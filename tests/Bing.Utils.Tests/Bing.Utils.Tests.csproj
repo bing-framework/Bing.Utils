@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;netcoreapp2.2;</TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Shouldly" Version="3.0.2" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="xunit" Version="2.*" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bing.Utils.DateTime\Bing.Utils.DateTime.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Drawing\Bing.Utils.Drawing.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Http\Bing.Utils.Http.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils\Bing.Utils.csproj" />
+    <ProjectReference Include="..\Bing.Tests.Samples\Bing.Tests.Samples.csproj" />
+  </ItemGroup>
+
+</Project>

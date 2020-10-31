@@ -1,0 +1,85 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils", "src\Bing.Utils\Bing.Utils.csproj", "{08249BBD-8926-4320-B48B-D6398155E506}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-src", "01-src", "{2F180CBD-D79B-4264-8468-3D8A01AACDC6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionItems", "_SolutionItems", "{08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}"
+	ProjectSection(SolutionItems) = preProject
+		common.props = common.props
+		Publish.bat = Publish.bat
+		README.md = README.md
+		version.props = version.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "asset", "asset", "{A5A89E27-217F-409C-A24D-3B52476A26A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "props", "props", "{DAFC420D-CDCF-45EF-87B9-9E480682AFEB}"
+	ProjectSection(SolutionItems) = preProject
+		asset\props\misc.props = asset\props\misc.props
+		asset\props\package.props = asset\props\package.props
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.DateTime", "src\Bing.Utils.DateTime\Bing.Utils.DateTime.csproj", "{7DB71615-87B0-4460-8608-381A91A8564A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Drawing", "src\Bing.Utils.Drawing\Bing.Utils.Drawing.csproj", "{74881FEE-1846-40A3-A030-41C36D09847C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Http", "src\Bing.Utils.Http\Bing.Utils.Http.csproj", "{1ED739E4-BD0B-442F-B81E-E527131CBBA0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-tests", "02-tests", "{0B23CC67-872A-4F9C-AA7C-B6B63F305D7A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Tests", "tests\Bing.Utils.Tests\Bing.Utils.Tests.csproj", "{3801E487-E190-478D-A7D2-40BBA82C5E4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Tests.Samples", "tests\Bing.Tests.Samples\Bing.Tests.Samples.csproj", "{EBF4146C-1723-461E-BFF3-C0973CECAC54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08249BBD-8926-4320-B48B-D6398155E506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08249BBD-8926-4320-B48B-D6398155E506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08249BBD-8926-4320-B48B-D6398155E506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08249BBD-8926-4320-B48B-D6398155E506}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DB71615-87B0-4460-8608-381A91A8564A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DB71615-87B0-4460-8608-381A91A8564A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DB71615-87B0-4460-8608-381A91A8564A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DB71615-87B0-4460-8608-381A91A8564A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74881FEE-1846-40A3-A030-41C36D09847C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74881FEE-1846-40A3-A030-41C36D09847C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74881FEE-1846-40A3-A030-41C36D09847C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74881FEE-1846-40A3-A030-41C36D09847C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED739E4-BD0B-442F-B81E-E527131CBBA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED739E4-BD0B-442F-B81E-E527131CBBA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED739E4-BD0B-442F-B81E-E527131CBBA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED739E4-BD0B-442F-B81E-E527131CBBA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3801E487-E190-478D-A7D2-40BBA82C5E4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3801E487-E190-478D-A7D2-40BBA82C5E4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3801E487-E190-478D-A7D2-40BBA82C5E4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3801E487-E190-478D-A7D2-40BBA82C5E4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBF4146C-1723-461E-BFF3-C0973CECAC54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF4146C-1723-461E-BFF3-C0973CECAC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF4146C-1723-461E-BFF3-C0973CECAC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF4146C-1723-461E-BFF3-C0973CECAC54}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{08249BBD-8926-4320-B48B-D6398155E506} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
+		{A5A89E27-217F-409C-A24D-3B52476A26A4} = {08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}
+		{DAFC420D-CDCF-45EF-87B9-9E480682AFEB} = {A5A89E27-217F-409C-A24D-3B52476A26A4}
+		{7DB71615-87B0-4460-8608-381A91A8564A} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
+		{74881FEE-1846-40A3-A030-41C36D09847C} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
+		{1ED739E4-BD0B-442F-B81E-E527131CBBA0} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
+		{3801E487-E190-478D-A7D2-40BBA82C5E4B} = {0B23CC67-872A-4F9C-AA7C-B6B63F305D7A}
+		{EBF4146C-1723-461E-BFF3-C0973CECAC54} = {0B23CC67-872A-4F9C-AA7C-B6B63F305D7A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4B464B4-BF6F-4831-A0EE-2FC007AE32A1}
+	EndGlobalSection
+EndGlobal

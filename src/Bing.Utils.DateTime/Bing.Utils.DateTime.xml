@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bing.Utils.DateTime</name>
+    </assembly>
+    <members>
+        <member name="T:Bing.Date.DateInfo">
+            <summary>
+            日期信息
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateInfo._internalDateTime">
+            <summary>
+            内部日期时间
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateInfo.#ctor">
+            <summary>
+            初始化一个<see cref="T:Bing.Date.DateInfo"/>类型的实例
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateInfo.#ctor(System.DateTime)">
+            <summary>
+            初始化一个<see cref="T:Bing.Date.DateInfo"/>类型的实例
+            </summary>
+            <param name="dt">日期时间</param>
+        </member>
+        <member name="M:Bing.Date.DateInfo.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            初始化一个<see cref="T:Bing.Date.DateInfo"/>类型的实例
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+        </member>
+        <member name="P:Bing.Date.DateInfo.Year">
+            <summary>
+            年
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateInfo.Month">
+            <summary>
+            月
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateInfo.Day">
+            <summary>
+            日
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateInfo.DateTimeRef">
+            <summary>
+            内部日期时间引用
+            </summary>
+        </member>
+        <member name="T:Bing.Date.DateInfo.DateChecker">
+            <summary>
+            日期检查
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateInfo.DateChecker.CheckMonth(System.Int32)">
+            <summary>
+            检查月份
+            </summary>
+            <param name="monthValue">月份值</param>
+        </member>
+        <member name="M:Bing.Date.DateInfo.ToDateTime">
+            <summary>
+            转换为 <see cref="T:System.DateTime"/>
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateInfo.ToLocalDate">
+            <summary>
+            转换为 <see cref="T:NodaTime.LocalDate"/>
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateInfo.ToLocalDateTime">
+            <summary>
+            转换为 <see cref="T:NodaTime.LocalDateTime"/>
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateInfo.AddDays(System.Int32)">
+            <summary>
+            添加天数
+            </summary>
+            <param name="days">天数</param>
+        </member>
+        <member name="T:Bing.Date.DayOfWeekCalc">
+            <summary>
+            星期计算
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DayOfWeekCalc.DaysBetween(System.DayOfWeek,System.DayOfWeek)">
+            <summary>
+            间隔天数
+            </summary>
+            <param name="left">星期几</param>
+            <param name="right">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DayOfWeekCalc.DaysBetween(NodaTime.IsoDayOfWeek,NodaTime.IsoDayOfWeek)">
+            <summary>
+            间隔天数
+            </summary>
+            <param name="left">星期几</param>
+            <param name="right">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DayOfWeekCalc.TryDaysBetween(System.DayOfWeek,System.DayOfWeek,System.Int32@)">
+            <summary>
+            尝试获取间隔天数
+            </summary>
+            <param name="left">星期几</param>
+            <param name="right">星期几</param>
+            <param name="days">间隔天数</param>
+        </member>
+        <member name="M:Bing.Date.DayOfWeekCalc.TryDaysBetween(NodaTime.IsoDayOfWeek,NodaTime.IsoDayOfWeek,System.Int32@)">
+            <summary>
+            尝试获取间隔天数
+            </summary>
+            <param name="left">星期几</param>
+            <param name="right">星期几</param>
+            <param name="days">间隔天数</param>
+        </member>
+        <member name="T:NodaTime.Helpers.DayOfWeekHelper">
+            <summary>
+            星期几(<see cref="T:System.DayOfWeek"/>) 操作辅助类
+            </summary>
+        </member>
+        <member name="M:NodaTime.Helpers.DayOfWeekHelper.ToNodaTimeWeek(System.DayOfWeek)">
+            <summary>
+            转换为 NodaTime 星期几
+            </summary>
+            <param name="week">系统星期几</param>
+        </member>
+        <member name="M:NodaTime.Helpers.DayOfWeekHelper.ToSystemWeek(NodaTime.IsoDayOfWeek)">
+            <summary>
+            转换为 系统星期几
+            </summary>
+            <param name="week">NodaTime 星期几</param>
+        </member>
+        <member name="T:System.BingDateTimeExtensions">
+            <summary>
+            日期时间(<see cref="T:System.DateTime"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:System.BingDateTimeExtensions.Clone(System.DateTime)">
+            <summary>
+            克隆
+            </summary>
+            <param name="dt">日期时间</param>
+        </member>
+    </members>
+</doc>

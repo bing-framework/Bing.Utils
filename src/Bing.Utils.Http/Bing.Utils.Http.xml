@@ -1,0 +1,1395 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bing.Utils.Http</name>
+    </assembly>
+    <members>
+        <member name="T:Bing.Helpers.CookieHelper">
+            <summary>
+            Cookie 操作辅助类
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.CookieHelper.GetCookie(System.String)">
+            <summary>
+            获取 Cookie 值
+            </summary>
+            <param name="name">名称</param>
+        </member>
+        <member name="M:Bing.Helpers.CookieHelper.GetCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            获取 Cookie 值
+            </summary>
+            <param name="context">Http上下文</param>
+            <param name="name">名称</param>
+        </member>
+        <member name="M:Bing.Helpers.CookieHelper.WriteCookie(System.String,System.String)">
+            <summary>
+            写入 Cookie 值。未设置过期时间，则写的是浏览器进程Cookie，一旦浏览器(是浏览器，而非标签页)关闭，则Cookie自动失效
+            </summary>
+            <param name="name">名称</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Helpers.CookieHelper.WriteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <summary>
+            写入 Cookie 值。未设置过期时间，则写的是浏览器进程Cookie，一旦浏览器(是浏览器，而非标签页)关闭，则Cookie自动失效
+            </summary>
+            <param name="context">Http上下文</param>
+            <param name="name">名称</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Helpers.CookieHelper.ClearCookie">
+            <summary>
+            清空 Cookie
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.CookieHelper.ClearCookie(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            清空 Cookie
+            </summary>
+            <param name="context">Http上下文</param>
+        </member>
+        <member name="T:Bing.Helpers.PathHelper">
+            <summary>
+            路径 操作
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.PathHelper.GetPhysicalPath(System.String)">
+            <summary>
+            获取物理路径
+            </summary>
+            <param name="relativePath">相对路径</param>
+        </member>
+        <member name="M:Bing.Helpers.PathHelper.GetWebRootPath(System.String)">
+            <summary>
+            获取wwwroot路径
+            </summary>
+            <param name="relativePath">相对路径</param>
+        </member>
+        <member name="T:Bing.Helpers.UserAgentHelper">
+            <summary>
+            UserAgent操作辅助类
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.UserAgentHelper.OperationSystemDict">
+            <summary>
+            操作系统字典
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.UserAgentHelper.GetOperatingSystemName(System.String)">
+            <summary>
+            根据 UserAgent 获取操作系统名称
+            </summary>
+            <param name="userAgent">UA</param>
+        </member>
+        <member name="M:Bing.Helpers.UserAgentHelper.GetBrowserName(System.String)">
+            <summary>
+            根据 UserAgent 获取浏览器名称
+            </summary>
+            <param name="userAgent">UA</param>
+        </member>
+        <member name="M:Bing.Helpers.UserAgentHelper.IsWechatBrowser(System.String)">
+            <summary>
+            是否微信浏览器
+            </summary>
+            <param name="userAgent">UA</param>
+        </member>
+        <member name="T:Bing.Helpers.UserAgentInfo">
+            <summary>
+            用户代理信息
+            参考地址：https://github.com/mumuy/browser/blob/master/Browser.js
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.UserAgentInfo.Browser">
+            <summary>
+            浏览器
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.UserAgentInfo.Version">
+            <summary>
+            版本号
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.UserAgentInfo.Engine">
+            <summary>
+            内核
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.UserAgentInfo.Os">
+            <summary>
+            操作系统
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.UserAgentInfo.OsVersion">
+            <summary>
+            操作系统版本号
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.UserAgentInfo.Device">
+            <summary>
+            设备
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.UserAgentInfo.Language">
+            <summary>
+            语言
+            </summary>
+        </member>
+        <member name="T:Bing.Helpers.Web">
+            <summary>
+            Web操作
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.HttpContextAccessor">
+            <summary>
+            Http上下文访问器
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.HttpContext">
+            <summary>
+            当前Http上下文
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.Environment">
+            <summary>
+            宿主环境
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.Request">
+            <summary>
+            当前Http请求
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.Response">
+            <summary>
+            当前Http响应
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.LocalIpAddress">
+            <summary>
+            本地IP
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.RequestType">
+            <summary>
+            请求类型
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.Form">
+            <summary>
+            Form表单
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.Body">
+            <summary>
+            请求正文
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.Url">
+            <summary>
+            请求地址
+            </summary>
+        </member>
+        <member name="F:Bing.Helpers.Web._ip">
+            <summary>
+            IP地址
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.SetIp(System.String)">
+            <summary>
+            设置IP地址
+            </summary>
+            <param name="ip">IP地址</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.ResetIp">
+            <summary>
+            重置IP地址
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.IP">
+            <summary>
+            客户端IP地址
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetLanIP">
+            <summary>
+            获取局域网IP
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetLanIP(System.Net.NetworkInformation.NetworkInterfaceType)">
+            <summary>
+            获取局域网IP。
+            参考地址：https://stackoverflow.com/questions/6803073/get-local-ip-address/28621250#28621250
+            解决OSX下获取IP地址产生"Device not configured"的问题
+            </summary>
+            <param name="type">网络接口类型</param>
+        </member>
+        <member name="P:Bing.Helpers.Web.Host">
+            <summary>
+            主机
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetClientHostName">
+            <summary>
+            获取Web客户端主机名
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetRemoteAddress">
+            <summary>
+            获取远程地址
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.Browser">
+            <summary>
+            浏览器
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.RootPath">
+            <summary>
+            根路径
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.WebRootPath">
+            <summary>
+            Web根路径，即wwwroot
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.ContentType">
+            <summary>
+            内容类型
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.QueryString">
+            <summary>
+            参数
+            </summary>
+        </member>
+        <member name="P:Bing.Helpers.Web.IsLocal">
+            <summary>
+            是否本地请求
+            </summary>
+        </member>
+        <member name="F:Bing.Helpers.Web.NullIpAddress">
+            <summary>
+            空IP地址
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.IsSet(System.Net.IPAddress)">
+            <summary>
+            是否已设置IP地址
+            </summary>
+            <param name="address">IP地址</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.#cctor">
+            <summary>
+            静态构造函数
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.Client">
+            <summary>
+            Web客户端，用于发送Http请求
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.Client``1">
+            <summary>
+            Web客户端，用于发送Http请求
+            </summary>
+            <typeparam name="TResult">返回结果类型</typeparam>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetFiles">
+            <summary>
+            获取客户端文件集合
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetFile">
+            <summary>
+            获取客户端文件
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetParam(System.String)">
+            <summary>
+            获取请求参数，搜索路径：查询参数->表单参数->请求头
+            </summary>
+            <param name="name">参数名</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.UrlEncode(System.String,System.Boolean)">
+            <summary>
+            Url编码
+            </summary>
+            <param name="url">url</param>
+            <param name="isUpper">编码字符是否转成大写，范例："http://"转成"http%3A%2F%2F"</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.UrlEncode(System.String,System.String,System.Boolean)">
+            <summary>
+            Url编码
+            </summary>
+            <param name="url">url</param>
+            <param name="encoding">字符编码</param>
+            <param name="isUpper">编码字符是否转成大写，范例："http://"转成"http%3A%2F%2F"</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.UrlEncode(System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Url编码
+            </summary>
+            <param name="url">url</param>
+            <param name="encoding">字符编码</param>
+            <param name="isUpper">编码字符是否转成大写，范例："http://"转成"http%3A%2F%2F"</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetUpperEncode(System.String)">
+            <summary>
+            获取大写编码字符串
+            </summary>
+            <param name="encode">编码字符串</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.UrlDecode(System.String)">
+            <summary>
+            Url解码
+            </summary>
+            <param name="url">url</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.UrlDecode(System.String,System.Text.Encoding)">
+            <summary>
+            Url解码
+            </summary>
+            <param name="url">url</param>
+            <param name="encoding">字符编码</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.Redirect(System.String)">
+            <summary>
+            跳转到指定链接
+            </summary>
+            <param name="url">链接</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.Write(System.String)">
+            <summary>
+            输出内容
+            </summary>
+            <param name="text">内容</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.Write(System.IO.FileStream)">
+            <summary>
+            输出文件
+            </summary>
+            <param name="stream">文件流</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetBodyAsync">
+            <summary>
+            获取请求正文
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.DownloadFileAsync(System.String,System.String)">
+            <summary>
+            下载文件
+            </summary>
+            <param name="filePath">文件绝对路径</param>
+            <param name="fileName">文件名。包含扩展名</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.DownloadFileAsync(System.String,System.String,System.Text.Encoding)">
+            <summary>
+            下载文件
+            </summary>
+            <param name="filePath">文件绝对路径</param>
+            <param name="fileName">文件名。包含扩展名</param>
+            <param name="encoding">字符编码</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.DownloadAsync(System.IO.Stream,System.String)">
+            <summary>
+            下载
+            </summary>
+            <param name="stream">流</param>
+            <param name="fileName">文件名。包含扩展名</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.DownloadAsync(System.IO.Stream,System.String,System.Text.Encoding)">
+            <summary>
+            下载
+            </summary>
+            <param name="stream">流</param>
+            <param name="fileName">文件名。包含扩展名</param>
+            <param name="encoding">字符编码</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.DownloadAsync(System.Byte[],System.String)">
+            <summary>
+            下载
+            </summary>
+            <param name="bytes">字节流</param>
+            <param name="fileName">文件名。包含扩展名</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.DownloadAsync(System.Byte[],System.String,System.Text.Encoding)">
+            <summary>
+            下载
+            </summary>
+            <param name="bytes">字节流</param>
+            <param name="fileName">文件名。包含扩展名</param>
+            <param name="encoding">字符编码</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.GetCookie(System.String)">
+            <summary>
+            读取Cookie值
+            </summary>
+            <param name="name">名称</param>
+        </member>
+        <member name="M:Bing.Helpers.Web.ClearCookie">
+            <summary>
+            清空Cookie
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Web.SetCookie(System.String,System.String)">
+            <summary>
+            设置Cookie值。未设置过期时间，则写的是浏览器进程Cookie，一旦浏览器（是浏览器，非标签页）关闭，则Cookie自动失效
+            </summary>
+            <param name="name">名称</param>
+            <param name="value">值</param>
+        </member>
+        <member name="T:Bing.Http.Clients.HttpContentType">
+            <summary>
+            Http 内容类型
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpContentType.FormUrlEncoded">
+            <summary>
+            Form格式：application/x-www-form-urlencoded
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpContentType.Json">
+            <summary>
+            JSON格式：application/json
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpContentType.FormData">
+            <summary>
+            表单文件上传：multipart/form-data
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpContentType.Xml">
+            <summary>
+            XML格式：text/xml
+            </summary>
+        </member>
+        <member name="T:Bing.Http.Clients.HttpRequest">
+            <summary>
+            Http请求
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequest._successAction">
+            <summary>
+            执行成功的回调函数
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequest._successStatusCodeAction">
+            <summary>
+            执行成功的回调函数
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest.#ctor(System.Net.Http.HttpMethod,System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.Http.Clients.HttpRequest"/>类型的实例
+            </summary>
+            <param name="httpMethod">Http请求方法</param>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest.OnSuccess(System.Action{System.String})">
+            <summary>
+            请求成功回调函数
+            </summary>
+            <param name="action">执行成功的回调函数，参数为响应结果</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest.OnSuccess(System.Action{System.String,System.Net.HttpStatusCode})">
+            <summary>
+            请求成功回调函数
+            </summary>
+            <param name="action">执行成功的回调函数，第一个参数为响应结果，第二个参数为状态码</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest.SuccessHandler(System.String,System.Net.HttpStatusCode,System.String)">
+            <summary>
+            成功处理操作
+            </summary>
+            <param name="result">结果</param>
+            <param name="statusCode">状态码</param>
+            <param name="contentType">内容类型</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest.ResultFromJsonAsync``1">
+            <summary>
+            获取Json结果
+            </summary>
+            <typeparam name="TResult">返回结果类型</typeparam>
+        </member>
+        <member name="T:Bing.Http.Clients.HttpRequest`1">
+            <summary>
+            Http请求
+            </summary>
+            <typeparam name="TResult">结果类型</typeparam>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequest`1._successAction">
+            <summary>
+            执行成功的回调函数
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequest`1._successStatusCodeAction">
+            <summary>
+            执行成功的回调函数
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequest`1._convertAction">
+            <summary>
+            执行成功的转换函数
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest`1.#ctor(System.Net.Http.HttpMethod,System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.Http.Clients.HttpRequest`1"/>类型的实例
+            </summary>
+            <param name="httpMethod">Http请求方法</param>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest`1.OnSuccess(System.Action{`0},System.Func{System.String,`0})">
+            <summary>
+            请求成功回调函数
+            </summary>
+            <param name="action">执行成功的回调函数，参数为响应结果</param>
+            <param name="convertAction">将结果字符串转换为指定类型，当默认转换实现无法转换时使用</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest`1.OnSuccess(System.Action{`0,System.Net.HttpStatusCode},System.Func{System.String,`0})">
+            <summary>
+            请求成功回调函数
+            </summary>
+            <param name="action">执行成功的回调函数，第一个参数为响应结果，第二个参数为状态码</param>
+            <param name="convertAction">将结果字符串转换为指定类型，当默认转换实现无法转换时使用</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest`1.SuccessHandler(System.String,System.Net.HttpStatusCode,System.String)">
+            <summary>
+            成功处理操作
+            </summary>
+            <param name="result">结果</param>
+            <param name="statusCode">状态码</param>
+            <param name="contentType">内容类型</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest`1.ConvertTo(System.String,System.String)">
+            <summary>
+            将结果字符串转换为指定类型
+            </summary>
+            <param name="result">结果</param>
+            <param name="contentType">内容类型</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequest`1.ResultFromJsonAsync">
+            <summary>
+            获取Json结果
+            </summary>
+        </member>
+        <member name="T:Bing.Http.Clients.HttpRequestBase`1">
+            <summary>
+            Http请求基类
+            </summary>
+            <typeparam name="TRequest">Http请求</typeparam>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._url">
+            <summary>
+            请求地址
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._httpMethod">
+            <summary>
+            Http请求方法
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._params">
+            <summary>
+            参数集合
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._data">
+            <summary>
+            参数
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._encoding">
+            <summary>
+            字符编码
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._contentType">
+            <summary>
+            内容类型
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._cookieContainer">
+            <summary>
+            Cookie容器
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._timeout">
+            <summary>
+            超时时间
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._headers">
+            <summary>
+            请求头集合
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._failAction">
+            <summary>
+            执行失败的回调函数
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._failStatusCodeAction">
+            <summary>
+            执行失败的回调函数
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._serverCertificateCustomValidationCallback">
+            <summary>
+            ssl证书验证委托
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._token">
+            <summary>
+            令牌
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.HttpRequestBase`1._files">
+            <summary>
+            文件集合
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.#ctor(System.Net.Http.HttpMethod,System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.Http.Clients.HttpRequestBase`1"/>类型的实例
+            </summary>
+            <param name="httpMethod">Http请求方法</param>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.This">
+            <summary>
+            返回自身
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Encoding(System.Text.Encoding)">
+            <summary>
+            设置字符编码
+            </summary>
+            <param name="encoding">字符编码</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Encoding(System.String)">
+            <summary>
+            设置字符编码
+            </summary>
+            <param name="encoding">字符编码</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.ContentType(Bing.Http.Clients.HttpContentType)">
+            <summary>
+            设置内容类型
+            </summary>
+            <param name="contentType">内容类型</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.ContentType(System.String)">
+            <summary>
+            设置内容类型
+            </summary>
+            <param name="contentType">内容类型</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Cookie(System.String,System.String,System.Double)">
+            <summary>
+            设置Cookie
+            </summary>
+            <param name="name">名称</param>
+            <param name="value">值</param>
+            <param name="expiresDate">有效时间，单位：天</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Cookie(System.String,System.String,System.DateTime)">
+            <summary>
+            设置Cookie
+            </summary>
+            <param name="name">名称</param>
+            <param name="value">值</param>
+            <param name="expiresDate">到期时间</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Cookie(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime})">
+            <summary>
+            设置Cookie
+            </summary>
+            <param name="name">名称</param>
+            <param name="value">值</param>
+            <param name="path">源服务器URL子集</param>
+            <param name="domain">所属域</param>
+            <param name="expiresDate">到期时间</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Cookie(System.Net.Cookie)">
+            <summary>
+            设置Cookie
+            </summary>
+            <param name="cookie">cookie</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Timeout(System.Int32)">
+            <summary>
+            设置超时时间
+            </summary>
+            <param name="timeout">超时时间。单位：秒</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Timeout(System.TimeSpan)">
+            <summary>
+            设置超时时间
+            </summary>
+            <param name="timeout">超时时间</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Header``1(System.String,``0)">
+            <summary>
+            设置请求头
+            </summary>
+            <typeparam name="T">值类型</typeparam>
+            <param name="key">键</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Data(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            添加参数字典
+            </summary>
+            <param name="parameters">参数字典</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.Data(System.String,System.Object)">
+            <summary>
+            添加参数
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.JsonData``1(``0)">
+            <summary>
+            添加Json参数
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.XmlData(System.String)">
+            <summary>
+            添加Xml参数
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.FileData(System.String)">
+            <summary>
+            添加文件参数
+            </summary>
+            <param name="filePath">文件路径</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.FileData(System.String,System.String)">
+            <summary>
+            添加文件参数
+            </summary>
+            <param name="name">参数名</param>
+            <param name="filePath">文件路径</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.OnFail(System.Action{System.String})">
+            <summary>
+            请求失败回调函数
+            </summary>
+            <param name="action">执行失败的回调函数，参数为响应结果</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.OnFail(System.Action{System.String,System.Net.HttpStatusCode})">
+            <summary>
+            请求失败回调函数
+            </summary>
+            <param name="action">执行失败的回调函数，第一个参数为响应结果，第二个参数为状态码</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.IgnoreSsl">
+            <summary>
+            忽略Ssl
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.BearerToken(System.String)">
+            <summary>
+            设置Bearer令牌
+            </summary>
+            <param name="token">令牌</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.ResultAsync">
+            <summary>
+            获取结果
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.SendBefore">
+            <summary>
+            发送前操作
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.SendAsync">
+            <summary>
+            发送请求
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.CreateHttpClient">
+            <summary>
+            创建Http客户端
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.InitHttpClient(System.Net.Http.HttpClient)">
+            <summary>
+            初始化Http客户端
+            </summary>
+            <param name="client">Http客户端</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.CreateRequestMessage">
+            <summary>
+            创建请求消息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.CreateHttpContent">
+            <summary>
+            创建请求内容
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.CreateJsonContent">
+            <summary>
+            创建Json内容
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.CreateXmlContent">
+            <summary>
+            创建Xml内容
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.CreateMultipartFormDataContent">
+            <summary>
+            创建表单内容
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.SendAfter(System.String,System.Net.Http.HttpResponseMessage)">
+            <summary>
+            发送后操作
+            </summary>
+            <param name="result">结果</param>
+            <param name="response">Http响应消息</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.GetContentType(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            获取内容类型
+            </summary>
+            <param name="response">Http响应消息</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.SuccessHandler(System.String,System.Net.HttpStatusCode,System.String)">
+            <summary>
+            成功处理操作
+            </summary>
+            <param name="result">结果</param>
+            <param name="statusCode">状态码</param>
+            <param name="contentType">内容类型</param>
+        </member>
+        <member name="M:Bing.Http.Clients.HttpRequestBase`1.FailHandler(System.String,System.Net.HttpStatusCode,System.String)">
+            <summary>
+            失败处理操作
+            </summary>
+            <param name="result">结果</param>
+            <param name="statusCode">状态码</param>
+            <param name="contentType">内容类型</param>
+        </member>
+        <member name="T:Bing.Http.Clients.IHttpRequest">
+            <summary>
+            Http请求
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.IHttpRequest.OnSuccess(System.Action{System.String})">
+            <summary>
+            请求成功回调函数
+            </summary>
+            <param name="action">执行成功的回调函数，参数为响应结果</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IHttpRequest.OnSuccess(System.Action{System.String,System.Net.HttpStatusCode})">
+            <summary>
+            请求成功回调函数
+            </summary>
+            <param name="action">执行成功的回调函数，第一个参数为响应结果，第二个参数为状态码</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IHttpRequest.ResultFromJsonAsync``1">
+            <summary>
+            获取Json结果
+            </summary>
+            <typeparam name="TResult">返回结果类型</typeparam>
+        </member>
+        <member name="T:Bing.Http.Clients.IHttpRequest`1">
+            <summary>
+            Http请求
+            </summary>
+            <typeparam name="TResult">结果类型</typeparam>
+        </member>
+        <member name="M:Bing.Http.Clients.IHttpRequest`1.OnSuccess(System.Action{`0},System.Func{System.String,`0})">
+            <summary>
+            请求成功回调函数
+            </summary>
+            <param name="action">执行成功的回调函数，参数为响应结果</param>
+            <param name="convertAction">将结果字符串转换为指定类型，当默认转换实现无法转换时使用</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IHttpRequest`1.OnSuccess(System.Action{`0,System.Net.HttpStatusCode},System.Func{System.String,`0})">
+            <summary>
+            请求成功回调函数
+            </summary>
+            <param name="action">执行成功的回调函数，第一个参数为响应结果，第二个参数为状态码</param>
+            <param name="convertAction">将结果字符串转换为指定类型，当默认转换实现无法转换时使用</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IHttpRequest`1.ResultFromJsonAsync">
+            <summary>
+            获取Json结果
+            </summary>
+        </member>
+        <member name="T:Bing.Http.Clients.Internal.HttpClientBuilderFactory">
+            <summary>
+            HttpClient 生成工厂
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.Internal.HttpClientBuilderFactory._httpClients">
+            <summary>
+            HttpClient 字典
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.Internal.HttpClientBuilderFactory._domainRegex">
+            <summary>
+            域名正则表达式
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.Internal.HttpClientBuilderFactory.CreateClient(System.String,System.TimeSpan)">
+            <summary>
+            创建Http客户端
+            </summary>
+            <param name="url">请求地址</param>
+            <param name="timeout">超时时间</param>
+        </member>
+        <member name="M:Bing.Http.Clients.Internal.HttpClientBuilderFactory.GetDomainByUrl(System.String)">
+            <summary>
+            通过Url地址获取域名
+            </summary>
+            <param name="url">Url地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.Internal.HttpClientBuilderFactory.Create(System.TimeSpan)">
+            <summary>
+            创建Http客户端
+            </summary>
+        </member>
+        <member name="T:Bing.Http.Clients.IRequest`1">
+            <summary>
+            Http请求
+            </summary>
+            <typeparam name="TRequest">Http请求</typeparam>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Encoding(System.Text.Encoding)">
+            <summary>
+            设置字符编码
+            </summary>
+            <param name="encoding">字符编码</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Encoding(System.String)">
+            <summary>
+            设置字符编码
+            </summary>
+            <param name="encoding">字符编码，范例：gb2312</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.ContentType(Bing.Http.Clients.HttpContentType)">
+            <summary>
+            设置内容类型
+            </summary>
+            <param name="contentType">内容类型</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.ContentType(System.String)">
+            <summary>
+            设置内容类型
+            </summary>
+            <param name="contentType">内容类型</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Cookie(System.String,System.String,System.Double)">
+            <summary>
+            设置Cookie
+            </summary>
+            <param name="name">名称</param>
+            <param name="value">值</param>
+            <param name="expiresDate">有效时间，单位：天</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Cookie(System.String,System.String,System.DateTime)">
+            <summary>
+            设置Cookie
+            </summary>
+            <param name="name">名称</param>
+            <param name="value">值</param>
+            <param name="expiresDate">到期时间</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Cookie(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime})">
+            <summary>
+            设置Cookie
+            </summary>
+            <param name="name">名称</param>
+            <param name="value">值</param>
+            <param name="path">源服务器URL子集</param>
+            <param name="domain">所属域</param>
+            <param name="expiresDate">到期时间</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Cookie(System.Net.Cookie)">
+            <summary>
+            设置Cookie
+            </summary>
+            <param name="cookie">cookie</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.BearerToken(System.String)">
+            <summary>
+            设置Bearer令牌
+            </summary>
+            <param name="token">令牌</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Timeout(System.Int32)">
+            <summary>
+            设置超时时间
+            </summary>
+            <param name="timeout">超时时间。单位：秒</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Timeout(System.TimeSpan)">
+            <summary>
+            设置超时时间
+            </summary>
+            <param name="timeout">超时时间</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Header``1(System.String,``0)">
+            <summary>
+            设置请求头
+            </summary>
+            <typeparam name="T">数据类型</typeparam>
+            <param name="key">键</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Data(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            添加参数字典
+            </summary>
+            <param name="parameters">参数字典</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.Data(System.String,System.Object)">
+            <summary>
+            添加参数
+            </summary>
+            <param name="key">键</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.JsonData``1(``0)">
+            <summary>
+            添加Json参数
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.XmlData(System.String)">
+            <summary>
+            添加Xml参数
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.FileData(System.String)">
+            <summary>
+            添加文件参数
+            </summary>
+            <param name="filePath">文件路径</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.FileData(System.String,System.String)">
+            <summary>
+            添加文件参数
+            </summary>
+            <param name="name">参数名</param>
+            <param name="filePath">文件路径</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.OnFail(System.Action{System.String})">
+            <summary>
+            请求失败回调函数
+            </summary>
+            <param name="action">执行失败的回调函数，参数为响应结果</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.OnFail(System.Action{System.String,System.Net.HttpStatusCode})">
+            <summary>
+            请求失败回调函数
+            </summary>
+            <param name="action">执行失败的回调函数，第一个参数为响应结果，第二个参数为状态码</param>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.IgnoreSsl">
+            <summary>
+            忽略Ssl
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.IRequest`1.ResultAsync">
+            <summary>
+            获取结果
+            </summary>
+        </member>
+        <member name="T:Bing.Http.Clients.Parameters.IFileParameter">
+            <summary>
+            文件参数
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.Parameters.IFileParameter.GetFileStream">
+            <summary>
+            获取文件流
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.Parameters.IFileParameter.GetFileName">
+            <summary>
+            获取文件名称
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.Parameters.IFileParameter.GetName">
+            <summary>
+            获取参数名
+            </summary>
+        </member>
+        <member name="T:Bing.Http.Clients.Parameters.PhysicalFileParameter">
+            <summary>
+            物理文件参数
+            </summary>
+        </member>
+        <member name="F:Bing.Http.Clients.Parameters.PhysicalFileParameter._stream">
+            <summary>
+            文件流
+            </summary>
+        </member>
+        <member name="P:Bing.Http.Clients.Parameters.PhysicalFileParameter.AbsolutePath">
+            <summary>
+            绝对路径
+            </summary>
+        </member>
+        <member name="P:Bing.Http.Clients.Parameters.PhysicalFileParameter.Name">
+            <summary>
+            参数名
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.Parameters.PhysicalFileParameter.#ctor(System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.Http.Clients.Parameters.PhysicalFileParameter"/>类型的实例
+            </summary>
+            <param name="absolutePath">绝对路径</param>
+        </member>
+        <member name="M:Bing.Http.Clients.Parameters.PhysicalFileParameter.#ctor(System.String,System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.Http.Clients.Parameters.PhysicalFileParameter"/>类型的实例
+            </summary>
+            <param name="absolutePath">绝对路径</param>
+            <param name="name">参数名</param>
+        </member>
+        <member name="M:Bing.Http.Clients.Parameters.PhysicalFileParameter.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.Parameters.PhysicalFileParameter.GetFileStream">
+            <summary>
+            获取文件流
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.Parameters.PhysicalFileParameter.GetFileName">
+            <summary>
+            获取文件名
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.Parameters.PhysicalFileParameter.GetName">
+            <summary>
+            获取参数名
+            </summary>
+        </member>
+        <member name="T:Bing.Http.Clients.WebClient">
+            <summary>
+            Web客户端
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Clients.WebClient.Get(System.String)">
+            <summary>
+            Get请求
+            </summary>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.WebClient.Post(System.String)">
+            <summary>
+            Post请求
+            </summary>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.WebClient.Put(System.String)">
+            <summary>
+            Put请求
+            </summary>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.WebClient.Delete(System.String)">
+            <summary>
+            Delete请求
+            </summary>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="T:Bing.Http.Clients.WebClient`1">
+            <summary>
+            Web客户端
+            </summary>
+            <typeparam name="TResult">返回的结果类型</typeparam>
+        </member>
+        <member name="M:Bing.Http.Clients.WebClient`1.Get(System.String)">
+            <summary>
+            Get请求
+            </summary>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.WebClient`1.Post(System.String)">
+            <summary>
+            Post请求
+            </summary>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.WebClient`1.Put(System.String)">
+            <summary>
+            Put请求
+            </summary>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="M:Bing.Http.Clients.WebClient`1.Delete(System.String)">
+            <summary>
+            Delete请求
+            </summary>
+            <param name="url">请求地址</param>
+        </member>
+        <member name="T:Bing.Http.HttpRequestExtensions">
+            <summary>
+            Http请求(<see cref="T:Microsoft.AspNetCore.Http.HttpRequest"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Http.HttpRequestExtensions.GetAbsoluteUri(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            获取Http请求的绝对路径
+            </summary>
+            <param name="request">Http请求</param>
+        </member>
+        <member name="M:Bing.Http.HttpRequestExtensions.Query``1(Microsoft.AspNetCore.Http.HttpRequest,System.String,``0)">
+            <summary>
+            获取查询参数
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="request">Http请求</param>
+            <param name="key">键</param>
+            <param name="defaultValue">默认值</param>
+        </member>
+        <member name="M:Bing.Http.HttpRequestExtensions.Form``1(Microsoft.AspNetCore.Http.HttpRequest,System.String,``0)">
+            <summary>
+            获取表单参数
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="request">Http请求</param>
+            <param name="key">键</param>
+            <param name="defaultValue">默认值</param>
+        </member>
+        <member name="M:Bing.Http.HttpRequestExtensions.Params(Microsoft.AspNetCore.Http.HttpRequest,System.String)">
+            <summary>
+            获取参数
+            </summary>
+            <param name="request">请求信息</param>
+            <param name="key">键名</param>
+        </member>
+        <member name="M:Bing.Http.HttpRequestExtensions.IsAjaxRequest(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            是否Ajax请求
+            </summary>
+            <param name="request">Http请求</param>
+        </member>
+        <member name="M:Bing.Http.HttpRequestExtensions.IsJsonContentType(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            是否Json内容类型
+            </summary>
+            <param name="request">Http请求</param>
+        </member>
+        <member name="F:Bing.Http.HttpRequestExtensions.BrowserRegex">
+            <summary>
+            浏览器正则表达式
+            </summary>
+        </member>
+        <member name="F:Bing.Http.HttpRequestExtensions.VersionRegex">
+            <summary>
+            版本号正则表达式
+            </summary>
+        </member>
+        <member name="M:Bing.Http.HttpRequestExtensions.IsMobileBrowser(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            是否移动端浏览器
+            </summary>
+            <param name="request">Http请求</param>
+        </member>
+        <member name="M:Bing.Http.HttpRequestExtensions.UserAgent(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            用户代理
+            </summary>
+            <param name="request">Http请求</param>
+        </member>
+        <member name="T:Bing.Http.HttpResponseExtensions">
+            <summary>
+            Http响应(<see cref="T:Microsoft.AspNetCore.Http.HttpResponse"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Http.HttpResponseExtensions.WriteJsonAsync(Microsoft.AspNetCore.Http.HttpResponse,System.Object)">
+            <summary>
+            写入Json
+            </summary>
+            <param name="response">Http响应</param>
+            <param name="obj">对象</param>
+        </member>
+        <member name="M:Bing.Http.HttpResponseExtensions.WriteJsonAsync(Microsoft.AspNetCore.Http.HttpResponse,System.String)">
+            <summary>
+            写入Json
+            </summary>
+            <param name="response">Http响应</param>
+            <param name="json">Json字符串</param>
+        </member>
+        <member name="M:Bing.Http.HttpResponseExtensions.SetCache(Microsoft.AspNetCore.Http.HttpResponse,System.Int32)">
+            <summary>
+            设置缓存头
+            </summary>
+            <param name="response">Http响应</param>
+            <param name="maxAge">最大有效期</param>
+        </member>
+        <member name="M:Bing.Http.HttpResponseExtensions.SetNoCache(Microsoft.AspNetCore.Http.HttpResponse)">
+            <summary>
+            设置无缓存
+            </summary>
+            <param name="response">Http响应</param>
+        </member>
+        <member name="M:Bing.Http.HttpResponseExtensions.WriteHtmlAsync(Microsoft.AspNetCore.Http.HttpResponse,System.String)">
+            <summary>
+            写入Html
+            </summary>
+            <param name="response">Http响应</param>
+            <param name="html">Html字符串</param>
+        </member>
+        <member name="T:Bing.Http.Extensions.SessionExtensions">
+            <summary>
+            会话(<see cref="T:Microsoft.AspNetCore.Http.ISession"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Http.Extensions.SessionExtensions.Set``1(Microsoft.AspNetCore.Http.ISession,System.String,``0)">
+            <summary>
+            设置会话
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="session">会话</param>
+            <param name="key">键</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Http.Extensions.SessionExtensions.Get``1(Microsoft.AspNetCore.Http.ISession,System.String)">
+            <summary>
+            获取指定键名的值
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="session">会话</param>
+            <param name="key">键名</param>
+        </member>
+        <member name="T:Bing.Parameters.UrlParameterBuilderExtensions">
+            <summary>
+            Url参数生成器(<see cref="T:Bing.Utils.Parameters.UrlParameterBuilder"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Parameters.UrlParameterBuilderExtensions.LoadForm(Bing.Utils.Parameters.UrlParameterBuilder)">
+            <summary>
+            从Request加载表单参数
+            </summary>
+            <param name="builder">Url参数生成器</param>
+        </member>
+        <member name="M:Bing.Parameters.UrlParameterBuilderExtensions.LoadQuery(Bing.Utils.Parameters.UrlParameterBuilder)">
+            <summary>
+            从Request加载查询参数
+            </summary>
+            <param name="builder">Url参数生成器</param>
+        </member>
+    </members>
+</doc>

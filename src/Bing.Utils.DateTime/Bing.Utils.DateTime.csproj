@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="Bing.Utils.DateTime._shared.props"/>
+
+  <Import Project="..\..\common.props"/>
+
+</Project>
