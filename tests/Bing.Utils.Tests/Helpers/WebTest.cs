@@ -12,8 +12,11 @@ namespace Bing.Utils.Tests.Helpers
     /// <summary>
     /// Web操作测试
     /// </summary>
-    public class WebTest:TestBase
+    public class WebTest : TestBase
     {
+        /// <summary>
+        /// 测试初始化
+        /// </summary>
         public WebTest(ITestOutputHelper output) : base(output)
         {
         }

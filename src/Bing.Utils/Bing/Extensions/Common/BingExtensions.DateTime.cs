@@ -30,7 +30,7 @@ namespace Bing.Extensions
                 result.AppendFormat("{0}毫秒", span.Milliseconds);
             if (result.Length > 0)
                 return result.ToString();
-            return $"{span.TotalSeconds * 1000}毫秒";
+            return $"{span.TotalMilliseconds}毫秒";
         }
 
         #endregion

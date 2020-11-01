@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
 using Bing.Helpers;
 
@@ -69,7 +70,7 @@ namespace Bing.Reflection
                 return string.Empty;
             return string.IsNullOrWhiteSpace(memberName)
                 ? string.Empty
-                : GetDescription(typeInfo, typeInfo.GetField(memberName));
+                : GetDescription(typeInfo.GetMember(memberName).FirstOrDefault());
         }
 
         /// <summary>

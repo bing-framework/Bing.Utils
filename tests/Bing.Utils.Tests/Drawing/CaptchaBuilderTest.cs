@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Bing.Drawing;
-using Bing.Tests;
 using Xunit;
 using Xunit.Abstractions;
 

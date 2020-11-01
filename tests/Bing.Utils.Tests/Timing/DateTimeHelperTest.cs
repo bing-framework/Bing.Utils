@@ -1,11 +1,22 @@
 ﻿using System;
 using Bing.Utils.Timing;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Timing
 {
-    public class DateTimeHelperTest
+    /// <summary>
+    /// 测试时间操作辅助类
+    /// </summary>
+    public class DateTimeHelperTest : TestBase
     {
+        /// <summary>
+        /// 测试初始化
+        /// </summary>
+        public DateTimeHelperTest(ITestOutputHelper output) : base(output)
+        {
+        }
+
         [Theory]
         [InlineData(DayOfWeek.Thursday, "2019/8/22 0:00:00")]
         [InlineData(DayOfWeek.Saturday, "2019/8/31 0:00:00")]

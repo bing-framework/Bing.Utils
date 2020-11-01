@@ -24,7 +24,7 @@ namespace Bing.Expressions
                 return Expression.Property(expression, propertyName);
             var propertyNameList = propertyName.Split('.');
             Expression result = null;
-            for (int i = 0; i < propertyName.Length; i++)
+            for (var i = 0; i < propertyNameList.Length; i++)
             {
                 if (i == 0)
                 {
