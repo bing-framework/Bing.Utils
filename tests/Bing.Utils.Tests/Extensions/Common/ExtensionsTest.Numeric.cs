@@ -9,6 +9,12 @@ namespace Bing.Utils.Tests.Extensions
     /// </summary>
     public partial class ExtensionsTest
     {
+        /// <summary>
+        /// 测试 - 保留小数位数
+        /// </summary>
+        /// <param name="input">输入值</param>
+        /// <param name="result">结果</param>
+        /// <param name="digits">小数位数</param>
         [Theory]
         [InlineData(10.3f, 10.30f, 2)]
         [InlineData(10.37f, 10.37f, 2)]

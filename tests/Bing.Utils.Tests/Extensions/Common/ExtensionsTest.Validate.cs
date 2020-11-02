@@ -1,6 +1,4 @@
 ﻿using Bing.Extensions;
-using Bing.Tests;
-using Bing.Extensions;
 using Xunit;
 
 // ReSharper disable once CheckNamespace
@@ -12,12 +10,12 @@ namespace Bing.Utils.Tests.Extensions
     public partial class ExtensionsTest : TestBase
     {
         /// <summary>
-        /// 检查控制，不为空则正常执行
+        /// 检查空值，不为空则正常执行
         /// </summary>
         [Fact]
         public void Test_CheckNull()
         {
-            object test = new object();
+            var test = new object();
             test.CheckNull(nameof(test));
         }
     }
