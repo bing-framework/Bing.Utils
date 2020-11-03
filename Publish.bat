@@ -20,10 +20,10 @@ echo.
 ::start to package all projects
 
 ::Utils
-dotnet pack src/Bing.Utils -c Release -o nuget_pub
-dotnet pack src/Bing.Utils.DateTime -c Release -o nuget_pub
-dotnet pack src/Bing.Utils.Drawing -c Release -o nuget_pub
-dotnet pack src/Bing.Utils.Http -c Release -o nuget_pub
+dotnet pack src/Bing.Utils -c Release -o nuget_packages
+dotnet pack src/Bing.Utils.DateTime -c Release -o nuget_packages
+dotnet pack src/Bing.Utils.Drawing -c Release -o nuget_packages
+dotnet pack src/Bing.Utils.Http -c Release -o nuget_packages
 
 for /R "nuget_packages" %%s in (*symbols.nupkg) do (
     del %%s
