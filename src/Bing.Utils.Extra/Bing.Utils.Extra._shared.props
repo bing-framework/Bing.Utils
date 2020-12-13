@@ -1,0 +1,7 @@
+﻿<Project>
+  <PropertyGroup>
+    <AssemblyName>Bing.Utils.Extra</AssemblyName>
+    <PackageId>Bing.Utils.Extra</PackageId>
+    <Description>Bing.Utils.Extra是Bing应用框架的帮助类扩展类库。</Description>
+  </PropertyGroup>
+</Project>

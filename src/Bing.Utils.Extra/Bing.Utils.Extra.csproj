@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="Bing.Utils.Extra._shared.props" />
+
+  <Import Project="..\..\common.props" />
+
+  <ItemGroup>
+    <Folder Include="Bing\Extra\Emoji\" />
+  </ItemGroup>
+
+</Project>
