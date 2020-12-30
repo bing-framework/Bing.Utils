@@ -95,6 +95,26 @@ namespace Bing.Extensions
 
         #endregion
 
+        #region GetAttributeValueOrNull(从Xml节点获取属性的值)
+
+        /// <summary>
+        /// 从Xml节点获取属性的值
+        /// </summary>
+        /// <param name="node">节点</param>
+        /// <param name="attributeName">属性名</param>
+        public static string GetAttributeValueOrNull(this XmlNode node, string attributeName)
+        {
+            if (node.Attributes == null || node.Attributes.Count <= 0)
+                throw new ArgumentNullException($"{node.Name} node has not {attributeName} attribute.");
+            return node.Attributes
+                .Cast<XmlAttribute>()
+                .Where(attr => attr.Name == attributeName)
+                .Select(attr => attr.Value)
+                .FirstOrDefault();
+        }
+
+        #endregion
+
         #region SetAttribute(设置Xml节点属性值)
 
         /// <summary>
