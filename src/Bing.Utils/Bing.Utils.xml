@@ -436,7 +436,7 @@
             <typeparam name="TValue">值类型</typeparam>
             <param name="this">字典</param>
             <param name="key">键</param>
-            <param name="valueFactory">值函数</param>
+            <param name="valueFactory">值函数。如果在字典中找不到值，则用于创建值的工厂方法</param>
         </member>
         <member name="M:Bing.Collections.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``0,``1})">
             <summary>
@@ -446,7 +446,7 @@
             <typeparam name="TValue">值类型</typeparam>
             <param name="this">字典</param>
             <param name="key">键</param>
-            <param name="valueFactory">值函数</param>
+            <param name="valueFactory">值函数。如果在字典中找不到值，则用于创建值的工厂方法</param>
         </member>
         <member name="M:Bing.Collections.DictionaryExtensions.GetKey``2(System.Collections.Generic.IDictionary{``0,``1},``1)">
             <summary>
@@ -4808,6 +4808,7 @@
             <param name="itemFormatFunc">单个集合项的转换委托</param>
             <param name="separator">分隔符，默认为逗号</param>
             <param name="wrapItem">项目包裹符</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:Bing.Extensions.EnumerableExtensions.ToDataTable``1(System.Collections.Generic.IEnumerable{``0},System.String)">
             <summary>
@@ -4826,6 +4827,17 @@
             <param name="enumerable">源集合</param>
             <param name="predicate">查询条件</param>
             <param name="condition">第三方条件</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Bing.Extensions.EnumerableExtensions.WhereIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean},System.Boolean)">
+            <summary>
+            是否执行指定条件的查询，根据第三方条件是否为真来决定
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="enumerable">源集合</param>
+            <param name="predicate">查询条件</param>
+            <param name="condition">第三方条件</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:Bing.Extensions.ListExtensions">
             <summary>
@@ -6247,6 +6259,20 @@
             Xml 扩展
             </summary>
         </member>
+        <member name="M:Bing.Extensions.XmlExtensions.FromXml``1(System.String)">
+            <summary>
+            将XML转换为Object
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="xml">XML字符串</param>
+        </member>
+        <member name="M:Bing.Extensions.XmlExtensions.Deserialize``1(System.Xml.Linq.XDocument)">
+            <summary>
+            反序列化指定的XML文档
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="xmlDocument">Xml文档</param>
+        </member>
         <member name="M:Bing.Extensions.XmlExtensions.ToXElement(System.Xml.XmlNode)">
             <summary>
             将XmlNode转换为XElement
@@ -6301,6 +6327,13 @@
             <param name="node">节点</param>
             <param name="name">属性名</param>
             <param name="defaultValue">>默认值。如果没有匹配属性存在</param>
+        </member>
+        <member name="M:Bing.Extensions.XmlNodeExtensions.GetAttributeValueOrNull(System.Xml.XmlNode,System.String)">
+            <summary>
+            从Xml节点获取属性的值
+            </summary>
+            <param name="node">节点</param>
+            <param name="attributeName">属性名</param>
         </member>
         <member name="M:Bing.Extensions.XmlNodeExtensions.SetAttribute(System.Xml.XmlNode,System.String,System.Object)">
             <summary>

@@ -18,12 +18,7 @@ namespace Bing.Collections
         /// <param name="this">字典</param>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
-        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue value)
-        {
-            if (!@this.ContainsKey(key))
-                @this.Add(key, value);
-            return @this[key];
-        }
+        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue value) => @this.TryGetValue(key, out var obj) ? obj : @this[key] = value;
 
         /// <summary>
         /// 获取或添加。如果指定键的值不存在，则添加值并返回
@@ -32,13 +27,8 @@ namespace Bing.Collections
         /// <typeparam name="TValue">值类型</typeparam>
         /// <param name="this">字典</param>
         /// <param name="key">键</param>
-        /// <param name="valueFactory">值函数</param>
-        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, Func<TValue> valueFactory)
-        {
-            if (!@this.ContainsKey(key))
-                @this.Add(key, valueFactory());
-            return @this[key];
-        }
+        /// <param name="valueFactory">值函数。如果在字典中找不到值，则用于创建值的工厂方法</param>
+        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, Func<TValue> valueFactory) => @this.GetOrAdd(key, k => valueFactory());
 
         /// <summary>
         /// 获取或添加。如果指定键的值不存在，则添加值并返回
@@ -47,13 +37,8 @@ namespace Bing.Collections
         /// <typeparam name="TValue">值类型</typeparam>
         /// <param name="this">字典</param>
         /// <param name="key">键</param>
-        /// <param name="valueFactory">值函数</param>
-        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, Func<TKey, TValue> valueFactory)
-        {
-            if (!@this.ContainsKey(key))
-                @this.Add(key, valueFactory(key));
-            return @this[key];
-        }
+        /// <param name="valueFactory">值函数。如果在字典中找不到值，则用于创建值的工厂方法</param>
+        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, Func<TKey, TValue> valueFactory) => @this.TryGetValue(key, out var obj) ? obj : @this[key] = valueFactory(key);
 
         /// <summary>
         /// 获取键。根据值反向查找键
@@ -77,7 +62,6 @@ namespace Bing.Collections
         /// <param name="this">字典</param>
         /// <param name="key">键</param>
         /// <param name="defaultValue">默认值</param>
-        public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue defaultValue = default) =>
-            @this.TryGetValue(key, out var value) ? value : defaultValue;
+        public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue defaultValue = default) => @this.TryGetValue(key, out var value) ? value : defaultValue;
     }
 }

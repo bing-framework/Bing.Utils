@@ -254,12 +254,15 @@
             将图像转换为字节数组
             </summary>
             <param name="bitmap">图像</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="M:Bing.Drawing.ImageHelper.ToBytes(System.Drawing.Image)">
+        <member name="M:Bing.Drawing.ImageHelper.ToBytes(System.Drawing.Image,System.Drawing.Imaging.ImageFormat)">
             <summary>
-            将图片转换成字节数组
+            将图像转换成字节数组
             </summary>
-            <param name="image">图片</param>
+            <param name="image">图像</param>
+            <param name="format">图像格式</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:Bing.Drawing.ImageHelper.ToStream(System.Drawing.Image)">
             <summary>
@@ -275,17 +278,17 @@
         </member>
         <member name="M:Bing.Drawing.ImageHelper.ToBase64String(System.Drawing.Image,System.Boolean)">
             <summary>
-            将图片转换为Base64字符串
+            将图像转换为base64字符串
             </summary>
             <param name="image">图片</param>
             <param name="appendPrefix">是否追加前缀</param>
         </member>
         <member name="M:Bing.Drawing.ImageHelper.ToBase64String(System.Drawing.Image,System.Drawing.Imaging.ImageFormat,System.Boolean)">
             <summary>
-            将图片转换为Base64字符串
+            将图像转换为base64字符串
             </summary>
-            <param name="image">图片</param>
-            <param name="imageFormat">图片格式</param>
+            <param name="image">图像</param>
+            <param name="imageFormat">图像格式</param>
             <param name="appendPrefix">是否追加前缀</param>
         </member>
         <member name="M:Bing.Drawing.ImageHelper.ToBase64String(System.Drawing.Bitmap,System.Boolean)">
@@ -302,6 +305,18 @@
             <param name="bitmap">图像</param>
             <param name="imageFormat">图片格式</param>
             <param name="appendPrefix">是否追加前缀</param>
+        </member>
+        <member name="F:Bing.Drawing.ImageHelper.Pngiconheader">
+            <summary>
+            PNG-ICON 文件头
+            </summary>
+        </member>
+        <member name="M:Bing.Drawing.ImageHelper.ToIcoStream(System.Drawing.Image,System.Drawing.Size)">
+            <summary>
+            将图像转换为ICO流
+            </summary>
+            <param name="image">图像</param>
+            <param name="size">大小</param>
         </member>
         <member name="M:Bing.Drawing.ImageHelper.MakeThumbnail(System.Drawing.Image,System.Int32,System.Int32,Bing.Drawing.ThumbnailMode)">
             <summary>
@@ -330,6 +345,14 @@
             <param name="width">缩略图宽度</param>
             <param name="height">缩略图高度</param>
             <param name="mode">缩略图方式</param>
+        </member>
+        <member name="M:Bing.Drawing.ImageHelper.ScaleImage(System.Drawing.Image,System.Int32,System.Int32)">
+            <summary>
+            缩放图像，以使其适合宽度/高度
+            </summary>
+            <param name="image">图像</param>
+            <param name="width">宽度</param>
+            <param name="height">高度</param>
         </member>
         <member name="M:Bing.Drawing.ImageHelper.DeleteCoordinate(System.String)">
             <summary>
@@ -483,6 +506,7 @@
             从指定字节数组创建图片
             </summary>
             <param name="bytes">字节数组</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:Bing.Drawing.ImageHelper.FromBase64String(System.String)">
             <summary>
@@ -742,6 +766,43 @@
             <summary>
             将二维二值化数组转换为特征码字符串
             </summary>
+        </member>
+        <member name="T:Bing.Extensions.ImageExtensions">
+            <summary>
+            图像(<see cref="T:System.Drawing.Image"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Extensions.ImageExtensions.ToBase64String(System.Drawing.Image,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            将图像转换为base64字符串
+            </summary>
+            <param name="image">图像</param>
+            <param name="format">图像格式</param>
+        </member>
+        <member name="M:Bing.Extensions.ImageExtensions.ToBase64StringWithPrefix(System.Drawing.Image,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            将图像转换为base64字符串，带前缀
+            </summary>
+            <param name="image">图像</param>
+            <param name="format">图像格式</param>
+            <returns>
+            data:image/jpeg;base64,字符串
+            </returns>
+        </member>
+        <member name="M:Bing.Extensions.ImageExtensions.ScaleImage(System.Drawing.Image,System.Int32,System.Int32)">
+            <summary>
+            缩放图像，以使其适合宽度/高度
+            </summary>
+            <param name="image">图像</param>
+            <param name="width">宽度</param>
+            <param name="height">高度</param>
+        </member>
+        <member name="M:Bing.Extensions.ImageExtensions.ToBytes(System.Drawing.Image,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            将图像转换成字节数组
+            </summary>
+            <param name="image">图像</param>
+            <param name="format">图像格式</param>
         </member>
     </members>
 </doc>

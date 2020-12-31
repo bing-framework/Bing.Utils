@@ -116,8 +116,7 @@ namespace Bing.Extensions
         /// <param name="collection">要处理的集合</param>
         /// <param name="separator">分隔符，默认为逗号</param>
         /// <param name="wrapItem">项目包裹符</param>
-        public static string ExpandAndToString<T>(this IEnumerable<T> collection, string separator = ",",
-            string wrapItem = "") =>
+        public static string ExpandAndToString<T>(this IEnumerable<T> collection, string separator = ",", string wrapItem = "") =>
             collection.ExpandAndToString(t => t.ToString(), separator, wrapItem);
 
         /// <summary>
@@ -128,9 +127,11 @@ namespace Bing.Extensions
         /// <param name="itemFormatFunc">单个集合项的转换委托</param>
         /// <param name="separator">分隔符，默认为逗号</param>
         /// <param name="wrapItem">项目包裹符</param>
-        public static string ExpandAndToString<T>(this IEnumerable<T> collection, Func<T, string> itemFormatFunc,
-            string separator = ",", string wrapItem = "")
+        /// <exception cref="ArgumentNullException"></exception>
+        public static string ExpandAndToString<T>(this IEnumerable<T> collection, Func<T, string> itemFormatFunc, string separator = ",", string wrapItem = "")
         {
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection));
             collection = collection as IList<T> ?? collection.ToList();
             itemFormatFunc.CheckNotNull(nameof(itemFormatFunc));
             if (!collection.Any())
@@ -176,18 +177,14 @@ namespace Bing.Extensions
             var type = typeof(T);
             var properties = type.GetProperties();
             var dataTable = string.IsNullOrEmpty(tableName) ? new DataTable() : new DataTable(tableName);
-            foreach (var property in properties)
-            {
+            foreach (var property in properties) 
                 dataTable.Columns.Add(new DataColumn(property.Name));
-            }
 
             var array = enumerable.ToArray();
             for (var i = 0; i < array.Length; i++)
             {
-                foreach (var property in properties)
-                {
+                foreach (var property in properties) 
                     dataTable.Rows[i][property.Name] = property.GetValue(array[i]);
-                }
             }
 
             return dataTable;
@@ -204,11 +201,26 @@ namespace Bing.Extensions
         /// <param name="enumerable">源集合</param>
         /// <param name="predicate">查询条件</param>
         /// <param name="condition">第三方条件</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate, bool condition)
         {
             if (enumerable == null)
-                throw new ArgumentNullException(nameof(enumerable), $@"源{typeof(T).Name}集合对象不可为空！");
-            enumerable = enumerable as IList<T> ?? enumerable.ToList();
+                throw new ArgumentNullException(nameof(enumerable));
+            return condition ? enumerable.Where(predicate) : enumerable;
+        }
+
+        /// <summary>
+        /// 是否执行指定条件的查询，根据第三方条件是否为真来决定
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="enumerable">源集合</param>
+        /// <param name="predicate">查询条件</param>
+        /// <param name="condition">第三方条件</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> enumerable, Func<T, int, bool> predicate, bool condition)
+        {
+            if (enumerable == null)
+                throw new ArgumentNullException(nameof(enumerable));
             return condition ? enumerable.Where(predicate) : enumerable;
         }
 
