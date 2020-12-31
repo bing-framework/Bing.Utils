@@ -36,8 +36,11 @@ namespace Bing.Drawing
         /// 从指定字节数组创建图片
         /// </summary>
         /// <param name="bytes">字节数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static Image FromBytes(byte[] bytes)
         {
+            if (bytes == null)
+                throw new ArgumentNullException(nameof(bytes));
             using var ms = new MemoryStream(bytes);
             return Image.FromStream(ms);
         }

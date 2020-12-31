@@ -125,6 +125,45 @@ namespace Bing.Drawing
 
         #endregion
 
+        #region ScaleImage(缩放图像)
+
+        /// <summary>
+        /// 缩放图像，以使其适合宽度/高度
+        /// </summary>
+        /// <param name="image">图像</param>
+        /// <param name="width">宽度</param>
+        /// <param name="height">高度</param>
+        public static Image ScaleImage(Image image, int width, int height)
+        {
+            if (image == null || width <= 0 || height <= 0)
+                return null;
+            var newWidth = image.Width * height / image.Height;
+            var newHeight = image.Height * width / image.Width;
+
+            var bmp = new Bitmap(width, height);
+            var g = Graphics.FromImage(bmp);
+            g.InterpolationMode = InterpolationMode.HighQualityBilinear;
+            // 调试时，取消以下代码注释
+            //g.FillRectangle(Brushes.Aqua, 0, 0, bmp.Width - 1, bmp.Height - 1);
+            if (newWidth > width)
+            {
+                var x = (bmp.Width - width) / 2;
+                var y = (bmp.Height - newHeight) / 2;
+                g.DrawImage(image, x, y, width, newHeight);
+            }
+            else
+            {
+                var x = bmp.Width / 2 - newWidth / 2;
+                var y = bmp.Height / 2 - height / 2;
+                g.DrawImage(image, x, y, newWidth, height);
+            }
+            // 调试时，取消以下代码注释
+            //g.DrawRectangle(new Pen(Color.Red, 1), 0, 0, bmp.Width - 1, bmp.Height - 1);
+            return bmp;
+        }
+
+        #endregion
+
         #region TextWatermark(文字水印)
 
         //public static string TextWatermark(string path, string letter, int size, Color color, ImageLocationMode mode)
