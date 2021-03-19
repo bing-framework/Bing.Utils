@@ -46,11 +46,18 @@ namespace Bing.Helpers
 
         #region Environment(宿主环境)
 
+#if NETCOREAPP3_1
+        /// <summary>
+        /// 宿主环境
+        /// </summary>
+        public static IWebHostEnvironment Environment { get; set; }
+
+#else
         /// <summary>
         /// 宿主环境
         /// </summary>
         public static IHostingEnvironment Environment { get; set; }
-
+#endif
         #endregion
 
         #region Request(当前Http请求)
