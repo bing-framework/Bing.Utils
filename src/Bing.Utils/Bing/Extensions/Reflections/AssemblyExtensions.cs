@@ -39,7 +39,7 @@ namespace Bing.Extensions
             if (assembly == null)
                 throw new ArgumentNullException(nameof(assembly));
             var info = FileVersionInfo.GetVersionInfo(assembly.Location);
-            return new Version(info.ProductVersion);
+            return new Version(info.FileVersion);
         }
 
         #endregion

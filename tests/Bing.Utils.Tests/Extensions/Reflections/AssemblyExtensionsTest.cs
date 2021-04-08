@@ -27,7 +27,7 @@ namespace Bing.Utils.Tests.Extensions.Reflections
         {
             var assembly = typeof(AssemblyExtensionsTest).Assembly;
             var result = assembly.GetProductVersion();
-            Assert.Equal("1.0.0", result.ToString());
+            Assert.Equal("1.0.0.0", result.ToString());
         }
     }
 }
