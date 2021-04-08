@@ -69,6 +69,19 @@ namespace Bing.Exceptions
         }
 
         /// <summary>
+        /// 解构
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="tryResult">尝试结果</param>
+        /// <param name="exception">异常</param>
+        public override void Deconstruct(out T value, out bool tryResult, out Exception exception)
+        {
+            value = Value;
+            tryResult = IsSuccess;
+            exception = default;
+        }
+
+        /// <summary>
         /// 恢复
         /// </summary>
         /// <param name="recoverFunc">恢复函数</param>

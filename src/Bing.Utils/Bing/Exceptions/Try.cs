@@ -93,5 +93,22 @@ namespace Bing.Exceptions
                 throw ExceptionHelper.PrepareForRethrow(e.InnerException);
             }
         }
+
+        /// <summary>
+        /// 调用
+        /// </summary>
+        /// <param name="invokeAction">操作</param>
+        public static TryAction Invoke(Action invokeAction)
+        {
+            try
+            {
+                invokeAction();
+                return new SuccessAction(invokeAction.GetHashCode());
+            }
+            catch (Exception e)
+            {
+                return new FailureAction(e, invokeAction?.GetHashCode() ?? 0);
+            }
+        }
     }
 }

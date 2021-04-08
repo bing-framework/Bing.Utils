@@ -157,6 +157,134 @@ namespace Bing.Exceptions
         }
 
         /// <summary>
+        /// 获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        public virtual Try<T> GetValueOut(out T value)
+        {
+            value = GetValue();
+            return this;
+        }
+
+        /// <summary>
+        /// 获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        public virtual Try<T> GetValueOutAsync(out Task<T> value)
+        {
+            value = GetValueAsync();
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        public virtual Try<T> GetSafeValueOut(out T value)
+        {
+            value = GetSafeValue();
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="defaultVal">默认值</param>
+        public virtual Try<T> GetSafeValueOut(out T value, T defaultVal)
+        {
+            value = GetSafeValue(defaultVal);
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="defaultValFunc">默认值函数</param>
+        public virtual Try<T> GetSafeValueOut(out T value, Func<T> defaultValFunc)
+        {
+            value = GetSafeValue(defaultValFunc);
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="defaultValFunc">默认值函数</param>
+        public virtual Try<T> GetSafeValueOut(out T value, Func<Exception, T> defaultValFunc)
+        {
+            value = GetSafeValue(defaultValFunc);
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        public virtual Try<T> GetSafeValueOutAsync(out Task<T> value)
+        {
+            value = GetSafeValueAsync();
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="defaultVal">默认值</param>
+        public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, T defaultVal)
+        {
+            value = GetSafeValueAsync(defaultVal);
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="defaultValFunc">默认值函数</param>
+        public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<T> defaultValFunc)
+        {
+            value = GetSafeValueAsync(defaultValFunc);
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="defaultValFunc">默认值函数</param>
+        public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<Exception, T> defaultValFunc)
+        {
+            value = GetSafeValueAsync(defaultValFunc);
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="defaultValFunc">默认值函数</param>
+        public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<Task<T>> defaultValFunc)
+        {
+            value = GetSafeValueAsync(defaultValFunc);
+            return this;
+        }
+
+        /// <summary>
+        /// 安全获取值并输出
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="defaultValFunc">默认值函数</param>
+        public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<Exception, Task<T>> defaultValFunc)
+        {
+            value = GetSafeValueAsync(defaultValFunc);
+            return this;
+        }
+
+        /// <summary>
         /// ==
         /// </summary>
         /// <param name="left">左对象</param>
@@ -199,6 +327,14 @@ namespace Bing.Exceptions
         /// <param name="value">值</param>
         /// <param name="exception">异常</param>
         public abstract void Deconstruct(out T value, out Exception exception);
+
+        /// <summary>
+        /// 解构
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="tryResult">尝试结果</param>
+        /// <param name="exception">异常</param>
+        public abstract void Deconstruct(out T value, out bool tryResult, out Exception exception);
 
         /// <summary>
         /// 将异常转换为指定类型异常

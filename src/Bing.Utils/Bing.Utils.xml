@@ -843,6 +843,111 @@
             </summary>
             <param name="typeInfo">类型信息</param>
         </member>
+        <member name="T:Bing.Date.DateTimeOutputStyles">
+            <summary>
+            日期时间输出样式
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOutputStyles.DateTime">
+            <summary>
+            格式：yyyy-MM-dd HH:mm:ss
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOutputStyles.Date">
+            <summary>
+            格式：yyyy-MM-dd
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOutputStyles.Time">
+            <summary>
+            格式：HH:mm:ss
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOutputStyles.LongDate">
+            <summary>
+            长日期。格式：yyyy年MM月dd日
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOutputStyles.LongTime">
+            <summary>
+            长时间。格式：HH:mm:ss
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOutputStyles.ShortDate">
+            <summary>
+            短日期。格式：yyyy/MM/dd
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOutputStyles.ShortTime">
+            <summary>
+            短时间。格式：HH:mm
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOutputStyles.Millisecond">
+            <summary>
+            格式：yyyy-MM-dd HH:mm:ss.fff
+            </summary>
+        </member>
+        <member name="T:Bing.Date.DateTimeHelper">
+            <summary>
+            日期时间帮助类
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeHelper.IfTtt(System.Boolean,System.String,System.String)">
+            <summary>
+            如果条件成立则A，不成立则B
+            </summary>
+            <param name="condition">条件</param>
+            <param name="format1">格式化1</param>
+            <param name="format2">格式化2</param>
+        </member>
+        <member name="T:Bing.Date.DateTimeToStringExtensions">
+            <summary>
+            日期时间转字符串 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeToStringExtensions.ToString(System.DateTime,Bing.Date.DateTimeOutputStyles,System.Boolean)">
+            <summary>
+            转换为字符串
+            </summary>
+            <param name="dt">日期时间</param>
+            <param name="styles">日期时间输出样式</param>
+            <param name="isRemoveSecond">是否移除秒。true:是,false:否</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeToStringExtensions.ToString(System.Nullable{System.DateTime},Bing.Date.DateTimeOutputStyles,System.Boolean)">
+            <summary>
+            转换为字符串
+            </summary>
+            <param name="dt">日期时间</param>
+            <param name="styles">日期时间输出样式</param>
+            <param name="isRemoveSecond">是否移除秒。true:是,false:否</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeToStringExtensions.ToDateTimeOffset(System.DateTime)">
+            <summary>
+            将时间转换为时间点
+            </summary>
+            <param name="localDateTime">DateTime</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeToStringExtensions.ToDateTimeOffset(System.DateTime,System.TimeZoneInfo)">
+            <summary>
+            将时间转换为时间点
+            </summary>
+            <param name="localDateTime">DateTime</param>
+            <param name="localTimeZone">时区</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeToStringExtensions.ToLocalDateTime(System.DateTimeOffset)">
+            <summary>
+            将时间点转换为时间
+            </summary>
+            <param name="dateTimeUtc">DateTimeOffset</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeToStringExtensions.ToLocalDateTime(System.DateTimeOffset,System.TimeZoneInfo)">
+            <summary>
+            将时间点转换为时间
+            </summary>
+            <param name="dateTimeUtc">DateTimeOffset</param>
+            <param name="localTimeZone">时区</param>
+        </member>
         <member name="T:Bing.Date.DateTimeExtensions">
             <summary>
             时间(<see cref="T:System.DateTime"/>) 扩展
@@ -923,32 +1028,6 @@
             </summary>
             <param name="dateTime">日期</param>
             <param name="isRemoveSecond">是否移除秒</param>
-        </member>
-        <member name="M:Bing.Date.DateTimeExtensions.ToDateTimeOffset(System.DateTime)">
-            <summary>
-            将时间转换为时间点
-            </summary>
-            <param name="localDateTime">DateTime</param>
-        </member>
-        <member name="M:Bing.Date.DateTimeExtensions.ToDateTimeOffset(System.DateTime,System.TimeZoneInfo)">
-            <summary>
-            将时间转换为时间点
-            </summary>
-            <param name="localDateTime">DateTime</param>
-            <param name="localTimeZone">时区</param>
-        </member>
-        <member name="M:Bing.Date.DateTimeExtensions.ToLocalDateTime(System.DateTimeOffset)">
-            <summary>
-            将时间点转换为时间
-            </summary>
-            <param name="dateTimeUtc">DateTimeOffset</param>
-        </member>
-        <member name="M:Bing.Date.DateTimeExtensions.ToLocalDateTime(System.DateTimeOffset,System.TimeZoneInfo)">
-            <summary>
-            将时间点转换为时间
-            </summary>
-            <param name="dateTimeUtc">DateTimeOffset</param>
-            <param name="localTimeZone">时区</param>
         </member>
         <member name="T:Bing.Date.TimeStamp">
             <summary>
@@ -1281,6 +1360,253 @@
             <param name="task">异步</param>
             <param name="cancellationToken">取消令牌</param>
         </member>
+        <member name="M:Bing.Exceptions.Try.Invoke(System.Action)">
+            <summary>
+            调用
+            </summary>
+            <param name="invokeAction">操作</param>
+        </member>
+        <member name="T:Bing.Exceptions.TryAction">
+            <summary>
+            尝试操作
+            </summary>
+        </member>
+        <member name="P:Bing.Exceptions.TryAction.IsFailure">
+            <summary>
+            是否失败
+            </summary>
+        </member>
+        <member name="P:Bing.Exceptions.TryAction.IsSuccess">
+            <summary>
+            是否成功
+            </summary>
+        </member>
+        <member name="P:Bing.Exceptions.TryAction.Exception">
+            <summary>
+            异常
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.op_Equality(Bing.Exceptions.TryAction,Bing.Exceptions.TryAction)">
+            <summary>
+            ==
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.op_Inequality(Bing.Exceptions.TryAction,Bing.Exceptions.TryAction)">
+            <summary>
+            !=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.ToString">
+            <summary>
+            重载输出字符串
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.Equals(System.Object)">
+            <summary>
+            重载相等
+            </summary>
+            <param name="obj">对象</param>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.GetHashCode">
+            <summary>
+            重载获取哈希码
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.Deconstruct(System.Boolean@,System.Exception@)">
+            <summary>
+            解构
+            </summary>
+            <param name="tryResult">尝试结果</param>
+            <param name="exception">异常</param>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.ExceptionAs``1">
+            <summary>
+            将异常转换为指定类型异常
+            </summary>
+            <typeparam name="TException">异常类型</typeparam>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.Recover(System.Action{System.Exception})">
+            <summary>
+            恢复
+            </summary>
+            <param name="recoverFunc">恢复函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.RecoverWith(System.Func{System.Exception,Bing.Exceptions.TryAction})">
+            <summary>
+            恢复
+            </summary>
+            <param name="recoverFunc">恢复函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.TryAction.Tap(System.Action,System.Action{System.Exception})">
+            <summary>
+            触发
+            </summary>
+            <param name="successAction">成功操作</param>
+            <param name="failureAction">失败操作</param>
+        </member>
+        <member name="T:Bing.Exceptions.FailureAction">
+            <summary>
+            失败操作
+            </summary>
+        </member>
+        <member name="F:Bing.Exceptions.FailureAction._hashOfAction">
+            <summary>
+            操作哈希值
+            </summary>
+        </member>
+        <member name="P:Bing.Exceptions.FailureAction.IsFailure">
+            <summary>
+            是否失败
+            </summary>
+        </member>
+        <member name="P:Bing.Exceptions.FailureAction.IsSuccess">
+            <summary>
+            是否成功
+            </summary>
+        </member>
+        <member name="P:Bing.Exceptions.FailureAction.Exception">
+            <summary>
+            异常
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.FailureAction.#ctor(System.Exception,System.Int32)">
+            <summary>
+            初始化一个<see cref="T:Bing.Exceptions.FailureAction"/>类型的实例
+            </summary>
+            <param name="exception">异常</param>
+            <param name="hashOfAction">操作哈希值</param>
+        </member>
+        <member name="M:Bing.Exceptions.FailureAction.ToString">
+            <summary>
+            重载输出字符串
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.FailureAction.Equals(Bing.Exceptions.FailureAction)">
+            <summary>
+            相等
+            </summary>
+            <param name="other">对象</param>
+        </member>
+        <member name="M:Bing.Exceptions.FailureAction.Equals(System.Object)">
+            <summary>
+            重载相等
+            </summary>
+            <param name="obj">对象</param>
+        </member>
+        <member name="M:Bing.Exceptions.FailureAction.GetHashCode">
+            <summary>
+            重载获取哈希码
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.FailureAction.Deconstruct(System.Boolean@,System.Exception@)">
+            <summary>
+            解构
+            </summary>
+            <param name="tryResult">尝试结果</param>
+            <param name="exception">异常</param>
+        </member>
+        <member name="M:Bing.Exceptions.FailureAction.Recover(System.Action{System.Exception})">
+            <summary>
+            恢复
+            </summary>
+            <param name="recoverFunc">恢复函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.FailureAction.RecoverWith(System.Func{System.Exception,Bing.Exceptions.TryAction})">
+            <summary>
+            恢复
+            </summary>
+            <param name="recoverFunc">恢复函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.FailureAction.Tap(System.Action,System.Action{System.Exception})">
+            <summary>
+            触发
+            </summary>
+            <param name="successAction">成功操作</param>
+            <param name="failureAction">失败操作</param>
+        </member>
+        <member name="T:Bing.Exceptions.SuccessAction">
+            <summary>
+            成功操作
+            </summary>
+        </member>
+        <member name="F:Bing.Exceptions.SuccessAction._hashOfAction">
+            <summary>
+            操作哈希值
+            </summary>
+        </member>
+        <member name="P:Bing.Exceptions.SuccessAction.IsFailure">
+            <summary>
+            是否失败
+            </summary>
+        </member>
+        <member name="P:Bing.Exceptions.SuccessAction.IsSuccess">
+            <summary>
+            是否成功
+            </summary>
+        </member>
+        <member name="P:Bing.Exceptions.SuccessAction.Exception">
+            <summary>
+            异常
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.SuccessAction.#ctor(System.Int32)">
+            <summary>
+            初始化一个<see cref="T:Bing.Exceptions.SuccessAction"/>类型的实例
+            </summary>
+            <param name="hashOfAction">操作哈希值</param>
+        </member>
+        <member name="M:Bing.Exceptions.SuccessAction.ToString">
+            <summary>
+            重载输出字符串
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.SuccessAction.Equals(Bing.Exceptions.SuccessAction)">
+            <summary>
+            相等
+            </summary>
+            <param name="other">对象</param>
+        </member>
+        <member name="M:Bing.Exceptions.SuccessAction.Equals(System.Object)">
+            <summary>
+            重载相等
+            </summary>
+            <param name="obj">对象</param>
+        </member>
+        <member name="M:Bing.Exceptions.SuccessAction.GetHashCode">
+            <summary>
+            重载获取哈希码
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.SuccessAction.Deconstruct(System.Boolean@,System.Exception@)">
+            <summary>
+            解构
+            </summary>
+            <param name="tryResult">尝试结果</param>
+            <param name="exception">异常</param>
+        </member>
+        <member name="M:Bing.Exceptions.SuccessAction.Recover(System.Action{System.Exception})">
+            <summary>
+            恢复
+            </summary>
+            <param name="recoverFunc">恢复函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.SuccessAction.RecoverWith(System.Func{System.Exception,Bing.Exceptions.TryAction})">
+            <summary>
+            恢复
+            </summary>
+            <param name="recoverFunc">恢复函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.SuccessAction.Tap(System.Action,System.Action{System.Exception})">
+            <summary>
+            触发
+            </summary>
+            <param name="successAction">成功操作</param>
+            <param name="failureAction">失败操作</param>
+        </member>
         <member name="T:Bing.Exceptions.Try`1">
             <summary>
             尝试
@@ -1402,6 +1728,86 @@
             <param name="value">值</param>
             <param name="defaultValFunc">默认值函数</param>
         </member>
+        <member name="M:Bing.Exceptions.Try`1.GetValueOut(`0@)">
+            <summary>
+            获取值并输出
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetValueOutAsync(System.Threading.Tasks.Task{`0}@)">
+            <summary>
+            获取值并输出
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOut(`0@)">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOut(`0@,`0)">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+            <param name="defaultVal">默认值</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOut(`0@,System.Func{`0})">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+            <param name="defaultValFunc">默认值函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOut(`0@,System.Func{System.Exception,`0})">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+            <param name="defaultValFunc">默认值函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOutAsync(System.Threading.Tasks.Task{`0}@)">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOutAsync(System.Threading.Tasks.Task{`0}@,`0)">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+            <param name="defaultVal">默认值</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOutAsync(System.Threading.Tasks.Task{`0}@,System.Func{`0})">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+            <param name="defaultValFunc">默认值函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOutAsync(System.Threading.Tasks.Task{`0}@,System.Func{System.Exception,`0})">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+            <param name="defaultValFunc">默认值函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOutAsync(System.Threading.Tasks.Task{`0}@,System.Func{System.Threading.Tasks.Task{`0}})">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+            <param name="defaultValFunc">默认值函数</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.GetSafeValueOutAsync(System.Threading.Tasks.Task{`0}@,System.Func{System.Exception,System.Threading.Tasks.Task{`0}})">
+            <summary>
+            安全获取值并输出
+            </summary>
+            <param name="value">值</param>
+            <param name="defaultValFunc">默认值函数</param>
+        </member>
         <member name="M:Bing.Exceptions.Try`1.op_Equality(Bing.Exceptions.Try{`0},Bing.Exceptions.Try{`0})">
             <summary>
             ==
@@ -1437,6 +1843,14 @@
             解构
             </summary>
             <param name="value">值</param>
+            <param name="exception">异常</param>
+        </member>
+        <member name="M:Bing.Exceptions.Try`1.Deconstruct(`0@,System.Boolean@,System.Exception@)">
+            <summary>
+            解构
+            </summary>
+            <param name="value">值</param>
+            <param name="tryResult">尝试结果</param>
             <param name="exception">异常</param>
         </member>
         <member name="M:Bing.Exceptions.Try`1.ExceptionAs``1">
@@ -1554,6 +1968,14 @@
             <param name="value">值</param>
             <param name="exception">异常</param>
         </member>
+        <member name="M:Bing.Exceptions.Failure`1.Deconstruct(`0@,System.Boolean@,System.Exception@)">
+            <summary>
+            解构
+            </summary>
+            <param name="value">值</param>
+            <param name="tryResult">尝试结果</param>
+            <param name="exception">异常</param>
+        </member>
         <member name="M:Bing.Exceptions.Failure`1.Recover(System.Func{System.Exception,`0})">
             <summary>
             恢复
@@ -1652,6 +2074,14 @@
             解构
             </summary>
             <param name="value">值</param>
+            <param name="exception">异常</param>
+        </member>
+        <member name="M:Bing.Exceptions.Success`1.Deconstruct(`0@,System.Boolean@,System.Exception@)">
+            <summary>
+            解构
+            </summary>
+            <param name="value">值</param>
+            <param name="tryResult">尝试结果</param>
             <param name="exception">异常</param>
         </member>
         <member name="M:Bing.Exceptions.Success`1.Recover(System.Func{System.Exception,`0})">
