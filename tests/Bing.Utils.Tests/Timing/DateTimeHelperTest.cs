@@ -1,4 +1,5 @@
 ﻿using System;
+using Bing.Helpers;
 using Bing.Utils.Timing;
 using Xunit;
 using Xunit.Abstractions;
@@ -27,6 +28,16 @@ namespace Bing.Utils.Tests.Timing
         {
             var res = DateTimeHelper.GetWeekDay(dateStr);
             Assert.Equal(dw, res);
+        }
+
+        [Fact]
+        public void Test_GetDays()
+        {
+            var beginTime = Conv.ToDate("2020-10-01 00:00:00"); 
+            var endTime = Conv.ToDate("2020-11-01 00:00:00");
+            var days = DateTimeHelper.GetDays(beginTime, endTime);
+            Output.WriteLine($"天数：{days}");
+            Output.WriteLine($"天数：{beginTime.AddDays(days):yyyy-MM-dd HH:mm:ss}");
         }
     }
 }

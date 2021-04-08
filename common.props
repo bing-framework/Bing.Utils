@@ -1,12 +1,13 @@
 <Project>
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.1;</TargetFrameworks>
+    <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.0;netstandard2.1;</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
     <RootNamespace/>
     <LangVersion>latest</LangVersion>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <NoWarn Condition=" '$(Configuration)' == 'Debug' ">$(NoWarn);NETSDK1138</NoWarn>
+    <NoWarn Condition=" '$(Configuration)' == 'Release' ">$(NoWarn);CS1591;NETSDK1138</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,4 +31,9 @@
   <Import Project="asset/props/misc.props"/>
 
   <Import Project="./version.props"/>
+
+  <ItemGroup>
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All"/>
+    <PackageReference Include="DotNetCore.SourceLink.Environment" Version="2.2.0" />
+  </ItemGroup>
 </Project>

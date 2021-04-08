@@ -9442,6 +9442,104 @@
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
+        <member name="T:Bing.IO.BingStreamExtensions">
+            <summary>
+            Bing <see cref="T:System.IO.Stream"/> 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TrySeek(System.IO.Stream,System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            尝试重新设定流位置
+            </summary>
+            <param name="stream">流</param>
+            <param name="offset">偏移量</param>
+            <param name="origin">流定位</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.ReadAllBytes(System.IO.Stream)">
+            <summary>
+            读取流当中所有字节数组
+            </summary>
+            <param name="stream">流</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TryRead(System.IO.Stream,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            尝试读取
+            </summary>
+            <param name="stream">流</param>
+            <param name="buffer">缓冲字节数组</param>
+            <param name="offset">偏移量</param>
+            <param name="count">读取数量</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TryReadAsync(System.IO.Stream,System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            尝试读取
+            </summary>
+            <param name="stream">流</param>
+            <param name="buffer">缓冲字节数组</param>
+            <param name="offset">偏移量</param>
+            <param name="count">读取数量</param>
+            <param name="cancellationToken">取消令牌</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TryReadByte(System.IO.Stream)">
+            <summary>
+            尝试读取字节
+            </summary>
+            <param name="stream">流</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TrySetReadTimeout(System.IO.Stream,System.Int32)">
+            <summary>
+            尝试设置读取超时时间
+            </summary>
+            <param name="stream">流</param>
+            <param name="milliseconds">毫秒数</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TrySetReadTimeout(System.IO.Stream,System.TimeSpan)">
+            <summary>
+            尝试设置读取超时时间
+            </summary>
+            <param name="stream">流</param>
+            <param name="timeout">时间跨度</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TryWrite(System.IO.Stream,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            尝试写入
+            </summary>
+            <param name="stream">流</param>
+            <param name="buffer">字节数组</param>
+            <param name="offset">偏移量</param>
+            <param name="count">写入数量</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TryWriteAsync(System.IO.Stream,System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            尝试写入
+            </summary>
+            <param name="stream">流</param>
+            <param name="buffer">字节数组</param>
+            <param name="offset">偏移量</param>
+            <param name="count">写入数量</param>
+            <param name="cancellationToken">取消令牌</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TryWriteByte(System.IO.Stream,System.Byte)">
+            <summary>
+            尝试写入字节
+            </summary>
+            <param name="stream">流</param>
+            <param name="value">字节</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TrySetWriteTimeout(System.IO.Stream,System.Int32)">
+            <summary>
+            尝试设置写入超时时间
+            </summary>
+            <param name="stream">流</param>
+            <param name="milliseconds">毫秒数</param>
+        </member>
+        <member name="M:Bing.IO.BingStreamExtensions.TrySetWriteTimeout(System.IO.Stream,System.TimeSpan)">
+            <summary>
+            尝试设置写入超时时间
+            </summary>
+            <param name="stream">流</param>
+            <param name="timeout">时间跨度</param>
+        </member>
         <member name="T:Bing.IO.ByteBuffer">
             <summary>
             字节缓冲区
@@ -9638,28 +9736,6 @@
             <param name="directory">目录路径</param>
             <param name="attribute">要设置的目录属性</param>
             <param name="isSet">是否为设置属性,true:设置,false:取消</param>
-        </member>
-        <member name="T:Bing.IO.StreamExtensions">
-            <summary>
-            流(<see cref="T:System.IO.Stream"/>) 扩展
-            </summary>
-            <summary>
-            流(<see cref="T:System.IO.Stream"/>) 扩展
-            </summary>
-        </member>
-        <member name="M:Bing.IO.StreamExtensions.ReadAllBytes(System.IO.Stream)">
-            <summary>
-            读取流当中所有字节数组
-            </summary>
-            <param name="stream">流</param>
-        </member>
-        <member name="M:Bing.IO.StreamExtensions.TrySeek(System.IO.Stream,System.Int64,System.IO.SeekOrigin)">
-            <summary>
-            尝试重新设定流位置
-            </summary>
-            <param name="stream">流</param>
-            <param name="offset">偏移量</param>
-            <param name="origin">流定位</param>
         </member>
         <member name="T:Bing.IO.FileHelper">
             <summary>
@@ -9932,6 +10008,18 @@
             </summary>
             <param name="fs">文件流</param>
         </member>
+        <member name="M:Bing.IO.FileHelper.Read(System.String)">
+            <summary>
+            将文件读取到字节流中
+            </summary>
+            <param name="targetFilePath">目标文件路径</param>
+        </member>
+        <member name="M:Bing.IO.FileHelper.ReadAsync(System.String)">
+            <summary>
+            从文件读取到字节流中
+            </summary>
+            <param name="targetFilePath">目标文件路径</param>
+        </member>
         <member name="M:Bing.IO.FileHelper.ReadAllTextAsync(System.String)">
             <summary>
             读取文件所有文本
@@ -9944,12 +10032,6 @@
             </summary>
             <param name="filePath">文件路径</param>
         </member>
-        <member name="M:Bing.IO.FileHelper.Read(System.String)">
-            <summary>
-            读取文件到字符串
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
-        </member>
         <member name="M:Bing.IO.FileHelper.Read(System.String,System.Text.Encoding)">
             <summary>
             读取文件到字符串
@@ -9961,7 +10043,7 @@
             <summary>
             将文件读取到字节流中
             </summary>
-            <param name="filePath">文件的绝对路径</param>
+            <param name="targetFilePath">目标文件路径</param>
         </member>
         <member name="M:Bing.IO.FileHelper.ReadToBytes(System.IO.FileInfo)">
             <summary>
@@ -9997,6 +10079,22 @@
             </summary>
             <param name="filePath">文件的绝对路径</param>
             <param name="bytes">数据</param>
+        </member>
+        <member name="M:Bing.IO.FileHelper.Write(System.Byte[],System.String,System.Boolean)">
+            <summary>
+            将字节数组写入目标文件
+            </summary>
+            <param name="byteArray">字节数组</param>
+            <param name="targetFilePath">目标文件路径</param>
+            <param name="appendMode">是否追加</param>
+        </member>
+        <member name="M:Bing.IO.FileHelper.WriteAsync(System.Byte[],System.String,System.Boolean)">
+            <summary>
+            将字节数组写入目标文件
+            </summary>
+            <param name="byteArray">字节数组</param>
+            <param name="targetFilePath">目标文件路径</param>
+            <param name="appendMode">是否追加</param>
         </member>
         <member name="T:Bing.IO.WriteType">
             <summary>

@@ -30,8 +30,12 @@ namespace Bing.Http.Extensions
         /// <param name="key">键名</param>
         public static T Get<T>(this ISession session, string key)
         {
+#if NETSTANDARD2_1
+            var value = string.Empty;
+#else
             var value = session.GetString(key);
-            return string.IsNullOrWhiteSpace(value) ? default(T) : JsonHelper.ToObject<T>(value);
+#endif
+            return string.IsNullOrWhiteSpace(value) ? default : JsonHelper.ToObject<T>(value);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Bing.Extensions;
 
 namespace Bing.IO
@@ -86,5 +87,41 @@ namespace Bing.IO
         }
 
         #endregion
+
+        /// <summary>
+        /// 将字节数组写入目标文件
+        /// </summary>
+        /// <param name="byteArray">字节数组</param>
+        /// <param name="targetFilePath">目标文件路径</param>
+        /// <param name="appendMode">是否追加</param>
+        public static bool Write(byte[] byteArray, string targetFilePath, bool appendMode = false)
+        {
+            if (!appendMode && File.Exists(targetFilePath))
+                File.Create(targetFilePath);
+
+            var fileMode = appendMode ? FileMode.Append : FileMode.Open;
+            using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
+            return fs.TryWrite(byteArray, 0, byteArray.Length);
+        }
+
+        /// <summary>
+        /// 将字节数组写入目标文件
+        /// </summary>
+        /// <param name="byteArray">字节数组</param>
+        /// <param name="targetFilePath">目标文件路径</param>
+        /// <param name="appendMode">是否追加</param>
+        public static async Task<bool> WriteAsync(byte[] byteArray, string targetFilePath, bool appendMode = false)
+        {
+            if (!appendMode && File.Exists(targetFilePath))
+                File.Create(targetFilePath);
+
+            var fileMode = appendMode ? FileMode.Append : FileMode.Open;
+#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1
+            await using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
+#else
+            using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
+#endif
+            return await fs.TryWriteAsync(byteArray, 0, byteArray.Length);
+        }
     }
 }

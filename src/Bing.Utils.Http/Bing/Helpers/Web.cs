@@ -12,8 +12,9 @@ using Bing.Extensions;
 using Bing.Http.Clients;
 using Bing.IO;
 using Microsoft.AspNetCore.Http;
+#if !NETSTANDARD2_1
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Hosting;
+#endif
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
 using WebClient = Bing.Http.Clients.WebClient;
 
@@ -46,17 +47,16 @@ namespace Bing.Helpers
 
         #region Environment(宿主环境)
 
-#if NETCOREAPP3_1
+#if NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
         /// <summary>
         /// 宿主环境
         /// </summary>
-        public static IWebHostEnvironment Environment { get; set; }
-
-#else
+        public static Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment { get; set; }
+#elif NETSTANDARD2_0
         /// <summary>
         /// 宿主环境
         /// </summary>
-        public static IHostingEnvironment Environment { get; set; }
+        public static Microsoft.AspNetCore.Hosting.IHostingEnvironment Environment { get; set; }
 #endif
         #endregion
 
@@ -140,11 +140,17 @@ namespace Bing.Helpers
 
         #region Url(请求地址)
 
+#if NETSTANDARD2_1
+        /// <summary>
+        /// 请求地址
+        /// </summary>
+        public static string Url => throw new NotSupportedException($"{nameof(Url)} 不支持在 NETSTANDARD2_1");
+#else
         /// <summary>
         /// 请求地址
         /// </summary>
         public static string Url => HttpContext?.Request?.GetDisplayUrl();
-
+#endif
         #endregion
 
         #region IP(客户端IP地址)
@@ -271,21 +277,32 @@ namespace Bing.Helpers
         #endregion
 
         #region RootPath(根路径)
-
+#if NETSTANDARD2_0|| NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
         /// <summary>
         /// 根路径
         /// </summary>
         public static string RootPath => Environment?.ContentRootPath;
-
+#else
+        /// <summary>
+        /// 根路径
+        /// </summary>
+        public static string RootPath => throw new NotSupportedException($"{nameof(RootPath)} 不支持在 NETSTANDARD2_1");
+#endif
         #endregion
 
         #region WebRootPath(Web根路径)
 
+#if NETSTANDARD2_0|| NETSTANDARD2_0|| NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
         /// <summary>
         /// Web根路径，即wwwroot
         /// </summary>
         public static string WebRootPath => Environment?.WebRootPath;
-
+#else
+        /// <summary>
+        /// Web根路径，即wwwroot
+        /// </summary>
+        public static string WebRootPath => throw new NotSupportedException($"{nameof(WebRootPath)} 不支持在 NETSTANDARD2_1");
+#endif
         #endregion
 
         #region ContentType(内容类型)
