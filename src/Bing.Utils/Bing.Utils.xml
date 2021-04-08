@@ -1145,6 +1145,13 @@
             </summary>
             <param name="exception">异常</param>
         </member>
+        <member name="M:Bing.Exceptions.ExceptionHelper.GetExceptionDetail(System.Exception)">
+            <summary>
+            获取异常详情
+            </summary>
+            <param name="exception">异常</param>
+            <returns>格式化之后的异常信息</returns>
+        </member>
         <member name="T:Bing.Exceptions.ExceptionExtensions">
             <summary>
             异常(<see cref="T:System.Exception"/>) 扩展

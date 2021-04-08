@@ -116,46 +116,5 @@ namespace Bing.Date
         public static string ToChineseDateTimeString(this DateTime? dateTime, bool isRemoveSecond = false) => dateTime == null ? string.Empty : ToChineseDateTimeString(dateTime.Value, isRemoveSecond);
 
         #endregion
-
-        #region ToDateTimeOffset(将时间转换为时间点)
-
-        /// <summary>
-        /// 将时间转换为时间点
-        /// </summary>
-        /// <param name="localDateTime">DateTime</param>
-        public static DateTimeOffset ToDateTimeOffset(this DateTime localDateTime) =>
-            localDateTime.ToDateTimeOffset(null);
-
-        /// <summary>
-        /// 将时间转换为时间点
-        /// </summary>
-        /// <param name="localDateTime">DateTime</param>
-        /// <param name="localTimeZone">时区</param>
-        public static DateTimeOffset ToDateTimeOffset(this DateTime localDateTime, TimeZoneInfo localTimeZone)
-        {
-            if (localDateTime.Kind != DateTimeKind.Unspecified)
-                localDateTime = new DateTime(localDateTime.Ticks, DateTimeKind.Unspecified);
-            return TimeZoneInfo.ConvertTime(localDateTime, localTimeZone ?? TimeZoneInfo.Local);
-        }
-
-        #endregion
-
-        #region ToLocalDateTime(将时间点转换为时间)
-
-        /// <summary>
-        /// 将时间点转换为时间
-        /// </summary>
-        /// <param name="dateTimeUtc">DateTimeOffset</param>
-        public static DateTime ToLocalDateTime(this DateTimeOffset dateTimeUtc) => dateTimeUtc.ToLocalDateTime(null);
-
-        /// <summary>
-        /// 将时间点转换为时间
-        /// </summary>
-        /// <param name="dateTimeUtc">DateTimeOffset</param>
-        /// <param name="localTimeZone">时区</param>
-        public static DateTime ToLocalDateTime(this DateTimeOffset dateTimeUtc, TimeZoneInfo localTimeZone) =>
-            TimeZoneInfo.ConvertTime(dateTimeUtc, localTimeZone ?? TimeZoneInfo.Local).DateTime;
-
-        #endregion
     }
 }
