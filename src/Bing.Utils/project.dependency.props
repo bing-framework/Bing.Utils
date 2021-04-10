@@ -1,9 +1,9 @@
 ﻿<Project>
   <ItemGroup>
-    <PackageReference Include="AspectCore.Extensions.Reflection" Version="2.1.0" />
+    <PackageReference Include="AspectCore.Extensions.Reflection" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 </Project>

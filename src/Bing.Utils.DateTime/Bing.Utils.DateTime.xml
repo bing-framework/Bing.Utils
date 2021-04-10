@@ -4,6 +4,42 @@
         <name>Bing.Utils.DateTime</name>
     </assembly>
     <members>
+        <member name="T:Bing.Conversions.DayOfWeekConv">
+            <summary>
+            <see cref="T:System.DayOfWeek"/> 转换
+            </summary>
+        </member>
+        <member name="M:Bing.Conversions.DayOfWeekConv.ToInt(System.DayOfWeek)">
+            <summary>
+            将 <see cref="T:System.DayOfWeek"/> 转换为 <see cref="T:System.Int32"/>
+            </summary>
+            <param name="week">星期几</param>
+        </member>
+        <member name="M:Bing.Conversions.DayOfWeekConv.ToInt(System.DayOfWeek,System.Int32)">
+            <summary>
+            将 <see cref="T:System.DayOfWeek"/> 转换为 <see cref="T:System.Int32"/>
+            </summary>
+            <param name="week">星期几</param>
+            <param name="offset">偏移量</param>
+        </member>
+        <member name="T:Bing.Conversions.DayOfWeekConvExtensions">
+            <summary>
+            Bing <see cref="T:Bing.Conversions.DayOfWeekConv"/> 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Conversions.DayOfWeekConvExtensions.CastToInt(System.DayOfWeek)">
+            <summary>
+            将 <see cref="T:System.DayOfWeek"/> 转换为 <see cref="T:System.Int32"/>
+            </summary>
+            <param name="week">星期几</param>
+        </member>
+        <member name="M:Bing.Conversions.DayOfWeekConvExtensions.CastToInt(System.DayOfWeek,System.Int32)">
+            <summary>
+            将 <see cref="T:System.DayOfWeek"/> 转换为 <see cref="T:System.Int32"/>
+            </summary>
+            <param name="week">星期几</param>
+            <param name="offset">偏移量</param>
+        </member>
         <member name="T:Bing.Date.DateInfo">
             <summary>
             日期信息
@@ -85,6 +121,1201 @@
             </summary>
             <param name="days">天数</param>
         </member>
+        <member name="T:Bing.Date.DateTimeOffsetOptions">
+            <summary>
+            日期时间偏移选项
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOffsetOptions.Absolute">
+            <summary>
+            绝对
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOffsetOptions.Relatively">
+            <summary>
+            相对
+            </summary>
+        </member>
+        <member name="T:Bing.Date.DateTimeOffsetStyles">
+            <summary>
+            日期时间偏移样式
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOffsetStyles.Week">
+            <summary>
+            周
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOffsetStyles.Year">
+            <summary>
+            年
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOffsetStyles.Quarters">
+            <summary>
+            季
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOffsetStyles.Month">
+            <summary>
+            月
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeOffsetStyles.Day">
+            <summary>
+            日
+            </summary>
+        </member>
+        <member name="T:Bing.Date.DateTimeCalcHelper">
+            <summary>
+            日期时间计算帮助类
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalcHelper.GetTargetDays(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            获取目标天数
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="weekAtMonth">第几个周</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalcHelper.Calc(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            计算
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="offsetMonths">偏移月份</param>
+            <returns>(年，月)</returns>
+        </member>
+        <member name="T:Bing.Date.DateTimeCalc">
+            <summary>
+            日期时间计算
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetBySeconds(System.DateTime,System.Int32)">
+            <summary>
+            偏移指定秒数
+            </summary>
+            <param name="dt">时间</param>
+            <param name="seconds">秒数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByMinutes(System.DateTime,System.Int32)">
+            <summary>
+            偏移指定分钟数
+            </summary>
+            <param name="dt">时间</param>
+            <param name="minutes">分钟数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByHours(System.DateTime,System.Int32)">
+            <summary>
+            偏移指定小时数
+            </summary>
+            <param name="dt">时间</param>
+            <param name="hours">小时数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByDays(System.DateTime,System.Int32)">
+            <summary>
+            偏移指定天数
+            </summary>
+            <param name="dt">时间</param>
+            <param name="days">天数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByWeek(System.Int32,System.Int32,System.Int32,System.DayOfWeek)">
+            <summary>
+            根据指定的年月和偏移信息创建 <see cref="T:System.DateTime"/>
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="weekAtMonth">第几个星期</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByWeek(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            根据指定的年月和偏移信息创建 <see cref="T:System.DateTime"/>
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="weekAtMonth">第几个星期</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.TryOffsetByWeek(System.Int32,System.Int32,System.Int32,System.DayOfWeek,System.DateTime@)">
+            <summary>
+            根据指定的年月和偏移信息创建 <see cref="T:System.DateTime"/>
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="weekAtMonth">第几个星期</param>
+            <param name="dayOfWeek">星期几</param>
+            <param name="result">结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.TryOffsetByWeek(System.Int32,System.Int32,System.Int32,System.Int32,System.DateTime@)">
+            <summary>
+            根据指定的年月和偏移信息创建 <see cref="T:System.DateTime"/>
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="weekAtMonth">第几个星期</param>
+            <param name="dayOfWeek">星期几</param>
+            <param name="result">结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByWeeks(System.DateTime,System.Int32)">
+            <summary>
+            偏移指定周数
+            </summary>
+            <param name="dt">时间</param>
+            <param name="weeks">周数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByWeekBefore(System.DateTime,System.DayOfWeek)">
+            <summary>
+            根据指定的日期，获取上一个工作日（如周一）
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByWeekAfter(System.DateTime,System.DayOfWeek)">
+            <summary>
+            根据指定的日期，获取下一个工作日（如周一）
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetOfDayOfWeek(System.DateTime,System.DayOfWeek,System.Int32)">
+            <summary>
+            偏移指定星期
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+            <param name="weekOffset">偏移星期数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByMonths(System.DateTime,System.Int32,Bing.Date.DateTimeOffsetOptions)">
+            <summary>
+            偏移指定月份数
+            </summary>
+            <param name="dt">时间</param>
+            <param name="months">月份数</param>
+            <param name="options">日期时间偏移选项</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByQuarters(System.DateTime,System.Int32,Bing.Date.DateTimeOffsetOptions)">
+            <summary>
+            偏移指定季度数
+            </summary>
+            <param name="dt">时间</param>
+            <param name="quarters">季度数</param>
+            <param name="options">日期时间偏移选项</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByYears(System.DateTime,System.Int32,Bing.Date.DateTimeOffsetOptions)">
+            <summary>
+            偏移指定年数
+            </summary>
+            <param name="dt">时间</param>
+            <param name="years">年数</param>
+            <param name="options">日期时间偏移选项</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeCalc.OffsetByDuration(System.DateTime,NodaTime.Duration)">
+            <summary>
+            偏移指定的持续时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="duration">持续时间</param>
+        </member>
+        <member name="T:Bing.Date.DateTimeExtensions">
+            <summary>
+            Bing 日期时间(<see cref="T:System.DateTime"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.OffsetBy(System.DateTime,System.Int32,Bing.Date.DateTimeOffsetStyles)">
+            <summary>
+            偏移指定值
+            </summary>
+            <param name="dt">时间</param>
+            <param name="offsetVal">偏移值</param>
+            <param name="styles">时间偏移样式</param>
+        </member>
+        <member name="T:Bing.Date.DateTimeFactory">
+            <summary>
+            日期时间工厂
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.Now">
+            <summary>
+            此刻
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.UtcNow">
+            <summary>
+            此刻
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.Create(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            根据指定的日期创建 <see cref="T:System.DateTime"/>
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.Create(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            根据指定的日期创建 <see cref="T:System.DateTime"/>
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.Create(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            根据指定的日期创建 <see cref="T:System.DateTime"/>
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+            <param name="millisecond">毫秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.Create(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.DateTimeKind)">
+            <summary>
+            根据指定的日期创建 <see cref="T:System.DateTime"/>
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+            <param name="millisecond">毫秒</param>
+            <param name="kind">种类</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreateLastDayOfMonth(System.Int32,System.Int32)">
+            <summary>
+            获取一个月中的最后一个日期
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+        </member>
+        <member name="T:Bing.Date.DateTimeSpan">
+            <summary>
+            日期时间间隔
+            </summary>
+            <summary>
+            日期时间间隔
+            </summary>
+        </member>
+        <member name="F:Bing.Date.DateTimeSpan.DAYS_PER_YEAR">
+            <summary>
+            每年天数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.Years">
+            <summary>
+            年
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.Months">
+            <summary>
+            月
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.TimeSpan">
+            <summary>
+            时间间隔
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.Equals(Bing.Date.DateTimeSpan)">
+            <summary>
+            相等
+            </summary>
+            <param name="other">对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.Add(Bing.Date.DateTimeSpan)">
+            <summary>
+            添加
+            </summary>
+            <param name="number">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.Add(System.TimeSpan)">
+            <summary>
+            添加
+            </summary>
+            <param name="timeSpan">时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.Subtract(Bing.Date.DateTimeSpan)">
+            <summary>
+            减去
+            </summary>
+            <param name="dateTimeSpan">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Addition(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            +
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Addition(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            +
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Addition(System.TimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            +
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Addition(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            +
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Addition(NodaTime.Period,Bing.Date.DateTimeSpan)">
+            <summary>
+            +
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Addition(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            +
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Addition(NodaTime.Duration,Bing.Date.DateTimeSpan)">
+            <summary>
+            +
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Subtraction(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            -
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Subtraction(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            -
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Subtraction(System.TimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            -
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Subtraction(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            -
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Subtraction(NodaTime.Period,Bing.Date.DateTimeSpan)">
+            <summary>
+            -
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Subtraction(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            -
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Subtraction(NodaTime.Duration,Bing.Date.DateTimeSpan)">
+            <summary>
+            -
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Equality(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            ==
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Equality(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            ==
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Equality(System.TimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            ==
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Equality(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            ==
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Equality(NodaTime.Period,Bing.Date.DateTimeSpan)">
+            <summary>
+            ==
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Equality(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            ==
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Equality(NodaTime.Duration,Bing.Date.DateTimeSpan)">
+            <summary>
+            ==
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Inequality(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            !=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Inequality(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            !=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Inequality(System.TimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            !=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Inequality(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            !=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Inequality(NodaTime.Period,Bing.Date.DateTimeSpan)">
+            <summary>
+            !=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Inequality(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            !=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Inequality(NodaTime.Duration,Bing.Date.DateTimeSpan)">
+            <summary>
+            !=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_UnaryNegation(Bing.Date.DateTimeSpan)">
+            <summary>
+            -
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThan(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            &lt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThan(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            &lt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThan(System.TimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            &lt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThan(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            &lt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThan(NodaTime.Period,Bing.Date.DateTimeSpan)">
+            <summary>
+            &lt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThan(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            &lt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThan(NodaTime.Duration,Bing.Date.DateTimeSpan)">
+            <summary>
+            &lt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThanOrEqual(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            &lt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThanOrEqual(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            &lt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThanOrEqual(System.TimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            &lt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThanOrEqual(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            &lt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThanOrEqual(NodaTime.Period,Bing.Date.DateTimeSpan)">
+            <summary>
+            &lt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThanOrEqual(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            &lt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_LessThanOrEqual(NodaTime.Duration,Bing.Date.DateTimeSpan)">
+            <summary>
+            &lt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThan(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            &gt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThan(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            &gt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThan(System.TimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            &gt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThan(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            &gt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThan(NodaTime.Period,Bing.Date.DateTimeSpan)">
+            <summary>
+            &gt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThan(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            &gt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThan(NodaTime.Duration,Bing.Date.DateTimeSpan)">
+            <summary>
+            &gt;
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThanOrEqual(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            &gt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThanOrEqual(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            &gt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThanOrEqual(System.TimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            &gt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThanOrEqual(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            &gt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThanOrEqual(NodaTime.Period,Bing.Date.DateTimeSpan)">
+            <summary>
+            &gt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThanOrEqual(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            &gt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_GreaterThanOrEqual(NodaTime.Duration,Bing.Date.DateTimeSpan)">
+            <summary>
+            &gt;=
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Implicit(Bing.Date.DateTimeSpan)~System.TimeSpan">
+            <summary>
+            将 <see cref="T:Bing.Date.DateTimeSpan"/> 显式转换为 <see cref="T:System.TimeSpan"/>
+            </summary>
+            <param name="dateTimeSpan">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Implicit(System.TimeSpan)~Bing.Date.DateTimeSpan">
+            <summary>
+            将 <see cref="T:System.TimeSpan"/> 显式转换为 <see cref="T:Bing.Date.DateTimeSpan"/>
+            </summary>
+            <param name="timeSpan">时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Implicit(Bing.Date.DateTimeSpan)~NodaTime.Period">
+            <summary>
+            将 <see cref="T:Bing.Date.DateTimeSpan"/> 显式转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="dateTimeSpan">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Implicit(NodaTime.Period)~Bing.Date.DateTimeSpan">
+            <summary>
+            将 <see cref="T:NodaTime.Period"/> 显式转换为 <see cref="T:Bing.Date.DateTimeSpan"/>
+            </summary>
+            <param name="period">期间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Implicit(Bing.Date.DateTimeSpan)~NodaTime.Duration">
+            <summary>
+            将 <see cref="T:Bing.Date.DateTimeSpan"/> 显式转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="dateTimeSpan">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.op_Implicit(NodaTime.Duration)~Bing.Date.DateTimeSpan">
+            <summary>
+            将 <see cref="T:NodaTime.Duration"/> 显式转换为 <see cref="T:Bing.Date.DateTimeSpan"/>
+            </summary>
+            <param name="duration">持续时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.ToString(System.String)">
+            <summary>
+            转换为字符串
+            </summary>
+            <param name="format">格式</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            转换为字符串
+            </summary>
+            <param name="format">格式</param>
+            <param name="provider">格式提供程序</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.AddInternal(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            内部相加
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.SubtractInternal(Bing.Date.DateTimeSpan,System.TimeSpan)">
+            <summary>
+            内部相减
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.AddInternal(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            内部相加
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.SubtractInternal(Bing.Date.DateTimeSpan,NodaTime.Period)">
+            <summary>
+            内部相减
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.AddInternal(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            内部相加
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.SubtractInternal(Bing.Date.DateTimeSpan,NodaTime.Duration)">
+            <summary>
+            内部相减
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.SubtractInternal(System.TimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            内部相减
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.SubtractInternal(NodaTime.Period,Bing.Date.DateTimeSpan)">
+            <summary>
+            内部相减
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.SubtractInternal(NodaTime.Duration,Bing.Date.DateTimeSpan)">
+            <summary>
+            内部相减
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.AddInternal(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            内部相加
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.SubtractInternal(Bing.Date.DateTimeSpan,Bing.Date.DateTimeSpan)">
+            <summary>
+            内部相减
+            </summary>
+            <param name="left">左对象</param>
+            <param name="right">右对象</param>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.Ticks">
+            <summary>
+            刻度数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.Days">
+            <summary>
+            天数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.Hours">
+            <summary>
+            小时数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.Minutes">
+            <summary>
+            分钟数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.Seconds">
+            <summary>
+            秒数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.Milliseconds">
+            <summary>
+            毫秒数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.TotalDays">
+            <summary>
+            总天数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.TotalHours">
+            <summary>
+            总小时数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.TotalMinutes">
+            <summary>
+            总分钟数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.TotalSeconds">
+            <summary>
+            总秒数
+            </summary>
+        </member>
+        <member name="P:Bing.Date.DateTimeSpan.TotalMilliseconds">
+            <summary>
+            总毫秒数
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.CompareTo(System.TimeSpan)">
+            <summary>
+            比较
+            </summary>
+            <param name="value">对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.CompareTo(System.Object)">
+            <summary>
+            比较
+            </summary>
+            <param name="value">对象</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.CompareTo(Bing.Date.DateTimeSpan)">
+            <summary>
+            比较
+            </summary>
+            <param name="value">对象</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.Clone">
+            <summary>
+            克隆
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.Negate">
+            <summary>
+            取反
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.TryParse(System.String,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试解析
+            </summary>
+            <param name="input">输入字符串</param>
+            <param name="result">解析结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.TryParse(System.String,System.IFormatProvider,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试解析
+            </summary>
+            <param name="input">输入字符串</param>
+            <param name="provider">格式化提供程序</param>
+            <param name="result">解析结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.TryParseExact(System.String,System.String,System.IFormatProvider,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试精确解析
+            </summary>
+            <param name="input">输入字符串</param>
+            <param name="format">格式化字符串</param>
+            <param name="provider">格式化提供程序</param>
+            <param name="result">解析结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.TryParseExact(System.String,System.String[],System.IFormatProvider,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试精确解析
+            </summary>
+            <param name="input">输入字符串</param>
+            <param name="formats">格式化字符串</param>
+            <param name="provider">格式化提供程序</param>
+            <param name="result">解析结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.TryParseExact(System.String,System.String,System.IFormatProvider,System.Globalization.TimeSpanStyles,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试精确解析
+            </summary>
+            <param name="input">输入字符串</param>
+            <param name="format">格式化字符串</param>
+            <param name="provider">格式化提供程序</param>
+            <param name="styles">时间间隔样式</param>
+            <param name="result">解析结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpan.TryParseExact(System.String,System.String[],System.IFormatProvider,System.Globalization.TimeSpanStyles,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试精确解析
+            </summary>
+            <param name="input">输入字符串</param>
+            <param name="formats">格式化字符串</param>
+            <param name="provider">格式化提供程序</param>
+            <param name="styles">时间间隔样式</param>
+            <param name="result">解析结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanParse.TryParse(System.String,System.IFormatProvider,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试解析
+            </summary>
+            <param name="s">字符串</param>
+            <param name="provider">格式化提供程序</param>
+            <param name="result">解析结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanParse.TryParseExact(System.String,System.String,System.IFormatProvider,System.Globalization.TimeSpanStyles,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试精确解析
+            </summary>
+            <param name="s">字符串</param>
+            <param name="format">格式化字符串</param>
+            <param name="provider">格式化提供程序</param>
+            <param name="styles">时间间隔样式</param>
+            <param name="result">解析结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanParse.TryParseExactMultiple(System.String,System.String[],System.IFormatProvider,System.Globalization.TimeSpanStyles,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试精确解析多个
+            </summary>
+            <param name="s">字符串</param>
+            <param name="formats">格式化字符串</param>
+            <param name="provider">格式化提供程序</param>
+            <param name="styles">时间间隔样式</param>
+            <param name="result">解析结果</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanParse.TryCreateDateTimeSpan(System.Boolean,System.TimeSpan,Bing.Date.DateTimeSpan@)">
+            <summary>
+            尝试创建日期时间间隔
+            </summary>
+            <param name="condition">条件</param>
+            <param name="timeSpan">时间间隔</param>
+            <param name="result">结果</param>
+        </member>
+        <member name="T:Bing.Date.DateTimeSpanExtensions">
+            <summary>
+            Bing <see cref="T:Bing.Date.DateTimeSpan"/> 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Before(Bing.Date.DateTimeSpan)">
+            <summary>
+            之前
+            </summary>
+            <param name="ts">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Before(Bing.Date.DateTimeSpan,System.DateTime)">
+            <summary>
+            之前
+            </summary>
+            <param name="ts">日期时间间隔</param>
+            <param name="originalValue">原值</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.OffsetBefore(Bing.Date.DateTimeSpan)">
+            <summary>
+            之前
+            </summary>
+            <param name="ts">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Before(Bing.Date.DateTimeSpan,System.DateTimeOffset)">
+            <summary>
+            之前
+            </summary>
+            <param name="ts">日期时间间隔</param>
+            <param name="originalValue">原值</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.FromNow(Bing.Date.DateTimeSpan)">
+            <summary>
+            从现在开始
+            </summary>
+            <param name="ts">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.From(Bing.Date.DateTimeSpan,System.DateTime)">
+            <summary>
+            从当前时间开始的之后一段日期时间间隔
+            </summary>
+            <param name="ts">日期时间间隔</param>
+            <param name="originalValue">原值</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.OffsetFromNow(Bing.Date.DateTimeSpan)">
+            <summary>
+            从现在开始
+            </summary>
+            <param name="ts">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.From(Bing.Date.DateTimeSpan,System.DateTimeOffset)">
+            <summary>
+            从当前时间开始的之后一段日期时间间隔
+            </summary>
+            <param name="ts">日期时间间隔</param>
+            <param name="originalValue">原值</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Years(System.Int32)">
+            <summary>
+            创建指定年数的日期时间间隔
+            </summary>
+            <param name="years">年数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Quarters(System.Int32)">
+            <summary>
+            创建指定季度数的日期时间间隔
+            </summary>
+            <param name="quarters">季度数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Months(System.Int32)">
+            <summary>
+            创建指定月数的日期时间间隔
+            </summary>
+            <param name="months">月数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Weeks(System.Int32)">
+            <summary>
+            创建指定周数的日期时间间隔
+            </summary>
+            <param name="weeks">周数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Weeks(System.Double)">
+            <summary>
+            创建指定周数的日期时间间隔
+            </summary>
+            <param name="weeks">周数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Days(System.Int32)">
+            <summary>
+            创建指定天数的日期时间间隔
+            </summary>
+            <param name="days">天数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Days(System.Double)">
+            <summary>
+            创建指定天数的日期时间间隔
+            </summary>
+            <param name="days">天数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Hours(System.Int32)">
+            <summary>
+            创建指定小时数的日期时间间隔
+            </summary>
+            <param name="hours">小时数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Hours(System.Double)">
+            <summary>
+            创建指定小时数的日期时间间隔
+            </summary>
+            <param name="hours">小时数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Minutes(System.Int32)">
+            <summary>
+            创建指定分钟数的日期时间间隔
+            </summary>
+            <param name="minutes">分钟数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Minutes(System.Double)">
+            <summary>
+            创建指定分钟数的日期时间间隔
+            </summary>
+            <param name="minutes">分钟数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Seconds(System.Int32)">
+            <summary>
+            创建指定秒数的日期时间间隔
+            </summary>
+            <param name="seconds">秒数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Seconds(System.Double)">
+            <summary>
+            创建指定秒数的日期时间间隔
+            </summary>
+            <param name="seconds">秒数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Milliseconds(System.Int32)">
+            <summary>
+            创建指定毫秒数的日期时间间隔
+            </summary>
+            <param name="milliseconds">毫秒数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Milliseconds(System.Double)">
+            <summary>
+            创建指定毫秒数的日期时间间隔
+            </summary>
+            <param name="milliseconds">毫秒数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Ticks(System.Int32)">
+            <summary>
+            创建指定刻度数的日期时间间隔
+            </summary>
+            <param name="ticks">刻度数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeSpanExtensions.Ticks(System.Int64)">
+            <summary>
+            创建指定刻度数的日期时间间隔
+            </summary>
+            <param name="ticks">刻度数</param>
+        </member>
         <member name="T:Bing.Date.DayOfWeekCalc">
             <summary>
             星期计算
@@ -136,6 +1367,184 @@
             转换为 系统星期几
             </summary>
             <param name="week">NodaTime 星期几</param>
+        </member>
+        <member name="T:NodaTime.NodaDurationExtensions">
+            <summary>
+            Bing <see cref="T:NodaTime.Duration"/> 扩展
+            </summary>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDuration(System.TimeSpan)">
+            <summary>
+            将 <see cref="T:System.TimeSpan"/> 转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="ts">时间间隔</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDuration(Bing.Date.DateTimeSpan)">
+            <summary>
+            将 <see cref="T:Bing.Date.DateTimeSpan"/> 转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="dateTimeSpan">日期时间间隔</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfMilliseconds(System.Int64)">
+            <summary>
+            将毫秒数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="milliseconds">毫秒数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfMilliseconds(System.Double)">
+            <summary>
+            将毫秒数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="milliseconds">毫秒数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfSeconds(System.Int64)">
+            <summary>
+            将秒数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="seconds">秒数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfSeconds(System.Double)">
+            <summary>
+            将秒数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="seconds">秒数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfMinutes(System.Int64)">
+            <summary>
+            将分钟数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="minutes">分钟数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfMinutes(System.Double)">
+            <summary>
+            将分钟数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="minutes">分钟数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfHours(System.Int64)">
+            <summary>
+            将小时数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="hours">小时数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfHours(System.Double)">
+            <summary>
+            将小时数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="hours">小时数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfDays(System.Int64)">
+            <summary>
+            将天数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="days">天数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfDays(System.Double)">
+            <summary>
+            将天数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="days">天数</param>
+        </member>
+        <member name="M:NodaTime.NodaDurationExtensions.AsDurationOfWeeks(System.Int32)">
+            <summary>
+            将周数转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="weeks">周数</param>
+        </member>
+        <member name="T:NodaTime.NodaPeriodExtensions">
+            <summary>
+            Bing <see cref="T:NodaTime.Period"/> 扩展
+            </summary>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriod(System.TimeSpan)">
+            <summary>
+            将 <see cref="T:System.TimeSpan"/> 转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="ts">时间间隔</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriod(Bing.Date.DateTimeSpan)">
+            <summary>
+            将 <see cref="T:Bing.Date.DateTimeSpan"/> 转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="ts">日期时间间隔</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriod(NodaTime.Duration)">
+            <summary>
+            将 <see cref="T:NodaTime.Duration"/> 转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="d">持续时间</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsTimeSpan(NodaTime.Period)">
+            <summary>
+            将 <see cref="T:NodaTime.Period"/> 转换为 <see cref="T:System.TimeSpan"/>
+            </summary>
+            <param name="p">期间</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsDateTimeSpan(NodaTime.Period)">
+            <summary>
+            将 <see cref="T:NodaTime.Period"/> 转换为 <see cref="T:Bing.Date.DateTimeSpan"/>
+            </summary>
+            <param name="p">期间</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsDuration(NodaTime.Period)">
+            <summary>
+            将 <see cref="T:NodaTime.Period"/> 转换为 <see cref="T:NodaTime.Duration"/>
+            </summary>
+            <param name="p">期间</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriodOfNanoseconds(System.Int64)">
+            <summary>
+            将纳秒数转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="nanoseconds">纳秒数</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriodOfMilliseconds(System.Int64)">
+            <summary>
+            将毫秒数转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="milliseconds">毫秒数</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriodOfSeconds(System.Int64)">
+            <summary>
+            将秒数转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="seconds">秒数</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriodOfMinutes(System.Int64)">
+            <summary>
+            将分钟数转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="minutes">分钟数</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriodOfHours(System.Int64)">
+            <summary>
+            将小时数转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="hours">小时数</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriodOfDays(System.Int32)">
+            <summary>
+            将天数转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="days">天数</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriodOfMonth(System.Int32)">
+            <summary>
+            将月数转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="months">月数</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriodOfQuarters(System.Int32)">
+            <summary>
+            将季度数转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="quarters">季度数</param>
+        </member>
+        <member name="M:NodaTime.NodaPeriodExtensions.AsPeriodOfYears(System.Int32)">
+            <summary>
+            将年数转换为 <see cref="T:NodaTime.Period"/>
+            </summary>
+            <param name="years">年数</param>
         </member>
         <member name="T:System.BingDateTimeExtensions">
             <summary>
