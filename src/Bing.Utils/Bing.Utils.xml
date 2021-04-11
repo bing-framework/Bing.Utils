@@ -10496,198 +10496,6 @@
             值
             </summary>
         </member>
-        <member name="T:Bing.Numeric.NumericExtensions">
-            <summary>
-            数值 扩展
-            </summary>
-            <summary>
-            数值 扩展
-            </summary>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsNaN(System.Double)">
-            <summary>
-            是否NaN
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsNaN(System.Single)">
-            <summary>
-            是否NaN
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsDefault(System.Double)">
-            <summary>
-            是否默认值
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.ToDecimal(System.Single)">
-            <summary>
-            转换为decimal。通过先转换为字符串将浮点数转换为小数的准确方法，避免公差问题
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.ToDouble(System.Single,System.Int32)">
-            <summary>
-            转换为double。通过将有限值四舍五入到小数点公差级别来将 float 转换为 double 的准确方法。
-            </summary>
-            <param name="value">值</param>
-            <param name="precision">精度</param>
-            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.ToDouble(System.Single)">
-            <summary>
-            转换为double。 通过首先转换为字符串将 float 转换为 double 的准确方法。 避免公差问题。
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.ToDouble(System.Nullable{System.Single})">
-            <summary>
-            转换为double。通过首先转换为字符串来将可能的 float 转换为 double 的准确方法。 避免公差问题。
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.ToDouble(System.Nullable{System.Single},System.Int32)">
-            <summary>
-            转换为double。通过将有限值四舍五入到小数点公差级别，将可能的浮点数转换为双精度值的准确方法。
-            </summary>
-            <param name="value">值</param>
-            <param name="precision">精度</param>
-            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.FixZero(System.Double)">
-            <summary>
-            修正零。如果将双公差浮点值视为零（在ε公差内），则返回真零。
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.ReturnZeroIfFinite(System.Single)">
-            <summary>
-            如果有限小数则返回零
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.DecimalPlaces(System.Double)">
-            <summary>
-            返回最后零位之前的小数位数
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.SumAccurate(System.Double,System.Double)">
-            <summary>
-            精确求和。通过消除意外的不准确性来确保附加公差
-            </summary>
-            <param name="source">源值</param>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.ProductAccurate(System.Double,System.Double)">
-            <summary>
-            精确乘积。通过消除意外的不准确性来确保附加公差
-            </summary>
-            <param name="source">源值</param>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.SumUsingIntegers(System.Double,System.Double)">
-            <summary>
-            求和。通过使用整数来确保加法公差
-            </summary>
-            <param name="source">源值</param>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsZero(System.Single)">
-            <summary>
-            是否为0
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsZero(System.Double)">
-            <summary>
-            是否为0
-            </summary>
-            <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsNearZero(System.Double,System.Double)">
-            <summary>
-            是否接近零。用于验证双公差浮点值是否被视为零
-            </summary>
-            <param name="value">值</param>
-            <param name="precision">精度</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsNearEqual(System.Single,System.Single,System.Single)">
-            <summary>
-            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
-            </summary>
-            <param name="a">比较的值</param>
-            <param name="b">比较的值</param>
-            <param name="tolerance">公差</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsNearEqual(System.Double,System.Double,System.Double)">
-            <summary>
-            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
-            </summary>
-            <param name="a">比较的值</param>
-            <param name="b">比较的值</param>
-            <param name="tolerance">公差</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsNearEqual(System.Decimal,System.Decimal,System.Decimal)">
-            <summary>
-            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
-            </summary>
-            <param name="a">比较的值</param>
-            <param name="b">比较的值</param>
-            <param name="tolerance">公差</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsRelativeNearEqual(System.Double,System.Double,System.UInt32)">
-            <summary>
-            是否相对接近相等。使用给定的公差来验证十进制的值是否接近另外一个值
-            </summary>
-            <param name="a">比较的值</param>
-            <param name="b">比较的值</param>
-            <param name="minDecimalPlaces">最小小数位数</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsPreciseEqual(System.Double,System.Double,System.Boolean)">
-            <summary>
-            是否精确相等。验证值是否在ε公差范围内相等
-            </summary>
-            <param name="a">比较的值</param>
-            <param name="b">比较的值</param>
-            <param name="stringValidate">是否验证字符串</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsPreciseEqual(System.Nullable{System.Double},System.Nullable{System.Double},System.Boolean)">
-            <summary>
-            是否精确相等。验证值是否在ε公差范围内相等
-            </summary>
-            <param name="a">比较的值</param>
-            <param name="b">比较的值</param>
-            <param name="stringValidate">是否验证字符串</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsPreciseEqual(System.Single,System.Single,System.Boolean)">
-            <summary>
-            是否精确相等。验证值是否在ε公差范围内相等
-            </summary>
-            <param name="a">比较的值</param>
-            <param name="b">比较的值</param>
-            <param name="stringValidate">是否验证字符串</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsPreciseEqual(System.Nullable{System.Single},System.Nullable{System.Single},System.Boolean)">
-            <summary>
-            是否精确相等。验证值是否在ε公差范围内相等
-            </summary>
-            <param name="a">比较的值</param>
-            <param name="b">比较的值</param>
-            <param name="stringValidate">是否验证字符串</param>
-        </member>
-        <member name="M:Bing.Numeric.NumericExtensions.IsNearEqual(System.IComparable,System.IComparable,System.IComparable)">
-            <summary>
-            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
-            </summary>
-            <param name="a">比较的值</param>
-            <param name="b">比较的值</param>
-            <param name="tolerance">公差</param>
-            <exception cref="T:System.NullReferenceException"></exception>
-            <exception cref="T:System.ArgumentNullException"></exception>
-        </member>
         <member name="T:Bing.Numeric.NumberConst">
             <summary>
             数值常量
@@ -10768,7 +10576,31 @@
             ushort 最小值
             </summary>
         </member>
+        <member name="T:Bing.Numeric.NumericMayOptions">
+            <summary>
+            数值可选项
+            </summary>
+        </member>
+        <member name="F:Bing.Numeric.NumericMayOptions.Default">
+            <summary>
+            默认
+            </summary>
+        </member>
+        <member name="F:Bing.Numeric.NumericMayOptions.IgnoreNullable">
+            <summary>
+            忽略可空
+            </summary>
+        </member>
         <member name="T:Bing.Numeric.Numbers">
+            <summary>
+            数值操作
+            </summary>
+            <summary>
+            数值操作
+            </summary>
+            <summary>
+            数值操作
+            </summary>
             <summary>
             数值操作
             </summary>
@@ -10787,6 +10619,45 @@
             <param name="min">最小值</param>
             <param name="max">最大值</param>
         </member>
+        <member name="M:Bing.Numeric.Numbers.FixZero(System.Double)">
+            <summary>
+            修正零。如果将双公差浮点值视为零（在ε公差内），则返回真零的快捷方式。
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.ReturnZeroIfFinite(System.Single)">
+            <summary>
+            如果有限小数则返回零
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.GetDecimalPlaces(System.Double)">
+            <summary>
+            返回最后零位之前的小数位数
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.GetSumAccurate(System.Double,System.Double)">
+            <summary>
+            精确求和。通过消除意外的不准确性来确保附加公差
+            </summary>
+            <param name="source">源值</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.GetProductAccurate(System.Double,System.Double)">
+            <summary>
+            精确乘积。通过消除意外的不准确性来确保附加公差
+            </summary>
+            <param name="source">源值</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.GetSumUsingIntegers(System.Double,System.Double)">
+            <summary>
+            求和。通过使用整数来确保加法公差
+            </summary>
+            <param name="source">源值</param>
+            <param name="value">值</param>
+        </member>
         <member name="M:Bing.Numeric.Numbers.IsNaN(System.Double)">
             <summary>
             是否NaN
@@ -10798,6 +10669,309 @@
             是否NaN
             </summary>
             <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsDefaultValue(System.Double)">
+            <summary>
+            是否默认值
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsZeroValue(System.Single)">
+            <summary>
+            是否为0
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsZeroValue(System.Double)">
+            <summary>
+            是否为0
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsNearZeroValue(System.Double,System.Double)">
+            <summary>
+            是否接近零。用于验证双公差浮点值是否被视为零
+            </summary>
+            <param name="value">值</param>
+            <param name="precision">精度</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsNearEqual(System.Single,System.Single,System.Single)">
+            <summary>
+            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="tolerance">公差</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsNearEqual(System.Double,System.Double,System.Double)">
+            <summary>
+            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="tolerance">公差</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsNearEqual(System.Decimal,System.Decimal,System.Decimal)">
+            <summary>
+            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="tolerance">公差</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsRelativeNearEqual(System.Double,System.Double,System.UInt32)">
+            <summary>
+            是否相对接近相等。使用给定的公差来验证十进制的值是否接近另外一个值
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="minDecimalPlaces">最小小数位数</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsPreciseEqual(System.Double,System.Double,System.Boolean)">
+            <summary>
+            是否精确相等。验证值是否在ε公差范围内相等
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="stringValidate">是否验证字符串</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsPreciseEqual(System.Single,System.Single,System.Boolean)">
+            <summary>
+            是否精确相等。验证值是否在ε公差范围内相等
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="stringValidate">是否验证字符串</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsPreciseEqual(System.Nullable{System.Double},System.Nullable{System.Double},System.Boolean)">
+            <summary>
+            是否精确相等。验证值是否在ε公差范围内相等
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="stringValidate">是否验证字符串</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsPreciseEqual(System.Nullable{System.Single},System.Nullable{System.Single},System.Boolean)">
+            <summary>
+            是否精确相等。验证值是否在ε公差范围内相等
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="stringValidate">是否验证字符串</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.IsNearEqual(System.IComparable,System.IComparable,System.IComparable)">
+            <summary>
+            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="tolerance">公差</param>
+            <exception cref="T:System.NullReferenceException"></exception>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.ToDecimal(System.Single)">
+            <summary>
+            转换为decimal。通过先转换为字符串将浮点数转换为小数的准确方法，避免公差问题
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.ToDouble(System.Single,System.Int32)">
+            <summary>
+            转换为double。通过将有限值四舍五入到小数点公差级别来将 float 转换为 double 的准确方法。
+            </summary>
+            <param name="value">值</param>
+            <param name="precision">精度</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.ToDouble(System.Single)">
+            <summary>
+            转换为double。 通过首先转换为字符串将 float 转换为 double 的准确方法。 避免公差问题。
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.ToDouble(System.Nullable{System.Single})">
+            <summary>
+            转换为double。通过首先转换为字符串来将可能的 float 转换为 double 的准确方法。 避免公差问题。
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.Numbers.ToDouble(System.Nullable{System.Single},System.Int32)">
+            <summary>
+            转换为double。通过将有限值四舍五入到小数点公差级别，将可能的浮点数转换为双精度值的准确方法。
+            </summary>
+            <param name="value">值</param>
+            <param name="precision">精度</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="T:Bing.Numeric.NumberExtensions">
+            <summary>
+            数值操作扩展
+            </summary>
+            <summary>
+            数值操作扩展
+            </summary>
+            <summary>
+            数值操作扩展
+            </summary>
+            <summary>
+            数值操作扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.FixZero(System.Double)">
+            <summary>
+            修正零。如果将双公差浮点值视为零（在ε公差内），则返回真零的快捷方式。
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.DecimalPlaces(System.Double)">
+            <summary>
+            返回最后零位之前的小数位数
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.SumAccurate(System.Double,System.Double)">
+            <summary>
+            精确求和。通过消除意外的不准确性来确保附加公差
+            </summary>
+            <param name="source">源值</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.ProductAccurate(System.Double,System.Double)">
+            <summary>
+            精确乘积。通过消除意外的不准确性来确保附加公差
+            </summary>
+            <param name="source">源值</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.SumUsingIntegers(System.Double,System.Double)">
+            <summary>
+            求和。通过使用整数来确保加法公差
+            </summary>
+            <param name="source">源值</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsDefault(System.Double)">
+            <summary>
+            是否默认值
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsZero(System.Single)">
+            <summary>
+            是否为0
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsZero(System.Double)">
+            <summary>
+            是否为0
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsNearZero(System.Double,System.Double)">
+            <summary>
+            是否接近零。用于验证双公差浮点值是否被视为零
+            </summary>
+            <param name="value">值</param>
+            <param name="precision">精度</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsNearEqual(System.Single,System.Single,System.Single)">
+            <summary>
+            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="tolerance">公差</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsNearEqual(System.Double,System.Double,System.Double)">
+            <summary>
+            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="tolerance">公差</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsNearEqual(System.Decimal,System.Decimal,System.Decimal)">
+            <summary>
+            是否接近相等。使用给定的公差来验证潜在浮点值是否足够接近另外一个值
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="tolerance">公差</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsRelativeNearEqual(System.Double,System.Double,System.UInt32)">
+            <summary>
+            是否相对接近相等。使用给定的公差来验证十进制的值是否接近另外一个值
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="minDecimalPlaces">最小小数位数</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsPreciseEqual(System.Double,System.Double,System.Boolean)">
+            <summary>
+            是否精确相等。验证值是否在ε公差范围内相等
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="stringValidate">是否验证字符串</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsPreciseEqual(System.Nullable{System.Double},System.Nullable{System.Double},System.Boolean)">
+            <summary>
+            是否精确相等。验证值是否在ε公差范围内相等
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="stringValidate">是否验证字符串</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsPreciseEqual(System.Single,System.Single,System.Boolean)">
+            <summary>
+            是否精确相等。验证值是否在ε公差范围内相等
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="stringValidate">是否验证字符串</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.IsPreciseEqual(System.Nullable{System.Single},System.Nullable{System.Single},System.Boolean)">
+            <summary>
+            是否精确相等。验证值是否在ε公差范围内相等
+            </summary>
+            <param name="a">比较的值</param>
+            <param name="b">比较的值</param>
+            <param name="stringValidate">是否验证字符串</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.ToDecimal(System.Single)">
+            <summary>
+            转换为decimal。通过先转换为字符串将浮点数转换为小数的准确方法，避免公差问题
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.ToDouble(System.Single,System.Int32)">
+            <summary>
+            转换为double。通过将有限值四舍五入到小数点公差级别来将 float 转换为 double 的准确方法。
+            </summary>
+            <param name="value">值</param>
+            <param name="precision">精度</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.ToDouble(System.Single)">
+            <summary>
+            转换为double。 通过首先转换为字符串将 float 转换为 double 的准确方法。 避免公差问题。
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.ToDouble(System.Nullable{System.Single})">
+            <summary>
+            转换为double。通过首先转换为字符串来将可能的 float 转换为 double 的准确方法。 避免公差问题。
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Numeric.NumberExtensions.ToDouble(System.Nullable{System.Single},System.Int32)">
+            <summary>
+            转换为double。通过将有限值四舍五入到小数点公差级别，将可能的浮点数转换为双精度值的准确方法。
+            </summary>
+            <param name="value">值</param>
+            <param name="precision">精度</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
         </member>
         <member name="T:Bing.Operator">
             <summary>
