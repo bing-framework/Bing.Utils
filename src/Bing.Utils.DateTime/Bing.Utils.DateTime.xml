@@ -325,6 +325,276 @@
             Bing 日期时间(<see cref="T:System.DateTime"/>) 扩展
             </summary>
         </member>
+        <member name="M:Bing.Date.DateTimeExtensions.AddWeeks(System.DateTime,System.Int32)">
+            <summary>
+            添加一个星期
+            </summary>
+            <param name="dt">时间</param>
+            <param name="weeks">星期数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.AddQuarters(System.DateTime,System.Int32)">
+            <summary>
+            添加一个季度
+            </summary>
+            <param name="dt">时间</param>
+            <param name="quarters">季度数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.AddDuration(System.DateTime,NodaTime.Duration)">
+            <summary>
+            添加一段持续时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="duration">持续时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.AddBusinessDays(System.DateTime,System.Int32)">
+            <summary>
+            添加指定个数量的工作日
+            </summary>
+            <param name="dt">时间</param>
+            <param name="days">天数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.ToCalculateAge(System.DateTime)">
+            <summary>
+            根据生日计算当前的年龄
+            </summary>
+            <param name="birthday">生日</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.ToCalculateAge(System.DateTime,System.DateTime)">
+            <summary>
+            根据生日和参照时间，计算当时年龄
+            </summary>
+            <param name="birthday">生日</param>
+            <param name="referenceDate">参照时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.Clone(System.DateTime)">
+            <summary>
+            克隆
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.GetMonthDiff(System.DateTime,System.DateTime)">
+            <summary>
+            计算两个时间之间相差的月份数
+            </summary>
+            <param name="dt1">时间</param>
+            <param name="dt2">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.GetTotalMonthDiff(System.DateTime,System.DateTime)">
+            <summary>
+            计算两个日期之间相差的确切月份数
+            </summary>
+            <param name="dt1">时间</param>
+            <param name="dt2">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.ElapsedTime(System.DateTime)">
+            <summary>
+            计算此刻与指定时间之间的时间差
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.ElapsedMilliseconds(System.DateTime)">
+            <summary>
+            计算此刻与指定时间之间的时间差（毫秒）
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsBetween(System.DateTime,System.DateTime,System.DateTime,System.Boolean)">
+            <summary>
+            判断当前日期是否在 from 和 to 之间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="from">开始时间</param>
+            <param name="to">结束时间</param>
+            <param name="includeBoundary">是否包含边界</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsDateBetweenWithBoundary(System.DateTime,System.DateTime,System.DateTime)">
+            <summary>
+            判断当前日期是否在 min 和 max 之间，闭包区间。
+            </summary>
+            <param name="dt">时间</param>
+            <param name="min">开始时间</param>
+            <param name="max">结束时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsDateBetweenWithBoundary(System.DateTime,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            判断当前日期是否在 min 和 max 之间，闭包区间。
+            </summary>
+            <param name="dt">时间</param>
+            <param name="min">开始时间</param>
+            <param name="max">结束时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsDateBetweenWithoutBoundary(System.DateTime,System.DateTime,System.DateTime)">
+            <summary>
+            判断当前日期是否在 min 和 max 之间，开区间。
+            </summary>
+            <param name="dt">时间</param>
+            <param name="min">开始时间</param>
+            <param name="max">结束时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsToday(System.DateTime)">
+            <summary>
+            判断给定时间是否今天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsToday(System.Nullable{System.DateTime})">
+            <summary>
+            判断给定时间是否今天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsMorning(System.DateTime)">
+            <summary>
+            判断给定时间是否是早晨
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsEarlyMorning(System.DateTime)">
+            <summary>
+            判断给定时间是否是清晨
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsAfternoon(System.DateTime)">
+            <summary>
+            判断给定时间是否是下午
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsDusk(System.DateTime)">
+            <summary>
+            判断给定时间是否是黄昏
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsEvening(System.DateTime)">
+            <summary>
+            判断给定时间是否是夜晚
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsBefore(System.DateTime,System.DateTime)">
+            <summary>
+            判断指定时间是否相对给定时间的过去
+            </summary>
+            <param name="dt">时间</param>
+            <param name="toCompareWith">比较时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsAfter(System.DateTime,System.DateTime)">
+            <summary>
+            判断指定时间是否相对给定时间的未来
+            </summary>
+            <param name="dt">时间</param>
+            <param name="toCompareWith">比较时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsInTheFuture(System.DateTime)">
+            <summary>
+            判断指定时间是否相对给定时间的未来
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsInThePast(System.DateTime)">
+            <summary>
+            判断指定时间是否相对给定时间的过去
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsWeekday(System.DateTime)">
+            <summary>
+            判断是否为工作日
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsWeekday(System.Nullable{System.DateTime})">
+            <summary>
+            判断是否为工作日
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsWeekend(System.DateTime)">
+            <summary>
+            判断是否为周末
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsWeekend(System.Nullable{System.DateTime})">
+            <summary>
+            判断是否为周末
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsSameDay(System.DateTime,System.DateTime)">
+            <summary>
+            判断是否同一天
+            </summary>
+            <param name="dt">时间</param>
+            <param name="date">日期</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsSameMonth(System.DateTime,System.DateTime)">
+            <summary>
+            判断是否同一个月
+            </summary>
+            <param name="dt">时间</param>
+            <param name="date">日期</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsSameYear(System.DateTime,System.DateTime)">
+            <summary>
+            判断是否同一年
+            </summary>
+            <param name="dt">时间</param>
+            <param name="date">日期</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsDateEqual(System.DateTime,System.DateTime)">
+            <summary>
+            判断日期是否相等
+            </summary>
+            <param name="dt">时间</param>
+            <param name="date">日期</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.IsTimeEqual(System.DateTime,System.DateTime)">
+            <summary>
+            判断时间是否相等
+            </summary>
+            <param name="dt">时间</param>
+            <param name="date">日期</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.Round(System.DateTime,Bing.Date.RoundTo)">
+            <summary>
+            将时间四舍五入到最接近给定精度的值
+            </summary>
+            <param name="dt">时间</param>
+            <param name="rt">舍入精度</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.ToUtc(System.DateTime)">
+            <summary>
+            转换为 UTC 时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.ToEpochTimeSpan(System.DateTime)">
+            <summary>
+            转换为纪元时间间隔
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.ToLocalDateTime(System.DateTime)">
+            <summary>
+            转换为 <see cref="T:NodaTime.LocalDateTime"/>
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.ToLocalDate(System.DateTime)">
+            <summary>
+            转换为 <see cref="T:NodaTime.LocalDate"/>
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.ToLocalTime(System.DateTime)">
+            <summary>
+            转换为 <see cref="T:NodaTime.LocalTime"/>
+            </summary>
+            <param name="dt">时间</param>
+        </member>
         <member name="M:Bing.Date.DateTimeExtensions.OffsetBy(System.DateTime,System.Int32,Bing.Date.DateTimeOffsetStyles)">
             <summary>
             偏移指定值
@@ -333,6 +603,533 @@
             <param name="offsetVal">偏移值</param>
             <param name="styles">时间偏移样式</param>
         </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfDay(System.DateTime)">
+            <summary>
+            获取一天的开始时间。
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfDay(System.DateTime,System.Int32)">
+            <summary>
+            获取一天的开始时间。
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfWeek(System.DateTime)">
+            <summary>
+            获取一周的开始时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfWeek(System.DateTime,System.Int32)">
+            <summary>
+            获取一周的开始时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfMonth(System.DateTime)">
+            <summary>
+            获取一个月的开始时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfMonth(System.DateTime,System.Int32)">
+            <summary>
+            获取一个月的开始时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfQuarter(System.DateTime)">
+            <summary>
+            获取一个季度的开始时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfQuarter(System.DateTime,System.Int32)">
+            <summary>
+            获取一个季度的开始时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfYear(System.DateTime)">
+            <summary>
+            获取一年的开始时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.BeginningOfYear(System.DateTime,System.Int32)">
+            <summary>
+            获取一年的开始时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfDay(System.DateTime)">
+            <summary>
+            获取一天的结束时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfDay(System.DateTime,System.Int32)">
+            <summary>
+            获取一天的结束时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfWeek(System.DateTime)">
+            <summary>
+            获取一周的结束时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfWeek(System.DateTime,System.Int32)">
+            <summary>
+            获取一周的结束时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfMonth(System.DateTime)">
+            <summary>
+            获取一个月的结束时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfMonth(System.DateTime,System.Int32)">
+            <summary>
+            获取一个月的结束时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfQuarter(System.DateTime)">
+            <summary>
+            获取一个季度的结束时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfQuarter(System.DateTime,System.Int32)">
+            <summary>
+            获取一个季度的结束时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfYear(System.DateTime)">
+            <summary>
+            获取一年的结束时间
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.EndOfYear(System.DateTime,System.Int32)">
+            <summary>
+            获取一年的结束时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="timeZoneOffset">时区偏移量</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.GetTimeSpan(System.DateTime,System.DateTime)">
+            <summary>
+            获取两个时间之间的间隔
+            </summary>
+            <param name="leftDt">时间</param>
+            <param name="rightDt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.FirstDayOfYear(System.DateTime)">
+            <summary>
+            获取指定年份的第一天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.FirstDayOfYear(System.DateTime,System.DayOfWeek)">
+            <summary>
+            获取指定年份的第一个星期指定的某一天
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.FirstDayOfQuarter(System.DateTime)">
+            <summary>
+            获取指定季度的第一天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.FirstDayOfQuarter(System.DateTime,System.DayOfWeek)">
+            <summary>
+            获取指定季度的第一个星期指定的某一天
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.FirstDayOfMonth(System.DateTime)">
+            <summary>
+            获取指定月份的第一天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.FirstDayOfMonth(System.DateTime,System.DayOfWeek)">
+            <summary>
+            获取指定月份的第一个星期指定的某一天
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.FirstDayOfWeek(System.DateTime)">
+            <summary>
+            获取指定星期的第一天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.FirstDayOfWeek(System.DateTime,System.Globalization.CultureInfo)">
+            <summary>
+            获取指定星期的第一天
+            </summary>
+            <param name="dt">时间</param>
+            <param name="cultureInfo">区域信息</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.LastDayOfYear(System.DateTime)">
+            <summary>
+            获取指定年份的最后一天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.LastDayOfYear(System.DateTime,System.DayOfWeek)">
+            <summary>
+            获取指定年份的最后一个星期指定的某一天
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.LastDayOfQuarter(System.DateTime)">
+            <summary>
+            获取指定季度的最后一天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.LastDayOfQuarter(System.DateTime,System.DayOfWeek)">
+            <summary>
+            获取指定季度的最后一个星期指定的某一天
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.LastDayOfMonth(System.DateTime)">
+            <summary>
+            获取指定月份的最后一天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.LastDayOfMonth(System.DateTime,System.DayOfWeek)">
+            <summary>
+            获取指定月份的最后一个星期指定的某一天
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.LastDayOfWeek(System.DateTime)">
+            <summary>
+            获取指定星期的最后一天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.LastDayOfWeek(System.DateTime,System.Globalization.CultureInfo)">
+            <summary>
+            获取指定星期的最后一天
+            </summary>
+            <param name="dt">时间</param>
+            <param name="cultureInfo">区域信息</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.DaysInMonth(System.DateTime)">
+            <summary>
+            获取指定月份中的天数
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.DaysInYear(System.DateTime)">
+            <summary>
+            获取指定年份中的天数
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.QuarterOfMonth(System.DateTime)">
+            <summary>
+            获取指定月份是第几个季度
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.GetWeekOfYear(System.DateTime)">
+            <summary>
+            获取指定的星期是一年中的第几个星期
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule)">
+            <summary>
+            获取指定的星期是一年中的第几个星期
+            </summary>
+            <param name="dt">时间</param>
+            <param name="weekRule">星期规则</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.GetWeekOfYear(System.DateTime,System.DayOfWeek)">
+            <summary>
+            获取指定的星期是一年中的第几个星期
+            </summary>
+            <param name="dt">时间</param>
+            <param name="firstDayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.GetWeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+            <summary>
+            获取指定的星期是一年中的第几个星期
+            </summary>
+            <param name="dt">时间</param>
+            <param name="weekRule">星期规则</param>
+            <param name="firstDayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.NextYear(System.DateTime)">
+            <summary>
+            下一年（明年）
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.PreviousYear(System.DateTime)">
+            <summary>
+            上一年（去年）
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.NextQuarter(System.DateTime)">
+            <summary>
+            下个季度
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.PreviousQuarter(System.DateTime)">
+            <summary>
+            上个季度
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.NextMonth(System.DateTime)">
+            <summary>
+            下个月
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.PreviousMonth(System.DateTime)">
+            <summary>
+            上个月
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.NextWeek(System.DateTime)">
+            <summary>
+            下个星期
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.PreviousWeek(System.DateTime)">
+            <summary>
+            上个星期
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.NextDay(System.DateTime)">
+            <summary>
+            下一天（明天）
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.PreviousDay(System.DateTime)">
+            <summary>
+            上一天（昨天）
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.Tomorrow(System.DateTime)">
+            <summary>
+            明天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.Yesterday(System.DateTime)">
+            <summary>
+            昨天
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.NextDayOfWeek(System.DateTime,System.DayOfWeek)">
+            <summary>
+            下个星期几
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.PreviousDayOfWeek(System.DateTime,System.DayOfWeek)">
+            <summary>
+            上个星期几
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.At(System.DateTime,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            时间，修改它的时分秒
+            </summary>
+            <param name="dt">时间</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.At(System.DateTime,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            时间，修改它的时分秒，以及毫秒
+            </summary>
+            <param name="dt">时间</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+            <param name="milliseconds">毫秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.On(System.DateTime,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            日期，修改它的年月日。
+            </summary>
+            <param name="dt">时间</param>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetTime(System.DateTime,System.Int32)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="hour">时</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetTime(System.DateTime,System.Int32,System.Int32)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetTime(System.DateTime,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetTime(System.DateTime,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="dt">时间</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+            <param name="millisecond">毫秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetHour(System.DateTime,System.Int32)">
+            <summary>
+            设置时间 - 小时
+            </summary>
+            <param name="dt">时间</param>
+            <param name="hour">时</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetMinute(System.DateTime,System.Int32)">
+            <summary>
+            设置时间 - 分钟
+            </summary>
+            <param name="dt">时间</param>
+            <param name="minute">分</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetSecond(System.DateTime,System.Int32)">
+            <summary>
+            设置时间 - 秒
+            </summary>
+            <param name="dt">时间</param>
+            <param name="second">秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetMillisecond(System.DateTime,System.Int32)">
+            <summary>
+            设置时间 - 毫秒
+            </summary>
+            <param name="dt">时间</param>
+            <param name="millisecond">毫秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.Midnight(System.DateTime)">
+            <summary>
+            设置时间为凌晨0点（午夜）
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.Noon(System.DateTime)">
+            <summary>
+            设置时间为中午12点（正午）
+            </summary>
+            <param name="dt">时间</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetDate(System.DateTime,System.Int32)">
+            <summary>
+            设置日期
+            </summary>
+            <param name="dt">时间</param>
+            <param name="year">年</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetDate(System.DateTime,System.Int32,System.Int32)">
+            <summary>
+            设置日期
+            </summary>
+            <param name="dt">时间</param>
+            <param name="year">年</param>
+            <param name="month">月</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetDate(System.DateTime,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            设置日期
+            </summary>
+            <param name="dt">时间</param>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetYear(System.DateTime,System.Int32)">
+            <summary>
+            设置日期 - 年
+            </summary>
+            <param name="dt">时间</param>
+            <param name="year">年</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetMonth(System.DateTime,System.Int32)">
+            <summary>
+            设置日期 - 月
+            </summary>
+            <param name="dt">时间</param>
+            <param name="month">月</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetDay(System.DateTime,System.Int32)">
+            <summary>
+            设置日期 - 日
+            </summary>
+            <param name="dt">时间</param>
+            <param name="day">日</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeExtensions.SetKind(System.DateTime,System.DateTimeKind)">
+            <summary>
+            设置日期种类。本地/UTC
+            </summary>
+            <param name="dt">时间</param>
+            <param name="kind">日期种类</param>
+        </member>
         <member name="T:Bing.Date.DateTimeFactory">
             <summary>
             日期时间工厂
@@ -340,12 +1137,12 @@
         </member>
         <member name="M:Bing.Date.DateTimeFactory.Now">
             <summary>
-            此刻
+            此刻。获取当前本地时间
             </summary>
         </member>
         <member name="M:Bing.Date.DateTimeFactory.UtcNow">
             <summary>
-            此刻
+            此刻。获取当前UTC时间
             </summary>
         </member>
         <member name="M:Bing.Date.DateTimeFactory.Create(System.Int32,System.Int32,System.Int32)">
@@ -394,10 +1191,90 @@
         </member>
         <member name="M:Bing.Date.DateTimeFactory.CreateLastDayOfMonth(System.Int32,System.Int32)">
             <summary>
-            获取一个月中的最后一个日期
+            寻找一个月中的最后一个日期
             </summary>
             <param name="year">年</param>
             <param name="month">月</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreateLastDayOfMonth(System.Int32,System.Int32,System.DayOfWeek)">
+            <summary>
+            寻找一个月中的最后一个工作日（如周一）
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreateLastDayOfMonth(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            寻找一个月中的最后一个工作日（如周一）
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreateFirstDayOfMonth(System.Int32,System.Int32)">
+            <summary>
+            寻找一个月中的第一个日期
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreateFirstDayOfMonth(System.Int32,System.Int32,System.DayOfWeek)">
+            <summary>
+            寻找一个月中的第一个工作日（如周一）
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreateFirstDayOfMonth(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            寻找一个月中的第一个工作日（如周一）
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreateNextDayByWeek(System.Int32,System.Int32,System.Int32,System.DayOfWeek)">
+            <summary>
+            根据指定的日期，获得下一个工作日（如周一）
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreateNextDayByWeek(System.DateTime,System.DayOfWeek)">
+            <summary>
+            根据指定的日期，获得下一个工作日（如周一）
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreatePreviousDayByWeek(System.Int32,System.Int32,System.Int32,System.DayOfWeek)">
+            <summary>
+            根据指定的日期，获取上一个工作日（如周一）
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreatePreviousDayByWeek(System.DateTime,System.DayOfWeek)">
+            <summary>
+            根据指定的日期，获取上一个工作日（如周一）
+            </summary>
+            <param name="dt">时间</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeFactory.CreateByWeek(System.Int32,System.Int32,System.DayOfWeek,System.Int32)">
+            <summary>
+            寻找指定的日期（如一个月的第三个周一）
+            </summary>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="dayOfWeek">星期几</param>
+            <param name="occurrence">第几个星期</param>
         </member>
         <member name="T:Bing.Date.DateTimeSpan">
             <summary>
@@ -1121,6 +1998,11 @@
             <param name="styles">时间间隔样式</param>
             <param name="result">解析结果</param>
         </member>
+        <member name="T:Bing.Date.DateTimeSpanParse">
+            <summary>
+            日期时间间隔解析器
+            </summary>
+        </member>
         <member name="M:Bing.Date.DateTimeSpanParse.TryParse(System.String,System.IFormatProvider,Bing.Date.DateTimeSpan@)">
             <summary>
             尝试解析
@@ -1350,6 +2232,31 @@
             <param name="left">星期几</param>
             <param name="right">星期几</param>
             <param name="days">间隔天数</param>
+        </member>
+        <member name="T:Bing.Date.RoundTo">
+            <summary>
+            时间舍入精度
+            </summary>
+        </member>
+        <member name="F:Bing.Date.RoundTo.Second">
+            <summary>
+            秒精度
+            </summary>
+        </member>
+        <member name="F:Bing.Date.RoundTo.Minute">
+            <summary>
+            分钟精度
+            </summary>
+        </member>
+        <member name="F:Bing.Date.RoundTo.Hour">
+            <summary>
+            小时精度
+            </summary>
+        </member>
+        <member name="F:Bing.Date.RoundTo.Day">
+            <summary>
+            日精度
+            </summary>
         </member>
         <member name="T:NodaTime.Helpers.DayOfWeekHelper">
             <summary>

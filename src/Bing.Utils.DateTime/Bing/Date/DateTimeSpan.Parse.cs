@@ -68,6 +68,9 @@ namespace Bing.Date
             DateTimeSpanParse.TryParseExactMultiple(input, formats, provider, styles, out result);
     }
 
+    /// <summary>
+    /// 日期时间间隔解析器
+    /// </summary>
     internal static class DateTimeSpanParse
     {
         /// <summary>

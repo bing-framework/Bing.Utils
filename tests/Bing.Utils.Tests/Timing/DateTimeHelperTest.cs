@@ -35,9 +35,9 @@ namespace Bing.Utils.Tests.Timing
         {
             var beginTime = Conv.ToDate("2020-10-01 00:00:00"); 
             var endTime = Conv.ToDate("2020-11-01 00:00:00");
-            var days = DateTimeHelper.GetDays(beginTime, endTime);
-            Output.WriteLine($"天数：{days}");
-            Output.WriteLine($"天数：{beginTime.AddDays(days):yyyy-MM-dd HH:mm:ss}");
+            //var days = DateTimeHelper.GetDays(beginTime, endTime);
+            //Output.WriteLine($"天数：{days}");
+            //Output.WriteLine($"天数：{beginTime.AddDays(days):yyyy-MM-dd HH:mm:ss}");
         }
     }
 }

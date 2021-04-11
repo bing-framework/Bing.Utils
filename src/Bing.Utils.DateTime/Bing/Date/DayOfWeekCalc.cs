@@ -1,5 +1,5 @@
 ﻿using System;
-using Bing.Extensions;
+using Bing.Conversions;
 using NodaTime;
 using NodaTime.Helpers;
 
@@ -17,8 +17,8 @@ namespace Bing.Date
         /// <param name="right">星期几</param>
         public static int DaysBetween(DayOfWeek left, DayOfWeek right)
         {
-            var leftVal = left.ToInt();
-            var rightVal = right.ToInt();
+            var leftVal = left.CastToInt();
+            var rightVal = right.CastToInt();
 
             if (leftVal <= rightVal)
                 return rightVal - leftVal;

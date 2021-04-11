@@ -33,35 +33,6 @@ namespace Bing.Utils.Timing
 
         #endregion
 
-        #region IsWeekend(当前时间是否周末)
-
-        /// <summary>
-        /// 当前时间是否周末
-        /// </summary>
-        /// <param name="dateTime">时间点</param>
-        public static bool IsWeekend(this DateTime dateTime)
-        {
-            DayOfWeek[] weeks = { DayOfWeek.Saturday, DayOfWeek.Sunday };
-            return weeks.Contains(dateTime.DayOfWeek);
-        }
-
-        #endregion
-
-        #region IsWorkday(当前时间是否工作日)
-
-        /// <summary>
-        /// 当前时间是否工作日
-        /// </summary>
-        /// <param name="dateTime">时间点</param>
-        public static bool IsWeekday(this DateTime dateTime)
-        {
-            DayOfWeek[] weeks =
-                {DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday};
-            return weeks.Contains(dateTime.DayOfWeek);
-        }
-
-        #endregion
-
         #region ToUniqueString(获取时间相对唯一字符串)
 
         /// <summary>
@@ -105,77 +76,6 @@ namespace Bing.Utils.Timing
         public static DateTime SetTime(this DateTime date, TimeSpan time)
         {
             return date.Date.Add(time);
-        }
-
-        #endregion
-
-        #region EndOfDay(设置指定时间为当天的结束时间)
-
-        /// <summary>
-        /// 设置指定时间为当天的结束时间。范例：yyyy-MM-dd 23:59:59.999
-        /// </summary>
-        /// <param name="date">指定时间</param>
-        /// <returns>当天的结束时间</returns>
-        public static DateTime EndOfDay(this DateTime date)
-        {
-            return date.SetTime(23, 59, 59, 999);
-        }
-
-        #endregion
-
-        #region BeginOfDay(设置指定时间为当天的开始时间)
-
-        /// <summary>
-        /// 设置指定时间为当天的开始时间（凌晨）。范例：yyyy-MM-dd 00:00:00
-        /// </summary>
-        /// <param name="time">指定时间</param>
-        /// <returns>当天的开始时间</returns>
-        public static DateTime BeginOfDay(this DateTime time)
-        {
-            return time.SetTime(0, 0, 0, 0);
-        }
-
-        #endregion
-
-        #region EndOfMonth(设置指定时间为当月的结束时间)
-
-        /// <summary>
-        /// 设置指定时间为当月的结束时间。范例：yyyy-MM-dd 23:59:59:999
-        /// </summary>
-        /// <param name="date">时间</param>
-        /// <returns>当月的结束时间</returns>
-        public static DateTime EndOfMonth(this DateTime date)
-        {
-            return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month), 23, 59, 59, 999);
-        }
-
-        #endregion
-
-        #region BeginOfMonth(设置指定时间为当月的开始时间)
-
-        /// <summary>
-        /// 设置指定时间为当月的开始时间。范例：yyyy-MM-01 00:00:00.000
-        /// </summary>
-        /// <param name="date">时间</param>
-        /// <returns>当月的开始时间</returns>
-        public static DateTime BeginOfMonth(this DateTime date)
-        {
-            return new DateTime(date.Year, date.Month, 1, 0, 0, 0, 0);
-        }
-
-        #endregion
-
-        #region GetCountDaysOfMonth(获取月总天数)
-
-        /// <summary>
-        /// 获取月总天数
-        /// </summary>
-        /// <param name="date">日期</param>
-        /// <returns>月总天数</returns>
-        public static int GetCountDaysOfMonth(this DateTime date)
-        {
-            var nextMonth = date.AddMonths(1);
-            return new DateTime(nextMonth.Year, nextMonth.Month, 1).AddDays(-1).Day;
         }
 
         #endregion
@@ -314,22 +214,6 @@ namespace Bing.Utils.Timing
 
         #endregion
 
-        #region IsBetween(判断当前时间是否在指定时间范围内)
-
-        /// <summary>
-        /// 判断当前时间是否在指定时间范围内，格式：yyyy-MM-dd HH:mm:ss
-        /// </summary>
-        /// <param name="current">当前时间</param>
-        /// <param name="begin">开始时间</param>
-        /// <param name="end">结束时间</param>
-        public static bool IsBetween(this DateTime current, DateTime begin, DateTime end)
-        {
-            var ticks = current.Ticks;
-            return ticks >= begin.Ticks && ticks <= end.Ticks;
-        }
-
-        #endregion
-
         #region IsValid(是否有效时间)
 
         /// <summary>
@@ -398,21 +282,6 @@ namespace Bing.Utils.Timing
         public static long CsharpTime2PhpTime(this DateTime dateTime)
         {
             return (DateTime.UtcNow.Ticks - Date1970.Ticks) / 10000000;
-        }
-
-        #endregion
-
-        #region AddWeeks(添加星期)
-
-        /// <summary>
-        /// 添加星期
-        /// </summary>
-        /// <param name="dateTime">时间</param>
-        /// <param name="weeks">周</param>
-        /// <returns></returns>
-        public static DateTime AddWeeks(this DateTime dateTime, int weeks)
-        {
-            return dateTime.AddDays(weeks * 7);
         }
 
         #endregion
