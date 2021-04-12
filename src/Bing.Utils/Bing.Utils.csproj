@@ -5,4 +5,8 @@
 
   <Import Project="..\..\common.props" />
 
+  <ItemGroup>
+    <Folder Include="Bing\Text\Internal\" />
+  </ItemGroup>
+
 </Project>
