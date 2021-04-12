@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Bing.Reflection;
 
 namespace Bing.Judgments
 {
@@ -118,7 +119,7 @@ namespace Bing.Judgments
             testFlag = type.GetInterfaces().Any(_checkRawGenericType);
             if (testFlag)
                 return true;
-            while (type != null && type != TypeClass.ObjectClass)
+            while (type != null && type != TypeClass.ObjectClazz)
             {
                 testFlag = _checkRawGenericType(type);
                 if (testFlag)

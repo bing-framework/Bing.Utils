@@ -61,7 +61,7 @@ namespace Bing.Reflection
                 throw new ArgumentNullException(nameof(genericType));
             if (!genericType.IsGenericType)
                 return null;
-            while (type != null && type != TypeClass.ObjectClass)
+            while (type != null && type != TypeClass.ObjectClazz)
             {
                 var testFlag = _checkRawGenericType(type);
                 if (testFlag)

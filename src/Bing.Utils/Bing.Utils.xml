@@ -541,6 +541,54 @@
             </summary>
             <param name="this">名称-值集合</param>
         </member>
+        <member name="T:Bing.Conversions.AsciiConvHelper">
+            <summary>
+            ASCII 转换帮助类
+            </summary>
+        </member>
+        <member name="M:Bing.Conversions.AsciiConvHelper.CharToAscii(System.Char)">
+            <summary>
+            字符转ASCII
+            </summary>
+            <param name="char">字符</param>
+        </member>
+        <member name="M:Bing.Conversions.AsciiConvHelper.StringToAscii(System.String)">
+            <summary>
+            字符串转ASCII
+            </summary>
+            <param name="string">字符串</param>
+        </member>
+        <member name="M:Bing.Conversions.AsciiConvHelper.AsciiToChar(System.Byte)">
+            <summary>
+            ASCII转字符
+            </summary>
+            <param name="byte">ASCII字节</param>
+        </member>
+        <member name="M:Bing.Conversions.AsciiConvHelper.AsciiToString(System.Byte[])">
+            <summary>
+            ASCII转字符串
+            </summary>
+            <param name="bytes">ASCII字节数组</param>
+        </member>
+        <member name="T:Bing.Conversions.AsciiConv">
+            <summary>
+            ASCII转换器
+            </summary>
+        </member>
+        <member name="M:Bing.Conversions.AsciiConv.BytesToAsciiString(System.Byte[])">
+            <summary>
+            将 byte[] 转换为 ASCII <see cref="T:System.String"/>
+            </summary>
+            <param name="bytes">字节数组</param>
+            <example>in: new byte[] {65, 66, 67}; out: ABC</example>
+        </member>
+        <member name="M:Bing.Conversions.AsciiConv.AsciiStringToBytes(System.String)">
+            <summary>
+            将 ASCII <see cref="T:System.String"/> 转换为 byte[]
+            </summary>
+            <param name="asciiStr">ASCII字符串</param>
+            <example>in: ABC; out: new byte[] {65, 66, 67}</example>
+        </member>
         <member name="T:Bing.Conversions.Base32Converter">
             <summary>
             Base32 转换器
@@ -1231,19 +1279,19 @@
             <param name="exception">异常</param>
             <returns>格式化之后的异常信息</returns>
         </member>
-        <member name="T:Bing.Exceptions.ExceptionExtensions">
+        <member name="T:Bing.Exceptions.ExceptionHelperExtensions">
             <summary>
-            异常(<see cref="T:System.Exception"/>) 扩展
+            Bing <see cref="T:System.Exception"/> 扩展
             </summary>
         </member>
-        <member name="M:Bing.Exceptions.ExceptionExtensions.Unwrap(System.Exception)">
+        <member name="M:Bing.Exceptions.ExceptionHelperExtensions.Unwrap(System.Exception)">
             <summary>
             解包
             </summary>
             <param name="ex">异常</param>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
-        <member name="M:Bing.Exceptions.ExceptionExtensions.Unwrap(System.Exception,System.Type,System.Boolean)">
+        <member name="M:Bing.Exceptions.ExceptionHelperExtensions.Unwrap(System.Exception,System.Type,System.Boolean)">
             <summary>
             解包
             </summary>
@@ -1253,63 +1301,18 @@
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:Bing.Exceptions.ExceptionExtensions.Unwrap``1(System.Exception)">
+        <member name="M:Bing.Exceptions.ExceptionHelperExtensions.Unwrap``1(System.Exception)">
             <summary>
             解包
             </summary>
             <typeparam name="TException">异常类型</typeparam>
             <param name="ex">异常</param>
         </member>
-        <member name="M:Bing.Exceptions.ExceptionExtensions.ToUnwrappedString(System.Exception)">
+        <member name="M:Bing.Exceptions.ExceptionHelperExtensions.ToUnwrappedString(System.Exception)">
             <summary>
             解包并返回消息
             </summary>
             <param name="ex">异常</param>
-        </member>
-        <member name="T:Bing.Exceptions.TryExtensions">
-            <summary>
-            尝试(<see cref="T:Bing.Exceptions.Try`1"/>) 扩展
-            </summary>
-        </member>
-        <member name="M:Bing.Exceptions.TryExtensions.Select``2(Bing.Exceptions.Try{``0},System.Func{``0,``1})">
-            <summary>
-            选择
-            </summary>
-            <typeparam name="TSource">源类型</typeparam>
-            <typeparam name="TResult">结果类型</typeparam>
-            <param name="source">源对象</param>
-            <param name="selector">选择器</param>
-            <exception cref="T:System.ArgumentNullException"></exception>
-        </member>
-        <member name="M:Bing.Exceptions.TryExtensions.SelectMany``2(Bing.Exceptions.Try{``0},System.Func{``0,Bing.Exceptions.Try{``1}})">
-            <summary>
-            选择
-            </summary>
-            <typeparam name="TSource">源类型</typeparam>
-            <typeparam name="TResult">结果类型</typeparam>
-            <param name="source">源对象</param>
-            <param name="selector">选择器</param>
-            <exception cref="T:System.ArgumentNullException"></exception>
-        </member>
-        <member name="M:Bing.Exceptions.TryExtensions.SelectMany``3(Bing.Exceptions.Try{``0},System.Func{``0,Bing.Exceptions.Try{``1}},System.Func{``0,``1,``2})">
-            <summary>
-            选择
-            </summary>
-            <typeparam name="TSource">源类型</typeparam>
-            <typeparam name="TIntermediate">中间类型</typeparam>
-            <typeparam name="TResult">结果类型</typeparam>
-            <param name="source">源对象</param>
-            <param name="convert">转换器</param>
-            <param name="selector">选择器</param>
-            <exception cref="T:System.ArgumentNullException"></exception>
-        </member>
-        <member name="M:Bing.Exceptions.TryExtensions.Where``1(Bing.Exceptions.Try{``0},System.Func{``0,System.Boolean})">
-            <summary>
-            设置条件
-            </summary>
-            <typeparam name="TSource">源类型</typeparam>
-            <param name="source">源对象</param>
-            <param name="predicate">条件</param>
         </member>
         <member name="T:Bing.Exceptions.Try">
             <summary>
@@ -1606,6 +1609,51 @@
             </summary>
             <param name="successAction">成功操作</param>
             <param name="failureAction">失败操作</param>
+        </member>
+        <member name="T:Bing.Exceptions.TryExtensions">
+            <summary>
+            尝试(<see cref="T:Bing.Exceptions.Try`1"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Exceptions.TryExtensions.Select``2(Bing.Exceptions.Try{``0},System.Func{``0,``1})">
+            <summary>
+            选择
+            </summary>
+            <typeparam name="TSource">源类型</typeparam>
+            <typeparam name="TResult">结果类型</typeparam>
+            <param name="source">源对象</param>
+            <param name="selector">选择器</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Bing.Exceptions.TryExtensions.SelectMany``2(Bing.Exceptions.Try{``0},System.Func{``0,Bing.Exceptions.Try{``1}})">
+            <summary>
+            选择
+            </summary>
+            <typeparam name="TSource">源类型</typeparam>
+            <typeparam name="TResult">结果类型</typeparam>
+            <param name="source">源对象</param>
+            <param name="selector">选择器</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Bing.Exceptions.TryExtensions.SelectMany``3(Bing.Exceptions.Try{``0},System.Func{``0,Bing.Exceptions.Try{``1}},System.Func{``0,``1,``2})">
+            <summary>
+            选择
+            </summary>
+            <typeparam name="TSource">源类型</typeparam>
+            <typeparam name="TIntermediate">中间类型</typeparam>
+            <typeparam name="TResult">结果类型</typeparam>
+            <param name="source">源对象</param>
+            <param name="convert">转换器</param>
+            <param name="selector">选择器</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Bing.Exceptions.TryExtensions.Where``1(Bing.Exceptions.Try{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            设置条件
+            </summary>
+            <typeparam name="TSource">源类型</typeparam>
+            <param name="source">源对象</param>
+            <param name="predicate">条件</param>
         </member>
         <member name="T:Bing.Exceptions.Try`1">
             <summary>
@@ -11623,7 +11671,338 @@
             <typeparam name="TGot">类型</typeparam>
             <typeparam name="TGeneric">泛型类型</typeparam>
         </member>
+        <member name="T:Bing.Reflection.TypeClass">
+            <summary>
+            类类型
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.VoidClazz">
+            <summary>
+            void
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ObjectClazz">
+            <summary>
+            object
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ObjectArrayClazz">
+            <summary>
+            object[]
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ByteClazz">
+            <summary>
+            byte
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ByteNullableClazz">
+            <summary>
+            byte?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ByteArrayClazz">
+            <summary>
+            byte[]
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.SByteClazz">
+            <summary>
+            sbyte
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.SByteNullableClazz">
+            <summary>
+            sbyte?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.Int16Clazz">
+            <summary>
+            int16
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.Int16NullableClazz">
+            <summary>
+            int16?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UInt16Clazz">
+            <summary>
+            uint16
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UInt16NullableClazz">
+            <summary>
+            uint16?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.Int32Clazz">
+            <summary>
+            int32
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.Int32NullableClazz">
+            <summary>
+            int32?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UInt32Clazz">
+            <summary>
+            uint32
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UInt32NullableClazz">
+            <summary>
+            uint32?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.Int64Clazz">
+            <summary>
+            int64
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.Int64NullableClazz">
+            <summary>
+            int64?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UInt64Clazz">
+            <summary>
+            uint64
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UInt64NullableClazz">
+            <summary>
+            uint64?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ShortClazz">
+            <summary>
+            short
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ShortNullableClazz">
+            <summary>
+            short?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UShortClazz">
+            <summary>
+            ushort
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UShortNullableClazz">
+            <summary>
+            ushort?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.IntClazz">
+            <summary>
+            int
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.IntNullableClazz">
+            <summary>
+            int?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UIntClazz">
+            <summary>
+            uint
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.UIntNullableClazz">
+            <summary>
+            uint?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.LongClazz">
+            <summary>
+            long
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.LongNullableClazz">
+            <summary>
+            long?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ULongClazz">
+            <summary>
+            ulong
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ULongNullableClazz">
+            <summary>
+            ulong?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.FloatClazz">
+            <summary>
+            float
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.FloatNullableClazz">
+            <summary>
+            float?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.SingleClazz">
+            <summary>
+            float
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.SingleNullableClazz">
+            <summary>
+            float?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.DoubleClazz">
+            <summary>
+            double
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.DoubleNullableClazz">
+            <summary>
+            double?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.DecimalClazz">
+            <summary>
+            decimal
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.DecimalNullableClazz">
+            <summary>
+            decimal?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.StringClazz">
+            <summary>
+            string
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.DateTimeClazz">
+            <summary>
+            DateTime
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.DateTimeNullableClazz">
+            <summary>
+            DateTime?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.DateTimeOffsetClazz">
+            <summary>
+            DateTimeOffset
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.DateTimeOffsetNullableClazz">
+            <summary>
+            DateTimeOffset?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.TimeSpanClazz">
+            <summary>
+            TimeSpan
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.TimeSpanNullableClazz">
+            <summary>
+            TimeSpan?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.GuidClazz">
+            <summary>
+            Guid
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.GuidNullableClazz">
+            <summary>
+            Guid?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.BooleanClazz">
+            <summary>
+            bool
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.BooleanNullableClazz">
+            <summary>
+            bool?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.CharClazz">
+            <summary>
+            char
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.CharNullableClazz">
+            <summary>
+            char?
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.EnumClazz">
+            <summary>
+            Enum
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ValueTupleClazz">
+            <summary>
+            ValueTuple
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.TaskClazz">
+            <summary>
+            Task
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.GenericTaskClazz">
+            <summary>
+            Generic Task
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.ValueTaskClazz">
+            <summary>
+            ValueTask
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.GenericValueTaskClazz">
+            <summary>
+            Generic ValueTask
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.GenericListClazz">
+            <summary>
+            Generic List
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.NullableClazz">
+            <summary>
+            Nullable
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.GenericNullableClazz">
+            <summary>
+            Generic Nullable
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.FormattableClazz">
+            <summary>
+            IFormattable
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypeClass.FormatProviderClazz">
+            <summary>
+            IFormatProvider
+            </summary>
+        </member>
         <member name="T:Bing.Reflection.Types">
+            <summary>
+            类型 操作
+            </summary>
+            <summary>
+            类型 操作
+            </summary>
             <summary>
             类型 操作
             </summary>
@@ -11806,6 +12185,48 @@
             </summary>
             <param name="type">实例类型</param>
             <param name="args">参数</param>
+        </member>
+        <member name="T:Bing.Reflection.TypeIsOptions">
+            <summary>
+            类型判断现象
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.TypeIsOptions.Default">
+            <summary>
+            默认
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.TypeIsOptions.IgnoreNullable">
+            <summary>
+            忽略可空
+            </summary>
+        </member>
+        <member name="T:Bing.Reflection.TypeExtensions">
+            <summary>
+            Bing 类型 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypeExtensions.GetUnboxedType``1(``0)">
+            <summary>
+            获取拆箱类型
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="value">值</param>
+        </member>
+        <member name="T:Bing.Reflection.TypeOfOptions">
+            <summary>
+            类型选项
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.TypeOfOptions.Owner">
+            <summary>
+            拥有者
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.TypeOfOptions.Underlying">
+            <summary>
+            基础类型
+            </summary>
         </member>
         <member name="T:Bing.Singleton">
             <summary>
@@ -13009,291 +13430,6 @@
         <member name="F:Bing.Threading.Locks.ReaderWriteLockType.UpgradeableRead">
             <summary>
             更新并读取
-            </summary>
-        </member>
-        <member name="T:Bing.TypeClass">
-            <summary>
-            类类型
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.VoidClass">
-            <summary>
-            void
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ObjectClass">
-            <summary>
-            object
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ObjectArrayClass">
-            <summary>
-            object[]
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ByteClass">
-            <summary>
-            byte
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ByteNullableClass">
-            <summary>
-            byte?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ByteArrayClass">
-            <summary>
-            byte[]
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.SByteClass">
-            <summary>
-            sbyte
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.SByteNullableClass">
-            <summary>
-            sbyte?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.Int16Class">
-            <summary>
-            int16
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.Int16NullableClass">
-            <summary>
-            int16?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UInt16Class">
-            <summary>
-            uint16
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UInt16NullableClass">
-            <summary>
-            uint16?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.Int32Class">
-            <summary>
-            int32
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.Int32NullableClass">
-            <summary>
-            int32?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UInt32Class">
-            <summary>
-            uint32
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UInt32NullableClass">
-            <summary>
-            uint32?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.Int64Class">
-            <summary>
-            int64
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.Int64NullableClass">
-            <summary>
-            int64?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UInt64Class">
-            <summary>
-            uint64
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UInt64NullableClass">
-            <summary>
-            uint64?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ShortClass">
-            <summary>
-            short
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ShortNullableClass">
-            <summary>
-            short?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UShortClass">
-            <summary>
-            ushort
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UShortNullableClass">
-            <summary>
-            ushort?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.IntClass">
-            <summary>
-            int
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.IntNullableClass">
-            <summary>
-            int?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UIntClass">
-            <summary>
-            uint
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.UIntNullableClass">
-            <summary>
-            uint?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.LongClass">
-            <summary>
-            long
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.LongNullableClass">
-            <summary>
-            long?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ULongClass">
-            <summary>
-            ulong
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ULongNullableClass">
-            <summary>
-            ulong?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.FloatClass">
-            <summary>
-            float
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.FloatNullableClass">
-            <summary>
-            float?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.DoubleClass">
-            <summary>
-            double
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.DoubleNullableClass">
-            <summary>
-            double?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.DecimalClass">
-            <summary>
-            decimal
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.DecimalNullableClass">
-            <summary>
-            decimal?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.StringClass">
-            <summary>
-            string
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.DateTimeClass">
-            <summary>
-            DateTime
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.DateTimeNullableClass">
-            <summary>
-            DateTime?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.DateTimeOffsetClass">
-            <summary>
-            DateTimeOffset
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.DateTimeOffsetNullableClass">
-            <summary>
-            DateTimeOffset?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.TimeSpanClass">
-            <summary>
-            TimeSpan
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.TimeSpanNullableClass">
-            <summary>
-            TimeSpan?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.GuidClass">
-            <summary>
-            Guid
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.GuidNullableClass">
-            <summary>
-            Guid?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.BooleanClass">
-            <summary>
-            bool
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.BooleanNullableClass">
-            <summary>
-            bool?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.CharClass">
-            <summary>
-            char
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.CharNullableClass">
-            <summary>
-            char?
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.EnumClass">
-            <summary>
-            Enum
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.ValueTupleClass">
-            <summary>
-            ValueTuple
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.TaskClass">
-            <summary>
-            Task
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.GenericTaskClass">
-            <summary>
-            Generic Task
-            </summary>
-        </member>
-        <member name="P:Bing.TypeClass.GenericListClass">
-            <summary>
-            Generic List
             </summary>
         </member>
         <member name="T:Bing.TypeDefault">
