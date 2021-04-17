@@ -11996,6 +11996,25 @@
             IFormatProvider
             </summary>
         </member>
+        <member name="T:Bing.Reflection.TypeConv">
+            <summary>
+            类型转换 操作
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypeConv.GetNonNullableType(System.Type)">
+            <summary>
+            将可为空的类型转换为基础类型
+            </summary>
+            <param name="type">类型</param>
+            <returns>基础类型</returns>
+        </member>
+        <member name="M:Bing.Reflection.TypeConv.GetNonNullableType``1">
+            <summary>
+            将可为空的类型转换为基础类型
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <returns>基础类型</returns>
+        </member>
         <member name="T:Bing.Reflection.Types">
             <summary>
             类型 操作
