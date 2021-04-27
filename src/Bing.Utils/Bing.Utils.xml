@@ -12026,18 +12026,6 @@
             类型 操作
             </summary>
         </member>
-        <member name="M:Bing.Reflection.Types.Of``1">
-            <summary>
-            获取类型
-            </summary>
-            <typeparam name="T">对象类型</typeparam>
-        </member>
-        <member name="M:Bing.Reflection.Types.Of(System.Object[])">
-            <summary>
-            获取类型数组
-            </summary>
-            <param name="objColl">对象数组</param>
-        </member>
         <member name="M:Bing.Reflection.Types.DefaultValue``1">
             <summary>
             获取默认值
@@ -12205,9 +12193,274 @@
             <param name="type">实例类型</param>
             <param name="args">参数</param>
         </member>
+        <member name="M:Bing.Reflection.Types.IsTupleType(System.Type,Bing.Reflection.TypeOfOptions,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型是否为元祖类型
+            </summary>
+            <param name="type">类型</param>
+            <param name="ofOptions">类型选项</param>
+            <param name="isOptions">类型判断选项</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsTupleType``1(Bing.Reflection.TypeOfOptions,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型是否为元组类型
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="ofOptions">类型选项</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsTupleType``1(``0,Bing.Reflection.TypeOfOptions,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的对象是否为元祖类型
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="value">值</param>
+            <param name="ofOptions">类型选项</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``1(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``2(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``3(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``4(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``5(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``6(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``7(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``8(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <typeparam name="T8">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``9(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <typeparam name="T8">类型</typeparam>
+            <typeparam name="T9">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``10(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <typeparam name="T8">类型</typeparam>
+            <typeparam name="T9">类型</typeparam>
+            <typeparam name="T10">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``11(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <typeparam name="T8">类型</typeparam>
+            <typeparam name="T9">类型</typeparam>
+            <typeparam name="T10">类型</typeparam>
+            <typeparam name="T11">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``12(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <typeparam name="T8">类型</typeparam>
+            <typeparam name="T9">类型</typeparam>
+            <typeparam name="T10">类型</typeparam>
+            <typeparam name="T11">类型</typeparam>
+            <typeparam name="T12">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``13(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <typeparam name="T8">类型</typeparam>
+            <typeparam name="T9">类型</typeparam>
+            <typeparam name="T10">类型</typeparam>
+            <typeparam name="T11">类型</typeparam>
+            <typeparam name="T12">类型</typeparam>
+            <typeparam name="T13">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``14(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <typeparam name="T8">类型</typeparam>
+            <typeparam name="T9">类型</typeparam>
+            <typeparam name="T10">类型</typeparam>
+            <typeparam name="T11">类型</typeparam>
+            <typeparam name="T12">类型</typeparam>
+            <typeparam name="T13">类型</typeparam>
+            <typeparam name="T14">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``15(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <typeparam name="T8">类型</typeparam>
+            <typeparam name="T9">类型</typeparam>
+            <typeparam name="T10">类型</typeparam>
+            <typeparam name="T11">类型</typeparam>
+            <typeparam name="T12">类型</typeparam>
+            <typeparam name="T13">类型</typeparam>
+            <typeparam name="T14">类型</typeparam>
+            <typeparam name="T15">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of``16(Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的通用参数返回相应的类型
+            </summary>
+            <typeparam name="T1">类型</typeparam>
+            <typeparam name="T2">类型</typeparam>
+            <typeparam name="T3">类型</typeparam>
+            <typeparam name="T4">类型</typeparam>
+            <typeparam name="T5">类型</typeparam>
+            <typeparam name="T6">类型</typeparam>
+            <typeparam name="T7">类型</typeparam>
+            <typeparam name="T8">类型</typeparam>
+            <typeparam name="T9">类型</typeparam>
+            <typeparam name="T10">类型</typeparam>
+            <typeparam name="T11">类型</typeparam>
+            <typeparam name="T12">类型</typeparam>
+            <typeparam name="T13">类型</typeparam>
+            <typeparam name="T14">类型</typeparam>
+            <typeparam name="T15">类型</typeparam>
+            <typeparam name="T16">类型</typeparam>
+            <param name="options">类型选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.Of(System.Object[],Bing.Reflection.TypeOfOptions)">
+            <summary>
+            根据给定的对象，返回其对应的类型
+            </summary>
+            <param name="objects">对象数组</param>
+            <param name="options">类型选项</param>
+        </member>
         <member name="T:Bing.Reflection.TypeIsOptions">
             <summary>
-            类型判断现象
+            类型判断选项
             </summary>
         </member>
         <member name="F:Bing.Reflection.TypeIsOptions.Default">
