@@ -1,5 +1,4 @@
 ﻿using System;
-using Bing.Extensions;
 using NodaTime;
 
 namespace Bing.Date

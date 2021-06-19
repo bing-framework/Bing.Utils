@@ -154,6 +154,7 @@ namespace Bing.Utils.Tests.Reflection
         public void TestIsCollection()
         {
             Assert.True(Reflections.IsCollection(_sample.StringArray.GetType()));
+            Assert.True(TypeReflections.IsCollection(_sample.StringArray.GetType()));
         }
 
         /// <summary>

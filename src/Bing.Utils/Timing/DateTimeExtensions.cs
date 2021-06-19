@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Bing.Extensions;
 
 namespace Bing.Utils.Timing
 {

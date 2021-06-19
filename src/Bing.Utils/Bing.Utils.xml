@@ -12015,6 +12015,524 @@
             <typeparam name="T">类型</typeparam>
             <returns>基础类型</returns>
         </member>
+        <member name="T:Bing.Reflection.ReflectionOptions">
+            <summary>
+            反射选项
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.ReflectionOptions.Default">
+            <summary>
+            默认
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.ReflectionOptions.Inherit">
+            <summary>
+            继承
+            </summary>
+        </member>
+        <member name="T:Bing.Reflection.ReflectionAmbiguousOptions">
+            <summary>
+            反射歧义选项
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.ReflectionAmbiguousOptions.Default">
+            <summary>
+            默认
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.ReflectionAmbiguousOptions.IgnoreAmbiguous">
+            <summary>
+            忽略歧义
+            </summary>
+        </member>
+        <member name="T:Bing.Reflection.TypeReflectorHelper">
+            <summary>
+            类型反射器帮助类
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflectorHelper.GetReflector(System.Reflection.MemberInfo)">
+            <summary>
+            获取反射器
+            </summary>
+            <param name="member">成员元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflectorHelper.GetReflector(System.Reflection.ParameterInfo)">
+            <summary>
+            获取反射器
+            </summary>
+            <param name="parameter">参数元数据</param>
+        </member>
+        <member name="F:Bing.Reflection.TypeReflectorHelper.CustomAttributeReflectorRuntimeTypeHandle">
+            <summary>
+            自定义特性反射器运行时类型处理
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflectorHelper.GetRuntimeTypeHandles(AspectCore.Extensions.Reflection.CustomAttributeReflector)">
+            <summary>
+            获取运行时类型处理器集合
+            </summary>
+            <param name="reflector">自定义特性反射器</param>
+        </member>
+        <member name="T:Bing.Reflection.TypeReflections">
+            <summary>
+            类型反射 操作
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.AttrRequired``1(``0,System.String)">
+            <summary>
+            校验
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.AttrRequired``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+            校验
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.AttrDisambiguation``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            消除歧义，取第一项的值
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsAttributeDefined``1(System.Reflection.MemberInfo)">
+            <summary>
+            判断给定的特性是否定义
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsAttributeDefined``1(System.Reflection.MemberInfo,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            判断给定的特性是否定义
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+            <param name="options">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsAttributeDefined``1(System.Reflection.ParameterInfo)">
+            <summary>
+            判断给定的特性是否定义
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsAttributeDefined``1(System.Reflection.ParameterInfo,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            判断给定的特性是否定义
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+            <param name="options">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsAttributeDefined(System.Reflection.MemberInfo,System.Type)">
+            <summary>
+            判断给定的特性是否定义
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsAttributeDefined(System.Reflection.MemberInfo,System.Type,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            判断给定的特性是否定义
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="options">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsAttributeDefined(System.Reflection.ParameterInfo,System.Type)">
+            <summary>
+            判断给定的特性是否定义
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsAttributeDefined(System.Reflection.ParameterInfo,System.Type,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            判断给定的特性是否定义
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="options">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsAttributeDefinedImpl(AspectCore.Extensions.Reflection.ICustomAttributeReflectorProvider,System.Type)">
+            <summary>
+            判断给定的特性是否定义 的实现方式
+            </summary>
+            <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttribute(System.Reflection.MemberInfo,System.Type)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttribute(System.Reflection.ParameterInfo,System.Type)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttribute(System.Reflection.MemberInfo,System.Type,Bing.Reflection.ReflectionOptions,Bing.Reflection.ReflectionAmbiguousOptions)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="refOptions">反射选项</param>
+            <param name="ambOptions">反射歧义选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttribute(System.Reflection.ParameterInfo,System.Type,Bing.Reflection.ReflectionOptions,Bing.Reflection.ReflectionAmbiguousOptions)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="refOptions">反射选项</param>
+            <param name="ambOptions">反射歧义选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttribute``1(System.Reflection.MemberInfo)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttribute``1(System.Reflection.ParameterInfo)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttribute``1(System.Reflection.MemberInfo,Bing.Reflection.ReflectionOptions,Bing.Reflection.ReflectionAmbiguousOptions)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+            <param name="refOptions">反射选项</param>
+            <param name="ambOptions">反射歧义选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttribute``1(System.Reflection.ParameterInfo,Bing.Reflection.ReflectionOptions,Bing.Reflection.ReflectionAmbiguousOptions)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+            <param name="refOptions">反射选项</param>
+            <param name="ambOptions">反射歧义选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributeImpl(AspectCore.Extensions.Reflection.ICustomAttributeReflectorProvider,System.Type)">
+            <summary>
+            获取特性 的实现方式
+            </summary>
+            <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes``1(System.Reflection.MemberInfo)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes``1(System.Reflection.ParameterInfo)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes``1(System.Reflection.MemberInfo,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes``1(System.Reflection.ParameterInfo,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes(System.Reflection.MemberInfo,System.Type)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes(System.Reflection.ParameterInfo,System.Type)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes(System.Reflection.MemberInfo,System.Type,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes(System.Reflection.ParameterInfo,System.Type,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributesImpl(AspectCore.Extensions.Reflection.ICustomAttributeReflectorProvider,System.Type)">
+            <summary>
+            获取特性集合 的实现方式
+            </summary>
+            <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttribute``1(System.Reflection.MemberInfo)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttribute``1(System.Reflection.ParameterInfo)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttribute``1(System.Reflection.MemberInfo,Bing.Reflection.ReflectionOptions,Bing.Reflection.ReflectionAmbiguousOptions)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+            <param name="refOptions">反射选项</param>
+            <param name="ambOptions">反射歧义选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttribute``1(System.Reflection.ParameterInfo,Bing.Reflection.ReflectionOptions,Bing.Reflection.ReflectionAmbiguousOptions)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+            <param name="refOptions">反射选项</param>
+            <param name="ambOptions">反射歧义选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttribute(System.Reflection.MemberInfo,System.Type)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttribute(System.Reflection.ParameterInfo,System.Type)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttribute(System.Reflection.MemberInfo,System.Type,Bing.Reflection.ReflectionOptions,Bing.Reflection.ReflectionAmbiguousOptions)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="refOptions">反射选项</param>
+            <param name="ambOptions">反射歧义选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttribute(System.Reflection.ParameterInfo,System.Type,Bing.Reflection.ReflectionOptions,Bing.Reflection.ReflectionAmbiguousOptions)">
+            <summary>
+            从成员信息中获取指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="refOptions">反射选项</param>
+            <param name="ambOptions">反射歧义选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttributes``1(System.Reflection.MemberInfo)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttributes``1(System.Reflection.ParameterInfo)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttributes``1(System.Reflection.MemberInfo,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="member">成员元数据</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttributes``1(System.Reflection.ParameterInfo,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <typeparam name="TAttribute">特性类型</typeparam>
+            <param name="parameter">参数元数据</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttributes(System.Reflection.MemberInfo,System.Type)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttributes(System.Reflection.ParameterInfo,System.Type)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttributes(System.Reflection.MemberInfo,System.Type,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRequiredAttributes(System.Reflection.ParameterInfo,System.Type,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取一组指定的 <see cref="T:System.Attribute"/> 实例，如果获取失败则抛出异常
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="attributeType">特性类型</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes(System.Reflection.MemberInfo)">
+            <summary>
+            从成员信息中获取所有 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="member">成员元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes(System.Reflection.ParameterInfo)">
+            <summary>
+            从成员信息中获取所有 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="parameter">参数元数据</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes(System.Reflection.MemberInfo,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取所有 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributes(System.Reflection.ParameterInfo,Bing.Reflection.ReflectionOptions)">
+            <summary>
+            从成员信息中获取所有 <see cref="T:System.Attribute"/> 实例
+            </summary>
+            <param name="parameter">参数元数据</param>
+            <param name="refOptions">反射选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetAttributesImpl(AspectCore.Extensions.Reflection.ICustomAttributeReflectorProvider)">
+            <summary>
+            获取所有特性 的实现方式
+            </summary>
+            <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsInterfaceDefined(System.Type,System.Type,Bing.Reflection.InterfaceOptions)">
+            <summary>
+            判断给定的接口是否定义
+            </summary>
+            <param name="type">类型</param>
+            <param name="interfaceType">接口类型</param>
+            <param name="options">接口选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsInterfaceDefined``1(System.Type,Bing.Reflection.InterfaceOptions)">
+            <summary>
+            判断给定的接口是否定义
+            </summary>
+            <typeparam name="TInterface">接口类型</typeparam>
+            <param name="type">类型</param>
+            <param name="options">接口选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsInterfaceDefinedImpl(System.Collections.Generic.IEnumerable{System.Type},System.Type)">
+            <summary>
+            判断给定的接口是否定义 的实现方式
+            </summary>
+            <param name="sourceInterfaceTypes">源接口类型集合</param>
+            <param name="interfaceType">接口类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsBoolean(System.Reflection.MemberInfo,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的 <see cref="T:System.Reflection.MemberInfo"/> 元信息是否为布尔类型
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsDateTime(System.Reflection.MemberInfo,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的 <see cref="T:System.Reflection.MemberInfo"/> 元信息是否为 <see cref="T:System.DateTime"/> 类型
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsNumeric(System.Reflection.MemberInfo,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的 <see cref="T:System.Reflection.MemberInfo"/> 元信息是否为数值类型
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsEnum(System.Reflection.MemberInfo,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的 <see cref="T:System.Reflection.MemberInfo"/> 元信息是否为枚举类型
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsStruct(System.Reflection.MemberInfo,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的 <see cref="T:System.Reflection.MemberInfo"/> 元信息是否为结构类型
+            </summary>
+            <param name="member">成员元数据</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsCollection(System.Reflection.MemberInfo)">
+            <summary>
+            判断给定的 <see cref="T:System.Reflection.MemberInfo"/> 元信息是否为集合或数组类型
+            </summary>
+            <param name="member">成员元数据</param>
+        </member>
+        <member name="T:Bing.Reflection.InterfaceOptions">
+            <summary>
+            接口选项
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.InterfaceOptions.Default">
+            <summary>
+            默认
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.InterfaceOptions.IgnoreGenericArgs">
+            <summary>
+            忽略泛型参数
+            </summary>
+        </member>
         <member name="T:Bing.Reflection.Types">
             <summary>
             类型 操作
@@ -12066,63 +12584,6 @@
             </summary>
             <typeparam name="TGot">类型</typeparam>
             <typeparam name="TGeneric">泛型类型</typeparam>
-        </member>
-        <member name="M:Bing.Reflection.Types.IsEnumType``1(System.Boolean)">
-            <summary>
-            是否枚举类型
-            </summary>
-            <typeparam name="T">类型</typeparam>
-            <param name="mayNullable">是否可空</param>
-        </member>
-        <member name="M:Bing.Reflection.Types.IsEnumType(System.Type,System.Boolean)">
-            <summary>
-            是否枚举类型
-            </summary>
-            <param name="type">类型</param>
-            <param name="mayNullable">是否可空</param>
-        </member>
-        <member name="M:Bing.Reflection.Types.IsEnumType(System.Reflection.TypeInfo,System.Boolean)">
-            <summary>
-            是否枚举类型
-            </summary>
-            <param name="typeInfo">类型信息</param>
-            <param name="mayNullable">是否可空</param>
-        </member>
-        <member name="M:Bing.Reflection.Types.IsNumericType``1">
-            <summary>
-            是否数值类型
-            </summary>
-            <typeparam name="T">类型</typeparam>
-        </member>
-        <member name="M:Bing.Reflection.Types.IsNumericType(System.Type)">
-            <summary>
-            是否数值类型
-            </summary>
-            <param name="type">类型</param>
-        </member>
-        <member name="M:Bing.Reflection.Types.IsNumericType(System.Reflection.TypeInfo)">
-            <summary>
-            是否数值类型
-            </summary>
-            <param name="typeInfo">类型信息</param>
-        </member>
-        <member name="M:Bing.Reflection.Types.IsNullableType``1">
-            <summary>
-            是否可空类型
-            </summary>
-            <typeparam name="T">类型</typeparam>
-        </member>
-        <member name="M:Bing.Reflection.Types.IsNullableType(System.Type)">
-            <summary>
-            是否可空类型
-            </summary>
-            <param name="type">类型</param>
-        </member>
-        <member name="M:Bing.Reflection.Types.IsNullableType(System.Reflection.TypeInfo)">
-            <summary>
-            是否可空类型
-            </summary>
-            <param name="typeInfo">类型信息</param>
         </member>
         <member name="M:Bing.Reflection.Types.IsDefaultValue(System.Object)">
             <summary>
@@ -12200,13 +12661,12 @@
             <param name="type">类型</param>
             <param name="ofOptions">类型选项</param>
             <param name="isOptions">类型判断选项</param>
-            <returns></returns>
         </member>
         <member name="M:Bing.Reflection.Types.IsTupleType``1(Bing.Reflection.TypeOfOptions,Bing.Reflection.TypeIsOptions)">
             <summary>
             判断给定的类型是否为元组类型
             </summary>
-            <typeparam name="T">类型</typeparam>
+            <typeparam name="T">泛型类型</typeparam>
             <param name="ofOptions">类型选项</param>
             <param name="isOptions">类型判断选项</param>
         </member>
@@ -12214,9 +12674,159 @@
             <summary>
             判断给定的对象是否为元祖类型
             </summary>
-            <typeparam name="T">类型</typeparam>
+            <typeparam name="T">泛型类型</typeparam>
             <param name="value">值</param>
             <param name="ofOptions">类型选项</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsNumericType(System.Type,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型是否为数字类型
+            </summary>
+            <param name="type">类型</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsNumericType(System.Reflection.TypeInfo,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型信息是否为数字类型
+            </summary>
+            <param name="typeInfo">类型信息</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsNumericType``1(Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型是否为数字类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsNumericType``1(``0,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的对象是否为数字类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+            <param name="value">值</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsNullableType(System.Type)">
+            <summary>
+            判断给定的类型是否为可空类型
+            </summary>
+            <param name="type">类型</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsNullableType(System.Reflection.TypeInfo)">
+            <summary>
+            判断给定的类型信息是否为可空类型
+            </summary>
+            <param name="typeInfo">类型信息</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsNullableType``1">
+            <summary>
+            判断给定的类型是否为可空类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsNullableType``1(``0)">
+            <summary>
+            判断给定的对象是否为可空类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsEnumType(System.Type,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型是否为枚举类型
+            </summary>
+            <param name="type">类型</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsEnumType(System.Reflection.TypeInfo,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型信息是否为枚举类型
+            </summary>
+            <param name="typeInfo">类型信息</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsEnumType``1(Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型是否为枚举类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsEnumType``1(``0,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定对象是否为枚举类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+            <param name="value">值</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsStructType(System.Type,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型是否为结构类型
+            </summary>
+            <param name="type">类型</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsStructType(System.Reflection.TypeInfo,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型信息是否为结构类型
+            </summary>
+            <param name="typeInfo">类型信息</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsStructType``1(Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的类型是否为结构类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsStructType``1(``0,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的对象是否为结构类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+            <param name="value">值</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsStaticType(System.Type)">
+            <summary>
+            判断给定的类型是否为静态类型
+            </summary>
+            <param name="type">类型</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsStaticType``1">
+            <summary>
+            判断给定的类型是否为静态类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsAnonymousType(System.Type)">
+            <summary>
+            判断给定的类型是否为匿名类型
+            </summary>
+            <param name="type">类型</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsCollectionType(System.Type)">
+            <summary>
+            判断给定的类型是否为集合或数组类型
+            </summary>
+            <param name="type">类型</param>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsCollectionType``1">
+            <summary>
+            判断给定的类型是否为集合或数组类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+        </member>
+        <member name="M:Bing.Reflection.Types.IsCollectionType``1(``0,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断给定的对象是否为集合或数组类型
+            </summary>
+            <typeparam name="T">泛型类型</typeparam>
+            <param name="value">值</param>
             <param name="isOptions">类型判断选项</param>
         </member>
         <member name="M:Bing.Reflection.Types.Of``1(Bing.Reflection.TypeOfOptions)">

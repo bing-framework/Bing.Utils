@@ -489,13 +489,13 @@
         </member>
         <member name="M:Bing.Date.DateTimeExtensions.IsInTheFuture(System.DateTime)">
             <summary>
-            判断指定时间是否相对给定时间的未来
+            判断指定时间是否相对当前时间的未来
             </summary>
             <param name="dt">时间</param>
         </member>
         <member name="M:Bing.Date.DateTimeExtensions.IsInThePast(System.DateTime)">
             <summary>
-            判断指定时间是否相对给定时间的过去
+            判断指定时间是否相对当前时间的过去
             </summary>
             <param name="dt">时间</param>
         </member>
@@ -1275,6 +1275,419 @@
             <param name="month">月</param>
             <param name="dayOfWeek">星期几</param>
             <param name="occurrence">第几个星期</param>
+        </member>
+        <member name="T:Bing.Date.DateTimeOffsetExtensions">
+            <summary>
+            Bing 时间点(<see cref="T:System.DateTimeOffset"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.AddDateTimeSpan(System.DateTimeOffset,Bing.Date.DateTimeSpan)">
+            <summary>
+            添加 <see cref="T:Bing.Date.DateTimeSpan"/>
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="timeSpan">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SubtractDateTimeSpan(System.DateTimeOffset,Bing.Date.DateTimeSpan)">
+            <summary>
+            减去 <see cref="T:Bing.Date.DateTimeSpan"/>
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="timeSpan">日期时间间隔</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.AddBusinessDays(System.DateTimeOffset,System.Int32)">
+            <summary>
+            添加工作日
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="days">天数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SubtractBusinessDays(System.DateTimeOffset,System.Int32)">
+            <summary>
+            减去工作日
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="days">天数</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.IsToday(System.DateTimeOffset)">
+            <summary>
+            判断给定时间点是否今天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.IsToday(System.Nullable{System.DateTimeOffset})">
+            <summary>
+            判断给定时间点是否今天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.IsBefore(System.DateTimeOffset,System.DateTimeOffset)">
+            <summary>
+            判断指定时间点是否相对给定时间点的过去
+            </summary>
+            <param name="current">时间点</param>
+            <param name="toCompareWith">比较时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.IsAfter(System.DateTimeOffset,System.DateTimeOffset)">
+            <summary>
+            判断指定时间点是否相对给定时间点的未来
+            </summary>
+            <param name="current">时间点</param>
+            <param name="toCompareWith">比较时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.IsInTheFuture(System.DateTimeOffset)">
+            <summary>
+            判断指定时间点是否相对当前时间点的未来
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.IsInThePast(System.DateTimeOffset)">
+            <summary>
+            判断指定时间点是否相对当前时间点的过去
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.IsSameDay(System.DateTimeOffset,System.DateTimeOffset)">
+            <summary>
+            判断是否同一天
+            </summary>
+            <param name="current">时间点</param>
+            <param name="date">日期</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.IsSameMonth(System.DateTimeOffset,System.DateTimeOffset)">
+            <summary>
+            判断是否同一个月
+            </summary>
+            <param name="current">时间点</param>
+            <param name="date">日期</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.IsSameYear(System.DateTimeOffset,System.DateTimeOffset)">
+            <summary>
+            判断是否同一年
+            </summary>
+            <param name="current">时间点</param>
+            <param name="date">日期</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.Round(System.DateTimeOffset,Bing.Date.RoundTo)">
+            <summary>
+            将时间点四舍五入到最接近给定精度的值
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="rt">舍入精度</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.BeginningOfDay(System.DateTimeOffset)">
+            <summary>
+            获取一天的开始时间。
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.EndOfDay(System.DateTimeOffset)">
+            <summary>
+            获取一天的结束时间。
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.FirstDayOfYear(System.DateTimeOffset)">
+            <summary>
+            获取指定年份的第一天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.FirstDayOfQuarter(System.DateTimeOffset)">
+            <summary>
+            获取指定季度的第一天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.FirstDayOfMonth(System.DateTimeOffset)">
+            <summary>
+            获取指定月份的第一天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.FirstDayOfWeek(System.DateTimeOffset,System.Globalization.CultureInfo)">
+            <summary>
+            获取指定星期的第一天
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="cultureInfo">区域信息</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.LastDayOfYear(System.DateTimeOffset)">
+            <summary>
+            获取指定年份的最后一天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.LastDayOfQuarter(System.DateTimeOffset)">
+            <summary>
+            获取指定季度的最后一天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.LastDayOfMonth(System.DateTimeOffset)">
+            <summary>
+            获取指定月份的最后一天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.LastDayOfWeek(System.DateTimeOffset)">
+            <summary>
+            获取指定星期的最后一天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.WeekBefore(System.DateTimeOffset)">
+            <summary>
+            获取一周前的时间点
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.WeekAfter(System.DateTimeOffset)">
+            <summary>
+            获取一周后的时间点
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.NextYear(System.DateTimeOffset)">
+            <summary>
+            下一年（明年）
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.PreviousYear(System.DateTimeOffset)">
+            <summary>
+            上一年（去年）
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.NextQuarter(System.DateTimeOffset)">
+            <summary>
+            下个季度
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.PreviousQuarter(System.DateTimeOffset)">
+            <summary>
+            上个季度
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.NextMonth(System.DateTimeOffset)">
+            <summary>
+            下个月
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.PreviousMonth(System.DateTimeOffset)">
+            <summary>
+            上个月
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.NextWeek(System.DateTimeOffset)">
+            <summary>
+            下个星期
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.PreviousWeek(System.DateTimeOffset)">
+            <summary>
+            上个星期
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.NextDay(System.DateTimeOffset)">
+            <summary>
+            下一天（明天）
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.PreviousDay(System.DateTimeOffset)">
+            <summary>
+            上一天（昨天）
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.Tomorrow(System.DateTimeOffset)">
+            <summary>
+            明天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.Yesterday(System.DateTimeOffset)">
+            <summary>
+            昨天
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.NextDayOfWeek(System.DateTimeOffset,System.DayOfWeek)">
+            <summary>
+            下个星期几
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.PreviousDayOfWeek(System.DateTimeOffset,System.DayOfWeek)">
+            <summary>
+            上个星期几
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="dayOfWeek">星期几</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.At(System.DateTimeOffset,System.Int32,System.Int32)">
+            <summary>
+            时间点，修改它的时分
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.At(System.DateTimeOffset,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            时间点，修改它的时分秒
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.At(System.DateTimeOffset,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            时间点，修改它的时分秒，以及毫秒
+            </summary>
+            <param name="dto">时间点</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+            <param name="milliseconds">毫秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.On(System.DateTimeOffset,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            时间点，修改它的年月日。
+            </summary>
+            <param name="dt">时间</param>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetTime(System.DateTimeOffset,System.Int32)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="hour">时</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetTime(System.DateTimeOffset,System.Int32,System.Int32)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetTime(System.DateTimeOffset,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetTime(System.DateTimeOffset,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="hour">时</param>
+            <param name="minute">分</param>
+            <param name="second">秒</param>
+            <param name="millisecond">毫秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetHour(System.DateTimeOffset,System.Int32)">
+            <summary>
+            设置时间 - 小时
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="hour">时</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetMinute(System.DateTimeOffset,System.Int32)">
+            <summary>
+            设置时间 - 分钟
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="minute">分</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetSecond(System.DateTimeOffset,System.Int32)">
+            <summary>
+            设置时间 - 秒
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="second">秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetMillisecond(System.DateTimeOffset,System.Int32)">
+            <summary>
+            设置时间 - 毫秒
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="millisecond">毫秒</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.Midnight(System.DateTimeOffset)">
+            <summary>
+            设置时间点为凌晨0点（午夜）
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.Noon(System.DateTimeOffset)">
+            <summary>
+            设置时间点为中午12点（正午）
+            </summary>
+            <param name="dto">时间点</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetDate(System.DateTimeOffset,System.Int32)">
+            <summary>
+            设置日期
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="year">年</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetDate(System.DateTimeOffset,System.Int32,System.Int32)">
+            <summary>
+            设置日期
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="year">年</param>
+            <param name="month">月</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetDate(System.DateTimeOffset,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            设置日期
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="year">年</param>
+            <param name="month">月</param>
+            <param name="day">日</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetYear(System.DateTimeOffset,System.Int32)">
+            <summary>
+            设置日期 - 年
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="year">年</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetMonth(System.DateTimeOffset,System.Int32)">
+            <summary>
+            设置日期 - 月
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="month">月</param>
+        </member>
+        <member name="M:Bing.Date.DateTimeOffsetExtensions.SetDay(System.DateTimeOffset,System.Int32)">
+            <summary>
+            设置日期 - 日
+            </summary>
+            <param name="originalDate">时间点</param>
+            <param name="day">日</param>
         </member>
         <member name="T:Bing.Date.DateTimeSpan">
             <summary>
