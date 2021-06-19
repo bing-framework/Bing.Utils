@@ -8,23 +8,24 @@ namespace Bing.Helpers
     public static partial class Sys
     {
         /// <summary>
-        /// 是否Linux操作系统
+        /// 当前操作系统是否为 Linux 操作系统
         /// </summary>
         public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
         /// <summary>
-        /// 是否Windows操作系统
+        /// 当前操作系统是否为 微软视窗（Windows）操作系统
         /// </summary>
         public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         /// <summary>
-        /// 是否苹果操作系统
+        /// 当前操作系统是否为苹果 MacOS（OSX） 操作系统
         /// </summary>
-        public static bool IsOsx => RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+        // ReSharper disable once InconsistentNaming
+        public static bool IsOSX => RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
         /// <summary>
         /// 当前操作系统
         /// </summary>
-        public static string System => IsWindows ? "Windows" : IsLinux ? "Linux" : IsOsx ? "OSX" : string.Empty;
+        public static string System => IsWindows ? "Windows" : IsLinux ? "Linux" : IsOSX ? "OSX" : string.Empty;
     }
 }

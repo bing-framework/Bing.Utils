@@ -452,7 +452,7 @@ namespace Bing.Date
         /// 昨天
         /// </summary>
         /// <param name="dt">时间</param>
-        public static DateTime Yesterday(this DateTime dt) => dt.NextDay();
+        public static DateTime Yesterday(this DateTime dt) => dt.PreviousDay();
 
         /// <summary>
         /// 下个星期几

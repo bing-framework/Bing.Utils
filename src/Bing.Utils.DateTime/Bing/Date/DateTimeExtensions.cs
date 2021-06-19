@@ -271,13 +271,13 @@ namespace Bing.Date
         public static bool IsAfter(this DateTime dt, DateTime toCompareWith) => dt > toCompareWith;
 
         /// <summary>
-        /// 判断指定时间是否相对给定时间的未来
+        /// 判断指定时间是否相对当前时间的未来
         /// </summary>
         /// <param name="dt">时间</param>
         public static bool IsInTheFuture(this DateTime dt) => dt > DateTime.Now;
 
         /// <summary>
-        /// 判断指定时间是否相对给定时间的过去
+        /// 判断指定时间是否相对当前时间的过去
         /// </summary>
         /// <param name="dt">时间</param>
         public static bool IsInThePast(this DateTime dt) => dt < DateTime.Now;

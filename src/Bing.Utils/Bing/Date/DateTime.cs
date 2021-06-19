@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 
 namespace Bing.Date
 {
@@ -71,8 +70,7 @@ namespace Bing.Date
         public static string ToString(this DateTime dt, DateTimeOutputStyles styles, bool isRemoveSecond = false) =>
             styles switch
             {
-                DateTimeOutputStyles.DateTime => dt.ToString(DateTimeHelper.IfTtt(isRemoveSecond, "yyyy-MM-dd HH:mm",
-                    "yyyy-MM-dd HH:mm:ss")),
+                DateTimeOutputStyles.DateTime => dt.ToString(DateTimeHelper.IfTtt(isRemoveSecond, "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss")),
                 DateTimeOutputStyles.Date => dt.ToString("yyyy-MM-dd"),
                 DateTimeOutputStyles.Time => dt.ToString(DateTimeHelper.IfTtt(isRemoveSecond, "HH:mm", "HH:mm:ss")),
                 DateTimeOutputStyles.LongDate => dt.ToLongDateString(),
@@ -120,7 +118,6 @@ namespace Bing.Date
         /// </summary>
         /// <param name="dateTimeUtc">DateTimeOffset</param>
         /// <param name="localTimeZone">时区</param>
-        public static DateTime ToLocalDateTime(this DateTimeOffset dateTimeUtc, TimeZoneInfo localTimeZone) =>
-            TimeZoneInfo.ConvertTime(dateTimeUtc, localTimeZone ?? TimeZoneInfo.Local).DateTime;
+        public static DateTime ToLocalDateTime(this DateTimeOffset dateTimeUtc, TimeZoneInfo localTimeZone) => TimeZoneInfo.ConvertTime(dateTimeUtc, localTimeZone ?? TimeZoneInfo.Local).DateTime;
     }
 }

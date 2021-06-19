@@ -8528,17 +8528,17 @@
         </member>
         <member name="P:Bing.Helpers.Sys.IsLinux">
             <summary>
-            是否Linux操作系统
+            当前操作系统是否为 Linux 操作系统
             </summary>
         </member>
         <member name="P:Bing.Helpers.Sys.IsWindows">
             <summary>
-            是否Windows操作系统
+            当前操作系统是否为 微软视窗（Windows）操作系统
             </summary>
         </member>
-        <member name="P:Bing.Helpers.Sys.IsOsx">
+        <member name="P:Bing.Helpers.Sys.IsOSX">
             <summary>
-            是否苹果操作系统
+            当前操作系统是否为苹果 MacOS（OSX） 操作系统
             </summary>
         </member>
         <member name="P:Bing.Helpers.Sys.System">
