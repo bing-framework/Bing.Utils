@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Bing.Text;
 using Bing.Utils.Properties;
 
 namespace Bing.Helpers
@@ -71,25 +72,85 @@ namespace Bing.Helpers
         /// </summary>
         /// <typeparam name="T">对象类型</typeparam>
         /// <param name="value">要判断的值</param>
-        /// <param name="paramName">参数名</param>
+        /// <param name="parameterName">参数名</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public static T NotNull<T>(T value, string paramName)
+        public static T NotNull<T>(T value, string parameterName)
         {
-            Require<ArgumentNullException>(value != null, string.Format(R.ParameterCheck_NotNull, paramName));
+            if (value == null)
+                throw new ArgumentNullException(parameterName, string.Format(R.ParameterCheck_NotNull, parameterName));
             return value;
         }
 
         /// <summary>
-        /// 检查字符串不能为空引用或空字符串，否则抛出<see cref="ArgumentNullException"/>异常或<see cref="ArgumentException"/>异常
+        /// 检查参数不能为空引用，否则抛出<see cref="ArgumentNullException"/>异常
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <param name="value">要判断的值</param>
+        /// <param name="parameterName">参数名</param>
+        /// <param name="message">错误消息</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static T NotNull<T>(T value, string parameterName, string message)
+        {
+            if (value == null)
+                throw new ArgumentNullException(parameterName, message);
+            return value;
+        }
+
+        /// <summary>
+        /// 检查字符串不能为空引用，否则抛出<see cref="ArgumentException"/>异常
         /// </summary>
         /// <param name="value">要判断的值</param>
-        /// <param name="paramName">参数名</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="parameterName">参数名</param>
+        /// <param name="maxLength">最大长度</param>
+        /// <param name="minLength">最小长度</param>
         /// <exception cref="ArgumentException"></exception>
-        public static void NotNullOrEmpty(string value, string paramName)
+        public static string NotNull(string value, string parameterName, int maxLength = int.MaxValue, int minLength = 0)
         {
-            NotNull(value, paramName);
-            Require<ArgumentException>(!string.IsNullOrEmpty(value), string.Format(R.ParameterCheck_NotNullOrEmpty_String, paramName));
+            if (value == null)
+                throw new ArgumentException(string.Format(R.ParameterCheck_NotNull, parameterName), parameterName);
+            if (value.Length > maxLength)
+                throw new ArgumentException($"{parameterName} length must be equal to or lower than {maxLength}!", parameterName);
+            if(value.Length>0&&value.Length<minLength)
+                throw new ArgumentException($"{parameterName} length must be equal to or bigger than {minLength}!", parameterName);
+            return value;
+        }
+
+        /// <summary>
+        /// 检查字符串不能为空引用或空白字符，否则抛出<see cref="ArgumentException"/>异常
+        /// </summary>
+        /// <param name="value">要判断的值</param>
+        /// <param name="parameterName">参数名</param>
+        /// <param name="maxLength">最大长度</param>
+        /// <param name="minLength">最小长度</param>
+        /// <exception cref="ArgumentException"></exception>
+        public static string NotNullOrWhiteSpace(string value, string parameterName, int maxLength = int.MaxValue, int minLength = 0)
+        {
+            if (value.IsNullOrWhiteSpace())
+                throw new ArgumentException(string.Format(R.ParameterCheck_NotNullOrEmpty_String, parameterName), parameterName);
+            if (value.Length > maxLength)
+                throw new ArgumentException($"{parameterName} length must be equal to or lower than {maxLength}!", parameterName);
+            if (value.Length > 0 && value.Length < minLength)
+                throw new ArgumentException($"{parameterName} length must be equal to or bigger than {minLength}!", parameterName);
+            return value;
+        }
+
+        /// <summary>
+        /// 检查字符串不能为空引用或空字符串，否则抛出<see cref="ArgumentException"/>异常
+        /// </summary>
+        /// <param name="value">要判断的值</param>
+        /// <param name="parameterName">参数名</param>
+        /// <param name="maxLength">最大长度</param>
+        /// <param name="minLength">最小长度</param>
+        /// <exception cref="ArgumentException"></exception>
+        public static string NotNullOrEmpty(string value, string parameterName, int maxLength = int.MaxValue, int minLength = 0)
+        {
+            if (value.IsNullOrEmpty())
+                throw new ArgumentException(string.Format(R.ParameterCheck_NotNullOrEmpty_String, parameterName), parameterName);
+            if (value.Length > maxLength)
+                throw new ArgumentException($"{parameterName} length must be equal to or lower than {maxLength}!", parameterName);
+            if (value.Length > 0 && value.Length < minLength)
+                throw new ArgumentException($"{parameterName} length must be equal to or bigger than {minLength}!", parameterName);
+            return value;
         }
 
         /// <summary>
