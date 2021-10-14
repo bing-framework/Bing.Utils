@@ -529,12 +529,11 @@ namespace Bing.Drawing
         /// 图片灰度化
         /// </summary>
         /// <param name="bitmap">图片</param>
-        /// <returns></returns>
         public static Bitmap Gray(Bitmap bitmap)
         {
-            for (int i = 0; i < bitmap.Width; i++)
+            for (var i = 0; i < bitmap.Width; i++)
             {
-                for (int j = 0; j < bitmap.Height; j++)
+                for (var j = 0; j < bitmap.Height; j++)
                 {
                     Color pixel = bitmap.GetPixel(i, j);
                     byte r = pixel.R;

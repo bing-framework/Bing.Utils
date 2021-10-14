@@ -434,7 +434,6 @@
             图片灰度化
             </summary>
             <param name="bitmap">图片</param>
-            <returns></returns>
         </member>
         <member name="M:Bing.Drawing.ImageHelper.Plate(System.Drawing.Bitmap)">
             <summary>
