@@ -10198,6 +10198,127 @@
             <param name="oldFullPath">旧的文件全路径</param>
             <param name="oldName">旧的文件名称</param>
         </member>
+        <member name="T:Bing.IO.Sandbox">
+            <summary>
+            沙箱。当沙箱被释放时，沙箱中创建的文件和目录将被删除
+            </summary>
+        </member>
+        <member name="F:Bing.IO.Sandbox.DefaultPrefix">
+            <summary>
+            默认前缀("Sandbox-")
+            </summary>
+        </member>
+        <member name="M:Bing.IO.Sandbox.#ctor(System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.IO.Sandbox"/>类型的实例
+            </summary>
+            <param name="name">沙箱前缀。默认值：<see cref="F:Bing.IO.Sandbox.DefaultPrefix"/></param>
+        </member>
+        <member name="M:Bing.IO.Sandbox.ResolvePath(System.String)">
+            <summary>
+            解析路径
+            </summary>
+            <param name="path">路径</param>
+        </member>
+        <member name="M:Bing.IO.Sandbox.CreateDirectory(System.String)">
+            <summary>
+            创建目录
+            </summary>
+            <param name="path">路径</param>
+        </member>
+        <member name="M:Bing.IO.Sandbox.CreateFile(System.String,System.String)">
+            <summary>
+            创建文件
+            </summary>
+            <param name="path">路径</param>
+            <param name="text">文本</param>
+        </member>
+        <member name="T:Bing.IO.TempDirectory">
+            <summary>
+            临时目录
+            </summary>
+        </member>
+        <member name="M:Bing.IO.TempDirectory.#ctor(System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.IO.TempDirectory"/>类型的实例
+            </summary>
+            <param name="prefix">临时目录前缀</param>
+        </member>
+        <member name="M:Bing.IO.TempDirectory.InitializePath">
+            <summary>
+            初始化路径
+            </summary>
+        </member>
+        <member name="M:Bing.IO.TempDirectory.Dispose(System.Boolean)">
+            <summary>
+            释放资源。确保删除临时路径
+            </summary>
+            <param name="disposing">是否释放中</param>
+        </member>
+        <member name="T:Bing.IO.TempFile">
+            <summary>
+            临时文件
+            </summary>
+        </member>
+        <member name="M:Bing.IO.TempFile.#ctor(System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.IO.TempFile"/>类型的实例
+            </summary>
+            <param name="prefix">临时文件前缀</param>
+        </member>
+        <member name="M:Bing.IO.TempFile.InitializePath">
+            <summary>
+            初始化路径
+            </summary>
+        </member>
+        <member name="M:Bing.IO.TempFile.Dispose(System.Boolean)">
+            <summary>
+            释放资源。确保删除临时路径
+            </summary>
+            <param name="disposing">是否释放中</param>
+        </member>
+        <member name="T:Bing.IO.TempPath">
+            <summary>
+            临时路径
+            </summary>
+        </member>
+        <member name="M:Bing.IO.TempPath.#ctor(System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.IO.TempPath"/>类型的实例
+            </summary>
+            <param name="prefix">临时路径前缀</param>
+        </member>
+        <member name="P:Bing.IO.TempPath.FullPath">
+            <summary>
+            完整的绝对路径
+            </summary>
+        </member>
+        <member name="P:Bing.IO.TempPath.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="M:Bing.IO.TempPath.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="M:Bing.IO.TempPath.Dispose(System.Boolean)">
+            <summary>
+            释放资源。确保删除临时路径
+            </summary>
+            <param name="disposing">是否释放中</param>
+        </member>
+        <member name="M:Bing.IO.TempPath.InitializePath">
+            <summary>
+            初始化路径
+            </summary>
+        </member>
+        <member name="M:Bing.IO.TempPath.Initialize">
+            <summary>
+            初始化
+            </summary>
+        </member>
         <member name="T:Bing.Item">
             <summary>
             列表项
