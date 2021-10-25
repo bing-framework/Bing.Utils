@@ -13056,6 +13056,127 @@
             <param name="expression">表达式</param>
             <param name="refOptions">反射选项</param>
         </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsObjectDerivedFrom``1(``0,System.Type,Bing.Reflection.TypeIsOptions,Bing.Reflection.TypeDerivedOptions)">
+            <summary>
+            判断对象是否派生自给定的类型
+            </summary>
+            <typeparam name="TSource">来源类型</typeparam>
+            <param name="value">值</param>
+            <param name="parentType">父类型</param>
+            <param name="isOptions">类型判断选项</param>
+            <param name="derivedOptions">类型派生选项</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsObjectDerivedFrom``2(``0,Bing.Reflection.TypeIsOptions)">
+            <summary>
+            判断对象是否派生自给定的类型
+            </summary>
+            <typeparam name="TSource">来源类型</typeparam>
+            <typeparam name="TParent">父类型</typeparam>
+            <param name="value">值</param>
+            <param name="isOptions">类型判断选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsTypeDerivedFrom(System.Type,System.Type,Bing.Reflection.TypeDerivedOptions)">
+            <summary>
+            判断类型是否派生自给定的类型
+            </summary>
+            <param name="sourceType">来源类型</param>
+            <param name="parentType">父类型</param>
+            <param name="derivedOptions">类型派生选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsTypeDerivedFrom``2(Bing.Reflection.TypeDerivedOptions)">
+            <summary>
+            判断类型是否派生自给定的类型
+            </summary>
+            <typeparam name="TSource">来源类型</typeparam>
+            <typeparam name="TParent">父类型</typeparam>
+            <param name="derivedOptions">类型派生选项</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsTypeBasedOn(System.Type,System.Type)">
+            <summary>
+            判断给定的左侧类型是否派生自右侧类型
+            </summary>
+            <param name="sourceType">来源类型</param>
+            <param name="parentType">父类型</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsTypeBasedOn``2">
+            <summary>
+            判断给定的左侧类型是否派生自右侧类型
+            </summary>
+            <typeparam name="TSource">来源类型</typeparam>
+            <typeparam name="TParent">父类型</typeparam>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsImplementationOfGenericType(System.Type,System.Type,System.Type@,System.Type[]@)">
+            <summary>
+            判断给定的类型是否可赋值给指定的泛型类型
+            </summary>
+            <param name="sourceType">来源类型</param>
+            <param name="parentGenericType">父泛型类型</param>
+            <param name="genericType">泛型类型</param>
+            <param name="genericArguments">泛型参数</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsImplementationOfGenericType(System.Type,System.Type,System.Type[]@)">
+            <summary>
+            判断给定的类型是否可赋值给指定的泛型类型
+            </summary>
+            <param name="sourceType">来源类型</param>
+            <param name="parentGenericType">父泛型类型</param>
+            <param name="genericArguments">泛型参数</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.IsImplementationOfGenericType``2(System.Type[]@)">
+            <summary>
+            判断给定的类型是否可赋值给指定的泛型类型
+            </summary>
+            <typeparam name="TSource">来源类型</typeparam>
+            <typeparam name="TGenericParent">父泛型类型</typeparam>
+            <param name="genericArguments">泛型参数</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRawTypeFromGenericType(System.Type,System.Type)">
+            <summary>
+            获取原始 <paramref name="sourceType"/>。 <br />
+            当类型从 genericType 继承时，返回该类型。
+            </summary>
+            <param name="sourceType">来源类型</param>
+            <param name="parentGenericType">父泛型类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRawTypeFromGenericType``2">
+            <summary>
+            获取原始 <typeparamref name="TSource"/>。 <br />
+            当类型从 genericType 继承时，返回该类型。
+            </summary>
+            <typeparam name="TSource">来源类型</typeparam>
+            <typeparam name="TGenericParent">父泛型类型</typeparam>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRawTypeArgsFromGenericType(System.Type,System.Type)">
+            <summary>
+            获取原始 <paramref name="sourceType"/>。 <br />
+            当type继承自genericType时，获取 <paramref name="sourceType"/> 对应的 <paramref name="parentGenericType"/> 中的所有泛型参数。
+            </summary>
+            <param name="sourceType">来源类型</param>
+            <param name="parentGenericType">父泛型类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetRawTypeArgsFromGenericType``2">
+            <summary>
+            获取原始 <typeparamref name="TSource"/>。 <br />
+            当type继承自genericType时，获取 <typeparamref name="TSource"/> 对应的 <typeparamref name="TGenericParent"/> 中的所有泛型参数。
+            </summary>
+            <typeparam name="TSource">来源类型</typeparam>
+            <typeparam name="TGenericParent">父泛型类型</typeparam>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetEnumUnderlyingType(System.Type)">
+            <summary>
+            获取枚举的底层类型
+            </summary>
+            <param name="type">类型</param>
+        </member>
+        <member name="M:Bing.Reflection.TypeReflections.GetEnumUnderlyingType``1">
+            <summary>
+            获取枚举的底层类型
+            </summary>
+            <typeparam name="T">枚举类型</typeparam>
+        </member>
         <member name="M:Bing.Reflection.TypeReflections.IsInterfaceDefined(System.Type,System.Type,Bing.Reflection.InterfaceOptions)">
             <summary>
             判断给定的接口是否定义
@@ -13119,6 +13240,21 @@
             判断给定的 <see cref="T:System.Reflection.MemberInfo"/> 元信息是否为集合或数组类型
             </summary>
             <param name="member">成员元数据</param>
+        </member>
+        <member name="T:Bing.Reflection.TypeDerivedOptions">
+            <summary>
+            类型派生选项
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.TypeDerivedOptions.Default">
+            <summary>
+            默认
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.TypeDerivedOptions.CanAbstract">
+            <summary>
+            允许识别抽象类
+            </summary>
         </member>
         <member name="T:Bing.Reflection.InterfaceOptions">
             <summary>
@@ -13710,6 +13846,60 @@
         <member name="F:Bing.Reflection.TypeOfOptions.Underlying">
             <summary>
             基础类型
+            </summary>
+        </member>
+        <member name="T:Bing.Reflection.TypesVal">
+            <summary>
+            类型集合值
+            </summary>
+        </member>
+        <member name="F:Bing.Reflection.TypesVal._types">
+            <summary>
+            类型数组
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypesVal.#ctor(System.Int32)">
+            <summary>
+            初始化一个<see cref="T:Bing.Reflection.TypesVal"/>类型的实例
+            </summary>
+            <param name="size">数组大小</param>
+        </member>
+        <member name="P:Bing.Reflection.TypesVal.Count">
+            <summary>
+            计算类型集合值中的类型总数
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypesVal.TypeArray">
+            <summary>
+            从类型集合值中获取所有类型
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypesVal.Types">
+            <summary>
+            从类型集合值中获取所有类型
+            </summary>
+        </member>
+        <member name="P:Bing.Reflection.TypesVal.Item(System.Int32)">
+            <summary>
+            通过索引值获取类型
+            </summary>
+            <param name="index">索引</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:Bing.Reflection.TypesVal.Create(System.Type[])">
+            <summary>
+            根据给定的类型数组，构建一个类型集合值
+            </summary>
+            <param name="types">类型数组</param>
+        </member>
+        <member name="P:Bing.Reflection.TypesVal.Empty">
+            <summary>
+            获取空的类型集合值
+            </summary>
+        </member>
+        <member name="M:Bing.Reflection.TypesVal.IsEmpty">
+            <summary>
+            标记是否为空的类型集合值
             </summary>
         </member>
         <member name="T:Bing.Singleton">
