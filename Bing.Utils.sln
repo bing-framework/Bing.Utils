@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Comments", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Comments.Tests", "tests\Bing.Utils.Comments.Tests\Bing.Utils.Comments.Tests.csproj", "{5305C710-931A-4778-AC9B-05FACBC90C8B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.IdGenerators", "src\Bing.Utils.IdGenerators\Bing.Utils.IdGenerators.csproj", "{D79351BF-DD68-4C81-B899-656F5C122B35}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{5305C710-931A-4778-AC9B-05FACBC90C8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5305C710-931A-4778-AC9B-05FACBC90C8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5305C710-931A-4778-AC9B-05FACBC90C8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D79351BF-DD68-4C81-B899-656F5C122B35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D79351BF-DD68-4C81-B899-656F5C122B35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D79351BF-DD68-4C81-B899-656F5C122B35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D79351BF-DD68-4C81-B899-656F5C122B35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{D3046086-A122-4D9C-B8B2-9DFDFFB8CF6D} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 		{2B436FCF-75BC-42BC-B680-9E86AC2CC210} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 		{5305C710-931A-4778-AC9B-05FACBC90C8B} = {0B23CC67-872A-4F9C-AA7C-B6B63F305D7A}
+		{D79351BF-DD68-4C81-B899-656F5C122B35} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4B464B4-BF6F-4831-A0EE-2FC007AE32A1}
