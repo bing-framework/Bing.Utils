@@ -1,0 +1,8 @@
+﻿<Project>
+  <PropertyGroup>
+    <AssemblyName>Bing.Utils.Comments</AssemblyName>
+    <PackageId>Bing.Utils.Comments</PackageId>
+    <Description>Bing.Utils.Comments.Comments是Bing应用框架的注释帮助类库，用于读取XML中的注释信息。
+Bing是一个.net core平台下的应用框架，旨在于提升小型团队的开发能力，由常用公共操作类、架构基类、第三方组件封装、第三方业务接口封装等组成。</Description>
+  </PropertyGroup>
+</Project>

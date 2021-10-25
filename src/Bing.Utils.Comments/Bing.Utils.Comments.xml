@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bing.Utils.Comments</name>
+    </assembly>
+    <members>
+        <member name="T:Bing.Comments.CsCommentReader">
+            <summary>
+            注释读取器，用于读取C#程序中的注释
+            </summary>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.Create(System.Reflection.MemberInfo)">
+            <summary> 
+            读取任意成员的注释信息
+            </summary>
+            <param name="member">需要读取注释的成员</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.Create(System.Type)">
+            <summary> 
+            读取任类注释信息
+            </summary>
+            <param name="type">需要读取注释的类</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.Create(System.Reflection.ConstructorInfo)">
+            <summary> 
+            读取构造函数的注释信息
+            </summary>
+            <param name="ctor">需要读取注释的构造函数</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.Create(System.Reflection.EventInfo)">
+            <summary> 
+            读取事件的注释信息
+            </summary>
+            <param name="event">需要读取注释的事件</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.Create(System.Reflection.MethodInfo)">
+            <summary> 
+            读取方法的注释信息
+            </summary>
+            <param name="method">需要读取注释的方法</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.Create(System.Reflection.PropertyInfo)">
+            <summary> 
+            读取属性的注释信息
+            </summary>
+            <param name="prop">需要读取注释的属性</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.Create(System.Reflection.FieldInfo)">
+            <summary> 
+            读取字段的注释信息
+            </summary>
+            <param name="field">需要读取注释的字段</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.CreateEnumComment(System.Type)">
+            <summary> 
+            读取枚举的值和注释
+            </summary>
+            <param name="enumType">枚举的类型</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.CreateEnumComment``1">
+            <summary>
+            读取枚举的值和注释
+            </summary>
+            <typeparam name="T">枚举的类型</typeparam>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.CreateEnumComment``1(System.Type)">
+            <summary> 
+            读取枚举的值和注释
+            </summary>
+            <typeparam name="T">枚举的类型</typeparam>
+            <param name="enumType">枚举的类型</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.GetDescription(System.Reflection.MemberInfo)">
+            <summary>
+            获取成员的DescriptionAttribute中的描述，如果没有这个特性返回Name
+            </summary>
+            <param name="member">需要获取描述的成员</param>
+        </member>
+        <member name="F:Bing.Comments.CsCommentReader._member">
+            <summary>
+            成员信息列表
+            </summary>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.CreateComment(System.Reflection.MemberInfo,System.String)">
+            <summary>
+            创建注释对象，读取任意成员的注释信息，如果xml不存在或者注释不存在返回null
+            </summary>
+            <param name="member">成员对象</param>
+            <param name="path">路径</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.GetXPathByParameters(System.Reflection.ParameterInfo[])">
+            <summary>
+            如果存在参数，则返回与参数相关的Xml路径字符串
+            </summary>
+            <param name="args">参数数组</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.GetParameterName(System.Type[])">
+            <summary>
+            获取参数名
+            </summary>
+            <param name="types">类型数组</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.GetParameterName(System.Type)">
+            <summary>
+            获取参数名
+            </summary>
+            <param name="type">类型</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentReader.GetXPath(System.String,System.Type,System.String)">
+            <summary>
+            返回与类型相关的Xml路径字符串
+            </summary>
+            <param name="prefix">固定前缀</param>
+            <param name="type">类型</param>
+            <param name="name">名称</param>
+        </member>
+        <member name="T:Bing.Comments.CsComments">
+            <summary>
+            用于描述一个成员的注释信息
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsComments.Summary">
+            <summary>
+            文档注释中的 summary 或 value 节点，用于表示注释的主体说明
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsComments.Remarks">
+            <summary>
+            文档注释中的 remarks 节点，用于表示备注信息
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsComments.Returns">
+            <summary>
+            文档注释中的 returns 节点，用于表示返回值信息
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsComments.Param">
+            <summary>
+            文档注释中的 param 节点，用于表示参数信息
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsComments.TypeParam">
+            <summary>
+            文档注释中的 typeparam 节点，用于表示泛型参数信息
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsComments.Exception">
+            <summary>
+            文档注释中的 exception 节点
+            </summary>
+        </member>
+        <member name="F:Bing.Comments.CsComments.Empty">
+            <summary>
+            空注释
+            </summary>
+        </member>
+        <member name="M:Bing.Comments.CsComments.#ctor">
+            <summary>
+            初始化一个<see cref="T:Bing.Comments.CsComments"/>类型的实例
+            </summary>
+        </member>
+        <member name="M:Bing.Comments.CsComments.ToString">
+            <summary>
+            输出字符串
+            </summary>
+        </member>
+        <member name="T:Bing.Comments.CsCommentsException">
+            <summary>
+            注释异常
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsCommentsException.Index">
+            <summary>
+            节点在文档中的索引
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsCommentsException.Cref">
+            <summary>
+            节点中的 cref 属性的值
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsCommentsException.Text">
+            <summary>
+            节点中的内容
+            </summary>
+        </member>
+        <member name="M:Bing.Comments.CsCommentsException.#ctor(System.Int32,System.Xml.XmlNode)">
+            <summary>
+            初始化一个<see cref="T:Bing.Comments.CsCommentsException"/>类型的实例
+            </summary>
+            <param name="index">节点在文档中的索引</param>
+            <param name="node">Xml节点</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentsException.ToString">
+            <summary>
+            输出字符串
+            </summary>
+        </member>
+        <member name="T:Bing.Comments.CsCommentsParam">
+            <summary>
+            用于描述注释中的 param 或者 typeparam 节点
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsCommentsParam.Name">
+            <summary>
+            节点中的 name 属性的值
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsCommentsParam.Text">
+            <summary>
+            节点中的内容
+            </summary>
+        </member>
+        <member name="F:Bing.Comments.CsCommentsParam.Empty">
+            <summary>
+            空对象
+            </summary>
+        </member>
+        <member name="M:Bing.Comments.CsCommentsParam.#ctor">
+            <summary>
+            初始化一个<see cref="T:Bing.Comments.CsCommentsParam"/>类型的实例
+            </summary>
+        </member>
+        <member name="M:Bing.Comments.CsCommentsParam.#ctor(System.Xml.XmlNode)">
+            <summary>
+            初始化一个<see cref="T:Bing.Comments.CsCommentsParam"/>类型的实例
+            </summary>
+            <param name="node">Xml节点</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentsParam.ToString">
+            <summary>
+            输出字符串
+            </summary>
+        </member>
+        <member name="T:Bing.Comments.CsCommentsParamCollection">
+            <summary>
+            用于描述注释中的 param 或者 typeparam 节点集合
+            </summary>
+        </member>
+        <member name="P:Bing.Comments.CsCommentsParamCollection.Item(System.String)">
+            <summary>
+            根据节点的 name 属性获取注释，如果没有，则返回null
+            </summary>
+            <param name="name">name 属性</param>
+        </member>
+        <member name="T:Bing.Comments.CsCommentsXmlCache">
+            <summary>
+            Xml注释缓存，对于注释Xml的缓存
+            </summary>
+        </member>
+        <member name="F:Bing.Comments.CsCommentsXmlCache._cache">
+            <summary>
+            缓存项。Key:Assembly.FullName   Value:XmlDocument
+            </summary>
+        </member>
+        <member name="F:Bing.Comments.CsCommentsXmlCache._cacheByPath">
+            <summary>
+            缓存项。Key:XmlPath     Value:XmlDocument
+            </summary>
+        </member>
+        <member name="M:Bing.Comments.CsCommentsXmlCache.Get(System.Reflection.MemberInfo)">
+            <summary>
+            获取缓存项
+            </summary>
+            <param name="member">成员信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bing.Comments.CsCommentsXmlCache.Set(System.Reflection.Assembly,System.String)">
+            <summary>
+            设置缓存项
+            </summary>
+            <param name="assembly">程序集</param>
+            <param name="xmlPath">Xml路径</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentsXmlCache.Reset(System.String)">
+            <summary>
+            刷新缓存项
+            </summary>
+            <param name="xmlPath">xml路径</param>
+        </member>
+        <member name="M:Bing.Comments.CsCommentsXmlCache.GetXmlPath(System.String)">
+            <summary>
+            获取指定dll的注释xml的路径，如果不存在则返回null
+            </summary>
+            <param name="dllPath">dll路径</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
