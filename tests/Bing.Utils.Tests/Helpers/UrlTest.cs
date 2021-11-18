@@ -17,10 +17,21 @@ namespace Bing.Utils.Tests.Helpers
         /// 合并Url
         /// </summary>
         [Theory]
+        [InlineData(null, null, "")]
+        [InlineData("", "", "")]
+        [InlineData("a", "", "a")]
+        [InlineData("", "a", "a")]
+        [InlineData("a", "b", "a/b")]
+        [InlineData("a/", "b", "a/b")]
+        [InlineData("a", "/b", "a/b")]
+        [InlineData("a", "\\b", "a/b")]
+        [InlineData("/a", "b", "/a/b")]
+        [InlineData("a", "b/", "a/b/")]
+        [InlineData("/a/", "/b/", "/a/b/")]
         [InlineData("http://a.com", "b", "http://a.com/b")]
         [InlineData("http://a.com/", "b", "http://a.com/b")]
-        [InlineData(@"http://a.com\", "b", "http://a.com/b")]
-        [InlineData(@"http://a.com", "b=1", "http://a.com/b=1")]
+        [InlineData("http://a.com\\", "b", "http://a.com/b")]
+        [InlineData("http://a.com", "b=1", "http://a.com/b=1")]
         public void Test_Combine(string url, string url2, string result)
         {
             Assert.Equal(result, Url.Combine(url, url2));

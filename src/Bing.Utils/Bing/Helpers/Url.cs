@@ -18,7 +18,25 @@ namespace Bing.Helpers
         /// 合并Url
         /// </summary>
         /// <param name="urls">url片段，范例：Url.Combine( "http://a.com","b" ),返回 "http://a.com/b"</param>
-        public static string Combine(params string[] urls) => Path.Combine(urls).Replace(@"\", "/");
+        public static string Combine(params string[] urls)
+        {
+            if (urls == null)
+                return string.Empty;
+            urls = urls.Where(url => string.IsNullOrWhiteSpace(url) == false)
+                .Select(t => t.Replace(@"\", "/"))
+                .ToArray();
+            if (urls.Length == 0)
+                return string.Empty;
+            var firstUrl = urls.First();
+            var lastUrl = urls.Last();
+            urls = urls.Select(t => t.Trim('/')).ToArray();
+            var result = Path.Combine(urls).Replace(@"\", "/");
+            if (firstUrl.StartsWith("/"))
+                result = $"/{result}";
+            if (lastUrl.EndsWith("/"))
+                result = $"{result}/";
+            return result;
+        }
 
         #endregion
 

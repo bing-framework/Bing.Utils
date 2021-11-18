@@ -97,6 +97,34 @@
             输出字符串
             </summary>
         </member>
+        <member name="T:Bing.IdGenerators.RandomNonceStrGenerator">
+            <summary>
+            随机字符串生成器
+            </summary>
+        </member>
+        <member name="F:Bing.IdGenerators.RandomNonceStrGenerator.NonceStr">
+            <summary>
+            随机字符串
+            </summary>
+        </member>
+        <member name="F:Bing.IdGenerators.RandomNonceStrGenerator._lock">
+            <summary>
+            对象锁
+            </summary>
+        </member>
+        <member name="M:Bing.IdGenerators.RandomNonceStrGenerator.Create(System.Boolean)">
+            <summary>
+            生成随机字符串
+            </summary>
+            <param name="forceToAvoidRepetition">强制避免重复</param>
+        </member>
+        <member name="M:Bing.IdGenerators.RandomNonceStrGenerator.Create(System.Int32,System.Boolean)">
+            <summary>
+            生成随机字符串
+            </summary>
+            <param name="length">长度</param>
+            <param name="forceToAvoidRepetition">强制避免重复</param>
+        </member>
         <member name="T:Bing.IdGenerators.SnowflakeIdWorker">
             <summary>
             雪花 Id 工作者
@@ -276,6 +304,52 @@
             <param name="workerId">机器ID</param>
             <param name="dataCenterId">数据标识ID</param>
             <param name="sequence">序列号标识</param>
+        </member>
+        <member name="T:Bing.IdGenerators.TraceIdAccessor">
+            <summary>
+            Trace Id 访问器
+            </summary>
+        </member>
+        <member name="F:Bing.IdGenerators.TraceIdAccessor.DefaultMarker">
+            <summary>
+            默认的 Trace Id 生成器
+            </summary>
+        </member>
+        <member name="F:Bing.IdGenerators.TraceIdAccessor._id">
+            <summary>
+            标识
+            </summary>
+        </member>
+        <member name="M:Bing.IdGenerators.TraceIdAccessor.#ctor(Bing.IdGenerators.ITraceIdMaker)">
+            <summary>
+            初始化一个<see cref="T:Bing.IdGenerators.TraceIdAccessor"/>类型的实例
+            </summary>
+            <param name="maker">Trace Id 生成器</param>
+        </member>
+        <member name="M:Bing.IdGenerators.TraceIdAccessor.GetTraceId">
+            <summary>
+            获取一个 Trace Id
+            </summary>
+        </member>
+        <member name="T:Bing.IdGenerators.DefaultTraceIdMaker">
+            <summary>
+            默认的 Trace Id 生成器
+            </summary>
+        </member>
+        <member name="M:Bing.IdGenerators.DefaultTraceIdMaker.Create">
+            <summary>
+            生成 Id
+            </summary>
+        </member>
+        <member name="T:Bing.IdGenerators.ITraceIdMaker">
+            <summary>
+            Trace Id 生成器
+            </summary>
+        </member>
+        <member name="M:Bing.IdGenerators.ITraceIdMaker.Create">
+            <summary>
+            生成 Id
+            </summary>
         </member>
     </members>
 </doc>

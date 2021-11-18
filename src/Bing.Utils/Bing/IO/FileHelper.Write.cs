@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Bing.Extensions;
 
 namespace Bing.IO
 {
@@ -10,8 +9,6 @@ namespace Bing.IO
     /// </summary>
     public static partial class FileHelper
     {
-        #region SaveFile(保存内容到文件)
-
         /// <summary>
         /// 保存内容到文件
         /// </summary>
@@ -58,10 +55,6 @@ namespace Bing.IO
             }
         }
 
-        #endregion
-
-        #region Write(将内容写入文件)
-
         /// <summary>
         /// 将内容写入文件，文件不存在则创建
         /// </summary>
@@ -69,7 +62,7 @@ namespace Bing.IO
         /// <param name="content">数据</param>
         public static void Write(string filePath, string content)
         {
-            Write(filePath, FileHelper.ToBytes(content.SafeString()));
+            Write(filePath, FileHelper.ToBytes(content));
         }
 
         /// <summary>
@@ -86,7 +79,31 @@ namespace Bing.IO
             File.WriteAllBytes(filePath, bytes);
         }
 
-        #endregion
+#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1
+        /// <summary>
+        /// 将内容写入文件，文件不存在则创建
+        /// </summary>
+        /// <param name="filePath">文件的绝对路径</param>
+        /// <param name="content">数据</param>
+        public static async Task WriteAsync(string filePath, string content)
+        {
+            await WriteAsync(filePath, FileHelper.ToBytes(content));
+        }
+
+        /// <summary>
+        /// 将内容写入文件，文件不存在则创建
+        /// </summary>
+        /// <param name="filePath">文件的绝对路径</param>
+        /// <param name="bytes">数据</param>
+        public static async Task WriteAsync(string filePath, byte[] bytes)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                return;
+            if (bytes == null)
+                return;
+            await File.WriteAllBytesAsync(filePath, bytes);
+        }
+#endif
 
         /// <summary>
         /// 将字节数组写入目标文件

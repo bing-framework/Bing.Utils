@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Bing.Helpers;
 
 namespace Bing.IO
 {
@@ -11,7 +10,7 @@ namespace Bing.IO
     public static partial class FileHelper
     {
         /// <summary>
-        /// 将文件读取到字节流中
+        /// 读取文件到字节流中
         /// </summary>
         /// <param name="targetFilePath">目标文件路径</param>
         public static byte[] Read(string targetFilePath)
@@ -26,7 +25,7 @@ namespace Bing.IO
         }
 
         /// <summary>
-        /// 从文件读取到字节流中
+        /// 读取文件到字节流中
         /// </summary>
         /// <param name="targetFilePath">目标文件路径</param>
         public static async Task<byte[]> ReadAsync(string targetFilePath)
@@ -44,78 +43,41 @@ namespace Bing.IO
         }
 
         /// <summary>
-        /// 读取文件所有文本
+        /// 读取文件到字符串中
         /// </summary>
-        /// <param name="filePath">文件路径</param>
-        public static async Task<string> ReadAllTextAsync(string filePath)
-        {
-            Check.NotNull(filePath, nameof(filePath));
-            using var reader = File.OpenText(filePath);
-            return await reader.ReadToEndAsync();
-        }
-
+        /// <param name="targetFilePath">目标文件路径</param>
+        public static string ReadToString(string targetFilePath) => ReadToString(targetFilePath, Encoding.UTF8);
 
         /// <summary>
-        /// 读取文件所有字节
+        /// 读取文件到字符串中
         /// </summary>
-        /// <param name="filePath">文件路径</param>
-        public static async Task<byte[]> ReadAllBytesAsync(string filePath)
-        {
-            Check.NotNull(filePath, nameof(filePath));
-            using var stream = File.Open(filePath, FileMode.Open);
-            var result = new byte[stream.Length];
-            await stream.ReadAsync(result, 0, (int) stream.Length);
-            return result;
-        }
-
-
-        ///// <summary>
-        ///// 读取文件到字符串
-        ///// </summary>
-        ///// <param name="filePath">文件的绝对路径</param>
-        //public static string Read(string filePath) => Read(filePath, Encoding.UTF8);
-
-        /// <summary>
-        /// 读取文件到字符串
-        /// </summary>
-        /// <param name="filePath">文件的绝对路径</param>
+        /// <param name="targetFilePath">目标文件路径</param>
         /// <param name="encoding">字符编码</param>
-        public static string Read(string filePath, Encoding encoding)
+        public static string ReadToString(string targetFilePath, Encoding encoding)
         {
-            if (encoding == null)
-                encoding = Encoding.UTF8;
-            if (!File.Exists(filePath))
+            if (File.Exists(targetFilePath) == false)
                 return string.Empty;
-            using var reader = new StreamReader(filePath, encoding);
+            using var reader = new StreamReader(targetFilePath, encoding);
             return reader.ReadToEnd();
         }
 
-
         /// <summary>
-        /// 将文件读取到字节流中
+        /// 读取文件到字符串中
         /// </summary>
         /// <param name="targetFilePath">目标文件路径</param>
-        public static byte[] ReadToBytes(string targetFilePath)
-        {
-            if (!File.Exists(targetFilePath))
-                return null;
-            using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read);
-            var byteArray = new byte[fs.Length];
-            fs.Read(byteArray, 0, byteArray.Length);
-            return byteArray;
-        }
+        public static Task<string> ReadToStringAsync(string targetFilePath) => ReadToStringAsync(targetFilePath, Encoding.UTF8);
 
         /// <summary>
-        /// 将文件读取到字节流中
+        /// 读取文件到字符串中
         /// </summary>
-        /// <param name="fileInfo">文件信息</param>
-        public static byte[] ReadToBytes(FileInfo fileInfo)
+        /// <param name="targetFilePath">目标文件路径</param>
+        /// <param name="encoding">字符编码</param>
+        public static async Task<string> ReadToStringAsync(string targetFilePath, Encoding encoding)
         {
-            if (fileInfo == null)
-                return null;
-            var fileSize = (int) fileInfo.Length;
-            using var reader = new BinaryReader(fileInfo.Open(FileMode.Open));
-            return reader.ReadBytes(fileSize);
+            if (File.Exists(targetFilePath) == false)
+                return string.Empty;
+            using var reader = new StreamReader(targetFilePath, encoding);
+            return await reader.ReadToEndAsync();
         }
     }
 }

@@ -40,12 +40,7 @@ namespace Bing.Helpers
         /// <typeparam name="T">类型</typeparam>
         /// <param name="a">变量A</param>
         /// <param name="b">变量B</param>
-        public static void Swap<T>(ref T a, ref T b)
-        {
-            var swap = a;
-            a = b;
-            b = swap;
-        }
+        public static void Swap<T>(ref T a, ref T b) => (a, b) = (b, a);
 
         #endregion
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,6 +19,7 @@ namespace Bing.IO
         /// <param name="stream">流</param>
         /// <param name="offset">偏移量</param>
         /// <param name="origin">流定位</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long TrySeek(this Stream stream, long offset, SeekOrigin origin)
             => stream.CanSeek ? stream.Seek(offset, origin) : default;
 
@@ -87,6 +89,7 @@ namespace Bing.IO
         /// <param name="buffer">缓冲字节数组</param>
         /// <param name="offset">偏移量</param>
         /// <param name="count">读取数量</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int TryRead(this Stream stream, byte[] buffer, int offset, int count)
             => stream.CanRead ? stream.Read(buffer, offset, count) : default;
 
@@ -98,6 +101,7 @@ namespace Bing.IO
         /// <param name="offset">偏移量</param>
         /// <param name="count">读取数量</param>
         /// <param name="cancellationToken">取消令牌</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<int> TryReadAsync(this Stream stream, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
             => stream.CanRead ? await stream.ReadAsync(buffer, offset, count, cancellationToken) : default;
 
@@ -105,6 +109,7 @@ namespace Bing.IO
         /// 尝试读取字节
         /// </summary>
         /// <param name="stream">流</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int TryReadByte(this Stream stream)
             => stream.CanRead ? stream.ReadByte() : default;
 
@@ -113,6 +118,7 @@ namespace Bing.IO
         /// </summary>
         /// <param name="stream">流</param>
         /// <param name="milliseconds">毫秒数</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TrySetReadTimeout(this Stream stream, int milliseconds)
         {
             if (stream.CanTimeout)
@@ -125,6 +131,7 @@ namespace Bing.IO
         /// </summary>
         /// <param name="stream">流</param>
         /// <param name="timeout">时间跨度</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TrySetReadTimeout(this Stream stream, TimeSpan timeout)
             => stream.TrySetReadTimeout(timeout.Milliseconds);
 
@@ -139,6 +146,7 @@ namespace Bing.IO
         /// <param name="buffer">字节数组</param>
         /// <param name="offset">偏移量</param>
         /// <param name="count">写入数量</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWrite(this Stream stream, byte[] buffer, int offset, int count)
         {
             if (stream.CanWrite)
@@ -154,6 +162,7 @@ namespace Bing.IO
         /// <param name="offset">偏移量</param>
         /// <param name="count">写入数量</param>
         /// <param name="cancellationToken">取消令牌</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<bool> TryWriteAsync(this Stream stream, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
         {
             if (stream.CanWrite)
@@ -166,6 +175,7 @@ namespace Bing.IO
         /// </summary>
         /// <param name="stream">流</param>
         /// <param name="value">字节</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteByte(this Stream stream, byte value)
         {
             if(stream.CanWrite)
@@ -178,6 +188,7 @@ namespace Bing.IO
         /// </summary>
         /// <param name="stream">流</param>
         /// <param name="milliseconds">毫秒数</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TrySetWriteTimeout(this Stream stream, int milliseconds)
         {
             if (stream.CanTimeout)
@@ -190,6 +201,7 @@ namespace Bing.IO
         /// </summary>
         /// <param name="stream">流</param>
         /// <param name="timeout">时间跨度</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TrySetWriteTimeout(this Stream stream, TimeSpan timeout) 
             => stream.TrySetWriteTimeout(timeout.Milliseconds);
 

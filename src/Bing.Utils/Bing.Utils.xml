@@ -8190,6 +8190,31 @@
             <param name="propertiesNoMap">忽略属性映射数组，忽略指定映射部分属性</param>
             <exception cref="T:System.ArgumentNullException"></exception>
         </member>
+        <member name="T:Bing.Helpers.Platform">
+            <summary>
+            平台操作
+            </summary>
+        </member>
+        <member name="F:Bing.Helpers.Platform.AppRoot">
+            <summary>
+            应用程序根目录
+            </summary>
+            <remarks>
+            等价于  <see cref="P:System.AppContext.BaseDirectory"/>
+            </remarks>
+        </member>
+        <member name="P:Bing.Helpers.Platform.ApplicationName">
+            <summary>
+            应用程序名称
+            </summary>
+        </member>
+        <member name="M:Bing.Helpers.Platform.GetPhysicalPath(System.String)">
+            <summary>
+            获取物理路径
+            </summary>
+            <param name="relativePath">相对路径。范例："test/a.txt" 或 "/test/a.txt"</param>
+            <returns>虚拟路径对应的物理路径</returns>
+        </member>
         <member name="T:Bing.Helpers.Regexs">
             <summary>
             正则表达式 操作
@@ -9930,46 +9955,41 @@
         </member>
         <member name="M:Bing.IO.FileHelper.Read(System.String)">
             <summary>
-            将文件读取到字节流中
+            读取文件到字节流中
             </summary>
             <param name="targetFilePath">目标文件路径</param>
         </member>
         <member name="M:Bing.IO.FileHelper.ReadAsync(System.String)">
             <summary>
-            从文件读取到字节流中
+            读取文件到字节流中
             </summary>
             <param name="targetFilePath">目标文件路径</param>
         </member>
-        <member name="M:Bing.IO.FileHelper.ReadAllTextAsync(System.String)">
+        <member name="M:Bing.IO.FileHelper.ReadToString(System.String)">
             <summary>
-            读取文件所有文本
+            读取文件到字符串中
             </summary>
-            <param name="filePath">文件路径</param>
+            <param name="targetFilePath">目标文件路径</param>
         </member>
-        <member name="M:Bing.IO.FileHelper.ReadAllBytesAsync(System.String)">
+        <member name="M:Bing.IO.FileHelper.ReadToString(System.String,System.Text.Encoding)">
             <summary>
-            读取文件所有字节
+            读取文件到字符串中
             </summary>
-            <param name="filePath">文件路径</param>
-        </member>
-        <member name="M:Bing.IO.FileHelper.Read(System.String,System.Text.Encoding)">
-            <summary>
-            读取文件到字符串
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
+            <param name="targetFilePath">目标文件路径</param>
             <param name="encoding">字符编码</param>
         </member>
-        <member name="M:Bing.IO.FileHelper.ReadToBytes(System.String)">
+        <member name="M:Bing.IO.FileHelper.ReadToStringAsync(System.String)">
             <summary>
-            将文件读取到字节流中
+            读取文件到字符串中
             </summary>
             <param name="targetFilePath">目标文件路径</param>
         </member>
-        <member name="M:Bing.IO.FileHelper.ReadToBytes(System.IO.FileInfo)">
+        <member name="M:Bing.IO.FileHelper.ReadToStringAsync(System.String,System.Text.Encoding)">
             <summary>
-            将文件读取到字节流中
+            读取文件到字符串中
             </summary>
-            <param name="fileInfo">文件信息</param>
+            <param name="targetFilePath">目标文件路径</param>
+            <param name="encoding">字符编码</param>
         </member>
         <member name="M:Bing.IO.FileHelper.SaveFile(System.String,System.String)">
             <summary>
@@ -9994,6 +10014,20 @@
             <param name="content">数据</param>
         </member>
         <member name="M:Bing.IO.FileHelper.Write(System.String,System.Byte[])">
+            <summary>
+            将内容写入文件，文件不存在则创建
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="bytes">数据</param>
+        </member>
+        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.String)">
+            <summary>
+            将内容写入文件，文件不存在则创建
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="content">数据</param>
+        </member>
+        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.Byte[])">
             <summary>
             将内容写入文件，文件不存在则创建
             </summary>
