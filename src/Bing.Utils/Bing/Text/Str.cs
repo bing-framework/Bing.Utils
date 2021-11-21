@@ -5,7 +5,7 @@ namespace Bing.Text
     /// <summary>
     /// 字符串操作 - 工具
     /// </summary>
-    public static class Str
+    public static partial class Str
     {
         /// <summary>
         /// 新行

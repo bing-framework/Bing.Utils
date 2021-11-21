@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Bing.Extensions;
@@ -432,6 +433,27 @@ namespace Bing.Helpers
                 return result;
             var array = input.Split(',');
             result.AddRange(from each in array where !string.IsNullOrWhiteSpace(each) select To<T>(each));
+            return result;
+        }
+
+        #endregion
+
+        #region ToDictionary(转换为字典)
+
+        /// <summary>
+        /// 对象转换为字典(属性名-属性值)
+        /// </summary>
+        /// <param name="input">输入值</param>
+        public static IDictionary<string, object> ToDictionary(object input)
+        {
+            if (input == null)
+                return null;
+            var result = new Dictionary<string, object>();
+            foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(input))
+            {
+                var value = property.GetValue(input);
+                result.Add(property.Name, value);
+            }
             return result;
         }
 

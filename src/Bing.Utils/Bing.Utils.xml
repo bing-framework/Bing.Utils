@@ -10020,20 +10020,6 @@
             <param name="filePath">文件的绝对路径</param>
             <param name="bytes">数据</param>
         </member>
-        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.String)">
-            <summary>
-            将内容写入文件，文件不存在则创建
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
-            <param name="content">数据</param>
-        </member>
-        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.Byte[])">
-            <summary>
-            将内容写入文件，文件不存在则创建
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
-            <param name="bytes">数据</param>
-        </member>
         <member name="M:Bing.IO.FileHelper.Write(System.Byte[],System.String,System.Boolean)">
             <summary>
             将字节数组写入目标文件
@@ -19136,6 +19122,23 @@
             <param name="seconds">秒</param>
         </member>
         <member name="M:System.BaseTypeExtensions.SetDateTime(System.DateTimeOffset,System.TimeSpan)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="date">DateTimeOffset</param>
+            <param name="time">时间跨度</param>
+        </member>
+        <member name="M:System.BaseTypeExtensions.SetDateTime(System.DateTimeOffset,System.TimeSpan,System.TimeZoneInfo)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="date">DateTimeOffset</param>
+            <param name="time">时间跨度</param>
+            <param name="localTimeZone">时区</param>
+        </member>
+    </members>
+</doc>
+SetDateTime(System.DateTimeOffset,System.TimeSpan)">
             <summary>
             设置时间
             </summary>
