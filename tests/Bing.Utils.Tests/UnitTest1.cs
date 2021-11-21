@@ -79,6 +79,13 @@ namespace Bing.Utils.Tests
         }
 
         [Fact]
+        public void Test_Except_Int_1()
+        {
+            var list = new List<int>{ 1, 3, 5, 7, 9, 11 };
+            var item = list.Where(x => x==10).ToList();
+        }
+
+        [Fact]
         public void Test_Except_Guid()
         {
             var oneGuid = Guid.NewGuid();

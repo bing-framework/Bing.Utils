@@ -148,7 +148,26 @@ namespace Bing.Collections
                 @this.Add(new KeyValuePair<TKey, TValue>(key, addValueFactory(key)));
             else
                 @this[key] = updateValueFactory(key, @this[key]);
+            
             return @this[key];
         }
+
+#if NETSTANDARD2_0
+        /// <summary>
+        /// 尝试将键值对添加到字典中。如果不存在，则添加；存在，不添加也不抛异常
+        /// </summary>
+        /// <typeparam name="TKey">键类型</typeparam>
+        /// <typeparam name="TValue">值类型</typeparam>
+        /// <param name="this">字典</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public static bool TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue value)
+        {
+            if (@this.ContainsKey(key))
+                return false;
+            @this.Add(key, value);
+            return true;
+        }
+#endif
     }
 }

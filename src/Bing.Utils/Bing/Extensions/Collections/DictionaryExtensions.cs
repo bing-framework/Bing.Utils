@@ -82,26 +82,6 @@ namespace Bing.Extensions
 
         #endregion
 
-        #region TryAdd(尝试添加键值对到字典)
-
-        /// <summary>
-        /// 尝试将键值对添加到字典中。如果不存在，则添加；存在，不添加也不抛异常
-        /// </summary>
-        /// <typeparam name="TKey">键类型</typeparam>
-        /// <typeparam name="TValue">值类型</typeparam>
-        /// <param name="dictionary">字典</param>
-        /// <param name="key">键</param>
-        /// <param name="value">值</param>
-        public static IDictionary<TKey, TValue> TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary,
-            TKey key, TValue value)
-        {
-            if (!dictionary.ContainsKey(key))
-                dictionary.Add(key, value);
-            return dictionary;
-        }
-
-        #endregion
-
         #region ToHashTable(将字典转换成哈希表)
 
         /// <summary>

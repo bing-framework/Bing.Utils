@@ -305,6 +305,21 @@
             <param name="length">长度</param>
             <param name="comparer">比较器</param>
         </member>
+        <member name="T:Bing.Collections.CollectionExtensions">
+            <summary>
+            集合(<see cref="T:System.Collections.Generic.ICollection`1"/>) 扩展
+            </summary>
+        </member>
+        <member name="M:Bing.Collections.CollectionExtensions.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            添加批量项。添加多个元素到集合中
+            </summary>
+            <typeparam name="T">元素类型</typeparam>
+            <param name="collection">集合</param>
+            <param name="items">元素集合</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <returns>添加成功的元素数量</returns>
+        </member>
         <member name="T:Bing.Collections.DictionaryExtensions">
             <summary>
             字典(<see cref="T:System.Collections.Generic.IDictionary`2"/>) 扩展
@@ -5101,15 +5116,6 @@
             <param name="source">集合</param>
             <param name="predicate">条件</param>
         </member>
-        <member name="M:Bing.Extensions.CollectionExtensions.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            添加批量项。
-            </summary>
-            <typeparam name="T">类型</typeparam>
-            <param name="collection">集合</param>
-            <param name="enumerable">元素集合</param>
-            <exception cref="T:System.ArgumentNullException">源集合对象为空、添加的集合项为空</exception>
-        </member>
         <member name="M:Bing.Extensions.CollectionExtensions.Sort``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IComparer{``0})">
             <summary>
             排序
@@ -5174,16 +5180,6 @@
             <typeparam name="TKey">键类型</typeparam>
             <typeparam name="TValue">值类型</typeparam>
             <param name="dictionary">字典</param>
-        </member>
-        <member name="M:Bing.Extensions.DictionaryExtensions.TryAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
-            <summary>
-            尝试将键值对添加到字典中。如果不存在，则添加；存在，不添加也不抛异常
-            </summary>
-            <typeparam name="TKey">键类型</typeparam>
-            <typeparam name="TValue">值类型</typeparam>
-            <param name="dictionary">字典</param>
-            <param name="key">键</param>
-            <param name="value">值</param>
         </member>
         <member name="M:Bing.Extensions.DictionaryExtensions.ToHashTable``2(System.Collections.Generic.IDictionary{``0,``1})">
             <summary>
@@ -7305,6 +7301,12 @@
             </summary>
             <typeparam name="T">目标元素类型</typeparam>
             <param name="input">输入值，以逗号分隔的元素集合字符串，范例：83B0233C-A24F-49FD-8083-1337209EBC9A,EAB523C6-2FE7-47BE-89D5-C6D440C3033A</param>
+        </member>
+        <member name="M:Bing.Helpers.Conv.ToDictionary(System.Object)">
+            <summary>
+            对象转换为字典(属性名-属性值)
+            </summary>
+            <param name="input">输入值</param>
         </member>
         <member name="M:Bing.Helpers.Conv.ToEnum``1(System.Object)">
             <summary>
@@ -10014,6 +10016,20 @@
             <param name="content">数据</param>
         </member>
         <member name="M:Bing.IO.FileHelper.Write(System.String,System.Byte[])">
+            <summary>
+            将内容写入文件，文件不存在则创建
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="bytes">数据</param>
+        </member>
+        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.String)">
+            <summary>
+            将内容写入文件，文件不存在则创建
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="content">数据</param>
+        </member>
+        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.Byte[])">
             <summary>
             将内容写入文件，文件不存在则创建
             </summary>
@@ -19122,23 +19138,6 @@
             <param name="seconds">秒</param>
         </member>
         <member name="M:System.BaseTypeExtensions.SetDateTime(System.DateTimeOffset,System.TimeSpan)">
-            <summary>
-            设置时间
-            </summary>
-            <param name="date">DateTimeOffset</param>
-            <param name="time">时间跨度</param>
-        </member>
-        <member name="M:System.BaseTypeExtensions.SetDateTime(System.DateTimeOffset,System.TimeSpan,System.TimeZoneInfo)">
-            <summary>
-            设置时间
-            </summary>
-            <param name="date">DateTimeOffset</param>
-            <param name="time">时间跨度</param>
-            <param name="localTimeZone">时区</param>
-        </member>
-    </members>
-</doc>
-SetDateTime(System.DateTimeOffset,System.TimeSpan)">
             <summary>
             设置时间
             </summary>
