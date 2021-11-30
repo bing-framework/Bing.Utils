@@ -197,9 +197,10 @@ namespace Bing.Helpers
         {
             if (!field.FieldType.IsEnum)
                 return;
+            var group = Reflections.GetAttribute<EnumGroupAttribute>(field);
             var value = GetValue(type, field.Name);
             var description = Reflections.GetDescription(field);
-            result.Add(new Item(description, value, value));
+            result.Add(new Item(description, value, value, group?.Title));
         }
 
         #endregion
