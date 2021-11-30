@@ -415,6 +415,16 @@
             <param name="addValueFactory">添加值函数</param>
             <param name="updateValueFactory">更新值函数</param>
         </member>
+        <member name="M:Bing.Collections.DictionaryExtensions.TryAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
+            <summary>
+            尝试将键值对添加到字典中。如果不存在，则添加；存在，不添加也不抛异常
+            </summary>
+            <typeparam name="TKey">键类型</typeparam>
+            <typeparam name="TValue">值类型</typeparam>
+            <param name="this">字典</param>
+            <param name="key">键</param>
+            <param name="value">值</param>
+        </member>
         <member name="M:Bing.Collections.DictionaryExtensions.ContainsAnyKey``2(System.Collections.Generic.IDictionary{``0,``1},``0[])">
             <summary>
             是否包含任意键
@@ -1275,6 +1285,27 @@
             获取时间核心方法
             </summary>
             <param name="refDt">引用时间</param>
+        </member>
+        <member name="T:Bing.EnumGroupAttribute">
+            <summary>
+            枚举分组 特性
+            </summary>
+        </member>
+        <member name="M:Bing.EnumGroupAttribute.#ctor">
+            <summary>
+            初始化一个<see cref="T:Bing.EnumGroupAttribute"/>类型的实例
+            </summary>
+        </member>
+        <member name="M:Bing.EnumGroupAttribute.#ctor(System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.EnumGroupAttribute"/>类型的实例
+            </summary>
+            <param name="title">标题</param>
+        </member>
+        <member name="P:Bing.EnumGroupAttribute.Title">
+            <summary>
+            标题
+            </summary>
         </member>
         <member name="T:Bing.Exceptions.ExceptionHelper">
             <summary>
@@ -10016,20 +10047,6 @@
             <param name="content">数据</param>
         </member>
         <member name="M:Bing.IO.FileHelper.Write(System.String,System.Byte[])">
-            <summary>
-            将内容写入文件，文件不存在则创建
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
-            <param name="bytes">数据</param>
-        </member>
-        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.String)">
-            <summary>
-            将内容写入文件，文件不存在则创建
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
-            <param name="content">数据</param>
-        </member>
-        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.Byte[])">
             <summary>
             将内容写入文件，文件不存在则创建
             </summary>
@@ -19151,6 +19168,10 @@
             <param name="date">DateTimeOffset</param>
             <param name="time">时间跨度</param>
             <param name="localTimeZone">时区</param>
+        </member>
+    </members>
+</doc>
+    <param name="localTimeZone">时区</param>
         </member>
     </members>
 </doc>

@@ -149,6 +149,11 @@
             当前Http上下文
             </summary>
         </member>
+        <member name="P:Bing.Helpers.Web.Environment">
+            <summary>
+            宿主环境
+            </summary>
+        </member>
         <member name="P:Bing.Helpers.Web.Request">
             <summary>
             当前Http请求
