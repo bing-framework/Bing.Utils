@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Bing.Collections;
 using Bing.Extensions;
 
 namespace Bing.Helpers
@@ -449,7 +450,11 @@ namespace Bing.Helpers
             if (input == null)
                 return null;
             if (input is IEnumerable<KeyValuePair<string, object>> dict)
+#if NETSTANDARD2_0
+                return new Dictionary<string, object>(dict.ToDictionary());
+#else
                 return new Dictionary<string, object>(dict);
+#endif
             var result = new Dictionary<string, object>();
             foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(input))
             {

@@ -10064,20 +10064,6 @@
             <param name="filePath">文件的绝对路径</param>
             <param name="bytes">数据</param>
         </member>
-        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.String)">
-            <summary>
-            将内容写入文件，文件不存在则创建
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
-            <param name="content">数据</param>
-        </member>
-        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.Byte[])">
-            <summary>
-            将内容写入文件，文件不存在则创建
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
-            <param name="bytes">数据</param>
-        </member>
         <member name="M:Bing.IO.FileHelper.Write(System.Byte[],System.String,System.Boolean)">
             <summary>
             将字节数组写入目标文件
