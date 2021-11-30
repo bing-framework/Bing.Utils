@@ -448,6 +448,8 @@ namespace Bing.Helpers
         {
             if (input == null)
                 return null;
+            if (input is IEnumerable<KeyValuePair<string, object>> dict)
+                return new Dictionary<string, object>(dict);
             var result = new Dictionary<string, object>();
             foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(input))
             {
