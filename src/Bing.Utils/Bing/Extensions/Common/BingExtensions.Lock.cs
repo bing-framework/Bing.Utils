@@ -16,7 +16,7 @@ namespace Bing.Extensions
         public static void Locking(this object source, Action action)
         {
             lock (source)
-                action();
+                action?.Invoke();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Bing.Extensions
         public static void Locking<T>(this T source, Action<T> action)
         {
             lock (source)
-                action(source);
+                action?.Invoke(source);
         }
 
         /// <summary>
