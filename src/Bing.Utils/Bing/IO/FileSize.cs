@@ -1,12 +1,12 @@
 ﻿using Bing.Extensions;
 using Bing.Helpers;
 
-namespace Bing.Utils.Files
+namespace Bing.IO
 {
     /// <summary>
     /// 文件大小
     /// </summary>
-    public struct FileSize
+    public readonly struct FileSize
     {
         /// <summary>
         /// 文件字节长度

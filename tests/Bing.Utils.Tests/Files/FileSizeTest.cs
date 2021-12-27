@@ -1,4 +1,4 @@
-﻿using Bing.Utils.Files;
+﻿using Bing.IO;
 using Xunit;
 
 namespace Bing.Utils.Tests.Files

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using Bing.Extensions;
@@ -143,32 +142,6 @@ namespace Bing.Reflection
             var type = Type.GetType(className) ?? Assembly.GetCallingAssembly().GetType(className);
             return CreateInstance<T>(type, parameters);
         }
-
-        #endregion
-
-        #region GetAssembly(获取程序集)
-
-        /// <summary>
-        /// 获取程序集
-        /// </summary>
-        /// <param name="assemblyName">程序集名称</param>
-        /// <returns></returns>
-        public static Assembly GetAssembly(string assemblyName) => Assembly.Load(new AssemblyName(assemblyName));
-
-        #endregion
-
-        #region GetAssemblies(从目录获取所有程序集)
-
-        /// <summary>
-        /// 从目录获取所有程序集
-        /// </summary>
-        /// <param name="directoryPath">目录绝对路径</param>
-        public static List<Assembly> GetAssemblies(string directoryPath) =>
-            Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories)
-                .ToList()
-                .Where(t => t.EndsWith(".exe") || t.EndsWith(".dll"))
-                .Select(path => Assembly.Load(new AssemblyName(path)))
-                .ToList();
 
         #endregion
 

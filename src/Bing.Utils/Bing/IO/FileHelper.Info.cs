@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Bing.Helpers;
-using Bing.Utils.Files;
-using FileInfo = System.IO.FileInfo;
 
 namespace Bing.IO
 {
@@ -66,7 +64,7 @@ namespace Bing.IO
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            return GetFileSize(new FileInfo(filePath));
+            return GetFileSize(new System.IO.FileInfo(filePath));
         }
 
         /// <summary>
@@ -74,7 +72,7 @@ namespace Bing.IO
         /// </summary>
         /// <param name="fileInfo">文件信息</param>
         /// <returns></returns>
-        public static FileSize GetFileSize(FileInfo fileInfo)
+        public static FileSize GetFileSize(System.IO.FileInfo fileInfo)
         {
             if (fileInfo == null)
             {
