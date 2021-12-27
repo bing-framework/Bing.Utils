@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Bing.Utils
+namespace Bing
 {
     /// <summary>
     /// 空释放

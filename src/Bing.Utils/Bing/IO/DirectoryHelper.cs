@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Bing.Extensions;
 using Bing.Helpers;
-using Bing.Utils;
 
 namespace Bing.IO
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Bing.Utils.Timing;
 
 namespace Bing.Helpers
@@ -11,29 +12,29 @@ namespace Bing.Helpers
         /// <summary>
         /// 日期
         /// </summary>
-        private static DateTime? _dateTime;
+        private static AsyncLocal<DateTime?> _dateTime = new AsyncLocal<DateTime?>();
 
         /// <summary>
         /// 设置时间
         /// </summary>
         /// <param name="dateTime">时间</param>
-        public static void SetTime(DateTime? dateTime) => _dateTime = dateTime;
+        public static void SetTime(DateTime? dateTime) => _dateTime.Value = dateTime;
 
         /// <summary>
         /// 设置时间
         /// </summary>
         /// <param name="dateTime">时间</param>
-        public static void SetTime(string dateTime) => _dateTime = Conv.ToDateOrNull(dateTime);
+        public static void SetTime(string dateTime) => SetTime(Conv.ToDateOrNull(dateTime));
 
         /// <summary>
         /// 重置时间
         /// </summary>
-        public static void Reset() => _dateTime = null;
+        public static void Reset() => _dateTime.Value = null;
 
         /// <summary>
         /// 获取当前日期时间
         /// </summary>
-        public static DateTime GetDateTime() => _dateTime ?? DateTime.Now;
+        public static DateTime GetDateTime() => _dateTime.Value ?? DateTime.Now;
 
         /// <summary>
         /// 获取当前日期，不带时间

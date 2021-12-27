@@ -1276,6 +1276,48 @@
             </summary>
             <param name="refDt">引用时间</param>
         </member>
+        <member name="T:Bing.DisposeAction">
+            <summary>
+            释放操作
+            </summary>
+        </member>
+        <member name="F:Bing.DisposeAction._action">
+            <summary>
+            操作
+            </summary>
+        </member>
+        <member name="M:Bing.DisposeAction.#ctor(System.Action)">
+            <summary>
+            初始化一个<see cref="T:Bing.DisposeAction"/>类型的实例
+            </summary>
+            <param name="action">操作</param>
+        </member>
+        <member name="M:Bing.DisposeAction.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="T:Bing.EnumGroupAttribute">
+            <summary>
+            枚举分组 特性
+            </summary>
+        </member>
+        <member name="M:Bing.EnumGroupAttribute.#ctor">
+            <summary>
+            初始化一个<see cref="T:Bing.EnumGroupAttribute"/>类型的实例
+            </summary>
+        </member>
+        <member name="M:Bing.EnumGroupAttribute.#ctor(System.String)">
+            <summary>
+            初始化一个<see cref="T:Bing.EnumGroupAttribute"/>类型的实例
+            </summary>
+            <param name="title">标题</param>
+        </member>
+        <member name="P:Bing.EnumGroupAttribute.Title">
+            <summary>
+            标题
+            </summary>
+        </member>
         <member name="T:Bing.Exceptions.ExceptionHelper">
             <summary>
             异常操作辅助类
@@ -4172,38 +4214,6 @@
             </summary>
             <typeparam name="T">类型</typeparam>
             <param name="value">值</param>
-        </member>
-        <member name="M:Bing.Extensions.ObjectExtensions.Locking(System.Object,System.Action)">
-            <summary>
-            锁定
-            </summary>
-            <param name="source">锁定对象</param>
-            <param name="action">操作</param>
-        </member>
-        <member name="M:Bing.Extensions.ObjectExtensions.Locking``1(``0,System.Action{``0})">
-            <summary>
-            锁定
-            </summary>
-            <typeparam name="T">对象类型</typeparam>
-            <param name="source">锁定对象</param>
-            <param name="action">操作</param>
-        </member>
-        <member name="M:Bing.Extensions.ObjectExtensions.Locking``1(System.Object,System.Func{``0})">
-            <summary>
-            锁定
-            </summary>
-            <typeparam name="TResult">结果类型</typeparam>
-            <param name="source">锁定对象</param>
-            <param name="func">执行函数</param>
-        </member>
-        <member name="M:Bing.Extensions.ObjectExtensions.Locking``2(``0,System.Func{``0,``1})">
-            <summary>
-            锁定
-            </summary>
-            <typeparam name="T">对象类型</typeparam>
-            <typeparam name="TResult">结果类型</typeparam>
-            <param name="source">锁定对象</param>
-            <param name="func">执行函数</param>
         </member>
         <member name="M:Bing.Extensions.ObjectExtensions.ExpressionCopy``1(``0)">
             <summary>
@@ -10919,6 +10929,26 @@
             值
             </summary>
         </member>
+        <member name="T:Bing.NullDisposable">
+            <summary>
+            空释放
+            </summary>
+        </member>
+        <member name="P:Bing.NullDisposable.Instance">
+            <summary>
+            实例
+            </summary>
+        </member>
+        <member name="M:Bing.NullDisposable.#ctor">
+            <summary>
+            初始化一个<see cref="T:Bing.NullDisposable"/>类型的实例
+            </summary>
+        </member>
+        <member name="M:Bing.NullDisposable.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
         <member name="T:Bing.Numeric.NumberConst">
             <summary>
             数值常量
@@ -17386,148 +17416,6 @@
             </summary>
             <param name="sign">签名</param>
         </member>
-        <member name="T:Bing.Utils.DisposeAction">
-            <summary>
-            释放操作
-            </summary>
-        </member>
-        <member name="F:Bing.Utils.DisposeAction._action">
-            <summary>
-            操作
-            </summary>
-        </member>
-        <member name="M:Bing.Utils.DisposeAction.#ctor(System.Action)">
-            <summary>
-            初始化一个<see cref="T:Bing.Utils.DisposeAction"/>类型的实例
-            </summary>
-            <param name="action">操作</param>
-        </member>
-        <member name="M:Bing.Utils.DisposeAction.Dispose">
-            <summary>
-            释放资源
-            </summary>
-        </member>
-        <member name="T:Bing.Utils.Helpers.ValidateHelper`1">
-            <summary>
-            Class ValidateHelper.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="F:Bing.Utils.Helpers.ValidateHelper`1.dicValidations">
-            <summary>
-            The dic validations
-            </summary>
-        </member>
-        <member name="F:Bing.Utils.Helpers.ValidateHelper`1.dErrors">
-            <summary>
-            错误列表
-            </summary>
-        </member>
-        <member name="F:Bing.Utils.Helpers.ValidateHelper`1.isIDataErrorInfo">
-            <summary>
-            是否实现IDataErrorInfo接口
-            </summary>
-        </member>
-        <member name="F:Bing.Utils.Helpers.ValidateHelper`1.validateObj">
-            <summary>
-            需要验证对象的实例
-            </summary>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.#ctor(`0)">
-            <summary>
-            构造函数
-            </summary>
-            <param name="obj">The object.</param>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.#ctor(`0,System.Collections.Generic.Dictionary{System.String,System.String})">
-            <summary>
-            构造函数
-            </summary>
-            <param name="obj">The object.</param>
-            <param name="errors">The errors.</param>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.Register(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Collections.Generic.List{System.ComponentModel.DataAnnotations.ValidationAttribute})">
-            <summary>
-            注册需要验证的属性和验证特性
-            </summary>
-            <param name="expr">属性</param>
-            <param name="metadatas">特性</param>
-            <returns>ValidateHelper{`0}.</returns>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.Register(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.ComponentModel.DataAnnotations.ValidationAttribute)">
-            <summary>
-            注册需要验证的属性和验证特性
-            </summary>
-            <param name="expr">属性</param>
-            <param name="metadata">特性</param>
-            <returns>ValidateHelper{`0}.</returns>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.Register(System.Collections.Generic.Dictionary{System.String,System.String})">
-            <summary>
-            如果是IDataErrorInfo接口，注册错误字典
-            </summary>
-            <param name="dataErrors">错误字典</param>
-            <returns>ValidateHelper{`0}.</returns>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.Register">
-            <summary>
-            注册，自动提取特性注册
-            </summary>
-            <returns>ValidateHelper{`0}.</returns>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.UnRegister">
-            <summary>
-            反注册
-            </summary>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.Validate">
-            <summary>
-            Validates this instance.
-            </summary>
-            <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
-            <summary>
-            处理属性变化事件
-            </summary>
-            <param name="sender">The sender.</param>
-            <param name="e">The <see cref="T:System.ComponentModel.PropertyChangedEventArgs" /> instance containing the event data.</param>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.RegisterEvent(`0)">
-            <summary>
-            注册属性变更事件.
-            </summary>
-            <param name="obj">The object.</param>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.GetExprName(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
-            <summary>
-            获取属性，名称.
-            </summary>
-            <param name="expr">The expr.</param>
-            <returns>System.String.</returns>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.GetPropertyValue(System.Object,System.String)">
-            <summary>
-            获取属性值.
-            </summary>
-            <param name="sender">The sender.</param>
-            <param name="propertyName">Name of the property.</param>
-            <returns>System.Object.</returns>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.GetPropertyChangedMethod(System.Object)">
-            <summary>
-            获取触发事件的methodinfo.
-            </summary>
-            <param name="sender">The sender.</param>
-            <returns>MethodInfo.</returns>
-        </member>
-        <member name="M:Bing.Utils.Helpers.ValidateHelper`1.GetEventMember(System.Object)">
-            <summary>
-            Gets the event member,silverlight下 GetValue抛出fiedlaccessexception，不能使用这类方法来处理.
-            </summary>
-            <param name="bindableObject">The bindable object.</param>
-            <returns>System.Object.</returns>
-        </member>
         <member name="T:Bing.Utils.IdGenerators.Abstractions.IGuidGenerator">
             <summary>
             Guid ID 生成器
@@ -18458,26 +18346,6 @@
             判断字符串是否为Json格式。为效率考虑，仅做了开始和结束字符的验证
             </summary>
             <param name="json">json字符串</param>
-        </member>
-        <member name="T:Bing.Utils.NullDisposable">
-            <summary>
-            空释放
-            </summary>
-        </member>
-        <member name="P:Bing.Utils.NullDisposable.Instance">
-            <summary>
-            实例
-            </summary>
-        </member>
-        <member name="M:Bing.Utils.NullDisposable.#ctor">
-            <summary>
-            初始化一个<see cref="T:Bing.Utils.NullDisposable"/>类型的实例
-            </summary>
-        </member>
-        <member name="M:Bing.Utils.NullDisposable.Dispose">
-            <summary>
-            释放资源
-            </summary>
         </member>
         <member name="T:Bing.Utils.Properties.R">
             <summary>
