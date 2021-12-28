@@ -154,26 +154,31 @@ namespace Bing.IO
 
         #endregion
 
-        #region IsEmpty(是否空目录)
+        #region IsEmptyDirectory(检查文件夹是否为空目录)
 
         /// <summary>
-        /// 是否空目录
+        /// 检查文件夹是否为空目录
         /// </summary>
-        /// <param name="directoryPath">目录的绝对路径</param>
-        public static bool IsEmpty(string directoryPath)
+        /// <param name="folderName">文件夹名称</param>
+        public static bool IsEmptyDirectory(string folderName)
         {
-            try
-            {
-                var fileNames = GetFiles(directoryPath, includeChildPath: true);
-                if (fileNames.Length > 0)
-                    return false;
-                var directoryNames = GetDirectories(directoryPath, includeChildPath: true);
-                return directoryNames.Length <= 0;
-            }
-            catch
-            {
-                return true;
-            }
+            return Directory.GetFiles(folderName).Length == 0 && Directory.GetDirectories(folderName).Length == 0;
+        }
+
+        #endregion
+
+        #region IsOverdueDirectory(检查文件夹的创建时间是否超过指定天数)
+
+        /// <summary>
+        /// 检查文件夹的创建时间是否超过指定天数
+        /// </summary>
+        /// <param name="folderPath">文件夹路径</param>
+        /// <param name="days">指定天数</param>
+        public static bool IsOverdueDirectory(string folderPath, int days)
+        {
+            var createTime = Directory.GetCreationTime(folderPath);
+            var date = DateTime.Now.Date.Subtract(createTime);
+            return date.Days > days;
         }
 
         #endregion
@@ -298,6 +303,91 @@ namespace Bing.IO
             }
 
             return flag;
+        }
+
+        #endregion
+
+        #region TryClearFolder(尝试删除文件夹及子文件夹)
+
+        /// <summary>
+        /// 尝试删除文件夹及子文件夹
+        /// </summary>
+        /// <param name="directory">目录路径</param>
+        public static bool TryClearFolder(string directory)
+        {
+            try
+            {
+                if (!Directory.Exists(directory))
+                    return false;
+                var fileSystemEntries = Directory.GetFileSystemEntries(directory);
+                foreach (var fileOrFolder in fileSystemEntries)
+                {
+                    if (Directory.Exists(fileOrFolder))
+                    {
+                        // 递归清理子文件夹
+                        if (!TryClearFolder(fileOrFolder))
+                            return false;
+                        // 删除空文件夹
+                        if (IsEmptyDirectory(fileOrFolder))
+                            Directory.Delete(fileOrFolder);
+                    }
+                    else if (File.Exists(fileOrFolder))
+                    {
+                        // 清理文件
+                        File.Delete(fileOrFolder);
+                    }
+                        
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region TryClearOverdueFolder(尝试删除创建时间超过指定天数的文件夹)
+
+        /// <summary>
+        /// 尝试删除创建时间超过指定天数的文件夹
+        /// </summary>
+        /// <param name="directory">目录路径</param>
+        /// <param name="days">指定天数</param>
+        public static bool TryClearOverdueFolder(string directory, int days)
+        {
+            try
+            {
+                if (!Directory.Exists(directory))
+                    return false;
+                var fileSystemEntries = Directory.GetFileSystemEntries(directory);
+                foreach (var fileOrFolder in fileSystemEntries)
+                {
+                    if (Directory.Exists(fileOrFolder))
+                    {
+                        // 递归清理子文件夹
+                        if (!TryClearOverdueFolder(fileOrFolder, days))
+                            return false;
+                        // 删除过期的空文件夹
+                        if (IsEmptyDirectory(fileOrFolder) && IsOverdueDirectory(fileOrFolder, days))
+                            Directory.Delete(fileOrFolder);
+                    }
+                    else if (File.Exists(fileOrFolder) && FileHelper.IsOverdueFile(fileOrFolder, days))
+                    {
+                        // 清理过期的文件
+                        File.Delete(fileOrFolder);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+
+            return true;
         }
 
         #endregion

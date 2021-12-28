@@ -9659,11 +9659,18 @@
             <param name="pattern">模式字符串。"*"代表0或N个字符，"?"代表1个字符。范例："Log*.xml"表示搜索所有以Log开头的Xml文件。</param>
             <param name="includeChildPath">是否包含子目录</param>
         </member>
-        <member name="M:Bing.IO.DirectoryHelper.IsEmpty(System.String)">
+        <member name="M:Bing.IO.DirectoryHelper.IsEmptyDirectory(System.String)">
             <summary>
-            是否空目录
+            检查文件夹是否为空目录
             </summary>
-            <param name="directoryPath">目录的绝对路径</param>
+            <param name="folderName">文件夹名称</param>
+        </member>
+        <member name="M:Bing.IO.DirectoryHelper.IsOverdueDirectory(System.String,System.Int32)">
+            <summary>
+            检查文件夹的创建时间是否超过指定天数
+            </summary>
+            <param name="folderPath">文件夹路径</param>
+            <param name="days">指定天数</param>
         </member>
         <member name="M:Bing.IO.DirectoryHelper.GetDirectoryPath(System.String)">
             <summary>
@@ -9685,6 +9692,19 @@
             </summary>
             <param name="directory">目录路径</param>
             <param name="isDeleteRoot">是否删除根目录</param>
+        </member>
+        <member name="M:Bing.IO.DirectoryHelper.TryClearFolder(System.String)">
+            <summary>
+            尝试删除文件夹及子文件夹
+            </summary>
+            <param name="directory">目录路径</param>
+        </member>
+        <member name="M:Bing.IO.DirectoryHelper.TryClearOverdueFolder(System.String,System.Int32)">
+            <summary>
+            尝试删除创建时间超过指定天数的文件夹
+            </summary>
+            <param name="directory">目录路径</param>
+            <param name="days">指定天数</param>
         </member>
         <member name="M:Bing.IO.DirectoryHelper.SetAttributes(System.String,System.IO.FileAttributes,System.Boolean)">
             <summary>
@@ -9941,6 +9961,13 @@
             <param name="zipPath">压缩文件路径</param>
             <param name="targetPath">解压目录</param>
         </member>
+        <member name="M:Bing.IO.FileHelper.IsOverdueFile(System.String,System.Int32)">
+            <summary>
+            检测文件的创建时间是否超过指定天数
+            </summary>
+            <param name="filePath">文件路径</param>
+            <param name="days">指定天数</param>
+        </member>
         <member name="M:Bing.IO.FileHelper.GetMd5(System.String)">
             <summary>
             获取文件的MD5值
@@ -10088,20 +10115,6 @@
             <param name="content">数据</param>
         </member>
         <member name="M:Bing.IO.FileHelper.Write(System.String,System.Byte[])">
-            <summary>
-            将内容写入文件，文件不存在则创建
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
-            <param name="bytes">数据</param>
-        </member>
-        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.String)">
-            <summary>
-            将内容写入文件，文件不存在则创建
-            </summary>
-            <param name="filePath">文件的绝对路径</param>
-            <param name="content">数据</param>
-        </member>
-        <member name="M:Bing.IO.FileHelper.WriteAsync(System.String,System.Byte[])">
             <summary>
             将内容写入文件，文件不存在则创建
             </summary>
@@ -19002,6 +19015,23 @@
             <param name="seconds">秒</param>
         </member>
         <member name="M:System.BaseTypeExtensions.SetDateTime(System.DateTimeOffset,System.TimeSpan)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="date">DateTimeOffset</param>
+            <param name="time">时间跨度</param>
+        </member>
+        <member name="M:System.BaseTypeExtensions.SetDateTime(System.DateTimeOffset,System.TimeSpan,System.TimeZoneInfo)">
+            <summary>
+            设置时间
+            </summary>
+            <param name="date">DateTimeOffset</param>
+            <param name="time">时间跨度</param>
+            <param name="localTimeZone">时区</param>
+        </member>
+    </members>
+</doc>
+SetDateTime(System.DateTimeOffset,System.TimeSpan)">
             <summary>
             设置时间
             </summary>

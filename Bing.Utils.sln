@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-src", "01-src", "{2F180C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionItems", "_SolutionItems", "{08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		common.props = common.props
 		Publish.bat = Publish.bat
 		README.md = README.md
@@ -37,11 +38,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Tests.Samples", "tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Extra", "src\Bing.Utils.Extra\Bing.Utils.Extra.csproj", "{D3046086-A122-4D9C-B8B2-9DFDFFB8CF6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Comments", "src\Bing.Utils.Comments\Bing.Utils.Comments.csproj", "{2B436FCF-75BC-42BC-B680-9E86AC2CC210}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Comments", "src\Bing.Utils.Comments\Bing.Utils.Comments.csproj", "{2B436FCF-75BC-42BC-B680-9E86AC2CC210}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Comments.Tests", "tests\Bing.Utils.Comments.Tests\Bing.Utils.Comments.Tests.csproj", "{5305C710-931A-4778-AC9B-05FACBC90C8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Comments.Tests", "tests\Bing.Utils.Comments.Tests\Bing.Utils.Comments.Tests.csproj", "{5305C710-931A-4778-AC9B-05FACBC90C8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.IdGenerators", "src\Bing.Utils.IdGenerators\Bing.Utils.IdGenerators.csproj", "{D79351BF-DD68-4C81-B899-656F5C122B35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.IdGenerators", "src\Bing.Utils.IdGenerators\Bing.Utils.IdGenerators.csproj", "{D79351BF-DD68-4C81-B899-656F5C122B35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

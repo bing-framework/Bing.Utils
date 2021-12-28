@@ -539,6 +539,22 @@ namespace Bing.IO
         }
 
         #endregion
+
+        #region IsOverdueFile(检测文件的创建时间是否超过指定天数)
+
+        /// <summary>
+        /// 检测文件的创建时间是否超过指定天数
+        /// </summary>
+        /// <param name="filePath">文件路径</param>
+        /// <param name="days">指定天数</param>
+        public static bool IsOverdueFile(string filePath, int days)
+        {
+            var createTime = File.GetCreationTime(filePath);
+            var date = DateTime.Now.Date.Subtract(createTime);
+            return date.Days > days;
+        }
+
+        #endregion
     }
 
     /// <summary>
