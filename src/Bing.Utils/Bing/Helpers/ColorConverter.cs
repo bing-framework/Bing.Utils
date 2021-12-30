@@ -11,27 +11,6 @@ namespace Bing.Helpers
     public static class ColorConverter
     {
         /// <summary>
-        /// 转换为16进制颜色
-        /// </summary>
-        /// <param name="color">颜色</param>
-        /// <returns></returns>
-        public static string ToHex(Color color) => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
-
-        /// <summary>
-        /// 转换为RGB颜色
-        /// </summary>
-        /// <param name="color">颜色</param>
-        public static string ToRgb(Color color) => $"RGB({color.R},{color.G},{color.B})";
-
-        /// <summary>
-        /// RGB格式转换为16进制颜色
-        /// </summary>
-        /// <param name="r">红色</param>
-        /// <param name="g">绿色</param>
-        /// <param name="b">蓝色</param>
-        public static string RgbToHex(int r, int g, int b) => ToHex(Color.FromArgb(r, g, b));
-
-        /// <summary>
         /// 从样式颜色中获取系统颜色
         /// </summary>
         /// <param name="cssColour">样式颜色</param>
