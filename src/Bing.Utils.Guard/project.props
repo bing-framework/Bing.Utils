@@ -1,0 +1,7 @@
+﻿<Project>
+  <PropertyGroup>
+    <AssemblyName>Bing.Utils.Guard</AssemblyName>
+    <PackageId>Bing.Utils.Guard</PackageId>
+    <Description>Bing.Utils.Guard是Bing应用框架的守护操作类库。</Description>
+  </PropertyGroup>
+</Project>
