@@ -1,11 +1,12 @@
 ﻿using System.IO;
+using Bing.Helpers;
 
-namespace Bing.Helpers
+namespace Bing.IO
 {
     /// <summary>
-    /// 路径 操作
+    /// 路径操作辅助类
     /// </summary>
-    public static partial class PathHelper
+    public static class PathHelper
     {
         #region GetPhysicalPath(获取物理路径)
 
@@ -17,10 +18,10 @@ namespace Bing.Helpers
         {
             if (string.IsNullOrWhiteSpace(relativePath))
                 return string.Empty;
-            var rootPath = Web.RootPath;
+            var rootPath = Platform.AppRoot;
             if (string.IsNullOrWhiteSpace(rootPath))
                 return Path.GetFullPath(relativePath);
-            return $"{Web.RootPath}\\{relativePath.Replace("/", "\\").TrimStart('\\')}";
+            return $"{Platform.AppRoot}\\{relativePath.Replace("/", "\\").TrimStart('\\')}";
         }
 
         #endregion
@@ -35,10 +36,10 @@ namespace Bing.Helpers
         {
             if (string.IsNullOrWhiteSpace(relativePath))
                 return string.Empty;
-            var rootPath = Web.WebRootPath;
+            var rootPath = Platform.AppRoot;
             if (string.IsNullOrWhiteSpace(rootPath))
                 return Path.GetFullPath(relativePath);
-            return $"{Web.WebRootPath}\\{relativePath.Replace("/", "\\").TrimStart('\\')}";
+            return $"{Platform.AppRoot}\\wwwroot\\{relativePath.Replace("/", "\\").TrimStart('\\')}";
         }
 
         #endregion

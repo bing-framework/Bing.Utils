@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Bing.Extensions;
 using Bing.Helpers;
+using Bing.Reflection;
 
 namespace Bing.IO
 {
@@ -341,7 +342,7 @@ namespace Bing.IO
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                InvokeHelper.OnInvokeException?.Invoke(e);
                 return false;
             }
             return true;
@@ -383,7 +384,7 @@ namespace Bing.IO
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                InvokeHelper.OnInvokeException?.Invoke(e);
                 return false;
             }
 
