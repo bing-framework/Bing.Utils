@@ -530,5 +530,39 @@ namespace Bing.Utils.Tests.Helpers
             Assert.Equal(guid.ToString(), Conv.To<string>(guid));
             Assert.Equal(EnumSample.C, Conv.To<EnumSample>("c"));
         }
+
+        /// <summary>
+        /// 转换为人民币大写金额
+        /// </summary>
+        [Theory]
+        [InlineData(null, default)]
+        [InlineData(1, "壹元")]
+        [InlineData(1.2, "壹元贰角")]
+        [InlineData(1.23, "壹元贰角叁分")]
+        [InlineData(1.234, "壹元贰角叁分")]
+        [InlineData(1.05, "壹元零伍分")]
+        [InlineData(2, "贰元")]
+        [InlineData(3, "叁元")]
+        [InlineData(4, "肆元")]
+        [InlineData(5, "伍元")]
+        [InlineData(6, "陆元")]
+        [InlineData(7, "柒元")]
+        [InlineData(8, "捌元")]
+        [InlineData(9, "玖元")]
+        [InlineData("10", "壹拾元")]
+        [InlineData("10.2", "壹拾元贰角")]
+        [InlineData("10.23", "壹拾元贰角叁分")]
+        [InlineData("10.234", "壹拾元贰角叁分")]
+        [InlineData("100", "壹佰元")]
+        [InlineData("1000", "壹仟元")]
+        [InlineData("10000", "壹万元")]
+        [InlineData(100000, "壹拾万元")]
+        [InlineData(1000000, "壹佰万元")]
+        [InlineData(10000000, "壹仟万元")]
+        [InlineData(100000000, "壹亿元")]
+        public void Test_ToRMB(object input,string result)
+        {
+            Assert.Equal(result, Conv.ToRMB(input));
+        }
     }
 }

@@ -534,14 +534,17 @@ namespace Bing.Helpers
 
         #endregion
 
-        #region ToAmountInWords(转换为大写金额)
+        #region ToRMB(转换为人民币大写金额)
 
         /// <summary>
-        /// 转换为大写金额
+        /// 转换为人民币大写金额
         /// </summary>
         /// <param name="input">输入值</param>
-        public static string ToAmountInWords(object input)
+        // ReSharper disable once InconsistentNaming
+        public static string ToRMB(object input)
         {
+            if (input == null)
+                return default;
             string tempValue;
             if (input is string valueStr)
                 tempValue = valueStr;
