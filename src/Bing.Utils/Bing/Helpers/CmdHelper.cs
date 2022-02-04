@@ -56,6 +56,7 @@ namespace Bing.Helpers
             process.Start();
         }
 
+#if NET5_0
         /// <summary>
         /// Windows操作系统，执行cmd命令
         /// 多命令请使用批处理命令连接符：
@@ -84,6 +85,7 @@ namespace Bing.Helpers
 
             return output;
         }
+#endif
 
         /// <summary>
         /// Linux操作系统，执行Shell命令

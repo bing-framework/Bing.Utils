@@ -11,17 +11,32 @@ namespace Bing.IO
     {
         /// <summary>
         /// 保存内容到文件
+        /// <para>
+        /// 注：使用系统默认编码；若文件不存在则创建新的，若存在则覆盖
+        /// </para>
         /// </summary>
         /// <param name="filePath">文件的绝对路径</param>
         /// <param name="content">数据</param>
         public static bool SaveFile(string filePath, string content)
         {
-            var encoding = Encoding.GetEncoding("gb2312");
-            return SaveFile(filePath, content, encoding);
+            if (string.IsNullOrWhiteSpace(filePath))
+                return false;
+            try
+            {
+                SaveFile(filePath, content, null, null);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>
         /// 保存内容到文件
+        /// <para>
+        /// 注：使用自定义编码；若文件不存在则创建新的，若存在则覆盖
+        /// </para>
         /// </summary>
         /// <param name="filePath">文件的绝对路径</param>
         /// <param name="content">数据</param>
@@ -30,29 +45,84 @@ namespace Bing.IO
         {
             if (string.IsNullOrWhiteSpace(filePath))
                 return false;
-            if (encoding == null)
-                encoding = Encoding.UTF8;
             try
             {
-                DirectoryHelper.CreateIfNotExists(DirectoryHelper.GetDirectoryPath(filePath));
-                if (File.Exists(filePath))
-                {
-                    File.WriteAllText(filePath, content, encoding);
-                }
-                else
-                {
-                    var sw = new StreamWriter(filePath, false, encoding);
-                    sw.Write(content);
-                    sw.Flush();
-                    sw.Close();
-                }
-
+                SaveFile(filePath, content, encoding, FileMode.Create);
                 return true;
             }
             catch
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// 保存内容到文件
+        /// <para>
+        /// 注：使用自定义模式，使用UTF-8编码
+        /// </para>
+        /// </summary>
+        /// <param name="filePath">文件的绝对路径</param>
+        /// <param name="content">数据</param>
+        /// <param name="fileMode">写入模式</param>
+        public static bool SaveFile(string filePath, string content, FileMode fileMode)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                return false;
+            try
+            {
+                SaveFile(filePath, content, Encoding.UTF8, fileMode);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 保存内容到文件
+        /// <para>
+        /// 注：使用自定义编码以及写入模式
+        /// </para>
+        /// </summary>
+        /// <param name="filePath">文件的绝对路径</param>
+        /// <param name="content">数据</param>
+        /// <param name="encoding">字符编码</param>
+        /// <param name="fileMode">写入模式</param>
+        public static bool SaveFile(string filePath, string content, Encoding encoding, FileMode fileMode)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                return false;
+            try
+            {
+                SaveFile(filePath, content, encoding, fileMode);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 保存内容到文件
+        /// </summary>
+        /// <param name="filePath">文件的绝对路径</param>
+        /// <param name="content">数据</param>
+        /// <param name="encoding">字符编码</param>
+        /// <param name="fileMode">写入模式</param>
+        private static void SaveFile(string filePath, string content, Encoding encoding, FileMode? fileMode)
+        {
+            encoding ??= Encoding.UTF8;
+            fileMode ??= FileMode.Create;
+            var dir = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+            using var fs = new FileStream(filePath, fileMode.Value);
+            using var sw = new StreamWriter(fs, encoding);
+            sw.Write(content);
+            sw.Flush();
         }
 
         /// <summary>
@@ -79,7 +149,7 @@ namespace Bing.IO
             File.WriteAllBytes(filePath, bytes);
         }
 
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1
+#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
         /// <summary>
         /// 将内容写入文件，文件不存在则创建
         /// </summary>
@@ -133,7 +203,7 @@ namespace Bing.IO
                 File.Create(targetFilePath);
 
             var fileMode = appendMode ? FileMode.Append : FileMode.Open;
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1
+#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
             await using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
 #else
             using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);

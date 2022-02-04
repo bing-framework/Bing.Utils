@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bing.IO
@@ -28,17 +29,18 @@ namespace Bing.IO
         /// 读取文件到字节流中
         /// </summary>
         /// <param name="targetFilePath">目标文件路径</param>
-        public static async Task<byte[]> ReadAsync(string targetFilePath)
+        /// <param name="cancellationToken">取消令牌</param>
+        public static async Task<byte[]> ReadAsync(string targetFilePath, CancellationToken cancellationToken = default)
         {
             if (!File.Exists(targetFilePath))
                 return null;
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1
+#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
             await using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read);
 #else
             using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read);
 #endif
             var byteArray = new byte[fs.Length];
-            await fs.ReadAsync(byteArray, 0, byteArray.Length);
+            await fs.ReadAsync(byteArray, 0, byteArray.Length, cancellationToken);
             return byteArray;
         }
 
