@@ -6,12 +6,12 @@
     public enum CaptchaType
     {
         /// <summary>
-        /// 纯数值
+        /// 数字
         /// </summary>
         Number,
 
         /// <summary>
-        /// 数值与字母组合
+        /// 字母数字混合
         /// </summary>
         NumberAndLetter,
 

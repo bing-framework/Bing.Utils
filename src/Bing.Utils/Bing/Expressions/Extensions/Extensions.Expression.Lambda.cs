@@ -101,8 +101,7 @@ namespace Bing.Expressions
         /// <typeparam name="T">对象类型</typeparam>
         /// <param name="left">左操作数</param>
         /// <param name="right">右操作数</param>
-        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> left,
-            Expression<Func<T, bool>> right)
+        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
         {
             if (left == null)
                 return right;

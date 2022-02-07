@@ -400,6 +400,17 @@ namespace Bing.Date
         public static DateTime ToUtc(this DateTime dt) => new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, DateTimeKind.Utc);
 
         /// <summary>
+        /// 转换为 CST 标准时间（北京时间，解决Linux时区问题）
+        /// </summary>
+        /// <param name="dt">时间</param>
+        public static DateTime ToCst(this DateTime dt)
+        {
+            var now = SystemClock.Instance.GetCurrentInstant();
+            var shanghaiZone = DateTimeZoneProviders.Tzdb["Asia/Shanghai"];
+            return now.InZone(shanghaiZone).ToDateTimeUnspecified();
+        }
+
+        /// <summary>
         /// 转换为纪元时间间隔
         /// </summary>
         /// <param name="dt">时间</param>
@@ -421,7 +432,7 @@ namespace Bing.Date
         /// 转换为 <see cref="LocalTime"/>
         /// </summary>
         /// <param name="dt">时间</param>
-        public static LocalTime ToLocalTime(this DateTime dt)=>new LocalTime(dt.Hour,dt.Minute,dt.Second,dt.Millisecond);
+        public static LocalTime ToLocalTime(this DateTime dt) => new LocalTime(dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
 
         #endregion
     }

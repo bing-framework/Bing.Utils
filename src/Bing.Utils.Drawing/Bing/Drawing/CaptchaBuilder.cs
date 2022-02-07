@@ -20,6 +20,7 @@ namespace Bing.Drawing
 
         /// <summary>
         /// 生成种子
+        /// <para>注：去掉一些容易混淆的字符</para>
         /// </summary>
         private const string Seed = "2,3,4,5,6,7,8,9," +
                                     "A,B,C,D,E,F,G,H,J,K,M,N,P,Q,R,S,T,U,V,W,X,Y,Z," +
@@ -136,15 +137,11 @@ namespace Bing.Drawing
         /// 获取随机数字的字符串
         /// </summary>
         /// <param name="length">长度</param>
-        /// <returns></returns>
         private static string GetRandomNumbers(int length)
         {
-            StringBuilder result = new StringBuilder();
-            for (var i = 0; i < length; i++)
-            {
+            var result = new StringBuilder();
+            for (var i = 0; i < length; i++) 
                 result.Append(Random.Next(0, 9));
-            }
-
             return result.ToString();
         }
 
@@ -152,7 +149,6 @@ namespace Bing.Drawing
         /// 获取随机数字与字母的字符串
         /// </summary>
         /// <param name="length">长度</param>
-        /// <returns></returns>
         private static string GetRandomNumbersAndLetters(int length)
         {
             var allChars = Seed.Split(',');
@@ -162,7 +158,6 @@ namespace Bing.Drawing
                 var index = Random.Next(allChars.Length);
                 result.Append(allChars[index]);
             }
-
             return result.ToString();
         }
 
@@ -170,28 +165,23 @@ namespace Bing.Drawing
         /// 获取随机汉字的字符串
         /// </summary>
         /// <param name="length">长度</param>
-        /// <returns></returns>
         private static string GetRandomChinese(int length)
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             // 每循环一次产生一个含两个元素的十六进制字节数组，并放入bytes数组中
-            for (int i = 0; i < length; i++)
-            {
+            for (var i = 0; i < length; i++) 
                 result.Append(GenerateChinese());
-            }
-
             return result.ToString();
         }
 
         /// <summary>
         /// 生成汉字
         /// </summary>
-        /// <returns></returns>
         private static string GenerateChinese()
         {
             // 汉字编码的组成元素，十六进制数
             string[] hexStrs = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f".Split(',');
-            Encoding encoding = Encoding.GetEncoding("GB2312");
+            var encoding = Encoding.GetEncoding("GB2312");
 
             // 汉字由四个区位码组成，1、2作为字节数组的第一元素，3、4作为第二元素
             Random rnd = Random;
@@ -464,8 +454,7 @@ namespace Bing.Drawing
         /// <param name="length">长度</param>
         /// <param name="code">验证码</param>
         /// <param name="captchaType">验证码类型</param>
-        public Bitmap CreateImage(int length, out string code,
-            CaptchaType captchaType = CaptchaType.NumberAndLetter)
+        public Bitmap CreateImage(int length, out string code, CaptchaType captchaType = CaptchaType.NumberAndLetter)
         {
             if (length <= 0)
                 throw new ArgumentOutOfRangeException(nameof(length));

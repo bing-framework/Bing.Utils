@@ -24,7 +24,7 @@ namespace Bing.Expressions
                 throw new ArgumentNullException(nameof(expression));
             var member = expression.Body as MemberExpression;
 
-            ArgumentException CreateExpressionNotPropertyException()=>new ArgumentException($"The expression parameter ({nameof(expression)}) is not a property expression.");
+            ArgumentException CreateExpressionNotPropertyException() => new ArgumentException($"The expression parameter ({nameof(expression)}) is not a property expression.");
 
             if (member is null && expression.Body.NodeType == ExpressionType.Convert)
             {
@@ -66,9 +66,9 @@ namespace Bing.Expressions
         /// <param name="expressions">表达式集合</param>
         public static IEnumerable<PropertyInfo> GetPropertyInfos<T>(this T source, IEnumerable<Expression<Func<T, object>>> expressions)
         {
-            if(source is null)
+            if (source is null)
                 throw new ArgumentNullException(nameof(source));
-            if(expressions is null)
+            if (expressions is null)
                 throw new ArgumentNullException(nameof(expressions));
             return expressions.GetPropertyInfos();
         }

@@ -7,22 +7,37 @@ namespace Bing.Helpers.Internal
 {
     /// <summary>
     /// RSA加解密 使用OpenSSL的公钥加密/私钥解密
-    ///
-    /// 公私钥请使用openssl生成  ssh-keygen -t rsa 命令生成的公钥私钥是不行的
-    ///
+    /// <para>
+    /// 注：公私钥请使用openssl生成  ssh-keygen -t rsa 命令生成的公钥私钥是不行的
+    /// </para>
     /// 作者：李志强
     /// 时间：2017年10月30日15:50:14
     /// QQ:501232752
     /// </summary>
     internal class RsaHelper
     {
+        /// <summary>
+        /// 私钥RSA提供程序
+        /// </summary>
         private readonly RSA _privateKeyRsaProvider;
+
+        /// <summary>
+        /// 公钥RSA提供程序
+        /// </summary>
         private readonly RSA _publicKeyRsaProvider;
+
+        /// <summary>
+        /// 哈希算法名称
+        /// </summary>
         private readonly HashAlgorithmName _hashAlgorithmName;
+
+        /// <summary>
+        /// 字符编码
+        /// </summary>
         private readonly Encoding _encoding;
 
         /// <summary>
-        /// 实例化RSAHelper
+        /// 初始化一个<see cref="RsaHelper"/>类型的实例
         /// </summary>
         /// <param name="rsaType">加密算法类型 RSA SHA1;RSA2 SHA256 密钥长度至少为2048</param>
         /// <param name="encoding">编码类型</param>

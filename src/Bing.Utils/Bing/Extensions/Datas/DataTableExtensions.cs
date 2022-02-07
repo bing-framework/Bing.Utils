@@ -12,7 +12,7 @@ namespace Bing.Extensions.Datas
     public static class DataTableExtensions
     {
         /// <summary>
-        /// DataTable转换为泛型集合
+        /// 将<see cref="DataTable"/>转换为泛型集合
         /// </summary>
         /// <typeparam name="T">类型</typeparam>
         /// <param name="dataTable">数据表</param>

@@ -651,5 +651,21 @@ namespace Bing.Helpers
                 : encoding.GetString(Convert.FromBase64String(value));
 
         #endregion
+
+        #region CreateSalt(创建随机盐)
+
+        /// <summary>
+        /// 创建随机盐
+        /// </summary>
+        /// <param name="size">盐值长度</param>
+        public static string CreateSalt(int size)
+        {
+            var provider = new RNGCryptoServiceProvider();
+            var data = new byte[size];
+            provider.GetBytes(data);
+            return Convert.ToBase64String(data);
+        }
+
+        #endregion
     }
 }
