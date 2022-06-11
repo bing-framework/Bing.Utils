@@ -6,11 +6,12 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Security;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Bing.Extensions;
-using Bing.Http.Clients.Internal;
+using Bing.Helpers;
 using Bing.Http.Clients.Parameters;
 using Bing.Utils.Json;
 
@@ -82,8 +83,7 @@ namespace Bing.Http.Clients
         /// <summary>
         /// ssl证书验证委托
         /// </summary>
-        private Func<HttpRequestMessage, X509Certificate2, X509Chain, SslPolicyErrors, bool>
-            _serverCertificateCustomValidationCallback;
+        private Func<HttpRequestMessage, X509Certificate2, X509Chain, SslPolicyErrors, bool> _serverCertificateCustomValidationCallback;
 
         /// <summary>
         /// 令牌
@@ -94,6 +94,16 @@ namespace Bing.Http.Clients
         /// 文件集合
         /// </summary>
         private readonly IList<IFileParameter> _files;
+
+        /// <summary>
+        /// 证书路径
+        /// </summary>
+        private string _certificatePath;
+
+        /// <summary>
+        /// 证书密码
+        /// </summary>
+        private string _certificatePassword;
 
         #endregion
 
@@ -371,6 +381,22 @@ namespace Bing.Http.Clients
 
         #endregion
 
+        #region Certificate(设置证书)
+
+        /// <summary>
+        /// 设置证书
+        /// </summary>
+        /// <param name="path">证书路径</param>
+        /// <param name="password">证书密码</param>
+        public TRequest Certificate(string path, string password)
+        {
+            _certificatePath = password;
+            _certificatePassword = password;
+            return This();
+        }
+
+        #endregion
+
         #region ResultAsync(获取结果)
 
         /// <summary>
@@ -415,13 +441,25 @@ namespace Bing.Http.Clients
         /// </summary>
         protected virtual HttpClient CreateHttpClient()
         {
-            return HttpClientBuilderFactory.CreateClient(_url, _timeout);
-            //return new HttpClient(new HttpClientHandler()
-            //{
-            //    CookieContainer = _cookieContainer,
-            //    ServerCertificateCustomValidationCallback = _serverCertificateCustomValidationCallback
-            //})
-            //{ Timeout = _timeout };
+            //return HttpClientBuilderFactory.CreateClient(_url, _timeout);
+            return new HttpClient(CreateHttpClientHandler()) { Timeout = _timeout };
+        }
+
+        /// <summary>
+        /// 创建Http客户端处理器
+        /// </summary>
+        protected HttpClientHandler CreateHttpClientHandler()
+        {
+            var handler = new HttpClientHandler
+            {
+                CookieContainer = _cookieContainer,
+                ServerCertificateCustomValidationCallback = _serverCertificateCustomValidationCallback
+            };
+            if (string.IsNullOrWhiteSpace(_certificatePath))
+                return handler;
+            var certificate = new X509Certificate2(_certificatePath, _certificatePassword, X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);
+            handler.ClientCertificates.Add(certificate);
+            return handler;
         }
 
         /// <summary>
@@ -430,18 +468,28 @@ namespace Bing.Http.Clients
         /// <param name="client">Http客户端</param>
         protected virtual void InitHttpClient(HttpClient client)
         {
+            InitToken();
             if (string.IsNullOrWhiteSpace(_token))
                 return;
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
         }
 
         /// <summary>
+        /// 初始化访问令牌
+        /// </summary>
+        protected virtual void InitToken()
+        {
+            if (string.IsNullOrWhiteSpace(_token) == false)
+                return;
+            _token = Web.AccessToken;
+        }
+
+        /// <summary>
         /// 创建请求消息
         /// </summary>
-        /// <returns></returns>
         protected virtual HttpRequestMessage CreateRequestMessage()
         {
-            var message = new HttpRequestMessage()
+            var message = new HttpRequestMessage
             {
                 Method = _httpMethod,
                 RequestUri = new Uri(_url),
@@ -555,6 +603,22 @@ namespace Bing.Http.Clients
         {
             _failAction?.Invoke(result);
             _failStatusCodeAction?.Invoke(result, statusCode);
+        }
+
+        #endregion
+
+        #region GetStreamAsync(获取流)
+
+        /// <summary>
+        /// 获取流
+        /// </summary>
+        public async Task<byte[]> GetStreamAsync()
+        {
+            using var client = new HttpClient();
+            using var result = await client.GetAsync(_url);
+            if (result.IsSuccessStatusCode)
+                return await result.Content.ReadAsByteArrayAsync();
+            return null;
         }
 
         #endregion

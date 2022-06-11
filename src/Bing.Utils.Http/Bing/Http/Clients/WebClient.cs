@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Bing.Http.Clients
 {
@@ -30,6 +31,12 @@ namespace Bing.Http.Clients
         /// </summary>
         /// <param name="url">请求地址</param>
         public IHttpRequest Delete(string url) => new HttpRequest(HttpMethod.Delete, url);
+
+        /// <summary>
+        /// 获取流
+        /// </summary>
+        /// <param name="url">请求地址</param>
+        public async Task<byte[]> GetStreamAsync(string url) => await new HttpRequest(HttpMethod.Get, url).GetStreamAsync();
     }
 
     /// <summary>

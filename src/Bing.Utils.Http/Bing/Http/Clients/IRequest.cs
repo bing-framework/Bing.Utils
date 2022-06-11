@@ -75,6 +75,13 @@ namespace Bing.Http.Clients
         TRequest BearerToken(string token);
 
         /// <summary>
+        /// 设置证书
+        /// </summary>
+        /// <param name="path">证书路径</param>
+        /// <param name="password">证书密码</param>
+        TRequest Certificate(string path, string password);
+
+        /// <summary>
         /// 设置超时时间
         /// </summary>
         /// <param name="timeout">超时时间。单位：秒</param>
