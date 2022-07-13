@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bing.Extensions.Bases
+// ReSharper disable once CheckNamespace
+namespace Bing.Extensions
 {
     /// <summary>
     /// <see cref="Decimal"/> 扩展
