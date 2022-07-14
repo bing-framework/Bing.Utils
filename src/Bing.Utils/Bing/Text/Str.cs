@@ -94,5 +94,55 @@ namespace Bing.Text
         /// <param name="width">宽度</param>
         /// <param name="appendChar">拼接字符</param>
         public static string PadEnd(string source, int width, char appendChar) => source.PadRight(width, appendChar);
+
+        /// <summary>
+        /// 移除起始字符串
+        /// </summary>
+        /// <param name="builder">字符串生成器</param>
+        /// <param name="start">要移除的值</param>
+        public static StringBuilder RemoveStart(StringBuilder builder, string start)
+        {
+            if (builder == null)
+                return null;
+            if (builder.Length == 0)
+                return builder;
+            if(string.IsNullOrEmpty(start))
+                return builder;
+            if (start.Length > builder.Length)
+                return builder;
+            var chars = start.ToCharArray();
+            for (var i = 0; i < chars.Length; i++)
+            {
+                if (builder[i] != chars[i])
+                    return builder;
+            }
+            return builder.Remove(0, start.Length);
+        }
+
+        /// <summary>
+        /// 移除末尾字符串
+        /// </summary>
+        /// <param name="builder">字符串生成器</param>
+        /// <param name="end">要移除的值</param>
+        public static StringBuilder RemoveEnd(StringBuilder builder, string end)
+        {
+            if (builder == null)
+                return null;
+            if (builder.Length == 0)
+                return builder;
+            if (string.IsNullOrEmpty(end))
+                return builder;
+            if (end.Length > builder.Length)
+                return builder;
+            var chars = end.ToCharArray();
+            for (var i = chars.Length - 1; i >= 0; i--)
+            {
+                var j = builder.Length - (chars.Length - i);
+                if (builder[j] != chars[i])
+                    return builder;
+            }
+
+            return builder.Remove(builder.Length-end.Length, end.Length);
+        }
     }
 }

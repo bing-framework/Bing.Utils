@@ -294,6 +294,30 @@ namespace Bing.Utils.Tests.Helpers
         }
 
         /// <summary>
+        /// 转换为128位浮点型
+        /// </summary>
+        /// <param name="input">输入值</param>
+        /// <param name="result">结果</param>
+        /// <param name="digits">小数位数</param>
+        [Theory]
+        [InlineData(null, 0, null)]
+        [InlineData("", 0, null)]
+        [InlineData("1A", 0, null)]
+        [InlineData("0", 0, null)]
+        [InlineData("1", 1, null)]
+        [InlineData("1.2", 1.2, null)]
+        [InlineData("12.235", 12.23, 2)]
+        [InlineData("12.345", 12.34, 2)]
+        [InlineData("12.3451", 12.34, 2)]
+        [InlineData("12.346", 12.34, 2)]
+        public void Test_ToDecimal_ToZero(object input, decimal result, int? digits)
+        {
+#if NETCOREAPP3_1_OR_GREATER
+            Assert.Equal(result, Conv.ToDecimal(input, 0, digits, MidpointRounding.ToZero));
+#endif
+        }
+
+        /// <summary>
         /// 转换为128位可空浮点型，验证
         /// </summary>
         /// <param name="input">输入值</param>

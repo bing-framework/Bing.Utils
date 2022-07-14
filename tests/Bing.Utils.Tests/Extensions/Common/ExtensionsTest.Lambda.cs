@@ -58,6 +58,22 @@ namespace Bing.Utils.Tests.Extensions
         }
 
         /// <summary>
+        /// 测试 - And方法
+        /// </summary>
+        [Fact]
+        public void Test_And_1()
+        {
+            //arrange
+            Expression<Func<string, bool>> where1 = s => s.StartsWith("a");
+            Expression<Func<string, bool>> where2 = S => S.Length > 10;
+            Func<string, bool> func = where1.And(where2).Compile();
+
+            //act assert
+            Assert.False(func("abc"));
+            Assert.True(func("abcd12345678"));
+        }
+
+        /// <summary>
         /// 测试 - Or方法
         /// </summary>
         [Fact]
