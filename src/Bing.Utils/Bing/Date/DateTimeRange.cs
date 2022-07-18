@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Bing.Utils.Timing
+namespace Bing.Date
 {
     /// <summary>
     /// 时间范围
@@ -24,6 +25,36 @@ namespace Bing.Utils.Timing
     [Serializable]
     public class DateTimeRange : IDateTimeRange
     {
+        #region 构造函数
+
+        /// <summary>
+        /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+        /// </summary>
+        public DateTimeRange() : this(DateTime.MinValue, DateTime.MaxValue)
+        {
+        }
+
+        /// <summary>
+        /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+        /// </summary>
+        /// <param name="startTime">起始时间</param>
+        /// <param name="endTime">结束时间</param>
+        public DateTimeRange(DateTime startTime, DateTime endTime)
+        {
+            StartTime = startTime;
+            EndTime = endTime;
+        }
+
+        /// <summary>
+        /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+        /// </summary>
+        /// <param name="dateTimeRange">事件范围</param>
+        public DateTimeRange(IDateTimeRange dateTimeRange) : this(dateTimeRange.StartTime, dateTimeRange.EndTime)
+        {
+        }
+
+        #endregion
+
         /// <summary>
         /// 获取或设置 起始时间
         /// </summary>
@@ -313,36 +344,6 @@ namespace Bing.Utils.Timing
 
         #endregion
 
-        #region 构造函数
-
-        /// <summary>
-        /// 初始化一个<see cref="DateTimeRange"/>类型的实例
-        /// </summary>
-        public DateTimeRange() : this(DateTime.MinValue, DateTime.MaxValue)
-        {
-        }
-
-        /// <summary>
-        /// 初始化一个<see cref="DateTimeRange"/>类型的实例
-        /// </summary>
-        /// <param name="startTime">起始时间</param>
-        /// <param name="endTime">结束时间</param>
-        public DateTimeRange(DateTime startTime, DateTime endTime)
-        {
-            StartTime = startTime;
-            EndTime = endTime;
-        }
-
-        /// <summary>
-        /// 初始化一个<see cref="DateTimeRange"/>类型的实例
-        /// </summary>
-        /// <param name="dateTimeRange">事件范围</param>
-        public DateTimeRange(IDateTimeRange dateTimeRange) : this(dateTimeRange.StartTime, dateTimeRange.EndTime)
-        {
-        }
-
-        #endregion
-
         #region ToString(输出字符串)
 
         /// <summary>
@@ -394,6 +395,136 @@ namespace Bing.Utils.Timing
         /// 获取两个时间之间的毫秒数
         /// </summary>
         public int GetMilliseconds() => Convert.ToInt32(EndTime.Subtract(StartTime).TotalMilliseconds);
+
+        #endregion
+
+        #region HasIntersect(是否与指定时间范围相交)
+
+        /// <summary>
+        /// 是否与指定时间范围相交
+        /// </summary>
+        /// <param name="range">时间范围</param>
+        public bool HasIntersect(IDateTimeRange range)
+        {
+            return StartTime.In(range.StartTime, range.EndTime) || EndTime.In(range.StartTime, range.EndTime);
+        }
+
+        /// <summary>
+        /// 是否与指定时间范围相交
+        /// </summary>
+        /// <param name="start">开始时间</param>
+        /// <param name="end">结束时间</param>
+        public bool HasIntersect(DateTime start, DateTime end)
+        {
+            return HasIntersect(new DateTimeRange(start, end));
+        }
+
+        #endregion
+
+        #region Contains(是否包含指定时间范围)
+
+        /// <summary>
+        /// 是否包含指定时间范围
+        /// </summary>
+        /// <param name="range">时间范围</param>
+        public bool Contains(IDateTimeRange range)
+        {
+            return range.StartTime.In(StartTime, EndTime) && range.EndTime.In(StartTime, EndTime);
+        }
+
+        /// <summary>
+        /// 是否包含指定时间范围
+        /// </summary>
+        /// <param name="start">开始时间</param>
+        /// <param name="end">结束时间</param>
+        public bool Contains(DateTime start, DateTime end)
+        {
+            return Contains(new DateTimeRange(start, end));
+        }
+
+        #endregion
+
+        #region In(是否在指定时间范围内)
+
+        /// <summary>
+        /// 是否在指定时间范围内
+        /// </summary>
+        /// <param name="range">时间范围</param>
+        public bool In(IDateTimeRange range)
+        {
+            return StartTime.In(range.StartTime, range.EndTime) && EndTime.In(range.StartTime, range.EndTime);
+        }
+
+        /// <summary>
+        /// 是否在指定时间范围内
+        /// </summary>
+        /// <param name="start">开始时间</param>
+        /// <param name="end">结束时间</param>
+        public bool In(DateTime start, DateTime end)
+        {
+            return In(new DateTimeRange(start, end));
+        }
+
+        #endregion
+
+        #region Intersect(获取相交时间范围)
+
+        /// <summary>
+        /// 获取相交时间范围
+        /// </summary>
+        /// <param name="range">时间范围</param>
+        public (bool intersected, DateTimeRange range) Intersect(IDateTimeRange range)
+        {
+            if (HasIntersect(range.StartTime, range.EndTime))
+            {
+                var list = new List<DateTime> { StartTime, range.StartTime, EndTime, range.EndTime };
+                list.Sort();
+                return (true, new DateTimeRange(list[1], list[2]));
+            }
+
+            return (false, null);
+        }
+
+        /// <summary>
+        /// 获取相交时间范围
+        /// </summary>
+        /// <param name="start">开始时间</param>
+        /// <param name="end">结束时间</param>
+        /// <returns></returns>
+        public (bool intersected, DateTimeRange range) Intersect(DateTime start, DateTime end)
+        {
+            return Intersect(new DateTimeRange(start, end));
+        }
+
+        #endregion
+
+        #region Union(合并时间范围)
+
+        /// <summary>
+        /// 合并时间范围
+        /// </summary>
+        /// <param name="range">时间范围</param>
+        public DateTimeRange Union(IDateTimeRange range)
+        {
+            if (HasIntersect(range))
+            {
+                var list = new List<DateTime> { StartTime, range.StartTime, EndTime, range.EndTime };
+                list.Sort();
+                return new DateTimeRange(list[0], list[3]);
+            }
+
+            throw new ArgumentException("不相交的时间段无法合并", nameof(range));
+        }
+
+        /// <summary>
+        /// 合并时间范围
+        /// </summary>
+        /// <param name="start">开始时间</param>
+        /// <param name="end">结束时间</param>
+        public DateTimeRange Union(DateTime start, DateTime end)
+        {
+            return Union(new DateTimeRange(start, end));
+        }
 
         #endregion
     }

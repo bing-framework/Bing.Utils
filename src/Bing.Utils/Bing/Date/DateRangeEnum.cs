@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Timing
+﻿namespace Bing.Date
 {
     /// <summary>
     /// 日期范围
