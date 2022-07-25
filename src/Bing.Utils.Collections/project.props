@@ -1,0 +1,7 @@
+﻿<Project>
+  <PropertyGroup>
+    <AssemblyName>Bing.Utils.Collections</AssemblyName>
+    <PackageId>Bing.Utils.Collections</PackageId>
+    <Description>Bing.Utils.Collections是Bing应用框架的集合操作类库。</Description>
+  </PropertyGroup>
+</Project>

@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Bing.Utils.Collections\Bing.Utils.Collections.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.DateTime\Bing.Utils.DateTime.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Drawing\Bing.Utils.Drawing.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Http\Bing.Utils.Http.csproj" />

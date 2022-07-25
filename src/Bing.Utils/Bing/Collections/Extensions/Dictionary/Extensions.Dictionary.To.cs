@@ -78,7 +78,7 @@ namespace Bing.Collections
         }
 
         /// <summary>
-        /// 转换为数据表
+        /// 转换为<see cref="DataTable"/>
         /// </summary>
         /// <param name="this">字典</param>
         public static DataTable ToDataTable(this IDictionary<string, object> @this)
@@ -96,6 +96,18 @@ namespace Bing.Collections
                 dataTable.Rows.Add(row);
             }
             return dataTable;
+        }
+
+        /// <summary>
+        /// 转换为Dynamic
+        /// </summary>
+        /// <param name="this">字典</param>
+        public static dynamic ToDynamic(this IDictionary<string, object> @this)
+        {
+            dynamic result = new System.Dynamic.ExpandoObject();
+            foreach (var item in @this)
+                (result as ICollection<KeyValuePair<string, object>>).Add(new KeyValuePair<string, object>(item.Key, item.Value));
+            return result;
         }
 
         /// <summary>
