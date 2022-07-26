@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Bing.Collections;
@@ -38,7 +39,7 @@ namespace Bing.Text
         /// </summary>
         /// <param name="text">字符串</param>
         public static int TotalDigits(this string text) =>
-            string.IsNullOrEmpty(text) ? 0 : text.ToCharArray().FindAll(char.IsDigit).Length;
+            string.IsNullOrEmpty(text) ? 0 : Array.FindAll(text.ToCharArray(), char.IsDigit).Length;
 
         /// <summary>
         /// 包含。仅包含数字

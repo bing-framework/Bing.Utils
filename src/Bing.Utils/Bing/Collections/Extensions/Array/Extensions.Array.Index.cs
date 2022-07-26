@@ -9,56 +9,6 @@ namespace Bing.Collections
     public static partial class ArrayExtensions
     {
         /// <summary>
-        /// 获取指定值的索引
-        /// </summary>
-        /// <param name="array">数组</param>
-        /// <param name="value">值</param>
-        public static int IndexOf(this Array array, object value) => Array.IndexOf(array, value);
-
-        /// <summary>
-        /// 获取指定值的索引
-        /// </summary>
-        /// <param name="array">数组</param>
-        /// <param name="value">值</param>
-        /// <param name="startIndex">起始索引</param>
-        public static int IndexOf(this Array array, object value, int startIndex) =>
-            Array.IndexOf(array, value, startIndex);
-
-        /// <summary>
-        /// 获取指定值的索引
-        /// </summary>
-        /// <param name="array">数组</param>
-        /// <param name="value">值</param>
-        /// <param name="startIndex">起始索引</param>
-        /// <param name="count">计数</param>
-        public static int IndexOf(this Array array, object value, int startIndex, int count) =>
-            Array.IndexOf(array, value, startIndex, count);
-
-        /// <summary>
-        /// 获取指定值的最后索引
-        /// </summary>
-        /// <param name="array">数组</param>
-        /// <param name="value">值</param>
-        public static int LastIndexOf(this Array array, object value) => Array.LastIndexOf(array, value);
-
-        /// <summary>
-        /// 获取指定值的最后索引
-        /// </summary>
-        /// <param name="array">数组</param>
-        /// <param name="value">值</param>
-        /// <param name="startIndex">起始索引</param>
-        public static int LastIndexOf(this Array array, object value, int startIndex) => Array.LastIndexOf(array, value, startIndex);
-
-        /// <summary>
-        /// 获取指定值的最后索引
-        /// </summary>
-        /// <param name="array">数组</param>
-        /// <param name="value">值</param>
-        /// <param name="startIndex">起始索引</param>
-        /// <param name="count">计数</param>
-        public static int LastIndexOf(this Array array, object value, int startIndex, int count) => Array.LastIndexOf(array, value, startIndex, count);
-
-        /// <summary>
         /// 是否在数组索引范围内
         /// </summary>
         /// <param name="array">数组</param>

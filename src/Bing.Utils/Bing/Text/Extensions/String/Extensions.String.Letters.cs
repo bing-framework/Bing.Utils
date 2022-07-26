@@ -1,4 +1,4 @@
-﻿using Bing.Collections;
+﻿using System;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Text
@@ -13,7 +13,7 @@ namespace Bing.Text
         /// </summary>
         /// <param name="text">字符串</param>
         public static int TotalLetters(this string text) =>
-            string.IsNullOrEmpty(text) ? 0 : text.ToCharArray().FindAll(char.IsLetter).Length;
+            string.IsNullOrEmpty(text) ? 0 : Array.FindAll(text.ToCharArray(), char.IsLetter).Length;
 
         /// <summary>
         /// 获取总小写英文字母数
@@ -21,7 +21,7 @@ namespace Bing.Text
         /// <param name="text">字符串</param>
         public static int TotalLowerLetters(this string text) => string.IsNullOrEmpty(text)
             ? 0
-            : text.ToCharArray().FindAll(x => char.IsLetter(x) && char.IsLower(x)).Length;
+            : Array.FindAll(text.ToCharArray(), x => char.IsLetter(x) && char.IsLower(x)).Length;
 
         /// <summary>
         /// 获取总大写英文字母数
@@ -29,7 +29,7 @@ namespace Bing.Text
         /// <param name="text">字符串</param>
         public static int TotalUpperLetters(this string text) => string.IsNullOrEmpty(text)
             ? 0
-            : text.ToCharArray().FindAll(x => char.IsLetter(x) && char.IsUpper(x)).Length;
+            : Array.FindAll(text.ToCharArray(), x => char.IsLetter(x) && char.IsUpper(x)).Length;
 
         /// <summary>
         /// 是否包含英文字母

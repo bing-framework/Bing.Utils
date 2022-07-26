@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Bing.Collections;
 
 // ReSharper disable once CheckNamespace
@@ -19,7 +20,7 @@ namespace Bing.Text
                 return;
             var destination = new char[builder.Length];
             builder.CopyTo(0, destination, 0, builder.Length);
-            destination.Reverse();
+            Array.Reverse(destination);
 
             builder.Clear();
             builder.Append(destination);
@@ -35,7 +36,7 @@ namespace Bing.Text
                 return builder;
             var destination = new char[builder.Length];
             builder.CopyTo(0, destination, 0, builder.Length);
-            destination.Reverse();
+            Array.Reverse(destination);
             return new StringBuilder().Append(destination);
         }
 
