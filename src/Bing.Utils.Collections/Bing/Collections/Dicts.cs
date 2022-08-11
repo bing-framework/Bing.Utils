@@ -137,6 +137,7 @@ namespace Bing.Collections
         /// <param name="dictionary">字典</param>
         /// <param name="key">键</param>
         /// <param name="defaultValue">默认值</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TValue GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
         {
             return dictionary is not null && dictionary.TryGetValue(key, out var value) ? value : defaultValue;
@@ -149,6 +150,7 @@ namespace Bing.Collections
         /// <typeparam name="TValue">值类型</typeparam>
         /// <param name="dictionary">字典</param>
         /// <param name="key">键</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TValue GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
         {
             return dictionary is not null && dictionary.TryGetValue(key, out var value) ? value : default;
@@ -197,10 +199,8 @@ namespace Bing.Collections
                 throw new ArgumentNullException(nameof(dictionaryColl));
             value = default;
             foreach (var dictionary in dictionaryColl)
-            {
                 if (dictionary.TryGetValue(key, out value))
                     return true;
-            }
             return false;
         }
 

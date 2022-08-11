@@ -117,18 +117,6 @@ namespace Bing.Extensions
 
         #endregion
 
-        #region AsReadOnly(转换成只读字典)
-
-        /// <summary>
-        /// 转换成只读字典
-        /// </summary>
-        /// <typeparam name="TKey">键类型</typeparam>
-        /// <typeparam name="TValue">值类型</typeparam>
-        /// <param name="dictionary">字典</param>
-        public static IReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) => new ReadOnlyDictionary<TKey, TValue>(dictionary);
-
-        #endregion
-
         #region EqualsTo(判断两个字典中的元素是否相等)
 
         /// <summary>

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Bing.Collections;
-using Bing.Extensions;
 using Shouldly;
 using Xunit;
 
@@ -15,7 +14,7 @@ namespace Bing.Utils.Tests.Collections
         [Fact]
         public void Test_DictConv_CastOneDictToAnother()
         {
-            var source = new Dictionary<int, int> { { 1, 1 }, { 2, 2 }, { 3, 3 } }.AsReadOnly();
+            var source = new Dictionary<int, int> { { 1, 1 }, { 2, 2 }, { 3, 3 } }.AsReadOnlyDictionary();
             var target = DictConv.Cast<int, int, int, dynamic>(source);
 
             target.ShouldNotBeNull();
@@ -28,7 +27,7 @@ namespace Bing.Utils.Tests.Collections
         [Fact]
         public void Test_ExtensionMethods_For_DictConv_CastOneDictToAnother()
         {
-            var source = new Dictionary<int, int> { { 1, 1 }, { 2, 2 }, { 3, 3 } }.AsReadOnly();
+            var source = new Dictionary<int, int> { { 1, 1 }, { 2, 2 }, { 3, 3 } }.AsReadOnlyDictionary();
             var target = source.Cast<int, int, int, dynamic>();
 
             target.ShouldNotBeNull();
