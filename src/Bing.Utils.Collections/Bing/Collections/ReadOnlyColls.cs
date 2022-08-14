@@ -77,21 +77,35 @@ namespace Bing.Collections
             internal static readonly ReadOnlyCollection<T> Instance = new(Array.Empty<T>());
         }
 
-        //public static IReadOnlyList<T> OfList<T>(params T[] @params)
-        //{
-        //}
+        /// <summary>
+        /// 创建一个指定类型 T 的只读列表实例
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="params">参数数组</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IReadOnlyList<T> OfList<T>(params T[] @params) => Colls.OfList(@params).AsReadOnly();
 
-        //public static IReadOnlyList<T> OfList<T>(params IEnumerable<T>[] listParams)
-        //{
+        /// <summary>
+        /// 创建一个指定类型 T 的只读列表实例
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="listParams">集合参数数组</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IReadOnlyList<T> OfList<T>(params IEnumerable<T>[] listParams) => Colls.OfList(listParams).AsReadOnly();
 
-        //}
-
-        //public static IReadOnlyList<T> OfList<T>(IEnumerable<T> list, params IEnumerable<T>[] listParams)
-        //{
-
-        //}
+        /// <summary>
+        /// 创建一个指定类型 T 的只读列表实例
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="list">列表</param>
+        /// <param name="listParams">集合参数数组</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IReadOnlyList<T> OfList<T>(IEnumerable<T> list, params IEnumerable<T>[] listParams) => Colls.OfList(list, listParams).AsReadOnly();
     }
 
+    /// <summary>
+    /// 只读集合工具扩展
+    /// </summary>
     public static class ReadOnlyCollsExtensions
     {
         /// <summary>

@@ -65,7 +65,8 @@ namespace Bing.Collections
         /// <param name="value">值</param>
         /// <param name="comparer">比较器</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int BinarySearch<T>(IReadOnlyList<T> source, T value, IComparer<T> comparer) => BinarySearch(source, 0, source.Count, t => t, value, comparer);
+        public static int BinarySearch<T>(IReadOnlyList<T> source, T value, IComparer<T> comparer) => 
+            BinarySearch(source, 0, source.Count, t => t, value, comparer);
 
         /// <summary>
         /// 二进制查询
