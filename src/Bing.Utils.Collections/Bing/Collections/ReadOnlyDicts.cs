@@ -8,7 +8,7 @@ namespace Bing.Collections
     /// <summary>
     /// 只读字典帮助类
     /// </summary>
-    internal static class ReadOnlyDictHelper
+    internal static class ReadOnlyDictsHelper
     {
         /// <summary>
         /// 包装成只读字典

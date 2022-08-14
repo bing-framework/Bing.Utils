@@ -56,7 +56,7 @@ namespace Bing.Collections
                 throw new ArgumentNullException(nameof(source));
             if (keySelector is null)
                 throw new ArgumentNullException(nameof(keySelector));
-            return ReadOnlyDictHelper.WrapInReadOnlyDictionary(source.ToDictionary(keySelector));
+            return ReadOnlyDictsHelper.WrapInReadOnlyDictionary(source.ToDictionary(keySelector));
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Bing.Collections
                 throw new ArgumentNullException(nameof(keySelector));
             if (comparer is null)
                 throw new ArgumentNullException(nameof(comparer));
-            return ReadOnlyDictHelper.WrapInReadOnlyDictionary(source.ToDictionary(keySelector, comparer));
+            return ReadOnlyDictsHelper.WrapInReadOnlyDictionary(source.ToDictionary(keySelector, comparer));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Bing.Collections
                 throw new ArgumentNullException(nameof(elementSelector));
             if (comparer is null)
                 throw new ArgumentNullException(nameof(comparer));
-            return ReadOnlyDictHelper.WrapInReadOnlyDictionary(source.ToDictionary(keySelector, elementSelector, comparer));
+            return ReadOnlyDictsHelper.WrapInReadOnlyDictionary(source.ToDictionary(keySelector, elementSelector, comparer));
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Bing.Collections
                 throw new ArgumentNullException(nameof(keySelector));
             if (elementSelector is null)
                 throw new ArgumentNullException(nameof(elementSelector));
-            return ReadOnlyDictHelper.WrapInReadOnlyDictionary(source.ToDictionary(keySelector, elementSelector));
+            return ReadOnlyDictsHelper.WrapInReadOnlyDictionary(source.ToDictionary(keySelector, elementSelector));
         }
     }
 
