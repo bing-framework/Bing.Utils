@@ -4,8 +4,4 @@
 	<Import Project="project.dependency.props" />
 
 	<Import Project="..\..\common.props" />
-
-	<ItemGroup>
-	  <Folder Include="Bing\Collections\Internals\" />
-	</ItemGroup>
 </Project>

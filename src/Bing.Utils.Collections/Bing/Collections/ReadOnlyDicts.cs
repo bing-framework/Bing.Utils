@@ -30,6 +30,8 @@ namespace Bing.Collections
     /// </summary>
     public static class ReadOnlyDicts
     {
+        #region Empty
+
         /// <summary>
         /// 获取一个空的只读字典
         /// </summary>
@@ -50,6 +52,10 @@ namespace Bing.Collections
             /// </summary>
             internal static readonly ReadOnlyDictionary<TKey, TValue> Instance = new(new Dictionary<TKey, TValue>());
         }
+
+        #endregion
+
+        #region GetValueOrDefault
 
         /// <summary>
         /// 获取值或默认值
@@ -96,6 +102,10 @@ namespace Bing.Collections
         {
             return dictionary is not null && dictionary.TryGetValue(key, out var value) ? value : default;
         }
+
+        #endregion
+
+        #region GetValueOrDefaultCascading
 
         /// <summary>
         /// 级联地获取一个值或默认值
@@ -146,5 +156,7 @@ namespace Bing.Collections
                     return true;
             return false;
         }
+
+        #endregion
     }
 }
