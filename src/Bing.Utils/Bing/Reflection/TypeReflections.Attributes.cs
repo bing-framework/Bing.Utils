@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using AspectCore.Extensions.Reflection;
 
 namespace Bing.Reflection
@@ -114,7 +115,9 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="member">成员元数据</param>
-        public static bool IsAttributeDefined<TAttribute>(MemberInfo member) where TAttribute : Attribute => IsAttributeDefinedImpl(TypeReflectorHelper.GetReflector(member), typeof(TAttribute));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsAttributeDefined<TAttribute>(MemberInfo member) where TAttribute : Attribute => 
+            IsAttributeDefinedImpl(TypeReflectorHelper.GetReflector(member), typeof(TAttribute));
 
         /// <summary>
         /// 判断给定的特性是否定义
@@ -122,6 +125,7 @@ namespace Bing.Reflection
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="member">成员元数据</param>
         /// <param name="options">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsAttributeDefined<TAttribute>(MemberInfo member, ReflectionOptions options) where TAttribute : Attribute =>
             options switch
             {
@@ -135,7 +139,9 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="parameter">参数元数据</param>
-        public static bool IsAttributeDefined<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => IsAttributeDefinedImpl(TypeReflectorHelper.GetReflector(parameter), typeof(TAttribute));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsAttributeDefined<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => 
+            IsAttributeDefinedImpl(TypeReflectorHelper.GetReflector(parameter), typeof(TAttribute));
 
         /// <summary>
         /// 判断给定的特性是否定义

@@ -273,7 +273,7 @@ namespace Bing.Reflection
                 : defaultVal;
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述，或返回默认值
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="defaultVal">默认值</param>
@@ -282,7 +282,7 @@ namespace Bing.Reflection
             GetDescriptionOrImpl(member, defaultVal, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述，或返回默认值
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="defaultVal">默认值</param>
@@ -291,7 +291,7 @@ namespace Bing.Reflection
             GetDescriptionOrImpl(parameter, defaultVal, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述，或返回默认值
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="defaultVal">默认值</param>
@@ -300,7 +300,7 @@ namespace Bing.Reflection
             GetDescriptionOrImpl(typeof(T), defaultVal, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述，或返回默认值
         /// </summary>
         /// <param name="type">类型</param>
         /// <param name="memberName">成员名称</param>
@@ -317,7 +317,7 @@ namespace Bing.Reflection
         }
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述，或返回默认值
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="memberName">成员名称</param>
@@ -332,7 +332,7 @@ namespace Bing.Reflection
         }
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述，或返回默认值
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="expression">表达式</param>
