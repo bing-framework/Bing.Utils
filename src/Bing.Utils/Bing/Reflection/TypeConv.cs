@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Bing.Reflection
 {
@@ -116,6 +117,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="T">类型</typeparam>
         /// <returns>基础类型</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Type GetNonNullableType<T>() => GetNonNullableType(typeof(T));
     }
 }

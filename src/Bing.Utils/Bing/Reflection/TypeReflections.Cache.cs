@@ -16,47 +16,47 @@ namespace Bing.Reflection
             /// <summary>
             /// 类型 - 属性 缓存
             /// </summary>
-            private static readonly ConcurrentDictionary<Type, PropertyInfo[]> TypePropertyCache = new ConcurrentDictionary<Type, PropertyInfo[]>();
+            private static readonly ConcurrentDictionary<Type, PropertyInfo[]> TypePropertyCache = new();
 
             /// <summary>
             /// 类型 - 字段 缓存
             /// </summary>
-            private static readonly ConcurrentDictionary<Type, FieldInfo[]> TypeFieldCache = new ConcurrentDictionary<Type, FieldInfo[]>();
+            private static readonly ConcurrentDictionary<Type, FieldInfo[]> TypeFieldCache = new();
 
             /// <summary>
             /// 类型 - 方法 缓存
             /// </summary>
-            internal static readonly ConcurrentDictionary<Type, MethodInfo[]> TypeMethodCache = new ConcurrentDictionary<Type, MethodInfo[]>();
+            internal static readonly ConcurrentDictionary<Type, MethodInfo[]> TypeMethodCache = new();
 
             /// <summary>
             /// 类型 - new函数Func 缓存
             /// </summary>
-            internal static readonly ConcurrentDictionary<Type, Func<ServiceContainer, object>> TypeNewFuncCache = new ConcurrentDictionary<Type, Func<ServiceContainer, object>>();
+            internal static readonly ConcurrentDictionary<Type, Func<ServiceContainer, object>> TypeNewFuncCache = new();
 
             /// <summary>
             /// 类型 - 构造函数 缓存
             /// </summary>
-            internal static readonly ConcurrentDictionary<Type, ConstructorInfo> TypeConstructorCache = new ConcurrentDictionary<Type, ConstructorInfo>();
+            internal static readonly ConcurrentDictionary<Type, ConstructorInfo> TypeConstructorCache = new();
 
             /// <summary>
             /// 类型 - 空构造函数Func 缓存
             /// </summary>
-            internal static readonly ConcurrentDictionary<Type, Func<object>> TypeEmptyConstructorFuncCache = new ConcurrentDictionary<Type, Func<object>>();
+            internal static readonly ConcurrentDictionary<Type, Func<object>> TypeEmptyConstructorFuncCache = new();
 
             /// <summary>
             /// 类型 - 构造函数Func 缓存
             /// </summary>
-            internal static readonly ConcurrentDictionary<Type, Func<object[], object>> TypeConstructorFuncCache = new ConcurrentDictionary<Type, Func<object[], object>>();
+            internal static readonly ConcurrentDictionary<Type, Func<object[], object>> TypeConstructorFuncCache = new();
 
             /// <summary>
             /// 属性 - 值 获取器 缓存
             /// </summary>
-            internal static readonly ConcurrentDictionary<PropertyInfo, Func<object, object>> PropertyValueGetters = new ConcurrentDictionary<PropertyInfo, Func<object, object>>();
+            internal static readonly ConcurrentDictionary<PropertyInfo, Func<object, object>> PropertyValueGetters = new();
 
             /// <summary>
             /// 属性 - 值 设置器 缓存
             /// </summary>
-            internal static readonly ConcurrentDictionary<PropertyInfo, Action<object, object>> PropertyValueSetters = new ConcurrentDictionary<PropertyInfo, Action<object, object>>();
+            internal static readonly ConcurrentDictionary<PropertyInfo, Action<object, object>> PropertyValueSetters = new();
 
             /// <summary>
             /// 获取指定类型的属性信息数组

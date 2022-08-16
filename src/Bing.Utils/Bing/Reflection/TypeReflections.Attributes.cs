@@ -46,6 +46,8 @@ namespace Bing.Reflection
         /// 获取反射器
         /// </summary>
         /// <param name="member">成员元数据</param>
+        /// <exception cref="InvalidOperationException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ICustomAttributeReflectorProvider GetReflector(MemberInfo member)
         {
             if (member is null)
@@ -66,6 +68,7 @@ namespace Bing.Reflection
         /// 获取反射器
         /// </summary>
         /// <param name="parameter">参数元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ICustomAttributeReflectorProvider GetReflector(ParameterInfo parameter) => parameter.GetReflector();
 
         /// <summary>
@@ -79,6 +82,7 @@ namespace Bing.Reflection
         /// 获取运行时类型处理器集合
         /// </summary>
         /// <param name="reflector">自定义特性反射器</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static HashSet<RuntimeTypeHandle> GetRuntimeTypeHandles(CustomAttributeReflector reflector) => CustomAttributeReflectorRuntimeTypeHandle.GetValue(reflector) as HashSet<RuntimeTypeHandle>;
     }
 
@@ -90,11 +94,15 @@ namespace Bing.Reflection
         /// <summary>
         /// 校验
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static TRequired AttrRequired<TRequired>(this TRequired value, string message) => value ?? throw new ArgumentException(message);
 
         /// <summary>
         /// 校验
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static IEnumerable<TRequired> AttrRequired<TRequired>(this IEnumerable<TRequired> value, string message)
         {
             if (value is null || !value.Any())
@@ -105,8 +113,9 @@ namespace Bing.Reflection
         /// <summary>
         /// 消除歧义，取第一项的值
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static TAttribute AttrDisambiguation<TAttribute>(this IEnumerable<TAttribute> value) =>
-            value.FirstOrDefault();
+            value is null ? default : value.FirstOrDefault();
 
         #region IsAttributeDefined
 
@@ -149,6 +158,7 @@ namespace Bing.Reflection
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="parameter">参数元数据</param>
         /// <param name="options">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsAttributeDefined<TAttribute>(ParameterInfo parameter, ReflectionOptions options) where TAttribute : Attribute =>
             options switch
             {
@@ -162,6 +172,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsAttributeDefined(MemberInfo member, Type attributeType) => IsAttributeDefinedImpl(TypeReflectorHelper.GetReflector(member), attributeType);
 
         /// <summary>
@@ -183,6 +194,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsAttributeDefined(ParameterInfo parameter, Type attributeType) => IsAttributeDefinedImpl(TypeReflectorHelper.GetReflector(parameter), attributeType);
 
         /// <summary>
@@ -191,6 +203,7 @@ namespace Bing.Reflection
         /// <param name="parameter">参数元数据</param>
         /// <param name="attributeType">特性类型</param>
         /// <param name="options">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsAttributeDefined(ParameterInfo parameter, Type attributeType, ReflectionOptions options) =>
             options switch
             {
@@ -204,6 +217,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
         /// <param name="attributeType">特性类型</param>
+        /// <exception cref="ArgumentNullException"></exception>
         private static bool IsAttributeDefinedImpl(ICustomAttributeReflectorProvider customAttributeReflectorProvider, Type attributeType)
         {
             if (attributeType is null)
@@ -232,6 +246,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Attribute GetAttribute(MemberInfo member, Type attributeType) => GetAttributeImpl(TypeReflectorHelper.GetReflector(member), attributeType);
 
         /// <summary>
@@ -239,6 +254,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Attribute GetAttribute(ParameterInfo parameter, Type attributeType) => GetAttributeImpl(TypeReflectorHelper.GetReflector(parameter), attributeType);
 
         /// <summary>
@@ -248,6 +264,7 @@ namespace Bing.Reflection
         /// <param name="attributeType">特性类型</param>
         /// <param name="refOptions">反射选项</param>
         /// <param name="ambOptions">反射歧义选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Attribute GetAttribute(MemberInfo member, Type attributeType, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default) =>
             refOptions switch
             {
@@ -268,6 +285,7 @@ namespace Bing.Reflection
         /// <param name="attributeType">特性类型</param>
         /// <param name="refOptions">反射选项</param>
         /// <param name="ambOptions">反射歧义选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Attribute GetAttribute(ParameterInfo parameter, Type attributeType, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default) =>
             refOptions switch
             {
@@ -286,6 +304,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="member">成员元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TAttribute GetAttribute<TAttribute>(MemberInfo member) where TAttribute : Attribute => (TAttribute)GetAttributeImpl(TypeReflectorHelper.GetReflector(member), typeof(TAttribute));
 
         /// <summary>
@@ -293,6 +312,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="parameter">参数元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TAttribute GetAttribute<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => (TAttribute)GetAttributeImpl(TypeReflectorHelper.GetReflector(parameter), typeof(TAttribute));
 
         /// <summary>
@@ -302,6 +322,7 @@ namespace Bing.Reflection
         /// <param name="member">成员元数据</param>
         /// <param name="refOptions">反射选项</param>
         /// <param name="ambOptions">反射歧义选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TAttribute GetAttribute<TAttribute>(MemberInfo member, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default) where TAttribute : Attribute =>
             refOptions switch
             {
@@ -322,6 +343,7 @@ namespace Bing.Reflection
         /// <param name="parameter">参数元数据</param>
         /// <param name="refOptions">反射选项</param>
         /// <param name="ambOptions">反射歧义选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TAttribute GetAttribute<TAttribute>(ParameterInfo parameter, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default) where TAttribute : Attribute =>
             refOptions switch
             {
@@ -340,6 +362,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
         /// <param name="attributeType">特性类型</param>
+        /// <exception cref="ArgumentNullException"></exception>
         private static Attribute GetAttributeImpl(ICustomAttributeReflectorProvider customAttributeReflectorProvider, Type attributeType)
         {
             if (attributeType is null)
@@ -368,6 +391,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="member">成员元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<TAttribute> GetAttributes<TAttribute>(MemberInfo member) where TAttribute : Attribute => GetAttributesImpl(TypeReflectorHelper.GetReflector(member), typeof(TAttribute)).Cast<TAttribute>();
 
         /// <summary>
@@ -375,6 +399,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="parameter">参数元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<TAttribute> GetAttributes<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => GetAttributesImpl(TypeReflectorHelper.GetReflector(parameter), typeof(TAttribute)).Cast<TAttribute>();
 
         /// <summary>
@@ -383,6 +408,7 @@ namespace Bing.Reflection
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="member">成员元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<TAttribute> GetAttributes<TAttribute>(MemberInfo member, ReflectionOptions refOptions) where TAttribute : Attribute =>
             refOptions switch
             {
@@ -397,6 +423,7 @@ namespace Bing.Reflection
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="parameter">参数元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<TAttribute> GetAttributes<TAttribute>(ParameterInfo parameter, ReflectionOptions refOptions) where TAttribute : Attribute =>
             refOptions switch
             {
@@ -410,6 +437,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetAttributes(MemberInfo member, Type attributeType) => GetAttributesImpl(TypeReflectorHelper.GetReflector(member), attributeType);
 
         /// <summary>
@@ -417,6 +445,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetAttributes(ParameterInfo parameter, Type attributeType) => GetAttributesImpl(TypeReflectorHelper.GetReflector(parameter), attributeType);
 
         /// <summary>
@@ -425,6 +454,7 @@ namespace Bing.Reflection
         /// <param name="member">成员元数据</param>
         /// <param name="attributeType">特性类型</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetAttributes(MemberInfo member, Type attributeType, ReflectionOptions refOptions) =>
             refOptions switch
             {
@@ -439,6 +469,7 @@ namespace Bing.Reflection
         /// <param name="parameter">参数元数据</param>
         /// <param name="attributeType">特性类型</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetAttributes(ParameterInfo parameter, Type attributeType, ReflectionOptions refOptions) =>
             refOptions switch
             {
@@ -452,6 +483,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
         /// <param name="attributeType">特性类型</param>
+        /// <exception cref="ArgumentNullException"></exception>
         private static IEnumerable<Attribute> GetAttributesImpl(ICustomAttributeReflectorProvider customAttributeReflectorProvider, Type attributeType)
         {
             if (attributeType is null)
@@ -489,6 +521,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="member">成员元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TAttribute GetRequiredAttribute<TAttribute>(MemberInfo member) where TAttribute : Attribute => GetAttribute<TAttribute>(member).AttrRequired($"There is no {typeof(TAttribute)} attribute can be found.");
 
         /// <summary>
@@ -496,6 +529,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="parameter">参数元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TAttribute GetRequiredAttribute<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => GetAttribute<TAttribute>(parameter).AttrRequired($"There is no {typeof(TAttribute)} attribute can be found.");
 
         /// <summary>
@@ -505,6 +539,7 @@ namespace Bing.Reflection
         /// <param name="member">成员元数据</param>
         /// <param name="refOptions">反射选项</param>
         /// <param name="ambOptions">反射歧义选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TAttribute GetRequiredAttribute<TAttribute>(MemberInfo member, ReflectionOptions refOptions,
             ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default) where TAttribute : Attribute
         {
@@ -525,6 +560,7 @@ namespace Bing.Reflection
         /// <param name="parameter">参数元数据</param>
         /// <param name="refOptions">反射选项</param>
         /// <param name="ambOptions">反射歧义选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TAttribute GetRequiredAttribute<TAttribute>(ParameterInfo parameter, ReflectionOptions refOptions,
             ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default) where TAttribute : Attribute
         {
@@ -543,6 +579,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Attribute GetRequiredAttribute(MemberInfo member, Type attributeType) => GetAttribute(member, attributeType).AttrRequired($"There is no {attributeType} attribute can be found.");
 
         /// <summary>
@@ -550,6 +587,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Attribute GetRequiredAttribute(ParameterInfo parameter, Type attributeType) => GetAttribute(parameter, attributeType).AttrRequired($"There is no {attributeType} attribute can be found.");
 
         /// <summary>
@@ -559,6 +597,7 @@ namespace Bing.Reflection
         /// <param name="attributeType">特性类型</param>
         /// <param name="refOptions">反射选项</param>
         /// <param name="ambOptions">反射歧义选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Attribute GetRequiredAttribute(MemberInfo member, Type attributeType, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default)
         {
             var val = ambOptions switch
@@ -577,6 +616,7 @@ namespace Bing.Reflection
         /// <param name="attributeType">特性类型</param>
         /// <param name="refOptions">反射选项</param>
         /// <param name="ambOptions">反射歧义选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Attribute GetRequiredAttribute(ParameterInfo parameter, Type attributeType, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default)
         {
             var val = ambOptions switch
@@ -597,6 +637,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="member">成员元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<TAttribute> GetRequiredAttributes<TAttribute>(MemberInfo member) where TAttribute : Attribute => GetAttributes<TAttribute>(member).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
 
         /// <summary>
@@ -604,6 +645,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="parameter">参数元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<TAttribute> GetRequiredAttributes<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => GetAttributes<TAttribute>(parameter).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
 
         /// <summary>
@@ -612,6 +654,7 @@ namespace Bing.Reflection
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="member">成员元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<TAttribute> GetRequiredAttributes<TAttribute>(MemberInfo member, ReflectionOptions refOptions) where TAttribute : Attribute => GetAttributes<TAttribute>(member, refOptions).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
 
         /// <summary>
@@ -620,6 +663,7 @@ namespace Bing.Reflection
         /// <typeparam name="TAttribute">特性类型</typeparam>
         /// <param name="parameter">参数元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<TAttribute> GetRequiredAttributes<TAttribute>(ParameterInfo parameter, ReflectionOptions refOptions) where TAttribute : Attribute => GetAttributes<TAttribute>(parameter, refOptions).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
 
         /// <summary>
@@ -627,6 +671,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetRequiredAttributes(MemberInfo member, Type attributeType) => GetAttributes(member, attributeType).AttrRequired($"There is no any {attributeType} attributes can be found.");
 
         /// <summary>
@@ -634,6 +679,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="attributeType">特性类型</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetRequiredAttributes(ParameterInfo parameter, Type attributeType) => GetAttributes(parameter, attributeType).AttrRequired($"There is no any {attributeType} attributes can be found.");
 
         /// <summary>
@@ -642,6 +688,7 @@ namespace Bing.Reflection
         /// <param name="member">成员元数据</param>
         /// <param name="attributeType">特性类型</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetRequiredAttributes(MemberInfo member, Type attributeType, ReflectionOptions refOptions) => GetAttributes(member, attributeType, refOptions).AttrRequired($"There is no any {attributeType} attributes can be found.");
 
         /// <summary>
@@ -650,6 +697,7 @@ namespace Bing.Reflection
         /// <param name="parameter">参数元数据</param>
         /// <param name="attributeType">特性类型</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetRequiredAttributes(ParameterInfo parameter, Type attributeType, ReflectionOptions refOptions) => GetAttributes(parameter, attributeType, refOptions).AttrRequired($"There is no any {attributeType} attributes can be found.");
 
         #endregion
@@ -660,12 +708,14 @@ namespace Bing.Reflection
         /// 从成员信息中获取所有 <see cref="Attribute"/> 实例
         /// </summary>
         /// <param name="member">成员元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetAttributes(MemberInfo member) => GetAttributesImpl(TypeReflectorHelper.GetReflector(member));
 
         /// <summary>
         /// 从成员信息中获取所有 <see cref="Attribute"/> 实例
         /// </summary>
         /// <param name="parameter">参数元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetAttributes(ParameterInfo parameter) => GetAttributesImpl(TypeReflectorHelper.GetReflector(parameter));
 
         /// <summary>
@@ -673,6 +723,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetAttributes(MemberInfo member, ReflectionOptions refOptions) =>
             refOptions switch
             {
@@ -686,6 +737,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Attribute> GetAttributes(ParameterInfo parameter, ReflectionOptions refOptions) =>
             refOptions switch
             {
@@ -698,6 +750,7 @@ namespace Bing.Reflection
         /// 获取所有特性 的实现方式
         /// </summary>
         /// <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
+        /// <exception cref="ArgumentNullException"></exception>
         private static IEnumerable<Attribute> GetAttributesImpl(ICustomAttributeReflectorProvider customAttributeReflectorProvider)
         {
             var attributeReflectors = customAttributeReflectorProvider != null

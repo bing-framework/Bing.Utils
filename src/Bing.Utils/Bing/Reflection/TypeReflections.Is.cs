@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Bing.Reflection
 {
@@ -29,6 +30,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsBoolean(MemberInfo member, TypeIsOptions isOptions = TypeIsOptions.Default) => X(member, type => N(type, isOptions), type => type == TypeClass.BooleanClazz);
 
         /// <summary>
@@ -36,6 +38,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsDateTime(MemberInfo member, TypeIsOptions isOptions = TypeIsOptions.Default) => X(member, type => N(type, isOptions), type => type == TypeClass.DateTimeClazz);
 
         /// <summary>
@@ -43,6 +46,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNumeric(MemberInfo member, TypeIsOptions isOptions = TypeIsOptions.Default) => X(member, type => type, type => Types.IsNumericType(type, isOptions));
 
         /// <summary>
@@ -50,6 +54,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEnum(MemberInfo member, TypeIsOptions isOptions = TypeIsOptions.Default) => X(member, type => type, type => Types.IsEnumType(type, isOptions));
 
         /// <summary>
@@ -57,6 +62,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsStruct(MemberInfo member, TypeIsOptions isOptions = TypeIsOptions.Default) => X(member, type => type, type => Types.IsStructType(type, isOptions));
 
         /// <summary>

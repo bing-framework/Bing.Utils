@@ -13,6 +13,7 @@ namespace Bing.Reflection
         /// 默认
         /// </summary>
         Default = 0,
+
         /// <summary>
         /// 允许识别抽象类
         /// </summary>
@@ -54,6 +55,7 @@ namespace Bing.Reflection
         /// <typeparam name="TParent">父类型</typeparam>
         /// <param name="value">值</param>
         /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsObjectDerivedFrom<TSource, TParent>(TSource value, TypeIsOptions isOptions = TypeIsOptions.Default) =>
             IsObjectDerivedFrom(value, typeof(TParent), isOptions);
 
@@ -67,6 +69,7 @@ namespace Bing.Reflection
         /// <param name="sourceType">来源类型</param>
         /// <param name="parentType">父类型</param>
         /// <param name="derivedOptions">类型派生选项</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static bool IsTypeDerivedFrom(Type sourceType, Type parentType, TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default)
         {
             if (sourceType == null)
@@ -95,6 +98,7 @@ namespace Bing.Reflection
         /// <typeparam name="TSource">来源类型</typeparam>
         /// <typeparam name="TParent">父类型</typeparam>
         /// <param name="derivedOptions">类型派生选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTypeDerivedFrom<TSource, TParent>(TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default) =>
             IsTypeDerivedFrom(typeof(TSource), typeof(TParent), derivedOptions);
 
@@ -108,7 +112,6 @@ namespace Bing.Reflection
         /// <param name="sourceType">来源类型</param>
         /// <param name="parentType">父类型</param>
         /// <exception cref="ArgumentNullException"></exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTypeBasedOn(Type sourceType, Type parentType)
         {
             if (sourceType is null)

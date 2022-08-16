@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Bing.Reflection
 {
@@ -17,6 +18,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsDescriptionDefined(MemberInfo member, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             member is not null && (IsAttributeDefined<DescriptionAttribute>(member, refOptions) || IsAttributeDefined<DisplayAttribute>(member, refOptions));
 
@@ -25,6 +27,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsDescriptionDefined(ParameterInfo parameter, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             parameter is not null && (IsAttributeDefined<DescriptionAttribute>(parameter, refOptions) || IsAttributeDefined<DisplayAttribute>(parameter, refOptions));
 
@@ -67,31 +70,54 @@ namespace Bing.Reflection
         }
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述信息。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DescriptionAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDescription(MemberInfo member, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDescriptionImpl(member, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述信息。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DescriptionAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDescription(ParameterInfo parameter, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDescriptionImpl(parameter, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述信息。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DescriptionAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDescription<T>(ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDescriptionImpl(typeof(T), refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述信息。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DescriptionAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <param name="type">类型</param>
         /// <param name="memberName">成员名称</param>
@@ -107,7 +133,12 @@ namespace Bing.Reflection
         }
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述信息。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DescriptionAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="memberName">成员名称</param>
@@ -121,7 +152,12 @@ namespace Bing.Reflection
         }
 
         /// <summary>
-        /// 获取描述
+        /// 获取描述信息。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DescriptionAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="expression">表达式</param>
@@ -175,31 +211,54 @@ namespace Bing.Reflection
         }
 
         /// <summary>
-        /// 获取显示名称
+        /// 获取显示名称。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DisplayNameAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDisplayName(MemberInfo member, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDisplayNameImpl(member, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
         /// <summary>
-        /// 获取显示名称
+        /// 获取显示名称。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DisplayNameAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDisplayName(ParameterInfo parameter, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDisplayNameImpl(parameter, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
         /// <summary>
-        /// 获取显示名称
+        /// 获取显示名称。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DisplayNameAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDisplayName<T>(ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDisplayNameImpl(typeof(T), refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
         /// <summary>
-        /// 获取显示名称
+        /// 获取显示名称。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DisplayNameAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <param name="type">类型</param>
         /// <param name="memberName">成员名称</param>
@@ -215,7 +274,12 @@ namespace Bing.Reflection
         }
 
         /// <summary>
-        /// 获取显示名称
+        /// 获取显示名称。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DisplayNameAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="memberName">成员名称</param>
@@ -229,7 +293,12 @@ namespace Bing.Reflection
         }
 
         /// <summary>
-        /// 获取显示名称
+        /// 获取显示名称。将按照以下顺序进行寻找：
+        /// <para>
+        /// - <see cref="DisplayNameAttribute"/> <br />
+        /// - <see cref="DisplayAttribute"/> <br />
+        /// - Name
+        /// </para>
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="expression">表达式</param>
@@ -278,6 +347,7 @@ namespace Bing.Reflection
         /// <param name="member">成员元数据</param>
         /// <param name="defaultVal">默认值</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDescriptionOr(MemberInfo member, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDescriptionOrImpl(member, defaultVal, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
@@ -287,6 +357,7 @@ namespace Bing.Reflection
         /// <param name="parameter">参数元数据</param>
         /// <param name="defaultVal">默认值</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDescriptionOr(ParameterInfo parameter, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDescriptionOrImpl(parameter, defaultVal, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
@@ -296,6 +367,7 @@ namespace Bing.Reflection
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="defaultVal">默认值</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDescriptionOr<T>(string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDescriptionOrImpl(typeof(T), defaultVal, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
@@ -394,6 +466,7 @@ namespace Bing.Reflection
         /// <param name="member">成员元数据</param>
         /// <param name="defaultVal">默认值</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDisplayNameOr(MemberInfo member, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDisplayNameOrImpl(member, defaultVal, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
@@ -403,6 +476,7 @@ namespace Bing.Reflection
         /// <param name="parameter">参数元数据</param>
         /// <param name="defaultVal">默认值</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDisplayNameOr(ParameterInfo parameter, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDisplayNameOrImpl(parameter, defaultVal, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
@@ -412,6 +486,7 @@ namespace Bing.Reflection
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="defaultVal">默认值</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDisplayNameOr<T>(string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDisplayNameOrImpl(typeof(T), defaultVal, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
@@ -503,6 +578,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="member">成员元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDescriptionOrDisplayName(MemberInfo member, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDescriptionOrDisplayNameImpl(member, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
@@ -511,6 +587,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <param name="parameter">参数元数据</param>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDescriptionOrDisplayName(ParameterInfo parameter, ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDescriptionOrDisplayNameImpl(parameter, refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 
@@ -519,6 +596,7 @@ namespace Bing.Reflection
         /// </summary>
         /// <typeparam name="T">泛型类型</typeparam>
         /// <param name="refOptions">反射选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetDescriptionOrDisplayName<T>(ReflectionOptions refOptions = ReflectionOptions.Default) =>
             GetDescriptionOrDisplayNameImpl(typeof(T), refOptions, ReflectionAmbiguousOptions.IgnoreAmbiguous);
 

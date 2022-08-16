@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Bing.Reflection
 {
@@ -53,6 +54,7 @@ namespace Bing.Reflection
         /// <typeparam name="TInterface">接口类型</typeparam>
         /// <param name="type">类型</param>
         /// <param name="options">接口选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInterfaceDefined<TInterface>(Type type, InterfaceOptions options = InterfaceOptions.Default) => IsInterfaceDefined(type, typeof(TInterface), options);
 
         /// <summary>

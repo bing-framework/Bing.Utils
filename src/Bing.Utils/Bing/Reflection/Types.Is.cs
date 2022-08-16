@@ -245,6 +245,80 @@ namespace Bing.Reflection
 
         #endregion
 
+        #region ValueType
+
+        /// <summary>
+        /// 判断给定的类型是否为值类型
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="isOptions">类型判断选项</param>
+        public static bool IsValueType(Type type, TypeIsOptions isOptions = TypeIsOptions.Default)
+        {
+            return type is not null && isOptions switch
+            {
+                TypeIsOptions.Default => type.GetTypeInfo().IsValueType,
+                TypeIsOptions.IgnoreNullable => TypeConv.GetNonNullableType(type)?.GetTypeInfo().IsValueType ?? false,
+                _ => type.IsValueType
+            };
+        }
+
+        /// <summary>
+        /// 判断给定的类型是否为值类型
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsValueType<T>(TypeIsOptions isOptions = TypeIsOptions.Default) => IsValueType(typeof(T), isOptions);
+
+        /// <summary>
+        /// 判断给定的类型是否为值类型
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="value">值</param>
+        /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsValueType<T>(T value, TypeIsOptions isOptions = TypeIsOptions.Default) =>
+            value is not null && IsValueType(typeof(T), isOptions);
+
+        #endregion
+
+        #region PrimitiveType
+
+        /// <summary>
+        /// 判断给定的类型是否为原始类型
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="isOptions">类型判断选项</param>
+        public static bool IsPrimitiveType(Type type, TypeIsOptions isOptions = TypeIsOptions.Default)
+        {
+            return type is not null && isOptions switch
+            {
+                TypeIsOptions.Default => type.GetTypeInfo().IsPrimitive,
+                TypeIsOptions.IgnoreNullable => TypeConv.GetNonNullableType(type)?.GetTypeInfo().IsPrimitive ?? false,
+                _ => type.IsPrimitive
+            };
+        }
+
+        /// <summary>
+        /// 判断给定的类型是否为原始类型
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPrimitiveType<T>(TypeIsOptions isOptions = TypeIsOptions.Default) => IsPrimitiveType(typeof(T), isOptions);
+
+        /// <summary>
+        /// 判断给定的类型是否为原始类型
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="value">值</param>
+        /// <param name="isOptions">类型判断选项</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPrimitiveType<T>(T value, TypeIsOptions isOptions = TypeIsOptions.Default) =>
+            value is not null && IsPrimitiveType(typeof(T), isOptions);
+
+        #endregion
+
         #region Struct
 
         /// <summary>
