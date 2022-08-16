@@ -8,7 +8,7 @@ namespace Bing.IdGenerators
     public class DefaultTraceIdMaker : ITraceIdMaker
     {
         /// <summary>
-        /// 生成 Id
+        /// 创建 Id
         /// </summary>
         public string Create()
         {

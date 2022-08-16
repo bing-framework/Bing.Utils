@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.Reflection</AssemblyName>
+		<PackageId>Bing.Utils.Reflection</PackageId>
+		<Description>Bing.Utils.Reflection是Bing应用框架的反射操作类库。</Description>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.props" />
+
+	<Import Project="references.props" />
+
+	<Import Project="dependency.props" />
+</Project>

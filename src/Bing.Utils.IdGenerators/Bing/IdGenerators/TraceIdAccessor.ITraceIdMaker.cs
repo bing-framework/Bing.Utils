@@ -6,7 +6,7 @@
     public interface ITraceIdMaker
     {
         /// <summary>
-        /// 生成 Id
+        /// 创建 Id
         /// </summary>
         string Create();
     }
