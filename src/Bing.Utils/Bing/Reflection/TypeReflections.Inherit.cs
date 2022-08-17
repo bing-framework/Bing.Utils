@@ -34,9 +34,7 @@ namespace Bing.Reflection
         /// <param name="isOptions">类型判断选项</param>
         /// <param name="derivedOptions">类型派生选项</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public static bool IsObjectDerivedFrom<TSource>(TSource value, Type parentType,
-            TypeIsOptions isOptions = TypeIsOptions.Default,
-            TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default)
+        public static bool IsObjectDerivedFrom<TSource>(TSource value, Type parentType, TypeIsOptions isOptions = TypeIsOptions.Default, TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default)
         {
             if (parentType is null)
                 throw new ArgumentNullException(nameof(parentType));

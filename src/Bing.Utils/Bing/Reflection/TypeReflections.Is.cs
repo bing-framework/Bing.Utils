@@ -69,6 +69,7 @@ namespace Bing.Reflection
         /// 判断给定的 <see cref="MemberInfo"/> 元信息是否为集合或数组类型
         /// </summary>
         /// <param name="member">成员元数据</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCollection(MemberInfo member) => X(member, type => type, Types.IsCollectionType);
     }
 }

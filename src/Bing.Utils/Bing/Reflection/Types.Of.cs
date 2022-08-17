@@ -14,6 +14,7 @@ namespace Bing.Reflection
         /// 拥有者
         /// </summary>
         Owner = 0,
+
         /// <summary>
         /// 基础类型
         /// </summary>
@@ -475,7 +476,7 @@ namespace Bing.Reflection
             return options switch
             {
                 TypeOfOptions.Owner => nativeTypes,
-                TypeOfOptions.Underlying => nativeTypes.Select(TypeConv.GetNonNullableType).ToArray(),
+                TypeOfOptions.Underlying => FilterAndConvert(nativeTypes.Select(TypeConv.GetNonNullableType)),
                 _ => nativeTypes
             };
 
@@ -488,8 +489,13 @@ namespace Bing.Reflection
 
                 //return objectCollection.Select(obj => obj?.GetType());
                 if (objectCollection.Contains(null))
-                    return objectCollection.Select(obj => obj?.GetType()).ToArray();
+                    return FilterAndConvert(objectCollection.Select(obj => obj?.GetType()));
                 return Type.GetTypeArray(objectCollection);
+            }
+
+            Type[] FilterAndConvert(IEnumerable<Type> ntVal)
+            {
+                return ntVal.Where(x => x != null).Select(x => x!).ToArray();
             }
         }
     }
