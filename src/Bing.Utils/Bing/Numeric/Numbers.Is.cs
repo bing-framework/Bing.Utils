@@ -1,4 +1,6 @@
-﻿namespace Bing.Numeric
+﻿using System.Runtime.CompilerServices;
+
+namespace Bing.Numeric
 {
     /// <summary>
     /// 数值操作
@@ -9,12 +11,14 @@
         /// 是否NaN
         /// </summary>
         /// <param name="value">值</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNaN(double value) => double.IsNaN(value);
 
         /// <summary>
         /// 是否NaN
         /// </summary>
         /// <param name="value">值</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNaN(float value) => float.IsNaN(value);
 
         /// <summary>
@@ -29,11 +33,11 @@
     /// </summary>
     public static partial class NumberExtensions
     {
-
         /// <summary>
         /// 是否默认值
         /// </summary>
         /// <param name="value">值</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsDefault(this double value) => Numbers.IsDefaultValue(value);
     }
 }

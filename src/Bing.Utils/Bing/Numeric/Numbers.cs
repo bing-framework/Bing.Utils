@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace Bing.Numeric
 {
@@ -12,6 +13,7 @@ namespace Bing.Numeric
         /// 默认
         /// </summary>
         Default = 0,
+
         /// <summary>
         /// 忽略可空
         /// </summary>
@@ -36,11 +38,8 @@ namespace Bing.Numeric
                 return new[] { min };
 
             if (min > max)
-            {
-                var t = min;
-                min = max;
-                max = t;
-            }
+                (min, max) = (max, min);
+
             var count = max - min + 1;
             var results = new int[count];
             var pointer = min;
@@ -67,11 +66,7 @@ namespace Bing.Numeric
                 return new[] { min };
 
             if (min > max)
-            {
-                var t = min;
-                min = max;
-                max = t;
-            }
+                (min, max) = (max, min);
 
             var count = max - min + 1;
             var results = new long[count];
@@ -182,12 +177,14 @@ namespace Bing.Numeric
         /// 修正零。如果将双公差浮点值视为零（在ε公差内），则返回真零的快捷方式。
         /// </summary>
         /// <param name="value">值</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double FixZero(this double value) => Numbers.FixZero(value);
 
         /// <summary>
         /// 返回最后零位之前的小数位数
         /// </summary>
         /// <param name="value">值</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int DecimalPlaces(this double value) => Numbers.GetDecimalPlaces(value);
 
         /// <summary>
@@ -195,6 +192,7 @@ namespace Bing.Numeric
         /// </summary>
         /// <param name="source">源值</param>
         /// <param name="value">值</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double SumAccurate(this double source, double value) => Numbers.GetSumAccurate(source, value);
 
         /// <summary>
@@ -202,6 +200,7 @@ namespace Bing.Numeric
         /// </summary>
         /// <param name="source">源值</param>
         /// <param name="value">值</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ProductAccurate(this double source, double value) => Numbers.GetProductAccurate(source, value);
 
         /// <summary>
@@ -209,6 +208,7 @@ namespace Bing.Numeric
         /// </summary>
         /// <param name="source">源值</param>
         /// <param name="value">值</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double SumUsingIntegers(this double source, double value) => Numbers.GetSumUsingIntegers(source, value);
     }
 }

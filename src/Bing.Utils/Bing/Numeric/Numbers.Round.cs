@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Bing.Numeric
 {
@@ -12,6 +13,7 @@ namespace Bing.Numeric
         /// </summary>
         /// <param name="value">值</param>
         /// <remarks>该方法截断保留2位小数并且不进行四舍五入操作</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal RoundTruncate(decimal value) => RoundTruncate(value, 2);
 
         /// <summary>
@@ -20,6 +22,7 @@ namespace Bing.Numeric
         /// <param name="value">值</param>
         /// <param name="digits">小数位数</param>
         /// <remarks>该方法截断保留N位小数并且不进行四舍五入操作</remarks>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static decimal RoundTruncate(decimal value, int digits)
         {
             if (digits < 0)
@@ -37,12 +40,6 @@ namespace Bing.Numeric
         /// </summary>
         /// <param name="precision">精度</param>
         private static decimal CalculatePow(int precision) => (decimal)Math.Pow(10, precision);
-
-        //public static decimal RoundDown(decimal value, int digits)
-        //{
-        //    var power10 = CalculatePow(digits);
-        //    return 
-        //}
     }
 
     /// <summary>
@@ -55,6 +52,7 @@ namespace Bing.Numeric
         /// </summary>
         /// <param name="value">值</param>
         /// <remarks>该方法截断保留2位小数并且不进行四舍五入操作</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
         public static decimal RoundTruncate(this decimal value) => Numbers.RoundTruncate(value);
 
         /// <summary>
@@ -63,6 +61,7 @@ namespace Bing.Numeric
         /// <param name="value">值</param>
         /// <param name="digits">小数位数</param>
         /// <remarks>该方法截断保留N位小数并且不进行四舍五入操作</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
         public static decimal RoundTruncate(this decimal value, int digits) => Numbers.RoundTruncate(value, digits);
     }
 }
