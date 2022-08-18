@@ -3,9 +3,9 @@
 namespace Bing.Date
 {
     /// <summary>
-    /// 时间戳工厂
+    /// 不重复时间戳工厂
     /// </summary>
-    public class TimeStampFactory
+    public class NoRepeatTimeStampFactory
     {
         /// <summary>
         /// 最后值
@@ -23,40 +23,40 @@ namespace Bing.Date
         public double IncrementMs { get; set; } = 4;
 
         /// <summary>
-        /// 获取时间
-        /// </summary>
-        public DateTime GetDateTime() => GetDateTimeCore(DateTime.Now);
-
-        /// <summary>
-        /// 获取时间(UTC)
-        /// </summary>
-        public DateTime GetUtcDateTime() => GetDateTimeCore(DateTime.UtcNow);
-
-        /// <summary>
         /// 获取时间戳
         /// </summary>
-        public TimeStamp GetTimeStamp() => new TimeStamp(GetDateTime());
+        public DateTime GetTimeStamp() => GetTimeStampCore(DateTime.Now);
 
         /// <summary>
-        /// 获取时间戳(UTC)
+        /// 获取 UTC 时间戳
         /// </summary>
-        public TimeStamp GetUtcTimeStamp() => new TimeStamp(GetUtcDateTime());
+        public DateTime GetUtcTimeStamp() => GetTimeStampCore(DateTime.UtcNow);
 
         /// <summary>
-        /// 获取Unix时间戳
+        /// 获取时间戳对象
         /// </summary>
-        public UnixTimeStamp GetUnixTimeStamp() => new UnixTimeStamp(GetDateTime());
+        public TimeStamp GetTimeStampObject() => new(GetTimeStamp());
 
         /// <summary>
-        /// 获取Unix时间戳(UTC)
+        /// 获取 UTC 时间戳对象
         /// </summary>
-        public UnixTimeStamp GetUtcUnixTimeStamp() => new UnixTimeStamp(GetUtcDateTime());
+        public TimeStamp GetUtcTimeStampObject() => new(GetUtcTimeStamp());
 
         /// <summary>
-        /// 获取时间核心方法
+        /// 获取 Unix 时间戳对象
+        /// </summary>
+        public UnixTimeStamp GetUnixTimeStampObject() => new(GetTimeStamp());
+
+        /// <summary>
+        /// 获取 UTC Unix 时间戳对象
+        /// </summary>
+        public UnixTimeStamp GetUtcUnixTimeStampObject() => new(GetUtcTimeStamp());
+
+        /// <summary>
+        /// 获取时间戳的核心方法
         /// </summary>
         /// <param name="refDt">引用时间</param>
-        private DateTime GetDateTimeCore(DateTime refDt)
+        private DateTime GetTimeStampCore(DateTime refDt)
         {
             var now = refDt;
             lock (_lockObj)
