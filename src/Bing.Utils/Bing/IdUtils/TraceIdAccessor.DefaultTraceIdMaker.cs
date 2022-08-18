@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Bing.IdGenerators
+namespace Bing.IdUtils
 {
     /// <summary>
     /// 默认的 Trace Id 生成器

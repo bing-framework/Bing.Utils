@@ -1,5 +1,5 @@
-﻿using Bing.Utils.IdGenerators.Abstractions;
-using Bing.Utils.IdGenerators.Ids;
+﻿using Bing.IdUtils;
+using Bing.Utils.IdGenerators.Abstractions;
 
 namespace Bing.Utils.IdGenerators.Core
 {
@@ -11,12 +11,12 @@ namespace Bing.Utils.IdGenerators.Core
         /// <summary>
         /// 雪花算法ID
         /// </summary>
-        private readonly SnowflakeId _id = new SnowflakeId(1, 1);
+        private readonly SnowflakeIdWorker _id = SnowflakeProvider.Create(1,1);
 
         /// <summary>
         /// 获取<see cref="SnowflakeIdGenerator"/>类型的实例
         /// </summary>
-        public static SnowflakeIdGenerator Current { get; } = new SnowflakeIdGenerator();
+        public static SnowflakeIdGenerator Current { get; } = new();
 
         /// <summary>
         /// 创建ID

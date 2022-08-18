@@ -1,7 +1,0 @@
-﻿<Project>
-  <PropertyGroup>
-    <AssemblyName>Bing.Utils.Http</AssemblyName>
-    <PackageId>Bing.Utils.Http</PackageId>
-    <Description>Bing.Utils.Http是Bing应用框架的Http操作类库。</Description>
-  </PropertyGroup>
-</Project>

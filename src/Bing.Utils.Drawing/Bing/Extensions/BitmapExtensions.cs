@@ -318,18 +318,6 @@ namespace Bing.Extensions
         /// <param name="value">颜色值</param>
         private static bool IsBlack(byte value) => value == 0;
 
-        /// <summary>
-        /// 复制一份二维数组的副本
-        /// </summary>
-        /// <param name="bytes">二维数组</param>
-        internal static byte[,] Copy(this byte[,] bytes)
-        {
-            int width = bytes.GetLength(0), height = bytes.GetLength(1);
-            var newBytes = new byte[width, height];
-            Array.Copy(bytes, newBytes, bytes.Length);
-            return newBytes;
-        }
-
         #endregion
 
         #region FloodFill(泛水填充算法)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Bing.IdGenerators
+namespace Bing.IdUtils
 {
     /// <summary>
     /// 随机字符串生成器

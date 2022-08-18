@@ -8,13 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-src", "01-src", "{2F180CBD-D79B-4264-8468-3D8A01AACDC6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionItems", "_SolutionItems", "{08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		common.props = common.props
-		Publish.bat = Publish.bat
-		README.md = README.md
-		version.props = version.props
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "asset", "asset", "{A5A89E27-217F-409C-A24D-3B52476A26A4}"
 EndProject
@@ -22,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "props", "props", "{DAFC420D
 	ProjectSection(SolutionItems) = preProject
 		asset\props\misc.props = asset\props\misc.props
 		asset\props\package.props = asset\props\package.props
+		asset\props\sourcelink.env.props = asset\props\sourcelink.env.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.DateTime", "src\Bing.Utils.DateTime\Bing.Utils.DateTime.csproj", "{7DB71615-87B0-4460-8608-381A91A8564A}"
@@ -42,13 +36,34 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Comments", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Comments.Tests", "tests\Bing.Utils.Comments.Tests\Bing.Utils.Comments.Tests.csproj", "{5305C710-931A-4778-AC9B-05FACBC90C8B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.IdGenerators", "src\Bing.Utils.IdGenerators\Bing.Utils.IdGenerators.csproj", "{D79351BF-DD68-4C81-B899-656F5C122B35}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Guard", "src\Bing.Utils.Guard\Bing.Utils.Guard.csproj", "{2D54ED23-F9CE-4D65-8583-D5DA8F87F3CF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Collections", "src\Bing.Utils.Collections\Bing.Utils.Collections.csproj", "{DCA2FD40-78A5-4DB0-B84E-BD5B10E75A7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Reflection", "src\Bing.Utils.Reflection\Bing.Utils.Reflection.csproj", "{8A711B34-162C-4D78-A6B6-12CA762861FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Reflection", "src\Bing.Utils.Reflection\Bing.Utils.Reflection.csproj", "{8A711B34-162C-4D78-A6B6-12CA762861FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{C07CAA1E-F2C7-4A99-9071-20BABDDAA318}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{D8AA0F2D-4D1B-4BC1-87D6-16C1C8A3C348}"
+	ProjectSection(SolutionItems) = preProject
+		Publish.bat = Publish.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution", "solution", "{168E0A65-91D1-48E0-8432-4A45D353E363}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		common.props = common.props
+		LICENSE = LICENSE
+		version.props = version.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{FFBB5113-5EEB-42E1-AD3D-FD74CECB9129}"
+	ProjectSection(SolutionItems) = preProject
+		asset\images\icon.png = asset\images\icon.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,10 +107,6 @@ Global
 		{5305C710-931A-4778-AC9B-05FACBC90C8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5305C710-931A-4778-AC9B-05FACBC90C8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5305C710-931A-4778-AC9B-05FACBC90C8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D79351BF-DD68-4C81-B899-656F5C122B35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D79351BF-DD68-4C81-B899-656F5C122B35}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D79351BF-DD68-4C81-B899-656F5C122B35}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D79351BF-DD68-4C81-B899-656F5C122B35}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2D54ED23-F9CE-4D65-8583-D5DA8F87F3CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2D54ED23-F9CE-4D65-8583-D5DA8F87F3CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D54ED23-F9CE-4D65-8583-D5DA8F87F3CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -124,10 +135,13 @@ Global
 		{D3046086-A122-4D9C-B8B2-9DFDFFB8CF6D} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 		{2B436FCF-75BC-42BC-B680-9E86AC2CC210} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 		{5305C710-931A-4778-AC9B-05FACBC90C8B} = {0B23CC67-872A-4F9C-AA7C-B6B63F305D7A}
-		{D79351BF-DD68-4C81-B899-656F5C122B35} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 		{2D54ED23-F9CE-4D65-8583-D5DA8F87F3CF} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 		{DCA2FD40-78A5-4DB0-B84E-BD5B10E75A7B} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 		{8A711B34-162C-4D78-A6B6-12CA762861FC} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
+		{C07CAA1E-F2C7-4A99-9071-20BABDDAA318} = {08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}
+		{D8AA0F2D-4D1B-4BC1-87D6-16C1C8A3C348} = {08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}
+		{168E0A65-91D1-48E0-8432-4A45D353E363} = {08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}
+		{FFBB5113-5EEB-42E1-AD3D-FD74CECB9129} = {A5A89E27-217F-409C-A24D-3B52476A26A4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4B464B4-BF6F-4831-A0EE-2FC007AE32A1}

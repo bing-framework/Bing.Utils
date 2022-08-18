@@ -9,7 +9,7 @@
  *      MIT
  */
 
-namespace Bing.IdGenerators
+namespace Bing.IdUtils
 {
     /// <summary>
     /// 雪花 Id 工作者
@@ -54,7 +54,7 @@ namespace Bing.IdGenerators
         const long MAX_WORKER_ID = -1L ^ (-1L << WORKER_ID_BITS);
 
         /// <summary>
-        /// 数据标志最大值
+        /// 数据标志ID最大值
         /// </summary>
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once IdentifierTypo
@@ -142,7 +142,7 @@ namespace Bing.IdGenerators
         /// <summary>
         /// 对象锁
         /// </summary>
-        private readonly object _lock = new object();
+        private readonly object _lock = new();
 
         /// <summary>
         /// 获取下一个ID
@@ -219,7 +219,7 @@ namespace Bing.IdGenerators
             public static IDisposable StubCurrentTime(Func<long> func)
             {
                 CurrentTimeFunc = func;
-                return new DisposableAction(() => { CurrentTimeFunc = InternalCurrentTimeMillis; });
+                return new DisposeAction(() => { CurrentTimeFunc = InternalCurrentTimeMillis; });
             }
 
             /// <summary>
@@ -229,40 +229,18 @@ namespace Bing.IdGenerators
             public static IDisposable StubCurrentTime(long millis)
             {
                 CurrentTimeFunc = () => millis;
-                return new DisposableAction(() => { CurrentTimeFunc = InternalCurrentTimeMillis; });
+                return new DisposeAction(() => { CurrentTimeFunc = InternalCurrentTimeMillis; });
             }
 
             /// <summary>
             /// 1970年
             /// </summary>
-            private static readonly DateTime Jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            private static readonly DateTime Jan1St1970 = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             /// <summary>
             /// 默认当前时间戳
             /// </summary>
             private static long InternalCurrentTimeMillis() => (long)(DateTime.UtcNow - Jan1St1970).TotalMilliseconds;
-        }
-
-        /// <summary>
-        /// 一次性方法
-        /// </summary>
-        private class DisposableAction : IDisposable
-        {
-            /// <summary>
-            /// 执行方法
-            /// </summary>
-            private readonly Action _action;
-
-            /// <summary>
-            /// 初始化一个<see cref="DisposableAction"/>类型的实例
-            /// </summary>
-            /// <param name="action">执行方法</param>
-            public DisposableAction(Action action) => _action = action ?? throw new ArgumentNullException(nameof(action));
-
-            /// <summary>
-            /// 释放资源
-            /// </summary>
-            public void Dispose() => _action();
         }
     }
 }

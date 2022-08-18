@@ -1,9 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="project.props" />
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils</AssemblyName>
+		<PackageId>Bing.Utils</PackageId>
+		<Description>Bing.Utils是Bing应用框架的核心帮助类库。</Description>
+	</PropertyGroup>
 
-  <Import Project="project.dependency.props" />
+	<Import Project="..\..\common.props" />
 
-  <Import Project="..\..\common.props" />
+	<Import Project="dependency.props" />
 
   <ItemGroup>
     <Folder Include="Bing\Text\Internal\" />

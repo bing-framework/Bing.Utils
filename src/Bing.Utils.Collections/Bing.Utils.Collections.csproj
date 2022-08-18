@@ -1,7 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="project.props" />
-
-	<Import Project="project.dependency.props" />
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.Collections</AssemblyName>
+		<PackageId>Bing.Utils.Collections</PackageId>
+		<Description>Bing.Utils.Collections是Bing应用框架的集合操作类库。</Description>
+	</PropertyGroup>
 
 	<Import Project="..\..\common.props" />
+
+	<Import Project="references.props" />
+	
 </Project>

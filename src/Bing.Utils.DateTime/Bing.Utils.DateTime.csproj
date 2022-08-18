@@ -1,8 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="project.props" />
-
-  <Import Project="project.dependency.props" />
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.DateTime</AssemblyName>
+		<PackageId>Bing.Utils.DateTime</PackageId>
+		<Description>Bing.Utils.DateTime是Bing应用框架的时间操作类库。</Description>
+	</PropertyGroup>
 
   <Import Project="..\..\common.props" />
+
+  <Import Project="dependency.props" />
+
+  <Import Project="references.props" />
 
 </Project>

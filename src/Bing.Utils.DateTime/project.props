@@ -1,7 +1,0 @@
-﻿<Project>
-  <PropertyGroup>
-    <AssemblyName>Bing.Utils.DateTime</AssemblyName>
-    <PackageId>Bing.Utils.DateTime</PackageId>
-    <Description>Bing.Utils.DateTime是Bing应用框架的时间操作类库。</Description>
-  </PropertyGroup>
-</Project>

@@ -1,4 +1,4 @@
-﻿namespace Bing.IdGenerators
+﻿namespace Bing.IdUtils
 {
     /// <summary>
     /// Trace Id 访问器

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Bing.IdGenerators
+namespace Bing.IdUtils
 {
     /// <summary>
     /// 随机 Id 生成器
@@ -101,7 +101,7 @@ namespace Bing.IdGenerators
         /// <summary>
         /// 随机
         /// </summary>
-        private static readonly Random Rand = new Random();
+        private static readonly Random Rand = new();
 
         /// <summary>
         /// 输出字符串

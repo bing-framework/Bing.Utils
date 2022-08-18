@@ -1,8 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="project.props"/>
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.Http</AssemblyName>
+		<PackageId>Bing.Utils.Http</PackageId>
+		<Description>Bing.Utils.Http是Bing应用框架的Http操作类库。</Description>
+	</PropertyGroup>
 
-  <Import Project="project.dependency.props"/>
+	<Import Project="..\..\common.props" />
 
-  <Import Project="..\..\common.props"/>
+	<Import Project="dependency.props" />
+
+	<Import Project="references.props" />
 
 </Project>

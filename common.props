@@ -1,39 +1,36 @@
 <Project>
-  <PropertyGroup>
-    <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.0;netstandard2.1;</TargetFrameworks>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.0;netstandard2.1;</TargetFrameworks>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <RootNamespace/>
-    <LangVersion>latest</LangVersion>
-    <NoWarn Condition=" '$(Configuration)' == 'Debug' ">$(NoWarn);NETSDK1138</NoWarn>
-    <NoWarn Condition=" '$(Configuration)' == 'Release' ">$(NoWarn);CS1591;NETSDK1138</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup>
+		<RootNamespace/>
+		<LangVersion>latest</LangVersion>
+		<NoWarn Condition=" '$(Configuration)' == 'Debug' ">$(NoWarn);NETSDK1138</NoWarn>
+		<NoWarn Condition=" '$(Configuration)' == 'Release' ">$(NoWarn);CS1591;NETSDK1138</NoWarn>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>$(MSBuildThisFileDirectory)/output/debug/</OutputPath>
-  </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<OutputPath>$(MSBuildThisFileDirectory)/output/debug/</OutputPath>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>$(MSBuildThisFileDirectory)/output/release/</OutputPath>
-  </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<OutputPath>$(MSBuildThisFileDirectory)/output/release/</OutputPath>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 
-  <Import Project="asset/props/package.props"/>
+	<Import Project="asset/props/sourcelink.env.props"/>
 
-  <Import Project="asset/props/misc.props"/>
+	<Import Project="asset/props/package.props"/>
 
-  <Import Project="./version.props"/>
+	<Import Project="asset/props/misc.props"/>
 
-  <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All"/>
-    <PackageReference Include="DotNetCore.SourceLink.Environment" Version="2.2.0" />
-  </ItemGroup>
+	<Import Project="./version.props"/>
 </Project>
