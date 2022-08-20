@@ -5,21 +5,58 @@ using Bing.Utils.IdGenerators.Abstractions;
 namespace Bing.Utils.IdGenerators.Core
 {
     /// <summary>
+    /// 有序Guid数据库类型
+    /// </summary>
+    public enum SequentialGuidDatabaseType
+    {
+        /// <summary>
+        /// SqlServer
+        /// </summary>
+        SqlServer,
+
+        /// <summary>
+        /// Oracle
+        /// </summary>
+        Oracle,
+
+        /// <summary>
+        /// MySql
+        /// </summary>
+        MySql,
+
+        /// <summary>
+        /// PostgreSql
+        /// </summary>
+        PostgreSql
+    }
+
+    /// <summary>
+    /// 有序Guid类型
+    /// </summary>
+    public enum SequentialGuidType
+    {
+        /// <summary>
+        /// 生成的GUID 按照字符串顺序排列
+        /// </summary>
+        SequentialAsString,
+
+        /// <summary>
+        /// 生成的GUID 按照二进制的顺序排列
+        /// </summary>
+        SequentialAsBinary,
+
+        /// <summary>
+        /// 生成的GUID 像SQL Server, 按照末尾部分排列
+        /// </summary>
+        SequentialAtEnd
+    }
+
+    /// <summary>
     /// 有序Guid 生成器
     /// 代码出自：https://github.com/jhtodd/SequentialGuid/blob/master/SequentialGuid/Classes/SequentialGuid.cs
     /// </summary>
     public class SequentialGuidGenerator : IGuidGenerator
     {
-        /// <summary>
-        /// 数据库类型
-        /// </summary>
-        public SequentialGuidDatabaseType DatabaseType { get; set; }
-
-        /// <summary>
-        /// 获取<see cref="SequentialGuidGenerator"/>类型的实例
-        /// </summary>
-        public static SequentialGuidGenerator Current { get; } = new SequentialGuidGenerator();
-
         /// <summary>
         /// 随机数生成器
         /// </summary>
@@ -29,6 +66,16 @@ namespace Bing.Utils.IdGenerators.Core
         /// 初始化一个<see cref="SequentialGuidGenerator"/>类型的实例
         /// </summary>
         private SequentialGuidGenerator() => DatabaseType = SequentialGuidDatabaseType.SqlServer;
+
+        /// <summary>
+        /// 获取<see cref="SequentialGuidGenerator"/>类型的实例
+        /// </summary>
+        public static SequentialGuidGenerator Current { get; } = new();
+
+        /// <summary>
+        /// 数据库类型
+        /// </summary>
+        public SequentialGuidDatabaseType DatabaseType { get; set; }
 
         /// <summary>
         /// 创建有序的 Guid
@@ -139,52 +186,5 @@ namespace Bing.Utils.IdGenerators.Core
 
             return new Guid(guidBytes);
         }
-    }
-
-    /// <summary>
-    /// 有序Guid数据库类型
-    /// </summary>
-    public enum SequentialGuidDatabaseType
-    {
-        /// <summary>
-        /// SqlServer
-        /// </summary>
-        SqlServer,
-
-        /// <summary>
-        /// Oracle
-        /// </summary>
-        Oracle,
-
-        /// <summary>
-        /// MySql
-        /// </summary>
-        MySql,
-
-        /// <summary>
-        /// PostgreSql
-        /// </summary>
-        PostgreSql
-    }
-
-    /// <summary>
-    /// 有序Guid类型
-    /// </summary>
-    public enum SequentialGuidType
-    {
-        /// <summary>
-        /// 生成的GUID 按照字符串顺序排列
-        /// </summary>
-        SequentialAsString,
-
-        /// <summary>
-        /// 生成的GUID 按照二进制的顺序排列
-        /// </summary>
-        SequentialAsBinary,
-
-        /// <summary>
-        /// 生成的GUID 像SQL Server, 按照末尾部分排列
-        /// </summary>
-        SequentialAtEnd
     }
 }

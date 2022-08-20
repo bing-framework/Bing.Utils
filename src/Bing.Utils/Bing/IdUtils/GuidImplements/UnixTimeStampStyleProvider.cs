@@ -50,6 +50,13 @@ namespace Bing.IdUtils.GuidImplements
         /// <summary>
         /// 创建一个 <see cref="Guid"/>
         /// </summary>
+        /// <param name="secureTimestamp">安全时间戳</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Guid Create(DateTime secureTimestamp) => Create(Guid.NewGuid(), secureTimestamp);
+
+        /// <summary>
+        /// 创建一个 <see cref="Guid"/>
+        /// </summary>
         /// <param name="value">值</param>
         /// <param name="secureTimestamp">安全时间戳</param>
         public static Guid Create(Guid value, DateTime secureTimestamp)
