@@ -38,7 +38,7 @@ set /p key=input key:
 set source=https://api.nuget.org/v3/index.json
 
 for /R "nuget_packages" %%s in (*.nupkg) do (
-    call dotnet nuget push %%s -k %key% -s %source%
+    call dotnet nuget push %%s -k %key% -s %source% --skip-duplicate
     echo.
 )
 
