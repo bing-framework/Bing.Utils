@@ -11,6 +11,8 @@ Bing.Utils 是一个基于`.net core`平台下的工具库，旨在提升小型�
 |Bing.Utils.DateTime|[![Bing.Utils.DateTime](https://img.shields.io/nuget/v/Bing.Utils.DateTime.svg)](https://www.nuget.org/packages/Bing.Utils.DateTime/)|[![Bing.Utils.DateTime](https://img.shields.io/nuget/dt/Bing.Utils.DateTime.svg)](https://www.nuget.org/packages/Bing.Utils.DateTime/)|
 |Bing.Utils.Drawing|[![Bing.Utils.Drawing](https://img.shields.io/nuget/v/Bing.Utils.Drawing.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing/)|[![Bing.Utils.Drawing](https://img.shields.io/nuget/dt/Bing.Utils.Drawing.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing/)|
 |Bing.Utils.Http|[![Bing.Utils.Http](https://img.shields.io/nuget/v/Bing.Utils.Http.svg)](https://www.nuget.org/packages/Bing.Utils.Http/)|[![Bing.Utils.Http](https://img.shields.io/nuget/dt/Bing.Utils.Http.svg)](https://www.nuget.org/packages/Bing.Utils.Http/)|
+|Bing.Utils.Collections|[![Bing.Utils.Collections](https://img.shields.io/nuget/v/Bing.Utils.Collections.svg)](https://www.nuget.org/packages/Bing.Utils.Collections/)|[![Bing.Utils.Collections](https://img.shields.io/nuget/dt/Bing.Utils.Collections.svg)](https://www.nuget.org/packages/Bing.Utils.Collections/)|
+|Bing.Utils.Reflection|[![Bing.Utils.Reflection](https://img.shields.io/nuget/v/Bing.Utils.Reflection.svg)](https://www.nuget.org/packages/Bing.Utils.Reflection/)|[![Bing.Utils.Reflectionn](https://img.shields.io/nuget/dt/Bing.Utils.Reflection.svg)](https://www.nuget.org/packages/Bing.Utils.Reflection/)|
 
 ## 开发环境以及类库依赖
 
