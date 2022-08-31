@@ -49,7 +49,7 @@ namespace Bing.Http.Clients.Parameters
         /// <summary>
         /// 获取文件流
         /// </summary>
-        public Stream GetFileStream() => _stream ?? (_stream = new FileStream(AbsolutePath, FileMode.Open));
+        public Stream GetFileStream() => _stream ??= new FileStream(AbsolutePath, FileMode.Open);
 
         /// <summary>
         /// 获取文件名
