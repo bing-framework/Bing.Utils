@@ -1,13 +1,12 @@
-﻿namespace Bing.IdUtils
+﻿namespace Bing.IdUtils;
+
+/// <summary>
+/// Trace Id 生成器
+/// </summary>
+public interface ITraceIdMaker
 {
     /// <summary>
-    /// Trace Id 生成器
+    /// 创建 Id
     /// </summary>
-    public interface ITraceIdMaker
-    {
-        /// <summary>
-        /// 创建 Id
-        /// </summary>
-        string Create();
-    }
+    string Create();
 }

@@ -1,18 +1,17 @@
-﻿namespace Bing.Utils.Signatures
+﻿namespace Bing.Utils.Signatures;
+
+/// <summary>
+/// 签名密钥
+/// </summary>
+public interface ISignKey
 {
     /// <summary>
-    /// 签名密钥
+    /// 获取私钥
     /// </summary>
-    public interface ISignKey
-    {
-        /// <summary>
-        /// 获取私钥
-        /// </summary>
-        string GetKey();
+    string GetKey();
 
-        /// <summary>
-        /// 获取公钥
-        /// </summary>
-        string GetPublicKey();
-    }
+    /// <summary>
+    /// 获取公钥
+    /// </summary>
+    string GetPublicKey();
 }

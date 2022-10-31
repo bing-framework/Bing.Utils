@@ -1,18 +1,17 @@
-﻿namespace Bing.IdUtils
+﻿namespace Bing.IdUtils;
+
+/// <summary>
+/// 不重复模式
+/// </summary>
+public enum NoRepeatMode
 {
     /// <summary>
-    /// 不重复模式
+    /// 关
     /// </summary>
-    public enum NoRepeatMode
-    {
-        /// <summary>
-        /// 关
-        /// </summary>
-        Off,
+    Off,
 
-        /// <summary>
-        /// 开
-        /// </summary>
-        On
-    }
+    /// <summary>
+    /// 开
+    /// </summary>
+    On
 }

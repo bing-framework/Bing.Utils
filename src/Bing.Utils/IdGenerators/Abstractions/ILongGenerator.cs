@@ -1,9 +1,8 @@
-﻿namespace Bing.Utils.IdGenerators.Abstractions
+﻿namespace Bing.Utils.IdGenerators.Abstractions;
+
+/// <summary>
+/// Long Id 生成器
+/// </summary>
+public interface ILongGenerator : IIdGenerator<long>
 {
-    /// <summary>
-    /// Long Id 生成器
-    /// </summary>
-    public interface ILongGenerator : IIdGenerator<long>
-    {
-    }
 }

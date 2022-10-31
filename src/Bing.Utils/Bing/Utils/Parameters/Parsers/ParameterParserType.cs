@@ -1,23 +1,22 @@
-﻿namespace Bing.Utils.Parameters.Parsers
+﻿namespace Bing.Utils.Parameters.Parsers;
+
+/// <summary>
+/// 参数解析器类型
+/// </summary>
+public enum ParameterParserType
 {
     /// <summary>
-    /// 参数解析器类型
+    /// Url参数解析器
     /// </summary>
-    public enum ParameterParserType
-    {
-        /// <summary>
-        /// Url参数解析器
-        /// </summary>
-        Url,
+    Url,
 
-        /// <summary>
-        /// Json参数解析器
-        /// </summary>
-        Json,
+    /// <summary>
+    /// Json参数解析器
+    /// </summary>
+    Json,
 
-        /// <summary>
-        /// Jsonp参数解析器
-        /// </summary>
-        Jsonp
-    }
+    /// <summary>
+    /// Jsonp参数解析器
+    /// </summary>
+    Jsonp
 }

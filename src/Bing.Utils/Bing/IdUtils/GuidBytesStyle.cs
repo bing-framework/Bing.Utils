@@ -1,18 +1,17 @@
-﻿namespace Bing.IdUtils
+﻿namespace Bing.IdUtils;
+
+/// <summary>
+/// GUID 字节风格
+/// </summary>
+public enum GuidBytesStyle
 {
     /// <summary>
-    /// GUID 字节风格
+    /// 小端字节数组
     /// </summary>
-    public enum GuidBytesStyle
-    {
-        /// <summary>
-        /// 小端字节数组
-        /// </summary>
-        LittleEndianByteArray,
+    LittleEndianByteArray,
 
-        /// <summary>
-        /// 大端字节数组
-        /// </summary>
-        BigEndianByteArray
-    }
+    /// <summary>
+    /// 大端字节数组
+    /// </summary>
+    BigEndianByteArray
 }

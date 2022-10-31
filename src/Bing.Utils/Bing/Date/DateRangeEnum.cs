@@ -1,33 +1,32 @@
-﻿namespace Bing.Date
+﻿namespace Bing.Date;
+
+/// <summary>
+/// 日期范围
+/// </summary>
+public enum DateRangeEnum
 {
     /// <summary>
-    /// 日期范围
+    /// 周
     /// </summary>
-    public enum DateRangeEnum
-    {
-        /// <summary>
-        /// 周
-        /// </summary>
-        Week,
+    Week,
 
-        /// <summary>
-        /// 月
-        /// </summary>
-        Month,
+    /// <summary>
+    /// 月
+    /// </summary>
+    Month,
 
-        /// <summary>
-        /// 季度
-        /// </summary>
-        Quarter,
+    /// <summary>
+    /// 季度
+    /// </summary>
+    Quarter,
 
-        /// <summary>
-        /// 半年
-        /// </summary>
-        HalfYear,
+    /// <summary>
+    /// 半年
+    /// </summary>
+    HalfYear,
 
-        /// <summary>
-        /// 年
-        /// </summary>
-        Year
-    }
+    /// <summary>
+    /// 年
+    /// </summary>
+    Year
 }

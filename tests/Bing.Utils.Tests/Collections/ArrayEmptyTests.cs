@@ -2,24 +2,23 @@
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Tests.Collections
+namespace Bing.Utils.Tests.Collections;
+
+/// <summary>
+/// 空数组
+/// </summary>
+[Trait("CollUT", "ArrayUT.Empty")]
+public class ArrayEmptyTests
 {
     /// <summary>
-    /// 空数组
+    /// 测试 - 空数组
     /// </summary>
-    [Trait("CollUT", "ArrayUT.Empty")]
-    public class ArrayEmptyTests
+    [Fact]
+    public void Test_EmptyArray()
     {
-        /// <summary>
-        /// 测试 - 空数组
-        /// </summary>
-        [Fact]
-        public void Test_EmptyArray()
-        {
-            var array = Arrays.Empty<string>();
+        var array = Arrays.Empty<string>();
 
-            array.ShouldNotBeNull();
-            array.ShouldBeEmpty();
-        }
+        array.ShouldNotBeNull();
+        array.ShouldBeEmpty();
     }
 }

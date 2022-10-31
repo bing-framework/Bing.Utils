@@ -1,33 +1,32 @@
-﻿namespace Bing.IdUtils
+﻿namespace Bing.IdUtils;
+
+/// <summary>
+/// COMB 风格
+/// </summary>
+public enum CombStyle
 {
     /// <summary>
-    /// COMB 风格
+    /// 普通风格
     /// </summary>
-    public enum CombStyle
-    {
-        /// <summary>
-        /// 普通风格
-        /// </summary>
-        NormalStyle,
+    NormalStyle,
 
-        /// <summary>
-        /// Unix 风格
-        /// </summary>
-        UnixStyle,
+    /// <summary>
+    /// Unix 风格
+    /// </summary>
+    UnixStyle,
 
-        /// <summary>
-        /// Sql 风格
-        /// </summary>
-        SqlStyle,
+    /// <summary>
+    /// Sql 风格
+    /// </summary>
+    SqlStyle,
 
-        /// <summary>
-        /// 合法的 Sql 风格
-        /// </summary>
-        LegacySqlStyle,
+    /// <summary>
+    /// 合法的 Sql 风格
+    /// </summary>
+    LegacySqlStyle,
 
-        /// <summary>
-        /// PostgreSQL 风格
-        /// </summary>
-        PostgreSqlStyle,
-    }
+    /// <summary>
+    /// PostgreSQL 风格
+    /// </summary>
+    PostgreSqlStyle,
 }

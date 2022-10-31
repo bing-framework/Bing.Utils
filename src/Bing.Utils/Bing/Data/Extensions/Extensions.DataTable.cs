@@ -4,28 +4,27 @@ using System.Data;
 using System.Linq;
 
 // ReSharper disable once CheckNamespace
-namespace Bing.Data
+namespace Bing.Data;
+
+/// <summary>
+/// 数据表(<see cref="DataTable"/>) 扩展
+/// </summary>
+public static partial class DataTableExtensions
 {
     /// <summary>
-    /// 数据表(<see cref="DataTable"/>) 扩展
+    /// 将<see cref="DataTable"/>转换为泛型集合
     /// </summary>
-    public static partial class DataTableExtensions
+    /// <typeparam name="T">类型</typeparam>
+    /// <param name="dataTable">数据表</param>
+    public static IList<T> ToList<T>(this DataTable dataTable) where T : class, new()
     {
-        /// <summary>
-        /// 将<see cref="DataTable"/>转换为泛型集合
-        /// </summary>
-        /// <typeparam name="T">类型</typeparam>
-        /// <param name="dataTable">数据表</param>
-        public static IList<T> ToList<T>(this DataTable dataTable) where T : class, new()
-        {
-            return DataTableHelper.ToList<T>(dataTable);
-        }
-
-        /// <summary>
-        /// 检查<see cref="DataTable"/>是否有数据行
-        /// </summary>
-        /// <param name="dataTable">数据表</param>
-        /// <returns>是否有数据行</returns>
-        public static bool HasRows(this DataTable dataTable) => dataTable.Rows.Count > 0;
+        return DataTableHelper.ToList<T>(dataTable);
     }
+
+    /// <summary>
+    /// 检查<see cref="DataTable"/>是否有数据行
+    /// </summary>
+    /// <param name="dataTable">数据表</param>
+    /// <returns>是否有数据行</returns>
+    public static bool HasRows(this DataTable dataTable) => dataTable.Rows.Count > 0;
 }
