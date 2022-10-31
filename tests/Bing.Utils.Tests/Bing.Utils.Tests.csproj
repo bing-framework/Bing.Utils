@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Bing.Tests.Samples\Bing.Tests.Samples.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TypeUT\" />
+  </ItemGroup>
+
 </Project>
