@@ -42,12 +42,12 @@ public class WebTest : TestBase
     [Fact]
     public async Task Test_Client_WebAccess()
     {
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 10; i++)
         {
-            await WriteFile("http://www.cnblogs.com");
+            await WriteFile("https://www.cnblogs.com");
         }
-        await WriteFile("http://www.cnblogs.com");
-        await WriteFile("http://www.cnblogs.com/artech/p/logging-for-net-core-05.html");
+        await WriteFile("https://www.cnblogs.com");
+        await WriteFile("https://www.cnblogs.com/artech/p/logging-for-net-core-05.html");
     }
 
     private async Task WriteFile(string url)
@@ -56,9 +56,10 @@ public class WebTest : TestBase
         DirectoryHelper.CreateIfNotExists(path);
         var result = await Web.Client()
             .Get(url)
+            .IgnoreSsl()
             .ResultAsync();
         var key = Bing.Utils.Randoms.GuidRandomGenerator.Instance.Generate();
-        File.WriteAllBytes($"{path}test_{key}.txt", result.ToBytes());
+        await File.WriteAllBytesAsync($"{path}test_{key}.txt", result.ToBytes());
     }
 
     /// <summary>
