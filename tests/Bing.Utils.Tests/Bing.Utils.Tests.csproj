@@ -17,11 +17,13 @@
     <ProjectReference Include="..\..\src\Bing.Utils.DateTime\Bing.Utils.DateTime.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Drawing\Bing.Utils.Drawing.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Http\Bing.Utils.Http.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Net\Bing.Utils.Net.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils\Bing.Utils.csproj" />
     <ProjectReference Include="..\Bing.Tests.Samples\Bing.Tests.Samples.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Net\FTP\" />
     <Folder Include="TypeUT\" />
   </ItemGroup>
 

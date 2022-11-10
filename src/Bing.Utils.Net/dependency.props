@@ -1,0 +1,5 @@
+﻿<Project>
+	<ItemGroup>
+		<PackageReference Include="FluentFTP" Version="42.0.1" />
+	</ItemGroup>
+</Project>

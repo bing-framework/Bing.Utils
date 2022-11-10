@@ -60,21 +60,18 @@ public static class StringJudgment
     /// <summary>
     /// WebUrl 正则表达式
     /// </summary>
-    private static readonly Regex WebUrlExpressionSchema = new Regex(@"(http|https)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?",
-        RegexOptions.Singleline | RegexOptions.Compiled);
+    private static readonly Regex WebUrlExpressionSchema = new Regex(@"(http|https)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?", RegexOptions.Singleline | RegexOptions.Compiled);
 
     /// <summary>
     /// 是否WebUrl
     /// </summary>
     /// <param name="str">字符串</param>
-    public static bool IsWebUrl(string str) =>
-        !string.IsNullOrWhiteSpace(str) && WebUrlExpressionSchema.IsMatch(str);
+    public static bool IsWebUrl(string str) => !string.IsNullOrWhiteSpace(str) && WebUrlExpressionSchema.IsMatch(str);
 
     /// <summary>
     /// Email 正则表达式
     /// </summary>
-    private static readonly Regex EmailExpressionSchema = new Regex(@"^([0-9a-zA-Z]+[-._+&])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}$",
-        RegexOptions.Singleline | RegexOptions.Compiled);
+    private static readonly Regex EmailExpressionSchema = new Regex(@"^([0-9a-zA-Z]+[-._+&])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}$", RegexOptions.Singleline | RegexOptions.Compiled);
 
     /// <summary>
     /// 是否Email
@@ -92,6 +89,5 @@ public static class StringJudgment
     /// 是否包含数字字符
     /// </summary>
     /// <param name="str">字符串</param>
-    public static bool ContainsNumber(string str) =>
-        !string.IsNullOrWhiteSpace(str) && RegexJudgment.IsMatch(str, "[0-9]+");
+    public static bool ContainsNumber(string str) => !string.IsNullOrWhiteSpace(str) && RegexJudgment.IsMatch(str, "[0-9]+");
 }
