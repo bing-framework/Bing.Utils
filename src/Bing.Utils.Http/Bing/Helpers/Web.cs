@@ -11,6 +11,7 @@ using System.Web;
 using Bing.Extensions;
 using Bing.Http.Clients;
 using Bing.IO;
+using Bing.OS;
 using Microsoft.AspNetCore.Http;
 #if !NETSTANDARD2_1
 using Microsoft.AspNetCore.Http.Extensions;
@@ -205,7 +206,7 @@ public static class Web
             var list = new[] { "127.0.0.1", "::1" };
             var result = HttpContext?.Connection?.RemoteIpAddress.SafeString();
             if (string.IsNullOrWhiteSpace(result) || list.Contains(result))
-                result = Sys.IsWindows ? GetLanIP() : GetLanIP(NetworkInterfaceType.Ethernet);
+                result = Platform.IsWindows ? GetLanIP() : GetLanIP(NetworkInterfaceType.Ethernet);
             return result;
         }
     }

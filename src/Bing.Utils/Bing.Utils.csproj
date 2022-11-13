@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Folder Include="Bing\Text\Internal\" />
+    <Folder Include="Bing\OS\" />
   </ItemGroup>
 
 </Project>

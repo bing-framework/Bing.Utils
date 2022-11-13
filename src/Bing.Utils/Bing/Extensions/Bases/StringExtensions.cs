@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Bing.Helpers;
+using Bing.OS;
 using Enum = System.Enum;
 
 // ReSharper disable once CheckNamespace
@@ -791,7 +788,7 @@ public static partial class StringExtensions
     {
         if (string.IsNullOrWhiteSpace(path))
             return string.Empty;
-        return Sys.IsWindows ? path.Replace("/", "\\") : path.Replace("\\", "/");
+        return Platform.IsWindows ? path.Replace("/", "\\") : path.Replace("\\", "/");
     }
 
     #endregion
