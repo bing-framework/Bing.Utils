@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Bing.Extensions;
 using Bing.Helpers;
+using Bing.OS;
 using Bing.Reflection;
 
 namespace Bing.IO;
@@ -420,6 +421,25 @@ public static class DirectoryHelper
             di.Attributes = di.Attributes & ~attribute;
         }
     }
+
+    #endregion
+
+    #region SetCurrentDirectory(设置当前目录)
+
+    /// <summary>
+    /// 设置当前目录
+    /// </summary>
+    /// <param name="path">目录路径</param>
+    public static string SetCurrentDirectory(string path) => Platform.CurrentDirectory = path;
+
+    #endregion
+
+    #region GetCurrentDirectory(获取当前目录)
+
+    /// <summary>
+    /// 获取当前目录
+    /// </summary>
+    public static string GetCurrentDirectory() => Platform.CurrentDirectory;
 
     #endregion
 }
