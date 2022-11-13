@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Net;
-using System.Reflection;
+﻿using System.Net;
 using System.Text;
 using FluentFTP;
 
@@ -25,16 +23,6 @@ public class FtpClient : IFtpClient
     /// FTP客户端配置
     /// </summary>
     private FtpClientConfig _config;
-
-    /// <summary>
-    /// 接收和发送数据的缓冲区
-    /// </summary>
-    private byte[] _buffer = new byte[4096];
-
-    /// <summary>
-    /// FTP客户端配置
-    /// </summary>
-    public FtpClientConfig Config { get; set; }
 
     /// <summary>
     /// 初始化一个<see cref="FtpClient"/>类型的实例
@@ -92,28 +80,6 @@ public class FtpClient : IFtpClient
     private void Client_ValidateCertificate(FluentFTP.Client.BaseClient.BaseFtpClient control, FtpSslValidationEventArgs e)
     {
         e.Accept = true;
-    }
-
-    /// <summary>
-    /// 创建连接请求
-    /// </summary>
-    /// <param name="remoteFullName">远程服务器文件地址</param>
-    protected FtpWebRequest Create(string remoteFullName)
-    {
-        var ftpUri = $"ftp://{Config.Host}:{Config.Port}{remoteFullName}";
-        var request = (FtpWebRequest)WebRequest.Create(ftpUri);
-        var proxy = Config.GetProxy();
-        if (proxy != null)
-            request.Proxy = proxy;
-        request.Credentials = new NetworkCredential(Config.UserName, Config.Password);
-        request.KeepAlive = Config.KeepAlive;
-        request.UseBinary = Config.UseBinary;
-        request.EnableSsl = Config.EnableSsl;
-        request.UsePassive = Config.UsePassive;
-        request.Timeout = Config.Timeout;
-        request.ReadWriteTimeout = Config.ReadWriteTimeout;
-
-        return request;
     }
 
     /// <summary>
@@ -337,7 +303,15 @@ public class FtpClient : IFtpClient
     /// <param name="remoteDir">远程目录</param>
     public bool UploadDirectory(string localDir, string remoteDir)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var result = _client.UploadDirectory(localDir, remoteDir);
+            return true;
+        }
+        catch (FluentFTP.FtpException e)
+        {
+            throw new FtpClientException($"上传文件 操作时出错: {(e.InnerException != null ? e.InnerException.Message : e.Message)}", e);
+        }
     }
 
     /// <summary>
@@ -375,7 +349,17 @@ public class FtpClient : IFtpClient
     /// <param name="remoteDir">远程目录</param>
     public bool UploadFiles(IEnumerable<string> localPaths, string remoteDir)
     {
-        throw new NotImplementedException();
+        if (!localPaths.Any())
+            return false;
+        try
+        {
+            var result = _client.UploadFiles(localPaths, remoteDir, FtpRemoteExists.Overwrite, true, FtpVerify.Retry);
+            return localPaths.Count() == result;
+        }
+        catch (FluentFTP.FtpException e)
+        {
+            throw new FtpClientException($"上传文件 操作时出错: {(e.InnerException != null ? e.InnerException.Message : e.Message)}", e);
+        }
     }
 
     #endregion
@@ -389,7 +373,25 @@ public class FtpClient : IFtpClient
     /// <param name="remotePath">远程路径</param>
     public bool DownloadStream(Stream stream, string remotePath)
     {
-        throw new NotImplementedException();
+        long remoteFileLength = 0;
+        try
+        {
+            _client.DownloadStream(stream, remotePath);
+            remoteFileLength = _client.GetFileSize(remotePath);
+        }
+        catch (FluentFTP.FtpException e)
+        {
+            throw new FtpClientException($"下载文件 操作时出错: {(e.InnerException != null ? e.InnerException.Message : e.Message)}", e);
+        }
+
+        if (stream.Length > 0)
+        {
+            if (remoteFileLength != stream.Length)
+                throw new FtpClientException($"对文件 {remotePath} 执行 下载文件 操作时出错，操作不成功");
+            return true;
+        }
+
+        throw new FileNotFoundException($"对文件 {remotePath} 执行 下载文件 操作时出错，操作不成功");
     }
 
     /// <summary>
@@ -399,7 +401,25 @@ public class FtpClient : IFtpClient
     /// <param name="remotePath">远程路径</param>
     public bool DownloadBytes(out byte[] bytes, string remotePath)
     {
-        throw new NotImplementedException();
+        long remoteFileLength = 0;
+        try
+        {
+            _client.DownloadBytes(out bytes, remotePath);
+            remoteFileLength = _client.GetFileSize(remotePath);
+        }
+        catch (FluentFTP.FtpException e)
+        {
+            throw new FtpClientException($"下载文件 操作时出错: {(e.InnerException != null ? e.InnerException.Message : e.Message)}", e);
+        }
+
+        if (bytes.Length > 0)
+        {
+            if (remoteFileLength != bytes.Length)
+                throw new FtpClientException($"对文件 {remotePath} 执行 下载文件 操作时出错，操作不成功");
+            return true;
+        }
+
+        throw new FileNotFoundException($"对文件 {remotePath} 执行 下载文件 操作时出错，操作不成功");
     }
 
     /// <summary>
@@ -409,7 +429,15 @@ public class FtpClient : IFtpClient
     /// <param name="remoteDir">远程目录</param>
     public bool DownloadDirectory(string localDir, string remoteDir)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var result = _client.DownloadDirectory(localDir, remoteDir);
+            return true;
+        }
+        catch (FluentFTP.FtpException e)
+        {
+            throw new FtpClientException($"下载文件 操作时出错: {(e.InnerException != null ? e.InnerException.Message : e.Message)}", e);
+        }
     }
 
     /// <summary>
@@ -419,7 +447,32 @@ public class FtpClient : IFtpClient
     /// <param name="remotePath">远程路径</param>
     public bool DownloadFile(string localPath, string remotePath)
     {
-        throw new NotImplementedException();
+        long remoteFileLength = 0;
+        try
+        {
+            var status = _client.DownloadFile(localPath, remotePath, FtpLocalExists.Overwrite, FtpVerify.Retry | FtpVerify.Delete | FtpVerify.Throw);
+            if (status != FtpStatus.Success)
+                return false;
+            remoteFileLength = _client.GetFileSize(remotePath);
+        }
+        catch (FluentFTP.FtpException e)
+        {
+            throw new FtpClientException($"下载文件 操作时出错: {(e.InnerException != null ? e.InnerException.Message : e.Message)}", e);
+        }
+
+        if (File.Exists(localPath))
+        {
+            var localFileInfo = new FileInfo(localPath);
+            if (remoteFileLength != localFileInfo.Length)
+            {
+                File.Delete(localPath);
+                throw new FtpClientException($"对文件 {remotePath} 执行 下载文件 操作时出错，操作不成功");
+            }
+
+            return true;
+        }
+
+        throw new FileNotFoundException($"对文件 {remotePath} 执行 下载文件 操作时出错，操作不成功");
     }
 
     /// <summary>
@@ -429,11 +482,20 @@ public class FtpClient : IFtpClient
     /// <param name="remotePaths">远程路径列表</param>
     public bool DownloadFiles(string localDir, IEnumerable<string> remotePaths)
     {
-        throw new NotImplementedException();
+        if (!remotePaths.Any())
+            return false;
+        try
+        {
+            var result = _client.DownloadFiles(localDir, remotePaths, FtpLocalExists.Overwrite, FtpVerify.Retry);
+            return remotePaths.Count() == result;
+        }
+        catch (FluentFTP.FtpException e)
+        {
+            throw new FtpClientException($"下载文件 操作时出错: {(e.InnerException != null ? e.InnerException.Message : e.Message)}", e);
+        }
     }
 
     #endregion
-
 
     #region Directory(目录操作)
 
