@@ -27,4 +27,10 @@
     <Folder Include="TypeUT\" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Content Include="Resources\**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
 </Project>
