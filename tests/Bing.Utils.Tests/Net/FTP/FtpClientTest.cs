@@ -23,6 +23,8 @@ public class FtpClientTest : TestBase
     private const string TEST_FILE_1 = "Text.txt";
     private const string TEST_FILE_2 = "测试文件1.txt";
     private const string TEST_FOLDER_1 = "TestSubFolder";
+    private const string TEST_FOLDER_2 = "TestSubFolder2\\TestSubFolder3";
+    private const string TEST_FOLDER_3 = "TestSubFolder4";
     private const string TEST_DOWNLOAD_FOLDER = "DownloadFolder";
 
     private readonly DirectoryInfo _activeFolder;
@@ -252,5 +254,123 @@ public class FtpClientTest : TestBase
         result = _client.DeleteDirectory(remotePath);
         Assert.True(result);
         _client.Dispose();
+    }
+
+    /// <summary>
+    /// 测试 - 删除文件
+    /// </summary>
+    [Theory]
+    [InlineData(TEST_FILE_1)]
+    [InlineData(TEST_FILE_2)]
+    public void Test_DeleteFile(string fileName)
+    {
+        var result = _client.UploadFile(GetTestFilePath(TEST_FILES_PATH, fileName), fileName);
+        Assert.True(result);
+        result = _client.DeleteFile(fileName);
+        Assert.True(result);
+        _client.Dispose();
+    }
+
+    /// <summary>
+    /// 测试 - 重命名文件
+    /// </summary>
+    [Theory]
+    [InlineData(TEST_FILE_1)]
+    [InlineData(TEST_FILE_2)]
+    public void Test_RenameFile(string fileName)
+    {
+        var result = _client.UploadFile(GetTestFilePath(TEST_FILES_PATH, fileName), fileName);
+        Assert.True(result);
+        result = _client.RenameFile(fileName, $"{fileName}_test");
+        Assert.True(result);
+        result = _client.DeleteFile($"{fileName}_test");
+        Assert.True(result);
+        _client.Dispose();
+    }
+
+    /// <summary>
+    /// 测试 - 复制文件
+    /// </summary>
+    [Theory]
+    [InlineData(TEST_FILE_1)]
+    [InlineData(TEST_FILE_2)]
+    public void Test_CopyFile(string fileName)
+    {
+        var result = _client.UploadFile(GetTestFilePath(TEST_FILES_PATH, fileName), fileName);
+        Assert.True(result);
+        result = _client.CopyFile(fileName, $"{fileName}_test");
+        Assert.True(result);
+        result = _client.DeleteFile($"{fileName}");
+        Assert.True(result);
+        result = _client.DeleteFile($"{fileName}_test");
+        Assert.True(result);
+        _client.Dispose();
+    }
+
+    /// <summary>
+    /// 测试 - 移动文件
+    /// </summary>
+    [Theory]
+    [InlineData(TEST_FILE_1)]
+    [InlineData(TEST_FILE_2)]
+    public void Test_MoveFile(string fileName)
+    {
+        var result = _client.UploadFile(GetTestFilePath(TEST_FILES_PATH, fileName), fileName);
+        Assert.True(result);
+        result = _client.CreateDirectory("/test");
+        result = _client.MoveFile(fileName, $"/test/{fileName}");
+        Assert.True(result);
+        result = _client.DeleteFile($"/test/{fileName}");
+        Assert.True(result);
+        _client.Dispose();
+    }
+
+    /// <summary>
+    /// 测试 - 是否存在文件
+    /// </summary>
+    [Theory]
+    [InlineData(TEST_FILE_1)]
+    [InlineData(TEST_FILE_2)]
+    public void Test_FileExists(string fileName)
+    {
+        var result = _client.UploadFile(GetTestFilePath(TEST_FILES_PATH, fileName), fileName);
+        Assert.True(result);
+        result = _client.FileExists(fileName);
+        Assert.True(result);
+        result = _client.DeleteFile(fileName);
+        Assert.True(result);
+        _client.Dispose();
+    }
+
+    /// <summary>
+    /// 测试 - 创建文件夹
+    /// </summary>
+    [Theory]
+    [InlineData(TEST_FOLDER_1)]
+    [InlineData(TEST_FOLDER_3)]
+    public void Test_CreateDirectory(string path)
+    {
+        if (_client.DirectoryExists(path))
+            _client.DeleteDirectory(path);
+        var result = _client.CreateDirectory(path);
+        Assert.True(result);
+        _client.DeleteDirectory(path);
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 -删除文件夹
+    /// </summary>
+    [Theory]
+    [InlineData(TEST_FOLDER_1)]
+    [InlineData(TEST_FOLDER_3)]
+    public void Test_DeleteDirectory(string path)
+    {
+        if (_client.DirectoryExists(path))
+            _client.DeleteDirectory(path);
+        var result = _client.CreateDirectory(path);
+        Assert.True(result);
+        _client.DeleteDirectory(path);
+        Assert.True(result);
     }
 }
