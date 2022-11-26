@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Bing.Date;
+﻿namespace Bing.Date;
 
 /// <summary>
 /// 时间范围
@@ -25,45 +22,12 @@ public interface IDateTimeRange
 [Serializable]
 public class DateTimeRange : IDateTimeRange
 {
-    #region 构造函数
+    #region 字段
 
     /// <summary>
-    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// 分隔符
     /// </summary>
-    public DateTimeRange() : this(DateTime.MinValue, DateTime.MaxValue)
-    {
-    }
-
-    /// <summary>
-    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
-    /// </summary>
-    /// <param name="startTime">起始时间</param>
-    /// <param name="endTime">结束时间</param>
-    public DateTimeRange(DateTime startTime, DateTime endTime)
-    {
-        StartTime = startTime;
-        EndTime = endTime;
-    }
-
-    /// <summary>
-    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
-    /// </summary>
-    /// <param name="dateTimeRange">事件范围</param>
-    public DateTimeRange(IDateTimeRange dateTimeRange) : this(dateTimeRange.StartTime, dateTimeRange.EndTime)
-    {
-    }
-
-    #endregion
-
-    /// <summary>
-    /// 获取或设置 起始时间
-    /// </summary>
-    public DateTime StartTime { get; set; }
-
-    /// <summary>
-    /// 获取或设置 结束时间
-    /// </summary>
-    public DateTime EndTime { get; set; }
+    private readonly string _separator = " - ";
 
     /// <summary>
     /// 当前时间
@@ -78,6 +42,87 @@ public class DateTimeRange : IDateTimeRange
         DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday,
         DayOfWeek.Friday, DayOfWeek.Saturday
     };
+
+    #endregion
+
+    #region 构造函数
+
+    /// <summary>
+    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// </summary>
+    public DateTimeRange() : this(DateTime.MinValue, DateTime.MaxValue)
+    {
+    }
+
+    /// <summary>
+    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// </summary>
+    /// <param name="startTime">起始时间</param>
+    /// <param name="endTime">结束时间</param>
+    /// <param name="separator">分隔符</param>
+    public DateTimeRange(DateTime startTime, DateTime endTime, string separator = " - ")
+    {
+        StartTime = startTime;
+        EndTime = endTime;
+        _separator = separator;
+        // 处理起始时间以及结束时间
+        if (StartTime > EndTime) 
+            (StartTime, EndTime) = (EndTime, StartTime);
+    }
+
+    /// <summary>
+    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// </summary>
+    /// <param name="dateTimeRange">事件范围</param>
+    public DateTimeRange(IDateTimeRange dateTimeRange) : this(dateTimeRange.StartTime, dateTimeRange.EndTime)
+    {
+    }
+
+    #endregion
+
+    #region 属性
+
+    /// <summary>
+    /// 获取或设置 起始时间
+    /// </summary>
+    public DateTime StartTime { get; set; }
+
+    /// <summary>
+    /// 获取或设置 结束时间
+    /// </summary>
+    public DateTime EndTime { get; set; }
+
+    /// <summary>
+    /// 相差时间
+    /// </summary>
+    public TimeSpan TimeSpan => EndTime - StartTime;
+
+    /// <summary>
+    /// 总天数
+    /// </summary>
+    public double TotalDays => TimeSpan.TotalDays;
+
+    /// <summary>
+    /// 总小时数
+    /// </summary>
+    public double TotalHours => TimeSpan.TotalHours;
+
+    /// <summary>
+    /// 总分钟数
+    /// </summary>
+    public double TotalMinutes => TimeSpan.TotalMinutes;
+
+    /// <summary>
+    /// 总秒数
+    /// </summary>
+    public double TotalSeconds => TimeSpan.TotalSeconds;
+
+    /// <summary>
+    /// 总毫秒数
+    /// </summary>
+    public double TotalMilliseconds => TimeSpan.TotalMilliseconds;
+
+    #endregion
 
     #region Yesterday(昨天时间范围)
 
@@ -349,7 +394,21 @@ public class DateTimeRange : IDateTimeRange
     /// <summary>
     /// 输出字符串
     /// </summary>
-    public override string ToString() => $"[{StartTime} - {EndTime}]";
+    /// <returns>yyyy-MM-dd HH:mm:ss - yyyy-MM-dd HH:mm:ss</returns>
+    public override string ToString() => ToString("yyyy-MM-dd HH:mm:ss");
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    public string ToString(string format) => $"{StartTime.ToString(format)}{_separator}{EndTime.ToString(format)}";
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    /// <param name="formatProvider">格式化提供程序</param>
+    public string ToString(string format, IFormatProvider formatProvider) => $"{StartTime.ToString(format, formatProvider)}{_separator}{EndTime.ToString(format, formatProvider)}";
 
     #endregion
 
