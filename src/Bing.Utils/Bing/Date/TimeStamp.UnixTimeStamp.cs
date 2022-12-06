@@ -54,8 +54,7 @@ public class UnixTimeStamp : TimeStamp
     /// Unix时间戳转时间函数
     /// </summary>
     private static readonly Func<long, DateTime> FromUnixTimestampFunc = timestamp =>
-        (TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local)).Add(
-            new TimeSpan(long.Parse(timestamp + "0000000")));
+        TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local).Add(new TimeSpan(long.Parse(timestamp + "0000000")));
 
     /// <summary>
     /// 当前Unix时间戳
