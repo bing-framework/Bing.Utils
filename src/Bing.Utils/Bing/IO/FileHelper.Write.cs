@@ -149,7 +149,7 @@ public static partial class FileHelper
         File.WriteAllBytes(filePath, bytes);
     }
 
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
+#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0 || NET6_0
     /// <summary>
     /// 将内容写入文件，文件不存在则创建
     /// </summary>
@@ -203,7 +203,7 @@ public static partial class FileHelper
             File.Create(targetFilePath);
 
         var fileMode = appendMode ? FileMode.Append : FileMode.Open;
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
+#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0 || NET6_0
         await using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
 #else
             using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);

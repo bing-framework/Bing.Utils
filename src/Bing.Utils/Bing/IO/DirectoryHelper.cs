@@ -270,7 +270,7 @@ public static class DirectoryHelper
     #region Delete(递归删除目录)
 
     /// <summary>
-    /// 递归删除目录
+    /// 递归删除目录下所有文件夹/文件包括子文件夹
     /// </summary>
     /// <param name="directory">目录路径</param>
     /// <param name="isDeleteRoot">是否删除根目录</param>
