@@ -13,7 +13,7 @@ public partial class Splitter : ISplitter
     private readonly bool _regexMode;
 
     /// <summary>
-    /// 是否修正长度模式
+    /// 是否固定长度模式
     /// </summary>
     private readonly bool _fixedLengthMode;
 
@@ -33,7 +33,7 @@ public partial class Splitter : ISplitter
     private readonly Regex _regexPattern;
 
     /// <summary>
-    /// 修正长度
+    /// 固定长度
     /// </summary>
     private readonly int _fixedLengthPattern;
 
@@ -87,7 +87,7 @@ public partial class Splitter : ISplitter
     /// <summary>
     /// 初始化一个<see cref="Splitter"/>类型的实例
     /// </summary>
-    /// <param name="fixedLength">修正长度</param>
+    /// <param name="fixedLength">固定长度</param>
     private Splitter(int fixedLength)
     {
         _on = Array.Empty<string>();
@@ -175,7 +175,7 @@ public partial class Splitter : ISplitter
     #region Split - List
 
     /// <summary>
-    /// 是否使用修正长度模式
+    /// 是否使用限制长度模式
     /// </summary>
     private bool _doesUseInLimitedMode() => Options.LimitLength >= 0 && (!_regexMode && _regexPattern == null);
 

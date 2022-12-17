@@ -1,7 +1,7 @@
 ﻿namespace Bing.Text.Splitters;
 
 /// <summary>
-/// 修正长度的分割器
+/// 固定长度的分割器
 /// </summary>
 public interface IFixedLengthSplitter
 {
