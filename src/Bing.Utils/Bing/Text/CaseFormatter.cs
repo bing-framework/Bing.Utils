@@ -1,10 +1,52 @@
-﻿namespace Bing.Text;
+﻿using Bing.Text.Splitters;
+
+namespace Bing.Text;
 
 /// <summary>
 /// 大小写格式化器
 /// </summary>
 public class CaseFormatter
 {
+    /// <summary>
+    /// 是否人性化模式
+    /// </summary>
+    private readonly bool _humanizerMode;
+
+    /// <summary>
+    /// 字符串分割器
+    /// </summary>
+    private readonly ISplitter _splitter;
+
+    /// <summary>
+    /// 初始化一个<see cref="CaseFormatter"/>类型的实例
+    /// </summary>
+    /// <param name="splitter">字符串分割器</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    private CaseFormatter(ISplitter splitter)
+    {
+        _splitter = splitter ?? throw new ArgumentNullException(nameof(splitter));
+        _humanizerMode = false;
+    }
+
+    /// <summary>
+    /// 初始化一个<see cref="CaseFormatter"/>类型的实例
+    /// </summary>
+    private CaseFormatter()
+    {
+        _splitter = null;
+        _humanizerMode = true;
+    }
+
+    ///// <summary>
+    ///// 转换
+    ///// </summary>
+    ///// <param name="style">大小写格式化样式</param>
+    ///// <param name="sequence">序列</param>
+    //public string To(Style style, string sequence)
+    //{
+
+    //}
+
     /// <summary>
     /// 大小写格式化样式
     /// </summary>
