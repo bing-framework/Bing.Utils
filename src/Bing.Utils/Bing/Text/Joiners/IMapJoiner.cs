@@ -110,11 +110,11 @@ public interface IMapJoiner
     StringBuilder AppendTo(StringBuilder builder, IEnumerable<string> list, string defaultKey, string defaultValue);
 
     /// <summary>
-    /// 连接
+    /// 附加到...
     /// </summary>
     /// <param name="builder">字符串拼接器</param>
     /// <param name="str1">字符串</param>
     /// <param name="str2">字符串</param>
     /// <param name="restStrings">其余字符串</param>
-    StringBuilder Join(StringBuilder builder, string str1, string str2, params string[] restStrings);
+    StringBuilder AppendTo(StringBuilder builder, string str1, string str2, params string[] restStrings);
 }
