@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Text;
@@ -9,15 +8,6 @@ namespace Bing.Text;
 /// </summary>
 public static partial class StringExtensions
 {
-    /// <summary>
-    /// 转换为byte[]
-    /// </summary>
-    /// <param name="value">字符串</param>
-    /// <param name="encoding">字符编码。默认编码为：<see cref="Encoding.UTF8"/></param>
-    public static byte[] ToBytes(this string value, Encoding encoding = null) => value is null
-        ? throw new ArgumentNullException(nameof(value))
-        : (encoding ?? Encoding.UTF8).GetBytes(value);
-
     /// <summary>
     /// 转换为byte[]
     /// </summary>

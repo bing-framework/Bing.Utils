@@ -5,6 +5,12 @@
 		<Description>Bing.Utils是Bing应用框架的核心帮助类库。</Description>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<!--移除Xml、DotSettings-->
+		<None Remove="Bing.Utils.xml"/>
+		<None Remove="Bing.Utils.csproj.DotSettings"/>
+	</ItemGroup>
+
 	<Import Project="..\..\common.props" />
 
 	<Import Project="dependency.props" />

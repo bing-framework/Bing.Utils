@@ -67,7 +67,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{FFBB51
 		asset\images\icon.png = asset\images\icon.png
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Net", "src\Bing.Utils.Net\Bing.Utils.Net.csproj", "{91C3760A-10FD-4B37-B2DC-5392721E74B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Net", "src\Bing.Utils.Net\Bing.Utils.Net.csproj", "{91C3760A-10FD-4B37-B2DC-5392721E74B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingUtilsUT", "tests\BingUtilsUT\BingUtilsUT.csproj", "{68690F5A-844B-44D9-8F8B-0508B10C7EF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +129,10 @@ Global
 		{91C3760A-10FD-4B37-B2DC-5392721E74B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91C3760A-10FD-4B37-B2DC-5392721E74B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91C3760A-10FD-4B37-B2DC-5392721E74B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68690F5A-844B-44D9-8F8B-0508B10C7EF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68690F5A-844B-44D9-8F8B-0508B10C7EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68690F5A-844B-44D9-8F8B-0508B10C7EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68690F5A-844B-44D9-8F8B-0508B10C7EF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,6 +157,7 @@ Global
 		{168E0A65-91D1-48E0-8432-4A45D353E363} = {08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}
 		{FFBB5113-5EEB-42E1-AD3D-FD74CECB9129} = {A5A89E27-217F-409C-A24D-3B52476A26A4}
 		{91C3760A-10FD-4B37-B2DC-5392721E74B7} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
+		{68690F5A-844B-44D9-8F8B-0508B10C7EF0} = {0B23CC67-872A-4F9C-AA7C-B6B63F305D7A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4B464B4-BF6F-4831-A0EE-2FC007AE32A1}

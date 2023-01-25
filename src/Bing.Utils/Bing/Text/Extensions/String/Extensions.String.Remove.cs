@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Text;
@@ -8,13 +8,6 @@ namespace Bing.Text;
 /// </summary>
 public static partial class StringExtensions
 {
-    /// <summary>
-    /// 移除字符串。移除指定字符串
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="removeText">移除字符串</param>
-    public static string Remove(this string text, string removeText) => text.Replace(removeText, string.Empty);
-
     /// <summary>
     /// 移除字符串。移除指定字符串之后的字符串
     /// </summary>
@@ -41,40 +34,6 @@ public static partial class StringExtensions
             text = text.Replace("  ", " ");
         }
         return text;
-    }
-
-    /// <summary>
-    /// 移除字符串。移除重复字符
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="charRemove">移除字符</param>
-    public static string RemoveDuplicateChar(this string text, char charRemove)
-    {
-        if (string.IsNullOrEmpty(text))
-            return text;
-        var charStr = charRemove.ToString();
-        var charRep = charStr + charStr;
-        string ante = null;
-        while (ante!=text)
-        {
-            ante = text;
-            text = text.Replace(charRep, charStr);
-        }
-        return text;
-    }
-
-    /// <summary>
-    /// 移除字符串。移除指定字符集合
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="toRemove">移除字符集合</param>
-    public static string RemoveChars(this string text, params char[] toRemove)
-    {
-        var res=new StringBuilder(text);
-        foreach (var remove in toRemove) 
-            res.Replace(remove, char.MinValue);
-        res.Replace(char.MinValue.ToString(), string.Empty);
-        return res.ToString();
     }
 
     /// <summary>

@@ -1,19 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using Bing.Reflection;
+﻿using System.Reflection;
 
-namespace Bing.Judgments;
+namespace Bing.Reflection;
 
 /// <summary>
-/// 类型(<see cref="Type"/>) 判断
+/// 类型(<see cref="Type"/>) 判断器
 /// </summary>
 public static class TypeJudgment
 {
     #region IsEnumType(是否枚举类型)
 
     /// <summary>
-    /// 是否枚举类型
+    /// 判断是否为枚举类型
     /// </summary>
     /// <typeparam name="T">类型</typeparam>
     /// <param name="mayNullable">是否可空</param>
@@ -22,7 +19,7 @@ public static class TypeJudgment
         : typeof(T).IsEnum;
 
     /// <summary>
-    /// 是否枚举类型
+    /// 判断是否为枚举类型
     /// </summary>
     /// <param name="type">类型</param>
     /// <param name="mayNullable">是否可空</param>
@@ -31,7 +28,7 @@ public static class TypeJudgment
         : type.IsEnum;
 
     /// <summary>
-    /// 是否枚举类型
+    /// 判断是否为枚举类型
     /// </summary>
     /// <param name="typeInfo">类型信息</param>
     /// <param name="mayNullable">是否可空</param>

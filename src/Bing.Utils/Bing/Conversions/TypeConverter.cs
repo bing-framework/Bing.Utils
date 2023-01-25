@@ -1,6 +1,5 @@
-﻿using System;
-using System.Reflection;
-using Bing.Judgments;
+﻿using System.Reflection;
+using Bing.Reflection;
 
 namespace Bing.Conversions;
 
