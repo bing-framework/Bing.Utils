@@ -1,5 +1,4 @@
 ﻿using System.Runtime.ExceptionServices;
-using System.Text;
 
 namespace Bing.Exceptions;
 

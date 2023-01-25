@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using AspectCore.Extensions.Reflection;
+﻿using AspectCore.Extensions.Reflection;
 
 namespace Bing.Reflection;
 

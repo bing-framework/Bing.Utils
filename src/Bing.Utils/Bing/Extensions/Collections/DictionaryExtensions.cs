@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Text;
 using Bing.Text;
 
 // ReSharper disable once CheckNamespace

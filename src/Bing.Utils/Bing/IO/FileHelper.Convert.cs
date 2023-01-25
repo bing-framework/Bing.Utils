@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Bing.IO;
+﻿namespace Bing.IO;
 
 /// <summary>
 /// 文件操作辅助类 - 转换

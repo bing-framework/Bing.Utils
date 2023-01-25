@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.Text;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Extensions;

@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Bing.Reflection;
+﻿namespace Bing.Reflection;
 
 // 类型反射 - 判断
 public static partial class TypeReflections

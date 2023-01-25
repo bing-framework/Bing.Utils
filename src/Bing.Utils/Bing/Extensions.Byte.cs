@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Bing.Conversions;
+﻿using Bing.Conversions;
 using Bing.Text;
 
 namespace Bing;

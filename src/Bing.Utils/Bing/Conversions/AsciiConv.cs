@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Bing.Conversions;
+﻿namespace Bing.Conversions;
 
 /// <summary>
 /// ASCII 转换帮助类

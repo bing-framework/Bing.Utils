@@ -1,5 +1,4 @@
 ﻿using Bing.Collections;
-using System.Text;
 
 namespace Bing.Text.Joiners;
 

@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.Text;
 using Bing.Extensions;
 using Bing.Helpers.Internal;
 

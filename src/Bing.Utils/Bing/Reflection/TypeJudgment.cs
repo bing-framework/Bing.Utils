@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Bing.Reflection;
+﻿namespace Bing.Reflection;
 
 /// <summary>
 /// 类型(<see cref="Type"/>) 判断器

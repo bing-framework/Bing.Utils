@@ -1,6 +1,5 @@
 ﻿using System.Collections.Specialized;
 using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 using Bing.OS;
 using Enum = System.Enum;

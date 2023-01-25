@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Bing.Conversions.Scale;

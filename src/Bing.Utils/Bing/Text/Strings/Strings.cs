@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Bing.Text;
+﻿namespace Bing.Text;
 
 /// <summary>
 /// 辅助字符串帮助类

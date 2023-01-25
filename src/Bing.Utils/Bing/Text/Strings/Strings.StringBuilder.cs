@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.Contracts;
-using System.Text;
 
 namespace Bing.Text;
 
