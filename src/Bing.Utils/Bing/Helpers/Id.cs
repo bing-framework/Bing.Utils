@@ -1,5 +1,4 @@
-﻿using System;
-using Bing.Utils.IdGenerators.Abstractions;
+﻿using Bing.Utils.IdGenerators.Abstractions;
 using Bing.Utils.IdGenerators.Core;
 
 namespace Bing.Helpers;

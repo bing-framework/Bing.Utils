@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Bing.Threading.Asyncs;
+﻿namespace Bing.Threading.Asyncs;
 
 /// <summary>
 /// 异步锁

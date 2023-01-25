@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Bing.IO;
+﻿namespace Bing.IO;
 
 /// <summary>
 /// 临时文件

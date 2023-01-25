@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Helpers;
+﻿namespace Bing.Helpers;
 
 /// <summary>
 /// 常用公共操作

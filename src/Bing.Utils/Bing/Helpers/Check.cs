@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Bing.Text;
+﻿using Bing.Text;
 using Bing.Utils.Properties;
 
 namespace Bing.Helpers;

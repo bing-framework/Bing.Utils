@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Bing.Utils.Files;
+﻿namespace Bing.Utils.Files;
 
 /// <summary>
 /// 文件存储服务

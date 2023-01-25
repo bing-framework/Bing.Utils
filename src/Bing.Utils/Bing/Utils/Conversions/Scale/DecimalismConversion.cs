@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Utils.Conversions.Scale;
+﻿namespace Bing.Utils.Conversions.Scale;
 
 /// <summary>
 /// 十进制转换操作

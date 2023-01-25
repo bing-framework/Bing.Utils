@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Bing.Extensions;
+﻿using Bing.Extensions;
 using Bing.Helpers;
 using Bing.Utils.Json;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Bing.Reflection;
+﻿namespace Bing.Reflection;
 
 /// <summary>
 /// 类型集合值
