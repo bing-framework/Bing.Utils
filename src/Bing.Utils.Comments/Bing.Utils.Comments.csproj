@@ -1,5 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="project.props"/>
+
+	<ItemGroup>
+		<!--移除Xml、DotSettings-->
+		<None Remove="Bing.Utils.Comments.xml"/>
+		<None Remove="Bing.Utils.Comments.csproj.DotSettings"/>
+	</ItemGroup>
+
+	<Import Project="project.props"/>
 
   <Import Project="project.dependency.props"/>
 
