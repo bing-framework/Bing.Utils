@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,7 +7,6 @@ using Bing.Helpers;
 using Bing.IO;
 using Bing.Utils.IdGenerators.Core;
 using Bing.Utils.Json;
-using Xunit;
 using Xunit.Abstractions;
 using FileHelper = Bing.IO.FileHelper;
 

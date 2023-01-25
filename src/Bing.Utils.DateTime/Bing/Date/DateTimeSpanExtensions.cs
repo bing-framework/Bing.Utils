@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Date;
+﻿namespace Bing.Date;
 
 /// <summary>
 /// Bing <see cref="DateTimeSpan"/> 扩展

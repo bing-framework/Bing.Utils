@@ -1,7 +1,5 @@
-﻿using System;
-using Bing.Helpers;
+﻿using Bing.Helpers;
 using Bing.Utils.Timing;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Timing;

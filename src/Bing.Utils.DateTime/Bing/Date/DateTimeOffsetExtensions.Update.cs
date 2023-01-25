@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Date;
+﻿namespace Bing.Date;
 
 // 时间点 - 更新
 public static partial class DateTimeOffsetExtensions

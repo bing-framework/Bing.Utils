@@ -1,7 +1,5 @@
-﻿using System;
-using Bing.Tests.Samples;
+﻿using Bing.Tests.Samples;
 using Bing.Utils.Parameters;
-using Xunit;
 
 namespace Bing.Utils.Tests.Parameters;
 

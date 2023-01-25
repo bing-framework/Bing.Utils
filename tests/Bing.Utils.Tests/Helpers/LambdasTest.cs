@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,7 +7,6 @@ using Bing.Expressions;
 using Bing.Extensions;
 using Bing.Helpers;
 using Bing.Tests.Samples;
-using Xunit;
 using Xunit.Abstractions;
 using Enum = Bing.Helpers.Enum;
 

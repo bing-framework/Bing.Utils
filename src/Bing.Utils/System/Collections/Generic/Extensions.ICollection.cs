@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Bing.Helpers;
+﻿using Bing.Helpers;
 
 namespace System.Collections.Generic;
 

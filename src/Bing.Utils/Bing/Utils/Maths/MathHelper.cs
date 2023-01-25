@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Utils.Maths;
+﻿namespace Bing.Utils.Maths;
 
 /// <summary>
 /// 数据计算操作辅助类

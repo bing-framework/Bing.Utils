@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Utils.Timing;
+﻿namespace Bing.Utils.Timing;
 
 /// <summary>
 /// 日期时间辅助扩展操作

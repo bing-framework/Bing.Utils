@@ -1,10 +1,8 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Bing.Tests.Samples;
 using Bing.Tests.XUnitHelpers;
 using Bing.Utils.Json;
 using Newtonsoft.Json;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Json;

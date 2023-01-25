@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Collections.Internals;
+﻿namespace Bing.Collections.Internals;
 
 /// <summary>
 /// 内部释放

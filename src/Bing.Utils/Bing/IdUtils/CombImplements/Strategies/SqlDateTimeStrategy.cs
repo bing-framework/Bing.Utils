@@ -1,5 +1,4 @@
-﻿using System;
-using Bing.Numeric;
+﻿using Bing.Numeric;
 
 namespace Bing.IdUtils.CombImplements.Strategies;
 

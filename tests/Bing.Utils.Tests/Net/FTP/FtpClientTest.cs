@@ -3,7 +3,6 @@ using System.IO;
 using Bing.Extensions;
 using Bing.IO;
 using Bing.Net.FTP;
-using FluentFTP.Helpers;
 using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Net.FTP;

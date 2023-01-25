@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Conversions;
+﻿namespace Bing.Conversions;
 
 /// <summary>
 /// <see cref="DayOfWeek"/> 转换

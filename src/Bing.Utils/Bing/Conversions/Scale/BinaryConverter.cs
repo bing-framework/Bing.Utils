@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Conversions.Scale;
+﻿namespace Bing.Conversions.Scale;
 
 /// <summary>
 /// 二进制转换器

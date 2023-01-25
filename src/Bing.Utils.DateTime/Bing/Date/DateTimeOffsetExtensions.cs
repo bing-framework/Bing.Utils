@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Date;
+﻿namespace Bing.Date;
 
 /// <summary>
 /// Bing 时间点(<see cref="DateTimeOffset"/>) 扩展

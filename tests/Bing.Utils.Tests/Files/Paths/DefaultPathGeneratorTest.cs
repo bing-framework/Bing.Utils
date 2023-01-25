@@ -1,9 +1,7 @@
-﻿using System;
-using Bing.Helpers;
+﻿using Bing.Helpers;
 using Bing.Tests.XUnitHelpers;
 using Bing.Utils.Files.Paths;
 using Bing.Utils.Randoms;
-using Xunit;
 
 namespace Bing.Utils.Tests.Files.Paths;
 

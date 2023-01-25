@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-
-namespace Bing.Collections;
+﻿namespace Bing.Collections;
 
 /// <summary>
 /// 字典工具

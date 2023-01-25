@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Bing.Utils.Maths;
-using Xunit;
 
 namespace Bing.Utils.Tests.Maths;
 

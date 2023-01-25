@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using Bing.Data;
 using Bing.Tests.Samples;
-using Xunit;
 
 namespace Bing.Utils.Tests.Data;
 

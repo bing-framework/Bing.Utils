@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Bing.Utils.Properties;
+﻿using Bing.Utils.Properties;
 
 namespace Bing.Utils.Maths;
 
