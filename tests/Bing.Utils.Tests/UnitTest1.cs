@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Bing.Extensions;
 using Bing.Helpers;
 using Bing.IO;
+using Bing.Numeric;
 using Bing.Utils.IdGenerators.Core;
 using Bing.Utils.Json;
 using Xunit;
@@ -553,6 +554,24 @@ Where `a`.`IsDeny`=1 And `b`.`ApplicationId`='79c3c002-1474-4b3f-bf83-b17aa173a2
     {
         var result= Regex.IsMatch("AutoMapper", "^AutoMapper", RegexOptions.IgnoreCase | RegexOptions.Compiled) == false;
         Output.WriteLine(result.ToString());
+    }
+
+    [Theory]
+    [InlineData(3.0, 0)]
+    [InlineData(3.9, 1)]
+    [InlineData(3.99, 2)]
+    [InlineData(3.999, 3)]
+    [InlineData(3.9999, 4)]
+    [InlineData(3.99999, 5)]
+    [InlineData(3.999991, 6)]
+    [InlineData(3.9999912, 7)]
+    [InlineData(3.99999123, 8)]
+    [InlineData(3.999991234, 9)]
+    [InlineData(3.9999912345, 10)]
+    public void Test_GetDecimalPlaces(decimal input, int places)
+    {
+        var result = Numbers.GetDecimalPlaces((double)input);
+        Assert.Equal(places, result);
     }
 }
 
