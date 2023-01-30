@@ -7,8 +7,8 @@
 
 	<ItemGroup>
 		<!--移除Xml、DotSettings-->
-		<None Remove="Bing.Utils.xml"/>
-		<None Remove="Bing.Utils.csproj.DotSettings"/>
+		<None Remove="Bing.Utils.xml" />
+		<None Remove="Bing.Utils.csproj.DotSettings" />
 	</ItemGroup>
 
 	<Import Project="..\..\common.props" />
