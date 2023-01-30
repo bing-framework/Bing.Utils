@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Text;
 using Bing.Helpers;
 
 namespace Bing.IO;

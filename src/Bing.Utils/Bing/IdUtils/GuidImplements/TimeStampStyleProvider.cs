@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
-namespace Bing.IdUtils.GuidImplements;
+﻿namespace Bing.IdUtils.GuidImplements;
 
 /// <summary>
 /// 时间戳风格提供程序

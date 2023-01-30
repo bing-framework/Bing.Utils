@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Bing.Judgments;
+using Bing.Text;
 
 namespace Bing.Net.FTP;
 
@@ -133,7 +133,7 @@ public class FtpClientConfig
         if (string.IsNullOrEmpty(ProxyHost))
             return null;
         var proxy = new WebProxy();
-        if (StringJudgment.IsWebUrl(ProxyHost))
+        if (StringJudge.IsWebUrl(ProxyHost))
             proxy.Address = new Uri(ProxyHost);
         if (ProxyPort > 0)
             proxy = new WebProxy(ProxyHost, ProxyPort);

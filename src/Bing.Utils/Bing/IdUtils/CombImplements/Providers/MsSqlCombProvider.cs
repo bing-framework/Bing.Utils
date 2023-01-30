@@ -1,5 +1,4 @@
-﻿using System;
-using Bing.IdUtils.CombImplements.Strategies;
+﻿using Bing.IdUtils.CombImplements.Strategies;
 
 namespace Bing.IdUtils.CombImplements.Providers;
 

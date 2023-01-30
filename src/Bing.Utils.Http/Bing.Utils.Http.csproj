@@ -5,6 +5,12 @@
 		<Description>Bing.Utils.Http是Bing应用框架的Http操作类库。</Description>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<!--移除Xml、DotSettings-->
+		<None Remove="Bing.Utils.Http.xml"/>
+		<None Remove="Bing.Utils.Http.csproj.DotSettings"/>
+	</ItemGroup>
+
 	<Import Project="..\..\common.props" />
 
 	<Import Project="dependency.props" />

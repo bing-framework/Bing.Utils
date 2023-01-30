@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bing.IO;
+﻿namespace Bing.IO;
 
 /// <summary>
 /// 文件操作帮助类 - 写入

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.IO;
+﻿namespace Bing.IO;
 
 /// <summary>
 /// 字节缓冲区

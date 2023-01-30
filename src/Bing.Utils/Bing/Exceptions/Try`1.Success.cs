@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Bing.Exceptions;
+﻿namespace Bing.Exceptions;
 
 /// <summary>
 /// 尝试成功

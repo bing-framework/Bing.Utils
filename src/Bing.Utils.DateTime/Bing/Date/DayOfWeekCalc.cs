@@ -1,5 +1,4 @@
-﻿using System;
-using Bing.Conversions;
+﻿using Bing.Conversions;
 using NodaTime;
 using NodaTime.Helpers;
 

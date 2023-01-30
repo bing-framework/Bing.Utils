@@ -1,5 +1,4 @@
 ﻿using Bing.Utils.Parameters;
-using Xunit;
 
 namespace Bing.Utils.Tests.Parameters;
 

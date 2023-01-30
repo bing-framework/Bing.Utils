@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Exceptions;
+﻿namespace Bing.Exceptions;
 
 /// <summary>
 /// 尝试操作

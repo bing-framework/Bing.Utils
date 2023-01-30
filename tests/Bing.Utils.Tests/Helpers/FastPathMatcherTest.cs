@@ -1,5 +1,4 @@
 ﻿using Bing.Helpers;
-using Xunit;
 
 namespace Bing.Utils.Tests.Helpers;
 

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Bing.Extensions;
-using Xunit;
 
 namespace Bing.Utils.Tests.Extensions;
 

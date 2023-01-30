@@ -2,7 +2,6 @@
 using System.Reflection;
 using Bing.Reflection;
 using Bing.Tests.Samples;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Reflection;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-namespace Bing;
+﻿namespace Bing;
 
 /// <summary>
 /// 随机数(<see cref="Random"/>) 扩展

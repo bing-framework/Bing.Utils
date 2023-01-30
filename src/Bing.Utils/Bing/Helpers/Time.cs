@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using Bing.Utils.Timing;
+﻿using Bing.Utils.Timing;
 
 namespace Bing.Helpers;
 

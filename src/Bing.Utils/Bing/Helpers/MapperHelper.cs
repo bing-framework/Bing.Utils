@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Bing.Reflection;
+﻿using Bing.Reflection;
 using Bing.Text;
 
 namespace Bing.Helpers;

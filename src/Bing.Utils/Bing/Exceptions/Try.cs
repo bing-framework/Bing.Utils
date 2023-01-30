@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Bing.Exceptions;
+﻿namespace Bing.Exceptions;
 
 /// <summary>
 /// 尝试

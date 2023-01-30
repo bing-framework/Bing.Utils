@@ -1,5 +1,4 @@
-﻿using Xunit;
-using Bing.Numeric;
+﻿using Bing.Numeric;
 
 namespace Bing.Utils.Tests.Numeric;
 

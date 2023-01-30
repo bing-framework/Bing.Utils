@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.ExceptionServices;
-using System.Text;
+﻿using System.Runtime.ExceptionServices;
 
 namespace Bing.Exceptions;
 

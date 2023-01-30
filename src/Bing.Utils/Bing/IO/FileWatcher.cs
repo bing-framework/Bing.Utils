@@ -1,6 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.IO;
-using System.Threading.Tasks;
 using Bing.Extensions;
 
 namespace Bing.IO;

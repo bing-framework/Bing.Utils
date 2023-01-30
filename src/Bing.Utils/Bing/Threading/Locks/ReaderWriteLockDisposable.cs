@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Bing.Threading.Locks;
+﻿namespace Bing.Threading.Locks;
 
 /// <summary>
 /// 读写锁释放器

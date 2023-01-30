@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Helpers;
+﻿namespace Bing.Helpers;
 
 /// <summary>
 /// Unix时间操作

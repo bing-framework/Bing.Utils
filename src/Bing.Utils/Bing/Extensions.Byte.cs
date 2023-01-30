@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using Bing.Conversions;
+﻿using Bing.Conversions;
 using Bing.Text;
 
 namespace Bing;
@@ -12,15 +9,6 @@ namespace Bing;
 public static class ByteExtensions
 {
     #region Encoding
-
-    /// <summary>
-    /// 转换字节数组为字符串
-    /// </summary>
-    /// <param name="bytes">字节数组</param>
-    /// <param name="encoding">字符编码。默认为：<see cref="Encoding.UTF8"/></param>
-    public static string GetString(this byte[] bytes, Encoding encoding = null) => bytes is null
-        ? throw new ArgumentNullException(nameof(bytes))
-        : (encoding ?? Encoding.UTF8).GetString(bytes);
 
     /// <summary>
     /// 转换字节数组为字符串

@@ -1,24 +1,25 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace Bing.Judgments;
+namespace Bing.IdUtils;
 
 /// <summary>
-/// <see cref="Guid"/> 判断
+/// <see cref="Guid"/> 检查器
 /// </summary>
-public static class GuidJudgment
+public static class GuidJudge
 {
     /// <summary>
-    /// 判断 <see cref="Guid"/> 是否为空、null或Guid.Empty
+    /// 判断 <see cref="Guid"/> 是否为空、null 或 Guid.Empty
     /// </summary>
     /// <param name="guid">Guid</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNullOrEmpty(Guid guid) => guid == Guid.Empty;
 
     /// <summary>
-    /// 判断 <see cref="Guid"/> 是否为空、null或Guid.Empty
+    /// 判断 <see cref="Guid"/> 是否为空、null 或 Guid.Empty
     /// </summary>
     /// <param name="guid">Guid</param>
-    public static bool IsNullOrEmpty(Guid? guid) => guid is null || IsNullOrEmpty(guid.Value);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNullOrEmpty(Guid? guid) => guid is null || guid == Guid.Empty;
 
     /// <summary>
     /// Guid 正则表达式

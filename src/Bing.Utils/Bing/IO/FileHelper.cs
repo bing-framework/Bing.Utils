@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.IO.Compression;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Bing.Extensions;
 
 namespace Bing.IO;

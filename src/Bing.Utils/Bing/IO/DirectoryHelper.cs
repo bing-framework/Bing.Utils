@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Bing.Extensions;
+﻿using Bing.Extensions;
 using Bing.Helpers;
 using Bing.OS;
 using Bing.Reflection;

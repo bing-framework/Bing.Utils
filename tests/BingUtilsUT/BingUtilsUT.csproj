@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net7.0;net6.0;net5.0;netcoreapp3.1;netcoreapp2.2;</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.tests.props" />
+
+	<ItemGroup>
+		<PackageReference Include="Shouldly" Version="4.1.0" />
+		<DotNetCliToolReference Include="dotnet-xunit" Version="2.*" />
+		<PackageReference Include="coverlet.collector" Version="3.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Bing.Utils.Collections\Bing.Utils.Collections.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.DateTime\Bing.Utils.DateTime.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.Drawing\Bing.Utils.Drawing.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.Http\Bing.Utils.Http.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.Net\Bing.Utils.Net.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils\Bing.Utils.csproj" />
+		<ProjectReference Include="..\Bing.Tests.Samples\Bing.Tests.Samples.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Resources\**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+</Project>

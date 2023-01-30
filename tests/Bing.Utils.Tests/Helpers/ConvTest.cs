@@ -1,7 +1,5 @@
-﻿using System;
-using Bing.Helpers;
+﻿using Bing.Helpers;
 using Bing.Tests.Samples;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Helpers;

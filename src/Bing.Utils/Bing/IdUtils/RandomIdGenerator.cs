@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace Bing.IdUtils;
+﻿namespace Bing.IdUtils;
 
 /// <summary>
 /// 随机 Id 生成器

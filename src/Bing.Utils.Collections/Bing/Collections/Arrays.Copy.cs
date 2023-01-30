@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Collections;
+﻿namespace Bing.Collections;
 
 /// <summary>
 /// 数组复制选项

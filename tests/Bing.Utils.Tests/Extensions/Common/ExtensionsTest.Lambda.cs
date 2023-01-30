@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Bing.Expressions;
 using Bing.Tests.Samples;
 using Xunit.Abstractions;
-using Xunit;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Utils.Tests.Extensions;

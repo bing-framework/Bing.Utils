@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Reflection;
+﻿namespace Bing.Reflection;
 
 /// <summary>
 /// 调用帮助辅助类

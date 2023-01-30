@@ -1,6 +1,5 @@
 ﻿using System.Collections.Specialized;
 using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 using Bing.OS;
 using Enum = System.Enum;
@@ -144,22 +143,6 @@ public static partial class StringExtensions
         foreach (var c in value.Where(char.IsLetterOrDigit))
             sb.Append(c);
         return sb.ToString();
-    }
-
-    /// <summary>
-    /// 去除字符串末尾指定的符号
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="defaultChar">需要去除的符号，默认：,</param>
-    public static string RemoveEnd(this string value, string defaultChar = ",")
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return string.Empty;
-        if (string.IsNullOrWhiteSpace(defaultChar))
-            return value.SafeString();
-        if (value.ToLower().EndsWith(defaultChar.ToLower()))
-            return value.Remove(value.Length - defaultChar.Length, defaultChar.Length);
-        return value;
     }
 
     /// <summary>

@@ -1,5 +1,4 @@
 ﻿using Bing.IO;
-using Xunit;
 
 namespace Bing.Utils.Tests.Files;
 

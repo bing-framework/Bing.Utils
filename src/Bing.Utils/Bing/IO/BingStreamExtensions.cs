@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Bing.IO;
+﻿namespace Bing.IO;
 
 /// <summary>
 /// Bing <see cref="Stream"/> 扩展

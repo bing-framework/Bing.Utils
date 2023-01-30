@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Collections;
 
 namespace Bing.Reflection;
 
@@ -290,8 +285,8 @@ public static partial class Types
     public static bool IsEnumType(Type type, TypeIsOptions isOptions = TypeIsOptions.Default) =>
         type is not null && isOptions switch
         {
-            TypeIsOptions.Default => type.IsEnum,
-            TypeIsOptions.IgnoreNullable => TypeConv.GetNonNullableType(type).IsEnum,
+            TypeIsOptions.Default => type.GetTypeInfo().IsEnum,
+            TypeIsOptions.IgnoreNullable => TypeConv.GetNonNullableType(type)?.GetTypeInfo().IsEnum ?? false,
             _ => type.IsEnum
         };
 
@@ -301,7 +296,10 @@ public static partial class Types
     /// <param name="typeInfo">类型信息</param>
     /// <param name="isOptions">类型判断选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsEnumType(TypeInfo typeInfo, TypeIsOptions isOptions = TypeIsOptions.Default) => IsEnumType(typeInfo.AsType(), isOptions);
+    public static bool IsEnumType(TypeInfo typeInfo, TypeIsOptions isOptions = TypeIsOptions.Default)
+    {
+        return IsEnumType(typeInfo.AsType(), isOptions);
+    }
 
     /// <summary>
     /// 判断给定的类型是否为枚举类型
@@ -309,7 +307,10 @@ public static partial class Types
     /// <typeparam name="T">泛型类型</typeparam>
     /// <param name="isOptions">类型判断选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsEnumType<T>(TypeIsOptions isOptions = TypeIsOptions.Default) => IsEnumType(typeof(T), isOptions);
+    public static bool IsEnumType<T>(TypeIsOptions isOptions = TypeIsOptions.Default)
+    {
+        return IsEnumType(typeof(T), isOptions);
+    }
 
     /// <summary>
     /// 判断给定对象是否为枚举类型
@@ -318,10 +319,10 @@ public static partial class Types
     /// <param name="value">值</param>
     /// <param name="isOptions">类型判断选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsEnumType<T>(T value, TypeIsOptions isOptions = TypeIsOptions.Default) =>
-        value is not null
-        && IsEnumType(typeof(T), isOptions)
-        && typeof(T).IsEnumDefined(value);
+    public static bool IsEnumType<T>(T value, TypeIsOptions isOptions = TypeIsOptions.Default)
+    {
+        return value is not null && IsEnumType(typeof(T), isOptions) && typeof(T).IsEnumDefined(value);
+    }
 
     #endregion
 

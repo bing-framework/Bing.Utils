@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Text;
-
-namespace Bing.Conversions.Scale;
+﻿namespace Bing.Conversions.Scale;
 
 /// <summary>
 /// 字节转换器

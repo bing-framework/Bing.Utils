@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Utils.IdGenerators.Abstractions;
+﻿namespace Bing.Utils.IdGenerators.Abstractions;
 
 /// <summary>
 /// Guid ID 生成器

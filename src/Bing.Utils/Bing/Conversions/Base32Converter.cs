@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace Bing.Conversions;
+﻿namespace Bing.Conversions;
 
 /// <summary>
 /// Base32 转换器

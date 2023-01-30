@@ -1,9 +1,4 @@
-﻿using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Bing.IO;
+﻿namespace Bing.IO;
 
 /// <summary>
 /// 文件操作帮助类 - 读取

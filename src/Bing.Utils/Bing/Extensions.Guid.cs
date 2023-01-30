@@ -1,5 +1,4 @@
-﻿using System;
-using Bing.Judgments;
+﻿using Bing.IdUtils;
 
 namespace Bing;
 
@@ -12,11 +11,11 @@ public static class GuidExtensions
     /// 是否为空
     /// </summary>
     /// <param name="guid">值</param>
-    public static bool IsNullOrEmpty(this Guid? guid) => GuidJudgment.IsNullOrEmpty(guid);
+    public static bool IsNullOrEmpty(this Guid? guid) => GuidJudge.IsNullOrEmpty(guid);
 
     /// <summary>
     /// 是否为空
     /// </summary>
     /// <param name="guid">值</param>
-    public static bool IsNullOrEmpty(this Guid guid) => GuidJudgment.IsNullOrEmpty(guid);
+    public static bool IsNullOrEmpty(this Guid guid) => GuidJudge.IsNullOrEmpty(guid);
 }

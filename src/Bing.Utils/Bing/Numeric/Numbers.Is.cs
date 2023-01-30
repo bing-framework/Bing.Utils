@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Bing.Numeric;
+﻿namespace Bing.Numeric;
 
 /// <summary>
 /// 数值操作

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing;
+﻿namespace Bing;
 
 /// <summary>
 /// 释放操作

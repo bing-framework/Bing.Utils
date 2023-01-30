@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Bing.Text.Joiners;
+﻿namespace Bing.Text.Joiners;
 
 /// <summary>
 /// 映射连接器
