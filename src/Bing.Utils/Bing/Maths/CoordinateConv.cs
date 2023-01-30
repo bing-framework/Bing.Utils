@@ -77,7 +77,7 @@ public static class CoordinateConv
     // ReSharper disable once InconsistentNaming
     public static Coordinate GCJ02ToWGS84(double lng, double lat)
     {
-        return new Coordinate(lng, lat).Offset(Offset(lng, lat, false));
+        return OutOfChina(lng, lat) ? new Coordinate(lng, lat) : new Coordinate(lng, lat).Offset(Offset(lng, lat, false));
     }
 
     /// <summary>
@@ -86,6 +86,7 @@ public static class CoordinateConv
     /// <param name="lng"></param>
     /// <param name="lat"></param>
     /// <returns>百度坐标系(BD-09)</returns>
+    // ReSharper disable once InconsistentNaming
     public static Coordinate GCJ02ToBD09(double lng, double lat)
     {
         var z = Math.Sqrt(lng * lng + lat * lat) + 0.00002 * Math.Sin(lat * X_PI);
