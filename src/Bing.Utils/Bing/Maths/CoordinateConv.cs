@@ -1,7 +1,7 @@
 ﻿namespace Bing.Maths;
 
 /// <summary>
-/// 坐标转换，UMD魔法代码。
+/// 坐标轴转换类，UMD魔法代码。
 /// </summary>
 public static class CoordinateConv
 {
@@ -16,7 +16,7 @@ public static class CoordinateConv
     private const double PI = 3.1415926535897932384626433832795D;
 
     /// <summary>
-    /// 地球半径（Krasovsky 1940）
+    /// 地球半径（Krasovsky 1940）克拉索夫斯基椭球体
     /// </summary>
     private const double RADIUS = 6378245.0D;
 
@@ -37,10 +37,10 @@ public static class CoordinateConv
         return (lng < 72.004 || lng > 137.8347) || (lat < 0.8293 || lat > 55.8271);
     }
 
-    #region 地球坐标系(WGS84)
+    #region 地球坐标系(WGS-84)
 
     /// <summary>
-    /// 将 地球坐标系（WGS84） 转换为 火星坐标系（GCJ-02）
+    /// 将 地球坐标系（WGS-84） 转换为 火星坐标系（GCJ-02）
     /// </summary>
     /// <param name="lng">经度坐标</param>
     /// <param name="lat">纬度坐标</param>
@@ -52,7 +52,7 @@ public static class CoordinateConv
     }
 
     /// <summary>
-    /// 将 地球坐标系（WGS84） 转换为 百度坐标系（BD-09）
+    /// 将 地球坐标系（WGS-84） 转换为 百度坐标系（BD-09）
     /// </summary>
     /// <param name="lng">经度坐标</param>
     /// <param name="lat">纬度坐标</param>
@@ -69,11 +69,11 @@ public static class CoordinateConv
     #region 火星坐标系(GCJ-02)
 
     /// <summary>
-    /// 将 火星坐标系（GCJ-02） 转换为 地球坐标系(WGS84)
+    /// 将 火星坐标系（GCJ-02） 转换为 地球坐标系(WGS-84)
     /// </summary>
     /// <param name="lng">经度坐标</param>
     /// <param name="lat">纬度坐标</param>
-    /// <returns>地球坐标系(WGS84)</returns>
+    /// <returns>地球坐标系(WGS-84)</returns>
     // ReSharper disable once InconsistentNaming
     public static Coordinate GCJ02ToWGS84(double lng, double lat)
     {
@@ -119,11 +119,11 @@ public static class CoordinateConv
     }
 
     /// <summary>
-    /// 将 百度坐标系（BD-09）转换为 地球坐标系（WGS84）
+    /// 将 百度坐标系（BD-09）转换为 地球坐标系（WGS-84）
     /// </summary>
     /// <param name="lng">经度坐标</param>
     /// <param name="lat">纬度坐标</param>
-    /// <returns>地球坐标系（WGS84）</returns>
+    /// <returns>地球坐标系（WGS-84）</returns>
     // ReSharper disable once InconsistentNaming
     public static Coordinate BD09ToWGS84(double lng, double lat)
     {
@@ -134,11 +134,11 @@ public static class CoordinateConv
     #endregion
 
     /// <summary>
-    /// 地球坐标系（WGS84） 与 火星坐标系（GCJ-02）转换的偏移算法（非精确）
+    /// 地球坐标系（WGS-84） 与 火星坐标系（GCJ-02）转换的偏移算法（非精确）
     /// </summary>
     /// <param name="lng">经度坐标</param>
     /// <param name="lat">纬度坐标</param>
-    /// <param name="isPlus">是否正向偏移：WGS84转GCJ-02使用正向，否则使用反向</param>
+    /// <param name="isPlus">是否正向偏移：WGS-84 转 GCJ-02 使用正向，否则使用反向</param>
     /// <returns>偏移坐标</returns>
     private static Coordinate Offset(double lng, double lat, bool isPlus)
     {
