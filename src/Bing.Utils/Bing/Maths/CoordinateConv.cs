@@ -134,7 +134,7 @@ public static class CoordinateConv
     #endregion
 
     /// <summary>
-    /// WGS84 与 火星坐标系（GCJ-02）转换的偏移算法（非精确）
+    /// 地球坐标系（WGS84） 与 火星坐标系（GCJ-02）转换的偏移算法（非精确）
     /// </summary>
     /// <param name="lng">经度坐标</param>
     /// <param name="lat">纬度坐标</param>
@@ -145,11 +145,12 @@ public static class CoordinateConv
         var dLng = TransformLng(lng - 105.0, lat - 35.0);
         var dLat = TransformLat(lng - 105.0, lat - 35.0);
 
-        var magic = Math.Sin(lat / 180.0 * PI);
+        var radLat = lat / 180.0 * PI;
+        var magic = Math.Sin(radLat);
         magic = 1 - CORRECTION_PARAM * magic * magic;
         var sqrtMagic = Math.Sqrt(magic);
 
-        dLng = (dLng * 180.0) / (RADIUS / sqrtMagic * Math.Cos(lat / 180.0 * PI) * PI);
+        dLng = (dLng * 180.0) / (RADIUS / sqrtMagic * Math.Cos(radLat) * PI);
         dLat = (dLat * 180.0) / ((RADIUS * (1 - CORRECTION_PARAM)) / (magic * sqrtMagic) * PI);
 
         if (false == isPlus)
