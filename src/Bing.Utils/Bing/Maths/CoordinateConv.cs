@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace Bing.Maths;
+﻿namespace Bing.Maths;
 
 /// <summary>
 /// 各坐标系之间的转换工具类，UMD魔法代码。
