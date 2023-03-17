@@ -5,12 +5,6 @@
 		<Description>Bing.Utils.Collections是Bing应用框架的集合操作类库。</Description>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<!--移除Xml、DotSettings-->
-		<None Remove="Bing.Utils.Collections.xml"/>
-		<None Remove="Bing.Utils.Collections.csproj.DotSettings"/>
-	</ItemGroup>
-
 	<Import Project="..\..\common.props" />
 
 	<Import Project="references.props" />
