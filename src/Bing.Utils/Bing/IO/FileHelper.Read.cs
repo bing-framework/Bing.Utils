@@ -29,7 +29,7 @@ public static partial class FileHelper
     {
         if (!File.Exists(targetFilePath))
             return null;
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
+#if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER
         await using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read);
 #else
             using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read);

@@ -199,10 +199,10 @@ public static partial class FileHelper
             File.Create(targetFilePath);
 
         var fileMode = appendMode ? FileMode.Append : FileMode.Open;
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0 || NET6_0
+#if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER
         await using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
 #else
-            using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
+        using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
 #endif
         return await fs.TryWriteAsync(byteArray, 0, byteArray.Length);
     }

@@ -299,7 +299,7 @@ public static class Web
     #endregion
 
     #region RootPath(根路径)
-#if NETSTANDARD2_0|| NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
+#if NETSTANDARD2_0|| NETCOREAPP3_0_OR_GREATER
         /// <summary>
         /// 根路径
         /// </summary>
@@ -314,7 +314,7 @@ public static class Web
 
     #region WebRootPath(Web根路径)
 
-#if NETSTANDARD2_0|| NETSTANDARD2_0|| NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
+#if NETSTANDARD2_0|| NETCOREAPP3_0_OR_GREATER
         /// <summary>
         /// Web根路径，即wwwroot
         /// </summary>
