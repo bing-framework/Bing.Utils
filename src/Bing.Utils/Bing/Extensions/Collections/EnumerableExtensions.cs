@@ -42,6 +42,8 @@ public static class EnumerableExtensions
 
     #endregion
 
+#if !NET6_0_OR_GREATER
+
     #region DistinctBy(根据指定条件返回集合中不重复的元素)
 
     /// <summary>
@@ -64,6 +66,8 @@ public static class EnumerableExtensions
     }
 
     #endregion
+
+#endif
 
     #region ExpandAndToString(展开集合并转换为字符串)
 
