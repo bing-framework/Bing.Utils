@@ -299,32 +299,24 @@ public static class Web
     #endregion
 
     #region RootPath(根路径)
-#if NETSTANDARD2_0|| NETCOREAPP3_0_OR_GREATER
-        /// <summary>
-        /// 根路径
-        /// </summary>
-        public static string RootPath => Environment?.ContentRootPath;
-#else
+#if !NETSTANDARD2_1
+    
     /// <summary>
     /// 根路径
     /// </summary>
-    public static string RootPath => throw new NotSupportedException($"{nameof(RootPath)} 不支持在 NETSTANDARD2_1");
+    public static string RootPath => Environment?.ContentRootPath;
 #endif
     #endregion
 
     #region WebRootPath(Web根路径)
 
-#if NETSTANDARD2_0|| NETCOREAPP3_0_OR_GREATER
-        /// <summary>
-        /// Web根路径，即wwwroot
-        /// </summary>
-        public static string WebRootPath => Environment?.WebRootPath;
-#else
+#if !NETSTANDARD2_1
     /// <summary>
     /// Web根路径，即wwwroot
     /// </summary>
-    public static string WebRootPath => throw new NotSupportedException($"{nameof(WebRootPath)} 不支持在 NETSTANDARD2_1");
+    public static string WebRootPath => Environment?.WebRootPath;
 #endif
+
     #endregion
 
     #region ContentType(内容类型)
