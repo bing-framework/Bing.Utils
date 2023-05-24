@@ -194,8 +194,8 @@ public static partial class TypeVisit
     {
         if (property is null)
             throw new ArgumentNullException(nameof(property));
-        return (property.CanRead && property.GetMethod.IsVisibleAndVirtual()) ||
-               (property.CanWrite && property.GetMethod.IsVisibleAndVirtual());
+        return (property.CanRead && property.GetMethod!.IsVisibleAndVirtual()) ||
+               (property.CanWrite && property.GetMethod!.IsVisibleAndVirtual());
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 
+// ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
 
 /// <summary>

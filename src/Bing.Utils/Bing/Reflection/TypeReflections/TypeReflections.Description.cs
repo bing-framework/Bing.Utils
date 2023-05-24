@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
+// ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
 
 // 类型反射操作 - 描述

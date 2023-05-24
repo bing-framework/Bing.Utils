@@ -72,8 +72,12 @@ public static partial class Check
     /// <exception cref="ArgumentNullException"></exception>
     public static T NotNull<T>(T value, string parameterName)
     {
-        if (value == null)
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(value, parameterName);
+#else
+        if (value is null)
             throw new ArgumentNullException(parameterName, string.Format(R.ParameterCheck_NotNull, parameterName));
+#endif
         return value;
     }
 
@@ -186,7 +190,7 @@ public static partial class Check
         Require<ArgumentException>(dictionary.Any(), string.Format(R.ParameterCheck_NotNullOrEmpty_Collection));
     }
 
-    #endregion
+#endregion
 
     #region Between(范围检查)
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel.Design;
 
+// ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
 
 // 类型反射 - 缓存
@@ -79,5 +80,22 @@ public static partial class TypeReflections
                 throw new ArgumentNullException(nameof(type));
             return TypeFieldCache.GetOrAdd(type, t => t.GetFields());
         }
+    }
+
+    /// <summary>
+    /// 类型缓存管理器
+    /// </summary>
+    /// <typeparam name="T">实体类型</typeparam>
+    internal static class TypeCacheManager<T>
+    {
+        /// <summary>
+        /// 属性 - 值 获取器 缓存
+        /// </summary>
+        public static readonly ConcurrentDictionary<PropertyInfo, Func<T, object>> PropertyValueGetters = new();
+
+        /// <summary>
+        /// 属性 - 值 设置器 缓存
+        /// </summary>
+        public static readonly ConcurrentDictionary<PropertyInfo, Action<T, object>> PropertyValueSetters = new();
     }
 }

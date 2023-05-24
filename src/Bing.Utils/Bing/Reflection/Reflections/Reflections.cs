@@ -1,6 +1,7 @@
 ﻿using Bing.Extensions;
 using Bing.Helpers;
 
+// ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
 
 /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace Bing.Reflection;
+﻿
+// ReSharper disable once CheckNamespace
+namespace Bing.Reflection;
 
 /// <summary>
 /// 反射 操作

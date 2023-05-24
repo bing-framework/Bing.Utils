@@ -5,6 +5,10 @@
 		<Description>Bing.Utils是Bing应用框架的核心帮助类库。</Description>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+	</PropertyGroup>
+
 	<Import Project="..\..\common.props" />
 
 	<Import Project="dependency.props" />

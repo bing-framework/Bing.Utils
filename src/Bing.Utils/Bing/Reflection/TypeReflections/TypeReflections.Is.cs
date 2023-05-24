@@ -1,4 +1,6 @@
-﻿namespace Bing.Reflection;
+﻿
+// ReSharper disable once CheckNamespace
+namespace Bing.Reflection;
 
 // 类型反射 - 判断
 public static partial class TypeReflections
@@ -60,6 +62,22 @@ public static partial class TypeReflections
     /// <param name="isOptions">类型判断选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsStruct(MemberInfo member, TypeIsOptions isOptions = TypeIsOptions.Default) => X(member, type => type, type => Types.IsStructType(type, isOptions));
+
+    /// <summary>
+    /// 判断给定的 <see cref="MemberInfo"/> 元信息是否为原始类型
+    /// </summary>
+    /// <param name="member">成员元数据</param>
+    /// <param name="isOptions">类型判断选项</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsPrimitive(MemberInfo member, TypeIsOptions isOptions = TypeIsOptions.Default) => X(member, type => type, type => Types.IsPrimitiveType(type, isOptions));
+
+    /// <summary>
+    /// 判断给定的 <see cref="MemberInfo"/> 元信息是否为值类型
+    /// </summary>
+    /// <param name="member">成员元数据</param>
+    /// <param name="isOptions">类型判断选项</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsValueType(MemberInfo member, TypeIsOptions isOptions = TypeIsOptions.Default) => X(member, type => type, type => Types.IsValueType(type, isOptions));
 
     /// <summary>
     /// 判断给定的 <see cref="MemberInfo"/> 元信息是否为集合或数组类型

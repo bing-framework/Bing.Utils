@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Bing.Helpers;
 
+// ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
 
 /// <summary>

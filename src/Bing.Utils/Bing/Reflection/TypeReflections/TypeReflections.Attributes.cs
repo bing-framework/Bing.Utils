@@ -1,5 +1,6 @@
 ﻿using AspectCore.Extensions.Reflection;
 
+// ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
 
 /// <summary>
