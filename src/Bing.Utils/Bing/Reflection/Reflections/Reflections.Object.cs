@@ -204,4 +204,42 @@ public static partial class Reflections
     }
 
     #endregion
+
+    #region SetFieldValue(给指定对象设置字段值)
+
+    /// <summary>
+    /// 给指定对象设置字段值
+    /// </summary>
+    /// <typeparam name="T">类型</typeparam>
+    /// <param name="this">当前对象</param>
+    /// <param name="fieldName">字段名</param>
+    /// <param name="value">值</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void SetFieldValue<T>(T @this, string fieldName, object value)
+    {
+        if (@this == null)
+            throw new ArgumentNullException(nameof(@this));
+        var type = @this.GetType();
+        var field = type.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+        field?.SetValue(@this, value);
+    }
+
+    #endregion
+
+    #region SetPropertyValue(给指定对象设置属性值)
+
+    /// <summary>
+    /// 给指定对象设置属性值
+    /// </summary>
+    /// <typeparam name="T">类型</typeparam>
+    /// <param name="this">当前对象</param>
+    /// <param name="propertyName">属性名</param>
+    /// <param name="value">值</param>
+    public static void SetPropertyValue<T>(T @this, string propertyName, object value) where T : class
+    {
+        var property = GetProperty<T>(propertyName);
+        property?.GetValueSetter()?.Invoke(@this, value);
+    }
+
+    #endregion
 }
