@@ -6,15 +6,12 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<!--解决 BinaryFormatter 兼容问题-->
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
 	</PropertyGroup>
 
 	<Import Project="..\..\common.props" />
 
 	<Import Project="dependency.props" />
-
-  <ItemGroup>
-    <Folder Include="Bing\OS\" />
-  </ItemGroup>
 
 </Project>
