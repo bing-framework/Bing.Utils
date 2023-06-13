@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace Bing.Http.Clients.Parameters;
+﻿namespace Bing.Http.Clients.Parameters;
 
 /// <summary>
 /// 文件参数
