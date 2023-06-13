@@ -24,7 +24,7 @@ public static partial class Enum
     public static TEnum Parse<TEnum>(object member)
     {
         var value = member.SafeString();
-        if (value.IsEmpty())
+        if (string.IsNullOrWhiteSpace(value))
         {
             if (typeof(TEnum).IsGenericType)
                 return default;
@@ -44,7 +44,7 @@ public static partial class Enum
     /// <param name="desc">描述</param>
     public static TEnum ParseByDescription<TEnum>(string desc)
     {
-        if (desc.IsEmpty())
+        if (string.IsNullOrWhiteSpace(desc))
         {
             if (typeof(TEnum).IsGenericType)
                 return default;
@@ -124,8 +124,8 @@ public static partial class Enum
     /// <exception cref="ArgumentNullException">成员为空</exception>
     public static int GetValue(Type type, object member)
     {
-        string value = member.SafeString();
-        if (value.IsEmpty())
+        var value = member.SafeString();
+        if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentNullException(nameof(member));
         return (int)System.Enum.Parse(type, member.ToString(), true);
     }
