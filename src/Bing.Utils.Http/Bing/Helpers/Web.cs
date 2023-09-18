@@ -1,12 +1,9 @@
 ﻿using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Text;
 using System.Web;
 using Bing.Extensions;
 using Bing.Http.Clients;
 using Bing.IO;
-using Bing.OS;
 using Microsoft.AspNetCore.Http;
 #if !NETSTANDARD2_1
 using Microsoft.AspNetCore.Http.Extensions;
@@ -167,90 +164,6 @@ public static class Web
         /// </summary>
         public static string Url => Request?.GetDisplayUrl();
 #endif
-    #endregion
-
-    #region IP(客户端IP地址)
-
-    /// <summary>
-    /// IP地址
-    /// </summary>
-    private static string _ip;
-
-    /// <summary>
-    /// 设置IP地址
-    /// </summary>
-    /// <param name="ip">IP地址</param>
-    public static void SetIp(string ip) => _ip = ip;
-
-    /// <summary>
-    /// 重置IP地址
-    /// </summary>
-    public static void ResetIp() => _ip = null;
-
-    /// <summary>
-    /// 客户端IP地址
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    public static string IP
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(_ip) == false)
-                return _ip;
-            var list = new[] { "127.0.0.1", "::1" };
-            var result = HttpContext?.Connection?.RemoteIpAddress.SafeString();
-            if (string.IsNullOrWhiteSpace(result) || list.Contains(result))
-                result = Platform.IsWindows ? GetLanIP() : GetLanIP(NetworkInterfaceType.Ethernet);
-            return result;
-        }
-    }
-
-    /// <summary>
-    /// 获取局域网IP
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    private static string GetLanIP()
-    {
-        foreach (var hostAddress in Dns.GetHostAddresses(Dns.GetHostName()))
-        {
-            if (hostAddress.AddressFamily == AddressFamily.InterNetwork)
-                return hostAddress.ToString();
-        }
-        return string.Empty;
-    }
-
-    /// <summary>
-    /// 获取局域网IP。
-    /// 参考地址：https://stackoverflow.com/questions/6803073/get-local-ip-address/28621250#28621250
-    /// 解决OSX下获取IP地址产生"Device not configured"的问题
-    /// </summary>
-    /// <param name="type">网络接口类型</param>
-    // ReSharper disable once InconsistentNaming
-    private static string GetLanIP(NetworkInterfaceType type)
-    {
-        try
-        {
-            foreach (var item in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                if (item.NetworkInterfaceType != type || item.OperationalStatus != OperationalStatus.Up)
-                    continue;
-                var ipProperties = item.GetIPProperties();
-                if (ipProperties.GatewayAddresses.FirstOrDefault() == null)
-                    continue;
-                foreach (var ip in ipProperties.UnicastAddresses)
-                {
-                    if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
-                        return ip.Address.ToString();
-                }
-            }
-        }
-        catch
-        {
-            return string.Empty;
-        }
-        return string.Empty;
-    }
-
     #endregion
 
     #region Host(主机)

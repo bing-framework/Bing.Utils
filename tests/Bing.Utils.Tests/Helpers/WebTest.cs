@@ -76,7 +76,7 @@ public class WebTest : TestBase
     [Fact]
     public void Test_Ip()
     {
-        Output.WriteLine(Web.IP);
+        Output.WriteLine(Ip.GetIp());
     }
 
     /// <summary>
