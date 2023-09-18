@@ -56,8 +56,7 @@ public static partial class FileHelper
     {
         if (stream == null)
             return string.Empty;
-        if (encoding == null) 
-            encoding = Encoding.UTF8;
+        encoding ??= Encoding.UTF8;
         if (stream.CanRead == false)
             return string.Empty;
         using var reader = new StreamReader(stream, encoding, true, bufferSize, !isCloseStream);

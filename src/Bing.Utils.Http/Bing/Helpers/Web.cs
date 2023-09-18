@@ -148,7 +148,6 @@ public static class Web
         get
         {
             Request.EnableBuffering();
-            //Request.EnableRewind();
             return FileHelper.ToString(Request.Body, isCloseStream: false);
         }
     }
@@ -166,7 +165,7 @@ public static class Web
         /// <summary>
         /// 请求地址
         /// </summary>
-        public static string Url => HttpContext?.Request?.GetDisplayUrl();
+        public static string Url => Request?.GetDisplayUrl();
 #endif
     #endregion
 
@@ -577,7 +576,6 @@ public static class Web
     public static async Task<string> GetBodyAsync()
     {
         Request.EnableBuffering();
-        //Request.EnableRewind();
         return await FileHelper.ToStringAsync(Request.Body, isCloseStream: false);
     }
 
@@ -600,15 +598,8 @@ public static class Web
     /// <param name="encoding">字符编码</param>
     public static async Task DownloadFileAsync(string filePath, string fileName, Encoding encoding)
     {
-        if(!File.Exists(filePath))
-            return;
-        var fileInfo = new FileInfo(filePath);
-        int fileSize = (int)fileInfo.Length;
-        using (var reader = new BinaryReader(fileInfo.Open(FileMode.Open)))
-        {
-            var bytes = reader.ReadBytes(fileSize);
-            await DownloadAsync(bytes, fileName, encoding);
-        }
+        var bytes = await FileHelper.ReadAsync(filePath);
+        await DownloadAsync(bytes, fileName, encoding);
     }
 
     /// <summary>
@@ -624,7 +615,11 @@ public static class Web
     /// <param name="stream">流</param>
     /// <param name="fileName">文件名。包含扩展名</param>
     /// <param name="encoding">字符编码</param>
-    public static async Task DownloadAsync(Stream stream, string fileName, Encoding encoding) => await DownloadAsync(await FileHelper.ToBytesAsync(stream), fileName, encoding);
+    public static async Task DownloadAsync(Stream stream, string fileName, Encoding encoding)
+    {
+        var bytes = await FileHelper.ToBytesAsync(stream);
+        await DownloadAsync(bytes, fileName, encoding);
+    }
 
     /// <summary>
     /// 下载
@@ -656,28 +651,10 @@ public static class Web
     #region GetCookie(获取Cookie值)
 
     /// <summary>
-    /// 读取Cookie值
+    /// 获取Cookie值
     /// </summary>
-    /// <param name="name">名称</param>
-    public static string GetCookie(string name)
-    {
-        if (HttpContext.Request.Cookies != null && HttpContext.Request.Cookies[name] != null)
-            return HttpContext.Request.Cookies[name];
-        return string.Empty;
-    }
-
-    #endregion
-
-    #region ClearCookie(清空Cookie)
-
-    /// <summary>
-    /// 清空Cookie
-    /// </summary>
-    public static void ClearCookie()
-    {
-        foreach (var cookie in HttpContext.Request.Cookies.Keys)
-            HttpContext.Response.Cookies.Delete(cookie);
-    }
+    /// <param name="key">cookie键名</param>
+    public static string GetCookie(string key) => Request?.Cookies[key];
 
     #endregion
 
@@ -686,13 +663,34 @@ public static class Web
     /// <summary>
     /// 设置Cookie值。未设置过期时间，则写的是浏览器进程Cookie，一旦浏览器（是浏览器，非标签页）关闭，则Cookie自动失效
     /// </summary>
-    /// <param name="name">名称</param>
+    /// <param name="key">cookie键名</param>
     /// <param name="value">值</param>
-    public static void SetCookie(string name, string value)
-    {
-        var cookieOptions = new CookieOptions { HttpOnly = true };
-        HttpContext.Response.Cookies.Append(name, value, cookieOptions);
-    }
+    public static void SetCookie(string key, string value) => Response?.Cookies.Append(key, value);
+
+    /// <summary>
+    /// 设置Cookie值。
+    /// </summary>
+    /// <param name="key">cookie键名</param>
+    /// <param name="value">值</param>
+    /// <param name="options">Cookie配置</param>
+    public static void SetCookie(string key, string value, CookieOptions options) => Response?.Cookies.Append(key, value, options);
+
+    #endregion
+
+    #region RemoveCookie(移除Cookie)
+
+    /// <summary>
+    /// 移除Cookie
+    /// </summary>
+    /// <param name="key">cookie键名</param>
+    public static void RemoveCookie(string key) => Response?.Cookies.Delete(key);
+
+    /// <summary>
+    /// 移除Cookie
+    /// </summary>
+    /// <param name="key">cookie键名</param>
+    /// <param name="options">Cookie配置</param>
+    public static void RemoveCookie(string key, CookieOptions options) => Response?.Cookies.Delete(key, options);
 
     #endregion
 }
