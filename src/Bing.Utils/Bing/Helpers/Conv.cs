@@ -379,7 +379,7 @@ public static partial class Conv
     /// </summary>
     /// <param name="input">输入值</param>
     /// <param name="defaultValue">默认值</param>
-    public static DateTime ToDate(object input, DateTime defaultValue = default) => ToDateOrNull(input) ?? DateTime.MinValue;
+    public static DateTime ToDate(object input, DateTime defaultValue = default) => ToDateOrNull(input, defaultValue) ?? DateTime.MinValue;
 
     /// <summary>
     /// 转换为可空日期
