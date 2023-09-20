@@ -264,6 +264,11 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     protected Encoding CharacterEncoding { get; private set; }
 
     /// <summary>
+    /// 超时时间间隔
+    /// </summary>
+    protected TimeSpan? HttpTimeout { get; private set; }
+
+    /// <summary>
     /// 请求头参数集合
     /// </summary>
     protected IDictionary<string, string> HeaderParams { get; }
@@ -466,6 +471,26 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
                 new NullableDateTimeJsonConverter()
             }
         };
+    }
+
+    #endregion
+
+    #region Timeout(设置超时时间)
+
+    /// <summary>
+    /// 设置超时时间
+    /// </summary>
+    /// <param name="timeout">超时时间。单位：秒</param>
+    public IHttpRequest<TResult> Timeout(int timeout) => Timeout(new TimeSpan(0, 0, timeout));
+
+    /// <summary>
+    /// 设置超时时间
+    /// </summary>
+    /// <param name="timeout">超时时间</param>
+    public IHttpRequest<TResult> Timeout(TimeSpan timeout)
+    {
+        HttpTimeout = timeout;
+        return this;
     }
 
     #endregion
@@ -1028,6 +1053,21 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
         if(string.IsNullOrWhiteSpace(BaseAddressUri))
             return;
         client.BaseAddress = new Uri(BaseAddressUri);
+    }
+
+    #endregion
+
+    #region InitTimeout(初始化超时间隔)
+
+    /// <summary>
+    /// 初始化超时间隔
+    /// </summary>
+    /// <param name="client">Http客户端</param>
+    protected virtual void InitTimeout(HttpClient client)
+    {
+        if (HttpTimeout == null)
+            return;
+        client.Timeout = HttpTimeout.SafeValue();
     }
 
     #endregion

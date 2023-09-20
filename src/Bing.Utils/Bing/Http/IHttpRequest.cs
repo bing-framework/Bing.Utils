@@ -72,6 +72,18 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     IHttpRequest<TResult> JsonSerializerOptions(JsonSerializerOptions options);
 
     /// <summary>
+    /// 设置超时时间
+    /// </summary>
+    /// <param name="timeout">超时时间。单位：秒</param>
+    IHttpRequest<TResult> Timeout(int timeout);
+
+    /// <summary>
+    /// 设置超时时间
+    /// </summary>
+    /// <param name="timeout">超时时间</param>
+    IHttpRequest<TResult> Timeout(TimeSpan timeout);
+
+    /// <summary>
     /// 设置请求头
     /// </summary>
     /// <param name="key">键</param>
