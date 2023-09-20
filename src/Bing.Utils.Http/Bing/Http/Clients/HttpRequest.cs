@@ -1000,11 +1000,7 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     /// 初始化是否携带Cookie
     /// </summary>
     /// <param name="handler">Http客户端处理器</param>
-    protected virtual void InitUseCookies(HttpClientHandler handler)
-    {
-        if (IsUseCookies == null)
-            handler.UseCookies = false;
-    }
+    protected virtual void InitUseCookies(HttpClientHandler handler) => handler.UseCookies = IsUseCookies.SafeValue();
 
     #endregion
 

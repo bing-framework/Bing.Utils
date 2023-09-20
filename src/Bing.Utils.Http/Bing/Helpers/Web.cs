@@ -2,14 +2,12 @@
 using System.Text;
 using System.Web;
 using Bing.Extensions;
-using Bing.Http.Clients;
 using Bing.IO;
 using Microsoft.AspNetCore.Http;
 #if !NETSTANDARD2_1
 using Microsoft.AspNetCore.Http.Extensions;
 #endif
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
-//using WebClient = Bing.Http.Clients.WebClient;
 
 namespace Bing.Helpers;
 
@@ -288,21 +286,6 @@ public static class Web
 
     #endregion
 
-    //#region Client(Web客户端)
-
-    ///// <summary>
-    ///// Web客户端，用于发送Http请求
-    ///// </summary>
-    //public static WebClient Client() => new WebClient();
-
-    ///// <summary>
-    ///// Web客户端，用于发送Http请求
-    ///// </summary>
-    ///// <typeparam name="TResult">返回结果类型</typeparam>
-    //public static WebClient<TResult> Client<TResult>() where TResult : class => new WebClient<TResult>();
-
-    //#endregion
-
     #region GetFiles(获取客户端文件集合)
 
     /// <summary>
@@ -312,7 +295,7 @@ public static class Web
     {
         var result = new List<IFormFile>();
         var files = HttpContext.Request.Form.Files;
-        if (files == null || files.Count == 0)
+        if (files.Count == 0)
             return result;
         result.AddRange(files.Where(file => file?.Length > 0));
         return result;
@@ -345,18 +328,13 @@ public static class Web
             return string.Empty;
         if (Request == null)
             return string.Empty;
-        var result = string.Empty;
-        if (Request.Query != null)
-            result = Request.Query[name];
+        string result = Request.Query[name];
         if (string.IsNullOrWhiteSpace(result) == false)
             return result;
-        if (Request.HasFormContentType && Request.Form != null)
-            result = Request.Form[name];
+        result = Request.Form[name];
         if (string.IsNullOrWhiteSpace(result) == false)
             return result;
-        if (Request.Headers != null)
-            result = Request.Headers[name];
-        return result;
+        return Request.Headers[name];;
     }
 
     #endregion
