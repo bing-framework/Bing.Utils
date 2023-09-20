@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 #endif
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
-using WebClient = Bing.Http.Clients.WebClient;
+//using WebClient = Bing.Http.Clients.WebClient;
 
 namespace Bing.Helpers;
 
@@ -288,20 +288,20 @@ public static class Web
 
     #endregion
 
-    #region Client(Web客户端)
+    //#region Client(Web客户端)
 
-    /// <summary>
-    /// Web客户端，用于发送Http请求
-    /// </summary>
-    public static WebClient Client() => new WebClient();
+    ///// <summary>
+    ///// Web客户端，用于发送Http请求
+    ///// </summary>
+    //public static WebClient Client() => new WebClient();
 
-    /// <summary>
-    /// Web客户端，用于发送Http请求
-    /// </summary>
-    /// <typeparam name="TResult">返回结果类型</typeparam>
-    public static WebClient<TResult> Client<TResult>() where TResult : class => new WebClient<TResult>();
+    ///// <summary>
+    ///// Web客户端，用于发送Http请求
+    ///// </summary>
+    ///// <typeparam name="TResult">返回结果类型</typeparam>
+    //public static WebClient<TResult> Client<TResult>() where TResult : class => new WebClient<TResult>();
 
-    #endregion
+    //#endregion
 
     #region GetFiles(获取客户端文件集合)
 

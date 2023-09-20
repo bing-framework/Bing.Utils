@@ -1,34 +1,12 @@
-﻿namespace Bing.Utils.Timing;
+﻿using Bing.Date;
+
+namespace Bing.Utils.Timing;
 
 /// <summary>
 /// 日期时间辅助扩展操作
 /// </summary>
 public static class DateTimeExtensions
 {
-    #region 字段
-
-    /// <summary>
-    /// 1970年1月1日
-    /// </summary>
-    internal static readonly DateTime Date1970 = new DateTime(1970, 1, 1);
-
-    /// <summary>
-    /// 最小日期
-    /// </summary>
-    internal static readonly DateTime MinDate = new DateTime(1900, 1, 1);
-
-    /// <summary>
-    /// 最大日期
-    /// </summary>
-    internal static readonly DateTime MaxDate = new DateTime(9999, 12, 31, 23, 59, 59, 999);
-
-    /// <summary>
-    /// 初始化js日期时间戳
-    /// </summary>
-    public static long InitialJavaScriptDateTicks = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Ticks;
-
-    #endregion
-
     #region ToUniqueString(获取时间相对唯一字符串)
 
     /// <summary>
@@ -85,7 +63,7 @@ public static class DateTimeExtensions
     /// <returns>毫秒数</returns>
     public static long GetMillisecondsSince1970(this DateTime datetime)
     {
-        var ts = datetime.Subtract(Date1970);
+        var ts = datetime.Subtract(TimeOptions.Date1970);
         return (long)ts.TotalMilliseconds;
     }
 
@@ -219,7 +197,7 @@ public static class DateTimeExtensions
     /// <returns></returns>
     public static bool IsValid(this DateTime value)
     {
-        return (value >= MinDate) && (value <= MaxDate);
+        return (value >= TimeOptions.MinDate) && (value <= TimeOptions.MaxDate);
     }
 
     #endregion
@@ -247,7 +225,7 @@ public static class DateTimeExtensions
     /// <returns></returns>
     public static long CsharpTime2JavascriptTime(this DateTime dateTime)
     {
-        return (long)new TimeSpan(dateTime.Ticks - Date1970.Ticks).TotalMilliseconds;
+        return (long)new TimeSpan(dateTime.Ticks - TimeOptions.Date1970.Ticks).TotalMilliseconds;
     }
 
     #endregion
@@ -262,7 +240,7 @@ public static class DateTimeExtensions
     /// <returns></returns>
     public static DateTime PhpTime2CsharpTime(this DateTime dateTime, long time)
     {
-        long t = (time + 8 * 60 * 60) * 10000000 + Date1970.Ticks;
+        long t = (time + 8 * 60 * 60) * 10000000 + TimeOptions.Date1970.Ticks;
         return new DateTime(t);
     }
 
@@ -277,7 +255,7 @@ public static class DateTimeExtensions
     /// <returns></returns>
     public static long CsharpTime2PhpTime(this DateTime dateTime)
     {
-        return (DateTime.UtcNow.Ticks - Date1970.Ticks) / 10000000;
+        return (DateTime.UtcNow.Ticks - TimeOptions.Date1970.Ticks) / 10000000;
     }
 
     #endregion

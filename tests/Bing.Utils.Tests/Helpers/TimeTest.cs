@@ -8,20 +8,12 @@ namespace Bing.Utils.Tests.Helpers;
 /// </summary>
 public class TimeTest : TestBase, IDisposable
 {
-    /// <summary>
-    /// 释放资源
-    /// </summary>
-    public void Dispose()
-    {
-        Time.Reset();
-    }
+    #region 测试初始化
 
     /// <summary>
-    /// 初始化一个<see cref="TestBase"/>类型的实例
+    /// 日期格式
     /// </summary>
-    public TimeTest(ITestOutputHelper output) : base(output)
-    {
-    }
+    private static readonly string _dateFormat = "yyyy-MM-dd HH:mm:ss";
 
     /// <summary>
     /// 日期字符串,"2012-01-02"
@@ -41,12 +33,12 @@ public class TimeTest : TestBase, IDisposable
     /// <summary>
     /// 日期时间字符串,"2012-01-02 01:02:03"
     /// </summary>
-    public const string DatetimeString1 = "2012-01-02 01:02:03";
+    private const string TestDateString = "2012-01-02 01:02:03";
 
     /// <summary>
     /// 日期时间,2012-01-02 01:02:03
     /// </summary>
-    public static readonly DateTime Datetime1 = DateTime.Parse(DatetimeString1);
+    public static readonly DateTime TestDate = DateTime.Parse(TestDateString);
 
     /// <summary>
     /// 日期时间字符串,"2012-11-12 13:04:05"
@@ -59,15 +51,55 @@ public class TimeTest : TestBase, IDisposable
     public static readonly DateTime Datetime2 = DateTime.Parse(DatetimeString2);
 
     /// <summary>
+    /// 测试初始化
+    /// </summary>
+    public TimeTest(ITestOutputHelper output) : base(output)
+    {
+    }
+
+    #endregion
+
+    #region 测试清理
+
+    /// <summary>
+    /// 释放资源
+    /// </summary>
+    public void Dispose() => Time.Reset();
+
+    #endregion
+
+    #region 辅助方法
+
+    /// <summary>
+    /// 相等断言
+    /// </summary>
+    /// <param name="expected">预期日期字符串</param>
+    /// <param name="actual">实际日期</param>
+    private void AssertEqual( string expected,DateTime actual ) {
+        Assert.Equal( expected, actual.ToString( _dateFormat ) );
+    }
+
+    /// <summary>
+    /// 不相等断言
+    /// </summary>
+    /// <param name="expected">预期日期字符串</param>
+    /// <param name="actual">实际日期</param>
+    private void AssertNotEqual( string expected, DateTime actual ) {
+        Assert.NotEqual( expected, actual.ToString( _dateFormat ) );
+    }
+
+    #endregion
+
+    /// <summary>
     /// 测试设置时间
     /// </summary>
     [Fact]
     public void Test_SetTime()
     {
-        Time.SetTime(Datetime1);
-        Assert.Equal(Datetime1, Time.GetDateTime());
+        Time.SetTime(TestDate);
+        AssertEqual(TestDateString, Time.Now);
         Time.Reset();
-        Assert.NotEqual(Datetime1, Time.GetDateTime());
+        AssertNotEqual(TestDateString, Time.Now);
     }
 
     /// <summary>

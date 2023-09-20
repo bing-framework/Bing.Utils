@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http;
+using System.Text.Json;
 
 namespace Bing.Http;
 
@@ -180,7 +181,7 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     /// 请求成功事件
     /// </summary>
     /// <param name="action">执行成功操作，参数为响应结果</param>
-    IHttpRequest<TResult> OnSuccess(Action<TResult, Task> action);
+    IHttpRequest<TResult> OnSuccess(Func<TResult, Task> action);
 
     /// <summary>
     /// 请求失败事件
