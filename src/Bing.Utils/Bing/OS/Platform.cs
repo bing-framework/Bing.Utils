@@ -86,6 +86,7 @@ public class Platform : IDisposable
     /// <remarks>
     /// 等价于  <see cref="AppContext.BaseDirectory"/>
     /// </remarks>
+    [Obsolete("请使用 Common.ApplicationBaseDirectory 属性")]
     public static readonly string AppRoot = AppDomain.CurrentDomain.BaseDirectory;
 
     /// <summary>
@@ -97,8 +98,10 @@ public class Platform : IDisposable
     /// 获取物理路径
     /// </summary>
     /// <param name="relativePath">相对路径。范例："test/a.txt" 或 "/test/a.txt"</param>
+    /// <param name="basePath">基路径。默认值：<see cref="AppContext.BaseDirectory"/></param>
     /// <returns>虚拟路径对应的物理路径</returns>
-    public static string GetPhysicalPath(string relativePath)
+    [Obsolete("请使用 Common.GetPhysicalPath 方法")]
+    public static string GetPhysicalPath(string relativePath, string basePath = null)
     {
         if (relativePath.StartsWith("~"))
             relativePath = relativePath.TrimStart('~');
@@ -106,7 +109,8 @@ public class Platform : IDisposable
             relativePath = relativePath.TrimStart('/');
         if (relativePath.StartsWith("\\"))
             relativePath = relativePath.TrimStart('\\');
-        return Path.Combine(AppRoot, relativePath);
+        basePath ??= AppRoot;
+        return Path.Combine(basePath, relativePath);
     }
 
     #region Dispose(检测冗余调用)
