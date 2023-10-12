@@ -22,7 +22,7 @@ public static partial class Common
     /// <summary>
     /// 换行符
     /// </summary>
-    public static string Line => Environment.NewLine;
+    public static string Line => Env.NewLine;
 
     #endregion
 

@@ -5,7 +5,7 @@ namespace Bing.Helpers;
 /// <summary>
 /// 环境操作
 /// </summary>
-public static class Environment
+public static class Env
 {
     /// <summary>
     /// DOTNET_ENVIRONMENT
