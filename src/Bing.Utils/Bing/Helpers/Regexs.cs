@@ -119,4 +119,5 @@ public static partial class Regexs
     public static bool IsMatch(string input, string pattern, RegexOptions options) => Regex.IsMatch(input, pattern, options);
 
     #endregion
+
 }

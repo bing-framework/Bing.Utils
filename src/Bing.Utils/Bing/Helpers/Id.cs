@@ -9,9 +9,9 @@ namespace Bing.Helpers;
 public static partial class Id
 {
     /// <summary>
-    /// Id
+    /// 标识
     /// </summary>
-    private static string _id;
+    private static readonly AsyncLocal<string> _id = new();
 
     /// <summary>
     /// Guid 生成器
@@ -32,17 +32,17 @@ public static partial class Id
     /// 设置Id
     /// </summary>
     /// <param name="id">Id</param>
-    public static void SetId(string id) => _id = id;
+    public static void SetId(string id) => _id.Value = id;
 
     /// <summary>
     /// 重置Id
     /// </summary>
-    public static void Reset() => _id = null;
+    public static void Reset() => _id.Value = null;
 
     /// <summary>
     /// 用Guid创建标识，去掉分隔符
     /// </summary>
-    public static string Guid() => string.IsNullOrWhiteSpace(_id) ? System.Guid.NewGuid().ToString("N") : _id;
+    public static string Guid() => string.IsNullOrWhiteSpace(_id.Value) ? System.Guid.NewGuid().ToString("N") : _id.Value;
 
     /// <summary>
     /// 创建 Guid ID
