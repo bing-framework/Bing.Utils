@@ -86,7 +86,7 @@ public partial class StrTest : TestBase
     public void Test_AddLine()
     {
         Builder.AppendLine();
-        Assert.Equal(Environment.NewLine, Builder.ToString());
+        Assert.Equal(System.Environment.NewLine, Builder.ToString());
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public partial class StrTest : TestBase
     {
         Builder.AppendLine(1);
         Builder.Append("b");
-        Assert.Equal(string.Format("1{0}b", Environment.NewLine), Builder.ToString());
+        Assert.Equal(string.Format("1{0}b", System.Environment.NewLine), Builder.ToString());
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ public partial class StrTest : TestBase
     {
         Builder.AppendLine("a{0}", 1);
         Builder.Append("b");
-        Assert.Equal(string.Format("a1{0}b", Environment.NewLine), Builder.ToString());
+        Assert.Equal(string.Format("a1{0}b", System.Environment.NewLine), Builder.ToString());
     }
 
     /// <summary>

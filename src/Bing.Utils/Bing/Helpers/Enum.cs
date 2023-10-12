@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Bing.Extensions;
 using Bing.Reflection;
+using Bing.Utils.Properties;
 
 namespace Bing.Helpers;
 
@@ -90,22 +91,6 @@ public static partial class Enum
 
     #endregion
 
-    #region GetNames(获取枚举所有成员名称)
-
-    /// <summary>
-    /// 获取枚举所有成员名称
-    /// </summary>
-    /// <typeparam name="TEnum">枚举类型</typeparam>
-    public static string[] GetNames<TEnum>() where TEnum : struct => GetNames(typeof(TEnum));
-
-    /// <summary>
-    /// 获取枚举所有成员名称
-    /// </summary>
-    /// <param name="type">枚举类型</param>
-    public static string[] GetNames(Type type) => System.Enum.GetNames(type);
-
-    #endregion
-
     #region GetValue(获取成员值)
 
     /// <summary>
@@ -127,7 +112,7 @@ public static partial class Enum
         var value = member.SafeString();
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentNullException(nameof(member));
-        return (int)System.Enum.Parse(type, member.ToString(), true);
+        return (int)System.Enum.Parse(type, value, true);
     }
 
     #endregion
@@ -255,6 +240,36 @@ public static partial class Enum
         }
 
         return collection;
+    }
+
+    #endregion
+
+    #region GetNames(获取枚举所有成员名称)
+
+    /// <summary>
+    /// 获取枚举所有成员名称
+    /// </summary>
+    /// <typeparam name="TEnum">枚举类型</typeparam>
+    public static string[] GetNames<TEnum>() => GetNames(typeof(TEnum));
+
+    /// <summary>
+    /// 获取枚举所有成员名称
+    /// </summary>
+    /// <param name="type">枚举类型</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static string[] GetNames(Type type)
+    {
+        type = Common.GetType(type);
+        if (type.IsEnum == false)
+            throw new InvalidOperationException(string.Format("类型 {0} 不是枚举", type));
+        var result = new List<string>();
+        foreach (var field in type.GetFields())
+        {
+            if (!field.FieldType.IsEnum)
+                continue;
+            result.Add(field.Name);
+        }
+        return result.ToArray();
     }
 
     #endregion

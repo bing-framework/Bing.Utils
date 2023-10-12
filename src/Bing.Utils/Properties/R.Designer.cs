@@ -19,10 +19,10 @@ namespace Bing.Utils.Properties {
     // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
     // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
     // (以 /str 作为命令选项)，或重新生成 VS 项目。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class R {
+    public class R {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Bing.Utils.Properties {
         ///   返回此类使用的缓存的 ResourceManager 实例。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Properties.R", typeof(R).Assembly);
@@ -47,11 +47,11 @@ namespace Bing.Utils.Properties {
         }
         
         /// <summary>
-        ///   重写当前线程的 CurrentUICulture 属性
-        ///   重写当前线程的 CurrentUICulture 属性。
+        ///   重写当前线程的 CurrentUICulture 属性，对
+        ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数中的字符\&quot;{0}\&quot;不是 {1} 进制数的有效字符。 的本地化字符串。
         /// </summary>
-        internal static string AnyRadixConvert_CharacterIsNotValid {
+        public static string AnyRadixConvert_CharacterIsNotValid {
             get {
                 return ResourceManager.GetString("AnyRadixConvert_CharacterIsNotValid", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 0 的本地化字符串。
         /// </summary>
-        internal static string AnyRadixConvert_Overflow {
+        public static string AnyRadixConvert_Overflow {
             get {
                 return ResourceManager.GetString("AnyRadixConvert_Overflow", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”的值必须在“{1}”与“{2}”之间。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_Between {
+        public static string ParameterCheck_Between {
             get {
                 return ResourceManager.GetString("ParameterCheck_Between", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”的值必须在“{1}”与“{2}”之间，且不能等于“{3}”。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_BetweenNotEqual {
+        public static string ParameterCheck_BetweenNotEqual {
             get {
                 return ResourceManager.GetString("ParameterCheck_BetweenNotEqual", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 指定的目录路径“{0}”不存在。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_DirectoryNotExists {
+        public static string ParameterCheck_DirectoryNotExists {
             get {
                 return ResourceManager.GetString("ParameterCheck_DirectoryNotExists", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 指定的文件路径“{0}”不存在。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_FileNotExists {
+        public static string ParameterCheck_FileNotExists {
             get {
                 return ResourceManager.GetString("ParameterCheck_FileNotExists", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”的值不能为Guid.Empty 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_NotEmpty_Guid {
+        public static string ParameterCheck_NotEmpty_Guid {
             get {
                 return ResourceManager.GetString("ParameterCheck_NotEmpty_Guid", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”的值必须大于“{1}”。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_NotGreaterThan {
+        public static string ParameterCheck_NotGreaterThan {
             get {
                 return ResourceManager.GetString("ParameterCheck_NotGreaterThan", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”的值必须大于或等于“{1}”。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_NotGreaterThanOrEqual {
+        public static string ParameterCheck_NotGreaterThanOrEqual {
             get {
                 return ResourceManager.GetString("ParameterCheck_NotGreaterThanOrEqual", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”的值必须小于“{1}”。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_NotLessThan {
+        public static string ParameterCheck_NotLessThan {
             get {
                 return ResourceManager.GetString("ParameterCheck_NotLessThan", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”的值必须小于或等于“{1}”。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_NotLessThanOrEqual {
+        public static string ParameterCheck_NotLessThanOrEqual {
             get {
                 return ResourceManager.GetString("ParameterCheck_NotLessThanOrEqual", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”不能为空引用。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_NotNull {
+        public static string ParameterCheck_NotNull {
             get {
                 return ResourceManager.GetString("ParameterCheck_NotNull", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”不能为空引用或空集合。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_NotNullOrEmpty_Collection {
+        public static string ParameterCheck_NotNullOrEmpty_Collection {
             get {
                 return ResourceManager.GetString("ParameterCheck_NotNullOrEmpty_Collection", resourceCulture);
             }
@@ -180,9 +180,18 @@ namespace Bing.Utils.Properties {
         /// <summary>
         ///   查找类似 参数“{0}”不能为空引用或空字符串。 的本地化字符串。
         /// </summary>
-        internal static string ParameterCheck_NotNullOrEmpty_String {
+        public static string ParameterCheck_NotNullOrEmpty_String {
             get {
                 return ResourceManager.GetString("ParameterCheck_NotNullOrEmpty_String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 类型 {0} 不是枚举 的本地化字符串。
+        /// </summary>
+        public static string TypeNotEnum {
+            get {
+                return ResourceManager.GetString("TypeNotEnum", resourceCulture);
             }
         }
     }

@@ -43,7 +43,7 @@ public class CmdHelper
     private static void InitProcess(Process process, string cmdPath)
     {
         if (cmdPath == "cmd.exe")
-            cmdPath = Path.Combine(Environment.SystemDirectory, cmdPath);
+            cmdPath = Path.Combine(System.Environment.SystemDirectory, cmdPath);
         process.StartInfo.FileName = cmdPath;
         process.StartInfo.UseShellExecute = false; // 是否使用操作系统shell启动
         process.StartInfo.RedirectStandardInput = true; // 是否接受来自调用程序的输入信息
