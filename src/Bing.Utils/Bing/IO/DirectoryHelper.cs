@@ -10,6 +10,23 @@ namespace Bing.IO;
 /// </summary>
 public static class DirectoryHelper
 {
+    #region CreateDirectory(创建目录)
+
+    /// <summary>
+    /// 创建目录
+    /// </summary>
+    /// <param name="path">文件或目录绝对路径</param>
+    public static void CreateDirectory(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+        var file = new FileInfo(path);
+        var directoryPath = file.Directory?.FullName;
+        CreateIfNotExists(directoryPath);
+    }
+
+    #endregion
+
     #region CreateIfNotExists(创建文件夹，如果不存在)
 
     /// <summary>

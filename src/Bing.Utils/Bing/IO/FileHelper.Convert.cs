@@ -16,7 +16,7 @@ public static partial class FileHelper
     {
         if (data == null || data.Length == 0)
             return string.Empty;
-        if (encoding == null) 
+        if (encoding == null)
             encoding = Encoding.UTF8;
         return encoding.GetString(data);
     }
@@ -32,15 +32,15 @@ public static partial class FileHelper
     {
         if (stream == null)
             return string.Empty;
-        if (encoding == null) 
+        if (encoding == null)
             encoding = Encoding.UTF8;
         if (stream.CanRead == false)
             return string.Empty;
         using var reader = new StreamReader(stream, encoding, true, bufferSize, !isCloseStream);
-        if (stream.CanSeek) 
+        if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
         var result = reader.ReadToEnd();
-        if (stream.CanSeek) 
+        if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
         return result;
     }
@@ -60,10 +60,10 @@ public static partial class FileHelper
         if (stream.CanRead == false)
             return string.Empty;
         using var reader = new StreamReader(stream, encoding, true, bufferSize, !isCloseStream);
-        if (stream.CanSeek) 
+        if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
         var result = await reader.ReadToEndAsync();
-        if (stream.CanSeek) 
+        if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
         return result;
     }
@@ -76,13 +76,18 @@ public static partial class FileHelper
     /// 字符串转换成流。需要释放内存流
     /// </summary>
     /// <param name="data">数据</param>
+    public static Stream ToStream(string data) => ToStream(data, Encoding.UTF8);
+
+    /// <summary>
+    /// 字符串转换成流。需要释放内存流
+    /// </summary>
+    /// <param name="data">数据</param>
     /// <param name="encoding">字符编码</param>
-    public static Stream ToStream(string data, Encoding encoding = null)
+    public static Stream ToStream(string data, Encoding encoding)
     {
         if (string.IsNullOrWhiteSpace(data))
             return Stream.Null;
-        if (encoding == null) 
-            encoding = Encoding.UTF8;
+        encoding ??= Encoding.UTF8;
         return new MemoryStream(ToBytes(data, encoding));
     }
 
@@ -116,19 +121,24 @@ public static partial class FileHelper
     {
         stream.Seek(0, SeekOrigin.Begin);
         var buffer = new byte[stream.Length];
-        stream.Read(buffer, 0, buffer.Length);
+        _ = stream.Read(buffer, 0, buffer.Length);
         return buffer;
     }
+
+    #endregion
+
+    #region ToBytesAsync(转换成字节数组)
 
     /// <summary>
     /// 流转换成字节流
     /// </summary>
     /// <param name="stream">流</param>
-    public static async Task<byte[]> ToBytesAsync(Stream stream)
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task<byte[]> ToBytesAsync(Stream stream, CancellationToken cancellationToken = default)
     {
         stream.Seek(0, SeekOrigin.Begin);
         var buffer = new byte[stream.Length];
-        await stream.ReadAsync(buffer, 0, buffer.Length);
+        _ = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
         return buffer;
     }
 

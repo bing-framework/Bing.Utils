@@ -489,7 +489,7 @@ public static class Web
     /// <param name="encoding">字符编码</param>
     public static async Task DownloadFileAsync(string filePath, string fileName, Encoding encoding)
     {
-        var bytes = await FileHelper.ReadAsync(filePath);
+        var bytes = await FileHelper.ReadToBytesAsync(filePath);
         await DownloadAsync(bytes, fileName, encoding);
     }
 
