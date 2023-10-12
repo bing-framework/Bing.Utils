@@ -171,7 +171,7 @@ public class ReflectionsTest : TestBase
     [Fact]
     public void TestGetPublicProperties()
     {
-        Sample4 sample = new Sample4
+        ReflectionsSample sample = new ReflectionsSample
         {
             A = "1",
             B = "2"

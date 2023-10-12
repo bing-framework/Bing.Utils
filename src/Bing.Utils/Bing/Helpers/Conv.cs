@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Bing.Collections;
 using Bing.Extensions;
@@ -117,7 +119,7 @@ public static partial class Conv
 
     #endregion
 
-    #region ToInt(转换为int)
+    #region ToInt(转换为32位整型)
 
     /// <summary>
     /// 转换为32位整型
@@ -131,6 +133,10 @@ public static partial class Conv
     /// <param name="input">输入值</param>
     /// <param name="defaultValue">默认值</param>
     public static int ToInt(object input, int defaultValue) => ToIntOrNull(input) ?? defaultValue;
+
+    #endregion
+
+    #region ToIntOrNull(转换为32位可空整型)
 
     /// <summary>
     /// 转换为32位可空整型
@@ -156,7 +162,7 @@ public static partial class Conv
 
     #endregion
 
-    #region ToLong(转换为long)
+    #region ToLong(转换为64位整型)
 
     /// <summary>
     /// 转换为64位整型
@@ -170,6 +176,10 @@ public static partial class Conv
     /// <param name="input">输入值</param>
     /// <param name="defaultValue">默认值</param>
     public static long ToLong(object input, long defaultValue) => ToLongOrNull(input) ?? defaultValue;
+
+    #endregion
+
+    #region ToLongOrNull(转换为64位可空整型)
 
     /// <summary>
     /// 转换为64位可空整型
@@ -195,7 +205,7 @@ public static partial class Conv
 
     #endregion
 
-    #region ToFloat(转换为float)
+    #region ToFloat(转换为32位浮点型)
 
     /// <summary>
     /// 转换为32位浮点型，并按指定小数位舍入
@@ -217,6 +227,10 @@ public static partial class Conv
     /// <param name="mode">可选择模式</param>
     public static float ToFloat(object input, float defaultValue, int? digits = null, MidpointRounding mode = MidpointRounding.AwayFromZero) => ToFloatOrNull(input, digits, mode) ?? defaultValue;
 
+    #endregion
+
+    #region ToFloatOrNull(转换为32位可空浮点型)
+
     /// <summary>
     /// 转换为32位可空浮点型，并按指定小数位舍入
     /// <para>采用Banker's rounding（银行家算法），即：四舍六入五取偶。事实上这也是IEEE的规范。</para>
@@ -237,7 +251,7 @@ public static partial class Conv
 
     #endregion
 
-    #region ToDouble(转换为double)
+    #region ToDouble(转换为64位浮点型)
 
     /// <summary>
     /// 转换为64位浮点型，并按指定小数位舍入，温馨提示：4舍6入5成双
@@ -259,6 +273,10 @@ public static partial class Conv
     /// <param name="mode">可选择模式</param>
     public static double ToDouble(object input, double defaultValue, int? digits = null, MidpointRounding mode = MidpointRounding.AwayFromZero) => ToDoubleOrNull(input, digits, mode) ?? defaultValue;
 
+    #endregion
+
+    #region ToDoubleOrNull(转换为64位可空浮点型)
+
     /// <summary>
     /// 转换为64位可空浮点型，并按指定小数位舍入，温馨提示：4舍6入5成双
     /// <para>采用Banker's rounding（银行家算法），即：四舍六入五取偶。事实上这也是IEEE的规范。</para>
@@ -277,7 +295,7 @@ public static partial class Conv
 
     #endregion
 
-    #region ToDecimal(转换为decimal)
+    #region ToDecimal(转换为128位浮点型)
 
     /// <summary>
     /// 转换为128位浮点型，并按指定小数位舍入，温馨提示：4舍6入5成双
@@ -299,6 +317,10 @@ public static partial class Conv
     /// <param name="mode">可选择模式</param>
     public static decimal ToDecimal(object input, decimal defaultValue, int? digits = null, MidpointRounding mode = MidpointRounding.AwayFromZero) => ToDecimalOrNull(input, digits, mode) ?? defaultValue;
 
+    #endregion
+
+    #region ToDecimalOrNull(转换为128位可空浮点型)
+
     /// <summary>
     /// 转换为128位可空浮点型，并按指定小数位舍入，温馨提示：4舍6入5成双
     /// <para>采用Banker's rounding（银行家算法），即：四舍六入五取偶。事实上这也是IEEE的规范。</para>
@@ -317,7 +339,7 @@ public static partial class Conv
 
     #endregion
 
-    #region ToBool(转换为bool)
+    #region ToBool(转换为布尔值)
 
     /// <summary>
     /// 转换为布尔值
@@ -331,6 +353,10 @@ public static partial class Conv
     /// <param name="input">输入值</param>
     /// <param name="defaultValue">默认值</param>
     public static bool ToBool(object input, bool defaultValue) => ToBoolOrNull(input) ?? defaultValue;
+
+    #endregion
+
+    #region ToBoolOrNull(转换为可空布尔值)
 
     /// <summary>
     /// 转换为可空布尔值
@@ -350,29 +376,24 @@ public static partial class Conv
     /// <param name="input">输入值</param>
     private static bool? GetBool(object input)
     {
-        switch (input.SafeString().ToLower())
+        return input.SafeString().ToLower() switch
         {
-            case "0":
-            case "否":
-            case "不":
-            case "no":
-            case "fail":
-                return false;
-
-            case "1":
-            case "是":
-            case "ok":
-            case "yes":
-                return true;
-
-            default:
-                return null;
-        }
+            "0" => false,
+            "否" => false,
+            "不" => false,
+            "no" => false,
+            "fail" => false,
+            "1" => true,
+            "是" => true,
+            "ok" => true,
+            "yes" => true,
+            _ => null
+        };
     }
 
     #endregion
 
-    #region ToDate(转换为DateTime)
+    #region ToDate(转换为日期)
 
     /// <summary>
     /// 转换为日期
@@ -380,6 +401,10 @@ public static partial class Conv
     /// <param name="input">输入值</param>
     /// <param name="defaultValue">默认值</param>
     public static DateTime ToDate(object input, DateTime defaultValue = default) => ToDateOrNull(input, defaultValue) ?? DateTime.MinValue;
+
+    #endregion
+
+    #region ToDateOrNull(转换为可空日期)
 
     /// <summary>
     /// 转换为可空日期
@@ -403,17 +428,43 @@ public static partial class Conv
     /// <param name="input">输入值</param>
     public static Guid ToGuid(object input) => ToGuidOrNull(input) ?? Guid.Empty;
 
+    #endregion
+
+    #region ToGuidOrNull(转换为可空Guid)
+
     /// <summary>
     /// 转换为可空Guid
     /// </summary>
     /// <param name="input">输入值</param>
-    public static Guid? ToGuidOrNull(object input) => Guid.TryParse(input.SafeString(), out var result) ? (Guid?)result : null;
+    public static Guid? ToGuidOrNull(object input) => Guid.TryParse(input.SafeString(), out var result) ? result : null;
+
+    #endregion
+
+    #region ToGuidList(转换为Guid集合)
 
     /// <summary>
     /// 转换为Guid集合
     /// </summary>
     /// <param name="input">输入值，以逗号分隔的Guid集合字符串，范例：83B0233C-A24F-49FD-8083-1337209EBC9A,EAB523C6-2FE7-47BE-89D5-C6D440C3033A</param>
     public static List<Guid> ToGuidList(string input) => ToList<Guid>(input);
+
+    #endregion
+
+    #region ToBytes(转换为字节数组)
+
+    /// <summary>
+    /// 转换为字节数组
+    /// </summary>
+    /// <param name="input">输入值</param>
+    public static byte[] ToBytes(string input) => ToBytes(input, Encoding.UTF8);
+
+    /// <summary>
+    /// 转换为字节数组
+    /// </summary>
+    /// <param name="input">输入值</param>
+    /// <param name="encoding">字符编码</param>
+    public static byte[] ToBytes(string input, Encoding encoding) =>
+        string.IsNullOrWhiteSpace(input) ? Array.Empty<byte>() : encoding.GetBytes(input);
 
     #endregion
 
@@ -436,6 +487,45 @@ public static partial class Conv
 
     #endregion
 
+    #region To(通用泛型转换)
+
+    /// <summary>
+    /// 通用泛型转换
+    /// </summary>
+    /// <typeparam name="T">目标类型</typeparam>
+    /// <param name="input">输入值</param>
+    public static T To<T>(object input)
+    {
+        if (input == null)
+            return default;
+        if (input is string && string.IsNullOrWhiteSpace(input.ToString()))
+            return default;
+
+        var type = Common.GetType<T>();
+        var typeName = type.Name.ToUpperInvariant();
+        try
+        {
+            if (typeName == "STRING" || typeName == "GUID")
+                return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(input.ToString());
+            if (type.IsEnum)
+                return Bing.Helpers.Enum.Parse<T>(input);
+            if (input is IConvertible)
+                return (T)System.Convert.ChangeType(input, type, CultureInfo.InvariantCulture);
+            if (input is JsonElement element)
+            {
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                return Json.ToObject<T>(element.GetRawText(), options);
+            }
+            return (T)input;
+        }
+        catch
+        {
+            return default;
+        }
+    }
+
+    #endregion
+
     #region ToDictionary(转换为字典)
 
     /// <summary>
@@ -444,6 +534,7 @@ public static partial class Conv
     /// <param name="input">输入值</param>
     public static IDictionary<string, object> ToDictionary(object input)
     {
+        var result = new Dictionary<string, object>();
         if (input == null)
             return null;
         if (input is IEnumerable<KeyValuePair<string, object>> dict)
@@ -452,7 +543,6 @@ public static partial class Conv
 #else
             return new Dictionary<string, object>(dict);
 #endif
-        var result = new Dictionary<string, object>();
         foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(input))
         {
             var value = property.GetValue(input);
@@ -491,42 +581,6 @@ public static partial class Conv
         if (success)
             return result;
         return null;
-    }
-
-    #endregion
-
-    #region To(通用泛型转换)
-
-    /// <summary>
-    /// 通用泛型转换
-    /// </summary>
-    /// <typeparam name="T">目标类型</typeparam>
-    /// <param name="input">输入值</param>
-    public static T To<T>(object input)
-    {
-        if (input == null)
-            return default;
-        if (input is string && string.IsNullOrWhiteSpace(input.ToString()))
-            return default;
-
-        var type = Common.GetType<T>();
-        var typeName = type.Name.ToLower();
-        try
-        {
-            if (typeName == "string")
-                return (T)(object)input.ToString();
-            if (typeName == "guid")
-                return (T)(object)new Guid(input.ToString());
-            if (type.IsEnum)
-                return Enum.Parse<T>(input);
-            if (input is IConvertible)
-                return (T)System.Convert.ChangeType(input, type);
-            return (T)input;
-        }
-        catch
-        {
-            return default;
-        }
     }
 
     #endregion
