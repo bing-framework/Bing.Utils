@@ -64,7 +64,7 @@ public static partial class Lambdas
             case ExpressionType.LessThanOrEqual:
                 return GetMemberExpression(right
                     ? ((BinaryExpression)expression).Right
-                    : ((BinaryExpression)expression).Left);
+                    : ((BinaryExpression)expression).Left, right);
 
             case ExpressionType.Call:
                 return GetMethodCallExpressionName(expression);
@@ -526,7 +526,8 @@ public static partial class Lambdas
     /// </summary>
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="expression">属性表达式</param>
-    public static TAttribute GetAttribute<TAttribute>(Expression expression) where TAttribute : Attribute
+    public static TAttribute GetAttribute<TAttribute>(Expression expression) 
+        where TAttribute : Attribute
     {
         var memberInfo = GetMember(expression);
         return memberInfo.GetCustomAttribute<TAttribute>();
@@ -539,8 +540,8 @@ public static partial class Lambdas
     /// <typeparam name="TProperty">属性类型</typeparam>
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="propertyExpression">属性表达式</param>
-    public static TAttribute GetAttribute<TEntity, TProperty, TAttribute>(
-        Expression<Func<TEntity, TProperty>> propertyExpression) where TAttribute : Attribute =>
+    public static TAttribute GetAttribute<TEntity, TProperty, TAttribute>(Expression<Func<TEntity, TProperty>> propertyExpression) 
+        where TAttribute : Attribute =>
         GetAttribute<TAttribute>(propertyExpression);
 
     /// <summary>
@@ -564,8 +565,8 @@ public static partial class Lambdas
     /// <typeparam name="TProperty">属性类型</typeparam>
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="propertyExpression">属性表达式</param>
-    public static IEnumerable<TAttribute> GetAttributes<TEntity, TProperty, TAttribute>(
-        Expression<Func<TEntity, TProperty>> propertyExpression) where TAttribute : Attribute
+    public static IEnumerable<TAttribute> GetAttributes<TEntity, TProperty, TAttribute>(Expression<Func<TEntity, TProperty>> propertyExpression)
+        where TAttribute : Attribute
     {
         var memberInfo = GetMember(propertyExpression);
         return memberInfo.GetCustomAttributes<TAttribute>();
@@ -583,9 +584,7 @@ public static partial class Lambdas
     public static ConstantExpression Constant(object value, Expression expression = null)
     {
         var type = GetType(expression);
-        if (type == null)
-            return Expression.Constant(value);
-        return Expression.Constant(value, type);
+        return type == null ? Expression.Constant(value) : Expression.Constant(value, type);
     }
 
     #endregion
@@ -782,7 +781,7 @@ public static partial class Lambdas
     /// <param name="operator">运算符</param>
     public static Expression<Func<T, bool>> ParsePredicate<T>(string propertyName, object value, Operator @operator)
     {
-        var parameter = Expression.Parameter(typeof(T), "t");
+        var parameter = CreateParameter<T>();
         return parameter
             .Property(propertyName)
             .Operation(@operator, value)
