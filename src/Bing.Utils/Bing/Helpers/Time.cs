@@ -161,6 +161,7 @@ public static partial class Time
     /// 获取Unix时间戳
     /// </summary>
     /// <param name="time">时间</param>
+    /// <remarks>当前时间必须是 <see cref="TimeZoneInfo.Local"/></remarks>
     public static long GetUnixTimestamp(DateTime time)
     {
         var start = TimeZoneInfo.ConvertTime(TimeOptions.Date1970, TimeZoneInfo.Local);

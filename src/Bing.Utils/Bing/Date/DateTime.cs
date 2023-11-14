@@ -44,7 +44,7 @@ public enum DateTimeOutputStyles
 /// <summary>
 /// 日期时间帮助类
 /// </summary>
-internal static class DateTimeHelper
+public static partial class DateTimeHelper
 {
     /// <summary>
     /// 如果条件成立则A，不成立则B
@@ -53,7 +53,7 @@ internal static class DateTimeHelper
     /// <param name="format1">格式化1</param>
     /// <param name="format2">格式化2</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string IfTtt(bool condition, string format1, string format2) => condition.IfTtt(() => format1, () => format2);
+    internal static string IfTtt(bool condition, string format1, string format2) => condition.IfTtt(() => format1, () => format2);
 }
 
 /// <summary>

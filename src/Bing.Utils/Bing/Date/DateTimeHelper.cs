@@ -1,11 +1,9 @@
-﻿using Bing.Date;
-
-namespace Bing.Utils.Timing;
+﻿namespace Bing.Date;
 
 /// <summary>
-/// 时间操作辅助类
+/// 日期时间帮助类
 /// </summary>
-public class DateTimeHelper
+public static partial class DateTimeHelper
 {
     #region BusinessDateFormat(业务时间格式化)
 
@@ -55,16 +53,16 @@ public class DateTimeHelper
     public static string BusinessDateFormat(DateTime dt, string defaultFormat = "yyyy-MM-dd HH:mm:ss")
     {
         var timeSpan = DateTime.Now - dt;
-        string result = string.Empty;
+        string result;
 
         if (timeSpan.TotalMinutes < 5)
             result = string.Format("刚刚");
         else if (timeSpan.TotalMinutes < 60)
-            result = string.Format("{0}分钟前", (int)timeSpan.TotalMinutes);
+            result = $"{(int)timeSpan.TotalMinutes}分钟前";
         else if (timeSpan.TotalMinutes < 60 * 24)
-            result = string.Format("{0}小时前", (int)timeSpan.TotalHours);
+            result = $"{(int)timeSpan.TotalHours}小时前";
         else if (timeSpan.TotalMinutes <= 60 * 24 * 7)
-            result = string.Format("{0}天前", (int)timeSpan.TotalDays);
+            result = $"{(int)timeSpan.TotalDays}天前";
         else
             result = dt.ToString(defaultFormat);
 
@@ -80,7 +78,7 @@ public class DateTimeHelper
     /// </summary>
     /// <param name="strDate">The string date.</param>
     /// <returns>System.String.</returns>
-    /// <exception cref="System.Exception"></exception>
+    /// <exception cref="Exception"></exception>
     public static DayOfWeek GetWeekDay(string strDate)
     {
         try
@@ -100,7 +98,7 @@ public class DateTimeHelper
     /// </summary>
     /// <param name="dTime">The d time.</param>
     /// <returns>System.String.</returns>
-    /// <exception cref="System.Exception"></exception>
+    /// <exception cref="Exception"></exception>
     public static DayOfWeek GetWeekDay(DateTime dTime)
     {
         try
@@ -180,7 +178,7 @@ public class DateTimeHelper
     /// </summary>
     /// <param name="year">The year.</param>
     /// <returns>System.Int32.</returns>
-    /// <exception cref="System.Exception"></exception>
+    /// <exception cref="Exception"></exception>
     public static int GetMaxWeekOfYear(int year)
     {
         try
@@ -204,7 +202,7 @@ public class DateTimeHelper
     /// </summary>
     /// <param name="dTime">The d time.</param>
     /// <returns>System.Int32.</returns>
-    /// <exception cref="System.Exception"></exception>
+    /// <exception cref="Exception"></exception>
     public static int GetMaxWeekOfYear(DateTime dTime)
     {
         try
@@ -226,7 +224,7 @@ public class DateTimeHelper
     /// </summary>
     /// <param name="dTime">The d time.</param>
     /// <returns>System.Int32.</returns>
-    /// <exception cref="System.Exception"></exception>
+    /// <exception cref="Exception"></exception>
     public static int GetWeekIndex(DateTime dTime)
     {
         //如果12月31号与下一年的1月1好在同一个星期则算下一年的第一周
@@ -271,7 +269,7 @@ public class DateTimeHelper
     /// </summary>
     /// <param name="strDate">The string date.</param>
     /// <returns>System.Int32.</returns>
-    /// <exception cref="System.Exception"></exception>
+    /// <exception cref="Exception"></exception>
     public static int GetWeekIndex(string strDate)
     {
         try
@@ -297,7 +295,7 @@ public class DateTimeHelper
     /// <param name="startDate">开始日期</param>
     /// <param name="endDate">结束日期</param>
     /// <returns>System.String.</returns>
-    /// <exception cref="System.Exception"></exception>
+    /// <exception cref="Exception"></exception>
     public static void GetWeekRange(string strDate, out DateTime startDate, out DateTime endDate)
     {
         try
@@ -319,7 +317,7 @@ public class DateTimeHelper
     /// <param name="startDate">开始日期</param>
     /// <param name="endDate">结束日期</param>
     /// <returns>System.String.</returns>
-    /// <exception cref="System.Exception"></exception>
+    /// <exception cref="Exception"></exception>
     public static void GetWeekRange(DateTime dTime, out DateTime startDate, out DateTime endDate)
     {
         try
@@ -344,7 +342,7 @@ public class DateTimeHelper
     /// <param name="startDate">开始日期</param>
     /// <param name="endDate">结束日期</param>
     /// <returns>System.String.</returns>
-    /// <exception cref="System.Exception">
+    /// <exception cref="Exception">
     /// 请输入大于0的整数
     /// or
     /// 今年没有第 + weekIndex + 周。
@@ -373,7 +371,7 @@ public class DateTimeHelper
         var weekRangeEnd = firstDate.AddDays(endAddDays);
 
         if (weekRangeStart.Year > year ||
-            (weekRangeStart.Year == year && weekRangeEnd.Year > year))
+            weekRangeStart.Year == year && weekRangeEnd.Year > year)
         {
             throw new Exception("今年没有第" + weekIndex + "周。");
         }
@@ -389,7 +387,7 @@ public class DateTimeHelper
     /// <param name="startDate">输出开始日期</param>
     /// <param name="endDate">输出结束日期</param>
     /// <returns>System.String.</returns>
-    /// <exception cref="System.Exception"></exception>
+    /// <exception cref="Exception"></exception>
     public static void GetWeekRange(int weekIndex, out DateTime startDate, out DateTime endDate)
     {
         try

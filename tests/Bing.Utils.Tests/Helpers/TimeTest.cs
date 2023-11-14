@@ -1,4 +1,5 @@
-﻿using Bing.Helpers;
+﻿using Bing.Date;
+using Bing.Helpers;
 using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Helpers;
@@ -123,4 +124,5 @@ public class TimeTest : TestBase, IDisposable
         Assert.Equal(new DateTime(2000, 12, 12, 12, 12, 12), Time.GetTimeFromUnixTimestamp(976594332));
         Assert.Equal(new DateTime(2014, 02, 18, 04, 24, 59), Time.GetTimeFromUnixTimestamp(1392668699));
     }
+
 }
