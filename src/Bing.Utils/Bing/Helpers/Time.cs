@@ -97,9 +97,9 @@ public static partial class Time
             return DateTime.MinValue;
         switch (date.Kind)
         {
-            case DateTimeKind.Utc:
-                return date.ToUniversalTime();
             case DateTimeKind.Local:
+                return date.ToUniversalTime();
+            case DateTimeKind.Unspecified:
                 return DateTime.SpecifyKind(date, DateTimeKind.Local).ToUniversalTime();
             default:
                 return date;
@@ -118,7 +118,7 @@ public static partial class Time
         {
             case DateTimeKind.Utc:
                 return date.ToLocalTime();
-            case DateTimeKind.Local:
+            case DateTimeKind.Unspecified:
                 return DateTime.SpecifyKind(date, DateTimeKind.Local);
             default:
                 return date;

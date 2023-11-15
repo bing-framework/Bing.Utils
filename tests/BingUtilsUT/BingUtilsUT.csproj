@@ -28,4 +28,10 @@
 		</Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Samples\FileSample.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

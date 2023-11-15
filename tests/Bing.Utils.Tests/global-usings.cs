@@ -1,4 +1,5 @@
-﻿global using Bing;
-global using Xunit;
+﻿global using System;
+global using Bing;
 global using Shouldly;
-global using System;
+global using Xunit;
+global using Xunit.Abstractions;

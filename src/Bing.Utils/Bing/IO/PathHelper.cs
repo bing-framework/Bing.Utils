@@ -1,4 +1,5 @@
-﻿using Bing.OS;
+﻿using Bing.Helpers;
+using Bing.OS;
 
 namespace Bing.IO;
 
@@ -17,10 +18,10 @@ public static class PathHelper
     {
         if (string.IsNullOrWhiteSpace(relativePath))
             return string.Empty;
-        var rootPath = Platform.AppRoot;
+        var rootPath = Common.ApplicationBaseDirectory;
         if (string.IsNullOrWhiteSpace(rootPath))
             return Path.GetFullPath(relativePath);
-        return $"{Platform.AppRoot}\\{relativePath.Replace("/", "\\").TrimStart('\\')}";
+        return $"{Common.ApplicationBaseDirectory}\\{relativePath.Replace("/", "\\").TrimStart('\\')}";
     }
 
     #endregion
@@ -35,11 +36,41 @@ public static class PathHelper
     {
         if (string.IsNullOrWhiteSpace(relativePath))
             return string.Empty;
-        var rootPath = Platform.AppRoot;
+        var rootPath = Common.ApplicationBaseDirectory;
         if (string.IsNullOrWhiteSpace(rootPath))
             return Path.GetFullPath(relativePath);
-        return $"{Platform.AppRoot}\\wwwroot\\{relativePath.Replace("/", "\\").TrimStart('\\')}";
+        return $"{Common.ApplicationBaseDirectory}\\wwwroot\\{relativePath.Replace("/", "\\").TrimStart('\\')}";
     }
 
     #endregion
+
+    /// <summary>
+    /// 将 Windows 路径转换为 Unix 路径
+    /// </summary>
+    /// <param name="path">Windows路径</param>
+    public static string ConvertWindowsPathToUnixPath(string path) => 
+        string.IsNullOrWhiteSpace(path) ? null : path.Replace('\\', '/');
+
+    /// <summary>
+    /// 将 Unix 路径转换为 Windows 路径
+    /// </summary>
+    /// <param name="path">Unix路径</param>
+    public static string ConvertUnixPathToWindowsPath(string path) =>
+        string.IsNullOrWhiteSpace(path) ? null : path.Replace('/', '\\');
+
+    /// <summary>
+    /// 根据当前系统自动转换路径
+    /// </summary>
+    /// <param name="path">路径</param>
+    /// <exception cref="PlatformNotSupportedException"></exception>
+    public static string AutoPathConvert(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return null;
+        if (Platform.IsLinux)
+            return path.Replace('\\', '/');
+        if (Platform.IsWindows || Platform.IsOSX)
+            return path.Replace('/', '\\');
+        throw new PlatformNotSupportedException("Convert path split failed. Unknown system.");
+    }
 }
