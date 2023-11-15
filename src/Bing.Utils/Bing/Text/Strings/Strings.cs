@@ -66,40 +66,28 @@ public static partial class Strings
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForLetters(string text)
-    {
-        return string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Count();
-    }
+    public static int CountForLetters(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Count();
 
     /// <summary>
     /// 返回字符串中所包含大写字母的数量。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForLettersUpperCase(string text)
-    {
-        return string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Where(char.IsUpper).Count();
-    }
+    public static int CountForLettersUpperCase(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Where(char.IsUpper).Count();
 
     /// <summary>
     /// 返回字符串中所包含小写字母的数量。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForLetterLowerCase(string text)
-    {
-        return string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Where(char.IsLower).Count();
-    }
+    public static int CountForLetterLowerCase(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Where(char.IsLower).Count();
 
     /// <summary>
     /// 返回字符串中所包含数字的数量。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForNumbers(string text)
-    {
-        return string.IsNullOrEmpty(text) ? 0 : FilterForNumbers(text).Count();
-    }
+    public static int CountForNumbers(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForNumbers(text).Count();
 
     /// <summary>
     /// 计算给定字符串中有多少个指定的字符。
@@ -107,10 +95,7 @@ public static partial class Strings
     /// <param name="text">字符串</param>
     /// <param name="toCheck">待检查的字符</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountOccurrences(string text, char toCheck)
-    {
-        return CountOccurrences(text, toCheck.ToString());
-    }
+    public static int CountOccurrences(string text, char toCheck) => CountOccurrences(text, toCheck.ToString());
 
     /// <summary>
     /// 计算给定字符串中有多少个指定的子字符串。
@@ -136,10 +121,7 @@ public static partial class Strings
     /// <param name="text">字符串</param>
     /// <param name="toCheck">待检查的字符</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountOccurrencesIgnoreCase(string text, char toCheck)
-    {
-        return CountOccurrencesIgnoreCase(text, toCheck.ToString());
-    }
+    public static int CountOccurrencesIgnoreCase(string text, char toCheck) => CountOccurrencesIgnoreCase(text, toCheck.ToString());
 
     /// <summary>
     /// 计算给定字符串中有多少个指定的子字符串，忽略大小写。
@@ -275,10 +257,7 @@ public static partial class Strings
     /// <param name="text">文本</param>
     /// <param name="predicate">条件</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<char> FilterByChar(string text, Func<char, bool> predicate)
-    {
-        return text.ToCharArray().Where(predicate);
-    }
+    public static IEnumerable<char> FilterByChar(string text, Func<char, bool> predicate) => text.ToCharArray().Where(predicate);
 
     /// <summary>
     /// 只获取字母和数字
@@ -326,10 +305,7 @@ public static partial class Strings
     /// <param name="format">字符串格式，占位符以{n}表示</param>
     /// <param name="args">用于填充占位符的参数</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string FormatWith(string format, params object[] args)
-    {
-        return string.Format(format, args);
-    }
+    public static string FormatWith(string format, params object[] args) => string.Format(format, args);
 
     /// <summary>
     /// 将指定字符串中的格式项替换为指定数组中相应对象的字符串表示形式，参数提供区域性特定的格式设置信息。
@@ -338,10 +314,7 @@ public static partial class Strings
     /// <param name="provider">区域性特定的格式设置信息</param>
     /// <param name="args">用于填充占位符的参数</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string FormatWith(string format, IFormatProvider provider, params object[] args)
-    {
-        return string.Format(provider, format, args);
-    }
+    public static string FormatWith(string format, IFormatProvider provider, params object[] args) => string.Format(provider, format, args);
 
     #endregion
 
@@ -352,30 +325,21 @@ public static partial class Strings
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetNumbersAndLetters(string text)
-    {
-        return Merge(FilterForNumbersAndLetters(text));
-    }
+    public static string GetNumbersAndLetters(string text) => Merge(FilterForNumbersAndLetters(text));
 
     /// <summary>
     /// 只获取数字。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetNumbers(string text)
-    {
-        return Merge(FilterForNumbers(text));
-    }
+    public static string GetNumbers(string text) => Merge(FilterForNumbers(text));
 
     /// <summary>
     /// 只获取字母。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetLetters(string text)
-    {
-        return Merge(FilterForLetters(text));
-    }
+    public static string GetLetters(string text) => Merge(FilterForLetters(text));
 
     #endregion
 
@@ -511,20 +475,14 @@ public static partial class Strings
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveWhiteSpace(string text)
-    {
-        return RemoveChars(text, ' ');
-    }
+    public static string RemoveWhiteSpace(string text) => RemoveChars(text, ' ');
 
     /// <summary>
     /// 从字符串中移除所有重复的空格。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveDuplicateWhiteSpaces(string text)
-    {
-        return RemoveDuplicateChar(text, ' ');
-    }
+    public static string RemoveDuplicateWhiteSpaces(string text) => RemoveDuplicateChar(text, ' ');
 
     /// <summary>
     /// 从字符串中移除所有重复的字符。
@@ -707,10 +665,7 @@ public static partial class Strings
     /// <param name="left">比较字符串</param>
     /// <param name="right">比较字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string CommonPrefix(string left, string right)
-    {
-        return CommonPrefix(left, right, out _);
-    }
+    public static string CommonPrefix(string left, string right) => CommonPrefix(left, right, out _);
 
     /// <summary>
     /// 从左到右，返回共有的字符，直至遇到第一个不同的字符。
@@ -736,10 +691,7 @@ public static partial class Strings
     /// <param name="left">比较字符串</param>
     /// <param name="right">比较字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string CommonSuffix(string left, string right)
-    {
-        return CommonSuffix(left, right, out _);
-    }
+    public static string CommonSuffix(string left, string right) => CommonSuffix(left, right, out _);
 
     /// <summary>
     /// 从右到左，返回共有的字符，直至遇到第一个不同的字符。
@@ -775,40 +727,28 @@ public static partial class StringsExtensions
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForLetters(this string text)
-    {
-        return Strings.CountForLetters(text);
-    }
+    public static int CountForLetters(this string text) => Strings.CountForLetters(text);
 
     /// <summary>
     /// 返回字符串中所包含大写字母的数量。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForLettersUpperCase(this string text)
-    {
-        return Strings.CountForLettersUpperCase(text);
-    }
+    public static int CountForLettersUpperCase(this string text) => Strings.CountForLettersUpperCase(text);
 
     /// <summary>
     /// 返回字符串中所包含小写字母的数量。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForLetterLowerCase(this string text)
-    {
-        return Strings.CountForLetterLowerCase(text);
-    }
+    public static int CountForLetterLowerCase(this string text) => Strings.CountForLetterLowerCase(text);
 
     /// <summary>
     /// 返回字符串中所包含数字的数量。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForNumbers(this string text)
-    {
-        return Strings.CountForNumbers(text);
-    }
+    public static int CountForNumbers(this string text) => Strings.CountForNumbers(text);
 
     /// <summary>
     /// 计算给定字符串中有多少个指定的字符。
@@ -816,10 +756,7 @@ public static partial class StringsExtensions
     /// <param name="text">字符串</param>
     /// <param name="toCheck">待检查的字符</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountOccurrences(this string text, char toCheck)
-    {
-        return Strings.CountOccurrences(text, toCheck);
-    }
+    public static int CountOccurrences(this string text, char toCheck) => Strings.CountOccurrences(text, toCheck);
 
     /// <summary>
     /// 计算给定字符串中有多少个指定的子字符串。
@@ -827,10 +764,7 @@ public static partial class StringsExtensions
     /// <param name="text">字符串</param>
     /// <param name="toCheck">待检查的字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountOccurrences(this string text, string toCheck)
-    {
-        return Strings.CountOccurrences(text, toCheck);
-    }
+    public static int CountOccurrences(this string text, string toCheck) => Strings.CountOccurrences(text, toCheck);
 
     /// <summary>
     /// 计算给定字符串中有多少个指定的字符，忽略大小写。
@@ -838,10 +772,7 @@ public static partial class StringsExtensions
     /// <param name="text">字符串</param>
     /// <param name="toCheck">待检查的字符</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountOccurrencesIgnoreCase(this string text, char toCheck)
-    {
-        return Strings.CountOccurrencesIgnoreCase(text, toCheck);
-    }
+    public static int CountOccurrencesIgnoreCase(this string text, char toCheck) => Strings.CountOccurrencesIgnoreCase(text, toCheck);
 
     /// <summary>
     /// 计算给定字符串中有多少个指定的子字符串，忽略大小写。
@@ -849,10 +780,7 @@ public static partial class StringsExtensions
     /// <param name="text">字符串</param>
     /// <param name="toCheck">待检查的字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountOccurrencesIgnoreCase(this string text, string toCheck)
-    {
-        return Strings.CountOccurrencesIgnoreCase(text, toCheck);
-    }
+    public static int CountOccurrencesIgnoreCase(this string text, string toCheck) => Strings.CountOccurrencesIgnoreCase(text, toCheck);
 
     /// <summary>
     /// 计算给定字符串中有多少个指定的字符，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
@@ -861,10 +789,7 @@ public static partial class StringsExtensions
     /// <param name="toCheck">待检查的字符</param>
     /// <param name="case">忽略大小写开关</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountOccurrences(this string text, char toCheck, IgnoreCase @case)
-    {
-        return Strings.CountOccurrences(text, toCheck, @case);
-    }
+    public static int CountOccurrences(this string text, char toCheck, IgnoreCase @case) => Strings.CountOccurrences(text, toCheck, @case);
 
     /// <summary>
     /// 计算给定字符串中有多少个指定的子字符串，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
@@ -873,10 +798,7 @@ public static partial class StringsExtensions
     /// <param name="toCheck">待检查的字符串</param>
     /// <param name="case">忽略大小写开关</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountOccurrences(this string text, string toCheck, IgnoreCase @case)
-    {
-        return Strings.CountOccurrences(text, toCheck, @case);
-    }
+    public static int CountOccurrences(this string text, string toCheck, IgnoreCase @case) => Strings.CountOccurrences(text, toCheck, @case);
 
     /// <summary>
     /// 比较字符串，获取不相等字符的数量。
@@ -884,10 +806,7 @@ public static partial class StringsExtensions
     /// <param name="text">字符串</param>
     /// <param name="toCheck">待检查的字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForDiffChars(this string text, string toCheck)
-    {
-        return Strings.CountForDiffChars(text, toCheck);
-    }
+    public static int CountForDiffChars(this string text, string toCheck) => Strings.CountForDiffChars(text, toCheck);
 
     /// <summary>
     /// 比较字符串，获取不相等字符的数量，忽略大小写。
@@ -895,10 +814,7 @@ public static partial class StringsExtensions
     /// <param name="text">字符串</param>
     /// <param name="toCheck">待检查的字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForDiffCharsIgnoreCase(this string text, string toCheck)
-    {
-        return Strings.CountForDiffCharsIgnoreCase(text, toCheck);
-    }
+    public static int CountForDiffCharsIgnoreCase(this string text, string toCheck) => Strings.CountForDiffCharsIgnoreCase(text, toCheck);
 
     /// <summary>
     /// 比较字符串，获取不相等字符的数量，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
@@ -907,10 +823,7 @@ public static partial class StringsExtensions
     /// <param name="toCheck">待检查的字符串</param>
     /// <param name="case">忽略大小写开关</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForDiffChars(this string text, string toCheck, IgnoreCase @case)
-    {
-        return Strings.CountForDiffChars(text, toCheck, @case);
-    }
+    public static int CountForDiffChars(this string text, string toCheck, IgnoreCase @case) => Strings.CountForDiffChars(text, toCheck, @case);
 
     #endregion
 
@@ -943,10 +856,7 @@ public static partial class StringsExtensions
     /// <param name="text">文本</param>
     /// <param name="predicate">条件</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<char> Where(this string text, Func<char, bool> predicate)
-    {
-        return Strings.FilterByChar(text, predicate);
-    }
+    public static IEnumerable<char> Where(this string text, Func<char, bool> predicate) => Strings.FilterByChar(text, predicate);
 
     #endregion
 
@@ -958,10 +868,7 @@ public static partial class StringsExtensions
     /// <param name="format">字符串格式，占位符以{n}表示</param>
     /// <param name="args">用于填充占位符的参数</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string FormatWith(this string format, params object[] args)
-    {
-        return Strings.FormatWith(format, args);
-    }
+    public static string FormatWith(this string format, params object[] args) => Strings.FormatWith(format, args);
 
     /// <summary>
     /// 将指定字符串中的格式项替换为指定数组中相应对象的字符串表示形式，参数提供区域性特定的格式设置信息。
@@ -970,10 +877,7 @@ public static partial class StringsExtensions
     /// <param name="provider">区域性特定的格式设置信息</param>
     /// <param name="args">用于填充占位符的参数</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string FormatWith(this string format, IFormatProvider provider, params object[] args)
-    {
-        return Strings.FormatWith(format, provider, args);
-    }
+    public static string FormatWith(this string format, IFormatProvider provider, params object[] args) => Strings.FormatWith(format, provider, args);
 
     #endregion
 
@@ -986,10 +890,7 @@ public static partial class StringsExtensions
     /// <param name="length">长度</param>
     /// <exception cref="ArgumentException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Left(this string text, int length)
-    {
-        return Strings.Left(text, length);
-    }
+    public static string Left(this string text, int length) => Strings.Left(text, length);
 
     /// <summary>
     /// 从右向左截取字符串。
@@ -998,10 +899,7 @@ public static partial class StringsExtensions
     /// <param name="length">长度</param>
     /// <exception cref="ArgumentException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Right(this string text, int length)
-    {
-        return Strings.Right(text, length);
-    }
+    public static string Right(this string text, int length) => Strings.Right(text, length);
 
     #endregion
 
@@ -1014,10 +912,7 @@ public static partial class StringsExtensions
     /// <param name="removeText">移除字符串</param>
     /// <param name="case">忽略大小写选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Remove(this string text, string removeText, IgnoreCase @case = IgnoreCase.False)
-    {
-        return Strings.Remove(text, removeText, @case);
-    }
+    public static string Remove(this string text, string removeText, IgnoreCase @case = IgnoreCase.False) => Strings.Remove(text, removeText, @case);
 
     /// <summary>
     /// 移除所有指定的字符。
@@ -1025,30 +920,21 @@ public static partial class StringsExtensions
     /// <param name="text">文本</param>
     /// <param name="toRemove">移除字符集合</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveChars(this string text, params char[] toRemove)
-    {
-        return Strings.RemoveChars(text, toRemove);
-    }
+    public static string RemoveChars(this string text, params char[] toRemove) => Strings.RemoveChars(text, toRemove);
 
     /// <summary>
     /// 移除所有空格。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveWhiteSpace(this string text)
-    {
-        return Strings.RemoveWhiteSpace(text);
-    }
+    public static string RemoveWhiteSpace(this string text) => Strings.RemoveWhiteSpace(text);
 
     /// <summary>
     /// 从字符串中移除所有重复的空格。
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveDuplicateWhiteSpaces(this string text)
-    {
-        return Strings.RemoveDuplicateWhiteSpaces(text);
-    }
+    public static string RemoveDuplicateWhiteSpaces(this string text) => Strings.RemoveDuplicateWhiteSpaces(text);
 
     /// <summary>
     /// 从字符串中移除所有重复的字符。
@@ -1057,10 +943,7 @@ public static partial class StringsExtensions
     /// <param name="charRemove">移除字符</param>
     /// <param name="case">忽略大小写选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveDuplicateChar(this string text, char charRemove, IgnoreCase @case = IgnoreCase.False)
-    {
-        return Strings.RemoveDuplicateChar(text, charRemove, @case);
-    }
+    public static string RemoveDuplicateChar(this string text, char charRemove, IgnoreCase @case = IgnoreCase.False) => Strings.RemoveDuplicateChar(text, charRemove, @case);
 
     /// <summary>
     /// 从给定的位置开始移除所有字符，位置从 0 开始计算。
@@ -1068,10 +951,7 @@ public static partial class StringsExtensions
     /// <param name="text">文本</param>
     /// <param name="indexOfStartToRemove">索引</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveSince(this string text, int indexOfStartToRemove)
-    {
-        return Strings.RemoveSince(text, indexOfStartToRemove);
-    }
+    public static string RemoveSince(this string text, int indexOfStartToRemove) => Strings.RemoveSince(text, indexOfStartToRemove);
 
     /// <summary>
     /// 根据给定子字符串在字符串中的位置，移除该位置之后的所有字符。
@@ -1079,10 +959,7 @@ public static partial class StringsExtensions
     /// <param name="text">文本</param>
     /// <param name="removeFromThis">移除位置的字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveSince(this string text, string removeFromThis)
-    {
-        return Strings.RemoveSince(text, removeFromThis);
-    }
+    public static string RemoveSince(this string text, string removeFromThis) => Strings.RemoveSince(text, removeFromThis);
 
     /// <summary>
     /// 根据给定子字符串在字符串中的位置，移除该位置之后的所有字符，并忽略大小写。
@@ -1090,10 +967,7 @@ public static partial class StringsExtensions
     /// <param name="text">文本</param>
     /// <param name="removeFromThis">移除位置的字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveSinceIgnoreCase(this string text, string removeFromThis)
-    {
-        return Strings.RemoveSinceIgnoreCase(text, removeFromThis);
-    }
+    public static string RemoveSinceIgnoreCase(this string text, string removeFromThis) => Strings.RemoveSinceIgnoreCase(text, removeFromThis);
 
     /// <summary>
     /// 根据给定子字符串在字符串中的位置，移除该位置之后的所有字符，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
@@ -1102,10 +976,7 @@ public static partial class StringsExtensions
     /// <param name="removeFromThis">移除位置的字符串</param>
     /// <param name="case">忽略大小写选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveSince(string text, string removeFromThis, IgnoreCase @case)
-    {
-        return Strings.RemoveSince(text, removeFromThis, @case);
-    }
+    public static string RemoveSince(string text, string removeFromThis, IgnoreCase @case) => Strings.RemoveSince(text, removeFromThis, @case);
 
     /// <summary>
     /// 移除起始字符串
@@ -1113,10 +984,7 @@ public static partial class StringsExtensions
     /// <param name="value">值</param>
     /// <param name="start">要移除的值</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveStart(this string value, string start)
-    {
-        return Strings.RemoveStart(value, start);
-    }
+    public static string RemoveStart(this string value, string start) => Strings.RemoveStart(value, start);
 
     /// <summary>
     /// 移除末尾字符串
@@ -1124,10 +992,7 @@ public static partial class StringsExtensions
     /// <param name="value">值</param>
     /// <param name="end">要移除的值</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveEnd(this string value, string end)
-    {
-        return Strings.RemoveEnd(value, end);
-    }
+    public static string RemoveEnd(this string value, string end) => Strings.RemoveEnd(value, end);
 
     #endregion
 
@@ -1139,10 +1004,7 @@ public static partial class StringsExtensions
     /// <param name="text">值</param>
     /// <param name="repeatTimes">重复次数</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Repeat(this string text, int repeatTimes)
-    {
-        return Strings.Repeat(text, repeatTimes);
-    }
+    public static string Repeat(this string text, int repeatTimes) => Strings.Repeat(text, repeatTimes);
 
     #endregion
 
@@ -1154,10 +1016,7 @@ public static partial class StringsExtensions
     /// <param name="left">比较字符串</param>
     /// <param name="right">比较字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string CommonPrefix(this string left, string right)
-    {
-        return Strings.CommonPrefix(left, right);
-    }
+    public static string CommonPrefix(this string left, string right) => Strings.CommonPrefix(left, right);
 
     /// <summary>
     /// 从左到右，返回共有的字符，直至遇到第一个不同的字符。
@@ -1166,10 +1025,7 @@ public static partial class StringsExtensions
     /// <param name="right">比较字符串</param>
     /// <param name="len">长度</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string CommonPrefix(this string left, string right, out int len)
-    {
-        return Strings.CommonPrefix(left, right, out len);
-    }
+    public static string CommonPrefix(this string left, string right, out int len) => Strings.CommonPrefix(left, right, out len);
 
     /// <summary>
     /// 从右到左，返回共有的字符，直至遇到第一个不同的字符。
@@ -1177,10 +1033,7 @@ public static partial class StringsExtensions
     /// <param name="left">比较字符串</param>
     /// <param name="right">比较字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string CommonSuffix(this string left, string right)
-    {
-        return Strings.CommonSuffix(left, right);
-    }
+    public static string CommonSuffix(this string left, string right) => Strings.CommonSuffix(left, right);
 
     /// <summary>
     /// 从右到左，返回共有的字符，直至遇到第一个不同的字符。
@@ -1188,10 +1041,7 @@ public static partial class StringsExtensions
     /// <param name="left">比较字符串</param>
     /// <param name="right">比较字符串</param>
     /// <param name="len">长度</param>
-    public static string CommonSuffix(this string left, string right, out int len)
-    {
-        return Strings.CommonSuffix(left, right, out len);
-    }
+    public static string CommonSuffix(this string left, string right, out int len) => Strings.CommonSuffix(left, right, out len);
 
     #endregion
 }
@@ -1367,10 +1217,7 @@ public static partial class StringsShortcutExtensions
     /// </summary>
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string TrimInner(this string text)
-    {
-        return Strings.RemoveWhiteSpace(text);
-    }
+    public static string TrimInner(this string text) => Strings.RemoveWhiteSpace(text);
 
     /// <summary>
     /// 对所有给定的字符串进行 Trim 操作

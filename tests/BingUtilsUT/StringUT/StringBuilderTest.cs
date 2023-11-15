@@ -55,6 +55,8 @@ public class StringBuilderTest
         val.ShouldBe("CBA");
     }
 
+    #region RemoveStart
+
     /// <summary>
     /// 测试 - 移除起始字符串
     /// </summary>
@@ -88,8 +90,12 @@ public class StringBuilderTest
         Assert.Equal(result, Strings.RemoveStart(builder, removeValue)?.ToString());
     }
 
+    #endregion
+
+    #region RemoveEnd
+
     /// <summary>
-    /// 测试移除末尾字符串
+    /// 测试 - 移除末尾字符串
     /// </summary>
     [Theory]
     [InlineData(null, null, null)]
@@ -100,7 +106,7 @@ public class StringBuilderTest
     }
 
     /// <summary>
-    /// 测试移除末尾字符串
+    /// 测试 - 移除末尾字符串
     /// </summary>
     [Theory]
     [InlineData(null, null, "")]
@@ -119,4 +125,6 @@ public class StringBuilderTest
         var builder = new StringBuilder(value);
         Assert.Equal(result, Strings.RemoveEnd(builder, removeValue)?.ToString());
     }
+
+    #endregion
 }
