@@ -130,6 +130,7 @@ public class UnitTest1: TestBase
     [Fact]
     public void Test_Id()
     {
+        SequentialGuidGenerator.Current.DatabaseType = SequentialGuidDatabaseType.MySql;
         for (int i = 0; i < 1000; i++)
         {
             var id = SequentialGuidGenerator.Current.Create();
