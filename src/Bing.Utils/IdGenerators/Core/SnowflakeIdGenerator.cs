@@ -11,7 +11,7 @@ public class SnowflakeIdGenerator : ILongGenerator
     /// <summary>
     /// 雪花算法ID
     /// </summary>
-    private readonly SnowflakeIdWorker _id = SnowflakeProvider.Create(1,1);
+    private readonly SnowflakeIdWorker _id = SnowflakeGenerator.Create(1,1);
 
     /// <summary>
     /// 获取<see cref="SnowflakeIdGenerator"/>类型的实例

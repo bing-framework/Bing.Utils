@@ -3,7 +3,7 @@
 /// <summary>
 /// 雪花算法Id 生成器
 /// </summary>
-public static class SnowflakeProvider
+public static class SnowflakeGenerator
 {
     /// <summary>
     /// 生成

@@ -164,11 +164,15 @@ public class SystemTestJsonTest
         var json = Json.ToJson(sample,
             new JsonSerializerOptions
             {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+#if NET5_0_OR_GREATER
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+#else
+                IgnoreNullValues = true,
+#endif
                 Converters = { new EnumJsonConverterFactory() }
             });
 
-        var result = Json.ToObject<JsonTestSample>(json, new JsonSerializerOptions()
+        var result = Json.ToObject<JsonTestSample>(json, new JsonSerializerOptions
         {
             Converters = { new EnumJsonConverterFactory() }
         });
