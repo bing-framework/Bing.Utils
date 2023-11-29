@@ -112,4 +112,47 @@ public static partial class GuidProvider
                 return TimeStampStyleProvider.Create(secureTimestamp);
         }
     }
+
+    /// <summary>
+    /// 创建一个 <see cref="Guid"/>
+    /// </summary>
+    /// <param name="endianGuidBytes">大/小端点字节数组</param>
+    /// <param name="style">GUID 字节风格</param>
+    public static Guid Create(byte[] endianGuidBytes, GuidBytesStyle style)
+    {
+        switch (style)
+        {
+            case GuidBytesStyle.LittleEndianByteArray:
+                return LittleEndianByteArrayProvider.Create(endianGuidBytes);
+            case GuidBytesStyle.BigEndianByteArray:
+                return BigEndianByteArrayProvider.Create(endianGuidBytes);
+            default:
+                return Guid.NewGuid();
+        }
+    }
+
+    /// <summary>
+    /// 创建一个 <see cref="Guid"/>
+    /// </summary>
+    /// <param name="namespace">命名空间</param>
+    /// <param name="name">名称</param>
+    /// <param name="version">GUID版本</param>
+    public static Guid Create(Guid @namespace, byte[] name, GuidVersion version)
+    {
+        switch (version)
+        {
+            case GuidVersion.Random:
+                return CreateRandom();
+            case GuidVersion.NameBasedMd5:
+                return NamedGuidProvider.Create(@namespace, name, GuidVersion.NameBasedMd5);
+            case GuidVersion.NameBasedSha1:
+                return NamedGuidProvider.Create(@namespace, name, GuidVersion.NameBasedSha1);
+            case GuidVersion.TimeBased:
+                return GuidProvider.Create(CombStyle.NormalStyle);
+            //case GuidVersion.DceSecurity:
+            //    break;
+            default:
+                return Guid.NewGuid();
+        }
+    }
 }

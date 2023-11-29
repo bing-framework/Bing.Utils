@@ -1,7 +1,7 @@
 ﻿namespace Bing.IdUtils.GuidImplements;
 
 /// <summary>
-/// Equifax 风格提供程序
+/// 基于 Equifax 风格实现的 GUID 提供程序
 /// </summary>
 internal static class EquifaxStyleProvider
 {

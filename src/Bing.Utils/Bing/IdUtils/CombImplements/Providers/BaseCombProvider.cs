@@ -1,4 +1,5 @@
 ﻿using Bing.IdUtils.CombImplements.Strategies;
+using Bing.IdUtils.GuidImplements;
 
 namespace Bing.IdUtils.CombImplements.Providers;
 
@@ -36,7 +37,7 @@ internal abstract class BaseCombProvider : ICombProvider
             throw new NotSupportedException("ICombDateTimeStrategy is limited to either 4 or 6 bytes.");
         _dateTimeStrategy = strategy;
         InternalTimeStampProvider = customTimeStampProvider ?? DefaultTimeStampProvider;
-        InternalGuidProvider = customGuidProvider ?? DefaultGuidProvider;
+        InternalGuidProvider = customGuidProvider ?? NoParamGuidImplementProxy.Basic;
     }
 
     /// <summary>
@@ -53,11 +54,6 @@ internal abstract class BaseCombProvider : ICombProvider
     /// 默认的时间戳提供程序
     /// </summary>
     protected static DateTime DefaultTimeStampProvider() => DateTime.UtcNow;
-
-    /// <summary>
-    /// 默认的 Guid 提供程序
-    /// </summary>
-    protected static Guid DefaultGuidProvider() => Guid.NewGuid();
 
     /// <summary>
     /// 创建一个 COMB 型的 <see cref="Guid"/>。由一个随机的 <see cref="Guid"/> 和当前的 UTC 时间戳组成。
