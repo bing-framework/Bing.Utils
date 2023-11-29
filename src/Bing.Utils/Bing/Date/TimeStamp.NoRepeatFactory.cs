@@ -13,7 +13,7 @@ public class NoRepeatTimeStampFactory
     /// <summary>
     /// 对象锁
     /// </summary>
-    private readonly object _lockObj = new object();
+    private readonly object _lockObj = new();
 
     /// <summary>
     /// 毫秒增量

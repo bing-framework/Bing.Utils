@@ -43,16 +43,19 @@ public enum GuidStyle
     /// <summary>
     /// 字符串序列
     /// </summary>
+    /// <remarks>数据库：MySql、PostgreSql</remarks>
     SequentialAsStringStyle,
 
     /// <summary>
     /// 二进制序列
     /// </summary>
+    /// <remarks>数据库：Oracle</remarks>
     SequentialAsBinaryStyle,
 
     /// <summary>
     /// 顺序
     /// </summary>
+    /// <remarks>数据库：SqlServer</remarks>
     SequentialAsEndStyle,
 
     /// <summary>
