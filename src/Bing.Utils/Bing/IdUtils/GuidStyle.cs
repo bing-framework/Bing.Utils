@@ -23,7 +23,7 @@ public enum GuidStyle
     /// <summary>
     /// SQL 时间戳
     /// </summary>
-    SqlTimestampStyle,
+    SqlTimeStampStyle,
 
     /// <summary>
     /// 合法 SQL 时间戳
@@ -53,7 +53,7 @@ public enum GuidStyle
     /// <summary>
     /// 顺序
     /// </summary>
-    SequentialAtEndStyle,
+    SequentialAsEndStyle,
 
     /// <summary>
     /// Equifax 风格

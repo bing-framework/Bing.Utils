@@ -9,8 +9,14 @@ namespace BingUtilsUT.IdUtilsUT;
 [Trait("IdUtilsUT", "RandomIdTest")]
 public class RandomIdTest
 {
+    /// <summary>
+    /// 测试输出帮助类
+    /// </summary>
     protected ITestOutputHelper Output { get; }
 
+    /// <summary>
+    /// 测试初始化
+    /// </summary>
     public RandomIdTest(ITestOutputHelper output)
     {
         Output = output;

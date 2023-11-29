@@ -39,7 +39,7 @@ public static partial class GuidProvider
                     ? InternalCombImplementProxy.LegacyWithNoRepeat.Create()
                     : InternalCombImplementProxy.Legacy.Create();
 
-            case GuidStyle.SqlTimestampStyle:
+            case GuidStyle.SqlTimeStampStyle:
                 return mode == NoRepeatMode.On
                     ? InternalCombImplementProxy.MsSqlWithNoRepeat.Create()
                     : InternalCombImplementProxy.MsSql.Create();
@@ -55,7 +55,7 @@ public static partial class GuidProvider
             case GuidStyle.SequentialAsBinaryStyle:
                 return SequentialStylesProvider.Create(SequentialGuidTypes.SequentialAsBinary, mode);
 
-            case GuidStyle.SequentialAtEndStyle:
+            case GuidStyle.SequentialAsEndStyle:
                 return SequentialStylesProvider.Create(SequentialGuidTypes.SequentialAtEnd, mode);
 
             case GuidStyle.EquifaxStyle:
@@ -90,7 +90,7 @@ public static partial class GuidProvider
             case GuidStyle.LegacySqlTimeStampStyle:
                 return InternalCombImplementProxy.Legacy.Create(secureTimestamp);
 
-            case GuidStyle.SqlTimestampStyle:
+            case GuidStyle.SqlTimeStampStyle:
                 return InternalCombImplementProxy.MsSql.Create(secureTimestamp);
 
             case GuidStyle.PostgreSqlTimeStampStyle:
@@ -102,7 +102,7 @@ public static partial class GuidProvider
             case GuidStyle.SequentialAsBinaryStyle:
                 return SequentialStylesProvider.Create(secureTimestamp, SequentialGuidTypes.SequentialAsBinary);
 
-            case GuidStyle.SequentialAtEndStyle:
+            case GuidStyle.SequentialAsEndStyle:
                 return SequentialStylesProvider.Create(secureTimestamp, SequentialGuidTypes.SequentialAtEnd);
 
             case GuidStyle.EquifaxStyle:
