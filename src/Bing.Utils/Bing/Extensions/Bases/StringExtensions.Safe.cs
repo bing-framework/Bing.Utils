@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using System.Web;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Extensions;
@@ -10,38 +9,6 @@ namespace Bing.Extensions;
 /// </summary>
 public static partial class StringExtensions
 {
-    #region UrlEncode(Url编码)
-
-    /// <summary>
-    /// Url编码
-    /// </summary>
-    /// <param name="source">url编码字符串</param>
-    /// <param name="encoding">编码格式</param>
-    public static string UrlEncode(this string source, Encoding encoding = null)
-    {
-        if (encoding == null)
-            encoding = Encoding.UTF8;
-        return HttpUtility.UrlEncode(source, encoding);
-    }
-
-    #endregion
-
-    #region UrlDecode(Url解码)
-
-    /// <summary>
-    /// Url解码
-    /// </summary>
-    /// <param name="source">url编码字符串</param>
-    /// <param name="encoding">编码格式</param>
-    public static string UrlDecode(this string source, Encoding encoding = null)
-    {
-        if (encoding == null)
-            encoding = Encoding.UTF8;
-        return HttpUtility.UrlDecode(source, encoding);
-    }
-
-    #endregion
-
     #region ToHtmlSafe(Html字符串进行安全编码)
 
     /// <summary>
