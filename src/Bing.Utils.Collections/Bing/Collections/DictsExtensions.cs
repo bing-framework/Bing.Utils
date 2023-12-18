@@ -98,26 +98,26 @@ public static class DictsExtensions
     public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueCalculator) => Dicts.GetValueOrDefault(dictionary, key, valueCalculator);
 
 #if NETFRAMEWORK || NETSTANDARD2_0
-        /// <summary>
-        /// 获取值或默认值
-        /// </summary>
-        /// <typeparam name="TKey">键类型</typeparam>
-        /// <typeparam name="TValue">值类型</typeparam>
-        /// <param name="dictionary">字典</param>
-        /// <param name="key">键</param>
-        /// <param name="defaultValue">默认值</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue) => Dicts.GetValueOrDefault(dictionary, key, defaultValue);
+    /// <summary>
+    /// 获取值或默认值
+    /// </summary>
+    /// <typeparam name="TKey">键类型</typeparam>
+    /// <typeparam name="TValue">值类型</typeparam>
+    /// <param name="dictionary">字典</param>
+    /// <param name="key">键</param>
+    /// <param name="defaultValue">默认值</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue) => Dicts.GetValueOrDefault(dictionary, key, defaultValue);
 
-        /// <summary>
-        /// 获取值或默认值
-        /// </summary>
-        /// <typeparam name="TKey">键类型</typeparam>
-        /// <typeparam name="TValue">值类型</typeparam>
-        /// <param name="dictionary">字典</param>
-        /// <param name="key">键</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key) => Dicts.GetValueOrDefault(dictionary, key);
+    /// <summary>
+    /// 获取值或默认值
+    /// </summary>
+    /// <typeparam name="TKey">键类型</typeparam>
+    /// <typeparam name="TValue">值类型</typeparam>
+    /// <param name="dictionary">字典</param>
+    /// <param name="key">键</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key) => Dicts.GetValueOrDefault(dictionary, key);
 #endif
 
     /// <summary>
@@ -207,20 +207,20 @@ public static class DictsExtensions
         Dicts.SetValue(dictionary, key, value);
 
 #if NETSTANDARD2_0
-        /// <summary>
-        /// 尝试将键值对添加到字典中。如果不存在，则添加；存在，不添加也不抛异常
-        /// </summary>
-        /// <typeparam name="TKey">键类型</typeparam>
-        /// <typeparam name="TValue">值类型</typeparam>
-        /// <param name="this">字典</param>
-        /// <param name="key">键</param>
-        /// <param name="value">值</param>
-        public static bool TryAdd<TKey, TValue>(this Dictionary<TKey, TValue> @this, TKey key, TValue value)
-        {
-            if (@this.ContainsKey(key))
-                return false;
-            @this.Add(key, value);
-            return true;
-        }
+    /// <summary>
+    /// 尝试将键值对添加到字典中。如果不存在，则添加；存在，不添加也不抛异常
+    /// </summary>
+    /// <typeparam name="TKey">键类型</typeparam>
+    /// <typeparam name="TValue">值类型</typeparam>
+    /// <param name="this">字典</param>
+    /// <param name="key">键</param>
+    /// <param name="value">值</param>
+    public static bool TryAdd<TKey, TValue>(this Dictionary<TKey, TValue> @this, TKey key, TValue value)
+    {
+        if (@this.ContainsKey(key))
+            return false;
+        @this.Add(key, value);
+        return true;
+    }
 #endif
 }

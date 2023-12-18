@@ -198,46 +198,6 @@ public static class StreamExtensions
 
     #endregion
 
-    #region CopyToMemory(复制流到内存流)
-
-    /// <summary>
-    /// 将流复制到内存流中
-    /// </summary>
-    /// <param name="stream">流</param>
-    public static MemoryStream CopyToMemory(this Stream stream)
-    {
-        var memoryStream = new MemoryStream((int)stream.Length);
-        stream.CopyTo(memoryStream);
-        return memoryStream;
-    }
-
-    #endregion
-
-    #region ReadAllBytes(将流写入字节数组)
-
-    /// <summary>
-    /// 将流写入字节数组
-    /// </summary>
-    /// <param name="stream">流</param>
-    public static byte[] ReadAllBytes(this Stream stream)
-    {
-        using var memoryStream = stream.CopyToMemory();
-        return memoryStream.ToArray();
-    }
-
-    #endregion
-
-    #region Write(将字节数组写入流)
-
-    /// <summary>
-    /// 将字节数组写入流
-    /// </summary>
-    /// <param name="stream">流</param>
-    /// <param name="bytes">字节数组</param>
-    public static void Write(this Stream stream, byte[] bytes) => stream.Write(bytes, 0, bytes.Length);
-
-    #endregion
-
     #region Write(将字符串写入流)
 
     /// <summary>
@@ -270,32 +230,6 @@ public static class StreamExtensions
                 md5Builder.Append(b.ToString("x2"));
             return md5Builder.ToString();
         }
-    }
-
-    #endregion
-
-    #region GetAllBytes(获取所有字节数组)
-
-    /// <summary>
-    /// 获取所有字节数组
-    /// </summary>
-    /// <param name="stream">流</param>
-    public static byte[] GetAllBytes(this Stream stream)
-    {
-        using var ms = new MemoryStream();
-        stream.CopyTo(ms);
-        return ms.ToArray();
-    }
-
-    /// <summary>
-    /// 获取所有自己数组
-    /// </summary>
-    /// <param name="stream">流</param>
-    public static async Task<byte[]> GetAllBytesAsync(this Stream stream)
-    {
-        using var ms = new MemoryStream();
-        await stream.CopyToAsync(ms);
-        return ms.ToArray();
     }
 
     #endregion

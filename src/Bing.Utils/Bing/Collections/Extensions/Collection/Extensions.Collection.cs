@@ -1,51 +1,13 @@
-﻿using Bing.Collections;
-using Bing.Helpers;
+﻿using Bing.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace Bing.Extensions;
+namespace Bing.Collections;
 
 /// <summary>
 /// 集合(<see cref="ICollection{T}"/>) 扩展
 /// </summary>
-public static class CollectionExtensions
+public static partial class BingCollectionExtensions
 {
-
-    #region RemoveAll(移除项)
-
-    /// <summary>
-    /// 移除项。指定集合
-    /// </summary>
-    /// <typeparam name="T">对象类型</typeparam>
-    /// <param name="source">集合</param>
-    /// <param name="items">集合项</param>
-    public static void RemoveAll<T>(this ICollection<T> source, IEnumerable<T> items)
-    {
-        Check.NotNull(source, nameof(source));
-        Check.NotNull(items, nameof(items));
-
-        foreach (var item in items)
-            source.Remove(item);
-    }
-
-    /// <summary>
-    /// 移除项。按条件移除
-    /// </summary>
-    /// <typeparam name="T">对象类型</typeparam>
-    /// <param name="source">集合</param>
-    /// <param name="predicate">条件</param>
-    public static IList<T> RemoveAll<T>(this ICollection<T> source, Func<T, bool> predicate)
-    {
-        Check.NotNull(source, nameof(source));
-        Check.NotNull(predicate, nameof(predicate));
-
-        var items = source.Where(predicate).ToList();
-        foreach (var item in items)
-            source.Remove(item);
-        return items;
-    }
-
-    #endregion
-
     #region Sort(排序)
 
     /// <summary>
@@ -101,5 +63,4 @@ public static class CollectionExtensions
     }
 
     #endregion
-
 }

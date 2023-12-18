@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using Bing.Extensions;
 
 namespace Bing.Utils.Tests.Extensions;
 
 /// <summary>
 /// 集合 扩展测试
 /// </summary>
-public class CollectionExtensionsTest
+public class BingCollectionExtensionsTest
 {
     /// <summary>
     /// 测试添加项 - 单个添加

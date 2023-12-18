@@ -134,6 +134,13 @@ public static class BingStreamExtensions
     #region Write
 
     /// <summary>
+    /// 将字节数组写入流
+    /// </summary>
+    /// <param name="stream">流</param>
+    /// <param name="buffer">字节数组</param>
+    public static void Write(this Stream stream, byte[] buffer) => stream.Write(buffer, 0, buffer.Length);
+
+    /// <summary>
     /// 尝试写入
     /// </summary>
     /// <param name="stream">流</param>
@@ -172,7 +179,7 @@ public static class BingStreamExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryWriteByte(this Stream stream, byte value)
     {
-        if(stream.CanWrite)
+        if (stream.CanWrite)
             stream.WriteByte(value);
         return stream.CanWrite;
     }
@@ -196,8 +203,101 @@ public static class BingStreamExtensions
     /// <param name="stream">流</param>
     /// <param name="timeout">时间跨度</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool TrySetWriteTimeout(this Stream stream, TimeSpan timeout) 
+    public static bool TrySetWriteTimeout(this Stream stream, TimeSpan timeout)
         => stream.TrySetWriteTimeout(timeout.Milliseconds);
+
+    #endregion
+
+    #region GetAllBytes(获取所有字节数组)
+
+    /// <summary>
+    /// 获取所有字节数组
+    /// </summary>
+    /// <param name="stream">流</param>
+    public static byte[] GetAllBytes(this Stream stream)
+    {
+        if (stream is MemoryStream memoryStream)
+            return memoryStream.ToArray();
+        using var ms = stream.CreateMemoryStream();
+        return ms.ToArray();
+    }
+
+    #endregion
+
+    #region GetAllBytesAsync(获取所有字节数组)
+
+    /// <summary>
+    /// 获取所有字节数组
+    /// </summary>
+    /// <param name="stream">流</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task<byte[]> GetAllBytesAsync(this Stream stream, CancellationToken cancellationToken = default)
+    {
+        if (stream is MemoryStream memoryStream)
+            return memoryStream.ToArray();
+        using var ms = await stream.CreateMemoryStreamAsync(cancellationToken);
+        return ms.ToArray();
+    }
+
+    #endregion
+
+    #region CopyToAsync(复制流)
+
+    /// <summary>
+    /// 复制当前流到目标流中
+    /// </summary>
+    /// <param name="stream">流</param>
+    /// <param name="destination">目标流</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static Task CopyToAsync(this Stream stream, Stream destination, CancellationToken cancellationToken = default)
+    {
+        if (stream.CanSeek)
+            stream.Position = 0;
+        return stream.CopyToAsync(destination,
+            81920, // 默认值，用于传递取消令牌
+            cancellationToken);
+    }
+
+    #endregion
+
+    #region CreateMemoryStream(创建内存流)
+
+    /// <summary>
+    /// 创建内存流
+    /// </summary>
+    /// <param name="stream">流</param>
+    public static MemoryStream CreateMemoryStream(this Stream stream)
+    {
+        if (stream.CanSeek)
+            stream.Position = 0;
+        var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        if (stream.CanSeek)
+            stream.Position = 0;
+        memoryStream.Position = 0;
+        return memoryStream;
+    }
+
+    #endregion
+
+    #region CreateMemoryStreamAsync(创建内存流)
+
+    /// <summary>
+    /// 创建内存流
+    /// </summary>
+    /// <param name="stream">流</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task<MemoryStream> CreateMemoryStreamAsync(this Stream stream, CancellationToken cancellationToken = default)
+    {
+        if (stream.CanSeek)
+            stream.Position = 0;
+        var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream, cancellationToken);
+        if (stream.CanSeek)
+            stream.Position = 0;
+        memoryStream.Position = 0;
+        return memoryStream;
+    }
 
     #endregion
 }

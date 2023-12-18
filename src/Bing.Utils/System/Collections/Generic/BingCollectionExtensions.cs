@@ -5,7 +5,7 @@ namespace System.Collections.Generic;
 /// <summary>
 /// 集合(<see cref="ICollection"/>) 扩展
 /// </summary>
-public static partial class CollectionExtensions
+public static partial class BingCollectionExtensions
 {
     #region IsNullOrEmpty(是否为空)
 
@@ -78,19 +78,31 @@ public static partial class CollectionExtensions
 
     #region RemoveAll(移除所有项)
 
-    ///// <summary>
-    ///// 移除所有项。从集合中删除所有满足给定条件的项
-    ///// </summary>
-    ///// <typeparam name="T">泛型类型</typeparam>
-    ///// <param name="source">源</param>
-    ///// <param name="predicate">条件</param>
-    //public static IList<T> RemoveAll<T>(this ICollection<T> source, Func<T, bool> predicate)
-    //{
-    //    var items = source.Where(predicate).ToList();
-    //    foreach (var item in items)
-    //        source.Remove(item);
-    //    return items;
-    //}
+    /// <summary>
+    /// 移除所有项。从集合中删除所有满足给定条件的项
+    /// </summary>
+    /// <typeparam name="T">泛型类型</typeparam>
+    /// <param name="source">源</param>
+    /// <param name="predicate">条件</param>
+    public static IList<T> RemoveAll<T>(this ICollection<T> source, Func<T, bool> predicate)
+    {
+        var items = source.Where(predicate).ToList();
+        foreach (var item in items)
+            source.Remove(item);
+        return items;
+    }
+
+    /// <summary>
+    /// 移除所有项。
+    /// </summary>
+    /// <typeparam name="T">类型</typeparam>
+    /// <param name="source">集合</param>
+    /// <param name="items">待移除的项</param>
+    public static void RemoveAll<T>(this ICollection<T> source, IEnumerable<T> items)
+    {
+        foreach (var item in items)
+            source.Remove(item);
+    }
 
     #endregion
 }

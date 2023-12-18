@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
-using Bing.Extensions;
+using Bing.Collections;
 
 namespace Bing.IO;
 

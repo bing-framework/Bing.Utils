@@ -1,4 +1,4 @@
-﻿
+﻿using Bing.IO;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Extensions;
@@ -62,11 +62,9 @@ public static class FileInfoExtensions
         if (file == null)
             throw new ArgumentNullException(nameof(file));
         if (file.Exists == false)
-            return new byte[0];
-        using (var reader = file.OpenRead())
-        {
-            return reader.ReadAllBytes();
-        }
+            return Array.Empty<byte>();
+        using var reader = file.OpenRead();
+        return reader.GetAllBytes();
     }
 
     #endregion
