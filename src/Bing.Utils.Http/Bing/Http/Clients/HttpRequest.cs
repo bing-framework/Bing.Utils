@@ -205,6 +205,11 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     /// </summary>
     private JsonSerializerOptions _jsonSerializerOptions;
 
+    /// <summary>
+    /// 是否忽略SSL证书
+    /// </summary>
+    private bool _ignoreSsl;
+
     #endregion
 
     #region 构造函数
@@ -229,9 +234,12 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
         HeaderParams = new Dictionary<string, string>();
         QueryParams = new Dictionary<string, string>();
         Params = new Dictionary<string, object>();
+        Files = new List<FileData>();
         Cookies = new Dictionary<string, string>();
         HttpContentType = Http.HttpContentType.Json.Description();
         CharacterEncoding = System.Text.Encoding.UTF8;
+        IsUseCookies = true;
+        IsFileParameterQuotes = true;
     }
 
     #endregion
@@ -294,9 +302,19 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     protected object Param { get; private set; }
 
     /// <summary>
+    /// 文件数据列表
+    /// </summary>
+    protected List<FileData> Files { get; private set; }
+
+    /// <summary>
     /// 是否自动携带cookie
     /// </summary>
-    protected bool? IsUseCookies { get; private set; }
+    protected bool IsUseCookies { get; private set; }
+
+    /// <summary>
+    /// 文件上传参数是否添加双引号
+    /// </summary>
+    protected bool IsFileParameterQuotes { get; private set; }
 
     /// <summary>
     /// 发送前操作
@@ -428,6 +446,19 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     {
         CertificatePath = path;
         CertificatePassword = password;
+        return this;
+    }
+
+    #endregion
+
+    #region IgnoreSsl(忽略SSL证书)
+
+    /// <summary>
+    /// 忽略SSL证书
+    /// </summary>
+    public IHttpRequest<TResult> IgnoreSsl()
+    {
+        _ignoreSsl = true;
         return this;
     }
 
@@ -689,6 +720,53 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
 
     #endregion
 
+    #region FileContent(添加文件参数)
+
+    /// <summary>
+    /// 添加内容类型为 multipart/form-data 的文件参数
+    /// </summary>
+    /// <param name="stream">文件流</param>
+    /// <param name="fileName">文件名</param>
+    /// <param name="name">参数名。默认值：file</param>
+    public IHttpRequest<TResult> FileContent(Stream stream, string fileName, string name = "file")
+    {
+        ContentType(Http.HttpContentType.FormData);
+        if (Files.Any(t => t.Name == name))
+            Files.RemoveAll(t => t.Name == name);
+        Files.Add(new FileData(stream, fileName, name));
+        return this;
+    }
+
+    /// <summary>
+    /// 添加内容类型为 multipart/form-data 的文件参数
+    /// </summary>
+    /// <param name="filePath">文件绝对路径</param>
+    /// <param name="name">参数名。默认值：file</param>
+    public IHttpRequest<TResult> FileContent(string filePath, string name = "file")
+    {
+        ContentType(Http.HttpContentType.FormData);
+        if (Files.Any(t => t.Name == name))
+            Files.RemoveAll(t => t.Name == name);
+        Files.Add(new FileData(filePath, name));
+        return this;
+    }
+
+    #endregion
+
+    #region FileParameterQuotes(文件上传参数是否添加双引号)
+
+    /// <summary>
+    /// 文件上传参数是否添加双引号
+    /// </summary>
+    /// <param name="isQuote">是否添加双引号</param>
+    public IHttpRequest<TResult> FileParameterQuotes(bool isQuote = true)
+    {
+        IsFileParameterQuotes = isQuote;
+        return this;
+    }
+
+    #endregion
+
     #region OnSendBefore(发送前事件)
 
     /// <summary>
@@ -857,6 +935,8 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
                 return CreateJsonContent();
             case "text/xml":
                 return CreateXmlContent();
+            case "multipart/form-data":
+                return CreateFileUploadContent();
         }
         return null;
     }
@@ -926,6 +1006,97 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     /// </summary>
     protected virtual HttpContent CreateXmlContent() => new StringContent(Param.SafeString(), CharacterEncoding, "text/xml");
 
+    /// <summary>
+    /// 创建文件上传内容
+    /// </summary>
+    protected virtual HttpContent CreateFileUploadContent()
+    {
+        var content = new MultipartFormDataContent(GetBoundary());
+        AddFileParameters(content);
+        AddFileData(content);
+        ClearBoundaryQuotes(content);
+        return content;
+    }
+
+    /// <summary>
+    /// 获取 multipart/form-data 分隔符
+    /// </summary>
+    protected virtual string GetBoundary() => $"-----{Guid.NewGuid()}";
+
+    /// <summary>
+    /// 添加文件参数
+    /// </summary>
+    /// <param name="content">表单内容</param>
+    protected void AddFileParameters(MultipartFormDataContent content)
+    {
+        var parameters = GetParameters();
+        foreach (var parameter in parameters)
+        {
+            var item = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(parameter.Value.SafeString()));
+            content.Add(item, GetFileParameter(parameter.Key));
+        }
+    }
+
+    /// <summary>
+    /// 获取文件参数
+    /// </summary>
+    /// <param name="param">参数</param>
+    protected string GetFileParameter(string param) => IsFileParameterQuotes ? "\"" + param + "\"" : param;
+
+    /// <summary>
+    /// 添加文件数据
+    /// </summary>
+    /// <param name="content">表单内容</param>
+    protected void AddFileData(MultipartFormDataContent content)
+    {
+        foreach (var file in Files)
+        {
+            if (file.Stream != null)
+            {
+                using var fileStream = file.Stream;
+                var bytes = FileHelper.ReadToBytes(fileStream);
+                AddFileData(content, bytes, file.Name, file.FileName);
+                continue;
+            }
+            if (string.IsNullOrWhiteSpace(file.FilePath))
+                continue;
+            if (File.Exists(file.FilePath) == false)
+                return;
+            var fileName = Path.GetFileName(file.FileName);
+            var stream = FileHelper.ReadToMemoryStream(file.FilePath);
+            AddFileData(content, stream.ToArray(), file.Name, fileName);
+        }
+    }
+
+    /// <summary>
+    /// 添加文件数据
+    /// </summary>
+    /// <param name="content">表单内容</param>
+    /// <param name="bytes">文件字节数组</param>
+    /// <param name="name">参数名</param>
+    /// <param name="fileName">文件名</param>
+    protected void AddFileData(MultipartFormDataContent content, byte[] bytes, string name, string fileName)
+    {
+        if (bytes == null)
+            return;
+        var fileContent = new ByteArrayContent(bytes);
+        content.Add(fileContent, GetFileParameter(name), GetFileParameter(fileName));
+        if (fileContent.Headers is { ContentDisposition: not null })
+            fileContent.Headers.ContentDisposition.FileNameStar = null;
+    }
+
+    /// <summary>
+    /// 清除分隔符双引号
+    /// </summary>
+    /// <param name="content">表单内容</param>
+    protected void ClearBoundaryQuotes(MultipartFormDataContent content)
+    {
+        var boundary = content?.Headers?.ContentType.Parameters.FirstOrDefault(o => o.Name == "boundary");
+        if (boundary == null)
+            return;
+        boundary.Value = boundary.Value?.Replace("\"", null);
+    }
+
     #endregion
 
     #region SendBefore(发送前操作)
@@ -971,7 +1142,6 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
             return _httpClient;
         var clientHandler = CreateHttpClientHandler();
         InitHttpClientHandler(clientHandler);
-        InitUseCookies(clientHandler);
         return string.IsNullOrWhiteSpace(_httpClientName)
             ? _httpClientFactory.CreateClient()
             : _httpClientFactory.CreateClient(_httpClientName);
@@ -983,8 +1153,12 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     protected HttpClientHandler CreateHttpClientHandler()
     {
         var handlerFactory = _httpClientFactory as IHttpMessageHandlerFactory;
-        var handler = handlerFactory?.CreateHandler();
-        while (handler is DelegatingHandler delegatingHandler) 
+        if (handlerFactory == null)
+            return null;
+        var handler = string.IsNullOrWhiteSpace(_httpClientName)
+            ? handlerFactory.CreateHandler()
+            : handlerFactory.CreateHandler(_httpClientName);
+        while (handler is DelegatingHandler delegatingHandler)
             handler = delegatingHandler.InnerHandler;
         return handler as HttpClientHandler;
     }
@@ -998,6 +1172,8 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
         if (handler == null)
             return;
         InitCertificate(handler);
+        InitUseCookies(handler);
+        IgnoreSsl(handler);
     }
 
     #endregion
@@ -1025,7 +1201,26 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     /// 初始化是否携带Cookie
     /// </summary>
     /// <param name="handler">Http客户端处理器</param>
-    protected virtual void InitUseCookies(HttpClientHandler handler) => handler.UseCookies = IsUseCookies.SafeValue();
+    protected virtual void InitUseCookies(HttpClientHandler handler)
+    {
+        if (handler.UseCookies != IsUseCookies)
+            handler.UseCookies = IsUseCookies;
+    }
+
+    #endregion
+
+    #region IgnoreSsl(忽略SSL证书错误)
+
+    /// <summary>
+    /// 忽略SSL证书错误
+    /// </summary>
+    /// <param name="handler">Http客户端处理器</param>
+    protected virtual void IgnoreSsl(HttpClientHandler handler)
+    {
+        if (_ignoreSsl == false)
+            return;
+        handler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;
+    }
 
     #endregion
 
@@ -1038,6 +1233,7 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     protected virtual void InitHttpClient(HttpClient client)
     {
         InitBaseAddress(client);
+        InitTimeout(client);
     }
 
     #endregion
@@ -1050,7 +1246,7 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     /// <param name="client">Http客户端</param>
     protected virtual void InitBaseAddress(HttpClient client)
     {
-        if(string.IsNullOrWhiteSpace(BaseAddressUri))
+        if (string.IsNullOrWhiteSpace(BaseAddressUri))
             return;
         client.BaseAddress = new Uri(BaseAddressUri);
     }

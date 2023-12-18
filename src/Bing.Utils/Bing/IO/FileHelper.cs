@@ -550,6 +550,16 @@ public static partial class FileHelper
     }
 
     #endregion
+
+    #region Exists(判断文件是否存在)
+
+    /// <summary>
+    /// 判断文件是否存在
+    /// </summary>
+    /// <param name="path">文件绝对路径</param>
+    public static bool Exists(string path) => System.IO.File.Exists(path);
+
+    #endregion
 }
 
 /// <summary>

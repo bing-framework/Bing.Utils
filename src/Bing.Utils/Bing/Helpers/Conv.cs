@@ -468,6 +468,18 @@ public static partial class Conv
 
     #endregion
 
+    #region ToBase64(转换为base64字符串)
+
+    /// <summary>
+    /// 转换为base64字符串
+    /// </summary>
+    /// <param name="input">输入值</param>
+    public static string ToBase64(string input) => string.IsNullOrWhiteSpace(input)
+        ? null
+        : Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
+
+    #endregion
+
     #region ToList(泛型集合转换)
 
     /// <summary>

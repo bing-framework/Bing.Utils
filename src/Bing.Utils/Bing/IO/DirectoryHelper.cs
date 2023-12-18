@@ -13,7 +13,7 @@ public static class DirectoryHelper
     #region CreateDirectory(创建目录)
 
     /// <summary>
-    /// 创建目录
+    /// 创建目录，如果目录已存在则不创建
     /// </summary>
     /// <param name="path">文件或目录绝对路径</param>
     public static void CreateDirectory(string path)

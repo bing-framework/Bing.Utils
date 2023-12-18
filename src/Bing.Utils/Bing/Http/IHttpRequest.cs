@@ -1,5 +1,4 @@
-﻿using System.Net.Http;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Bing.Http;
 
@@ -64,6 +63,11 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     /// <param name="path">证书路径</param>
     /// <param name="password">证书密码</param>
     IHttpRequest<TResult> Certificate(string path, string password);
+
+    /// <summary>
+    /// 忽略SSL证书
+    /// </summary>
+    IHttpRequest<TResult> IgnoreSsl();
 
     /// <summary>
     /// 设置Json序列化配置
@@ -139,7 +143,7 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     /// </summary>
     /// <param name="key">键</param>
     /// <param name="value">值</param>
-    IHttpRequest<TResult> Content(string key,object value);
+    IHttpRequest<TResult> Content(string key, object value);
 
     /// <summary>
     /// 添加参数。作为请求内容发送
@@ -164,6 +168,27 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     /// </summary>
     /// <param name="value">值</param>
     IHttpRequest<TResult> XmlContent(string value);
+
+    /// <summary>
+    /// 添加内容类型为 multipart/form-data 的文件参数
+    /// </summary>
+    /// <param name="stream">文件流</param>
+    /// <param name="fileName">文件名</param>
+    /// <param name="name">参数名。默认值：file</param>
+    IHttpRequest<TResult> FileContent(Stream stream, string fileName, string name = "file");
+    
+    /// <summary>
+    /// 添加内容类型为 multipart/form-data 的文件参数
+    /// </summary>
+    /// <param name="filePath">文件绝对路径</param>
+    /// <param name="name">参数名。默认值：file</param>
+    IHttpRequest<TResult> FileContent(string filePath, string name = "file");
+
+    /// <summary>
+    /// 文件上传参数是否添加双引号
+    /// </summary>
+    /// <param name="isQuote">是否添加双引号</param>
+    IHttpRequest<TResult> FileParameterQuotes(bool isQuote = true);
 
     /// <summary>
     /// 发送前事件

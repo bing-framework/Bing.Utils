@@ -72,6 +72,17 @@ public static partial class BingExtensions
 
     #endregion
 
+    #region IsDefault(是否默认值)
+
+    /// <summary>
+    /// 是否默认值
+    /// </summary>
+    /// <typeparam name="T">值类型</typeparam>
+    /// <param name="value">值</param>
+    public static bool IsDefault<T>(this T value) => EqualityComparer<T>.Default.Equals(value, default);
+
+    #endregion
+
     #region IsNull(是否为空)
 
     /// <summary>
