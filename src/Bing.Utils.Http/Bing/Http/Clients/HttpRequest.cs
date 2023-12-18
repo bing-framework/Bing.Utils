@@ -1403,7 +1403,7 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     public async Task WriteAsync(string filePath, CancellationToken cancellationToken = default)
     {
         var bytes = await GetStreamAsync(cancellationToken);
-        await FileHelper.WriteAsync(bytes, filePath);
+        await FileHelper.WriteAsync(bytes, filePath, cancellationToken: cancellationToken);
     }
 
     #endregion

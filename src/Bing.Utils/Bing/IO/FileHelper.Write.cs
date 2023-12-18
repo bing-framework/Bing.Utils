@@ -187,7 +187,7 @@ public static partial class FileHelper
 
     #region WriteAsync(写入文件)
 
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0 || NET6_0
+#if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER
 
     /// <summary>
     /// 将字符串写入文件，文件不存在则创建
@@ -235,11 +235,12 @@ public static partial class FileHelper
     /// <param name="byteArray">字节数组</param>
     /// <param name="filePath">文件的绝对路径</param>
     /// <param name="appendMode">是否追加</param>
-    public static async Task<bool> WriteAsync(byte[] byteArray, string filePath, bool appendMode = false)
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task<bool> WriteAsync(byte[] byteArray, string filePath, bool appendMode = false, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(filePath))
             return false;
-
+        DirectoryHelper.CreateDirectory(filePath);
         if (!appendMode && File.Exists(filePath))
             File.Create(filePath);
 
@@ -249,7 +250,7 @@ public static partial class FileHelper
 #else
         using var fs = new FileStream(filePath, fileMode, FileAccess.Write);
 #endif
-        return await fs.TryWriteAsync(byteArray, 0, byteArray.Length);
+        return await fs.TryWriteAsync(byteArray, 0, byteArray.Length, cancellationToken);
     }
 
     #endregion
