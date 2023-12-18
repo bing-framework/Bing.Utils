@@ -225,4 +225,20 @@ public static partial class BingExtensions
     public static bool IsZeroOrPercentage(this decimal value) => value.IsPercentage() || value.Equals(0m);
 
     #endregion
+
+    #region IsBetween(检查一个值是否在最小值和最大值之间)
+
+    /// <summary>
+    /// 检查一个值是否在最小值和最大值之间（包括最小值和最大值）。
+    /// </summary>
+    /// <typeparam name="T">类型</typeparam>
+    /// <param name="value">值</param>
+    /// <param name="minInclusiveValue">最小值（包含）</param>
+    /// <param name="maxInclusiveValue">最大值（包含）</param>
+    public static bool IsBetween<T>(this T value, T minInclusiveValue, T maxInclusiveValue) where T : IComparable<T>
+    {
+        return value.CompareTo(minInclusiveValue) >= 0 && value.CompareTo(maxInclusiveValue) <= 0;
+    }
+
+    #endregion
 }
