@@ -1,6 +1,6 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
+// ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
 
 /// <summary>
