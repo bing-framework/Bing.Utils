@@ -3,3 +3,6 @@ global using Bing.Utils;
 global using Xunit;
 global using Shouldly;
 global using System;
+global using System.Linq;
+global using System.Reflection;
+global using BingUtilsUT.Samples;

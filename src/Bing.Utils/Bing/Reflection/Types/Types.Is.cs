@@ -215,14 +215,6 @@ public static partial class Types
     }
 
     /// <summary>
-    /// 判断给定的类型信息是否为数字类型
-    /// </summary>
-    /// <param name="typeInfo">类型信息</param>
-    /// <param name="isOptions">类型判断选项</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsNumericType(TypeInfo typeInfo, TypeIsOptions isOptions = TypeIsOptions.Default) => IsNumericType(typeInfo.AsType(), isOptions);
-
-    /// <summary>
     /// 判断给定的类型是否为数字类型
     /// </summary>
     /// <typeparam name="T">泛型类型</typeparam>
@@ -251,13 +243,6 @@ public static partial class Types
         type is not null
         && type.IsGenericType
         && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-
-    /// <summary>
-    /// 判断给定的类型信息是否为可空类型
-    /// </summary>
-    /// <param name="typeInfo">类型信息</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsNullableType(TypeInfo typeInfo) => IsNullableType(typeInfo.AsType());
 
     /// <summary>
     /// 判断给定的类型是否为可空类型
@@ -290,17 +275,6 @@ public static partial class Types
             TypeIsOptions.IgnoreNullable => TypeConv.GetNonNullableType(type)?.GetTypeInfo().IsEnum ?? false,
             _ => type.IsEnum
         };
-
-    /// <summary>
-    /// 判断给定的类型信息是否为枚举类型
-    /// </summary>
-    /// <param name="typeInfo">类型信息</param>
-    /// <param name="isOptions">类型判断选项</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsEnumType(TypeInfo typeInfo, TypeIsOptions isOptions = TypeIsOptions.Default)
-    {
-        return IsEnumType(typeInfo.AsType(), isOptions);
-    }
 
     /// <summary>
     /// 判断给定的类型是否为枚举类型
