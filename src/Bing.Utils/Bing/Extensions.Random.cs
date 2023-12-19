@@ -211,9 +211,9 @@ public static class RandomExtensions
     /// <param name="random">随机数</param>
     public static double NormalDouble(this Random random)
     {
-        var u1 = random.NextDouble();
-        var u2 = random.NextDouble();
-        return Math.Sqrt(-2 * Math.Log(u1)) * Math.Cos(2 * Math.PI * u2);
+        var u1 = 1.0 - random.NextDouble();
+        var u2 = 1.0 - random.NextDouble();
+        return Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
     }
 
     /// <summary>
