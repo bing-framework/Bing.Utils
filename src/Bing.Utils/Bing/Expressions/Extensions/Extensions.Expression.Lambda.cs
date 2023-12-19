@@ -64,8 +64,7 @@ public static partial class LambdaExtensions
     /// <typeparam name="T">对象类型</typeparam>
     /// <param name="left">左操作数</param>
     /// <param name="right">右操作数</param>
-    public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> left,
-        Expression<Func<T, bool>> right)
+    public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
     {
         if (left == null)
             return right;
@@ -73,6 +72,46 @@ public static partial class LambdaExtensions
             return left;
         return left.Compose(right, Expression.AndAlso);
     }
+
+    #endregion
+
+    #region AndIf(与表达式)
+
+    /// <summary>
+    /// 与操作表达式。如果给定条件为真，则拼接表达式
+    /// </summary>
+    /// <param name="left">左操作数</param>
+    /// <param name="condition">给定条件</param>
+    /// <param name="right">右操作数</param>
+    public static Expression AndIf(this Expression left, bool condition, Expression right) => condition ? left.And(right) : left;
+
+    /// <summary>
+    /// 与操作表达式。如果给定条件为真，则拼接表达式
+    /// </summary>
+    /// <param name="left">左操作数</param>
+    /// <param name="condition">给定条件</param>
+    /// <param name="right">右操作数</param>
+    public static Expression AndIf(this Expression left, Func<bool> condition, Expression right) => condition() ? left.And(right) : left;
+
+    /// <summary>
+    /// 与操作表达式。如果给定条件为真，则拼接表达式
+    /// </summary>
+    /// <typeparam name="T">对象类型</typeparam>
+    /// <param name="left">左操作数</param>
+    /// <param name="condition">给定条件</param>
+    /// <param name="right">右操作数</param>
+    public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> left, bool condition, Expression<Func<T, bool>> right) => 
+        condition ? left.And(right) : left;
+
+    /// <summary>
+    /// 与操作表达式。如果给定条件为真，则拼接表达式
+    /// </summary>
+    /// <typeparam name="T">对象类型</typeparam>
+    /// <param name="left">左操作数</param>
+    /// <param name="condition">给定条件</param>
+    /// <param name="right">右操作数</param>
+    public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> left, Func<bool> condition, Expression<Func<T, bool>> right) => 
+        condition() ? left.And(right) : left;
 
     #endregion
 
@@ -106,6 +145,46 @@ public static partial class LambdaExtensions
             return left;
         return left.Compose(right, Expression.OrElse);
     }
+
+    #endregion
+
+    #region OrIf(或表达式)
+
+    /// <summary>
+    /// 或操作表达式。如果给定条件为真，则拼接表达式
+    /// </summary>
+    /// <param name="left">左操作数</param>
+    /// <param name="condition">给定条件</param>
+    /// <param name="right">右操作数</param>
+    public static Expression OrIf(this Expression left, bool condition, Expression right) => condition ? left.Or(right) : left;
+
+    /// <summary>
+    /// 或操作表达式。如果给定条件为真，则拼接表达式
+    /// </summary>
+    /// <param name="left">左操作数</param>
+    /// <param name="condition">给定条件</param>
+    /// <param name="right">右操作数</param>
+    public static Expression OrIf(this Expression left, Func<bool> condition, Expression right) => condition() ? left.Or(right) : left;
+
+    /// <summary>
+    /// 或操作表达式。如果给定条件为真，则拼接表达式
+    /// </summary>
+    /// <typeparam name="T">对象类型</typeparam>
+    /// <param name="left">左操作数</param>
+    /// <param name="condition">给定条件</param>
+    /// <param name="right">右操作数</param>
+    public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> left, bool condition, Expression<Func<T, bool>> right) => 
+        condition ? left.Or(right) : left;
+
+    /// <summary>
+    /// 或操作表达式。如果给定条件为真，则拼接表达式
+    /// </summary>
+    /// <typeparam name="T">对象类型</typeparam>
+    /// <param name="left">左操作数</param>
+    /// <param name="condition">给定条件</param>
+    /// <param name="right">右操作数</param>
+    public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> left, Func<bool> condition, Expression<Func<T, bool>> right) => 
+        condition() ? left.Or(right) : left;
 
     #endregion
 
