@@ -615,7 +615,7 @@ public class ConvTest : TestBase
         Assert.Single(Conv.ToList<string>("1"));
         Assert.Equal(2, Conv.ToList<string>("1,2").Count);
         Assert.Equal(2, Conv.ToList<int>("1,2")[1]);
-    } 
+    }
 
     #endregion
 
@@ -703,12 +703,44 @@ public class ConvTest : TestBase
             Display = "Display",
             NullableBoolValue = true,
             DisplayName = "DisplayName",
+            DisplayName2 = "DisplayName2",
             Test3 = new Sample3 { StringValue = "a" },
             TestList = new List<Sample3> { new() { StringValue = "a" }, new() { StringValue = "b" } }
         };
         var result = Conv.ToDictionary(sample);
-        Assert.Equal(9, result.Count);
+        Assert.Equal(10, result.Count);
+        Assert.Equal("Description", result["Description"]);
         Assert.Equal("Display", result["Display"]);
+        Assert.Equal("DisplayName", result["DisplayName"]);
+        Assert.Equal("DisplayName2", result["DisplayName2"]);
+        Assert.Equal(2, result["IntValue"]);
+    }
+
+    /// <summary>
+    /// 测试 - 对象转换为字典(属性名-属性值)
+    /// </summary>
+    [Fact]
+    public void Test_ToDictionary_2()
+    {
+        var sample = new Sample2
+        {
+            BoolValue = true,
+            Description = "Description",
+            StringValue = "StringValue",
+            IntValue = 2,
+            Display = "Display",
+            NullableBoolValue = true,
+            DisplayName = "DisplayName",
+            DisplayName2 = "DisplayName2",
+            Test3 = new Sample3 { StringValue = "a" },
+            TestList = new List<Sample3> { new() { StringValue = "a" }, new() { StringValue = "b" } }
+        };
+        var result = Conv.ToDictionary(sample, true);
+        Assert.Equal(10, result.Count);
+        Assert.Equal("Description", result["描述"]);
+        Assert.Equal("Display", result["Display"]);
+        Assert.Equal("DisplayName", result["显示名"]);
+        Assert.Equal("DisplayName2", result["DisplayName2"]);
         Assert.Equal(2, result["IntValue"]);
     }
 
@@ -716,11 +748,13 @@ public class ConvTest : TestBase
     /// 测试 - 对象转换为字典(属性名-属性值) - 传入字典
     /// </summary>
     [Fact]
-    public void Test_ToDictionary_2()
+    public void Test_ToDictionary_3()
     {
-        var content = new Dictionary<string, object>();
-        content.Add("Code", "a");
-        content.Add("Price", 0);
+        var content = new Dictionary<string, object>
+        {
+            { "Code", "a" },
+            { "Price", 0 }
+        };
         var result = Conv.ToDictionary(content);
         Assert.Equal(2, result.Count);
         Assert.Equal("a", result["Code"]);

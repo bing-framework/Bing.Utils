@@ -23,6 +23,12 @@ namespace Bing.Tests.Samples
         public string DisplayName { get; set; }
 
         /// <summary>
+        /// 显示名2
+        /// </summary>
+        [Display(Description = "显示名2")]
+        public string DisplayName2 { get; set; }
+
+        /// <summary>
         /// 显示描述
         /// </summary>
         [Display(Description = "显示描述")]

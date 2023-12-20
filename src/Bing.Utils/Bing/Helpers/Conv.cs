@@ -544,23 +544,46 @@ public static partial class Conv
     /// 对象转换为字典(属性名-属性值)
     /// </summary>
     /// <param name="input">输入值</param>
-    public static IDictionary<string, object> ToDictionary(object input)
+    public static IDictionary<string, object> ToDictionary(object input) => ToDictionary(input, false);
+
+    /// <summary>
+    /// 对象转换为字典(属性名-属性值)
+    /// </summary>
+    /// <param name="input">输入值</param>
+    /// <param name="useDisplayName">是否使用显示名称，可使用[Description] 或 [DisplayName]特性设置</param>
+    public static IDictionary<string, object> ToDictionary(object input, bool useDisplayName)
     {
         var result = new Dictionary<string, object>();
         if (input == null)
-            return null;
+            return result;
         if (input is IEnumerable<KeyValuePair<string, object>> dict)
 #if NETSTANDARD2_0
-                return new Dictionary<string, object>(dict.ToDictionary());
+            return new Dictionary<string, object>(dict.ToDictionary());
 #else
             return new Dictionary<string, object>(dict);
 #endif
         foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(input))
         {
             var value = property.GetValue(input);
-            result.Add(property.Name, value);
+            result.Add(GetPropertyDescriptorName(property, useDisplayName), value);
         }
         return result;
+    }
+
+    /// <summary>
+    /// 获取属性名
+    /// </summary>
+    /// <param name="property">属性名</param>
+    /// <param name="useDisplayName">是否使用显示名称，可使用[Description] 或 [DisplayName]特性设置</param>
+    private static string GetPropertyDescriptorName(PropertyDescriptor property, bool useDisplayName)
+    {
+        if (useDisplayName == false)
+            return property.Name;
+        if (string.IsNullOrEmpty(property.Description) == false)
+            return property.Description;
+        if (string.IsNullOrEmpty(property.DisplayName) == false)
+            return property.DisplayName;
+        return property.Name;
     }
 
     #endregion
