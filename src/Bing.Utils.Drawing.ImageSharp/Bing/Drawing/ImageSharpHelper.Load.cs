@@ -4,11 +4,14 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Bing.Drawing;
 
-/// <summary>
-/// 图片操作辅助类 - 加载
-/// </summary>
+// 图片操作辅助类 - 加载
 public static partial class ImageSharpHelper
 {
+    /// <summary>
+    /// 图片DataUrl正则表达式
+    /// </summary>
+    internal static readonly Regex ImageDataUrl = new(@"^data\:(?<MIME>image\/(bmp|emf|exif|gif|icon|jpeg|png|tiff|wmf))\;base64\,(?<DATA>.+)");
+
     #region FromFile(从指定文件创建图片)
 
     /// <summary>
@@ -152,7 +155,7 @@ public static partial class ImageSharpHelper
             return default;
         try
         {
-            return Image.Load(Convert.FromBase64String(GetBase64String(base64String)));
+            return Image.Load(Convert.FromBase64String(base64String));
         }
         catch
         {
@@ -172,7 +175,7 @@ public static partial class ImageSharpHelper
             return default;
         try
         {
-            return Image.Load<TPixel>(Convert.FromBase64String(GetBase64String(base64String)));
+            return Image.Load<TPixel>(Convert.FromBase64String(base64String));
         }
         catch
         {
@@ -180,16 +183,40 @@ public static partial class ImageSharpHelper
         }
     }
 
+    #endregion
+
+    #region FromDataUrl(从指定DataUrl字符串创建图片)
+
     /// <summary>
-    /// 获取真正的图片Base64数据。
-    /// 即去掉data:image/jpg;base64,这样的格式
+    /// 从指定DataUrl字符串创建图片。<br />
+    /// 格式：data:image/png;base64,base64String
     /// </summary>
-    /// <param name="base64String">带前缀的Base64图片字符串</param>
-    private static string GetBase64String(string base64String)
+    /// <param name="dataUrl">DataUrl字符串</param>
+    public static Image? FromDataUrl(string dataUrl)
     {
-        var pattern = "^(data:image/.*?;base64,).*?$";
-        var match = Regex.Match(base64String, pattern);
-        return base64String.Replace(match.Groups[1].ToString(), "");
+        if (string.IsNullOrWhiteSpace(dataUrl))
+            return default;
+        var match = ImageDataUrl.Match(dataUrl);
+        if (!match.Success)
+            return default;
+        return FromBase64String(match.Groups["DATA"].Value);
+    }
+
+    /// <summary>
+    /// 从指定DataUrl字符串创建图片。<br />
+    /// 格式：data:image/png;base64,base64String
+    /// </summary>
+    /// <typeparam name="TPixel">像素类型</typeparam>
+    /// <param name="dataUrl">DataUrl字符串</param>
+    public static Image<TPixel>? FromDataUrl<TPixel>(string dataUrl)
+        where TPixel : unmanaged, IPixel<TPixel>
+    {
+        if (string.IsNullOrWhiteSpace(dataUrl))
+            return default;
+        var match = ImageDataUrl.Match(dataUrl);
+        if (!match.Success)
+            return default;
+        return FromBase64String<TPixel>(match.Groups["DATA"].Value);
     }
 
     #endregion

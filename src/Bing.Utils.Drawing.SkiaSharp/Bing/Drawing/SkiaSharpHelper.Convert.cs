@@ -1,11 +1,9 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Jpeg;
+﻿using SkiaSharp;
 
 namespace Bing.Drawing;
 
-// 图片操作辅助类 - 转换
-public static partial class ImageSharpHelper
+// // 图片操作辅助类 - 转换
+public static partial class SkiaSharpHelper
 {
     #region ToBytes(将图像转换为字节数组)
 
@@ -15,14 +13,12 @@ public static partial class ImageSharpHelper
     /// <param name="image">图像</param>
     /// <param name="imageFormat">图像格式</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static byte[] ToBytes(Image image, IImageFormat? imageFormat = default)
+    public static byte[] ToBytes(SKImage image, (SKEncodedImageFormat Format, int Quality)? imageFormat = default)
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat ??= JpegFormat.Instance;
-        using var ms = new MemoryStream();
-        image.Save(ms, imageFormat);
-        return ms.ToArray();
+        var format = imageFormat ?? (SKEncodedImageFormat.Png, 100);
+        return image.Encode(format.Format, format.Quality).ToArray();
     }
 
     #endregion
@@ -33,16 +29,15 @@ public static partial class ImageSharpHelper
     /// 将图像转换为base64字符串
     /// </summary>
     /// <param name="image">图像</param>
-    /// <param name="imageFormat">图像格式</param>
+    /// <param name="imageFormat">图片格式</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static string ToBase64String(Image image, IImageFormat? imageFormat = default)
+    public static string ToBase64String(SKImage image, (SKEncodedImageFormat Format, int Quality)? imageFormat = default)
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat ??= JpegFormat.Instance;
-        using var ms = new MemoryStream();
-        image.Save(ms, imageFormat);
-        return Convert.ToBase64String(ms.ToArray());
+        var format = imageFormat ?? (SKEncodedImageFormat.Png, 100);
+        var bytes = image.Encode(format.Format, format.Quality).ToArray();
+        return Convert.ToBase64String(bytes);
     }
 
     #endregion
@@ -56,12 +51,12 @@ public static partial class ImageSharpHelper
     /// <param name="image">图像</param>
     /// <param name="imageFormat">图片格式</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static string ToDataUrl(Image image, IImageFormat? imageFormat = default)
+    public static string ToDataUrl(SKImage image, (SKEncodedImageFormat Format, int Quality)? imageFormat = default)
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat ??= JpegFormat.Instance;
-        return $"data:{imageFormat.DefaultMimeType};base64,{ToBase64String(image, imageFormat)}";
+        var format = imageFormat ?? (SKEncodedImageFormat.Png, 100);
+        return $"data:image/{format.Format.GetMimeType()};base64,{ToBase64String(image, format)}";
     }
 
     #endregion

@@ -14,7 +14,7 @@ public static class ImageExtensions
     /// </summary>
     /// <param name="image">图像</param>
     /// <param name="format">图像格式</param>
-    public static string ToBase64String(this Image image, ImageFormat format) => ImageHelper.ToBase64String(image, format, false);
+    public static string ToBase64String(this Image image, ImageFormat format) => ImageHelper.ToBase64String(image, format);
 
     /// <summary>
     /// 将图像转换为base64字符串，带前缀
@@ -24,7 +24,7 @@ public static class ImageExtensions
     /// <returns>
     /// data:image/jpeg;base64,字符串
     /// </returns>
-    public static string ToBase64StringWithPrefix(this Image image, ImageFormat format) => ImageHelper.ToBase64String(image, format, true);
+    public static string ToBase64StringWithPrefix(this Image image, ImageFormat format) => ImageHelper.ToDataUrl(image, format);
 
     /// <summary>
     /// 缩放图像，以使其适合宽度/高度
