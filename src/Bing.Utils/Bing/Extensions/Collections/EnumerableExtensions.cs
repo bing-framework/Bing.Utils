@@ -49,20 +49,19 @@ public static class EnumerableExtensions
     /// <summary>
     /// 根据指定条件返回集合中不重复的元素
     /// </summary>
-    /// <typeparam name="T">动态类型</typeparam>
+    /// <typeparam name="TSource">动态类型</typeparam>
     /// <typeparam name="TKey">动态筛选条件类型</typeparam>
-    /// <param name="enumerable">源集合</param>
+    /// <param name="source">源集合</param>
     /// <param name="keySelector">字段选择委托</param>
     /// <exception cref="ArgumentNullException">源集合对象为空、参照字段表达式为空</exception>
-    public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector)
+    public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
     {
-        if (enumerable == null)
-            throw new ArgumentNullException(nameof(enumerable), $@"源{typeof(T).Name}集合对象不可为空！");
+        if (source == null)
+            throw new ArgumentNullException(nameof(source), $@"源{typeof(TSource).Name}集合对象不可为空！");
         if (keySelector == null)
             throw new ArgumentNullException(nameof(keySelector), @"参照字段表达式不可为空");
-        enumerable = enumerable as IList<T> ?? enumerable.ToList();
-        var seenKeys = new HashSet<TKey>();
-        return enumerable.Where(item => seenKeys.Add(keySelector(item)));
+        var set = new HashSet<TKey>();
+        return source.Where(item => set.Add(keySelector(item)));
     }
 
     #endregion

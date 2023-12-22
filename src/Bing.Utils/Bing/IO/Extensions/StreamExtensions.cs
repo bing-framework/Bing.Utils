@@ -1,9 +1,9 @@
 ﻿namespace Bing.IO;
 
 /// <summary>
-/// Bing <see cref="Stream"/> 扩展
+/// 流 <see cref="Stream"/> 扩展
 /// </summary>
-public static class BingStreamExtensions
+public static class StreamExtensions
 {
     #region Seek
 
@@ -237,6 +237,80 @@ public static class BingStreamExtensions
             return memoryStream.ToArray();
         using var ms = await stream.CreateMemoryStreamAsync(cancellationToken);
         return ms.ToArray();
+    }
+
+    #endregion
+
+    #region CopyToFile(以文件流的形式复制大文件)
+
+    /// <summary>
+    /// 以文件流的形式复制大文件
+    /// </summary>
+    /// <param name="stream">源</param>
+    /// <param name="dest">目标地址</param>
+    /// <param name="bufferSize">缓冲区大小。默认：8MB</param>
+    public static void CopyToFile(this Stream stream, string dest, int bufferSize = 1024 * 8 * 1024)
+    {
+        stream.Seek(0, SeekOrigin.Begin);
+        using var fs = new FileStream(dest, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        var bs = new BufferedStream(stream, bufferSize);
+        bs.CopyTo(fs);
+        stream.Seek(0, SeekOrigin.Begin);
+    }
+
+    #endregion
+
+    #region CopyToFileAsync(以文件流的形式复制大文件)
+
+    /// <summary>
+    /// 以文件流的形式复制大文件
+    /// </summary>
+    /// <param name="stream">源</param>
+    /// <param name="dest">目标地址</param>
+    /// <param name="bufferSize">缓冲区大小。默认：8MB</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static Task CopyToFileAsync(this Stream stream, string dest, int bufferSize = 1024 * 8 * 1024, CancellationToken cancellationToken = default)
+    {
+        using var fs = new FileStream(dest, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        var bs = new BufferedStream(stream, bufferSize);
+        return bs.CopyToAsync(fs, cancellationToken);
+    }
+
+    #endregion
+
+    #region SaveFile(将内存流转储成文件)
+
+    /// <summary>
+    /// 将内存流转储成文件
+    /// </summary>
+    /// <param name="stream">源</param>
+    /// <param name="fileName">文件名</param>
+    public static void SaveFile(this Stream stream, string fileName)
+    {
+        stream.Seek(0, SeekOrigin.Begin);
+        using var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+        var bs = new BufferedStream(stream, 1048576);
+        bs.CopyTo(fs);
+        stream.Seek(0, SeekOrigin.Begin);
+    }
+
+    #endregion
+
+    #region SaveFile(将内存流转储成文件)
+
+    /// <summary>
+    /// 将内存流转储成文件
+    /// </summary>
+    /// <param name="stream">源</param>
+    /// <param name="fileName">文件名</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task SaveFileAsync(this Stream stream, string fileName, CancellationToken cancellationToken = default)
+    {
+        stream.Seek(0, SeekOrigin.Begin);
+        using var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+        var bs = new BufferedStream(stream, 1048576);
+        await bs.CopyToAsync(fs, cancellationToken);
+        stream.Seek(0, SeekOrigin.Begin);
     }
 
     #endregion

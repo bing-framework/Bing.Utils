@@ -1,4 +1,6 @@
-﻿namespace Bing.Collections;
+﻿using Bing.Extensions;
+
+namespace Bing.Collections;
 
 /// <summary>
 /// 集合转换器扩展
