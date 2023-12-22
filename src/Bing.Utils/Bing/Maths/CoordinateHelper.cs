@@ -28,7 +28,7 @@ public class CoordinateHelper
         var latDiffer = arcLatA - arcLatB;
         var lngDiffer = arcLngA - arcLngB;
 
-        var distance = 2 * Math.Asin(Math.Sqrt(Math.Pow(Math.Sin(latDiffer / 2), 2) +Math.Cos(arcLatA) * Math.Cos(arcLatB) * Math.Pow(Math.Sin(lngDiffer / 2), 2))) * RADIUS;
+        var distance = 2 * Math.Asin(Math.Sqrt(Math.Pow(Math.Sin(latDiffer / 2), 2) + Math.Cos(arcLatA) * Math.Cos(arcLatB) * Math.Pow(Math.Sin(lngDiffer / 2), 2))) * RADIUS;
         return Math.Round(distance, 2);
     }
 
@@ -37,8 +37,5 @@ public class CoordinateHelper
     /// </summary>
     /// <param name="line">经度/纬度</param>
     /// <returns>弧度</returns>
-    private static double Arc(double line)
-    {
-        return line * Math.PI / 180d;
-    }
+    private static double Arc(double line) => line * Math.PI / 180d;
 }
