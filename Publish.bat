@@ -23,6 +23,8 @@ echo.
 dotnet pack src/Bing.Utils -c Release -o nuget_packages
 dotnet pack src/Bing.Utils.DateTime -c Release -o nuget_packages
 dotnet pack src/Bing.Utils.Drawing -c Release -o nuget_packages
+dotnet pack src/Bing.Utils.Drawing.ImageSharp -c Release -o nuget_packages
+dotnet pack src/Bing.Utils.Drawing.SkiaSharp -c Release -o nuget_packages
 dotnet pack src/Bing.Utils.Http -c Release -o nuget_packages
 dotnet pack src/Bing.Utils.Collections -c Release -o nuget_packages
 dotnet pack src/Bing.Utils.Reflection -c Release -o nuget_packages
