@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.Drawing.ImageSharp</AssemblyName>
+		<PackageId>Bing.Utils.Drawing.ImageSharp</PackageId>
+		<Description>Bing.Utils.Drawing.ImageSharp是Bing应用框架的图片操作类库。基于 SixLabors.ImageSharp 封装的类库</Description>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.props" />
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="SixLabors.ImageSharp" Version="2.1.6" />
+	</ItemGroup>
+
+</Project>

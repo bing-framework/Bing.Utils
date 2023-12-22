@@ -67,8 +67,8 @@ public static partial class ImageHelper
     /// <param name="base64String">带前缀的Base64图片字符串</param>
     private static string GetBase64String(string base64String)
     {
-        var parttern = "^(data:image/.*?;base64,).*?$";
-        var match = Regex.Match(base64String, parttern);
+        var pattern = "^(data:image/.*?;base64,).*?$";
+        var match = Regex.Match(base64String, pattern);
         return base64String.Replace(match.Groups[1].ToString(), "");
     }
 
