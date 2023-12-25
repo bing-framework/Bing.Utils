@@ -40,6 +40,155 @@ public class FormattedStringValueExtractorTest
     }
 
     /// <summary>
+    /// 测试 - 匹配 - 原始值为空
+    /// </summary>
+    [Fact]
+    public void Test_Matched_1()
+    {
+        var result = FormattedStringValueExtractor.Extract("", "a");
+        Assert.False(result.IsMatch);
+        Assert.Empty(result.Matches);
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式字符串为空
+    /// </summary>
+    [Fact]
+    public void Test_Matched_2()
+    {
+        var result = FormattedStringValueExtractor.Extract("a", "");
+        Assert.False(result.IsMatch);
+        Assert.Empty(result.Matches);
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式字符串未包含{}
+    /// </summary>
+    [Fact]
+    public void Test_Matched_3()
+    {
+        var result = FormattedStringValueExtractor.Extract("a", "a");
+        Assert.True(result.IsMatch);
+        Assert.Empty(result.Matches);
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式字符串包含{}
+    /// </summary>
+    [Fact]
+    public void Test_Matched_4()
+    {
+        Test_Matched_Internal("a", "{value}", new NameValue("value", "a"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 值前后有空格
+    /// </summary>
+    [Fact]
+    public void Test_Matched_5()
+    {
+        Test_Matched_Internal(" a ", "{value}", new NameValue("value", "a"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式化字符串前后有空格
+    /// </summary>
+    [Fact]
+    public void Test_Matched_6()
+    {
+        Test_Matched_Internal("a", "    {value}   ", new NameValue("value", "a"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式字符串左侧有文本
+    /// </summary>
+    [Fact]
+    public void Test_Matched_7()
+    {
+        Test_Matched_Internal("Hello,World", "Hello,{value}", new NameValue("value", "World"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式字符串右侧有文本
+    /// </summary>
+    [Fact]
+    public void Test_Matched_8()
+    {
+        Test_Matched_Internal("Hello,World", "{value},World", new NameValue("value", "Hello"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式字符串左右侧有文本
+    /// </summary>
+    [Fact]
+    public void Test_Matched_9()
+    {
+        Test_Matched_Internal("Hello,Bing,World", "Hello,{value},World", new NameValue("value", "Bing"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式字符串包含两个变量 - 左侧文本
+    /// </summary>
+    [Fact]
+    public void Test_Matched_10()
+    {
+        Test_Matched_Internal(
+            "Hello,Bing,World", 
+            "Hello,{a},{b}", 
+            new NameValue("a", "Bing"),
+            new NameValue("b", "World"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式字符串包含两个变量 - 右侧文本
+    /// </summary>
+    [Fact]
+    public void Test_Matched_11()
+    {
+        Test_Matched_Internal(
+            "Hello,Bing,World", 
+            "{a},{b},World", 
+            new NameValue("a", "Hello"),
+            new NameValue("b", "Bing"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 格式字符串包含两个变量 - 重复文本
+    /// </summary>
+    [Fact]
+    public void Test_Matched_12()
+    {
+        Test_Matched_Internal(
+            "Hello,Bing,Hello,Test,Hello,World", 
+            "Hello,{a},Hello,{b},Hello,World", 
+            new NameValue("a", "Bing"),
+            new NameValue("b", "Test"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 没有分隔符
+    /// </summary>
+    [Fact]
+    public void Test_Matched_13()
+    {
+        Test_Matched_Internal("acababcabcd", "a{b}c{d}", 
+            new NameValue("b", "cabab"),
+            new NameValue("d", "abcd"));
+    }
+
+    /// <summary>
+    /// 测试 - 匹配 - 未匹配到变量b
+    /// </summary>
+    [Fact]
+    public void Test_Matched_14()
+    {
+        Test_Matched_Internal(
+            "Hello,Bing,World", 
+            "Hello,{a},{b},World", 
+            new NameValue("a", "Bing"));
+    }
+
+    /// <summary>
     /// 测试 - 不匹配
     /// </summary>
     [Fact]
