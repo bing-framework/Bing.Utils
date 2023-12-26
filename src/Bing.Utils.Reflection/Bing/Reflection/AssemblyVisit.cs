@@ -1,6 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
+using Bing.Extensions;
 
 namespace Bing.Reflection;
 
@@ -19,7 +19,13 @@ public static partial class AssemblyVisit
     /// 获取 <see cref="Assembly"/> 文件的产品版本
     /// </summary>
     /// <param name="assembly">程序集</param>
-    public static string GetProductVersion(Assembly assembly) => V(assembly).ProductVersion;
+    public static string GetProductVersion(Assembly assembly)
+    {
+        var version = V(assembly).ProductVersion;
+        if (version?.Contains("+") == true) 
+            version = version.ReplaceWith(@"\+(\w+)?", "");
+        return version;
+    }
 
     /// <summary>
     /// 访问

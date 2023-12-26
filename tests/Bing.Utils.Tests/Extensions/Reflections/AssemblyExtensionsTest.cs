@@ -1,5 +1,4 @@
-﻿using Bing.Extensions;
-using Bing.Reflection;
+﻿using Bing.Reflection;
 
 namespace Bing.Utils.Tests.Extensions.Reflections;
 
@@ -27,7 +26,7 @@ public class AssemblyExtensionsTest
     {
         var assembly = typeof(AssemblyExtensionsTest).Assembly;
         var result = AssemblyVisit.GetProductVersion(assembly);
-        Assert.Equal("1.0.0.0", result.ToString());
+        Assert.Equal("1.0.0.0", result);
     }
 
 }

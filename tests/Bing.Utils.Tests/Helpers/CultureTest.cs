@@ -21,4 +21,36 @@ public class CultureTest
         Assert.Equal("zh-Hans", cultures[1].Name);
         Assert.Equal("zh", cultures[2].Name);
     }
+
+    /// <summary>
+    /// 测试 - 是否兼容的区域文化
+    /// </summary>
+    [Fact]
+    public void Test_IsCompatibleCulture()
+    {
+        Culture.IsCompatibleCulture("tr", "tr").ShouldBeTrue();
+        Culture.IsCompatibleCulture("tr", "tr-TR").ShouldBeTrue();
+
+        Culture.IsCompatibleCulture("en", "tr").ShouldBeFalse();
+        Culture.IsCompatibleCulture("en", "tr-TR").ShouldBeFalse();
+
+        Culture.IsCompatibleCulture("en-US", "en").ShouldBeFalse();
+        Culture.IsCompatibleCulture("en-US", "en-GB").ShouldBeFalse();
+
+        Culture.IsCompatibleCulture("zh", "zh-CN").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh", "zh-HK").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh", "zh-MO").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh", "zh-SG").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh", "zh-TW").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh", "zh-Hans").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh", "zh-Hant").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh-Hans", "zh-CN").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh-Hans", "zh-SG").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh-Hant", "zh-HK").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh-Hant", "zh-MO").ShouldBeTrue();
+        Culture.IsCompatibleCulture("zh-Hant", "zh-TW").ShouldBeTrue();
+
+        Culture.IsCompatibleCulture("zh-Hans", "zh-HK").ShouldBeFalse();
+        Culture.IsCompatibleCulture("zh-Hant", "zh-SG").ShouldBeFalse();
+    }
 }
