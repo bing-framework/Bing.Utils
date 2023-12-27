@@ -84,4 +84,50 @@ public static class Ip
         }
         return string.Empty;
     }
+
+    /// <summary>
+    /// 判断给定的IP地址是否为内部IP地址。
+    /// </summary>
+    /// <param name="ipAddress">要检查的IP地址字符串</param>
+    /// <returns>如果是内部IP地址，则为 true；否则为 false。</returns>
+    public static bool IsInnerIp(string ipAddress)
+    {
+        var ipNum = GetIpNum(ipAddress);
+        // 定义内部IP地址范围。
+        var internalRanges = new (long begin, long end)[]
+        {
+            (GetIpNum("10.0.0.0"), GetIpNum("10.255.255.255")),      // A类
+            (GetIpNum("172.16.0.0"), GetIpNum("172.31.255.255")),    // B类
+            (GetIpNum("192.168.0.0"), GetIpNum("192.168.255.255"))   // C类
+        };
+        // 判断给定的IP地址是否在任何一个内部IP地址范围内，或者是否为本地回环地址（127.0.0.1）
+        return internalRanges.Any(range => IsInner(ipNum, range.begin, range.end)) || ipAddress.Equals("127.0.0.1");
+    }
+
+    /// <summary>
+    /// 将IP地址转换为long。
+    /// </summary>
+    /// <param name="ipAddress">IP地址字符串</param>
+    /// <returns>IP地址的long表示。</returns>
+    private static long GetIpNum(string ipAddress)
+    {
+        if (IPAddress.TryParse(ipAddress, out var ip))
+        {
+            var ipBytes = ip.GetAddressBytes();
+            // 如果系统是小端序（Little Endian），则翻转字节数组，以确保正确的顺序。
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(ipBytes);
+            return BitConverter.ToInt32(ipBytes, 0);
+        }
+        throw new ArgumentException($@"Invalid IP address format: {ipAddress}", nameof(ipAddress));
+    }
+
+    /// <summary>
+    /// 判断用户IP是否在指定范围内。
+    /// </summary>
+    /// <param name="userIp">用户的IP地址（长整型表示）</param>
+    /// <param name="begin">IP范围的起始值</param>
+    /// <param name="end">IP范围的结束值</param>
+    /// <returns>如果用户IP在指定范围内，则为 true；否则为 false。</returns>
+    private static bool IsInner(long userIp, long begin, long end) => userIp >= begin && userIp <= end;
 }
