@@ -1,4 +1,4 @@
-﻿namespace Bing.Reflection;
+﻿namespace Bing.Threading;
 
 /// <summary>
 /// 锁扩展

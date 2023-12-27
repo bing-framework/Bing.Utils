@@ -33,8 +33,9 @@ public static class SemaphoreSlimExtensions
     /// <param name="millisecondsTimeout">超时时间。单位：毫秒数</param>
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphoreSlim, int millisecondsTimeout)
     {
-        await semaphoreSlim.WaitAsync(millisecondsTimeout);
-        return GetDispose(semaphoreSlim);
+        if(await semaphoreSlim.WaitAsync(millisecondsTimeout))
+            return GetDispose(semaphoreSlim);
+        throw new TimeoutException();
     }
 
     /// <summary>
@@ -45,8 +46,9 @@ public static class SemaphoreSlimExtensions
     /// <param name="cancellationToken">取消令牌</param>
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphoreSlim, int millisecondsTimeout, CancellationToken cancellationToken)
     {
-        await semaphoreSlim.WaitAsync(millisecondsTimeout, cancellationToken);
-        return GetDispose(semaphoreSlim);
+        if(await semaphoreSlim.WaitAsync(millisecondsTimeout, cancellationToken))
+            return GetDispose(semaphoreSlim);
+        throw new TimeoutException();
     }
 
     /// <summary>
@@ -56,8 +58,9 @@ public static class SemaphoreSlimExtensions
     /// <param name="timeout">超时时间</param>
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphoreSlim, TimeSpan timeout)
     {
-        await semaphoreSlim.WaitAsync(timeout);
-        return GetDispose(semaphoreSlim);
+        if(await semaphoreSlim.WaitAsync(timeout))
+            return GetDispose(semaphoreSlim);
+        throw new TimeoutException();
     }
 
     /// <summary>
@@ -68,8 +71,9 @@ public static class SemaphoreSlimExtensions
     /// <param name="cancellationToken">取消令牌</param>
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphoreSlim, TimeSpan timeout, CancellationToken cancellationToken)
     {
-        await semaphoreSlim.WaitAsync(timeout, cancellationToken);
-        return GetDispose(semaphoreSlim);
+        if(await semaphoreSlim.WaitAsync(timeout, cancellationToken))
+            return GetDispose(semaphoreSlim);
+        throw new TimeoutException();
     }
 
     /// <summary>
@@ -100,8 +104,9 @@ public static class SemaphoreSlimExtensions
     /// <param name="millisecondsTimeout">超时时间。单位：毫秒数</param>
     public static IDisposable Lock(this SemaphoreSlim semaphoreSlim, int millisecondsTimeout)
     {
-        semaphoreSlim.Wait(millisecondsTimeout);
-        return GetDispose(semaphoreSlim);
+        if (semaphoreSlim.Wait(millisecondsTimeout))
+            return GetDispose(semaphoreSlim);
+        throw new TimeoutException();
     }
 
     /// <summary>
@@ -112,8 +117,9 @@ public static class SemaphoreSlimExtensions
     /// <param name="cancellationToken">取消令牌</param>
     public static IDisposable Lock(this SemaphoreSlim semaphoreSlim, int millisecondsTimeout, CancellationToken cancellationToken)
     {
-        semaphoreSlim.Wait(millisecondsTimeout, cancellationToken);
-        return GetDispose(semaphoreSlim);
+        if (semaphoreSlim.Wait(millisecondsTimeout, cancellationToken))
+            return GetDispose(semaphoreSlim);
+        throw new TimeoutException();
     }
 
     /// <summary>
@@ -123,8 +129,9 @@ public static class SemaphoreSlimExtensions
     /// <param name="timeout">超时时间</param>
     public static IDisposable Lock(this SemaphoreSlim semaphoreSlim, TimeSpan timeout)
     {
-        semaphoreSlim.Wait(timeout);
-        return GetDispose(semaphoreSlim);
+        if (semaphoreSlim.Wait(timeout))
+            return GetDispose(semaphoreSlim);
+        throw new TimeoutException();
     }
 
     /// <summary>
@@ -135,8 +142,9 @@ public static class SemaphoreSlimExtensions
     /// <param name="cancellationToken">取消令牌</param>
     public static IDisposable Lock(this SemaphoreSlim semaphoreSlim, TimeSpan timeout, CancellationToken cancellationToken)
     {
-        semaphoreSlim.Wait(timeout, cancellationToken);
-        return GetDispose(semaphoreSlim);
+        if (semaphoreSlim.Wait(timeout, cancellationToken))
+            return GetDispose(semaphoreSlim);
+        throw new TimeoutException();
     }
 
     /// <summary>
@@ -145,6 +153,9 @@ public static class SemaphoreSlimExtensions
     /// <param name="semaphoreSlim">信号量</param>
     private static IDisposable GetDispose(this SemaphoreSlim semaphoreSlim)
     {
-        return new DisposeAction(semaphoreSlim.Dispose);
+        return new DisposeAction<SemaphoreSlim>(static (semaphoreSlim) =>
+        {
+            semaphoreSlim.Release();
+        }, semaphoreSlim);
     }
 }
