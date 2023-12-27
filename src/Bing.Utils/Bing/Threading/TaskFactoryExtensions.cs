@@ -1,7 +1,5 @@
-﻿
-
-// ReSharper disable once CheckNamespace
-namespace Bing.Extensions;
+﻿// ReSharper disable once CheckNamespace
+namespace Bing.Threading;
 
 /// <summary>
 /// 任务工厂(<see cref="TaskFactory"/>) 扩展
@@ -14,7 +12,6 @@ public static class TaskFactoryExtensions
     /// <param name="factory">任务工厂</param>
     /// <param name="millisecondsDelay">延时时间。单位：毫秒</param>
     /// <param name="action">操作</param>
-    /// <returns></returns>
     public static Task StartDelayedTask(this TaskFactory factory, int millisecondsDelay, Action action)
     {
         // 校验参数

@@ -1,7 +1,5 @@
-﻿
-
-// ReSharper disable once CheckNamespace
-namespace Bing.Extensions;
+﻿// ReSharper disable once CheckNamespace
+namespace Bing.Threading;
 
 /// <summary>
 /// 任务(<see cref="Task"/>) 扩展
