@@ -1,4 +1,6 @@
-﻿namespace Bing.Helpers;
+﻿using Bing.IO;
+
+namespace Bing.Helpers;
 
 /// <summary>
 /// 常用公共操作
@@ -8,7 +10,7 @@ public static partial class Common
     #region ApplicationBaseDirectory(当前应用程序基路径)
 
     /// <summary>
-    /// 当前应用程序基路径
+    /// 当前应用程序基路径。路径末尾包含“\”。
     /// </summary>
     /// <remarks>
     /// 等价于  <see cref="AppContext.BaseDirectory"/>
@@ -62,17 +64,7 @@ public static partial class Common
     /// <param name="relativePath">相对路径。范例："test/a.txt" 或 "/test/a.txt"</param>
     /// <param name="basePath">基路径。默认值：<see cref="AppContext.BaseDirectory"/></param>
     /// <returns>虚拟路径对应的物理路径</returns>
-    public static string GetPhysicalPath(string relativePath, string basePath = null)
-    {
-        if (relativePath.StartsWith("~"))
-            relativePath = relativePath.TrimStart('~');
-        if (relativePath.StartsWith("/"))
-            relativePath = relativePath.TrimStart('/');
-        if (relativePath.StartsWith("\\"))
-            relativePath = relativePath.TrimStart('\\');
-        basePath ??= ApplicationBaseDirectory;
-        return Path.Combine(basePath, relativePath);
-    }
+    public static string GetPhysicalPath(string relativePath, string basePath = null) => PathHelper.GetPhysicalPath(relativePath, basePath);
 
     #endregion
 

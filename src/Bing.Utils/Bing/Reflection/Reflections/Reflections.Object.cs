@@ -205,6 +205,43 @@ public static partial class Reflections
 
     #endregion
 
+    #region GetPropertyValueByPath(获取指定对象的属性值)
+
+    /// <summary>
+    /// 通过指定对象的属性路径获取属性值。
+    /// </summary>
+    /// <param name="obj">要获取属性值的对象。</param>
+    /// <param name="objectType">对象的类型。</param>
+    /// <param name="propertyPath">属性的路径，可以包括嵌套属性，如 "NestedObject.PropertyName"。</param>
+    /// <returns>属性值，如果属性不存在或获取过程中发生错误，则返回 null。</returns>
+    public static object GetPropertyValueByPath(object obj, Type objectType, string propertyPath)
+    {
+        var value = obj;
+        var currentType = objectType;
+        var objectPath = currentType.FullName;
+        var absolutePropertyPath = propertyPath;
+        if (objectPath != null && absolutePropertyPath.StartsWith(objectPath))
+            absolutePropertyPath = absolutePropertyPath.Replace(objectPath + ".", "");
+        foreach (var propertyName in absolutePropertyPath.Split('.'))
+        {
+            var property = currentType.GetProperty(propertyName);
+            if (property != null)
+            {
+                if (value != null)
+                    value = property.GetValue(value, null);
+                currentType = property.PropertyType;
+            }
+            else
+            {
+                value = null;
+                break;
+            }
+        }
+        return value;
+    }
+
+    #endregion
+
     #region SetFieldValue(给指定对象设置字段值)
 
     /// <summary>
@@ -239,6 +276,45 @@ public static partial class Reflections
     {
         var property = GetProperty<T>(propertyName);
         property?.GetValueSetter()?.Invoke(@this, value);
+    }
+
+    #endregion
+
+    #region SetPropertyValueByPath(给指定对象设置属性值)
+
+    /// <summary>
+    /// 通过指定对象的属性路径设置属性值。
+    /// </summary>
+    /// <param name="obj">要设置属性值的对象。</param>
+    /// <param name="objectType">对象的类型。</param>
+    /// <param name="propertyPath">属性的路径，可以包括嵌套属性，如 "NestedObject.PropertyName"。</param>
+    /// <param name="value">要设置的属性值。</param>
+    public static void SetPropertyValueByPath(object obj, Type objectType, string propertyPath, object value)
+    {
+        var currentType = objectType;
+        PropertyInfo property;
+        var objectPath = currentType.FullName!;
+        var absolutePropertyPath = propertyPath;
+        if (absolutePropertyPath.StartsWith(objectPath))
+            absolutePropertyPath = absolutePropertyPath.Replace(objectPath + ".", "");
+
+        var properties = absolutePropertyPath.Split('.');
+        if (properties.Length == 1)
+        {
+            property = objectType.GetProperty(properties.First())!;
+            property.SetValue(obj, value);
+            return;
+        }
+
+        for (var i = 0; i < properties.Length-1; i++)
+        {
+            property = currentType.GetProperty(properties[i])!;
+            obj = property.GetValue(obj, null)!;
+            currentType = property.PropertyType;
+        }
+
+        property = currentType.GetProperty(properties.Last())!;
+        property.SetValue(obj, value);
     }
 
     #endregion

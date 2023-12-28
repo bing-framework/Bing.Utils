@@ -18,7 +18,6 @@ public static partial class FileHelper
     {
         Check.NotNull(fileNameWithExtension, nameof(fileNameWithExtension));
 
-        // Path.GetExtension(fileNameWithExtension);
         var lastDotIndex = fileNameWithExtension.LastIndexOf('.');
         if (lastDotIndex < 0)
             return string.Empty;

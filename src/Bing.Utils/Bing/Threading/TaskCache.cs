@@ -1,17 +1,17 @@
 ﻿namespace Bing.Threading;
 
 /// <summary>
-/// 异步缓存
+/// 提供预先缓存的结果。
 /// </summary>
 public static class TaskCache
 {
     /// <summary>
-    /// 返回true结果
+    /// 预先缓存的返回 true 结果
     /// </summary>
     public static Task<bool> TrueResult { get; }
 
     /// <summary>
-    /// 返回false结果
+    /// 预先缓存的返回 false 结果
     /// </summary>
     public static Task<bool> FalseResult { get; }
 

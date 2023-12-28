@@ -18,9 +18,29 @@ public static partial class FileHelper
     /// <param name="fileName">文件名，绝对路径</param>
     public static void CreateIfNotExists(string fileName)
     {
+        if (string.IsNullOrWhiteSpace(fileName))
+            return;
         if (File.Exists(fileName))
             return;
         File.Create(fileName);
+    }
+
+    #endregion
+
+    #region DeleteIfExists(删除文件，如果文件存在)
+
+    /// <summary>
+    /// 删除文件，如果文件存在
+    /// </summary>
+    /// <param name="filePath">文件的绝对路径</param>
+    public static bool DeleteIfExists(string filePath)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+            return false;
+        if (!File.Exists(filePath))
+            return false;
+        File.Delete(filePath);
+        return true;
     }
 
     #endregion

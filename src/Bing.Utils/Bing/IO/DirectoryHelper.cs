@@ -27,10 +27,10 @@ public static class DirectoryHelper
 
     #endregion
 
-    #region CreateIfNotExists(创建文件夹，如果不存在)
+    #region CreateIfNotExists(创建文件夹，如果文件夹不存在)
 
     /// <summary>
-    /// 创建文件夹，如果不存在
+    /// 创建文件夹，如果文件夹不存在
     /// </summary>
     /// <param name="directory">要创建的文件夹路径</param>
     public static void CreateIfNotExists(string directory)
@@ -39,6 +39,47 @@ public static class DirectoryHelper
             return;
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
+    }
+
+    /// <summary>
+    /// 创建文件夹，如果文件夹不存在
+    /// </summary>
+    /// <param name="directory">文件夹信息</param>
+    public static void CreateIfNotExists(DirectoryInfo directory)
+    {
+        if (directory == null)
+            return;
+        if (!directory.Exists)
+            directory.Create();
+    }
+
+    #endregion
+
+    #region DeleteIfExists(删除文件夹，如果文件夹存在)
+
+    /// <summary>
+    /// 删除文件夹，如果文件夹存在
+    /// </summary>
+    /// <param name="directory">要删除的文件夹路径</param>
+    public static void DeleteIfExists(string directory)
+    {
+        if (string.IsNullOrWhiteSpace(directory))
+            return;
+        if (Directory.Exists(directory))
+            Directory.Delete(directory);
+    }
+
+    /// <summary>
+    /// 删除文件夹，如果文件夹存在
+    /// </summary>
+    /// <param name="directory">要删除的文件夹路径</param>
+    /// <param name="recursive">是否递归删除所有子目录和文件</param>
+    public static void DeleteIfExists(string directory, bool recursive)
+    {
+        if (string.IsNullOrWhiteSpace(directory))
+            return;
+        if (Directory.Exists(directory))
+            Directory.Delete(directory, recursive);
     }
 
     #endregion
@@ -86,13 +127,16 @@ public static class DirectoryHelper
     /// 更改当前目录
     /// </summary>
     /// <param name="targetDirectory">目标目录</param>
+    /// <exception cref="ArgumentNullException"></exception>
     public static IDisposable ChangeCurrentDirectory(string targetDirectory)
     {
+        if (string.IsNullOrWhiteSpace(targetDirectory))
+            throw new ArgumentNullException(nameof(targetDirectory));
         var currentDirectory = Directory.GetCurrentDirectory();
         if (currentDirectory.Equals(targetDirectory, StringComparison.OrdinalIgnoreCase))
             return NullDisposable.Instance;
         Directory.SetCurrentDirectory(targetDirectory);
-        return new DisposeAction(() => { Directory.SetCurrentDirectory(currentDirectory); });
+        return new DisposeAction<string>(Directory.SetCurrentDirectory, currentDirectory);
     }
 
     #endregion
@@ -128,7 +172,7 @@ public static class DirectoryHelper
     public static string[] GetFileNames(string directoryPath, string pattern = "*", bool includeChildPath = false)
     {
         var names = new List<string>();
-        foreach (var filePath in GetFiles(directoryPath,pattern,includeChildPath))
+        foreach (var filePath in GetFiles(directoryPath, pattern, includeChildPath))
             names.Add(Path.GetFileName(filePath));
         return names.ToArray();
     }
@@ -236,7 +280,7 @@ public static class DirectoryHelper
         if (!Directory.Exists(sourcePath))
             throw new DirectoryNotFoundException($"递归复制文件夹时源目录\"{sourcePath}\"不存在。");
 
-        if (!Directory.Exists(targetPath)) 
+        if (!Directory.Exists(targetPath))
             Directory.CreateDirectory(targetPath);
 
         string[] dirs = Directory.GetDirectories(sourcePath);
@@ -352,7 +396,7 @@ public static class DirectoryHelper
                     // 清理文件
                     File.Delete(fileOrFolder);
                 }
-                        
+
             }
         }
         catch (Exception e)

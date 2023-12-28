@@ -13,15 +13,19 @@ public static class PathHelper
     /// <summary>
     /// 获取物理路径
     /// </summary>
-    /// <param name="relativePath">相对路径</param>
-    public static string GetPhysicalPath(string relativePath)
+    /// <param name="relativePath">相对路径。范例："test/a.txt" 或 "/test/a.txt"</param>
+    /// <param name="basePath">基路径。默认值：<see cref="AppContext.BaseDirectory"/></param>
+    /// <returns>虚拟路径对应的物理路径</returns>
+    public static string GetPhysicalPath(string relativePath, string basePath = null)
     {
-        if (string.IsNullOrWhiteSpace(relativePath))
-            return string.Empty;
-        var rootPath = Common.ApplicationBaseDirectory;
-        if (string.IsNullOrWhiteSpace(rootPath))
-            return Path.GetFullPath(relativePath);
-        return $"{Common.ApplicationBaseDirectory}\\{relativePath.Replace("/", "\\").TrimStart('\\')}";
+        if (relativePath.StartsWith("~"))
+            relativePath = relativePath.TrimStart('~');
+        if (relativePath.StartsWith("/"))
+            relativePath = relativePath.TrimStart('/');
+        if (relativePath.StartsWith("\\"))
+            relativePath = relativePath.TrimStart('\\');
+        basePath ??= Common.ApplicationBaseDirectory;
+        return Path.Combine(basePath, relativePath);
     }
 
     #endregion

@@ -713,6 +713,26 @@ public static partial class Strings
     }
 
     #endregion
+
+    #region Convert
+
+    /// <summary>
+    /// 将字节数组转换为字符串，去除可能存在的BOM（字节顺序标记）
+    /// </summary>
+    /// <param name="bytes">字节数组</param>
+    /// <param name="encoding">字符编码。如果未提供，则默认使用 UTF-8 编码</param>
+    public static string ConvertFromBytesWithoutBom(byte[] bytes, Encoding encoding = null)
+    {
+        if (bytes == null)
+            return null;
+        encoding ??= Encoding.UTF8;
+        var hasBom = bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF;
+        if (hasBom)
+            return encoding.GetString(bytes, 3, bytes.Length - 3);
+        return encoding.GetString(bytes);
+    }
+
+    #endregion
 }
 
 /// <summary>

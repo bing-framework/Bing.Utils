@@ -30,14 +30,10 @@ public static class AsyncHelper
     public static bool IsTaskOfT(this Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>);
 
     /// <summary>
-    /// 展开异步方法
+    /// 解封装（Unwrap）可能包含 Task 的类型，获取实际的结果类型。
     /// </summary>
-    /// <param name="type">类型</param>
-    /// <returns>
-    /// 如果类型为<see cref="Task"/>，则返回 void。<br />
-    /// 如果类型为<see cref="Task{T}"/>，则返回 T。<br />
-    /// 否则返回原来类型
-    /// </returns>
+    /// <param name="type">要解封装的类型。</param>
+    /// <returns>解封装后的实际类型。</returns>
     public static Type UnwrapTask(Type type)
     {
         Check.NotNull(type, nameof(type));

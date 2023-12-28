@@ -16,7 +16,7 @@ public static partial class FileHelper
         if (!Exists(targetFilePath))
             return null;
 
-        using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read);
+        using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         var byteArray = new byte[fs.Length];
         _ = fs.Read(byteArray, 0, byteArray.Length);
         return byteArray;
@@ -55,9 +55,9 @@ public static partial class FileHelper
         if (!File.Exists(targetFilePath))
             return null;
 #if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER
-        await using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read);
+        await using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 #else
-        using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read);
+        using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 #endif
         var byteArray = new byte[fs.Length];
         _ = await fs.ReadAsync(byteArray, 0, byteArray.Length, cancellationToken);
