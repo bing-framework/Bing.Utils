@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Bing.Reflection;
 using Bing.Tests.Samples;
-using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Reflection;
 
@@ -220,8 +220,183 @@ public class ReflectionsTest : TestBase
     [Fact]
     public void TestGetElementType_3()
     {
-        var list = new List<Sample> { new Sample() };
+        var list = new List<Sample> { new() };
         var type = list.GetType();
         Assert.Equal(typeof(Sample), Reflections.GetElementType(type));
+    }
+
+    /// <summary>
+    /// 测试 - 通过指定对象的属性路径获取属性值
+    /// </summary>
+    [Fact]
+    public void Test_GetPropertyValueByPath()
+    {
+        var value = new GetPropertyValueByPathTestClass
+        {
+            Name = "test",
+            Count = 8,
+            Time = DateTime.Parse("2023-01-01"),
+            Children = new GetPropertyValueByPathTestChildrenClass
+            {
+                Name = "test-children",
+                Count = 9
+            }
+        };
+
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Name").ShouldBe("test");
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Count").ShouldBe(8);
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Time").ShouldBe(DateTime.Parse("2023-01-01"));
+        Reflections.GetPropertyValueByPath(value, value.GetType(),"Bing.Utils.Tests.Reflection.ReflectionsTest+GetPropertyValueByPathTestClass.Name").ShouldBe("test");
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Name").ShouldBe("test-children");
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Count").ShouldBe(9);
+        Reflections.GetPropertyValueByPath(value, value.GetType(),"Bing.Utils.Tests.Reflection.ReflectionsTest+GetPropertyValueByPathTestClass.Children.Name").ShouldBe("test-children");
+
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.NotExists").ShouldBeNull();
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "NotExists").ShouldBeNull();
+    }
+
+    /// <summary>
+    /// 测试 - 通过指定对象的属性路径设置属性值
+    /// </summary>
+    [Fact]
+    public void Test_SetPropertyValueByPath()
+    {
+        var value = new GetPropertyValueByPathTestClass
+        {
+            Name = "test",
+            Count = 8,
+            Time = DateTime.Parse("2023-01-01"),
+            Children = new GetPropertyValueByPathTestChildrenClass
+            {
+                Name = "test-children",
+                Count = 9
+            }
+        };
+
+        Reflections.SetPropertyValueByPath(value, value.GetType(), "Name", "test-set");
+        Reflections.SetPropertyValueByPath(value, value.GetType(), "Count", 80);
+        Reflections.SetPropertyValueByPath(value, value.GetType(), "Time", DateTime.Parse("2022-01-01"));
+        Reflections.SetPropertyValueByPath(value, value.GetType(), "Children.Name", "test-children-set");
+        Reflections.SetPropertyValueByPath(value, value.GetType(), "Children.Count", 90);
+
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Name").ShouldBe("test-set");
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Count").ShouldBe(80);
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Time").ShouldBe(DateTime.Parse("2022-01-01"));
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Name").ShouldBe("test-children-set");
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Count").ShouldBe(90);
+    }
+
+    class GetPropertyValueByPathTestClass
+    {
+        public string Name { get; set; }
+
+        public int Count { get; set; }
+
+        public DateTime Time { get; set; }
+
+        public GetPropertyValueByPathTestChildrenClass Children { get; set; }
+    }
+
+    class GetPropertyValueByPathTestChildrenClass
+    {
+        public string Name { get; set; }
+
+        public int Count { get; set; }
+    }
+
+    /// <summary>
+    /// 测试 - 获取指定类型的所有公共常量值
+    /// </summary>
+    [Fact]
+    public void Test_GetPublicConstantsRecursively()
+    {
+        var constants = Reflections.GetPublicConstantsRecursively(typeof(BaseRole));
+
+        constants.ShouldNotBeEmpty();
+        constants.Length.ShouldBe(1);
+        constants.ShouldContain(x => x == "DefaultBaseRoleName");
+    }
+
+    /// <summary>
+    /// 测试 - 获取指定类型的所有公共常量值 - 继承
+    /// </summary>
+    [Fact]
+    public void Test_GetPublicConstantsRecursively_Inherit()
+    {
+        var constants = Reflections.GetPublicConstantsRecursively(typeof(Roles));
+
+        constants.ShouldNotBeEmpty();
+        constants.Length.ShouldBe(2);
+        constants.ShouldContain(x => x == "DefaultBaseRoleName");
+        constants.ShouldContain(x => x == "DefaultRoleName");
+    }
+
+    /// <summary>
+    /// 测试 - 获取指定类型的所有公共常量值 - 嵌套类型
+    /// </summary>
+    [Fact]
+    public void Test_GetPublicConstantsRecursively_NestedTypes()
+    {
+        var constants = Reflections.GetPublicConstantsRecursively(typeof(IdentityPermissions));
+
+        constants.ShouldNotBeEmpty();
+        constants.Except(IdentityPermissions.GetAll()).Count().ShouldBe(0);
+    }
+}
+
+public class BaseRole
+{
+    public const string BaseRoleName = "DefaultBaseRoleName";
+}
+
+public class Roles : BaseRole
+{
+    public const string RoleName = "DefaultRoleName";
+}
+
+public static class IdentityPermissions
+{
+    public const string GroupName = "AbpIdentity";
+
+    public static class Roles
+    {
+        public const string Default = GroupName + ".Roles";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+        public const string ManagePermissions = Default + ".ManagePermissions";
+    }
+
+    public static class Users
+    {
+        public const string Default = GroupName + ".Users";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+        public const string ManagePermissions = Default + ".ManagePermissions";
+    }
+
+    public static class UserLookup
+    {
+        public const string Default = GroupName + ".UserLookup";
+    }
+
+    public static string[] GetAll()
+    {
+        return
+        [
+            GroupName,
+            Roles.Default,
+            Roles.Create,
+            Roles.Update,
+            Roles.Delete,
+            Roles.ManagePermissions,
+            Users.Default,
+            Users.Create,
+            Users.Update,
+            Users.Delete,
+            Users.ManagePermissions,
+            UserLookup.Default
+        ];
     }
 }

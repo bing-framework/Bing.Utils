@@ -318,4 +318,36 @@ public static partial class Reflections
     }
 
     #endregion
+
+    #region GetPublicConstantsRecursively(获取指定类型的所有公共常量值)
+
+    /// <summary>
+    /// 递归获取指定类型（包括基类型）及其嵌套类型中的公共常量值。
+    /// </summary>
+    /// <param name="type">要获取常量的类型。</param>
+    /// <returns>包含公共常量值的字符串数组。</returns>
+    public static string[] GetPublicConstantsRecursively(Type type)
+    {
+        const int maxRecursiveParameterValidationDepth = 8;
+        var publicConstants = new List<string>();
+
+        void Recursively(List<string> constants, Type targetType, int currentDepth)
+        {
+            if (currentDepth > maxRecursiveParameterValidationDepth)
+                return;
+            constants.AddRange(targetType
+                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(x => x.IsLiteral && !x.IsInitOnly)
+                .Select(x => x.GetValue(null)!.ToString()!));
+            var nestedTypes = targetType.GetNestedTypes(BindingFlags.Public);
+            foreach (var nestedType in nestedTypes)
+                Recursively(constants, nestedType, currentDepth + 1);
+        }
+
+        Recursively(publicConstants, type, 1);
+        return publicConstants.ToArray();
+    }
+
+
+    #endregion
 }
