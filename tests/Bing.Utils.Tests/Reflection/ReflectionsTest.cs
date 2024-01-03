@@ -37,30 +37,30 @@ public class ReflectionsTest : TestBase
     }
 
     /// <summary>
-    /// 测试获取类描述
+    /// 测试 - 获取类描述
     /// </summary>
     [Fact]
-    public void TestGetDescription_Class()
+    public void Test_GetDescription_Class()
     {
         Assert.Equal("测试样例", Reflections.GetDescription<Sample>());
         Assert.Equal("Sample2", Reflections.GetDescription<Sample2>());
     }
 
     /// <summary>
-    /// 测试显示名
+    /// 测试 - 显示名
     /// </summary>
     [Fact]
-    public void TestGetDisplayName()
+    public void Test_GetDisplayName()
     {
         Assert.Equal("", Reflections.GetDisplayName<Sample>());
         Assert.Equal("测试样例2", Reflections.GetDisplayName<Sample2>());
     }
 
     /// <summary>
-    /// 测试获取类描述或显示名
+    /// 测试 - 获取类描述或显示名
     /// </summary>
     [Fact]
-    public void TestGetDescriptionOrDisplayName()
+    public void Test_GetDescriptionOrDisplayName()
     {
         Assert.Equal("测试样例", Reflections.GetDisplayNameOrDescription<Sample>());
         Assert.Equal("测试样例2",Reflections.GetDisplayNameOrDescription<Sample2>());
@@ -68,10 +68,10 @@ public class ReflectionsTest : TestBase
     }
 
     /// <summary>
-    /// 测试是否布尔类型
+    /// 测试 - 是否布尔类型
     /// </summary>
     [Fact]
-    public void TestIsBool()
+    public void Test_IsBool()
     {
         Assert.True(Reflections.IsBool(_sample.BoolValue.GetType().GetTypeInfo()), "BoolValue GetType");
         Assert.True(Reflections.IsBool(_sample.GetType().GetMember("BoolValue")[0]), "BoolValue");
@@ -80,10 +80,10 @@ public class ReflectionsTest : TestBase
     }
 
     /// <summary>
-    /// 测试是否枚举类型
+    /// 测试 - 是否枚举类型
     /// </summary>
     [Fact]
-    public void TestIsEnum()
+    public void Test_IsEnum()
     {
         Assert.True(Reflections.IsEnum(_sample.EnumValue.GetType().GetTypeInfo()), "EnumValue GetType");
         Assert.True(Reflections.IsEnum(_sample.GetType().GetMember("EnumValue")[0]), "EnumValue");
@@ -93,10 +93,10 @@ public class ReflectionsTest : TestBase
     }
 
     /// <summary>
-    /// 测试是否日期类型
+    /// 测试 - 是否日期类型
     /// </summary>
     [Fact]
-    public void TestIsDate()
+    public void Test_IsDate()
     {
         Assert.True(Reflections.IsDate(_sample.DateValue.GetType().GetTypeInfo()), "DateValue GetType");
         Assert.True(Reflections.IsDate(_sample.GetType().GetMember("DateValue")[0]), "DateValue");
@@ -105,10 +105,10 @@ public class ReflectionsTest : TestBase
     }
 
     /// <summary>
-    /// 测试是否整型
+    /// 测试 - 是否整型
     /// </summary>
     [Fact]
-    public void TestIsInt()
+    public void Test_IsInt()
     {
         Assert.True(Reflections.IsInt(_sample.IntValue.GetType().GetTypeInfo()), "IntValue GetType");
         Assert.True(Reflections.IsInt(_sample.GetType().GetMember("IntValue")[0]), "IntValue");
@@ -124,10 +124,10 @@ public class ReflectionsTest : TestBase
     }
 
     /// <summary>
-    /// 测试是否数值类型
+    /// 测试 - 是否数值类型
     /// </summary>
     [Fact]
-    public void TestIsNumber()
+    public void Test_IsNumber()
     {
         Assert.True(Reflections.IsNumber(_sample.DoubleValue.GetType().GetTypeInfo()), "DoubleValue GetType");
         Assert.True(Reflections.IsNumber(_sample.GetType().GetMember("DoubleValue")[0]), "DoubleValue");
@@ -147,29 +147,29 @@ public class ReflectionsTest : TestBase
     }
 
     /// <summary>
-    /// 测试是否集合
+    /// 测试 - 是否集合
     /// </summary>
     [Fact]
-    public void TestIsCollection()
+    public void Test_IsCollection()
     {
         Assert.True(Reflections.IsCollection(_sample.StringArray.GetType()));
         Assert.True(TypeReflections.IsCollection(_sample.StringArray.GetType()));
     }
 
     /// <summary>
-    /// 测试是否泛型集合
+    /// 测试 - 是否泛型集合
     /// </summary>
     [Fact]
-    public void TestIsGenericCollection()
+    public void Test_IsGenericCollection()
     {
         Assert.True(Reflections.IsGenericCollection(_sample.StringList.GetType()));
     }
 
     /// <summary>
-    /// 测试获取公共属性列表
+    /// 测试 - 获取公共属性列表
     /// </summary>
     [Fact]
-    public void TestGetPublicProperties()
+    public void Test_GetPublicProperties()
     {
         ReflectionsSample sample = new ReflectionsSample
         {
@@ -185,29 +185,29 @@ public class ReflectionsTest : TestBase
     }
 
     /// <summary>
-    /// 获取顶级基类
+    /// 测试 - 获取顶级基类
     /// </summary>
     [Fact]
-    public void TestGetTopBaseType()
+    public void Test_GetTopBaseType()
     {
         Assert.Null(Reflections.GetTopBaseType(null));
     }
 
     /// <summary>
-    /// 获取元素类型
+    /// 测试 - 获取元素类型
     /// </summary>
     [Fact]
-    public void TestGetElementType_1()
+    public void Test_GetElementType_1()
     {
         Sample sample = new Sample();
         Assert.Equal(typeof(Sample), Reflections.GetElementType(sample.GetType()));
     }
 
     /// <summary>
-    /// 获取元素类型 - 数组
+    /// 测试 - 获取元素类型 - 数组
     /// </summary>
     [Fact]
-    public void TestGetElementType_2()
+    public void Test_GetElementType_2()
     {
         var list = new[] { new Sample() };
         var type = list.GetType();
@@ -215,10 +215,10 @@ public class ReflectionsTest : TestBase
     }
 
     /// <summary>
-    /// 获取元素类型 - 集合
+    /// 测试 - 获取元素类型 - 集合
     /// </summary>
     [Fact]
-    public void TestGetElementType_3()
+    public void Test_GetElementType_3()
     {
         var list = new List<Sample> { new() };
         var type = list.GetType();
@@ -341,6 +341,41 @@ public class ReflectionsTest : TestBase
 
         constants.ShouldNotBeEmpty();
         constants.Except(IdentityPermissions.GetAll()).Count().ShouldBe(0);
+    }
+
+    /// <summary>
+    /// 测试 - 获取指定类型的所有基类型 - 排除object对象
+    /// </summary>
+    [Fact]
+    public void Test_GetBaseClasses_Excluding_Object()
+    {
+        var baseClasses = Reflections.GetBaseClasses(typeof(MyClass), false);
+        baseClasses.Length.ShouldBe(2);
+        baseClasses[0].ShouldBe(typeof(MyBaseClass1));
+        baseClasses[1].ShouldBe(typeof(MyBaseClass2));
+    }
+
+    /// <summary>
+    /// 测试 - 获取指定类型的所有基类型 - 指定停止类型
+    /// </summary>
+    [Fact]
+    public void Test_GetBaseClasses_With_StoppingType()
+    {
+        var baseClasses = Reflections.GetBaseClasses(typeof(MyClass), typeof(MyBaseClass1));
+        baseClasses.Length.ShouldBe(1);
+        baseClasses[0].ShouldBe(typeof(MyBaseClass2));
+    }
+
+    public abstract class MyBaseClass1
+    {
+    }
+
+    public class MyBaseClass2 : MyBaseClass1
+    {
+    }
+
+    public class MyClass : MyBaseClass2
+    {
     }
 }
 

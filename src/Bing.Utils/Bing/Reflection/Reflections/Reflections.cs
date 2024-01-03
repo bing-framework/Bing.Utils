@@ -85,7 +85,7 @@ public static partial class Reflections
         if (findType.IsGenericTypeDefinition == false)
             return false;
         var definition = findType.GetGenericTypeDefinition();
-        foreach (var implementedInterface in type.FindInterfaces((filiter, criteria) => true, null))
+        foreach (var implementedInterface in type.FindInterfaces((_, criteria) => true, null))
         {
             if (implementedInterface.IsGenericType == false)
                 continue;
@@ -511,6 +511,87 @@ public static partial class Reflections
         if (genericArgumentsTypes == null || genericArgumentsTypes.Length == 0)
             throw new ArgumentException("泛型类型参数不能为空");
         return genericArgumentsTypes[0];
+    }
+
+    #endregion
+
+    #region IsAssignableTo(检查类型是否可分配给目标类型)
+
+    /// <summary>
+    /// 检查类型是否可分配给目标类型 <typeparamref name="TTarget"/>。<br />
+    /// 内部使用 <see cref="Type.IsAssignableFrom"/> 方法。
+    /// </summary>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="type">要检查的类型。</param>
+    /// <returns>如果类型可分配给目标类型，则为 true；否则为 false。</returns>
+    public static bool IsAssignableTo<TTarget>(Type type)
+    {
+        Check.NotNull(type, nameof(type));
+        return IsAssignableTo(type, typeof(TTarget));
+    }
+
+    /// <summary>
+    /// 检查类型是否可分配给目标类型。<br />
+    /// 内部使用 <see cref="Type.IsAssignableFrom"/> 方法。
+    /// </summary>
+    /// <param name="type">要检查的类型。</param>
+    /// <param name="targetType">目标类型。</param>
+    /// <returns>如果类型可分配给目标类型，则为 true；否则为 false。</returns>
+    public static bool IsAssignableTo(Type type, Type targetType)
+    {
+        Check.NotNull(type, nameof(type));
+        Check.NotNull(targetType, nameof(targetType));
+        return targetType.IsAssignableFrom(type);
+    }
+
+    #endregion
+
+    #region GetBaseClasses(获取指定类型的所有基类型)
+
+    /// <summary>
+    /// 获取指定类型及其基类型的数组。
+    /// </summary>
+    /// <param name="type">要获取基类型的类型。</param>
+    /// <param name="includeObject">是否包含 <see cref="object"/> 类型（默认为 true）。</param>
+    /// <returns>包含类型及其基类型的数组。</returns>
+    public static Type[] GetBaseClasses(Type type, bool includeObject = true)
+    {
+        Check.NotNull(type, nameof(type));
+        var types = new List<Type>();
+        AddTypeAndBaseTypesRecursively(types, type.BaseType, includeObject);
+        return types.ToArray();
+    }
+
+    /// <summary>
+    /// 获取指定类型的所有基类型
+    /// </summary>
+    /// <param name="type">要获取基类型的类型。</param>
+    /// <param name="stoppingType">停止添加的类型。</param>
+    /// <param name="includeObject">是否包含 <see cref="object"/> 类型（默认为 true）。</param>
+    /// <returns>包含类型及其基类型的数组。</returns>
+    public static Type[] GetBaseClasses(Type type, Type stoppingType, bool includeObject = true)
+    {
+        Check.NotNull(type, nameof(type));
+        var types = new List<Type>();
+        AddTypeAndBaseTypesRecursively(types, type.BaseType, includeObject, stoppingType);
+        return types.ToArray();
+    }
+
+    /// <summary>
+    /// 递归地添加类型及其基类型到类型列表。
+    /// </summary>
+    /// <param name="types">要添加到的类型列表。</param>
+    /// <param name="type">要添加的类型。</param>
+    /// <param name="includeObject">是否包含 <see cref="object"/> 类型。</param>
+    /// <param name="stoppingType">停止添加的类型（可选）。</param>
+    private static void AddTypeAndBaseTypesRecursively(List<Type> types, Type type, bool includeObject, Type stoppingType = null)
+    {
+        if (type == null || type == stoppingType)
+            return;
+        if (!includeObject && type == typeof(object))
+            return;
+        AddTypeAndBaseTypesRecursively(types, type.BaseType, includeObject, stoppingType);
+        types.Add(type);
     }
 
     #endregion

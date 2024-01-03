@@ -22,19 +22,6 @@ public static partial class TypeVisit
     }
 
     /// <summary>
-    /// 获取给定 <see cref="Type"/> 的名称、程序集名称
-    /// </summary>
-    /// <param name="type">类型</param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static string GetFullNameWithAssemblyName(Type type)
-    {
-        if (type is null)
-            throw new ArgumentNullException(nameof(type));
-        return type.FullName + ", " + type.Assembly.GetName().Name;
-    }
-
-    /// <summary>
     /// 获取给定 <see cref="TypeInfo"/> 的完全限定名。
     /// </summary>
     /// <param name="type">类型</param>
@@ -77,13 +64,6 @@ public static partial class TypeVisit
 /// </summary>
 public static partial class TypeMetaVisitExtensions
 {
-    /// <summary>
-    /// 获取给定 <see cref="Type"/> 的名称、程序集名称
-    /// </summary>
-    /// <param name="type">类型</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetFullNameWithAssemblyName(this Type type) => TypeVisit.GetFullNameWithAssemblyName(type);
-
     /// <summary>
     /// 获取给定 <see cref="TypeInfo"/> 的完全限定名。
     /// </summary>

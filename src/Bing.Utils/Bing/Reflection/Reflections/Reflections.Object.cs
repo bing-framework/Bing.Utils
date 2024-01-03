@@ -24,10 +24,7 @@ public static partial class Reflections
     /// <typeparam name="T">类型</typeparam>
     /// <param name="name">成员名</param>
     /// <param name="bindingFlags">绑定标记</param>
-    public static FieldInfo GetField<T>(string name, BindingFlags bindingFlags)
-    {
-        return typeof(T).GetField(name, bindingFlags);
-    }
+    public static FieldInfo GetField<T>(string name, BindingFlags bindingFlags) => typeof(T).GetField(name, bindingFlags);
 
     #endregion
 

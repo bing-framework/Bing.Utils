@@ -84,4 +84,20 @@ public static partial class Reflections
     public static Type GetRawTypeFromGenericClass<TGot, TGeneric>() => GetRawTypeFromGenericClass(typeof(TGot), typeof(TGeneric));
 
     #endregion
+
+    #region GetFullNameWithAssemblyName(获取包含程序集名称的类型全名)
+
+    /// <summary>
+    /// 获取包含程序集名称的类型全名。
+    /// </summary>
+    /// <param name="type">类型</param>
+    /// <returns>包含程序集名称的类型全名。</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static string GetFullNameWithAssemblyName(Type type)
+    {
+        _ = type ?? throw new ArgumentNullException(nameof(type));
+        return $"{type.FullName}, {type.Assembly.GetName().Name}";
+    }
+
+    #endregion
 }

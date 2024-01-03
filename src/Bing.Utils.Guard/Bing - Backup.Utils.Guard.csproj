@@ -10,8 +10,9 @@
 	<Import Project="..\..\common.props" />
 
 	<ItemGroup>
-	  <Folder Include="Bing\IdUtils\" />
-	  <Folder Include="Bing\Validation\" />
+	  <Folder Include="IdUtils\" />
+	  <Folder Include="Validation\" />
+	  <Folder Include="新文件夹\" />
 	</ItemGroup>
 
 </Project>

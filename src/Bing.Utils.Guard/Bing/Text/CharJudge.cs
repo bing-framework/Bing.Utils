@@ -1,4 +1,6 @@
-﻿namespace Bing.Text;
+﻿using System.Runtime.CompilerServices;
+
+namespace Bing.Text;
 
 /// <summary>
 /// 字符(<see cref="char"/>) 检查器

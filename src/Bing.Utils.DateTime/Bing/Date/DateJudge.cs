@@ -8,12 +8,12 @@ public static class DateJudge
     /// <summary>
     /// 最小日期
     /// </summary>
-    internal static readonly DateTime MinDate = new DateTime(1900, 1, 1);
+    internal static readonly DateTime MinDate = new(1900, 1, 1);
 
     /// <summary>
     /// 最大日期
     /// </summary>
-    internal static readonly DateTime MaxDate = new DateTime(9999, 12, 31, 23, 59, 59, 999);
+    internal static readonly DateTime MaxDate = new(9999, 12, 31, 23, 59, 59, 999);
 
     #region IsToday(是否今天)
 
