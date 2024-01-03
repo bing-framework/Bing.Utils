@@ -29,13 +29,13 @@ public static partial class DateTimeExtensions
     #region Begin
 
     /// <summary>
-    /// 获取一天的开始时间。
+    /// 获取一天的开始时间，类似于“2023-01-03 00:00:00.000”。
     /// </summary>
     /// <param name="dt">时间</param>
     public static DateTime BeginningOfDay(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, 0, 0, 0, 0, dt.Kind);
 
     /// <summary>
-    /// 获取一天的开始时间。
+    /// 获取一天的开始时间，类似于“2023-01-03 00:00:00.000”。
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
@@ -81,13 +81,13 @@ public static partial class DateTimeExtensions
     public static DateTime BeginningOfQuarter(this DateTime dt, int timeZoneOffset) => dt.FirstDayOfQuarter().BeginningOfDay(timeZoneOffset);
 
     /// <summary>
-    /// 获取一年的开始时间
+    /// 获取一年的开始时间，类似于“2023-01-01 00:00:00”。
     /// </summary>
     /// <param name="dt">时间</param>
     public static DateTime BeginningOfYear(this DateTime dt) => dt.FirstDayOfYear().BeginningOfDay();
 
     /// <summary>
-    /// 获取一年的开始时间
+    /// 获取一年的开始时间，类似于“2023-01-01 00:00:00”。
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
@@ -98,13 +98,13 @@ public static partial class DateTimeExtensions
     #region End
 
     /// <summary>
-    /// 获取一天的结束时间
+    /// 获取一天的结束时间，类似于“2023-01-03 23:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
     public static DateTime EndOfDay(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, 23, 59, 59, 999, dt.Kind);
 
     /// <summary>
-    /// 获取一天的结束时间
+    /// 获取一天的结束时间，类似于“2023-01-03 23:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
@@ -150,13 +150,13 @@ public static partial class DateTimeExtensions
     public static DateTime EndOfQuarter(this DateTime dt, int timeZoneOffset) => dt.LastDayOfQuarter().EndOfDay(timeZoneOffset);
 
     /// <summary>
-    /// 获取一年的结束时间
+    /// 获取一年的结束时间，类似于“2023-12-31 23:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
     public static DateTime EndOfYear(this DateTime dt) => dt.LastDayOfYear().EndOfDay();
 
     /// <summary>
-    /// 获取一年的结束时间
+    /// 获取一年的结束时间，类似于“2023-12-31 23:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>

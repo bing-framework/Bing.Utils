@@ -46,7 +46,7 @@ public class UnixTimeStamp : TimeStamp
     /// <summary>
     /// 时间转Unix时间戳函数
     /// </summary>
-    private static readonly Func<DateTime, long> ToUnixTimestampFunc = time => (time.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
+    private static readonly Func<DateTime, long> ToUnixTimestampFunc = time => (time.ToUniversalTime().Ticks - TimeOptions.UnixEpochTicks) / TimeOptions.TicksPerSec;
 
     /// <summary>
     /// Unix时间戳转时间函数

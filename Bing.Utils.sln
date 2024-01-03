@@ -55,6 +55,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{D8AA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution", "solution", "{168E0A65-91D1-48E0-8432-4A45D353E363}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		common.props = common.props
 		common.tests.props = common.tests.props
@@ -75,9 +76,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03-benchmarks", "03-benchma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Benchmark", "benchmarks\Bing.Utils.Benchmark\Bing.Utils.Benchmark.csproj", "{E344A30C-CD1F-4354-A009-572238AF745B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Drawing.ImageSharp", "src\Bing.Utils.Drawing.ImageSharp\Bing.Utils.Drawing.ImageSharp.csproj", "{C8FFF703-529C-44F1-AB21-4917C3D99742}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Drawing.ImageSharp", "src\Bing.Utils.Drawing.ImageSharp\Bing.Utils.Drawing.ImageSharp.csproj", "{C8FFF703-529C-44F1-AB21-4917C3D99742}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Drawing.SkiaSharp", "src\Bing.Utils.Drawing.SkiaSharp\Bing.Utils.Drawing.SkiaSharp.csproj", "{A903C0F3-7A57-40B6-9073-FFB42CCE0296}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bing.Utils.Drawing.SkiaSharp", "src\Bing.Utils.Drawing.SkiaSharp\Bing.Utils.Drawing.SkiaSharp.csproj", "{A903C0F3-7A57-40B6-9073-FFB42CCE0296}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

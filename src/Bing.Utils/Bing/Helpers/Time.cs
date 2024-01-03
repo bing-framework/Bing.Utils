@@ -155,6 +155,7 @@ public static partial class Time
     /// <summary>
     /// 获取Unix时间戳
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static long GetUnixTimestamp() => GetUnixTimestamp(DateTime.Now);
 
     /// <summary>
@@ -162,21 +163,49 @@ public static partial class Time
     /// </summary>
     /// <param name="time">时间</param>
     /// <remarks>当前时间必须是 <see cref="TimeZoneInfo.Local"/></remarks>
-    public static long GetUnixTimestamp(DateTime time)
-    {
-        var start = TimeZoneInfo.ConvertTime(TimeOptions.Date1970, TimeZoneInfo.Local);
-        var ticks = (time - start.Add(new TimeSpan(8, 0, 0))).Ticks;
-        return Conv.ToLong(ticks / TimeSpan.TicksPerSecond);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static long GetUnixTimestamp(DateTime time) => ToEpochSecond(time);
 
     /// <summary>
     /// 从Unix时间戳获取时间
     /// </summary>
     /// <param name="timestamp">Unix时间戳</param>
-    public static DateTime GetTimeFromUnixTimestamp(long timestamp)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static DateTime GetTimeFromUnixTimestamp(long timestamp) => OfEpochSecond(timestamp);
+
+    /// <summary>
+    /// 将 UNIX 时间戳（以秒为单位）转换为本地时间 <see cref="DateTime"/> 对象。
+    /// </summary>
+    /// <param name="epochSecond">UNIX 时间戳（以秒为单位）。</param>
+    /// <returns>本地时间 <see cref="DateTime"/> 对象。</returns>
+    public static DateTime OfEpochSecond(long epochSecond)
     {
-        var start = TimeZoneInfo.ConvertTime(TimeOptions.Date1970, TimeZoneInfo.Local);
-        var span = new TimeSpan(long.Parse(timestamp + "0000000"));
-        return start.Add(span).Add(new TimeSpan(8, 0, 0));
+        var ticks = TimeOptions.UnixEpochTicks + epochSecond * TimeOptions.TicksPerSec;
+        return new DateTime(ticks, DateTimeKind.Utc).ToLocalTime();
     }
+
+    /// <summary>
+    /// 将 UNIX 时间戳（以毫秒为单位）转换为本地时间 <see cref="DateTime"/> 对象。
+    /// </summary>
+    /// <param name="epochMilli">UNIX 时间戳（以毫秒为单位）。</param>
+    /// <returns>本地时间 <see cref="DateTime"/> 对象。</returns>
+    public static DateTime OfEpochMilli(long epochMilli)
+    {
+        var ticks = TimeOptions.UnixEpochTicks + epochMilli * TimeOptions.TicksPreMillisecond;
+        return new DateTime(ticks, DateTimeKind.Utc).ToLocalTime();
+    }
+
+    /// <summary>
+    /// 将 <see cref="DateTime"/> 对象转换为 UNIX 时间戳（以秒为单位）。
+    /// </summary>
+    /// <param name="datetime">要转换的 <see cref="DateTime"/> 对象。</param>
+    /// <returns>UNIX 时间戳（毫秒为单位）。</returns>
+    public static long ToEpochSecond(DateTime datetime)=> (datetime.ToUniversalTime().Ticks - TimeOptions.UnixEpochTicks) / TimeOptions.TicksPerSec;
+
+    /// <summary>
+    /// 将 <see cref="DateTime"/> 对象转换为 UNIX 时间戳（以毫秒为单位）。
+    /// </summary>
+    /// <param name="datetime">要转换的 <see cref="DateTime"/> 对象。</param>
+    /// <returns>UNIX 时间戳（以毫秒为单位）。</returns>
+    public static long ToEpochMilli(DateTime datetime)=> (datetime.ToUniversalTime().Ticks - TimeOptions.UnixEpochTicks) / TimeOptions.TicksPreMillisecond;
 }

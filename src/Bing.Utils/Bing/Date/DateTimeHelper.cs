@@ -482,4 +482,119 @@ public static partial class DateTimeHelper
     }
 
     #endregion
+
+    #region FormatTime(格式化时间)
+
+    /// <summary>
+    /// 格式化毫秒数为可读的时间格式，包括天、小时、分钟、秒和毫秒。
+    /// </summary>
+    /// <param name="ms">毫秒数</param>
+    /// <param name="isContainMillisecond">是否包含毫秒</param>
+    /// <returns>格式化后的时间字符串</returns>
+    public static string FormatTime(long ms, bool isContainMillisecond = false)
+    {
+        const int millisecondsPerSecond = 1000;
+        const int secondsPerMinute = 60;
+        const int minutesPerHour = 60;
+        const int hoursPerDay = 24;
+
+        var totalSeconds = ms / millisecondsPerSecond;
+
+        var days = totalSeconds / (secondsPerMinute * minutesPerHour * hoursPerDay);
+        var hours = (totalSeconds % (secondsPerMinute * minutesPerHour * hoursPerDay)) / (secondsPerMinute * minutesPerHour);
+        var minutes = (totalSeconds % (secondsPerMinute * minutesPerHour)) / secondsPerMinute;
+        var seconds = (totalSeconds % secondsPerMinute);
+        var milliseconds = ms % millisecondsPerSecond;
+
+        var formattedTime = $"{days:D2} 天 {hours:D2} 小时 {minutes:D2} 分 {seconds:D2} 秒";
+
+        if (isContainMillisecond)
+            formattedTime += $" {milliseconds:D3} 毫秒";
+
+        return formattedTime;
+    }
+
+    #endregion
+
+    #region ConvertDateTimeToUnixTime(将DateTime转换为Unix时间戳)
+
+    /// <summary>
+    /// 将 <see cref="DateTime"/> 转换为 Unix 时间戳。
+    /// </summary>
+    /// <param name="dateTime">要转换的日期时间。</param>
+    /// <param name="digit">时间戳的精度（秒或毫秒）。</param>
+    /// <returns>Unix 时间戳。</returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public static long ConvertDateTimeToUnixTime(DateTime dateTime, TimestampDigit digit = TimestampDigit.Millisecond)
+    {
+        var dateTimeUtc = dateTime.Kind != DateTimeKind.Utc ? dateTime.ToUniversalTime() : dateTime;
+        if (dateTimeUtc <= GetUnixEpoch())
+            return 0;
+        return digit switch
+        {
+            TimestampDigit.Second => new DateTimeOffset(dateTimeUtc).ToUnixTimeSeconds(),
+            TimestampDigit.Millisecond => new DateTimeOffset(dateTimeUtc).ToUnixTimeMilliseconds(),
+            _ => throw new ArgumentOutOfRangeException(nameof(digit), @"不支持的时间戳精度"),
+        };
+    }
+
+    /// <summary>
+    /// 获取 Unix纪元
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static DateTime GetUnixEpoch()
+    {
+#if NET6_0_OR_GREATER
+        return DateTime.UnixEpoch;
+#else
+        return TimeOptions.UnixEpoch;
+#endif
+    }
+
+    #endregion
+
+    #region ConvertUnixTimestampToDateTime(将Unix时间戳转换为本地时间)
+
+    /// <summary>
+    /// 将 Unix 时间戳转换为本地时间。
+    /// </summary>
+    /// <param name="unixTimestamp">Unix 时间戳。</param>
+    /// <param name="digit">时间戳的精度。</param>
+    /// <returns>转换后的本地时间。</returns>
+    public static DateTime ConvertUnixTimestampToDateTime(long unixTimestamp, TimestampDigit digit = TimestampDigit.Millisecond)
+    {
+        // 从 Unix 时间戳创建 DateTime 对象。
+        var convertedTime = digit switch
+        {
+            TimestampDigit.Second => GetUnixEpoch().AddSeconds(unixTimestamp),
+            TimestampDigit.Millisecond => GetUnixEpoch().AddMilliseconds(unixTimestamp),
+            _ => GetUnixEpoch().AddMilliseconds(unixTimestamp),
+        };
+
+        // 转换为本地时间（GMT+8时区）。
+        return TimeZoneInfo.ConvertTimeFromUtc(convertedTime, TimeOptions.GMT8);
+    }
+
+    #endregion
+}
+
+/// <summary>
+/// 时间戳精度
+/// </summary>
+public enum TimestampDigit
+{
+    /// <summary>
+    /// 无
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    /// 精确到 秒。返回时间戳长度为：10
+    /// </summary>
+    Second = 16,
+
+    /// <summary>
+    /// 精确到 毫秒。返回时间戳长度为：13
+    /// </summary>
+    Millisecond = 32,
 }

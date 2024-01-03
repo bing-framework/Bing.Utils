@@ -29,7 +29,7 @@ public static class DateTimeFactory
     /// <param name="year">年</param>
     /// <param name="month">月</param>
     /// <param name="day">日</param>
-    public static DateTime Create(int year, int month, int day) => new DateTime(year, month, day);
+    public static DateTime Create(int year, int month, int day) => new(year, month, day);
 
     /// <summary>
     /// 根据指定的日期创建 <see cref="DateTime"/>
@@ -40,7 +40,7 @@ public static class DateTimeFactory
     /// <param name="hour">时</param>
     /// <param name="minute">分</param>
     /// <param name="second">秒</param>
-    public static DateTime Create(int year, int month, int day, int hour, int minute, int second) => new DateTime(year, month, day, hour, minute, second);
+    public static DateTime Create(int year, int month, int day, int hour, int minute, int second) => new(year, month, day, hour, minute, second);
 
     /// <summary>
     /// 根据指定的日期创建 <see cref="DateTime"/>
@@ -52,7 +52,7 @@ public static class DateTimeFactory
     /// <param name="minute">分</param>
     /// <param name="second">秒</param>
     /// <param name="millisecond">毫秒</param>
-    public static DateTime Create(int year, int month, int day, int hour, int minute, int second, int millisecond) => new DateTime(year, month, day, hour, minute, second, millisecond);
+    public static DateTime Create(int year, int month, int day, int hour, int minute, int second, int millisecond) => new(year, month, day, hour, minute, second, millisecond);
 
     /// <summary>
     /// 根据指定的日期创建 <see cref="DateTime"/>
@@ -65,7 +65,7 @@ public static class DateTimeFactory
     /// <param name="second">秒</param>
     /// <param name="millisecond">毫秒</param>
     /// <param name="kind">种类</param>
-    public static DateTime Create(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeKind kind) => new DateTime(year, month, day, hour, minute, second, millisecond, kind);
+    public static DateTime Create(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeKind kind) => new(year, month, day, hour, minute, second, millisecond, kind);
 
     #endregion
 
