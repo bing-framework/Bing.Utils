@@ -120,6 +120,19 @@ public class ObjectExtensionsTest
         Assert.Equal(b.Id, a.Id);
         Assert.Equal(b.Description, a.Description);
     }
+
+    /// <summary>
+    /// 测试 - 强制转换
+    /// </summary>
+    [Fact]
+    public void Test_As()
+    {
+        var obj = (object)new ObjectExtensionsTest();
+        obj.As<ObjectExtensionsTest>().ShouldNotBe(null);
+
+        obj = null;
+        obj.As<ObjectExtensionsTest>().ShouldBe(null);
+    }
 }
 
 #region 辅助类

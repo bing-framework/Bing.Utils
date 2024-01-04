@@ -47,8 +47,8 @@ public class CheckTest
     {
         Check.NotNullOrEmpty("test", nameof(Test_NotNullOrEmpty)).ShouldBe("test");
         Check.NotNullOrEmpty("test", nameof(Test_NotNullOrEmpty), maxLength: 4, minLength: 0).ShouldBe("test");
-        Check.NotNullOrEmpty(new List<string>{"test"}, nameof(Test_NotNullOrEmpty));
-        
+        Check.NotNullOrEmpty(new List<string> { "test" }, nameof(Test_NotNullOrEmpty));
+
         Assert.Throws<ArgumentException>(() => Check.NotNullOrEmpty(null, nameof(Test_NotNullOrEmpty)));
         Assert.Throws<ArgumentException>(() => Check.NotNullOrEmpty(string.Empty, nameof(Test_NotNullOrEmpty)));
         Assert.Throws<ArgumentException>(() => Check.NotNullOrEmpty("test", nameof(Test_NotNullOrEmpty), maxLength: 3));
@@ -80,12 +80,66 @@ public class CheckTest
     {
         Check.Length("test", nameof(Test_Length), maxLength: 4).ShouldBe("test");
         Check.Length("test", nameof(Test_Length), maxLength: 5).ShouldBe("test");
-        Check.Length("test", nameof(Test_Length), maxLength:4, minLength: 0).ShouldBe("test");
-        Check.Length("test", nameof(Test_Length), maxLength:4, minLength: 4).ShouldBe("test");
-        
+        Check.Length("test", nameof(Test_Length), maxLength: 4, minLength: 0).ShouldBe("test");
+        Check.Length("test", nameof(Test_Length), maxLength: 4, minLength: 4).ShouldBe("test");
+
         Assert.Throws<ArgumentException>(() => Check.Length("test", nameof(Test_Length), maxLength: 0));
         Assert.Throws<ArgumentException>(() => Check.Length("test", nameof(Test_Length), maxLength: 3));
         Assert.Throws<ArgumentException>(() => Check.Length("test", nameof(Test_Length), maxLength: 4, minLength: 5));
+    }
+
+    /// <summary>
+    /// 测试 - 确保值为正数
+    /// </summary>
+    [Fact]
+    public void Test_Positive()
+    {
+        Check.Positive(Conv.To<short>(1), nameof(Test_Positive)).ShouldBe(Conv.To<short>(1));
+        Check.Positive(Conv.To<int>(1), nameof(Test_Positive)).ShouldBe(Conv.To<int>(1));
+        Check.Positive(Conv.To<long>(1), nameof(Test_Positive)).ShouldBe(Conv.To<long>(1));
+        Check.Positive(Decimal.One, nameof(Test_Positive)).ShouldBe(Decimal.One);
+        Check.Positive(1.0f, nameof(Test_Positive)).ShouldBe(1.0f);
+        Check.Positive(1.0, nameof(Test_Positive)).ShouldBe(1.0);
+
+        Assert.Throws<ArgumentException>(() => Check.Positive(Conv.To<short>(0), nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(Conv.To<int>(0), nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(Conv.To<long>(0), nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(Decimal.Zero, nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(0.0f, nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(0.0, nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(Conv.To<short>(-1), nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(Conv.To<int>(-1), nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(Conv.To<long>(-1), nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(-Decimal.One, nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(-1.0f, nameof(Test_Positive)));
+        Assert.Throws<ArgumentException>(() => Check.Positive(-1.0, nameof(Test_Positive)));
+    }
+
+    /// <summary>
+    /// 测试 - 确保值处于指定的范围内
+    /// </summary>
+    [Fact]
+    public void Test_Range()
+    {
+        Check.Range(Conv.To<short>(1), nameof(Test_Range), minimumValue: Conv.To<short>(1), maximumValue: Conv.To<short>(10)).ShouldBe(Conv.To<short>(1));
+        Check.Range(Conv.To<int>(1), nameof(Test_Range), minimumValue: Conv.To<int>(1), maximumValue: Conv.To<int>(10)).ShouldBe(Conv.To<int>(1));
+        Check.Range(Conv.To<long>(1), nameof(Test_Range), minimumValue: Conv.To<long>(1), maximumValue: Conv.To<long>(10)).ShouldBe(Conv.To<long>(1));
+        Check.Range(decimal.One, nameof(Test_Range), minimumValue: decimal.One, maximumValue: Conv.To<decimal>(10)).ShouldBe(decimal.One);
+        Check.Range(1.0f, nameof(Test_Range), minimumValue: 1.0f, maximumValue: 10.0f).ShouldBe(1.0f);
+        Check.Range(1.0, nameof(Test_Range), minimumValue: 1.0, maximumValue: 10.0).ShouldBe(1.0);
+
+        Assert.Throws<ArgumentException>(() => Check.Range(Conv.To<short>(0), nameof(Test_Range), minimumValue: Conv.To<short>(1), maximumValue: Conv.To<short>(10)));
+        Assert.Throws<ArgumentException>(() => Check.Range(Conv.To<int>(0), nameof(Test_Range), minimumValue: Conv.To<int>(1), maximumValue: Conv.To<int>(10)));
+        Assert.Throws<ArgumentException>(() => Check.Range(Conv.To<long>(0), nameof(Test_Range), minimumValue: Conv.To<long>(1), maximumValue: Conv.To<long>(10)));
+        Assert.Throws<ArgumentException>(() => Check.Range(decimal.Zero, nameof(Test_Range), minimumValue: decimal.One, maximumValue: Conv.To<decimal>(10)));
+        Assert.Throws<ArgumentException>(() => Check.Range(0.0f, nameof(Test_Range), minimumValue: 1.0f, maximumValue: 10.0f));
+        Assert.Throws<ArgumentException>(() => Check.Range(0.0, nameof(Test_Range), minimumValue: 1.0, maximumValue: 10.0));
+        Assert.Throws<ArgumentException>(() => Check.Range(Conv.To<short>(11), nameof(Test_Range), minimumValue: Conv.To<short>(1), maximumValue: Conv.To<short>(10)));
+        Assert.Throws<ArgumentException>(() => Check.Range(Conv.To<int>(11), nameof(Test_Range), minimumValue: Conv.To<int>(1), maximumValue: Conv.To<int>(10)));
+        Assert.Throws<ArgumentException>(() => Check.Range(Conv.To<long>(11), nameof(Test_Range), minimumValue: Conv.To<long>(1), maximumValue: Conv.To<long>(10)));
+        Assert.Throws<ArgumentException>(() => Check.Range(Conv.To<decimal>(11), nameof(Test_Range), minimumValue: decimal.One, maximumValue: Conv.To<decimal>(10)));
+        Assert.Throws<ArgumentException>(() => Check.Range(11.0f, nameof(Test_Range), minimumValue: 1.0f, maximumValue: 10.0f));
+        Assert.Throws<ArgumentException>(() => Check.Range(11.0, nameof(Test_Range), minimumValue: 1.0, maximumValue: 10.0));
     }
 
     class Parent;

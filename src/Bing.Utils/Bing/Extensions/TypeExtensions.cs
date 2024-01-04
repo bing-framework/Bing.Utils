@@ -6,7 +6,7 @@ namespace Bing;
 /// <summary>
 /// 类型(<see cref="Type"/>) 扩展
 /// </summary>
-public static class BingTypeExtensions
+public static class TypeExtensions
 {
     #region GetFullNameWithAssemblyName(获取包含程序集名称的类型全名)
 

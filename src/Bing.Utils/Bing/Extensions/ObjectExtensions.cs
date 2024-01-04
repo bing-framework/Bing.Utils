@@ -1,5 +1,6 @@
 ﻿using Bing.Text;
 
+// ReSharper disable once CheckNamespace
 namespace Bing;
 
 /// <summary>

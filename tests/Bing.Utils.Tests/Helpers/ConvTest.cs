@@ -643,7 +643,16 @@ public class ConvTest : TestBase
         Assert.Equal(12.5, Conv.To<double>("12.5"));
         Assert.Equal(12.5, Conv.To<double?>("12.5"));
         Assert.Equal(12.5M, Conv.To<decimal>("12.5"));
-        Assert.True(Conv.To<bool>("true"));
+
+        Conv.To<double>("12.5").ShouldBe(12.5);
+        Conv.To<double>("0.2").ShouldBe(0.2);
+        Conv.To<int>(2.0).ShouldBe(2);
+
+        Conv.To<bool>("false").ShouldBe(false);
+        Conv.To<bool>("True").ShouldBe(true);
+        Conv.To<bool>("False").ShouldBe(false);
+        Conv.To<bool>("TrUE").ShouldBe(true);
+
         Assert.Equal(new DateTime(2000, 1, 1), Conv.To<DateTime>("2000-1-1"));
         Assert.Equal(new DateTime(2000, 1, 1), Conv.To<DateTime?>("2000-1-1"));
         var guid = Guid.NewGuid();

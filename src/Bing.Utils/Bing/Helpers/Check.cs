@@ -262,6 +262,212 @@ public static class Check
 
     #endregion
 
+    #region Positive(确保值为正数)
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 是正数，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <returns>如果值为正数，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不是正数，则引发异常。</exception>
+    public static short Positive(short value, string parameterName)
+    {
+        return value switch
+        {
+            0 => throw new ArgumentException($"{parameterName} is equal to zero."),
+            < 0 => throw new ArgumentException($"{parameterName} is less than zero."),
+            _ => value
+        };
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 是正数，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <returns>如果值为正数，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不是正数，则引发异常。</exception>
+    public static int Positive(int value, string parameterName)
+    {
+        return value switch
+        {
+            0 => throw new ArgumentException($"{parameterName} is equal to zero."),
+            < 0 => throw new ArgumentException($"{parameterName} is less than zero."),
+            _ => value
+        };
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 是正数，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <returns>如果值为正数，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不是正数，则引发异常。</exception>
+    public static long Positive(long value, string parameterName)
+    {
+        return value switch
+        {
+            0 => throw new ArgumentException($"{parameterName} is equal to zero."),
+            < 0 => throw new ArgumentException($"{parameterName} is less than zero."),
+            _ => value
+        };
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 是正数，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <returns>如果值为正数，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不是正数，则引发异常。</exception>
+    public static float Positive(float value, string parameterName)
+    {
+        return value switch
+        {
+            0 => throw new ArgumentException($"{parameterName} is equal to zero."),
+            < 0 => throw new ArgumentException($"{parameterName} is less than zero."),
+            _ => value
+        };
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 是正数，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <returns>如果值为正数，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不是正数，则引发异常。</exception>
+    public static double Positive(double value, string parameterName)
+    {
+        return value switch
+        {
+            0 => throw new ArgumentException($"{parameterName} is equal to zero."),
+            < 0 => throw new ArgumentException($"{parameterName} is less than zero."),
+            _ => value
+        };
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 是正数，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <returns>如果值为正数，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不是正数，则引发异常。</exception>
+    public static decimal Positive(decimal value, string parameterName)
+    {
+        return value switch
+        {
+            0 => throw new ArgumentException($"{parameterName} is equal to zero."),
+            < 0 => throw new ArgumentException($"{parameterName} is less than zero."),
+            _ => value
+        };
+    }
+
+    #endregion
+
+    #region Range(确保值处于指定的范围内)
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 处于指定的范围内，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <param name="minimumValue">最小允许值。</param>
+    /// <param name="maximumValue">最大允许值（默认为 <see cref="short.MaxValue"/>）。</param>
+    /// <returns>如果值在指定范围内，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不在指定范围内，则引发异常。</exception>
+    public static short Range(short value, string parameterName, short minimumValue, short maximumValue = short.MaxValue)
+    {
+        if (value < minimumValue || value > maximumValue)
+            throw new ArgumentException($"{parameterName} is out of range min: {minimumValue} - max: {maximumValue}");
+        return value;
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 处于指定的范围内，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <param name="minimumValue">最小允许值。</param>
+    /// <param name="maximumValue">最大允许值（默认为 <see cref="int.MaxValue"/>）。</param>
+    /// <returns>如果值在指定范围内，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不在指定范围内，则引发异常。</exception>
+    public static int Range(int value, string parameterName, int minimumValue, int maximumValue = int.MaxValue)
+    {
+        if (value < minimumValue || value > maximumValue)
+            throw new ArgumentException($"{parameterName} is out of range min: {minimumValue} - max: {maximumValue}");
+        return value;
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 处于指定的范围内，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <param name="minimumValue">最小允许值。</param>
+    /// <param name="maximumValue">最大允许值（默认为 <see cref="long.MaxValue"/>）。</param>
+    /// <returns>如果值在指定范围内，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不在指定范围内，则引发异常。</exception>
+    public static long Range(long value, string parameterName, long minimumValue, long maximumValue = long.MaxValue)
+    {
+        if (value < minimumValue || value > maximumValue)
+            throw new ArgumentException($"{parameterName} is out of range min: {minimumValue} - max: {maximumValue}");
+        return value;
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 处于指定的范围内，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <param name="minimumValue">最小允许值。</param>
+    /// <param name="maximumValue">最大允许值（默认为 <see cref="float.MaxValue"/>）。</param>
+    /// <returns>如果值在指定范围内，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不在指定范围内，则引发异常。</exception>
+    public static float Range(float value, string parameterName, float minimumValue, float maximumValue = float.MaxValue)
+    {
+        if (value < minimumValue || value > maximumValue)
+            throw new ArgumentException($"{parameterName} is out of range min: {minimumValue} - max: {maximumValue}");
+        return value;
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 处于指定的范围内，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <param name="minimumValue">最小允许值。</param>
+    /// <param name="maximumValue">最大允许值（默认为 <see cref="double.MaxValue"/>）。</param>
+    /// <returns>如果值在指定范围内，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不在指定范围内，则引发异常。</exception>
+    public static double Range(double value, string parameterName, double minimumValue, double maximumValue = double.MaxValue)
+    {
+        if (value < minimumValue || value > maximumValue)
+            throw new ArgumentException($"{parameterName} is out of range min: {minimumValue} - max: {maximumValue}");
+        return value;
+    }
+
+    /// <summary>
+    /// 确保 <paramref name="value"/> 处于指定的范围内，否则抛出 <see cref="ArgumentException"/>。
+    /// </summary>
+    /// <param name="value">要验证的值。</param>
+    /// <param name="parameterName">参数名称。</param>
+    /// <param name="minimumValue">最小允许值。</param>
+    /// <param name="maximumValue">最大允许值（默认为 <see cref="decimal.MaxValue"/>）。</param>
+    /// <returns>如果值在指定范围内，则返回原始值。</returns>
+    /// <exception cref="ArgumentException">如果值不在指定范围内，则引发异常。</exception>
+    public static decimal Range(decimal value, string parameterName, decimal minimumValue, decimal maximumValue = decimal.MaxValue)
+    {
+        if (value < minimumValue || value > maximumValue)
+            throw new ArgumentException($"{parameterName} is out of range min: {minimumValue} - max: {maximumValue}");
+        return value;
+    }
+
+    #endregion
+
     #region Between(范围检查)
 
     /// <summary>
@@ -276,8 +482,8 @@ public static class Check
     public static void LessThan<T>(T value, string paramName, T target, bool canEqual = false)
         where T : IComparable<T>
     {
-        bool flag = canEqual ? value.CompareTo(target) <= 0 : value.CompareTo(target) < 0;
-        string format = canEqual ? R.ParameterCheck_NotLessThanOrEqual : R.ParameterCheck_NotLessThan;
+        var flag = canEqual ? value.CompareTo(target) <= 0 : value.CompareTo(target) < 0;
+        var format = canEqual ? R.ParameterCheck_NotLessThanOrEqual : R.ParameterCheck_NotLessThan;
         Require<ArgumentOutOfRangeException>(flag, string.Format(format, paramName, target));
     }
 
