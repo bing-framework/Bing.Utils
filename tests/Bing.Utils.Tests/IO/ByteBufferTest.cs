@@ -36,6 +36,19 @@ public class ByteBufferTest
     }
 
     /// <summary>
+    /// 测试 - 申请缓冲区 - 池化申请
+    /// </summary>
+    [Fact]
+    public void Test_Allocate_Pool_1()
+    {
+        var testData = new byte[] { 1, 2, 3, 4, 5 };
+        var buffer = ByteBuffer.Allocate(testData, true);
+        buffer.Capacity.ShouldBe(testData.Length);
+        buffer.ReadableBytes.ShouldBe(testData.Length);
+        buffer.ToArray().ShouldBe(testData);
+    }
+
+    /// <summary>
     /// 测试 - 写入int
     /// </summary>
     [Fact]
