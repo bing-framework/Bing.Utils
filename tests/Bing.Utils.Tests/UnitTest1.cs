@@ -572,6 +572,47 @@ Where `a`.`IsDeny`=1 And `b`.`ApplicationId`='79c3c002-1474-4b3f-bf83-b17aa173a2
         var result = Numbers.GetDecimalPlaces((double)input);
         Assert.Equal(places, result);
     }
+
+    /// <summary>
+    /// 测试 - 修正长度
+    /// </summary>
+    [Theory]
+    [InlineData(0,1)]
+    [InlineData(1,2)]
+    [InlineData(2,2)]
+    [InlineData(3,4)]
+    [InlineData(4,4)]
+    [InlineData(5,8)]
+    [InlineData(6,8)]
+    [InlineData(7,8)]
+    [InlineData(8,8)]
+    [InlineData(9,16)]
+    [InlineData(10,16)]
+    [InlineData(11,16)]
+    [InlineData(12,16)]
+    public void Test_FixLength(int length, int result)
+    {
+        FixLength(length).ShouldBe(result);
+    }
+
+    /// <summary>
+    /// 将长度修正为不小于指定值的最近的大于或等于2的幂，如length=7，则返回值为8；length=12，则返回16。
+    /// </summary>
+    /// <param name="length">输入值。</param>
+    /// <returns>修正后的长度。</returns>
+    private int FixLength(int length)
+    {
+        if (length == 0)
+            return 1;
+        var powerOfTwo = 2; // 2的幂等
+        var bitIndex = 2;   // 位索引
+        while (powerOfTwo < length)
+        {
+            powerOfTwo = 1 << bitIndex; // 计算2的幂
+            bitIndex++;                 // 递增位索引
+        }
+        return powerOfTwo;
+    }
 }
 
 public class BingLogModel
