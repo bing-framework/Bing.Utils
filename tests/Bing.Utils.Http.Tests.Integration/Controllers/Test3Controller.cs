@@ -17,7 +17,7 @@ public class Test3Controller : ControllerBase
     /// Put操作
     /// </summary>
     [HttpPut("{id}")]
-    public IActionResult Update2(string id, [FromBody]CustomerDto dto)
+    public IActionResult Update2(string id, CustomerDto dto)
     {
         dto.Id = id;
         return new JsonResult(dto);

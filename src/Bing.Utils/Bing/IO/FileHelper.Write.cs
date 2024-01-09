@@ -7,6 +7,11 @@ namespace Bing.IO;
 /// </summary>
 public static partial class FileHelper
 {
+    /// <summary>
+    /// 默认缓冲区大小：4M
+    /// </summary>
+    private const int DefaultBufferSize = 4096;
+
     #region SaveFile(保存内容到文件)
 
     /// <summary>
@@ -187,8 +192,6 @@ public static partial class FileHelper
 
     #region WriteAsync(写入文件)
 
-#if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER
-
     /// <summary>
     /// 将字符串写入文件，文件不存在则创建
     /// </summary>
@@ -212,6 +215,8 @@ public static partial class FileHelper
         await WriteAsync(filePath, bytes, cancellationToken);
     }
 
+#if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER
+
     /// <summary>
     /// 将字节流写入文件，文件不存在则创建
     /// </summary>
@@ -227,6 +232,26 @@ public static partial class FileHelper
         DirectoryHelper.CreateDirectory(filePath);
         await File.WriteAllBytesAsync(filePath, content, cancellationToken);
     }
+
+#else
+
+    /// <summary>
+    /// 将字节流写入文件，文件不存在则创建
+    /// </summary>
+    /// <param name="filePath">文件的绝对路径</param>
+    /// <param name="content">内容</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task WriteAsync(string filePath, byte[] content, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+            return;
+        if (content == null)
+            return;
+        DirectoryHelper.CreateDirectory(filePath);
+        using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read, DefaultBufferSize, FileOptions.Asynchronous | FileOptions.SequentialScan);
+        await fileStream.WriteAsync(content, 0, content.Length, cancellationToken);
+    }
+
 #endif
 
     /// <summary>

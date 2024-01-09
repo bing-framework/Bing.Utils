@@ -1,9 +1,13 @@
-﻿using Bing.Http;
+﻿using Bing.Helpers;
+using Bing.Http;
 using Bing.Http.Clients;
+using Bing.Serialization.SystemTextJson;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Xunit.DependencyInjection;
@@ -50,12 +54,26 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
+        RegisterHttpContextAccessor(services);
+        services.Configure( ( Microsoft.AspNetCore.Mvc.JsonOptions options ) => {
+            options.JsonSerializerOptions.Converters.Add( new DateTimeJsonConverter() );
+            options.JsonSerializerOptions.Converters.Add( new NullableDateTimeJsonConverter() );
+        } );
         services.AddTransient<IHttpClient>(t =>
         {
             var client = new HttpClientService();
             client.SetHttpClient(t.GetService<IHost>().GetTestClient());
             return client;
         });
+    }
+
+    /// <summary>
+    /// 注册Http上下文访问器
+    /// </summary>
+    private void RegisterHttpContextAccessor( IServiceCollection services ) {
+        var httpContextAccessor = new HttpContextAccessor();
+        services.TryAddSingleton<IHttpContextAccessor>( httpContextAccessor );
+        Web.HttpContextAccessor = httpContextAccessor;
     }
 
     /// <summary>

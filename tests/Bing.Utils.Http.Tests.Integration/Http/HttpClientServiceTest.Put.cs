@@ -9,7 +9,7 @@ namespace Bing.Utils.Http.Tests.Integration.Http;
 public partial class HttpClientServiceTest
 {
     /// <summary>
-    /// 测试调用Put操作方法 - 返回字符串结果
+    /// 测试 - 调用Put操作方法 - 返回字符串结果
     /// </summary>
     [Fact]
     public async Task Test_Put_1()
@@ -20,7 +20,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试调用Put方法 - 返回泛型结果
+    /// 测试 - 调用Put方法 - 返回泛型结果
     /// </summary>
     [Fact]
     public async Task Test_Put_2()

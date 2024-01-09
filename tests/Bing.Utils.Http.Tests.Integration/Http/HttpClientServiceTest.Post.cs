@@ -1,4 +1,7 @@
-﻿namespace Bing.Utils.Http.Tests.Integration.Http;
+﻿using Bing.Helpers;
+using Bing.IO;
+
+namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
 /// Http客户端测试 - Post操作
@@ -57,5 +60,57 @@ public partial class HttpClientServiceTest
         var dto = new CustomerDto { Code = "a" };
         var result = await _client.Post("/api/test2/create").Content(dto).GetResultAsync();
         result.ShouldBe("ok:a");
+    }
+
+    /// <summary>
+    /// 测试 - Post调用 - 上传文件 - 文件路径
+    /// </summary>
+    [Fact]
+    public async Task Test_Post_FileContent_1()
+    {
+        var path = Common.GetPhysicalPath("Resources/a.png");
+        var result = await _client.Post("/api/test6").FileContent(path, "file1").GetResultAsync();
+        Assert.Equal("ok:file1:a.png", result);
+    }
+
+    /// <summary>
+    /// 测试 - Post调用 - 上传文件 - 文件流
+    /// </summary>
+    [Fact]
+    public async Task Test_Post_FileContent_2()
+    {
+        var path = Common.GetPhysicalPath("Resources/a.png");
+        var stream = FileHelper.ReadToMemoryStream(path);
+        var result = await _client.Post("/api/test6").FileContent(stream, "abc.png", "file2").GetResultAsync();
+        Assert.Equal("ok:file2:abc.png", result);
+    }
+
+    /// <summary>
+    /// 测试 - Post调用 - 上传文件 - 多文件上传
+    /// </summary>
+    [Fact]
+    public async Task Test_Post_FileContent_3()
+    {
+        var path = Common.GetPhysicalPath("Resources/a.png");
+        var stream = FileHelper.ReadToMemoryStream(path);
+        var result = await _client.Post("/api/test6/multi")
+            .FileContent(path, "file1")
+            .FileContent(stream, "b.png", "file2")
+            .GetResultAsync();
+        Assert.Equal("ok:file1:a.png:file2:b.png", result);
+    }
+
+    /// <summary>
+    /// 测试 - Post调用 - 上传文件 - 发送参数
+    /// </summary>
+    [Fact]
+    public async Task Test_Post_FileContent_4()
+    {
+        var path = Common.GetPhysicalPath("Resources/a.png");
+        var result = await _client.Post("/api/test6")
+            .FileContent(path, "file1")
+            .Content("util", "core")
+            .GetResultAsync();
+        Assert.Equal("ok:file1:a.png:core", result);
     }
 }

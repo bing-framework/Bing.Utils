@@ -40,4 +40,10 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\Bing.Utils.Http\Bing.Utils.Http.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Resources\a.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 </Project>

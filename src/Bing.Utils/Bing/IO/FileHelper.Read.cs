@@ -200,6 +200,28 @@ public static partial class FileHelper
             return null;
         }
     }
+#else
+    /// <summary>
+    /// 读取文件到内存流中
+    /// </summary>
+    /// <param name="filePath">文件的绝对路径</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task<MemoryStream> ReadToMemoryStreamAsync(string filePath, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (Exists(filePath) == false)
+                return null;
+            var memoryStream = new MemoryStream();
+            using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            await stream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
+            return memoryStream;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 #endif
     #endregion
 
