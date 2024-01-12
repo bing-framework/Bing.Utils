@@ -43,6 +43,22 @@ public enum DateTimeOffsetStyles
     /// 日
     /// </summary>
     Day,
+    /// <summary>
+    /// 小时
+    /// </summary>
+    Hour,
+    /// <summary>
+    /// 分钟
+    /// </summary>
+    Minute,
+    /// <summary>
+    /// 秒
+    /// </summary>
+    Second,
+    /// <summary>
+    /// 毫秒
+    /// </summary>
+    Millisecond,
 }
 
 /// <summary>
@@ -107,6 +123,13 @@ internal static class DateTimeCalcHelper
 /// </summary>
 public static class DateTimeCalc
 {
+    /// <summary>
+    /// 偏移指定毫秒数
+    /// </summary>
+    /// <param name="dt">时间</param>
+    /// <param name="millisecond">毫秒数</param>
+    public static DateTime OffsetByMillisecond(DateTime dt, int millisecond) => dt + millisecond.Milliseconds();
+
     /// <summary>
     /// 偏移指定秒数
     /// </summary>

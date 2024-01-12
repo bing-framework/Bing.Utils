@@ -613,6 +613,15 @@ Where `a`.`IsDeny`=1 And `b`.`ApplicationId`='79c3c002-1474-4b3f-bf83-b17aa173a2
         }
         return powerOfTwo;
     }
+
+    [Fact]
+    public void Test_Repeat()
+    {
+        var result = Repeat(" ", 31);
+        Output.WriteLine($"A{result}A");
+    }
+
+    private string Repeat(string character, int num) => new(character.ToCharArray()[0], num);
 }
 
 public class BingLogModel

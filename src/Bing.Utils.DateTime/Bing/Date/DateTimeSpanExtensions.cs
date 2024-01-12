@@ -71,103 +71,103 @@ public static class DateTimeSpanExtensions
     /// 创建指定年数的日期时间间隔
     /// </summary>
     /// <param name="years">年数</param>
-    public static DateTimeSpan Years(this int years) => new DateTimeSpan {Years = years};
+    public static DateTimeSpan Years(this int years) => new() {Years = years};
 
     /// <summary>
     /// 创建指定季度数的日期时间间隔
     /// </summary>
     /// <param name="quarters">季度数</param>
-    public static DateTimeSpan Quarters(this int quarters) => new DateTimeSpan { Months = quarters*3 };
+    public static DateTimeSpan Quarters(this int quarters) => new() { Months = quarters*3 };
 
     /// <summary>
     /// 创建指定月数的日期时间间隔
     /// </summary>
     /// <param name="months">月数</param>
-    public static DateTimeSpan Months(this int months) => new DateTimeSpan { Months = months };
+    public static DateTimeSpan Months(this int months) => new() { Months = months };
 
     /// <summary>
     /// 创建指定周数的日期时间间隔
     /// </summary>
     /// <param name="weeks">周数</param>
-    public static DateTimeSpan Weeks(this int weeks) => new DateTimeSpan { TimeSpan = TimeSpan.FromDays(weeks*7) };
+    public static DateTimeSpan Weeks(this int weeks) => new() { TimeSpan = TimeSpan.FromDays(weeks*7) };
 
     /// <summary>
     /// 创建指定周数的日期时间间隔
     /// </summary>
     /// <param name="weeks">周数</param>
-    public static DateTimeSpan Weeks(this double weeks) => new DateTimeSpan { TimeSpan = TimeSpan.FromDays(weeks * 7) };
+    public static DateTimeSpan Weeks(this double weeks) => new() { TimeSpan = TimeSpan.FromDays(weeks * 7) };
 
     /// <summary>
     /// 创建指定天数的日期时间间隔
     /// </summary>
     /// <param name="days">天数</param>
-    public static DateTimeSpan Days(this int days) => new DateTimeSpan { TimeSpan = TimeSpan.FromDays(days) };
+    public static DateTimeSpan Days(this int days) => new() { TimeSpan = TimeSpan.FromDays(days) };
 
     /// <summary>
     /// 创建指定天数的日期时间间隔
     /// </summary>
     /// <param name="days">天数</param>
-    public static DateTimeSpan Days(this double days) => new DateTimeSpan { TimeSpan = TimeSpan.FromDays(days) };
+    public static DateTimeSpan Days(this double days) => new() { TimeSpan = TimeSpan.FromDays(days) };
 
     /// <summary>
     /// 创建指定小时数的日期时间间隔
     /// </summary>
     /// <param name="hours">小时数</param>
-    public static DateTimeSpan Hours(this int hours) => new DateTimeSpan { TimeSpan = TimeSpan.FromHours(hours) };
+    public static DateTimeSpan Hours(this int hours) => new() { TimeSpan = TimeSpan.FromHours(hours) };
 
     /// <summary>
     /// 创建指定小时数的日期时间间隔
     /// </summary>
     /// <param name="hours">小时数</param>
-    public static DateTimeSpan Hours(this double hours) => new DateTimeSpan { TimeSpan = TimeSpan.FromHours(hours) };
+    public static DateTimeSpan Hours(this double hours) => new() { TimeSpan = TimeSpan.FromHours(hours) };
 
     /// <summary>
     /// 创建指定分钟数的日期时间间隔
     /// </summary>
     /// <param name="minutes">分钟数</param>
-    public static DateTimeSpan Minutes(this int minutes) => new DateTimeSpan { TimeSpan = TimeSpan.FromMinutes(minutes) };
+    public static DateTimeSpan Minutes(this int minutes) => new() { TimeSpan = TimeSpan.FromMinutes(minutes) };
 
     /// <summary>
     /// 创建指定分钟数的日期时间间隔
     /// </summary>
     /// <param name="minutes">分钟数</param>
-    public static DateTimeSpan Minutes(this double minutes) => new DateTimeSpan { TimeSpan = TimeSpan.FromMinutes(minutes) };
+    public static DateTimeSpan Minutes(this double minutes) => new() { TimeSpan = TimeSpan.FromMinutes(minutes) };
 
     /// <summary>
     /// 创建指定秒数的日期时间间隔
     /// </summary>
     /// <param name="seconds">秒数</param>
-    public static DateTimeSpan Seconds(this int seconds) => new DateTimeSpan { TimeSpan = TimeSpan.FromSeconds(seconds) };
+    public static DateTimeSpan Seconds(this int seconds) => new() { TimeSpan = TimeSpan.FromSeconds(seconds) };
 
     /// <summary>
     /// 创建指定秒数的日期时间间隔
     /// </summary>
     /// <param name="seconds">秒数</param>
-    public static DateTimeSpan Seconds(this double seconds) => new DateTimeSpan { TimeSpan = TimeSpan.FromSeconds(seconds) };
+    public static DateTimeSpan Seconds(this double seconds) => new() { TimeSpan = TimeSpan.FromSeconds(seconds) };
 
     /// <summary>
     /// 创建指定毫秒数的日期时间间隔
     /// </summary>
     /// <param name="milliseconds">毫秒数</param>
-    public static DateTimeSpan Milliseconds(this int milliseconds) => new DateTimeSpan { TimeSpan = TimeSpan.FromMilliseconds(milliseconds) };
+    public static DateTimeSpan Milliseconds(this int milliseconds) => new() { TimeSpan = TimeSpan.FromMilliseconds(milliseconds) };
 
     /// <summary>
     /// 创建指定毫秒数的日期时间间隔
     /// </summary>
     /// <param name="milliseconds">毫秒数</param>
-    public static DateTimeSpan Milliseconds(this double milliseconds) => new DateTimeSpan { TimeSpan = TimeSpan.FromMilliseconds(milliseconds) };
+    public static DateTimeSpan Milliseconds(this double milliseconds) => new() { TimeSpan = TimeSpan.FromMilliseconds(milliseconds) };
 
     /// <summary>
     /// 创建指定刻度数的日期时间间隔
     /// </summary>
     /// <param name="ticks">刻度数</param>
-    public static DateTimeSpan Ticks(this int ticks) => new DateTimeSpan { TimeSpan = TimeSpan.FromTicks(ticks) };
+    public static DateTimeSpan Ticks(this int ticks) => new() { TimeSpan = TimeSpan.FromTicks(ticks) };
 
     /// <summary>
     /// 创建指定刻度数的日期时间间隔
     /// </summary>
     /// <param name="ticks">刻度数</param>
-    public static DateTimeSpan Ticks(this long ticks) => new DateTimeSpan { TimeSpan = TimeSpan.FromTicks(ticks) };
+    public static DateTimeSpan Ticks(this long ticks) => new() { TimeSpan = TimeSpan.FromTicks(ticks) };
 
     #endregion
 

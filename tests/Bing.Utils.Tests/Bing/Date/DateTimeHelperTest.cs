@@ -1,8 +1,7 @@
-﻿using Bing.Date;
-using Bing.Helpers;
-using Xunit.Abstractions;
+﻿using Bing.Helpers;
+using Bing.Utils.Tests;
 
-namespace Bing.Utils.Tests.Timing;
+namespace Bing.Date;
 
 /// <summary>
 /// 测试时间操作辅助类
@@ -31,10 +30,32 @@ public class DateTimeHelperTest : TestBase
     [Fact]
     public void Test_GetDays()
     {
-        var beginTime = Conv.ToDate("2020-10-01 00:00:00"); 
+        var beginTime = Conv.ToDate("2020-10-01 00:00:00");
         var endTime = Conv.ToDate("2020-11-01 00:00:00");
         //var days = DateTimeHelper.GetDays(beginTime, endTime);
         //Output.WriteLine($"天数：{days}");
         //Output.WriteLine($"天数：{beginTime.AddDays(days):yyyy-MM-dd HH:mm:ss}");
+    }
+
+    /// <summary>
+    /// 测试 - 获取当前时间的时间戳
+    /// </summary>
+    [Fact]
+    public void Test_Current_1()
+    {
+        var result = DateTimeHelper.Current();
+        Output.WriteLine(result.ToString());
+        Output.WriteLine(DateTimeHelper.ConvertUnixTimestampToDateTime(result).ToMillisecondString());
+    }
+
+    /// <summary>
+    /// 测试 - 获取当前时间的时间戳（秒）
+    /// </summary>
+    [Fact]
+    public void Test_CurrentSeconds_1()
+    {
+        var result = DateTimeHelper.CurrentSeconds();
+        Output.WriteLine(result.ToString());
+        Output.WriteLine(DateTimeHelper.ConvertUnixTimestampToDateTime(result, TimestampDigit.Second).ToDateTimeString());
     }
 }

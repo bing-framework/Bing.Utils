@@ -576,6 +576,22 @@ public static partial class DateTimeHelper
     }
 
     #endregion
+
+    #region Current(获取当前时间的时间戳)
+
+    /// <summary>
+    /// 获取当前时间的时间戳
+    /// </summary>
+    /// <returns>当前时间毫秒数</returns>
+    public static long Current() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+    /// <summary>
+    /// 获取当前时间的时间戳（秒）
+    /// </summary>
+    /// <returns>当前时间秒数</returns>
+    public static long CurrentSeconds() => DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+    #endregion
 }
 
 /// <summary>
