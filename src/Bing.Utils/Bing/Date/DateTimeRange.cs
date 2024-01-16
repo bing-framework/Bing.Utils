@@ -20,7 +20,7 @@ public interface IDateTimeRange
 /// 时间范围
 /// </summary>
 [Serializable]
-public class DateTimeRange : IDateTimeRange
+public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
 {
     #region 字段
 
@@ -37,11 +37,16 @@ public class DateTimeRange : IDateTimeRange
     /// <summary>
     /// 周列表
     /// </summary>
-    private static DayOfWeek[] Weeks => new[]
-    {
-        DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday,
-        DayOfWeek.Friday, DayOfWeek.Saturday
-    };
+    private static DayOfWeek[] Weeks =>
+    [
+        DayOfWeek.Sunday,
+        DayOfWeek.Monday,
+        DayOfWeek.Tuesday,
+        DayOfWeek.Wednesday,
+        DayOfWeek.Thursday,
+        DayOfWeek.Friday,
+        DayOfWeek.Saturday
+    ];
 
     #endregion
 
@@ -66,7 +71,7 @@ public class DateTimeRange : IDateTimeRange
         EndTime = endTime;
         _separator = separator;
         // 处理起始时间以及结束时间
-        if (StartTime > EndTime) 
+        if (StartTime > EndTime)
             (StartTime, EndTime) = (EndTime, StartTime);
     }
 
@@ -586,4 +591,13 @@ public class DateTimeRange : IDateTimeRange
     }
 
     #endregion
+
+    /// <inheritdoc />
+    public bool Equals(DateTimeRange other)
+    {
+        if (other == null)
+            return false;
+        return this.StartTime == other.StartTime && this.EndTime == other.EndTime;
+    }
+
 }

@@ -180,6 +180,16 @@ public static partial class DateTimeExtensions
         };
     }
 
+    /// <summary>
+    /// 判断当前时间是否在指定的时间范围内。
+    /// </summary>
+    /// <param name="this">要检查的时间。</param>
+    /// <param name="range">时间范围。</param>
+    /// <param name="mode">范围模式（默认为 <see cref="RangeMode.Close"/>，即包括开始和结束时间）。</param>
+    /// <returns>如果当前时间在指定范围内，则为 true；否则为 false。</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool In(this in DateTime @this, IDateTimeRange range, RangeMode mode = RangeMode.Close) => In(@this, range.StartTime, range.EndTime, mode);
+
     #endregion
 
     #region SetTime(设置时间)

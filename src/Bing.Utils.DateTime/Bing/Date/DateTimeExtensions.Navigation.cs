@@ -8,15 +8,6 @@ public static partial class DateTimeExtensions
     #region Offset
 
     /// <summary>
-    /// 偏移毫秒数
-    /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="offsetVal">偏移毫秒数，正数向未来偏移，负数向历史偏移</param>
-    /// <returns>偏移后的日期</returns>
-    public static DateTime OffsetMillisecond(this DateTime dt, int offsetVal) =>
-        OffsetBy(dt, offsetVal, DateTimeOffsetStyles.Millisecond);
-
-    /// <summary>
     /// 偏移指定值
     /// </summary>
     /// <param name="dt">时间</param>
