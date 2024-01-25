@@ -9,14 +9,3 @@ namespace Bing.Text;
 public static partial class StringExtensions
 {
 }
-
-/// <summary>
-/// 类型相似度
-/// </summary>
-public enum TypeSimilarity
-{
-    Any,
-    Same,
-    MayorLong,
-    MinorLong,
-}
