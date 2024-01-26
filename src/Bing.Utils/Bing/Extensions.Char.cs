@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Bing.Text;
 
 namespace Bing;
 
@@ -24,7 +25,7 @@ public static class CharExtensions
     /// </summary>
     /// <param name="this">字符</param>
     /// <param name="repeatCount">重复次数</param>
-    public static string Repeat(this char @this, int repeatCount) => new string(@this, repeatCount);
+    public static string Repeat(this char @this, int repeatCount) => Chars.Repeat(@this, repeatCount);
 
     #endregion
 
