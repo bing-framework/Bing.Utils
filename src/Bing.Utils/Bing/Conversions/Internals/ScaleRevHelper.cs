@@ -1,7 +1,7 @@
 ﻿namespace Bing.Conversions.Internals;
 
 /// <summary>
-/// 比例反转帮助类
+/// 进制反转帮助类
 /// </summary>
 internal static class ScaleRevHelper
 {

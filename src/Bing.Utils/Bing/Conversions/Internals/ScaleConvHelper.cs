@@ -1,7 +1,7 @@
 ﻿namespace Bing.Conversions.Internals;
 
 /// <summary>
-/// 比例转换帮助类
+/// 进制转换帮助类
 /// </summary>
 internal static class ScaleConvHelper
 {

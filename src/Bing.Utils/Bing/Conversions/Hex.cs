@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Bing.Conversions.Internals;
 
 namespace Bing.Conversions;
 
@@ -38,4 +39,33 @@ public static class Hex
             result[i] = byte.Parse(hex.Substring(2 * i, 2), NumberStyles.AllowHexSpecifier);
         return result;
     }
+
+    /// <summary>
+    /// 高低位交换
+    /// </summary>
+    /// <param name="hex">十六进制字符串</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Reverse(string hex) => ScaleRevHelper.Reverse(hex, 2);
+}
+
+/// <summary>
+/// 十六进制工具(<see cref="Hex"/>) 扩展
+/// </summary>
+public static class HexExtensions
+{
+    /// <summary>
+    /// 将字节数组转换成十六进制字符串。
+    /// </summary>
+    /// <param name="bytes">字节数组</param>
+    /// <returns>十六进制字符串</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string CastToHexString(this byte[] bytes) => Hex.ToString(bytes);
+
+    /// <summary>
+    /// 将十六进制字符串转换为字节数组。
+    /// </summary>
+    /// <param name="hex">十六进制字符串</param>
+    /// <returns>字节数组</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte[] CastToHexBytes(this string hex) => Hex.ToBytes(hex);
 }
