@@ -60,36 +60,46 @@ internal abstract class BaseXCore
     /// <summary>
     /// 初始化 <see cref="BaseXCore"/> 类的新实例。
     /// </summary>
-    /// <param name="charsCount">字符集的数量。</param>
-    /// <param name="alphabet">字符集。</param>
-    /// <param name="special">特殊字符标记。</param>
-    /// <param name="encoding">用于字符编码的编码方式。</param>
-    /// <param name="parallel">指示是否并行进行编码/解码操作。</param>
-    public BaseXCore(uint charsCount, string alphabet, char special, Encoding encoding = null, bool parallel = false)
+    /// <param name="charsCount">字符集的数量，用于定义编码的基数。</param>
+    /// <param name="alphabet">用于编码的字符集。字符集的长度应与charsCount相等，并且包含不重复的字符。</param>
+    /// <param name="special">一个特殊字符，用于在必要时标记或处理特定情况。它不应出现在alphabet中。</param>
+    /// <param name="encoding">用于编码字符串和字节之间转换的编码。如果为null，则使用默认的UTF8编码。</param>
+    /// <param name="parallel">指示是否应使用并行处理来加速某些操作。</param>
+    /// <exception cref="ArgumentException">当alphabet长度不等于charsCount，或当alphabet包含重复字符，或当alphabet包含特殊字符时抛出异常。</exception>
+    protected BaseXCore(uint charsCount, string alphabet, char special, Encoding encoding = null, bool parallel = false)
     {
+        // 确保alphabet的长度与charsCount相等
         if (alphabet.Length != charsCount)
             throw new ArgumentException($"Base string should contain {charsCount} chars.");
+        // 确保alphabet中的字符都是唯一的
         for (var i = 0; i < charsCount; i++)
             for (var j = i + 1; j < charsCount; j++)
                 if (alphabet[i] == alphabet[j])
                     throw new ArgumentException("Base string should contain distinct chars.");
+        // 确保alphabet中不包含特殊字符
         if (alphabet.Contains(special))
             throw new ArgumentException("Base string should not contain special char.");
+
         CharsCount = charsCount;
         Alphabet = alphabet;
         Special = special;
 
+        // 计算每个字符所代表的位数，并计算块大小
         var bitsPerChar = LogBase2(charsCount);
         BlockBitsCount = Lcm(bitsPerChar, 8);
         BlockCharsCount = BlockBitsCount / bitsPerChar;
 
+        // 初始化用于字符到索引映射的数组
         InvAlphabet = new int[Alphabet.Max() + 1];
 
+        // 初始化映射数组中的所有元素为-1
         for (var i = 0; i < InvAlphabet.Length; i++)
             InvAlphabet[i] = -1;
 
+        // 根据alphabet建立字符到索引的映射
         for (var i = 0; i < charsCount; i++)
             InvAlphabet[Alphabet[i]] = i;
+
         Encoding = encoding ?? Encoding.UTF8;
         Parallel = parallel;
     }

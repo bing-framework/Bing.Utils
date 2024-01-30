@@ -42,8 +42,4 @@
 	  </EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Bing\Text\Internals\" />
-	</ItemGroup>
-
 </Project>
