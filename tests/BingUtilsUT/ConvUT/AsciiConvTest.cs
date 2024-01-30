@@ -1,8 +1,11 @@
-﻿namespace Bing.Conversions;
+﻿using Bing.Conversions;
+
+namespace BingUtilsUT.ConvUT;
 
 /// <summary>
 /// ASCII转换器测试
 /// </summary>
+[Trait("ConvUT", "Ascii")]
 public class AsciiConvTest
 {
     /// <summary>
@@ -11,7 +14,7 @@ public class AsciiConvTest
     [Fact]
     public void Test_BytesToAsciiString()
     {
-        var bytes = new byte[] {65, 66, 67};
+        var bytes = new byte[] { 65, 66, 67 };
         var asciiString = AsciiConv.BytesToAsciiString(bytes);
 
         asciiString.ShouldBe("ABC");
@@ -26,8 +29,8 @@ public class AsciiConvTest
         var byteArray = AsciiConv.AsciiStringToBytes("ABC");
 
         byteArray.Length.ShouldBe(3);
-        byteArray[0].ShouldBe((byte) 65);
-        byteArray[1].ShouldBe((byte) 66);
-        byteArray[2].ShouldBe((byte) 67);
+        byteArray[0].ShouldBe((byte)65);
+        byteArray[1].ShouldBe((byte)66);
+        byteArray[2].ShouldBe((byte)67);
     }
 }
