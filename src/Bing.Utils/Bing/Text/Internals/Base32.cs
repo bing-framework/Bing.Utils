@@ -1,17 +1,12 @@
 ﻿namespace Bing.Text.Internals;
 
 /// <summary>
-/// 提供一种 Base32 编码/解码机制。
+/// 表示 Base32 编码实现的类。
 /// </summary>
-/// <remarks>
-/// Base32 编码是一种用于将二进制数据编码为 ASCII 文本的方式。它使用了32个字符的字母表，
-/// 通常包括字母 A-Z 和数字 2-7。Base32 编码常用于需要可读性的数据编码场景，如在某些网络协议和
-/// 二维码中。继承自 BaseXCore，Base32 类提供了针对 Base32 编码的特化实现。
-/// </remarks>
 internal class Base32 : BaseXCore
 {
     /// <summary>
-    /// 定义 Base32 编码的默认字母表。
+    /// 默认的 Base32 字符集。
     /// </summary>
     /// <remarks>
     /// 这个字母表包含了 26 个大写英文字母和数字 2 到 7，总共 32 个字符。
@@ -29,7 +24,7 @@ internal class Base32 : BaseXCore
     public const char DefaultSpecial = '=';
 
     /// <inheritdoc />
-    public override bool HasSpecial => false;
+    public override bool HasSpecial => true;
 
     /// <summary>
     /// 初始化一个 <see cref="Base32"/> 类型的实例。
