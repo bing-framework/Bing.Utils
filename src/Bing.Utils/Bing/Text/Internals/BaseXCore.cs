@@ -58,7 +58,7 @@ internal abstract class BaseXCore
     protected readonly int[] InvAlphabet;
 
     /// <summary>
-    /// 初始化 <see cref="BaseXCore"/> 类的新实例。
+    /// 初始化一个 <see cref="BaseXCore"/> 类型的实例。
     /// </summary>
     /// <param name="charsCount">字符集的数量，用于定义编码的基数。</param>
     /// <param name="alphabet">用于编码的字符集。字符集的长度应与charsCount相等，并且包含不重复的字符。</param>
