@@ -28,7 +28,7 @@ internal class Base91 : BaseXCore
     /// 初始化一个 <see cref="Base91"/> 类型的实例。
     /// </summary>
     /// <param name="alphabet">用于 Base91 编码的字符集。如果未提供，则使用默认的字符集。</param>
-    /// <param name="special">特殊字符。Base91编码中通常不使用特殊字符，故默认为(char)0。</param>
+    /// <param name="special">特殊字符。Base91 编码中通常不使用特殊字符，故默认为(char)0。</param>
     /// <param name="encoding">用于编码字符串的编码方式。如果未指定，则默认使用UTF-8编码。</param>
     public Base91(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding encoding = null) : base(91, alphabet, special, encoding)
     {
