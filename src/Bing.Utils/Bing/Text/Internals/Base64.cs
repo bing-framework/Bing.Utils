@@ -15,7 +15,7 @@ internal class Base64 : BaseXCore
     public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     /// <summary>
-    /// Base64 编码中用于填充的默认特殊字符。
+    /// 定义 Base64 编码中用于填充的默认特殊字符。
     /// </summary>
     /// <remarks>
     /// 特殊字符 '=' 用于 Base64 编码的输出，以确保输出字符串的长度总是 4 的倍数。
@@ -29,9 +29,9 @@ internal class Base64 : BaseXCore
     /// <summary>
     /// 初始化一个 <see cref="Base64"/> 类型的实例。
     /// </summary>
-    /// <param name="alphabet">Base64 编码的字符集，默认为包含大写字母、小写字母、数字以及两个额外符号 '+' 和 '/' 的标准字符集。</param>
+    /// <param name="alphabet">用于 Base64 编码的字符集。如果未提供，则使用默认的字符集。</param>
     /// <param name="special">Base64 编码中用于填充的特殊字符，默认为 '='。</param>
-    /// <param name="encoding">用于解码字符串的字符编码，默认为 UTF-8 编码。</param>
+    /// <param name="encoding">用于编码字符串的编码方式。如果未指定，则默认使用UTF-8编码。</param>
     /// <param name="parallel">指示是否使用并行编码或解码的标志，默认为 false。</param>
     public Base64(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding encoding = null, bool parallel = false)
         : base(64, alphabet, special, encoding, parallel)

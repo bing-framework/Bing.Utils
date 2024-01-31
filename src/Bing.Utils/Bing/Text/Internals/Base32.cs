@@ -31,7 +31,7 @@ internal class Base32 : BaseXCore
     /// </summary>
     /// <param name="alphabet">用于 Base32 编码的字符集。如果未提供，则使用默认的字符集。</param>
     /// <param name="special">用于 Base32 编码的特殊填充字符。如果未提供，则使用默认的 '=' 字符。</param>
-    /// <param name="encoding">用于字符串和字节之间转换的编码。如果未提供，则默认使用 UTF-8 编码。</param>
+    /// <param name="encoding">用于编码字符串的编码方式。如果未指定，则默认使用UTF-8编码。</param>
     public Base32(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding encoding = null)
         : base(32, alphabet, special, encoding)
     {
