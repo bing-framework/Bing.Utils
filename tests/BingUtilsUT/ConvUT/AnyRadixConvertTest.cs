@@ -1,4 +1,7 @@
-﻿using Bing.Conversions;
+﻿using System.Collections.Generic;
+using System.Text;
+using Bing.Conversions;
+using Bing.Utils.Maths;
 using Convert = System.Convert;
 
 namespace BingUtilsUT.ConvUT;
@@ -9,6 +12,8 @@ namespace BingUtilsUT.ConvUT;
 [Trait("ConvUT", "AnyRadixConvert")]
 public class AnyRadixConvertTest
 {
+    #region X2X(任意进制)
+
     /// <summary>
     /// 测试 - 常用进制转换
     /// </summary>
@@ -75,6 +80,22 @@ public class AnyRadixConvertTest
         AnyRadixConvert.X2X("101110", 35, 35).ShouldBe("101110");
         AnyRadixConvert.X2X("101110", 36, 36).ShouldBe("101110");
     }
+
+    /// <summary>
+    /// 测试 - 任意进制
+    /// </summary>
+    [Theory]
+    [InlineData(10, 32, "32", "10")]
+    [InlineData(10, 33, "32", "w")]
+    public void Test_X2X_Any(int fromRadix, int toRadix, string input, string result)
+    {
+        //AnyRadixConvert.X2X(input, fromRadix, toRadix).ShouldBe(result);
+        HexConverter.ToString(Convert.ToInt64(input),toRadix).ShouldBe(result);
+        //HexConv.X2X(input, fromRadix, toRadix).ShouldBe(result);
+    }
+
+    #endregion
+
 
     #region Binary(二进制)
 
@@ -378,4 +399,165 @@ public class AnyRadixConvertTest
     }
 
     #endregion
+}
+
+/// <summary>
+/// 进制转换器
+/// </summary>
+public class HexConverter
+{
+    /// <summary>
+    /// 进制格式字符
+    /// </summary>
+    public string FormatString
+    {
+        get;
+        private set;
+    }
+    /// <summary>
+    /// 格式字符长度
+    /// </summary>
+    public int Length
+    {
+        get
+        {
+            if (FormatString != null)
+                return FormatString.Length;
+            else
+                return 0;
+        }
+
+    }
+    /// <summary>
+    /// 进制转换器
+    /// </summary>
+    /// <param name="formatStr"></param>
+    public HexConverter(string formatStr = "01")
+    {
+        FormatString = formatStr;
+    }
+
+    /// <summary>
+    /// 数字转换为指定的进制形式字符串，
+    /// 倍数就是位数，
+    /// 模数就是具体显示内容
+    /// </summary>
+    /// <param name="number"></param>
+    /// <returns></returns>
+    public string ToString(long number)
+    {
+        if (number == 0) return number.ToString();
+        List<string> result = new List<string>();
+        long t = number;
+        do
+        {
+            var mod = t % Length;
+            t = Math.Abs(t / Length);
+            var character = FormatString[Convert.ToInt32(mod)].ToString();
+            result.Insert(0, character);
+        }
+        while (t > 0);
+        return string.Join("", result.ToArray());
+    }
+
+    /// <summary>
+    /// 指定字符串转换为指定进制的数字形式，
+    /// 显示内容的位置就是模，
+    /// 位数就倍数
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public long FromString(string str)
+    {
+        long result = 0;
+        int j = 0;
+        foreach (var ch in str.ToCharArray().Reverse().ToArray())
+        {
+            if (FormatString.Contains(ch))
+            {
+                result += FormatString.IndexOf(ch) * ((long)Math.Pow(Length, j));
+                j++;
+            }
+        }
+        return result;
+    }
+    /// <summary>
+    /// 将数字转换成指定格式进制
+    /// </summary>
+    /// <param name="number"></param>
+    /// <param name="formatStr"></param>
+    /// <returns></returns>
+    public static string ToString(long number, string formatStr)
+    {
+        var num = new HexConverter(formatStr);
+        return num.ToString(number);
+    }
+    /// <summary>
+    /// 将数字转换成指定进制
+    /// </summary>
+    /// <param name="number"></param>
+    /// <param name="hexSize"></param>
+    /// <returns></returns>
+    public static string ToString(long number, int hexSize = 2)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < hexSize; i++)
+        {
+            if (i > 61)
+            {
+                sb.Append(Convert.ToChar(65 + i - 62));
+            }
+            if (i > 35)
+            {
+                sb.Append(Convert.ToChar(65 + i - 36));
+            }
+            else if (i > 9)
+            {
+                sb.Append(Convert.ToChar(87 + i));
+            }
+            else
+                sb.Append(i);
+        }
+        return ToString(number, sb.ToString());
+    }
+
+    /// <summary>
+    /// 将指定字符从指定格式进制还原成数字
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="formatStr"></param>
+    /// <returns></returns>
+    public static long FromString(string str, string formatStr)
+    {
+        var num = new HexConverter(formatStr);
+        return num.FromString(str);
+    }
+    /// <summary>
+    /// 将指定字符从指定进制还原成数字
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="hexSize"></param>
+    /// <returns></returns>
+    public static long FromString(string str, int hexSize = 2)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < hexSize; i++)
+        {
+            if (i > 61)
+            {
+                sb.Append(Convert.ToChar(65 + i - 62));
+            }
+            if (i > 35)
+            {
+                sb.Append(Convert.ToChar(65 + i - 36));
+            }
+            else if (i > 9)
+            {
+                sb.Append(Convert.ToChar(87 + i));
+            }
+            else
+                sb.Append(i);
+        }
+        return FromString(str, sb.ToString());
+    }
 }
