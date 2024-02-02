@@ -9,10 +9,19 @@ namespace Bing.Conversions;
 public static class Hex
 {
     /// <summary>
+    /// 将字节转换成十六进制字符串。
+    /// </summary>
+    /// <param name="byte">字节数组</param>
+    /// <returns>十六进制字符串</returns>
+    /// <example>in: (byte)128; out: 80</example>
+    public static string ToString(byte @byte) => @byte.ToString("X2");
+
+    /// <summary>
     /// 将字节数组转换成十六进制字符串。
     /// </summary>
     /// <param name="bytes">字节数组</param>
     /// <returns>十六进制字符串</returns>
+    /// <example>in: new byte[] {65, 66, 67}; out: 414243</example>
     public static string ToString(byte[] bytes)
     {
         var sb = new StringBuilder(bytes.Length * 3);
@@ -30,11 +39,11 @@ public static class Hex
     {
         if (hex == null)
             return [0];
-        if(hex.Length==0)
+        if (hex.Length == 0)
             return [0];
         if (hex.Length % 2 == 1)
             hex = "0" + hex;
-        var result =new byte[hex.Length / 2];
+        var result = new byte[hex.Length / 2];
         for (var i = 0; i < hex.Length / 2; i++)
             result[i] = byte.Parse(hex.Substring(2 * i, 2), NumberStyles.AllowHexSpecifier);
         return result;
