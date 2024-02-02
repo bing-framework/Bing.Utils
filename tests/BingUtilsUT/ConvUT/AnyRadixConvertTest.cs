@@ -1,8 +1,11 @@
-﻿namespace Bing.Conversions;
+﻿using Bing.Conversions;
+
+namespace BingUtilsUT.ConvUT;
 
 /// <summary>
 /// 任意[2,62]进制转换器 测试
 /// </summary>
+[Trait("ConvUT", "AnyRadixConvert")]
 public class AnyRadixConvertTest
 {
     /// <summary>
@@ -16,12 +19,12 @@ public class AnyRadixConvertTest
         AnyRadixConvert.X2X("101110", 2, 10).ShouldBe("46");
         AnyRadixConvert.X2X("101110", 2, 16).ShouldBe("2E");
         // 8 -> [2,10,16]
-        AnyRadixConvert.X2X("140", 8,2).ShouldBe("1100000");
-        AnyRadixConvert.X2X("140", 8,10).ShouldBe("96");
+        AnyRadixConvert.X2X("140", 8, 2).ShouldBe("1100000");
+        AnyRadixConvert.X2X("140", 8, 10).ShouldBe("96");
         AnyRadixConvert.X2X("140", 8, 16).ShouldBe("60");
         // 10 -> [2,8,16]
-        AnyRadixConvert.X2X("128", 10,2).ShouldBe("10000000");
-        AnyRadixConvert.X2X("128", 10,8).ShouldBe("200");
+        AnyRadixConvert.X2X("128", 10, 2).ShouldBe("10000000");
+        AnyRadixConvert.X2X("128", 10, 8).ShouldBe("200");
         AnyRadixConvert.X2X("128", 10, 16).ShouldBe("80");
         // 16 -> [2,8,10]
         AnyRadixConvert.X2X("2E", 16, 2).ShouldBe("101110");
@@ -116,6 +119,76 @@ public class AnyRadixConvertTest
     public void Test_DecToHex()
     {
         AnyRadixConvert.DecToHex("46").ShouldBe("2E");
-        AnyRadixConvert.DecToHex(46,4).ShouldBe("002E");
+        AnyRadixConvert.DecToHex("46", 4).ShouldBe("002E");
+        AnyRadixConvert.DecToHex(46).ShouldBe("2E");
+        AnyRadixConvert.DecToHex(65, 66).ShouldBe("4142");
+        AnyRadixConvert.DecToHex(66, 65).ShouldBe("4241");
+    }
+
+    /// <summary>
+    /// 测试 - 十六进制值转换为二进制值
+    /// </summary>
+    [Fact]
+    public void Test_HexToBin()
+    {
+        AnyRadixConvert.HexToBin("2E").ShouldBe("101110");
+    }
+
+    /// <summary>
+    /// 测试 - 十六进制值转换为十进制值
+    /// </summary>
+    [Fact]
+    public void Test_HexToDec()
+    {
+        AnyRadixConvert.HexToDec("2E").ShouldBe("46");
+    }
+
+    /// <summary>
+    /// 测试 - 将字符串转换为十六进制数的字符串
+    /// </summary>
+    [Fact]
+    public void Test_LettersToHex()
+    {
+        AnyRadixConvert.LettersToHex("ABC").ShouldBe("41 42 43");
+        AnyRadixConvert.HexToLetters("41 42 43").ShouldBe("ABC");
+    }
+
+    /// <summary>
+    /// 测试 - 将长十六进制字符串转换为十进制字节数组
+    /// </summary>
+    [Fact]
+    public void Test_LongHexToDecBytes()
+    {
+        var byteArray = AnyRadixConvert.LongHexToDecBytes("41 42 43");
+
+        byteArray.Length.ShouldBe(3);
+        byteArray[0].ShouldBe((byte) 65);
+        byteArray[1].ShouldBe((byte) 66);
+        byteArray[2].ShouldBe((byte) 67);
+
+        var longHex = AnyRadixConvert.DecBytesToLongHex(byteArray);
+
+        longHex.ShouldNotBeEmpty();
+        longHex.ShouldBe("41 42 43");
+    }
+
+    /// <summary>
+    /// 测试 - 二进制 - 高低位交换
+    /// </summary>
+    [Fact]
+    public void Test_Bin_Reverse()
+    {
+        Bin.Reverse("1101110100000011010110100001110").ShouldBe("00001110101011011000000101101110");
+        Bin.Reverse("01101110100000011010110100001110").ShouldBe("00001110101011011000000101101110");
+    }
+
+    /// <summary>
+    /// 测试 - 十六进制 - 高低位交换
+    /// </summary>
+    [Fact]
+    public void Test_Hex_Reverse()
+    {
+        Hex.Reverse("E81AD0E").ShouldBe("0EAD810E");
+        Hex.Reverse("6E81AD0E").ShouldBe("0EAD816E");
     }
 }
