@@ -5,6 +5,30 @@ using Bing.Conversions.Internals;
 namespace Bing.Conversions;
 
 /// <summary>
+/// 进制字符集策略
+/// </summary>
+public enum RadixCharsetStrategy
+{
+    /// <summary>
+    /// 数字 + 小写字母 + 大写字母
+    /// </summary>
+    LowerFirst,
+
+    /// <summary>
+    /// 数字 + 大写字母 + 小写字母，避免视觉上容易混淆的字符集
+    /// </summary>
+    /// <remarks>
+    /// 26进制：使用全小写字母作为26进制的字符集。<br />
+    /// 32进制：修正32进制字符集，仅包含数字和大写字母，排除易混淆的I、O、L等。<br />
+    /// 36进制：包含数字和小写字母。<br />
+    /// 52进制：包含小写和大写字母，不包含数字。<br />
+    /// 58进制：避开视觉上相似的字符，常用于加密货币。<br />
+    /// 62进制：完整混合了数字、小写和大写字母。<br />
+    /// </remarks>
+    AvoidConfusion
+}
+
+/// <summary>
 /// 任意[2,62]进制转换器
 /// </summary>
 public static class AnyRadixConvert
@@ -12,12 +36,14 @@ public static class AnyRadixConvert
     /// <summary>
     /// X 进制转换为 Y 进制，通用进制转换入口
     /// </summary>
+    /// <remarks>注意：该方法的进制字符排序为先大写后小写。</remarks>
     /// <param name="things">要转换的字符串。</param>
     /// <param name="baseOfSource">源数制的基数。</param>
     /// <param name="baseOfTarget">目标数制的基数。</param>
+    /// <param name="strategy">进制字符集策略</param>
     /// <returns>转换后的字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string X2X(string things, int baseOfSource, int baseOfTarget) => ScaleConvHelper.ThingsToThings(things, baseOfSource, baseOfTarget);
+    public static string X2X(string things, int baseOfSource, int baseOfTarget, RadixCharsetStrategy strategy = RadixCharsetStrategy.AvoidConfusion) => ScaleConvHelper.ThingsToThings(things, baseOfSource, baseOfTarget, strategy);
 
     #region Binary(二进制)
 
