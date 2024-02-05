@@ -1,5 +1,4 @@
-﻿using Bing.Conversions;
-using Bing.Text;
+﻿using Bing.Text;
 
 namespace Bing;
 
@@ -139,7 +138,7 @@ public static class ByteExtensions
     /// 转换为Base64字符串
     /// </summary>
     /// <param name="inArray">byte[]</param>
-    public static string ToBase64String(this byte[] inArray) => Base64Converter.ToBase64String(inArray);
+    public static string ToBase64String(this byte[] inArray) => Convert.ToBase64String(inArray);
 
     /// <summary>
     /// 转换为Base64字符串
