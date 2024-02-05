@@ -167,14 +167,4 @@ public static class ByteExtensions
         Base64FormattingOptions options) => Convert.ToBase64String(inArray, offset, length, options);
 
     #endregion
-
-    #region ToMemoryStream
-
-    /// <summary>
-    /// 转换为内存流
-    /// </summary>
-    /// <param name="this">byte[]</param>
-    public static MemoryStream ToMemoryStream(this byte[] @this) => new MemoryStream(@this);
-
-    #endregion
 }

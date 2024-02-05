@@ -8,21 +8,6 @@ namespace Bing.Extensions;
 /// </summary>
 public static class ByteArrayExtensions
 {
-    #region ToString(将byte[]转换成字符串)
-
-    /// <summary>
-    /// 将byte[]转换成字符串，默认字符编码：<see cref="Encoding.UTF8"/>
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="encoding">字符编码</param>
-    public static string ToString(this byte[] value, Encoding encoding)
-    {
-        encoding = (encoding ?? Encoding.UTF8);
-        return encoding.GetString(value);
-    }
-
-    #endregion
-
     #region ToHexString(将byte[]转换成16进制字符串表示形式)
 
     /// <summary>
@@ -100,16 +85,6 @@ public static class ByteArrayExtensions
     /// </summary>
     /// <param name="value">值</param>
     public static string ToBase64String(this byte[] value) => Convert.ToBase64String(value);
-
-    #endregion
-
-    #region ToMemoryStream(将byte[]转换成内存流)
-
-    /// <summary>
-    /// 将byte[]转换成内存流
-    /// </summary>
-    /// <param name="value">值</param>
-    public static MemoryStream ToMemoryStream(this byte[] value) => new MemoryStream(value);
 
     #endregion
 
