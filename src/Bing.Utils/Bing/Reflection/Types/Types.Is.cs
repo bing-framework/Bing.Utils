@@ -9,12 +9,12 @@ namespace Bing.Reflection;
 public enum TypeIsOptions
 {
     /// <summary>
-    /// 默认
+    /// 默认，执行标准的枚举类型检查。
     /// </summary>
     Default = 0,
 
     /// <summary>
-    /// 忽略可空
+    /// 略可空类型的包装，直接检查其基础类型。
     /// </summary>
     IgnoreNullable = 1
 }
@@ -30,6 +30,7 @@ internal static partial class TypeExtensions
     /// <typeparam name="T">类型</typeparam>
     /// <param name="value">值</param>
     // ReSharper disable once IdentifierTypo
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Type GetUnboxedType<T>(this T value) => typeof(T);
 }
 
