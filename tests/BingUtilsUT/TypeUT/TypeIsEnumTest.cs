@@ -1,5 +1,4 @@
 ﻿using Bing.Reflection;
-using BingUtilsUT.Samples;
 
 namespace BingUtilsUT.TypeUT;
 

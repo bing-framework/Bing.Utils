@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using Bing.Reflection;
-using Bing.Utils.Tests.Samples;
-using System.Linq;
 
-namespace Bing.Utils.Tests.TypeUT;
+namespace BingUtilsUT.TypeUT;
 
 [Trait("TypeUT ", "TypeOfTests")]
 public class TypeOfTests
