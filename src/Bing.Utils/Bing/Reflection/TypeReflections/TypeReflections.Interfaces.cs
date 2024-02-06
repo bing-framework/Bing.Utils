@@ -7,11 +7,15 @@ namespace Bing.Reflection;
 public enum InterfaceOptions
 {
     /// <summary>
-    /// 默认
+    /// 默认选项。
+    /// 在默认情况下，接口的处理会考虑所有的特性，包括泛型参数。
     /// </summary>
     Default = 0,
+
     /// <summary>
-    /// 忽略泛型参数
+    /// 忽略泛型参数。
+    /// 在处理接口时，这个选项指示应忽略接口的泛型参数，只关注接口本身的定义。
+    /// 例如，对于泛型接口`IMyInterface{T}`，与其具体的泛型实例`IMyInterface{string}`将被视为相同。
     /// </summary>
     IgnoreGenericArgs = 1
 }
