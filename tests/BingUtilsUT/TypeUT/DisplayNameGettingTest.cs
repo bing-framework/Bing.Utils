@@ -53,7 +53,7 @@ public class DisplayNameGettingTest
     }
 
     /// <summary>
-    /// 测试 - 类级别 - 获取描述
+    /// 测试 - 类级别 - 获取显示名称
     /// </summary>
     [Fact]
     public void Test_ClassLevel_Description_Getting()
@@ -84,7 +84,7 @@ public class DisplayNameGettingTest
     }
 
     /// <summary>
-    /// 测试 - 属性级别 - 获取描述
+    /// 测试 - 属性级别 - 获取显示名称
     /// </summary>
     [Fact]
     public void Test_PropertyLevel_Description_Getting()
@@ -107,7 +107,7 @@ public class DisplayNameGettingTest
     }
 
     /// <summary>
-    /// 测试 - 字段级别 - 获取描述
+    /// 测试 - 字段级别 - 获取显示名称
     /// </summary>
     [Fact]
     public void Test_FieldLevel_Description_Getting()
@@ -130,7 +130,7 @@ public class DisplayNameGettingTest
     }
 
     /// <summary>
-    /// 测试 - 方法级别 - 获取描述
+    /// 测试 - 方法级别 - 获取显示名称
     /// </summary>
     [Fact]
     public void Test_MethodLevel_Description_Getting()
@@ -153,7 +153,7 @@ public class DisplayNameGettingTest
     }
 
     /// <summary>
-    /// 测试 - 参数级别 - 获取描述
+    /// 测试 - 参数级别 - 获取显示名称
     /// </summary>
     [Fact]
     public void Test_ParameterLevel_Description_Getting()
