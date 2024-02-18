@@ -4,31 +4,41 @@
 namespace Bing.Reflection;
 
 /// <summary>
-/// 反射选项
+/// 定义在反射操作中使用的选项。
 /// </summary>
 public enum ReflectionOptions
 {
     /// <summary>
-    /// 默认
+    /// 默认选项。
+    /// 使用此选项时，反射操作将不自动考虑继承链，只处理当前类型声明的成员。
     /// </summary>
     Default = 0,
+
     /// <summary>
-    /// 继承
+    /// 继承选项。
+    /// 使用此选项时，反射操作将考虑类型的继承链，包括从基类继承的成员。
+    /// 这对于需要搜索整个继承层次结构中的成员时特别有用。
     /// </summary>
     Inherit = 1
 }
 
 /// <summary>
-/// 反射歧义选项
+/// 定义在使用反射搜索成员时如何处理存在歧义的情况的选项。
 /// </summary>
 public enum ReflectionAmbiguousOptions
 {
     /// <summary>
-    /// 默认
+    /// 默认选项。
+    /// 使用此选项时，如果存在歧义（例如，多个同名成员满足搜索条件），反射操作将抛出异常。
+    /// 这确保了搜索结果的明确性，要求调用者处理可能的歧义。
     /// </summary>
     Default = 0,
+
     /// <summary>
-    /// 忽略歧义
+    /// 忽略歧义选项。
+    /// 使用此选项时，反射操作在遇到歧义情况（例如，有多个符合条件的成员）时不会抛出异常，
+    /// 而是选择其中一个成员（具体哪一个可能依赖于反射API的实现细节）。
+    /// 这对于调用者来说提供了便利，但在某些情况下可能会牺牲结果的准确性。
     /// </summary>
     IgnoreAmbiguous = 1
 }
@@ -510,7 +520,7 @@ public static partial class TypeReflections
 
     #endregion
 
-    #region GetRequiredAttribute
+    #region GetAttributeRequired
 
     /// <summary>
     /// 从成员信息中获取指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -518,7 +528,7 @@ public static partial class TypeReflections
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="member">成员元数据</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TAttribute GetRequiredAttribute<TAttribute>(MemberInfo member) where TAttribute : Attribute => GetAttribute<TAttribute>(member).AttrRequired($"There is no {typeof(TAttribute)} attribute can be found.");
+    public static TAttribute GetAttributeRequired<TAttribute>(MemberInfo member) where TAttribute : Attribute => GetAttribute<TAttribute>(member).AttrRequired($"There is no {typeof(TAttribute)} attribute can be found.");
 
     /// <summary>
     /// 从成员信息中获取指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -526,7 +536,7 @@ public static partial class TypeReflections
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="parameter">参数元数据</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TAttribute GetRequiredAttribute<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => GetAttribute<TAttribute>(parameter).AttrRequired($"There is no {typeof(TAttribute)} attribute can be found.");
+    public static TAttribute GetAttributeRequired<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => GetAttribute<TAttribute>(parameter).AttrRequired($"There is no {typeof(TAttribute)} attribute can be found.");
 
     /// <summary>
     /// 从成员信息中获取指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -536,7 +546,7 @@ public static partial class TypeReflections
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TAttribute GetRequiredAttribute<TAttribute>(MemberInfo member, ReflectionOptions refOptions,
+    public static TAttribute GetAttributeRequired<TAttribute>(MemberInfo member, ReflectionOptions refOptions,
         ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default) where TAttribute : Attribute
     {
         var val = ambOptions switch
@@ -557,7 +567,7 @@ public static partial class TypeReflections
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TAttribute GetRequiredAttribute<TAttribute>(ParameterInfo parameter, ReflectionOptions refOptions,
+    public static TAttribute GetAttributeRequired<TAttribute>(ParameterInfo parameter, ReflectionOptions refOptions,
         ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default) where TAttribute : Attribute
     {
         var val = ambOptions switch
@@ -576,7 +586,7 @@ public static partial class TypeReflections
     /// <param name="member">成员元数据</param>
     /// <param name="attributeType">特性类型</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Attribute GetRequiredAttribute(MemberInfo member, Type attributeType) => GetAttribute(member, attributeType).AttrRequired($"There is no {attributeType} attribute can be found.");
+    public static Attribute GetAttributeRequired(MemberInfo member, Type attributeType) => GetAttribute(member, attributeType).AttrRequired($"There is no {attributeType} attribute can be found.");
 
     /// <summary>
     /// 从成员信息中获取指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -584,7 +594,7 @@ public static partial class TypeReflections
     /// <param name="parameter">参数元数据</param>
     /// <param name="attributeType">特性类型</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Attribute GetRequiredAttribute(ParameterInfo parameter, Type attributeType) => GetAttribute(parameter, attributeType).AttrRequired($"There is no {attributeType} attribute can be found.");
+    public static Attribute GetAttributeRequired(ParameterInfo parameter, Type attributeType) => GetAttribute(parameter, attributeType).AttrRequired($"There is no {attributeType} attribute can be found.");
 
     /// <summary>
     /// 从成员信息中获取指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -594,7 +604,7 @@ public static partial class TypeReflections
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Attribute GetRequiredAttribute(MemberInfo member, Type attributeType, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default)
+    public static Attribute GetAttributeRequired(MemberInfo member, Type attributeType, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default)
     {
         var val = ambOptions switch
         {
@@ -613,7 +623,7 @@ public static partial class TypeReflections
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Attribute GetRequiredAttribute(ParameterInfo parameter, Type attributeType, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default)
+    public static Attribute GetAttributeRequired(ParameterInfo parameter, Type attributeType, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions = ReflectionAmbiguousOptions.Default)
     {
         var val = ambOptions switch
         {
@@ -626,7 +636,7 @@ public static partial class TypeReflections
 
     #endregion
 
-    #region GetRequiredAttributes
+    #region GetAttributesRequired
 
     /// <summary>
     /// 从成员信息中获取一组指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -634,7 +644,7 @@ public static partial class TypeReflections
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="member">成员元数据</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<TAttribute> GetRequiredAttributes<TAttribute>(MemberInfo member) where TAttribute : Attribute => GetAttributes<TAttribute>(member).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
+    public static IEnumerable<TAttribute> GetAttributesRequired<TAttribute>(MemberInfo member) where TAttribute : Attribute => GetAttributes<TAttribute>(member).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
 
     /// <summary>
     /// 从成员信息中获取一组指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -642,7 +652,7 @@ public static partial class TypeReflections
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="parameter">参数元数据</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<TAttribute> GetRequiredAttributes<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => GetAttributes<TAttribute>(parameter).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
+    public static IEnumerable<TAttribute> GetAttributesRequired<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => GetAttributes<TAttribute>(parameter).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
 
     /// <summary>
     /// 从成员信息中获取一组指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -651,7 +661,7 @@ public static partial class TypeReflections
     /// <param name="member">成员元数据</param>
     /// <param name="refOptions">反射选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<TAttribute> GetRequiredAttributes<TAttribute>(MemberInfo member, ReflectionOptions refOptions) where TAttribute : Attribute => GetAttributes<TAttribute>(member, refOptions).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
+    public static IEnumerable<TAttribute> GetAttributesRequired<TAttribute>(MemberInfo member, ReflectionOptions refOptions) where TAttribute : Attribute => GetAttributes<TAttribute>(member, refOptions).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
 
     /// <summary>
     /// 从成员信息中获取一组指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -660,7 +670,7 @@ public static partial class TypeReflections
     /// <param name="parameter">参数元数据</param>
     /// <param name="refOptions">反射选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<TAttribute> GetRequiredAttributes<TAttribute>(ParameterInfo parameter, ReflectionOptions refOptions) where TAttribute : Attribute => GetAttributes<TAttribute>(parameter, refOptions).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
+    public static IEnumerable<TAttribute> GetAttributesRequired<TAttribute>(ParameterInfo parameter, ReflectionOptions refOptions) where TAttribute : Attribute => GetAttributes<TAttribute>(parameter, refOptions).AttrRequired($"There is no any {typeof(TAttribute)} attributes can be found.");
 
     /// <summary>
     /// 从成员信息中获取一组指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -668,7 +678,7 @@ public static partial class TypeReflections
     /// <param name="member">成员元数据</param>
     /// <param name="attributeType">特性类型</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<Attribute> GetRequiredAttributes(MemberInfo member, Type attributeType) => GetAttributes(member, attributeType).AttrRequired($"There is no any {attributeType} attributes can be found.");
+    public static IEnumerable<Attribute> GetAttributesRequired(MemberInfo member, Type attributeType) => GetAttributes(member, attributeType).AttrRequired($"There is no any {attributeType} attributes can be found.");
 
     /// <summary>
     /// 从成员信息中获取一组指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -676,7 +686,7 @@ public static partial class TypeReflections
     /// <param name="parameter">参数元数据</param>
     /// <param name="attributeType">特性类型</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<Attribute> GetRequiredAttributes(ParameterInfo parameter, Type attributeType) => GetAttributes(parameter, attributeType).AttrRequired($"There is no any {attributeType} attributes can be found.");
+    public static IEnumerable<Attribute> GetAttributesRequired(ParameterInfo parameter, Type attributeType) => GetAttributes(parameter, attributeType).AttrRequired($"There is no any {attributeType} attributes can be found.");
 
     /// <summary>
     /// 从成员信息中获取一组指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -685,7 +695,7 @@ public static partial class TypeReflections
     /// <param name="attributeType">特性类型</param>
     /// <param name="refOptions">反射选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<Attribute> GetRequiredAttributes(MemberInfo member, Type attributeType, ReflectionOptions refOptions) => GetAttributes(member, attributeType, refOptions).AttrRequired($"There is no any {attributeType} attributes can be found.");
+    public static IEnumerable<Attribute> GetAttributesRequired(MemberInfo member, Type attributeType, ReflectionOptions refOptions) => GetAttributes(member, attributeType, refOptions).AttrRequired($"There is no any {attributeType} attributes can be found.");
 
     /// <summary>
     /// 从成员信息中获取一组指定的 <see cref="Attribute"/> 实例，如果获取失败则抛出异常
@@ -694,7 +704,7 @@ public static partial class TypeReflections
     /// <param name="attributeType">特性类型</param>
     /// <param name="refOptions">反射选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<Attribute> GetRequiredAttributes(ParameterInfo parameter, Type attributeType, ReflectionOptions refOptions) => GetAttributes(parameter, attributeType, refOptions).AttrRequired($"There is no any {attributeType} attributes can be found.");
+    public static IEnumerable<Attribute> GetAttributesRequired(ParameterInfo parameter, Type attributeType, ReflectionOptions refOptions) => GetAttributes(parameter, attributeType, refOptions).AttrRequired($"There is no any {attributeType} attributes can be found.");
 
     #endregion
 
