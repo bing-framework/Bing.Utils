@@ -192,6 +192,34 @@ public static partial class Strings
         }
         return new string(holder);
     }
+
+    /// <summary>
+    /// 替换指定字符串的指定区间内字符为固定字符。
+    /// </summary>
+    /// <param name="text">待处理的字符串。</param>
+    /// <param name="startInclude">替换起始位置（包含该位置字符）。</param>
+    /// <param name="endExclude">替换结束位置（不包含该位置字符）。</param>
+    /// <param name="replacedChar">用于替换的字符。</param>
+    /// <returns>处理后的字符串，指定范围内的字符被<paramref name="replacedChar"/>替换。</returns>
+    /// <remarks>
+    /// 如果输入的字符串为空或仅包含空白字符，或者<paramref name="startInclude"/>大于等于字符串的长度，
+    /// 或<paramref name="startInclude"/>大于<paramref name="endExclude"/>，方法将返回原始字符串。
+    /// <paramref name="endExclude"/>如果超过字符串长度，将被调整为字符串的实际长度，以避免越界访问。
+    /// </remarks>
+    public static string Replace(string text, int startInclude, int endExclude, char replacedChar)
+    {
+        if (text is null)
+            return null;
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+        if (startInclude >= text.Length || startInclude > endExclude)
+            return text;
+        endExclude = Math.Min(endExclude, text.Length);
+        var sb = new StringBuilder(text.Length);
+        for (var i = 0; i < text.Length; i++)
+            sb.Append(i >= startInclude && i < endExclude ? replacedChar : text[i]);
+        return sb.ToString();
+    }
 }
 
 /// <summary>

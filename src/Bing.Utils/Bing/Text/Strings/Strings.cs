@@ -733,6 +733,19 @@ public static partial class Strings
     }
 
     #endregion
+
+    #region Hide
+
+    /// <summary>
+    /// 替换指定字符串的指定区间内字符为"*"。[俗称:脱敏]
+    /// </summary>
+    /// <param name="text">要隐藏部分文本的原始字符串。</param>
+    /// <param name="startInclude">开始隐藏文本的起始索引（包含该索引位置的字符）。</param>
+    /// <param name="endExclude">停止隐藏文本的结束索引（不包含该索引位置的字符）。</param>
+    /// <returns>处理后的字符串，其中指定范围内的字符被星号替换。</returns>
+    public static string Hide(string text, int startInclude, int endExclude) => Replace(text, startInclude, endExclude, '*');
+
+    #endregion
 }
 
 /// <summary>

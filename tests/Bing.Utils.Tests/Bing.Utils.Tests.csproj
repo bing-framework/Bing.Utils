@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Net\FTP\" />
-    <Folder Include="Text\Strings\" />
   </ItemGroup>
 
 	<ItemGroup>
