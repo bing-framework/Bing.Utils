@@ -94,7 +94,7 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     public override bool CanSeek => true;
 
     /// <summary>
-    /// 科协
+    /// 可写
     /// </summary>
     public override bool CanWrite => true;
 
