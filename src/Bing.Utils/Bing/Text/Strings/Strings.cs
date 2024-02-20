@@ -746,6 +746,20 @@ public static partial class Strings
     public static string Hide(string text, int startInclude, int endExclude) => Replace(text, startInclude, endExclude, '*');
 
     #endregion
+
+    #region Clean
+
+    /// <summary>
+    /// 清理空白字符
+    /// </summary>
+    /// <param name="text">文本</param>
+    /// <returns>清理后的字符串</returns>
+    public static string CleanBlank(string text)
+    {
+        return Merge(FilterByChar(text, c => CharJudge.IsBlankChar(c) == false));
+    }
+
+    #endregion
 }
 
 /// <summary>

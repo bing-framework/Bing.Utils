@@ -1,4 +1,6 @@
-﻿namespace BingUtilsUT.StringUT;
+﻿using Bing.Text;
+
+namespace BingUtilsUT.StringUT;
 
 [Trait("StringUT", "Strings.Remove")]
 public class StringRemoveTest
@@ -21,7 +23,7 @@ public class StringRemoveTest
     [InlineData("\r\na", "\r\n", "a")]
     public void Test_RemoveStart(string value, string removeValue, string result)
     {
-        Assert.Equal(result, Bing.Text.Strings.RemoveStart(value, removeValue));
+        Assert.Equal(result, Strings.RemoveStart(value, removeValue));
     }
 
     /// <summary>
@@ -41,6 +43,16 @@ public class StringRemoveTest
     [InlineData("a\r\n", "\r\n", "a")]
     public void Test_RemoveEnd(string value, string removeValue, string result)
     {
-        Assert.Equal(result, Bing.Text.Strings.RemoveEnd(value, removeValue));
+        Assert.Equal(result, Strings.RemoveEnd(value, removeValue));
+    }
+
+    /// <summary>
+    /// 测试 - 清理空白字符
+    /// </summary>
+    [Fact]
+    public void Test_CleanBlank()
+    {
+        var str = "	 你 好　";
+        Strings.CleanBlank(str).ShouldBe("你好");
     }
 }
