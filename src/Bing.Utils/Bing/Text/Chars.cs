@@ -41,5 +41,4 @@ public static class Chars
     public static string Repeat(char @char, int repeatTimes) => repeatTimes <= 0 ? string.Empty : new string(@char, repeatTimes);
 
     #endregion
-    
 }
