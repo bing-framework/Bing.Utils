@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Bing.Helpers;
-using Xunit.Abstractions;
+﻿using Bing.Helpers;
 
 namespace Bing.Utils.Tests.Helpers;
 

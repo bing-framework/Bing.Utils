@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Bing.Threading;
+﻿using Bing.Threading;
 
 namespace Bing.Utils.Tests.Threading;
 

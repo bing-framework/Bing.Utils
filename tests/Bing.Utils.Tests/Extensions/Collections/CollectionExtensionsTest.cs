@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bing.Utils.Tests.Extensions;
+﻿namespace Bing.Utils.Tests.Extensions;
 
 /// <summary>
 /// 集合 扩展测试

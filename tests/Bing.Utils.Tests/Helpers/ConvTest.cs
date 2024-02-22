@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Bing.Helpers;
+﻿using Bing.Helpers;
 using Bing.Tests.Samples;
 
 namespace Bing.Utils.Tests.Helpers;

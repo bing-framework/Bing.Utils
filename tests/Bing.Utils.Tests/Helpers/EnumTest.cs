@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Bing.Tests.Samples;
+﻿using Bing.Tests.Samples;
 using Bing.Tests.XUnitHelpers;
 using Enum = Bing.Helpers.Enum;
 

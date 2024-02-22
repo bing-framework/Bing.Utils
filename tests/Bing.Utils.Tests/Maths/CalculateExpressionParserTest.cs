@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Bing.Utils.Maths;
+﻿using Bing.Utils.Maths;
 
 namespace Bing.Utils.Tests.Maths;
 

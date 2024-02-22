@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Bing.Utils.Develops;
+﻿using Bing.Utils.Develops;
 using Bing.Utils.IdGenerators.Core;
-using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.IdGenerators;
 

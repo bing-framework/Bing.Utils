@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Bing.Expressions;
+﻿using Bing.Expressions;
 using Bing.Tests.Samples;
 
 // ReSharper disable once CheckNamespace

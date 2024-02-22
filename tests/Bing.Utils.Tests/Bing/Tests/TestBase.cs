@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Xunit.Abstractions;
-
-namespace Bing.Tests;
+﻿namespace Bing.Tests;
 
 /// <summary>
 /// 测试基类

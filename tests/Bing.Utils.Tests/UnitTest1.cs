@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Bing.Collections;
+﻿using Bing.Collections;
 using Bing.Extensions;
 using Bing.Helpers;
 using Bing.IO;

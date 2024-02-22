@@ -1,6 +1,4 @@
-﻿using System.Text;
-using Bing.Drawing;
-using Xunit.Abstractions;
+﻿using Bing.Drawing;
 
 namespace Bing.Utils.Tests.Drawing;
 
