@@ -1,9 +1,9 @@
 ﻿using Bing.Collections;
 
-namespace Bing.Utils.Tests.Collections;
+namespace BingUtilsUT.ConvUT;
 
 [Trait("ConvUT","Dict")]
-public class DictConvTests
+public class DictConvTest
 {
     /// <summary>
     /// 测试 - 将字典转换为其它

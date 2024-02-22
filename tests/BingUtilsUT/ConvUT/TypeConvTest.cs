@@ -1,12 +1,12 @@
 ﻿using Bing.Reflection;
 
-namespace Bing.Utils.Tests.ConvUT;
+namespace BingUtilsUT.ConvUT;
 
 /// <summary>
 /// 类型转换操作单元测试
 /// </summary>
 [Trait("TypeUT", "TypeConv")]
-public class TypeConvTests
+public class TypeConvTest
 {
     /// <summary>
     /// 测试 - 可空基础类型转换为不可空基础类型

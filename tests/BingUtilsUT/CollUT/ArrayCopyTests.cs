@@ -1,6 +1,6 @@
 ﻿using Bing.Collections;
 
-namespace Bing.Utils.Tests.Collections;
+namespace BingUtilsUT.CollUT;
 
 /// <summary>
 /// 数组克隆
