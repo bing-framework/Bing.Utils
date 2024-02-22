@@ -10,7 +10,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Xunit.DependencyInjection.Logging" Version="8.0.1" />
-		<PackageReference Include="Shouldly" Version="4.1.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Bing.Reflection;
+﻿using Bing.Reflection;
 
 namespace BingUtilsUT.TypeUT;
 

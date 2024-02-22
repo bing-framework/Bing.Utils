@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BingUtilsUT.Samples;
+﻿namespace BingUtilsUT.Samples;
 
 public class NormalValueTypeClass
 {

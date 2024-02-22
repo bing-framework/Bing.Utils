@@ -1,5 +1,4 @@
 ﻿using Bing.IdUtils;
-using Xunit.Abstractions;
 
 namespace BingUtilsUT.IdUtilsUT;
 

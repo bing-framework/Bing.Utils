@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<RootNamespace />
 		<TargetFrameworks>net8.0;net7.0;net6.0;net5.0;netcoreapp3.1;</TargetFrameworks>
@@ -6,12 +6,6 @@
 	</PropertyGroup>
 
 	<Import Project="..\..\common.tests.props" />
-
-	<ItemGroup>
-		<PackageReference Include="Shouldly" Version="4.2.1" />
-		<PackageReference Include="coverlet.collector" Version="6.0.0" />
-		<DotNetCliToolReference Include="dotnet-xunit" Version="2.*" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Bing.Utils.DateTime\Bing.Utils.DateTime.csproj" />

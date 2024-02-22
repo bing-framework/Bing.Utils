@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Bing.Text.Splitters;
+﻿using Bing.Text.Splitters;
 
-namespace Bing.Utils.Tests.Text.Splitters;
+namespace BingUtilsUT.SplitterUT;
 
 public class MapSplitterTest
 {

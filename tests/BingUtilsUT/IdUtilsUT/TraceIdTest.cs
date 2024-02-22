@@ -1,5 +1,4 @@
 ﻿using Bing.IdUtils;
-using Xunit.Abstractions;
 
 namespace BingUtilsUT.IdUtilsUT;
 
@@ -9,8 +8,14 @@ namespace BingUtilsUT.IdUtilsUT;
 [Trait("IdUtilsUT", "TraceIdAccessor")]
 public class TraceIdTest
 {
+    /// <summary>
+    /// 测试输出帮助类
+    /// </summary>
     protected ITestOutputHelper Output { get; }
 
+    /// <summary>
+    /// 测试初始化
+    /// </summary>
     public TraceIdTest(ITestOutputHelper output)
     {
         Output = output;

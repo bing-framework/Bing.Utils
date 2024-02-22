@@ -1,7 +1,4 @@
-﻿using System.Text;
-using System.Threading.Tasks;
-using Bing.Helpers;
-using BingUtilsUT.Samples;
+﻿using Bing.Helpers;
 
 namespace BingUtilsUT.JsonUT;
 

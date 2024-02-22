@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
-using Bing.Text.Splitters;
+﻿using Bing.Text.Splitters;
 
-namespace Bing.Utils.Tests.Text.Splitters;
+namespace BingUtilsUT.SplitterUT;
 
 public class SplitterTest
 {
