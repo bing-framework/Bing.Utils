@@ -13,10 +13,7 @@ public static partial class Reflections
     /// </summary>
     /// <typeparam name="T">类型</typeparam>
     /// <param name="name">成员名</param>
-    public static FieldInfo GetField<T>(string name)
-    {
-        return TypeReflections.TypeCacheManager.GetTypeFields(typeof(T)).FirstOrDefault(_ => _.Name == name);
-    }
+    public static FieldInfo GetField<T>(string name) => TypeReflections.TypeCacheManager.GetTypeFields(typeof(T)).FirstOrDefault(_ => _.Name == name);
 
     /// <summary>
     /// 获取指定对象的指定 <see cref="BindingFlags"/> 的字段信息
@@ -120,25 +117,21 @@ public static partial class Reflections
     #region GetProperty(获取指定对象的属性信息)
 
     /// <summary>
-    /// 获取指定对象的属性信息
+    /// 获取指定类型具有指定名称的公共属性。
     /// </summary>
     /// <typeparam name="T">类型</typeparam>
-    /// <param name="name">属性名</param>
-    public static PropertyInfo GetProperty<T>(string name)
-    {
-        return TypeReflections.TypeCacheManager.GetTypeProperties(typeof(T)).FirstOrDefault(_ => _.Name == name);
-    }
+    /// <param name="name">要查找的属性的名称。</param>
+    /// <returns>如果找到具有指定名称的属性，则返回该属性的<see cref="PropertyInfo"/>；否则返回null。</returns>
+    public static PropertyInfo GetProperty<T>(string name) => TypeReflections.TypeCacheManager.GetTypeProperties(typeof(T)).FirstOrDefault(_ => _.Name == name);
 
     /// <summary>
-    /// 获取指定对象的指定 <see cref="BindingFlags"/> 的属性信息
+    /// 获取指定类型具有指定名称和绑定标志的属性信息。
     /// </summary>
     /// <typeparam name="T">类型</typeparam>
-    /// <param name="name">属性名</param>
-    /// <param name="bindingFlags">绑定标记</param>
-    public static PropertyInfo GetProperty<T>(string name, BindingFlags bindingFlags)
-    {
-        return typeof(T).GetProperty(name, bindingFlags);
-    }
+    /// <param name="name">要查找的属性的名称。</param>
+    /// <param name="bindingFlags">用于控制搜索的绑定约束（如公共或非公共、静态或实例等）。</param>
+    /// <returns>匹配指定名称和绑定标志的属性的<see cref="PropertyInfo"/>对象；如果未找到属性，则返回null。</returns>
+    public static PropertyInfo GetProperty<T>(string name, BindingFlags bindingFlags) => typeof(T).GetProperty(name, bindingFlags);
 
     #endregion
 

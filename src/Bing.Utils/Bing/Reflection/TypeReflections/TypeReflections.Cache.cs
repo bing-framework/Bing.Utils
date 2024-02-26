@@ -58,9 +58,10 @@ public static partial class TypeReflections
         internal static readonly ConcurrentDictionary<PropertyInfo, Action<object, object>> PropertyValueSetters = new();
 
         /// <summary>
-        /// 获取指定类型的属性信息数组
+        /// 获取指定类型的所有公共属性，并缓存结果以提高后续访问的性能。
         /// </summary>
         /// <param name="type">类型</param>
+        /// <returns>表示指定类型所有公共属性的<see cref="PropertyInfo"/>数组。</returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static PropertyInfo[] GetTypeProperties(Type type)
         {
@@ -70,9 +71,10 @@ public static partial class TypeReflections
         }
 
         /// <summary>
-        /// 获取指定类型的字段信息数组
+        /// 获取指定类型的所有公共字段，并缓存结果以提高后续访问的性能。
         /// </summary>
         /// <param name="type">类型</param>
+        /// <returns>表示指定类型所有公共字段的<see cref="FieldInfo"/>数组。</returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static FieldInfo[] GetTypeFields(Type type)
         {
