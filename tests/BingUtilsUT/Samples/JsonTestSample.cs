@@ -111,6 +111,21 @@ public class JsonTestSample : IJsonTestSample
 /// <summary>
 /// Json测试样例
 /// </summary>
+public class JsonTestSample2
+{
+    /// <summary>
+    /// 测试long
+    /// </summary>
+    public long Long { get; set; }
+    /// <summary>
+    /// 测试long?
+    /// </summary>
+    public long? NullableLong { get; set; }
+}
+
+/// <summary>
+/// Json测试样例
+/// </summary>
 public interface IJsonTestSample
 {
     /// <summary>
