@@ -1,7 +1,7 @@
-﻿using Bing.Reflection;
-using Bing.Tests.Samples;
+﻿using Bing.Tests.Samples;
+using Bing.Utils.Tests;
 
-namespace Bing.Utils.Tests.Reflection;
+namespace Bing.Reflection;
 
 /// <summary>
 /// 测试反射操作
@@ -14,12 +14,14 @@ public class ReflectionsTest : TestBase
     private readonly Sample _sample;
 
     /// <summary>
-    /// 初始化一个<see cref="TestBase"/>类型的实例
+    /// 测试初始化
     /// </summary>
     public ReflectionsTest(ITestOutputHelper output) : base(output)
     {
         _sample = new Sample();
     }
+
+    #region GetDescription
 
     /// <summary>
     /// 测试 - 获取类成员描述
@@ -43,6 +45,10 @@ public class ReflectionsTest : TestBase
         Assert.Equal("Sample2", Reflections.GetDescription<Sample2>());
     }
 
+    #endregion
+
+    #region GetDisplayName
+
     /// <summary>
     /// 测试 - 显示名
     /// </summary>
@@ -53,6 +59,10 @@ public class ReflectionsTest : TestBase
         Assert.Equal("测试样例2", Reflections.GetDisplayName<Sample2>());
     }
 
+    #endregion
+
+    #region GetDisplayNameOrDescription
+
     /// <summary>
     /// 测试 - 获取类描述或显示名
     /// </summary>
@@ -60,9 +70,176 @@ public class ReflectionsTest : TestBase
     public void Test_GetDescriptionOrDisplayName()
     {
         Assert.Equal("测试样例", Reflections.GetDisplayNameOrDescription<Sample>());
-        Assert.Equal("测试样例2",Reflections.GetDisplayNameOrDescription<Sample2>());
+        Assert.Equal("测试样例2", Reflections.GetDisplayNameOrDescription<Sample2>());
         Assert.Equal("测试样例", Reflections.GetDisplayNameOrDescription<Sample>());
     }
+
+    #endregion
+
+    #region FindImplementTypes
+
+    /// <summary>
+    /// 测试 - 查找实现类型列表 - 测试类型中只有一个类实现IA接口
+    /// </summary>
+    [Fact]
+    public void Test_FindImplementTypes_1()
+    {
+        var types = Reflections.FindImplementTypes<IA>(this.GetType().Assembly);
+        Assert.Single(types);
+        Assert.Equal(typeof(A), types[0]);
+    }
+
+    /// <summary>
+    /// 测试 - 查找实现类型列表 - 抽象类和接口被排除
+    /// </summary>
+    [Fact]
+    public void Test_FindImplementTypes_2()
+    {
+        var types = Reflections.FindImplementTypes<IB>(this.GetType().Assembly);
+        Assert.Equal(2, types.Count);
+        Assert.Equal(typeof(A), types[0]);
+        Assert.Equal(typeof(B), types[1]);
+    }
+
+    /// <summary>
+    /// 测试 - 查找实现类型列表 - 泛型实现 
+    /// </summary>
+    [Fact]
+    public void Test_FindImplementTypes_3()
+    {
+        var types = Reflections.FindImplementTypes<IC>(this.GetType().Assembly);
+        Assert.Equal(2, types.Count);
+        Assert.Equal(typeof(B), types[0]);
+        Assert.Equal(typeof(D<>), types[1]);
+    }
+
+    /// <summary>
+    /// 测试 - 查找实现类型列表 - 泛型参数为E
+    /// </summary>
+    [Fact]
+    public void Test_FindImplementTypes_4()
+    {
+        var types = Reflections.FindImplementTypes<IG<E>>(this.GetType().Assembly);
+        Assert.Single(types);
+        Assert.Equal(typeof(E), types[0]);
+    }
+
+    /// <summary>
+    /// 测试 - 查找实现类型列表 - 泛型参数为空
+    /// </summary>
+    [Fact]
+    public void Test_FindImplementTypes_5()
+    {
+        var types = Reflections.FindImplementTypes(typeof(IG<>), this.GetType().Assembly);
+        Assert.Equal(2, types.Count);
+        Assert.Equal(typeof(E), types[0]);
+        Assert.Equal(typeof(F<>), types[1]);
+    }
+
+    /// <summary>
+    /// 测试 - 查找实现类型列表 - 测试并发
+    /// </summary>
+    [Fact]
+    public void Test_FindImplementTypes_6()
+    {
+        Bing.Helpers.Thread.ParallelExecute(() =>
+        {
+            var types = Reflections.FindImplementTypes<IA>(this.GetType().Assembly);
+            Assert.Single(types);
+            Assert.Equal(typeof(A), types[0]);
+        }, () =>
+        {
+            var types = Reflections.FindImplementTypes<IB>(this.GetType().Assembly);
+            Assert.Equal(2, types.Count);
+            Assert.Equal(typeof(A), types[0]);
+            Assert.Equal(typeof(B), types[1]);
+        }, () =>
+        {
+            var types = Reflections.FindImplementTypes<IC>(this.GetType().Assembly);
+            Assert.Equal(2, types.Count);
+            Assert.Equal(typeof(B), types[0]);
+            Assert.Equal(typeof(D<>), types[1]);
+        });
+    }
+
+    #endregion
+
+    #region GetDirectInterfaceTypes
+
+    /// <summary>
+    /// 测试 - 获取直接接口列表
+    /// </summary>
+    [Fact]
+    public void Test_GetDirectInterfaces()
+    {
+        var interfaceTypes = Reflections.GetDirectInterfaceTypes<TestSample>();
+        Assert.Equal(2, interfaceTypes.Count);
+        Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample"));
+        Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample5"));
+    }
+
+    /// <summary>
+    /// 测试 - 获取直接接口列表 - 一个基接口
+    /// </summary>
+    [Fact]
+    public void Test_GetDirectInterfaces_2()
+    {
+        var interfaceTypes = Reflections.GetDirectInterfaceTypes<TestSample>(typeof(ITestSample3));
+        Assert.Single(interfaceTypes);
+        Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample"));
+    }
+
+    /// <summary>
+    /// 测试 - 获取直接接口列表 - 两个基接口
+    /// </summary>
+    [Fact]
+    public void Test_GetDirectInterfaces_3()
+    {
+        var interfaceTypes = Reflections.GetDirectInterfaceTypes<TestSample>(typeof(ITestSample4), typeof(ITestSample3));
+        Assert.Equal(2, interfaceTypes.Count);
+        Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample"));
+        Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample5"));
+    }
+
+    #endregion
+
+    #region GetInterfaceTypes
+
+    /// <summary>
+    /// 测试 - 获取接口列表
+    /// </summary>
+    [Fact]
+    public void Test_GetInterfaces_1()
+    {
+        var interfaceTypes = Reflections.GetInterfaceTypes<TestSample>();
+        Assert.Equal(5, interfaceTypes.Count);
+    }
+
+    /// <summary>
+    /// 测试 - 获取接口列表 - 一个基接口
+    /// </summary>
+    [Fact]
+    public void Test_GetInterfaces_2()
+    {
+        var interfaceTypes = Reflections.GetInterfaceTypes<TestSample>(typeof(ITestSample3));
+        Assert.Equal(2, interfaceTypes.Count);
+        Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample"));
+        Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample2"));
+    }
+
+    /// <summary>
+    /// 测试 - 获取接口列表 - 两个基接口
+    /// </summary>
+    [Fact]
+    public void Test_GetInterfaces_3()
+    {
+        var interfaceTypes = Reflections.GetInterfaceTypes<TestSample>(typeof(ITestSample4), typeof(ITestSample3));
+        Assert.Equal(3, interfaceTypes.Count);
+    }
+
+    #endregion
+
+    #region IsBool
 
     /// <summary>
     /// 测试 - 是否布尔类型
@@ -75,6 +252,10 @@ public class ReflectionsTest : TestBase
         Assert.True(Reflections.IsBool(_sample.GetType().GetMember("NullableBoolValue")[0]), "NullableBoolValue");
         Assert.False(Reflections.IsBool(_sample.GetType().GetMember("EnumValue")[0]), "EnumValue");
     }
+
+    #endregion
+
+    #region IsEnum
 
     /// <summary>
     /// 测试 - 是否枚举类型
@@ -89,6 +270,10 @@ public class ReflectionsTest : TestBase
         Assert.False(Reflections.IsEnum(_sample.GetType().GetMember("NullableBoolValue")[0]), "NullableBoolValue");
     }
 
+    #endregion
+
+    #region IsDate
+
     /// <summary>
     /// 测试 - 是否日期类型
     /// </summary>
@@ -100,6 +285,10 @@ public class ReflectionsTest : TestBase
         Assert.True(Reflections.IsDate(_sample.GetType().GetMember("NullableDateValue")[0]), "NullableDateValue");
         Assert.False(Reflections.IsDate(_sample.GetType().GetMember("EnumValue")[0]), "EnumValue");
     }
+
+    #endregion
+
+    #region IsInt
 
     /// <summary>
     /// 测试 - 是否整型
@@ -119,6 +308,10 @@ public class ReflectionsTest : TestBase
         Assert.True(Reflections.IsInt(_sample.GetType().GetMember("LongValue")[0]), "LongValue");
         Assert.True(Reflections.IsInt(_sample.GetType().GetMember("NullableLongValue")[0]), "NullableLongValue");
     }
+
+    #endregion
+
+    #region IsNumber
 
     /// <summary>
     /// 测试 - 是否数值类型
@@ -143,6 +336,10 @@ public class ReflectionsTest : TestBase
         Assert.True(Reflections.IsNumber(_sample.GetType().GetMember("NullableIntValue")[0]), "NullableIntValue");
     }
 
+    #endregion
+
+    #region IsCollection
+
     /// <summary>
     /// 测试 - 是否集合
     /// </summary>
@@ -153,6 +350,10 @@ public class ReflectionsTest : TestBase
         Assert.True(TypeReflections.IsCollection(_sample.StringArray.GetType()));
     }
 
+    #endregion
+
+    #region IsGenericCollection
+
     /// <summary>
     /// 测试 - 是否泛型集合
     /// </summary>
@@ -161,6 +362,10 @@ public class ReflectionsTest : TestBase
     {
         Assert.True(Reflections.IsGenericCollection(_sample.StringList.GetType()));
     }
+
+    #endregion
+
+    #region GetPublicProperties
 
     /// <summary>
     /// 测试 - 获取公共属性列表
@@ -181,6 +386,10 @@ public class ReflectionsTest : TestBase
         Assert.Equal("2", items[1].Value);
     }
 
+    #endregion
+
+    #region GetTopBaseType
+
     /// <summary>
     /// 测试 - 获取顶级基类
     /// </summary>
@@ -189,6 +398,10 @@ public class ReflectionsTest : TestBase
     {
         Assert.Null(Reflections.GetTopBaseType(null));
     }
+
+    #endregion
+
+    #region GetElementType
 
     /// <summary>
     /// 测试 - 获取元素类型
@@ -222,6 +435,10 @@ public class ReflectionsTest : TestBase
         Assert.Equal(typeof(Sample), Reflections.GetElementType(type));
     }
 
+    #endregion
+
+    #region Get/Set PropertyValueByPath
+
     /// <summary>
     /// 测试 - 通过指定对象的属性路径获取属性值
     /// </summary>
@@ -243,10 +460,10 @@ public class ReflectionsTest : TestBase
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Name").ShouldBe("test");
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Count").ShouldBe(8);
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Time").ShouldBe(DateTime.Parse("2023-01-01"));
-        Reflections.GetPropertyValueByPath(value, value.GetType(),"Bing.Utils.Tests.Reflection.ReflectionsTest+GetPropertyValueByPathTestClass.Name").ShouldBe("test");
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Bing.Reflection.ReflectionsTest+GetPropertyValueByPathTestClass.Name").ShouldBe("test");
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Name").ShouldBe("test-children");
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Count").ShouldBe(9);
-        Reflections.GetPropertyValueByPath(value, value.GetType(),"Bing.Utils.Tests.Reflection.ReflectionsTest+GetPropertyValueByPathTestClass.Children.Name").ShouldBe("test-children");
+        Reflections.GetPropertyValueByPath(value, value.GetType(), "Bing.Reflection.ReflectionsTest+GetPropertyValueByPathTestClass.Children.Name").ShouldBe("test-children");
 
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.NotExists").ShouldBeNull();
         Reflections.GetPropertyValueByPath(value, value.GetType(), "NotExists").ShouldBeNull();
@@ -301,6 +518,10 @@ public class ReflectionsTest : TestBase
         public int Count { get; set; }
     }
 
+    #endregion
+
+    #region GetPublicConstantsRecursively
+
     /// <summary>
     /// 测试 - 获取指定类型的所有公共常量值
     /// </summary>
@@ -340,6 +561,10 @@ public class ReflectionsTest : TestBase
         constants.Except(IdentityPermissions.GetAll()).Count().ShouldBe(0);
     }
 
+    #endregion
+
+    #region GetBaseClasses
+
     /// <summary>
     /// 测试 - 获取指定类型的所有基类型 - 排除object对象
     /// </summary>
@@ -374,6 +599,9 @@ public class ReflectionsTest : TestBase
     public class MyClass : MyBaseClass2
     {
     }
+
+    #endregion
+
 }
 
 public class BaseRole

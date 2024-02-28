@@ -107,7 +107,7 @@ public static partial class Reflections
     /// </summary>
     /// <typeparam name="T">类型</typeparam>
     /// <param name="bindingFlags">绑定标记</param>
-    public static MethodInfo[] GetMethods<T>( BindingFlags bindingFlags)
+    public static MethodInfo[] GetMethods<T>(BindingFlags bindingFlags)
     {
         return typeof(T).GetMethods(bindingFlags);
     }
@@ -117,12 +117,20 @@ public static partial class Reflections
     #region GetProperty(获取指定对象的属性信息)
 
     /// <summary>
-    /// 获取指定类型具有指定名称的公共属性。
+    /// 获取指定类型中具有给定名称的公共属性。
     /// </summary>
     /// <typeparam name="T">类型</typeparam>
     /// <param name="name">要查找的属性的名称。</param>
-    /// <returns>如果找到具有指定名称的属性，则返回该属性的<see cref="PropertyInfo"/>；否则返回null。</returns>
-    public static PropertyInfo GetProperty<T>(string name) => TypeReflections.TypeCacheManager.GetTypeProperties(typeof(T)).FirstOrDefault(_ => _.Name == name);
+    /// <returns>匹配给定名称的属性的<see cref="PropertyInfo"/>对象；如果没有找到匹配的属性，则返回null。</returns>
+    public static PropertyInfo GetProperty<T>(string name) => GetProperty(typeof(T), name);
+
+    /// <summary>
+    /// 获取指定类型中具有给定名称的公共属性。
+    /// </summary>
+    /// <param name="type">类型</param>
+    /// <param name="name">要查找的属性的名称。</param>
+    /// <returns>匹配给定名称的属性的<see cref="PropertyInfo"/>对象；如果没有找到匹配的属性，则返回null。</returns>
+    public static PropertyInfo GetProperty(Type type, string name) => TypeReflections.TypeCacheManager.GetTypeProperties(type).FirstOrDefault(_ => _.Name == name);
 
     /// <summary>
     /// 获取指定类型具有指定名称和绑定标志的属性信息。
@@ -131,33 +139,50 @@ public static partial class Reflections
     /// <param name="name">要查找的属性的名称。</param>
     /// <param name="bindingFlags">用于控制搜索的绑定约束（如公共或非公共、静态或实例等）。</param>
     /// <returns>匹配指定名称和绑定标志的属性的<see cref="PropertyInfo"/>对象；如果未找到属性，则返回null。</returns>
-    public static PropertyInfo GetProperty<T>(string name, BindingFlags bindingFlags) => typeof(T).GetProperty(name, bindingFlags);
+    public static PropertyInfo GetProperty<T>(string name, BindingFlags bindingFlags) => GetProperty(typeof(T), name, bindingFlags);
+
+    /// <summary>
+    /// 获取指定类型具有指定名称和绑定标志的属性信息
+    /// </summary>
+    /// <param name="type">类型</param>
+    /// <param name="name">要查找的属性的名称。</param>
+    /// <param name="bindingFlags">用于控制搜索的绑定约束（如公共或非公共、静态或实例等）。</param>
+    /// <returns>匹配指定名称和绑定标志的属性的<see cref="PropertyInfo"/>对象；如果未找到属性，则返回null。</returns>
+    public static PropertyInfo GetProperty(Type type, string name, BindingFlags bindingFlags) => type.GetProperty(name, bindingFlags);
 
     #endregion
 
     #region GetProperties(获取指定对象的属性信息数组)
 
     /// <summary>
-    /// 获取指定对象的所有公共属性信息数组
+    /// 获取指定类型的所有公共属性信息。
     /// </summary>
-    /// <param name="this">当前对象</param>
-    public static PropertyInfo[] GetProperties(object @this)
-    {
-        return TypeReflections.TypeCacheManager.GetTypeProperties(@this.GetType());
-    }
+    /// <typeparam name="T">类型</typeparam>
+    /// <returns>包含指定类型所有公共属性的PropertyInfo数组。如果指定的类型没有公共属性，则返回空数组。</returns>
+    public static PropertyInfo[] GetProperties<T>() => GetProperties(typeof(T));
+    
+    /// <summary>
+    /// 获取指定类型的所有公共属性信息。
+    /// </summary>
+    /// <param name="type">类型</param>
+    /// <returns>包含指定类型所有公共属性的PropertyInfo数组。如果指定的类型没有公共属性，则返回空数组。</returns>
+    public static PropertyInfo[] GetProperties(Type type) => TypeReflections.TypeCacheManager.GetTypeProperties(type);
 
     /// <summary>
-    /// 获取指定对象的指定 <see cref="BindingFlags"/> 的属性信息数组
+    /// 获取指定类型的属性信息，根据提供的绑定标志筛选结果。
     /// </summary>
-    /// <param name="this">当前对象</param>
-    /// <param name="bindingFlags">绑定标记</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static PropertyInfo[] GetProperties(object @this, BindingFlags bindingFlags)
-    {
-        if (@this == null)
-            throw new ArgumentNullException(nameof(@this));
-        return @this.GetType().GetProperties(bindingFlags);
-    }
+    /// <typeparam name="T">类型</typeparam>
+    /// <param name="bindingFlags">用于控制搜索的绑定约束（如公共或非公共、静态或实例等）。</param>
+    /// <returns>根据指定绑定标志找到的PropertyInfo对象数组。如果没有找到匹配的属性，则返回空数组。</returns>
+    public static PropertyInfo[] GetProperties<T>(BindingFlags bindingFlags) => GetProperties(typeof(T), bindingFlags);
+
+    /// <summary>
+    /// 获取指定类型的属性信息，根据提供的绑定标志筛选结果。
+    /// </summary>
+    /// <param name="type">类型</param>
+    /// <param name="bindingFlags">用于控制搜索的绑定约束（如公共或非公共、静态或实例等）。</param>
+    /// <returns>根据指定绑定标志找到的PropertyInfo对象数组。如果没有找到匹配的属性，则返回空数组。</returns>
+    public static PropertyInfo[] GetProperties(Type type, BindingFlags bindingFlags) => type.GetProperties(bindingFlags);
 
     #endregion
 
@@ -296,7 +321,7 @@ public static partial class Reflections
             return;
         }
 
-        for (var i = 0; i < properties.Length-1; i++)
+        for (var i = 0; i < properties.Length - 1; i++)
         {
             property = currentType.GetProperty(properties[i])!;
             obj = property.GetValue(obj, null)!;

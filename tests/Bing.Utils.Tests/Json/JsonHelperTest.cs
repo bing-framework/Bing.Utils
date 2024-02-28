@@ -1,4 +1,4 @@
-﻿using Bing.Tests.Samples;
+﻿using Bing.Tests.Samples.Json;
 using Bing.Tests.XUnitHelpers;
 using Bing.Utils.Json;
 using Newtonsoft.Json;

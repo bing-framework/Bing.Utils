@@ -1,6 +1,6 @@
 ﻿using Bing.Helpers;
 
-namespace Bing.Tests.Samples
+namespace Bing.Tests.Samples.Json
 {
     public class A
     {

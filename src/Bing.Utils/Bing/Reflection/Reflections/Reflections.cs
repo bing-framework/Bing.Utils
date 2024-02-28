@@ -9,25 +9,45 @@ namespace Bing.Reflection;
 /// </summary>
 public static partial class Reflections
 {
-    #region FindTypes(查找类型列表)
+    #region CreateInstance(动态创建实例)
 
     /// <summary>
-    /// 查找类型列表
+    /// 动态创建实例
+    /// </summary>
+    /// <typeparam name="T">目标类型</typeparam>
+    /// <param name="type">类型</param>
+    /// <param name="parameters">传递给构造函数的参数</param>
+    public static T CreateInstance<T>(Type type, params object[] parameters) => Conv.To<T>(Activator.CreateInstance(type, parameters));
+
+    /// <summary>
+    /// 动态创建实例
+    /// </summary>
+    /// <typeparam name="T">目标类型</typeparam>
+    /// <param name="className">类名，包括命名空间,如果类型不处于当前执行程序集中，需要包含程序集名，范例：Test.Core.Test2,Test.Core</param>
+    /// <param name="parameters">传递给构造函数的参数</param>
+    public static T CreateInstance<T>(string className, params object[] parameters)
+    {
+        var type = Type.GetType(className) ?? Assembly.GetCallingAssembly().GetType(className);
+        return CreateInstance<T>(type, parameters);
+    }
+
+    #endregion
+
+    #region FindImplementTypes(查找实现类型列表)
+
+    /// <summary>
+    /// 在指定的程序集中查找实现类型列表
     /// </summary>
     /// <typeparam name="TFind">查找类型</typeparam>
     /// <param name="assemblies">待查找的程序集列表</param>
-    public static List<Type> FindTypes<TFind>(params Assembly[] assemblies)
-    {
-        var findType = typeof(TFind);
-        return FindTypes(findType, assemblies);
-    }
+    public static List<Type> FindImplementTypes<TFind>(params Assembly[] assemblies) => FindImplementTypes(typeof(TFind), assemblies);
 
     /// <summary>
-    /// 查找类型列表
+    /// 在指定的程序集中查找实现类型列表
     /// </summary>
     /// <param name="findType">查找类型</param>
     /// <param name="assemblies">待查找的程序集列表</param>
-    public static List<Type> FindTypes(Type findType, params Assembly[] assemblies)
+    public static List<Type> FindImplementTypes(Type findType, params Assembly[] assemblies)
     {
         var result = new List<Type>();
         foreach (var assembly in assemblies)
@@ -54,7 +74,6 @@ public static partial class Reflections
         {
             return result;
         }
-
         foreach (var type in types)
             AddType(result, findType, type);
         return result;
@@ -118,38 +137,81 @@ public static partial class Reflections
 
     #endregion
 
-    #region CreateInstance(动态创建实例)
+    #region GetDirectInterfaceTypes(获取直接接口类型列表)
 
     /// <summary>
-    /// 动态创建实例
+    /// 获取直接接口类型列表，排除基接口类型。
     /// </summary>
-    /// <typeparam name="T">目标类型</typeparam>
-    /// <param name="type">类型</param>
-    /// <param name="parameters">传递给构造函数的参数</param>
-    public static T CreateInstance<T>(Type type, params object[] parameters) => Conv.To<T>(Activator.CreateInstance(type, parameters));
+    /// <typeparam name="T">在该类型上查找接口</typeparam>
+    /// <param name="baseInterfaceTypes">基接口类型列表，只返回继承了基接口的直接接口。</param>
+    /// <returns>直接实现的接口类型列表。如果提供了基接口类型，只返回同时满足直接实现和基接口条件的类型。</returns>
+    public static List<Type> GetDirectInterfaceTypes<T>(params Type[] baseInterfaceTypes) => GetDirectInterfaceTypes(typeof(T), baseInterfaceTypes);
 
     /// <summary>
-    /// 动态创建实例
+    /// 获取直接接口类型列表，排除基接口类型。
     /// </summary>
-    /// <typeparam name="T">目标类型</typeparam>
-    /// <param name="className">类名，包括命名空间,如果类型不处于当前执行程序集中，需要包含程序集名，范例：Test.Core.Test2,Test.Core</param>
-    /// <param name="parameters">传递给构造函数的参数</param>
-    public static T CreateInstance<T>(string className, params object[] parameters)
+    /// <param name="type">在该类型上查找接口</param>
+    /// <param name="baseInterfaceTypes">基接口类型列表，只返回继承了基接口的直接接口。</param>
+    /// <returns>直接实现的接口类型列表。如果提供了基接口类型，只返回同时满足直接实现和基接口条件的类型。</returns>
+    public static List<Type> GetDirectInterfaceTypes(Type type, params Type[] baseInterfaceTypes)
     {
-        var type = Type.GetType(className) ?? Assembly.GetCallingAssembly().GetType(className);
-        return CreateInstance<T>(type, parameters);
+        var interfaceTypes = type.GetInterfaces();
+        var directInterfaceTypes = interfaceTypes.Except(interfaceTypes.SelectMany(t => t.GetInterfaces())).ToList();
+        if (baseInterfaceTypes == null || baseInterfaceTypes.Length == 0)
+            return directInterfaceTypes;
+        return GetInterfaceTypes(directInterfaceTypes, baseInterfaceTypes);
+    }
+
+    /// <summary>
+    /// 从给定的接口类型集合中筛选出实现了指定基接口的类型。
+    /// </summary>
+    /// <param name="interfaceTypes">要检查的接口类型集合。</param>
+    /// <param name="baseInterfaceTypes">检查实现的基接口类型数组。</param>
+    /// <returns>实现了指定基接口的接口类型列表。如果接口类型为泛型且不是泛型定义本身，则添加其泛型定义。</returns>
+    private static List<Type> GetInterfaceTypes(IEnumerable<Type> interfaceTypes, Type[] baseInterfaceTypes)
+    {
+        var result = new List<Type>();
+        foreach (var interfaceType in interfaceTypes)
+        {
+            // 检查当前接口是否实现了任一基接口
+            if (interfaceType.GetInterfaces().Any(baseInterfaceTypes.Contains) == false)
+                continue;
+            // 如果接口是具体化的泛型且没有完整名称，则添加其泛型定义
+            if (interfaceType.IsGenericType && !interfaceType.IsGenericTypeDefinition && interfaceType.FullName == null)
+            {
+                result.Add(interfaceType.GetGenericTypeDefinition());
+                continue;
+            }
+            result.Add(interfaceType);
+        }
+        return result;
     }
 
     #endregion
 
-    #region GetPropertyInfo(获取属性信息)
+    #region GetInterfaceTypes(获取接口类型列表)
 
     /// <summary>
-    /// 获取属性信息
+    /// 获取接口类型列表，排除基接口类型。
     /// </summary>
-    /// <param name="type">类型</param>
-    /// <param name="propertyName">属性名</param>
-    public static PropertyInfo GetPropertyInfo(Type type, string propertyName) => type.GetProperties().FirstOrDefault(p => p.Name.Equals(propertyName));
+    /// <typeparam name="T">在该类型上查找接口</typeparam>
+    /// <param name="baseInterfaceTypes">用于筛选的基接口类型数组。只有实现了这些接口的类型才会被包含在结果中。</param>
+    /// <returns>满足条件的接口类型列表。如果没有提供基接口类型或没有找到满足条件的接口，则返回该类型实现的所有接口。</returns>
+    public static List<Type> GetInterfaceTypes<T>(params Type[] baseInterfaceTypes) => GetInterfaceTypes(typeof(T), baseInterfaceTypes);
+
+    /// <summary>
+    /// 获取接口类型列表，排除基接口类型。
+    /// </summary>
+    /// <param name="type">在该类型上查找接口</param>
+    /// <param name="baseInterfaceTypes">用于筛选的基接口类型数组。只有实现了这些接口的类型才会被包含在结果中。</param>
+    /// <returns>满足条件的接口类型列表。如果没有提供基接口类型或没有找到满足条件的接口，则返回该类型实现的所有接口。</returns>
+    public static List<Type> GetInterfaceTypes(Type type, params Type[] baseInterfaceTypes)
+    {
+        var interfaceTypes = type.GetInterfaces();
+        if (baseInterfaceTypes == null || baseInterfaceTypes.Length == 0)
+            return interfaceTypes.ToList();
+        return GetInterfaceTypes(interfaceTypes, baseInterfaceTypes);
+    }
 
     #endregion
 
