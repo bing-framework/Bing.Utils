@@ -1,6 +1,6 @@
-﻿using Bing.Helpers;
+﻿using Bing.Utils.Tests;
 
-namespace Bing.Utils.Tests.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// Xml操作测试
@@ -21,13 +21,13 @@ public class XmlTest : TestBase
     }
 
     /// <summary>
-    /// 测试添加节点
+    /// 测试 - 添加节点
     /// </summary>
     [Fact]
     public void Test_AddNode_1()
     {
         //结果
-        var result = new Str();
+        var result = new StringBuilder();
         result.Append("<xml>");
         result.Append("<a>1</a>");
         result.Append("</xml>");
@@ -43,13 +43,13 @@ public class XmlTest : TestBase
     }
 
     /// <summary>
-    /// 测试添加节点 - 父子节点
+    /// 测试 - 添加节点 - 父子节点
     /// </summary>
     [Fact]
     public void Test_AddNode_2()
     {
         //结果
-        var result = new Str();
+        var result = new StringBuilder();
         result.Append("<xml>");
         result.Append("<a>");
         result.Append("<b>2</b>");
@@ -68,13 +68,13 @@ public class XmlTest : TestBase
     }
 
     /// <summary>
-    /// 测试添加注释类型节点
+    /// 测试 - 添加注释类型节点
     /// </summary>
     [Fact]
     public void Test_AddCDataNode_1()
     {
         //结果
-        var result = new Str();
+        var result = new StringBuilder();
         result.Append("<xml>");
         result.Append("<![CDATA[1]]>");
         result.Append("</xml>");
@@ -90,13 +90,13 @@ public class XmlTest : TestBase
     }
 
     /// <summary>
-    /// 测试添加注释类型节点 - 父节点
+    /// 测试 - 添加注释类型节点 - 父节点
     /// </summary>
     [Fact]
     public void Test_AddCDataNode_2()
     {
         //结果
-        var result = new Str();
+        var result = new StringBuilder();
         result.Append("<xml>");
         result.Append("<a>");
         result.Append("<![CDATA[1]]>");
@@ -115,13 +115,13 @@ public class XmlTest : TestBase
     }
 
     /// <summary>
-    /// 测试添加注释类型节点 - 父节点 - 通过设置字符串父节点名称
+    /// 测试 - 添加注释类型节点 - 父节点 - 通过设置字符串父节点名称
     /// </summary>
     [Fact]
     public void Test_AddCDataNode_3()
     {
         //结果
-        var result = new Str();
+        var result = new StringBuilder();
         result.Append("<xml>");
         result.Append("<a>");
         result.Append("<![CDATA[1]]>");
@@ -139,13 +139,13 @@ public class XmlTest : TestBase
     }
 
     /// <summary>
-    /// xml字符串转换为XElement列表
+    /// 测试 - xml字符串转换为XElement列表
     /// </summary>
     [Fact]
     public void Test_ToElements_1()
     {
         //输入
-        var input = new Str();
+        var input = new StringBuilder();
         input.Append("<xml>");
         input.Append("<a>1</a>");
         input.Append("<b>2</b>");
@@ -160,13 +160,13 @@ public class XmlTest : TestBase
     }
 
     /// <summary>
-    /// xml字符串转换为XElement列表
+    /// 测试 - xml字符串转换为XElement列表
     /// </summary>
     [Fact]
     public void Test_ToElements_2()
     {
         //输入
-        var input = new Str();
+        var input = new StringBuilder();
         input.Append("<xml>");
         input.Append("<a>1</a>");
         input.Append("<b>2</b>");
@@ -181,5 +181,26 @@ public class XmlTest : TestBase
 
         //验证
         Assert.Equal("3", element?.Value);
+    }
+
+    /// <summary>
+    /// 测试 - 加载Xml文件到XDocument
+    /// </summary>
+    [Fact]
+    public async Task Test_LoadFileToDocumentAsync() {
+        var file = Common.GetPhysicalPath( "./Samples/version.xml" );
+        var document = await Xml.LoadFileToDocumentAsync( file );
+        Assert.Equal( "123", document?.Root?.Value );
+    }
+
+    /// <summary>
+    /// 测试 - 加载Xml文件到XElement列表
+    /// </summary>
+    [Fact]
+    public async Task Test_LoadFileToElementsAsync() {
+        var file = Common.GetPhysicalPath( "./Samples/version.xml" );
+        var elements = await Xml.LoadFileToElementsAsync( file );
+        var element = elements.FirstOrDefault( t => t?.Name == "VersionMinor" );
+        Assert.Equal( "2", element?.Value );
     }
 }

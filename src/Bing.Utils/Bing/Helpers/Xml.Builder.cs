@@ -9,20 +9,6 @@ namespace Bing.Helpers;
 /// </summary>
 public partial class Xml
 {
-    #region 属性
-
-    /// <summary>
-    /// Xml文档
-    /// </summary>
-    public XmlDocument Document { get; }
-
-    /// <summary>
-    /// Xml根节点
-    /// </summary>
-    public XmlElement Root { get; }
-
-    #endregion
-
     #region 构造函数
 
     /// <summary>
@@ -56,6 +42,20 @@ public partial class Xml
     /// </summary>
     /// <param name="xml">Xml字符串</param>
     private string GetXml(string xml) => string.IsNullOrWhiteSpace(xml) ? "<xml></xml>" : xml;
+
+    #endregion
+
+    #region 属性
+
+    /// <summary>
+    /// Xml文档
+    /// </summary>
+    public XmlDocument Document { get; }
+
+    /// <summary>
+    /// Xml根节点
+    /// </summary>
+    public XmlElement Root { get; }
 
     #endregion
 
@@ -105,7 +105,7 @@ public partial class Xml
     /// <param name="parent">父节点</param>
     public XmlNode AddCDataNode(object value, XmlNode parent = null)
     {
-        var node = CreateNode(Id.Guid(), value, XmlNodeType.CDATA);
+        var node = CreateNode(CreateId(), value, XmlNodeType.CDATA);
         GetParent(parent).AppendChild(node);
         return node;
     }
@@ -121,6 +121,11 @@ public partial class Xml
         Root.AppendChild(parent);
         return AddCDataNode(value, parent);
     }
+
+    /// <summary>
+    /// 创建标识
+    /// </summary>
+    private string CreateId() => Guid.NewGuid().ToString("N");
 
     #endregion
 

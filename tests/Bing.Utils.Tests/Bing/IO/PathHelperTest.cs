@@ -1,6 +1,4 @@
-﻿using Bing.IO;
-
-namespace Bing.Utils.Tests.IO;
+﻿namespace Bing.IO;
 
 /// <summary>
 /// 路径操作辅助类 测试
@@ -18,7 +16,7 @@ public class PathHelperTest
     public void Test_GetPhysicalPath_1(string relativePath, string target)
     {
         var path = PathHelper.GetPhysicalPath(relativePath);
-        var result = $"{System.AppContext.BaseDirectory}{target}";
+        var result = $"{AppContext.BaseDirectory}{target}";
         Assert.Equal(result, path);
     }
 

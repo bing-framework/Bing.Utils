@@ -1,12 +1,15 @@
-﻿using Bing.Helpers;
+﻿using Bing.Utils.Tests;
 
-namespace Bing.Utils.Tests.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// Url操作测试
 /// </summary>
 public class UrlTest : TestBase
 {
+    /// <summary>
+    /// 测试初始化
+    /// </summary>
     public UrlTest(ITestOutputHelper output) : base(output)
     {
     }
@@ -62,10 +65,10 @@ public class UrlTest : TestBase
     }
 
     [Theory(Skip = "尚未验证通过")]
-    [InlineData("http://www.baidu.com","baidu.com")]
+    [InlineData("http://www.baidu.com", "baidu.com")]
     [InlineData("http://baidu.com", "baidu.com")]
     [InlineData("http://www.baidu.com?a=xxx.aaa.cc", "baidu.com")]
-    public void Test_GetMainDomain(string domain,string result)
+    public void Test_GetMainDomain(string domain, string result)
     {
         Assert.Equal(result, Url.GetMainDomain(domain));
     }
