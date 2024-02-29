@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.IdUtils</AssemblyName>
+		<PackageId>Bing.Utils.IdUtils</PackageId>
+		<Description>Bing.Utils.IdUtils是Bing应用框架的Id生成器类库封装。</Description>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.props" />
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Bing.Utils\Bing.Utils.csproj" />
+	</ItemGroup>
+
+</Project>

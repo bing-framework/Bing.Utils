@@ -1,10 +1,13 @@
-﻿using Bing.Utils.Develops;
-using Bing.Utils.IdGenerators.Core;
+﻿using Bing.Helpers;
+using Bing.Utils.Develops;
 
 namespace Bing.Utils.Tests.IdGenerators;
 
 public class TimestampIdGeneratorTest:TestBase
 {
+    /// <summary>
+    /// 测试初始化
+    /// </summary>
     public TimestampIdGeneratorTest(ITestOutputHelper output) : base(output)
     {
     }
@@ -12,7 +15,7 @@ public class TimestampIdGeneratorTest:TestBase
     [Fact]
     public void Test_Create()
     {
-        var result = TimestampIdGenerator.Current.Create();
+        var result = Id.CreateTimestampId();
         Output.WriteLine(result.ToString());
     }
 
@@ -21,7 +24,7 @@ public class TimestampIdGeneratorTest:TestBase
     {
         for (int i = 0; i < 100; i++)
         {
-            var result = TimestampIdGenerator.Current.Create();
+            var result = Id.CreateTimestampId();
             Output.WriteLine(result.ToString());
         }
     }
@@ -31,7 +34,7 @@ public class TimestampIdGeneratorTest:TestBase
     {
         for (int i = 0; i < 1000; i++)
         {
-            var result = TimestampIdGenerator.Current.Create();
+            var result = Id.CreateTimestampId();
             Output.WriteLine(result.ToString());
         }
     }
@@ -41,7 +44,7 @@ public class TimestampIdGeneratorTest:TestBase
     {
         for (int i = 0; i < 10000; i++)
         {
-            var result = TimestampIdGenerator.Current.Create();
+            var result = Id.CreateTimestampId();
             Output.WriteLine(result.ToString());
         }
     }
@@ -70,7 +73,7 @@ public class TimestampIdGeneratorTest:TestBase
     {
         for (int i = 0; i < length; i++)
         {
-            var result = TimestampIdGenerator.Current.Create();
+            var result =Id.CreateTimestampId();
             lock (_lock)
             {
                 if (_set.Contains(result))

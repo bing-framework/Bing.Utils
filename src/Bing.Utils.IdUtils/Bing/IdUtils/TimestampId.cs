@@ -1,6 +1,6 @@
 ﻿using Bing.Extensions;
 
-namespace Bing.Utils.IdGenerators.Ids;
+namespace Bing.IdUtils;
 
 /// <summary>
 /// 时间戳ID，借鉴雪花算法，生成唯一时间戳ID

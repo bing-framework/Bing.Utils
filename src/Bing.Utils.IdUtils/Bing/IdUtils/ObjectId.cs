@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Security.Cryptography;
 
-namespace Bing.Utils.IdGenerators.Ids;
+namespace Bing.IdUtils;
 
 /// <summary>
 /// Id生成器，代码出自：https://github.com/tangxuehua/ecommon/blob/master/src/ECommon/Utilities/ObjectId.cs
