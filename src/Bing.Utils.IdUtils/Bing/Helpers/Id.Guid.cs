@@ -30,7 +30,7 @@ public static partial class Id
     /// <summary>
     /// 创建简化的Guid标识，去掉了横线
     /// </summary>
-    public static string CreateSimpleGuid()=>string.IsNullOrWhiteSpace(_id.Value) ? _guidGenerateFunc().ToString("N") : _id.Value;
+    public static string CreateSimpleGuid() => string.IsNullOrWhiteSpace(_id.Value) ? _guidGenerateFunc().ToString("N") : _id.Value;
 
     /// <summary>
     /// 创建Guid标识

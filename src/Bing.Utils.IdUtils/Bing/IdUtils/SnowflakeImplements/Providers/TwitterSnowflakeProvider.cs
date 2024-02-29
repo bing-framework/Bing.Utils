@@ -1,26 +1,16 @@
-﻿
-
-/*
- * Reference To:
- *      https://github.com/stulzq/snowflake-net/
- *      Author:
- *          dunitian,   https://github.com/dunitian
- *          stulzq,     https://github.com/stulzq
- *      MIT
- */
-
-namespace Bing.IdUtils;
+﻿namespace Bing.IdUtils.SnowflakeImplements.Providers;
 
 /// <summary>
-/// 雪花 Id 工作者
+/// 基于 Twitter 算法的雪花ID 提供程序
 /// </summary>
-public class SnowflakeIdWorker
+internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvider
 {
     #region 常量
 
     /// <summary>
     /// 基准时间
     /// </summary>
+    /// <remarks>开始时间截(毫秒) 2010-11-04 09:42:54</remarks>
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once IdentifierTypo
     public const long TWEPOCH = 1288834974657L;
@@ -33,7 +23,7 @@ public class SnowflakeIdWorker
     const int WORKER_ID_BITS = 5;
 
     /// <summary>
-    /// 数据标志位数
+    /// 数据中心标志位数
     /// </summary>
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once IdentifierTypo
@@ -47,42 +37,42 @@ public class SnowflakeIdWorker
     const int SEQUENCE_BITS = 12;
 
     /// <summary>
-    /// 机器ID最大值
+    /// 机器ID最大值，结果是31。
     /// </summary>
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once IdentifierTypo
     const long MAX_WORKER_ID = -1L ^ (-1L << WORKER_ID_BITS);
 
     /// <summary>
-    /// 数据标志ID最大值
+    /// 数据中心标志ID最大值，结果是31。
     /// </summary>
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once IdentifierTypo
     const long MAX_DATA_CENTER_ID = -1L ^ (-1L << DATA_CENTER_ID_BITS);
 
     /// <summary>
-    /// 序列号ID最大值
+    /// 生成序列的掩码，这里为4095
     /// </summary>
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once IdentifierTypo
     const long SEQUENCE_MASK = -1L ^ (-1L << SEQUENCE_BITS);
 
     /// <summary>
-    /// 机器ID偏左移12位
+    /// 机器ID的偏移量(12)
     /// </summary>
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once IdentifierTypo 
     const int WORKER_ID_SHIFT = SEQUENCE_BITS;
 
     /// <summary>
-    /// 数据ID偏左移17位
+    /// 数据中心ID的偏移量(12+5)
     /// </summary>
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once IdentifierTypo
     const int DATA_CENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
 
     /// <summary>
-    /// 时间毫秒左移22位
+    /// 时间戳的偏移量(5+5+12)
     /// </summary>
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once IdentifierTypo
@@ -90,42 +80,35 @@ public class SnowflakeIdWorker
 
     #endregion
 
+    #region 字段
+
     /// <summary>
-    /// 序列号ID
+    /// 毫秒内序列(0 ~ 4095)
     /// </summary>
     private long _sequence = 0L;
 
     /// <summary>
-    /// 最后时间戳
+    /// 上次生成ID的时间截
     /// </summary>
     private long _lastTimestamp = -1L;
 
     /// <summary>
-    /// 机器ID
+    /// 同步锁
     /// </summary>
-    public long WorkerId { get; protected set; }
+    private readonly object _lock = new();
+
+    #endregion
+
+    #region 构造函数
 
     /// <summary>
-    /// 数据标志ID
+    /// 初始化一个<see cref="TwitterSnowflakeProvider"/>类型的实例
     /// </summary>
-    public long DatacenterId { get; protected set; }
-
-    /// <summary>
-    /// 序列号ID
-    /// </summary>
-    public long Sequence
-    {
-        get => _sequence;
-        internal set => _sequence = value;
-    }
-
-    /// <summary>
-    /// 初始化一个<see cref="SnowflakeIdWorker"/>类型的实例
-    /// </summary>
-    /// <param name="workerId">机器ID</param>
-    /// <param name="datacenterId">数据标志ID</param>
-    /// <param name="sequence">序列号ID</param>
-    public SnowflakeIdWorker(long workerId, long datacenterId, long sequence = 0L)
+    /// <param name="workerId">机器ID，取值范围: 0 ~ 31</param>
+    /// <param name="datacenterId">数据中心ID，取值范围: 0 ~ 31</param>
+    /// <param name="sequence">毫秒内序列，取值范围: 0 ~ 4095</param>
+    /// <exception cref="ArgumentException"></exception>
+    public TwitterSnowflakeProvider(long workerId, long datacenterId, long sequence = 0L)
     {
         // 如果超出范围就抛出异常
         if (workerId > MAX_WORKER_ID || workerId < 0)
@@ -139,43 +122,70 @@ public class SnowflakeIdWorker
         _sequence = sequence;
     }
 
-    /// <summary>
-    /// 对象锁
-    /// </summary>
-    private readonly object _lock = new();
+    #endregion
+
+    #region 属性
 
     /// <summary>
-    /// 获取下一个ID
+    /// 机器ID(0 ~ 31)
     /// </summary>
-    public virtual long NextId()
+    public long WorkerId { get; protected set; }
+
+    /// <summary>
+    /// 数据中心ID(0 ~ 31)
+    /// </summary>
+    public long DatacenterId { get; protected set; }
+
+    /// <summary>
+    /// 毫秒内序列(0 ~ 4095)
+    /// </summary>
+    public long Sequence
     {
-        lock (_lock)
+        get => _sequence;
+        internal set => _sequence = value;
+    }
+
+    #endregion
+
+    /// <inheritdoc />
+    public override long NextId()
+    {
+        lock (_lock) // 同步锁保证线程安全
         {
             var timestamp = TimeGen();
-            if (timestamp < _lastTimestamp)
-                throw new Exception($"时间戳必须大于上一次生成ID的时间戳，拒绝为{_lastTimestamp - timestamp}毫秒生成id");
 
-            // 如果上次生成时间和当前时间相同，在同一毫秒内
+            // 系统时钟不允许回退
+            // 说明：这种回拨机制判断仅限于运行时检查，如果关闭以后回拨系统时间，则生成的ID就同样存在风险。
+            if (timestamp < _lastTimestamp)
+                throw new ApplicationException($"时间戳必须大于上一次生成ID的时间戳，拒绝为{_lastTimestamp - timestamp}毫秒生成id");
+
+            // 如果是同一时间生成的，则进行毫秒内序列生成
             if (_lastTimestamp == timestamp)
             {
                 // sequence自增，和sequenceMask相与一下，去掉高位
                 _sequence = (_sequence + 1) & SEQUENCE_MASK;
-                //判断是否溢出,也就是每毫秒内超过1024，当为1024时，与sequenceMask相与，sequence就等于0
+                // 判断是否溢出,也就是每毫秒内超过1024，当为1024时，与sequenceMask相与，sequence就等于0
                 if (_sequence == 0)
                 {
-                    //等待到下一毫秒
+                    // 阻塞到下一个毫秒，获得新的时间戳
                     timestamp = TilNextMillis(_lastTimestamp);
                 }
             }
             else
             {
-                //如果和上次生成时间不同,重置sequence，就是下一毫秒开始，sequence计数重新从0开始累加,
-                //为了保证尾数随机性更大一些,最后一位可以设置一个随机数
+                // 如果和上次生成时间不同,重置sequence，就是下一毫秒开始，sequence计数重新从0开始累加,
+                // 为了保证尾数随机性更大一些,最后一位可以设置一个随机数
                 _sequence = 0;//new Random().Next(10);
             }
 
+            // 上次生成ID的时间截
             _lastTimestamp = timestamp;
-            return ((timestamp - TWEPOCH) << TIMESTAMP_LEFT_SHIFT) | (DatacenterId << DATA_CENTER_ID_SHIFT) | (WorkerId << WORKER_ID_SHIFT) | _sequence;
+
+            // 移位并通过或运算拼到一起组成64位的ID
+            return ((timestamp - TWEPOCH) << TIMESTAMP_LEFT_SHIFT)  // 时间戳部分
+                   | (DatacenterId << DATA_CENTER_ID_SHIFT)         // 数据中心部分
+                   | (WorkerId << WORKER_ID_SHIFT)                  // 机器标识部分
+                   | _sequence;                                     // 序列号部分
         }
     }
 
@@ -186,60 +196,8 @@ public class SnowflakeIdWorker
     protected virtual long TilNextMillis(long lastTimestamp)
     {
         var timestamp = TimeGen();
-        while (timestamp <= lastTimestamp) 
+        while (timestamp <= lastTimestamp)
             timestamp = TimeGen();
         return timestamp;
-    }
-
-    /// <summary>
-    /// 获取当前时间戳
-    /// </summary>
-    protected virtual long TimeGen() => TimeExtensions.CurrentTimeMills();
-
-    /// <summary>
-    /// 时间扩展
-    /// </summary>
-    private static class TimeExtensions
-    {
-        /// <summary>
-        /// 获取当前时间戳
-        /// </summary>
-        // ReSharper disable once InconsistentNaming
-        private static Func<long> CurrentTimeFunc = InternalCurrentTimeMillis;
-
-        /// <summary>
-        /// 获取当前时间戳
-        /// </summary>
-        public static long CurrentTimeMills() => CurrentTimeFunc();
-
-        /// <summary>
-        /// 重置当前时间戳
-        /// </summary>
-        /// <param name="func">函数</param>
-        public static IDisposable StubCurrentTime(Func<long> func)
-        {
-            CurrentTimeFunc = func;
-            return new DisposeAction(() => { CurrentTimeFunc = InternalCurrentTimeMillis; });
-        }
-
-        /// <summary>
-        /// 重置当前时间戳
-        /// </summary>
-        /// <param name="millis">毫秒数</param>
-        public static IDisposable StubCurrentTime(long millis)
-        {
-            CurrentTimeFunc = () => millis;
-            return new DisposeAction(() => { CurrentTimeFunc = InternalCurrentTimeMillis; });
-        }
-
-        /// <summary>
-        /// 1970年
-        /// </summary>
-        private static readonly DateTime Jan1St1970 = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        /// <summary>
-        /// 默认当前时间戳
-        /// </summary>
-        private static long InternalCurrentTimeMillis() => (long)(DateTime.UtcNow - Jan1St1970).TotalMilliseconds;
     }
 }

@@ -6,14 +6,14 @@ namespace Bing.Utils.Tests.IdGenerators;
 
 public class SnowflakeIdGeneratorTest : TestBase
 {
-    private readonly SnowflakeIdWorker _worker;
+    private readonly ISnowflakeId _worker;
 
     /// <summary>
     /// 测试初始化
     /// </summary>
     public SnowflakeIdGeneratorTest(ITestOutputHelper output) : base(output)
     {
-        _worker = SnowflakeGenerator.Create(1, 1);
+        _worker = SnowflakeGenerator.Create(1);
     }
 
     [Fact]
