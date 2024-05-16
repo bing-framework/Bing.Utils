@@ -911,6 +911,14 @@ public static partial class StringsExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int CharacterCount(this string text) => Strings.CharacterCount(text);
 
+    /// <summary>
+    /// 计算字符串的字节大小（使用UTF-8编码）
+    /// </summary>
+    /// <param name="text">字符串</param>
+    /// <returns>字节大小</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int BytesCount(this string text) => Strings.BytesCount(text);
+
     #endregion
 
     #region Equals
