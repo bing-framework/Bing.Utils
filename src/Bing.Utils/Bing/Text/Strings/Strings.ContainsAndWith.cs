@@ -35,10 +35,7 @@ public static partial class Strings
     /// <param name="text">字符串</param>
     /// <param name="character">包含字符</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(string text, char character)
-    {
-        return text.Any(c => c == character);
-    }
+    public static bool Contains(string text, char character) => text.Any(c => c == character);
 
     /// <summary>
     /// 在字符串中是否包含任意一个给定的字符。

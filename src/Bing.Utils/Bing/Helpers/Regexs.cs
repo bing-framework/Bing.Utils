@@ -116,7 +116,12 @@ public static partial class Regexs
     /// <param name="input">输入的字符串</param>
     /// <param name="pattern">模式字符串</param>
     /// <param name="options">选项</param>
-    public static bool IsMatch(string input, string pattern, RegexOptions options) => Regex.IsMatch(input, pattern, options);
+    public static bool IsMatch(string input, string pattern, RegexOptions options)
+    {
+        if (string.IsNullOrEmpty(pattern) || string.IsNullOrEmpty(input))
+            return false;
+        return Regex.IsMatch(input, pattern, options);
+    }
 
     #endregion
 
