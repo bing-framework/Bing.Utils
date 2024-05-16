@@ -53,9 +53,23 @@ public static partial class StringsShortcutExtensions
     public static bool IsNullOrEmpty(this string text) => string.IsNullOrEmpty(text);
 
     /// <summary>
+    /// 检查字符串不是 null 或 <see cref="string.Empty"/> 字符串。
+    /// </summary>
+    /// <param name="text">字符串</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNotNullNorEmpty(this string text) => !text.IsNullOrEmpty();
+
+    /// <summary>
     /// 检查字符串是 null、空还是仅由空白字符组成。
     /// </summary>
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNullOrWhiteSpace(this string text) => string.IsNullOrWhiteSpace(text);
+
+    /// <summary>
+    /// 检查字符串不是 null、空或由空白字符组成。
+    /// </summary>
+    /// <param name="text">字符串</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNotNullNorWhiteSpace(this string text) => !text.IsNullOrWhiteSpace();
 }
