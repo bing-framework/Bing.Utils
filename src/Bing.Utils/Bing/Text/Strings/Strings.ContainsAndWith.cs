@@ -1,4 +1,6 @@
-﻿namespace Bing.Text;
+﻿using System.Text.RegularExpressions;
+
+namespace Bing.Text;
 
 /// <summary>
 /// 字符串工具
@@ -151,7 +153,18 @@ public static partial class Strings
             : characters.Any(text.Contains);
     }
 
-	#endregion
+    #endregion
+
+    #region Match
+
+    /// <summary>
+    /// 匹配字符串中是否包含 Emoji 表情
+    /// </summary>
+    /// <param name="text">需要检查的字符串</param>
+    /// <returns>如果字符串中包含 Emoji 表情，则返回 true，否则返回 false</returns>
+    public static bool MatchEmoji(string text) => Regex.IsMatch(text, @"(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])");
+
+    #endregion
 }
 
 /// <summary>
