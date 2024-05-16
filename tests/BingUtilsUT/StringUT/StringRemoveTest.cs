@@ -6,6 +6,76 @@ namespace BingUtilsUT.StringUT;
 public class StringRemoveTest
 {
     /// <summary>
+    /// 测试 - 移除字符串
+    /// </summary>
+    [Fact]
+    public void Test_Remove()
+    {
+        var text = " abcdefghijkl mnopqrstuvwxyz ";
+
+        Strings.RemoveChars(text, 'a', 'b', 'z').ShouldBe(" cdefghijkl mnopqrstuvwxy ");
+        Strings.RemoveChars(text, ' ').ShouldBe("abcdefghijklmnopqrstuvwxyz");
+        Strings.RemoveWhiteSpace(text).ShouldBe("abcdefghijklmnopqrstuvwxyz");
+    }
+
+    /// <summary>
+    /// 测试 - 移除所有重复的空格
+    /// </summary>
+    [Fact]
+    public void Test_RemoveDuplicateWhiteSpaces()
+    {
+        Strings.RemoveDuplicateWhiteSpaces("  ").ShouldBe(" ");
+        Strings.RemoveDuplicateWhiteSpaces("  1").ShouldBe(" 1");
+        Strings.RemoveDuplicateWhiteSpaces("1  ").ShouldBe("1 ");
+        Strings.RemoveDuplicateWhiteSpaces("1  1").ShouldBe("1 1");
+        Strings.RemoveDuplicateWhiteSpaces(" 11 ").ShouldBe(" 11 ");
+        Strings.RemoveDuplicateWhiteSpaces("    ").ShouldBe(" ");
+        Strings.RemoveDuplicateWhiteSpaces("  1  ").ShouldBe(" 1 ");
+    }
+
+    /// <summary>
+    /// 测试 - 移除所有重复的字符
+    /// </summary>
+    [Fact]
+    public void Test_RemoveDuplicateChar()
+    {
+        Strings.RemoveDuplicateChar("zz", 'z').ShouldBe("z");
+        Strings.RemoveDuplicateChar("zz1", 'z').ShouldBe("z1");
+        Strings.RemoveDuplicateChar("1zz", 'z').ShouldBe("1z");
+        Strings.RemoveDuplicateChar("1zz1", 'z').ShouldBe("1z1");
+        Strings.RemoveDuplicateChar("z11z", 'z').ShouldBe("z11z");
+        Strings.RemoveDuplicateChar("zzz", 'z').ShouldBe("z");
+        Strings.RemoveDuplicateChar("zz1zz", 'z').ShouldBe("z1z");
+    }
+
+    /// <summary>
+    /// 测试 - 移除指定位置后的字符串
+    /// </summary>
+    [Fact]
+    public void Test_RemoveSince()
+    {
+        Strings.RemoveSince("ABCDE", 3).ShouldBe("ABC");
+    }
+
+    /// <summary>
+    /// 测试 - 移除给定字符串后的字符串
+    /// </summary>
+    [Fact]
+    public void Test_RemoveSince_WithGivenText()
+    {
+        Strings.RemoveSince("ABCDE", "D").ShouldBe("ABC");
+    }
+
+    /// <summary>
+    /// 测试 - 移除给定字符串后的字符串 - 忽略大小写
+    /// </summary>
+    [Fact]
+    public void Test_RemoveSinceIgnoreCase_WithGivenText()
+    {
+        Strings.RemoveSinceIgnoreCase("ABCDE", "d").ShouldBe("ABC");
+    }
+
+    /// <summary>
     /// 测试 - 移除起始字符串
     /// </summary>
     [Theory]
