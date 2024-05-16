@@ -1,4 +1,6 @@
-﻿namespace Bing.Text;
+﻿using System.Globalization;
+
+namespace Bing.Text;
 
 /// <summary>
 /// 辅助字符串帮助类
@@ -221,6 +223,31 @@ public static partial class Strings
             _ => CountForDiffChars(text, toCheck)
         };
     }
+
+    /// <summary>
+    /// 计算字符串中的字符数。
+    /// </summary>
+    /// <param name="text">字符串</param>
+    /// <returns>字符数</returns>
+    /// <remarks>
+    /// 注意：<br />
+    /// netcore3.1 遇到组合emoji时，会被拆成单个emoji去计算。
+    /// </remarks>
+    public static int CharacterCount(string text)
+    {
+        var enumerator = StringInfo.GetTextElementEnumerator(text);
+        var length = 0;
+        while (enumerator.MoveNext()) 
+            length++;
+        return length;
+    }
+
+    /// <summary>
+    /// 计算字符串的字节大小（使用UTF-8编码）
+    /// </summary>
+    /// <param name="text">字符串</param>
+    /// <returns>字节大小</returns>
+    public static int BytesCount(string text) => Encoding.UTF8.GetByteCount(text);
 
     #endregion
 
@@ -871,6 +898,18 @@ public static partial class StringsExtensions
     /// <param name="case">忽略大小写开关</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int CountForDiffChars(this string text, string toCheck, IgnoreCase @case) => Strings.CountForDiffChars(text, toCheck, @case);
+
+    /// <summary>
+    /// 计算字符串中的字符数。
+    /// </summary>
+    /// <param name="text">字符串</param>
+    /// <returns>字符数</returns>
+    /// <remarks>
+    /// 注意：<br />
+    /// netcore3.1 遇到组合emoji时，会被拆成单个emoji去计算。
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int CharacterCount(this string text) => Strings.CharacterCount(text);
 
     #endregion
 

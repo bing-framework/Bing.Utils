@@ -47,6 +47,23 @@ public class StringRemoveTest
     }
 
     /// <summary>
+    /// 测试 - 移除末尾字符串
+    /// </summary>
+    [Fact]
+    public void Test_RemoveEnd_1()
+    {
+        // null case
+        (null as string).RemoveEnd("Test").ShouldBe(string.Empty);
+
+        // empty case
+        string.Empty.RemoveEnd("Test").ShouldBe(string.Empty);
+
+        // Simple case
+        "MyTestAppService".RemoveEnd("AppService").ShouldBe("MyTest");
+        "MyTestAppService".RemoveEnd("Service").ShouldBe("MyTestApp");
+    }
+
+    /// <summary>
     /// 测试 - 清理空白字符
     /// </summary>
     [Fact]

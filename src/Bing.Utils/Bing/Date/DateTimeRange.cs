@@ -478,10 +478,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
-    public bool HasIntersect(DateTime start, DateTime end)
-    {
-        return HasIntersect(new DateTimeRange(start, end));
-    }
+    public bool HasIntersect(DateTime start, DateTime end) => HasIntersect(new DateTimeRange(start, end));
 
     #endregion
 
@@ -501,10 +498,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
-    public bool Contains(DateTime start, DateTime end)
-    {
-        return Contains(new DateTimeRange(start, end));
-    }
+    public bool Contains(DateTime start, DateTime end) => Contains(new DateTimeRange(start, end));
 
     #endregion
 
@@ -524,10 +518,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
-    public bool In(DateTime start, DateTime end)
-    {
-        return In(new DateTimeRange(start, end));
-    }
+    public bool In(DateTime start, DateTime end) => In(new DateTimeRange(start, end));
 
     #endregion
 
@@ -585,10 +576,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
-    public DateTimeRange Union(DateTime start, DateTime end)
-    {
-        return Union(new DateTimeRange(start, end));
-    }
+    public DateTimeRange Union(DateTime start, DateTime end) => Union(new DateTimeRange(start, end));
 
     #endregion
 
