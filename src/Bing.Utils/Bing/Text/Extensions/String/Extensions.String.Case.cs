@@ -7,7 +7,6 @@ namespace Bing.Text;
 /// </summary>
 public static partial class StringExtensions
 {
-    
     /// <summary>
     /// 转换为首字母大写字符串
     /// </summary>

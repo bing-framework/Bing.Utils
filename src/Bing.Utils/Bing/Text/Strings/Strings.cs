@@ -66,28 +66,28 @@ public static partial class Strings
     /// <summary>
     /// 返回字符串中所包含字母的数量。
     /// </summary>
-    /// <param name="text">文本</param>
+    /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int CountForLetters(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Count();
 
     /// <summary>
     /// 返回字符串中所包含大写字母的数量。
     /// </summary>
-    /// <param name="text">文本</param>
+    /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int CountForLettersUpperCase(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Where(char.IsUpper).Count();
 
     /// <summary>
     /// 返回字符串中所包含小写字母的数量。
     /// </summary>
-    /// <param name="text">文本</param>
+    /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int CountForLetterLowerCase(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Where(char.IsLower).Count();
 
     /// <summary>
     /// 返回字符串中所包含数字的数量。
     /// </summary>
-    /// <param name="text">文本</param>
+    /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int CountForNumbers(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForNumbers(text).Count();
 

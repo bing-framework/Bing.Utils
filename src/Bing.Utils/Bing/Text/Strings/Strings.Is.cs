@@ -10,20 +10,14 @@ public static partial class Strings
     /// </summary>
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsUpper(string text)
-    {
-        return FilterForLetters(text).All(char.IsUpper);
-    }
+    public static bool IsUpper(string text) => FilterForLetters(text).All(char.IsUpper);
 
     /// <summary>
     /// 判断是否为小写。
     /// </summary>
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsLower(string text)
-    {
-        return FilterForLetters(text).All(char.IsLower);
-    }
+    public static bool IsLower(string text) => FilterForLetters(text).All(char.IsLower);
 }
 
 /// <summary>
@@ -36,20 +30,14 @@ public static partial class StringsExtensions
     /// </summary>
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsUpper(this string text)
-    {
-        return Strings.IsUpper(text);
-    }
+    public static bool IsUpper(this string text) => Strings.IsUpper(text);
 
     /// <summary>
     /// 判断是否为小写。
     /// </summary>
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsLower(this string text)
-    {
-        return Strings.IsLower(text);
-    }
+    public static bool IsLower(this string text) => Strings.IsLower(text);
 }
 
 /// <summary>
@@ -62,18 +50,12 @@ public static partial class StringsShortcutExtensions
     /// </summary>
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsNullOrEmpty(this string text)
-    {
-        return string.IsNullOrEmpty(text);
-    }
+    public static bool IsNullOrEmpty(this string text) => string.IsNullOrEmpty(text);
 
     /// <summary>
     /// 检查字符串是 null、空还是仅由空白字符组成。
     /// </summary>
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsNullOrWhiteSpace(this string text)
-    {
-        return string.IsNullOrWhiteSpace(text);
-    }
+    public static bool IsNullOrWhiteSpace(this string text) => string.IsNullOrWhiteSpace(text);
 }

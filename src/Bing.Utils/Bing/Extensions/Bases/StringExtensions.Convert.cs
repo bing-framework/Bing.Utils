@@ -141,58 +141,6 @@ public static partial class StringExtensions
 
     #endregion
 
-    #region ToSbcCase(转换成全角)
-
-    /// <summary>
-    /// 将字符串转换成全角字符串(SBC Case)
-    /// </summary>
-    /// <param name="input">任意字符串</param>
-    public static string ToSbcCase(this string input)
-    {
-        var c = input.ToCharArray();
-        for (var i = 0; i < c.Length; i++)
-        {
-            if (c[i] == 32)
-            {
-                c[i] = (char)12288;
-                continue;
-            }
-            if (c[i] < 127)
-            {
-                c[i] = (char)(c[i] + 65248);
-            }
-        }
-        return new string(c);
-    }
-
-    #endregion
-
-    #region ToDbcCase(转换成半角)
-
-    /// <summary>
-    /// 将字符串转换成半角字符串(DBC Case)
-    /// </summary>
-    /// <param name="input">任意字符串</param>
-    public static string ToDbcCase(this string input)
-    {
-        var c = input.ToCharArray();
-        for (var i = 0; i < c.Length; i++)
-        {
-            if (c[i] == 12288)
-            {
-                c[i] = (char)32;
-                continue;
-            }
-            if (c[i] > 35280 && c[i] < 65375)
-            {
-                c[i] = (char)(c[i] - 65248);
-            }
-        }
-        return new string(c);
-    }
-
-    #endregion
-
     #region ToDateTime(时间戳转换成时间)
 
     /// <summary>
