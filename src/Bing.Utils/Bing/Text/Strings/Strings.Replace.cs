@@ -6,7 +6,7 @@
 public static partial class Strings
 {
     /// <summary>
-    /// 替换，忽略大小写。
+    /// 替换文本，忽略大小写。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
@@ -18,7 +18,7 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 仅替换完整单词。
+    /// 替换文本，仅替换完整单词。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
@@ -43,7 +43,7 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 仅替换首个命中的值。
+    /// 替换文本，仅替换首个命中的值。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
@@ -62,7 +62,7 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 仅替换最后一个命中的值。
+    /// 替换文本，仅替换最后一个命中的值。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
@@ -81,7 +81,7 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 仅替换结尾命中的结果，并忽略大小写。
+    /// 替换文本，仅替换结尾命中的结果，并忽略大小写。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
@@ -96,7 +96,7 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 替换。
+    /// 替换文本。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
@@ -120,7 +120,7 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 递归替换。
+    /// 替换文本，递归替换。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
@@ -141,7 +141,7 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 用空格来替换所有命中的字符。
+    /// 替换文本，用空格来替换所有命中的字符。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="toReplace">替换字符</param>
@@ -173,7 +173,7 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 用给定的字符来替换数字。
+    /// 替换文本，用给定的字符来替换数字。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="toReplace">替换字符</param>
@@ -194,7 +194,7 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 替换指定字符串的指定区间内字符为固定字符。
+    /// 替换文本，替换指定字符串的指定区间内字符为固定字符。
     /// </summary>
     /// <param name="text">待处理的字符串。</param>
     /// <param name="startInclude">替换起始位置（包含该位置字符）。</param>
@@ -228,109 +228,82 @@ public static partial class Strings
 public static partial class StringsExtensions
 {
     /// <summary>
-    /// 替换，忽略大小写。
+    /// 替换文本，忽略大小写。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
     /// <param name="newValue">新值</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ReplaceIgnoreCase(this string text, string oldValue, string newValue)
-    {
-        return Strings.ReplaceIgnoreCase(text, oldValue, newValue);
-    }
+    public static string ReplaceIgnoreCase(this string text, string oldValue, string newValue) => Strings.ReplaceIgnoreCase(text, oldValue, newValue);
 
     /// <summary>
-    /// 仅替换完整单词。
+    /// 替换文本，仅替换完整单词。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
     /// <param name="newValue">新值</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ReplaceOnlyWholePhrase(this string text, string oldValue, string newValue)
-    {
-        return Strings.ReplaceOnlyWholePhrase(text, oldValue, newValue);
-    }
+    public static string ReplaceOnlyWholePhrase(this string text, string oldValue, string newValue) => Strings.ReplaceOnlyWholePhrase(text, oldValue, newValue);
 
     /// <summary>
-    /// 仅替换首个命中的值。
+    /// 替换文本，仅替换首个命中的值。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
     /// <param name="newValue">新值</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ReplaceFirstOccurrence(this string text, string oldValue, string newValue)
-    {
-        return Strings.ReplaceFirstOccurrence(text, oldValue, newValue);
-    }
+    public static string ReplaceFirstOccurrence(this string text, string oldValue, string newValue) => Strings.ReplaceFirstOccurrence(text, oldValue, newValue);
 
     /// <summary>
-    /// 仅替换最后一个命中的值。
+    /// 替换文本，仅替换最后一个命中的值。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
     /// <param name="newValue">新值</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ReplaceLastOccurrence(this string text, string oldValue, string newValue)
-    {
-        return Strings.ReplaceLastOccurrence(text, oldValue, newValue);
-    }
+    public static string ReplaceLastOccurrence(this string text, string oldValue, string newValue) => Strings.ReplaceLastOccurrence(text, oldValue, newValue);
 
     /// <summary>
-    /// 仅替换结尾命中的结果，并忽略大小写。
+    /// 替换文本，仅替换结尾命中的结果，并忽略大小写。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
     /// <param name="newValue">新值</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ReplaceOnlyAtEndIgnoreCase(this string text, string oldValue, string newValue)
-    {
-        return Strings.ReplaceOnlyAtEndIgnoreCase(text, oldValue, newValue);
-    }
+    public static string ReplaceOnlyAtEndIgnoreCase(this string text, string oldValue, string newValue) => Strings.ReplaceOnlyAtEndIgnoreCase(text, oldValue, newValue);
 
     /// <summary>
-    /// 替换。
+    /// 替换文本。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
     /// <param name="newValue">新值</param>
     /// <param name="comparisonType">字符串比较类型</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Replace(this string text, string oldValue, string newValue, StringComparison comparisonType)
-    {
-        return Strings.Replace(text, oldValue, newValue, comparisonType);
-    }
+    public static string Replace(this string text, string oldValue, string newValue, StringComparison comparisonType) => Strings.Replace(text, oldValue, newValue, comparisonType);
 
     /// <summary>
-    /// 递归替换。
+    /// 替换文本，递归替换。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="oldValue">旧值</param>
     /// <param name="newValue">新值</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ReplaceRecursive(this string text, string oldValue, string newValue)
-    {
-        return Strings.ReplaceRecursive(text, oldValue, newValue);
-    }
+    public static string ReplaceRecursive(this string text, string oldValue, string newValue) => Strings.ReplaceRecursive(text, oldValue, newValue);
 
     /// <summary>
-    /// 用空格来替换所有命中的字符。
+    /// 替换文本，用空格来替换所有命中的字符。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="toReplace">替换字符</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ReplaceCharsWithWhiteSpace(this string text, params char[] toReplace)
-    {
-        return Strings.ReplaceCharsWithWhiteSpace(text, toReplace);
-    }
+    public static string ReplaceCharsWithWhiteSpace(this string text, params char[] toReplace) => Strings.ReplaceCharsWithWhiteSpace(text, toReplace);
 
     /// <summary>
-    /// 用给定的字符来替换数字。
+    /// 替换文本，用给定的字符来替换数字。
     /// </summary>
     /// <param name="text">原始字符串</param>
     /// <param name="toReplace">替换字符</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ReplaceNumbersWith(this string text, char toReplace)
-    {
-        return Strings.ReplaceNumbersWith(text, toReplace);
-    }
+    public static string ReplaceNumbersWith(this string text, char toReplace) => Strings.ReplaceNumbersWith(text, toReplace);
 }
