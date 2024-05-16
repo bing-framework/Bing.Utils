@@ -6,6 +6,19 @@
 public static partial class Strings
 {
     /// <summary>
+    /// 从字符串开始处获取指定长度的子字符串
+    /// </summary>
+    /// <param name="text">原始字符串</param>
+    /// <param name="length">需要获取的子字符串的长度</param>
+    /// <returns>如果原始字符串的长度大于指定长度，则返回原始字符串的前length个字符组成的子字符串；否则，返回原始字符串。如果原始字符串为空或仅包含空格，则返回空字符串。</returns>
+    public static string Take(string text, int length)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+        return text.Length > length ? text.Substring(0, length) : text;
+    }
+
+    /// <summary>
     /// 截断字符串。从字符串中提取指定范围的子字符串。
     /// </summary>
     /// <param name="text">原始字符串</param>

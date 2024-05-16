@@ -5,6 +5,62 @@ namespace BingUtilsUT.StringUT;
 [Trait("StringUT", "Strings.Substring")]
 public class StringSubstringTest
 {
+    #region Take
+
+    /// <summary>
+    /// 测试 - 获取指定长度的字符串 - 当输入字符串长度大于指定长度时
+    /// </summary>
+    [Fact]
+    public void Test_Take_WithLongerText()
+    {
+        var input = "Hello, world!";
+        var length = 5;
+        var expected = "Hello";
+        var result = Strings.Take(input, length);
+        Assert.Equal(expected, result);
+    }
+
+    /// <summary>
+    /// 测试 - 获取指定长度的字符串 - 当输入字符串长度小于指定长度时
+    /// </summary>
+    [Fact]
+    public void Test_Take_WithShorterText()
+    {
+        var input = "Hello";
+        var length = 10;
+        var expected = "Hello";
+        var result = Strings.Take(input, length);
+        Assert.Equal(expected, result);
+    }
+
+    /// <summary>
+    /// 测试 - 获取指定长度的字符串 - 当输入字符串为空字符串时
+    /// </summary>
+    [Fact]
+    public void Test_Take_WithEmptyString()
+    {
+        var input = "";
+        var length = 5;
+        var expected = "";
+        var result = Strings.Take(input, length);
+        Assert.Equal(expected, result);
+    }
+
+    /// <summary>
+    /// 测试 - 获取指定长度的字符串 - 当输入字符串只包含空格时
+    /// </summary>
+    [Fact]
+    public void Test_Take_WithWhitespaceString()
+    {
+        var input = "     ";
+        var length = 5;
+        var expected = "";
+        var result = Strings.Take(input, length);
+        Assert.Equal(expected, result);
+    } 
+
+    #endregion
+
     /// <summary>
     /// 测试 - 截断字符串 - 指定范围
     /// </summary>

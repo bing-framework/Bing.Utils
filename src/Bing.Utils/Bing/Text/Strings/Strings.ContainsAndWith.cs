@@ -307,6 +307,17 @@ public static partial class StringsExtensions
     }
 
     #endregion
+
+    #region Match
+
+    /// <summary>
+    /// 匹配字符串中是否包含 Emoji 表情
+    /// </summary>
+    /// <param name="text">需要检查的字符串</param>
+    /// <returns>如果字符串中包含 Emoji 表情，则返回 true，否则返回 false</returns>
+    public static bool MatchEmoji(this string text) => Strings.MatchEmoji(text);
+
+    #endregion
 }
 
 /// <summary>
