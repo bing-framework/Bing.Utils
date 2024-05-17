@@ -82,7 +82,7 @@ public static partial class Strings
     /// </summary>
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForLetterLowerCase(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Where(char.IsLower).Count();
+    public static int CountForLettersLowerCase(string text) => string.IsNullOrEmpty(text) ? 0 : FilterForLetters(text).Where(char.IsLower).Count();
 
     /// <summary>
     /// 返回字符串中所包含数字的数量。
@@ -815,7 +815,7 @@ public static partial class StringsExtensions
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CountForLetterLowerCase(this string text) => Strings.CountForLetterLowerCase(text);
+    public static int CountForLettersLowerCase(this string text) => Strings.CountForLettersLowerCase(text);
 
     /// <summary>
     /// 返回字符串中所包含数字的数量。
