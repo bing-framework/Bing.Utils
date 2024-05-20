@@ -38,45 +38,40 @@ public static class ExceptionHelper
         detail.Append(@"***************************************");
         return detail.ToString();
     }
-}
 
-/// <summary>
-/// Bing <see cref="Exception"/> 扩展
-/// </summary>
-public static class ExceptionHelperExtensions
-{
     /// <summary>
-    /// 解包
+    /// 解包异常，获取最内层的异常
     /// </summary>
-    /// <param name="ex">异常</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static Exception Unwrap(this Exception ex)
+    /// <param name="exception">需要解包的异常</param>
+    /// <returns>返回最内层的异常。如果输入的异常本身就没有内部异常，那么返回输入的异常。</returns>
+    /// <exception cref="ArgumentNullException">当输入的异常为 null 时抛出此异常</exception>
+    public static Exception Unwrap(Exception exception)
     {
-        if (ex is null)
-            throw new ArgumentNullException(nameof(ex));
-        while (ex.InnerException != null)
-            ex = ex.InnerException;
-        return ex;
+        if (exception is null)
+            throw new ArgumentNullException(nameof(exception));   
+        while (exception.InnerException != null)
+            exception = exception.InnerException;
+        return exception;
     }
 
     /// <summary>
-    /// 解包
+    /// 解包异常，获取指定类型的异常
     /// </summary>
-    /// <param name="ex">异常</param>
-    /// <param name="untilType">截止类型</param>
-    /// <param name="mayDerivedClass">是否允许派生类</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentException"></exception>
-    public static Exception Unwrap(this Exception ex, Type untilType, bool mayDerivedClass = true)
+    /// <param name="exception">需要解包的异常</param>
+    /// <param name="untilType">需要获取的异常类型</param>
+    /// <param name="mayDerivedClass">是否可以是指定异常类型的派生类，默认为 true</param>
+    /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
+    /// <exception cref="ArgumentNullException">当输入的异常或指定的类型为 null 时抛出此异常</exception>
+    /// <exception cref="ArgumentException">当指定的类型不是 Exception 类型或其派生类时抛出此异常</exception>
+    public static Exception Unwrap(Exception exception, Type untilType, bool mayDerivedClass = true)
     {
-        if (ex is null)
-            throw new ArgumentNullException(nameof(ex));
+        if (exception is null)
+            throw new ArgumentNullException(nameof(exception));
         if (untilType is null)
             throw new ArgumentNullException(nameof(untilType));
         if (!untilType.IsSubclassOf(typeof(Exception)))
-            throw new ArgumentException($"Type '{untilType}' does not devide from {typeof(Exception)}", nameof(untilType));
+            throw new ArgumentException($"Type '{untilType}' does not divided from {typeof(Exception)}", nameof(untilType));
 
-        var exception = ex;
         return exception.GetType() == untilType || mayDerivedClass && exception.GetType().IsSubclassOf(untilType)
             ? exception
             : exception.InnerException is null
@@ -85,15 +80,52 @@ public static class ExceptionHelperExtensions
     }
 
     /// <summary>
-    /// 解包
+    /// 解包异常，获取指定类型的异常
     /// </summary>
-    /// <typeparam name="TException">异常类型</typeparam>
-    /// <param name="ex">异常</param>
-    public static Exception Unwrap<TException>(this Exception ex) where TException : Exception => ex.Unwrap(Reflection.Types.Of<TException>());
+    /// <typeparam name="TException">需要获取的异常类型</typeparam>
+    /// <param name="exception">需要解包的异常</param>
+    /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Exception Unwrap<TException>(this Exception exception) where TException : Exception => exception.Unwrap(Reflection.Types.Of<TException>());
+}
+
+/// <summary>
+/// Bing <see cref="Exception"/> 扩展
+/// </summary>
+public static class ExceptionHelperExtensions
+{
+    /// <summary>
+    /// 解包异常，获取最内层的异常
+    /// </summary>
+    /// <param name="exception">需要解包的异常</param>
+    /// <returns>返回最内层的异常。如果输入的异常本身就没有内部异常，那么返回输入的异常。</returns>
+    /// <exception cref="ArgumentNullException">当输入的异常为 null 时抛出此异常</exception>
+    public static Exception Unwrap(this Exception exception) => ExceptionHelper.Unwrap(exception);
+
+    /// <summary>
+    /// 解包异常，获取指定类型的异常
+    /// </summary>
+    /// <param name="exception">需要解包的异常</param>
+    /// <param name="untilType">需要获取的异常类型</param>
+    /// <param name="mayDerivedClass">是否可以是指定异常类型的派生类，默认为 true</param>
+    /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
+    /// <exception cref="ArgumentNullException">当输入的异常或指定的类型为 null 时抛出此异常</exception>
+    /// <exception cref="ArgumentException">当指定的类型不是 Exception 类型或其派生类时抛出此异常</exception>
+    public static Exception Unwrap(this Exception exception, Type untilType, bool mayDerivedClass = true) => ExceptionHelper.Unwrap(exception, untilType, mayDerivedClass);
+
+    /// <summary>
+    /// 解包异常，获取指定类型的异常
+    /// </summary>
+    /// <typeparam name="TException">需要获取的异常类型</typeparam>
+    /// <param name="exception">需要解包的异常</param>
+    /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Exception Unwrap<TException>(this Exception exception) where TException : Exception => ExceptionHelper.Unwrap<TException>(exception);
 
     /// <summary>
     /// 解包并返回消息
     /// </summary>
     /// <param name="ex">异常</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ToUnwrappedString(this Exception ex) => ex.Unwrap().Message;
 }
