@@ -92,38 +92,76 @@ public class StringsTest
     }
 
     /// <summary>
-    /// 测试 - 返回字符串中所包含字母的数量
+    /// 测试 - 重复指定次数的字符
     /// </summary>
     [Fact]
-    public void Test_CountForLetters()
+    public void Test_Repeat()
     {
-        Strings.CountForLetters("abcd1234").ShouldBe(4);
-        Strings.CountForLetters("").ShouldBe(0);
-        Strings.CountForLetters("1234").ShouldBe(0);
-        Strings.CountForLetters(null).ShouldBe(0);
+        Strings.Repeat("ABC", -1).ShouldBeEmpty();
+        Strings.Repeat("ABC", 0).ShouldBeEmpty();
+        Strings.Repeat("ABC", 1).ShouldBe("ABC");
+        Strings.Repeat("ABC", 2).ShouldBe("ABCABC");
     }
 
     /// <summary>
-    /// 测试 - 返回字符串中所包含大写字母的数量
+    /// 测试 - 从左向右截取字符串
     /// </summary>
     [Fact]
-    public void Test_CountForLettersUpperCase()
+    public void Test_Left()
     {
-        Strings.CountForLettersUpperCase("abcdABCD1234").ShouldBe(4);
-        Strings.CountForLettersUpperCase("").ShouldBe(0);
-        Strings.CountForLettersUpperCase("1234").ShouldBe(0);
-        Strings.CountForLettersUpperCase(null).ShouldBe(0);
+        Strings.Left("ABCDEFG", 0).ShouldBeEmpty();
+        Strings.Left("ABCDEFG", 1).ShouldBe("A");
+        Strings.Left("ABCDEFG", 2).ShouldBe("AB");
+        Strings.Left("ABCDEFG", 3).ShouldBe("ABC");
+        Strings.Left("ABCDEFG", 4).ShouldBe("ABCD");
+        Strings.Left("ABCDEFG", 5).ShouldBe("ABCDE");
+        Strings.Left("ABCDEFG", 6).ShouldBe("ABCDEF");
+        Strings.Left("ABCDEFG", 7).ShouldBe("ABCDEFG");
+        Strings.Left("ABCDEFG", 8).ShouldBe("ABCDEFG");
     }
 
     /// <summary>
-    /// 测试 - 返回字符串中所包含小写字母的数量
+    /// 测试 - 从右向左截取字符串
     /// </summary>
     [Fact]
-    public void Test_CountForLettersLowerCase()
+    public void Test_Right()
     {
-        Strings.CountForLettersLowerCase("abcdABCD1234").ShouldBe(4);
-        Strings.CountForLettersLowerCase("").ShouldBe(0);
-        Strings.CountForLettersLowerCase("1234").ShouldBe(0);
-        Strings.CountForLettersLowerCase(null).ShouldBe(0);
+        Strings.Right("ABCDEFG", 0).ShouldBeEmpty();
+        Strings.Right("ABCDEFG", 1).ShouldBe("G");
+        Strings.Right("ABCDEFG", 2).ShouldBe("FG");
+        Strings.Right("ABCDEFG", 3).ShouldBe("EFG");
+        Strings.Right("ABCDEFG", 4).ShouldBe("DEFG");
+        Strings.Right("ABCDEFG", 5).ShouldBe("CDEFG");
+        Strings.Right("ABCDEFG", 6).ShouldBe("BCDEFG");
+        Strings.Right("ABCDEFG", 7).ShouldBe("ABCDEFG");
+        Strings.Right("ABCDEFG", 8).ShouldBe("ABCDEFG");
+    }
+
+    /// <summary>
+    /// 测试 - 获取通用前缀
+    /// </summary>
+    [Fact]
+    public void Test_CommonPrefix()
+    {
+        var textOne = "AAABBBCCC";
+        var textTwo = "AABBCC";
+
+        Strings.CommonPrefix(textOne, textTwo).ShouldBe("AA");
+        Strings.CommonPrefix(textOne, textTwo, out var v1).ShouldBe("AA");
+        v1.ShouldBe(2);
+    }
+
+    /// <summary>
+    /// 测试 - 获取通用后缀
+    /// </summary>
+    [Fact]
+    public void Test_CommonSuffix()
+    {
+        var textOne = "AAABBBCCC";
+        var textTwo = "AABBCC";
+
+        Strings.CommonSuffix(textOne, textTwo).ShouldBe("CC");
+        Strings.CommonSuffix(textOne, textTwo, out var v1).ShouldBe("CC");
+        v1.ShouldBe(2);
     }
 }

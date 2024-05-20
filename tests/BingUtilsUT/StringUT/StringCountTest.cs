@@ -11,8 +11,10 @@ public class StringCountTest
     [Fact]
     public void Test_CountForLetters()
     {
-        Assert.Equal(5, Strings.CountForLetters("Hello"));
-        Assert.Equal(0, Strings.CountForLetters(""));
+        Strings.CountForLetters("abcd1234").ShouldBe(4);
+        Strings.CountForLetters("").ShouldBe(0);
+        Strings.CountForLetters("1234").ShouldBe(0);
+        Strings.CountForLetters(null).ShouldBe(0);
     }
 
     /// <summary>
@@ -21,8 +23,10 @@ public class StringCountTest
     [Fact]
     public void Test_CountForLettersUpperCase()
     {
-        Assert.Equal(1, Strings.CountForLettersUpperCase("Hello"));
-        Assert.Equal(0, Strings.CountForLettersUpperCase(""));
+        Strings.CountForLettersUpperCase("abcdABCD1234").ShouldBe(4);
+        Strings.CountForLettersUpperCase("").ShouldBe(0);
+        Strings.CountForLettersUpperCase("1234").ShouldBe(0);
+        Strings.CountForLettersUpperCase(null).ShouldBe(0);
     }
 
     /// <summary>
@@ -31,8 +35,10 @@ public class StringCountTest
     [Fact]
     public void Test_CountForLetterLowerCase()
     {
-        Assert.Equal(4, Strings.CountForLetterLowerCase("Hello"));
-        Assert.Equal(0, Strings.CountForLetterLowerCase(""));
+        Strings.CountForLettersLowerCase("abcdABCD1234").ShouldBe(4);
+        Strings.CountForLettersLowerCase("").ShouldBe(0);
+        Strings.CountForLettersLowerCase("1234").ShouldBe(0);
+        Strings.CountForLettersLowerCase(null).ShouldBe(0);
     }
 
     /// <summary>
@@ -41,8 +47,10 @@ public class StringCountTest
     [Fact]
     public void Test_CountForNumbers()
     {
-        Assert.Equal(3, Strings.CountForNumbers("123abc"));
-        Assert.Equal(0, Strings.CountForNumbers("abc"));
+        Strings.CountForNumbers("abcd1234").ShouldBe(4);
+        Strings.CountForNumbers("").ShouldBe(0);
+        Strings.CountForNumbers("abcd").ShouldBe(0);
+        Strings.CountForNumbers(null).ShouldBe(0);
     }
 
     /// <summary>
@@ -51,8 +59,24 @@ public class StringCountTest
     [Fact]
     public void Test_CountOccurrences()
     {
-        Assert.Equal(4, Strings.CountOccurrences("Hello Hello", 'l'));
-        Assert.Equal(0, Strings.CountOccurrences("", 'l'));
+        var text = "AABBCCDDAABBCCDD";
+        Strings.CountOccurrences(text,"AA").ShouldBe(2);
+        Strings.CountOccurrences(text,"aa").ShouldBe(0);
+            
+        Strings.CountOccurrences(text,'A').ShouldBe(4);
+        Strings.CountOccurrences(text,'a').ShouldBe(0);
+
+        Strings.CountOccurrences(text,"AA", IgnoreCase.False).ShouldBe(2);
+        Strings.CountOccurrences(text,"aa", IgnoreCase.False).ShouldBe(0);
+            
+        Strings.CountOccurrences(text,'A', IgnoreCase.False).ShouldBe(4);
+        Strings.CountOccurrences(text,'a', IgnoreCase.False).ShouldBe(0);
+            
+        Strings.CountOccurrences(text,"AA", IgnoreCase.True).ShouldBe(2);
+        Strings.CountOccurrences(text,"aa", IgnoreCase.True).ShouldBe(2);
+            
+        Strings.CountOccurrences(text,'A', IgnoreCase.True).ShouldBe(4);
+        Strings.CountOccurrences(text,'a', IgnoreCase.True).ShouldBe(4);
     }
 
     /// <summary>
@@ -61,8 +85,12 @@ public class StringCountTest
     [Fact]
     public void Test_CountOccurrences_IgnoreCase()
     {
-        Assert.Equal(4, Strings.CountOccurrencesIgnoreCase("Hello Hello", 'L'));
-        Assert.Equal(0, Strings.CountOccurrencesIgnoreCase("", 'L'));
+        var text = "AABBCCDDAABBCCDD";
+        Strings.CountOccurrencesIgnoreCase(text,"AA").ShouldBe(2);
+        Strings.CountOccurrencesIgnoreCase(text,"aa").ShouldBe(2);
+            
+        Strings.CountOccurrencesIgnoreCase(text,'A').ShouldBe(4);
+        Strings.CountOccurrencesIgnoreCase(text,'a').ShouldBe(4);
     }
 
     /// <summary>
