@@ -7,34 +7,24 @@
 public class Success<T> : Try<T>
 {
     /// <summary>
-    /// 是否失败
-    /// </summary>
-    public override bool IsFailure => false;
-
-    /// <summary>
-    /// 是否成功
-    /// </summary>
-    public override bool IsSuccess => true;
-
-    /// <summary>
-    /// 异常
-    /// </summary>
-    public override Exception Exception => null;
-
-    /// <summary>
-    /// 值
-    /// </summary>
-    public override T Value { get; }
-
-    /// <summary>
     /// 初始化一个<see cref="Success{T}"/>类型的实例
     /// </summary>
     /// <param name="value">值</param>
     internal Success(T value) => Value = value;
 
-    /// <summary>
-    /// 重载输出字符串
-    /// </summary>
+    /// <inheritdoc />
+    public override bool IsFailure => false;
+
+    /// <inheritdoc />
+    public override bool IsSuccess => true;
+
+    /// <inheritdoc />
+    public override TryCreatingValueException Exception => default!;
+
+    /// <inheritdoc />
+    public override T Value { get; }
+
+    /// <inheritdoc />
     public override string ToString() => $"Success<{Value}>";
 
     /// <summary>
@@ -43,72 +33,64 @@ public class Success<T> : Try<T>
     /// <param name="other">对象</param>
     public bool Equals(Success<T> other) => !(other is null) && EqualityComparer<T>.Default.Equals(Value, other.Value);
 
-    /// <summary>
-    /// 重载相等
-    /// </summary>
-    /// <param name="obj">对象</param>
+    /// <inheritdoc />
     public override bool Equals(object obj) => obj is Success<T> success && Equals(success);
 
-    /// <summary>
-    /// 重载获取哈希码
-    /// </summary>
-    public override int GetHashCode() => EqualityComparer<T>.Default.GetHashCode(Value);
+    /// <inheritdoc />
+    public override int GetHashCode() => Value is null ? 0 : EqualityComparer<T>.Default.GetHashCode(Value);
 
-    /// <summary>
-    /// 解构
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="exception">异常</param>
+    /// <inheritdoc />
     public override void Deconstruct(out T value, out Exception exception)
     {
         value = Value;
-        exception = default;
+        exception = default!;
     }
 
-    /// <summary>
-    /// 解构
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="tryResult">尝试结果</param>
-    /// <param name="exception">异常</param>
+    /// <inheritdoc />
     public override void Deconstruct(out T value, out bool tryResult, out Exception exception)
     {
         value = Value;
         tryResult = IsSuccess;
-        exception = default;
+        exception = default!;
     }
 
-    /// <summary>
-    /// 恢复
-    /// </summary>
-    /// <param name="recoverFunc">恢复函数</param>
-    public override Try<T> Recover(Func<Exception, T> recoverFunc) => this;
+    /// <inheritdoc />
+    public override Try<T> Recover(Func<TryCreatingValueException, T> recoverFunction) => this;
 
-    /// <summary>
-    /// 恢复
-    /// </summary>
-    /// <param name="recoverFunc">恢复函数</param>
-    public override Try<T> RecoverWith(Func<Exception, Try<T>> recoverFunc) => this;
+    /// <inheritdoc />
+    public override Try<T> Recover(Func<Exception, string, T> recoverFunction) => this;
 
-    /// <summary>
-    /// 匹配
-    /// </summary>
-    /// <typeparam name="TResult">结果类型</typeparam>
-    /// <param name="whenValue">条件值函数</param>
-    /// <param name="whenException">条件异常</param>
-    public override TResult Match<TResult>(Func<T, TResult> whenValue, Func<Exception, TResult> whenException)
+    /// <inheritdoc />
+    public override Try<T> RecoverWith(Func<TryCreatingValueException, Try<T>> recoverFunction) => this;
+
+    /// <inheritdoc />
+    public override Try<T> RecoverWith(Func<Exception, string, Try<T>> recoverFunction) => this;
+
+    /// <inheritdoc />
+    public override TResult Match<TResult>(Func<T, TResult> whenValue, Func<TryCreatingValueException, TResult> whenException)
     {
         if (whenValue is null)
             throw new ArgumentNullException(nameof(whenValue));
         return whenValue(Value);
     }
 
-    /// <summary>
-    /// 触发
-    /// </summary>
-    /// <param name="successAction">成功操作</param>
-    /// <param name="failureAction">失败操作</param>
-    public override Try<T> Tap(Action<T> successAction = null, Action<Exception> failureAction = null)
+    /// <inheritdoc />
+    public override TResult Match<TResult>(Func<T, TResult> whenValue, Func<Exception, string, TResult> whenException)
+    {
+        if (whenValue is null)
+            throw new ArgumentNullException(nameof(whenValue));
+        return whenValue(Value);
+    }
+
+    /// <inheritdoc />
+    public override Try<T> Tap(Action<T> successAction = null, Action<TryCreatingValueException> failureAction = null)
+    {
+        successAction?.Invoke(Value);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public override Try<T> Tap(Action<T> successAction = null, Action<Exception, string> failureAction = null)
     {
         successAction?.Invoke(Value);
         return this;
