@@ -18,7 +18,12 @@ public abstract class TryAction
     /// <summary>
     /// 异常
     /// </summary>
-    public abstract Exception Exception { get; }
+    public abstract TryInvokingException Exception { get; }
+
+    /// <summary>
+    /// 发生异常的原因
+    /// </summary>
+    public abstract string Cause { get; }
 
     /// <summary>
     /// ==
@@ -62,7 +67,7 @@ public abstract class TryAction
     /// </summary>
     /// <param name="tryResult">尝试结果</param>
     /// <param name="exception">异常</param>
-    public abstract void Deconstruct(out bool tryResult, out Exception exception);
+    public abstract void Deconstruct(out bool tryResult, out TryInvokingException exception);
 
     /// <summary>
     /// 将异常转换为指定类型异常
@@ -73,14 +78,14 @@ public abstract class TryAction
     /// <summary>
     /// 恢复
     /// </summary>
-    /// <param name="recoverFunc">恢复函数</param>
-    public abstract TryAction Recover(Action<Exception> recoverFunc);
+    /// <param name="recoverFunction">恢复函数</param>
+    public abstract TryAction Recover(Action<Exception> recoverFunction);
 
     /// <summary>
     /// 恢复
     /// </summary>
-    /// <param name="recoverFunc">恢复函数</param>
-    public abstract TryAction RecoverWith(Func<Exception, TryAction> recoverFunc);
+    /// <param name="recoverFunction">恢复函数</param>
+    public abstract TryAction RecoverWith(Func<Exception, TryAction> recoverFunction);
 
     /// <summary>
     /// 触发
