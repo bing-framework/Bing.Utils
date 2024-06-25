@@ -1,4 +1,6 @@
-﻿namespace Bing.Date;
+﻿using System.Diagnostics;
+
+namespace Bing.Date;
 
 /// <summary>
 /// 时间范围
@@ -8,26 +10,36 @@ public interface IDateTimeRange
     /// <summary>
     /// 获取或设置 起始时间
     /// </summary>
-    DateTime StartTime { get; set; }
+    DateTime StartTime { get; }
 
     /// <summary>
     /// 获取或设置 结束时间
     /// </summary>
-    DateTime EndTime { get; set; }
+    DateTime EndTime { get; }
 }
 
 /// <summary>
 /// 时间范围
 /// </summary>
 [Serializable]
-public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
+[DebuggerDisplay("{StartTime} {DefaultSeparator} {EndTime}")]
+public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, IComparable<DateTimeRange>
 {
-    #region 字段
+    #region 常量
 
     /// <summary>
-    /// 分隔符
+    /// 空实例
     /// </summary>
-    private readonly string _separator = " - ";
+    public static readonly DateTimeRange Empty = new(DateTime.MinValue, DateTime.MaxValue);
+
+    /// <summary>
+    /// 默认分隔符
+    /// </summary>
+    public const string DefaultSeparator = " - ";
+
+    #endregion
+
+    #region 字段
 
     /// <summary>
     /// 当前时间
@@ -62,17 +74,27 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
     /// <summary>
     /// 初始化一个<see cref="DateTimeRange"/>类型的实例
     /// </summary>
-    /// <param name="startTime">起始时间</param>
-    /// <param name="endTime">结束时间</param>
-    /// <param name="separator">分隔符</param>
-    public DateTimeRange(DateTime startTime, DateTime endTime, string separator = " - ")
+    /// <param name="start">起始时间</param>
+    /// <param name="end">结束时间</param>
+    public DateTimeRange(DateTime start, DateTime end)
     {
-        StartTime = startTime;
-        EndTime = endTime;
-        _separator = separator;
-        // 处理起始时间以及结束时间
-        if (StartTime > EndTime)
-            (StartTime, EndTime) = (EndTime, StartTime);
+        StartTime = start < end ? start : end;
+        UtcStartTime = StartTime != DateTime.MinValue ? StartTime.ToUniversalTime() : StartTime;
+        EndTime = end > start ? end : start;
+        UtcEndTime = EndTime != DateTime.MaxValue ? EndTime.ToUniversalTime() : EndTime;
+    }
+
+    /// <summary>
+    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// </summary>
+    /// <param name="start">起始时间</param>
+    /// <param name="end">结束时间</param>
+    public DateTimeRange(DateTimeOffset start, DateTimeOffset end)
+    {
+        StartTime = (start = start < end ? start : end).DateTime;
+        UtcStartTime = start.UtcDateTime;
+        EndTime = (end = end > start ? end : start).DateTime;
+        UtcEndTime = end.UtcDateTime;
     }
 
     /// <summary>
@@ -90,12 +112,22 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
     /// <summary>
     /// 获取或设置 起始时间
     /// </summary>
-    public DateTime StartTime { get; set; }
+    public DateTime StartTime { get; }
 
     /// <summary>
     /// 获取或设置 结束时间
     /// </summary>
-    public DateTime EndTime { get; set; }
+    public DateTime EndTime { get; }
+
+    /// <summary>
+    /// 获取 UTC起始时间
+    /// </summary>
+    public DateTime UtcStartTime { get; }
+
+    /// <summary>
+    /// 获取 UTC结束时间
+    /// </summary>
+    public DateTime UtcEndTime { get; }
 
     /// <summary>
     /// 相差时间
@@ -394,29 +426,6 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
 
     #endregion
 
-    #region ToString(输出字符串)
-
-    /// <summary>
-    /// 输出字符串
-    /// </summary>
-    /// <returns>yyyy-MM-dd HH:mm:ss - yyyy-MM-dd HH:mm:ss</returns>
-    public override string ToString() => ToString("yyyy-MM-dd HH:mm:ss");
-
-    /// <summary>
-    /// 输出字符串
-    /// </summary>
-    /// <param name="format">格式</param>
-    public string ToString(string format) => $"{StartTime.ToString(format)}{_separator}{EndTime.ToString(format)}";
-
-    /// <summary>
-    /// 输出字符串
-    /// </summary>
-    /// <param name="format">格式</param>
-    /// <param name="formatProvider">格式化提供程序</param>
-    public string ToString(string format, IFormatProvider formatProvider) => $"{StartTime.ToString(format, formatProvider)}{_separator}{EndTime.ToString(format, formatProvider)}";
-
-    #endregion
-
     #region GetDays(获取相差天数)
 
     /// <summary>
@@ -483,6 +492,18 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
     #endregion
 
     #region Contains(是否包含指定时间范围)
+
+    /// <summary>
+    /// 判断指定的时间是否在此时间范围内
+    /// </summary>
+    /// <param name="time">需要判断的时间</param>
+    /// <returns>如果指定的时间在此时间范围内，返回 true，否则返回 false。</returns>
+    public bool Contains(DateTime time)
+    {
+        if (time.Kind == DateTimeKind.Utc)
+            return time >= UtcStartTime && time <= UtcEndTime;
+        return time >= StartTime && time <= EndTime;
+    }
 
     /// <summary>
     /// 是否包含指定时间范围
@@ -580,12 +601,97 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>
 
     #endregion
 
+    #region ToString(输出字符串)
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <returns>yyyy-MM-dd HH:mm:ss - yyyy-MM-dd HH:mm:ss</returns>
+    public override string ToString() => ToString("yyyy-MM-dd HH:mm:ss");
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    /// <returns>yyyy-MM-dd HH:mm:ss - yyyy-MM-dd HH:mm:ss</returns>
+    public string ToString(string format) => ToString(format, DefaultSeparator);
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    /// <param name="separator">分隔符</param>
+    public string ToString(string format, string separator) => $"{StartTime.ToString(format)}{separator}{EndTime.ToString(format)}";
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    /// <param name="formatProvider">格式化提供程序</param>
+    public string ToString(string format, IFormatProvider formatProvider) => ToString(format, DefaultSeparator, formatProvider);
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    /// <param name="separator">分隔符</param>
+    /// <param name="formatProvider">格式化提供程序</param>
+    public string ToString(string format, string separator, IFormatProvider formatProvider) => $"{StartTime.ToString(format, formatProvider)}{separator}{EndTime.ToString(format, formatProvider)}";
+
+    #endregion
+
+    /// <summary>
+    /// 判断两个 DateTimeRange 实例是否相等
+    /// </summary>
+    /// <param name="left">第一个 DateTimeRange 实例</param>
+    /// <param name="right">第二个 DateTimeRange 实例</param>
+    /// <returns>如果两个 DateTimeRange 实例的开始时间和结束时间都相等，返回 true，否则返回 false。</returns>
+    public static bool operator ==(DateTimeRange left, DateTimeRange right)
+    {
+        if (ReferenceEquals(left, right))
+            return true;
+        if ((object)left == null || (object)right == null)
+            return false;
+        return left.StartTime == right.StartTime && left.EndTime == right.EndTime;
+    }
+
+    /// <summary>
+    /// 判断两个 DateTimeRange 实例是否不相等
+    /// </summary>
+    /// <param name="left">第一个 DateTimeRange 实例</param>
+    /// <param name="right">第二个 DateTimeRange 实例</param>
+    /// <returns>如果两个 DateTimeRange 实例的开始时间和结束时间都不相等，返回 true，否则返回 false。</returns>
+    public static bool operator !=(DateTimeRange left, DateTimeRange right) => !(left == right);
+
+    /// <inheritdoc />
+    public int CompareTo(DateTimeRange other)
+    {
+        if (other == null)
+            return 1;
+        if (Equals(other))
+            return 0;
+        return StartTime.CompareTo(other.EndTime);
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+        if (obj == null)
+            return false;
+        var other = obj as DateTimeRange;
+        if ((object)other == null)
+            return false;
+        return (StartTime == other.StartTime) && (EndTime == other.EndTime);
+    }
+
     /// <inheritdoc />
     public bool Equals(DateTimeRange other)
     {
-        if (other == null)
+        if ((object)other == null)
             return false;
-        return this.StartTime == other.StartTime && this.EndTime == other.EndTime;
+        return StartTime == other.StartTime && EndTime == other.EndTime;
     }
 
+    /// <inheritdoc />
+    public override int GetHashCode() => (StartTime.Ticks + EndTime.Ticks).GetHashCode();
 }
