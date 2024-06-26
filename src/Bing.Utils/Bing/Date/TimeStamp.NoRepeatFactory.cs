@@ -16,7 +16,7 @@ public class NoRepeatTimeStampFactory
     private readonly object _lockObj = new();
 
     /// <summary>
-    /// 毫秒增量
+    /// 自增毫秒数
     /// </summary>
     public double IncrementMs { get; set; } = 4;
 

@@ -3,7 +3,7 @@
 /// <summary>
 /// 日期时间帮助类
 /// </summary>
-public static partial class DateTimeHelper
+public static class DateTimeHelper
 {
     #region BusinessDateFormat(业务时间格式化)
 

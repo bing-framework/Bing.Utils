@@ -3,48 +3,9 @@
 namespace Bing.Date;
 
 /// <summary>
-/// 日期时间输出样式
+/// 时间输出帮助类
 /// </summary>
-public enum DateTimeOutputStyles
-{
-    /// <summary>
-    /// 格式：yyyy-MM-dd HH:mm:ss
-    /// </summary>
-    DateTime,
-    /// <summary>
-    /// 格式：yyyy-MM-dd
-    /// </summary>
-    Date,
-    /// <summary>
-    /// 格式：HH:mm:ss
-    /// </summary>
-    Time,
-    /// <summary>
-    /// 长日期。格式：yyyy年MM月dd日
-    /// </summary>
-    LongDate,
-    /// <summary>
-    /// 长时间。格式：HH:mm:ss
-    /// </summary>
-    LongTime,
-    /// <summary>
-    /// 短日期。格式：yyyy/MM/dd
-    /// </summary>
-    ShortDate,
-    /// <summary>
-    /// 短时间。格式：HH:mm
-    /// </summary>
-    ShortTime,
-    /// <summary>
-    /// 格式：yyyy-MM-dd HH:mm:ss.fff
-    /// </summary>
-    Millisecond,
-}
-
-/// <summary>
-/// 日期时间帮助类
-/// </summary>
-public static partial class DateTimeHelper
+public static class DateTimeOutputHelper
 {
     /// <summary>
     /// 如果条件成立则A，不成立则B
@@ -53,13 +14,13 @@ public static partial class DateTimeHelper
     /// <param name="format1">格式化1</param>
     /// <param name="format2">格式化2</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string IfTtt(bool condition, string format1, string format2) => condition.IfTtt(() => format1, () => format2);
+    internal static string IfTtt(bool condition, string format1, string format2) => condition ? format1 : format2;
 }
 
 /// <summary>
-/// 日期时间转字符串 扩展
+/// 时间输出 扩展
 /// </summary>
-public static class DateTimeToStringExtensions
+public static class DateTimeOutputExtensions
 {
     /// <summary>
     /// 转换为字符串
@@ -70,9 +31,9 @@ public static class DateTimeToStringExtensions
     public static string ToString(this DateTime dt, DateTimeOutputStyles styles, bool isRemoveSecond = false) =>
         styles switch
         {
-            DateTimeOutputStyles.DateTime => dt.ToString(DateTimeHelper.IfTtt(isRemoveSecond, "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss")),
+            DateTimeOutputStyles.DateTime => dt.ToString(DateTimeOutputHelper.IfTtt(isRemoveSecond, "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss")),
             DateTimeOutputStyles.Date => dt.ToString("yyyy-MM-dd"),
-            DateTimeOutputStyles.Time => dt.ToString(DateTimeHelper.IfTtt(isRemoveSecond, "HH:mm", "HH:mm:ss")),
+            DateTimeOutputStyles.Time => dt.ToString(DateTimeOutputHelper.IfTtt(isRemoveSecond, "HH:mm", "HH:mm:ss")),
             DateTimeOutputStyles.LongDate => dt.ToLongDateString(),
             DateTimeOutputStyles.LongTime => dt.ToLongTimeString(),
             DateTimeOutputStyles.ShortDate => dt.ToShortDateString(),
