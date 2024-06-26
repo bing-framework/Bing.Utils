@@ -1,4 +1,5 @@
 ﻿using Bing.Conversions;
+using Bing.Date.DateUtils;
 
 namespace Bing.Date;
 
@@ -178,7 +179,7 @@ public static class DateTimeFactory
     /// <param name="month">月</param>
     /// <param name="dayOfWeek">星期几</param>
     /// <param name="occurrence">第几个星期</param>
-    public static DateTime CreateByWeek(int year, int month, DayOfWeek dayOfWeek, int occurrence) => DateTimeCalc.OffsetByWeek(year, month, occurrence, dayOfWeek.CastToInt(0));
+    public static DateTime CreateByWeek(int year, int month, DayOfWeek dayOfWeek, int occurrence) => DateTimeCalc.OffsetByWeek(year, month, occurrence, dayOfWeek.CastToInt32(0));
 
     #endregion
 }

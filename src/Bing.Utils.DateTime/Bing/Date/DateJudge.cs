@@ -1,4 +1,7 @@
-﻿namespace Bing.Date;
+﻿using System.Globalization;
+using Bing.Extensions;
+
+namespace Bing.Date;
 
 /// <summary>
 /// 日期(<see cref="DateTime"/>) 判断器
@@ -14,6 +17,11 @@ public static class DateJudge
     /// 最大日期
     /// </summary>
     internal static readonly DateTime MaxDate = new(9999, 12, 31, 23, 59, 59, 999);
+
+    /// <summary>
+    /// 日历
+    /// </summary>
+    private static readonly Calendar _calendar = CultureInfo.InvariantCulture.Calendar;
 
     #region IsToday(是否今天)
 
@@ -80,6 +88,76 @@ public static class DateJudge
     /// <param name="dt">时间</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsWeekday(DateTime? dt) => dt.IsWeekday();
+
+    #endregion
+
+    #region IsSameDay(是否为同一天)
+
+    /// <summary>
+    /// 判断是否为同一天
+    /// </summary>
+    /// <param name="date">日期1</param>
+    /// <param name="compareDate">日期2</param>
+    /// <returns>是否为同一天</returns>
+    public static bool IsSameDay(DateTime? date, DateTime? compareDate)
+    {
+        if (date is null || compareDate is null)
+            return false;
+        return date.Value.Date == compareDate.Value.Date;
+    }
+
+    #endregion
+
+    #region IsSameWeek(是否为同一周)
+
+    /// <summary>
+    /// 判断是否为同一周
+    /// </summary>
+    /// <param name="date">日期1</param>
+    /// <param name="compareDate">日期2</param>
+    /// <param name="firstDayOfWeek"></param>
+    /// <returns>是否为同一周</returns>
+    public static bool IsSameWeek(DateTime? date, DateTime? compareDate, DayOfWeek firstDayOfWeek)
+    {
+        if (date is null || compareDate is null)
+            return false;
+        return IsSameYear(date, compareDate) 
+               && date.Value.GetWeekOfYear(CalendarWeekRule.FirstDay, firstDayOfWeek) == compareDate.Value.GetWeekOfYear(CalendarWeekRule.FirstDay, firstDayOfWeek);
+    }
+
+    #endregion
+
+    #region IsSameMonth(是否为同一月)
+
+    /// <summary>
+    /// 判断是否为同一月
+    /// </summary>
+    /// <param name="date">日期1</param>
+    /// <param name="compareDate">日期2</param>
+    /// <returns>是否为同一月</returns>
+    public static bool IsSameMonth(DateTime? date, DateTime? compareDate)
+    {
+        if (date is null || compareDate is null)
+            return false;
+        return IsSameYear(date, compareDate) && date.Value.Month == compareDate.Value.Month;
+    }
+
+    #endregion
+
+    #region IsSameYear(是否为同一年)
+
+    /// <summary>
+    /// 判断是否为同一年
+    /// </summary>
+    /// <param name="date">日期1</param>
+    /// <param name="compareDate">日期2</param>
+    /// <returns>是否为同一年</returns>
+    public static bool IsSameYear(DateTime? date, DateTime? compareDate)
+    {
+        if (date is null || compareDate is null)
+            return false;
+        return date.Value.Year == compareDate.Value.Year;
+    }
 
     #endregion
 

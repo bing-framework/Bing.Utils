@@ -36,6 +36,18 @@ public class DateTimeRangeTest
         var range2 = new DateTimeRange(_now, _now.AddMinutes(1));
         Assert.True(range1==range2);
     }
+    
+    /// <summary>
+    /// 测试 - 输出字符串
+    /// </summary>
+    [Fact]
+    public void Test_ToString()
+    {
+        var range = new DateTimeRange(_now, _now.AddMinutes(1));
+        range.ToString().ShouldBe("2024-06-25 14:37:56 - 2024-06-25 14:38:56");
+        range.ToString("yyyy-MM-dd HH:mm").ShouldBe("2024-06-25 14:37 - 2024-06-25 14:38");
+        range.ToString("yyyy-MM-dd HH:mm", " ~ ").ShouldBe("2024-06-25 14:37 ~ 2024-06-25 14:38");
+    }
 
     /// <summary>
     /// 测试 - 属性

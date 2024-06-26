@@ -16,8 +16,8 @@ public static class DayOfWeekCalc
     /// <param name="right">星期几</param>
     public static int DaysBetween(DayOfWeek left, DayOfWeek right)
     {
-        var leftVal = left.CastToInt();
-        var rightVal = right.CastToInt();
+        var leftVal = left.CastToInt32();
+        var rightVal = right.CastToInt32();
 
         if (leftVal <= rightVal)
             return rightVal - leftVal;

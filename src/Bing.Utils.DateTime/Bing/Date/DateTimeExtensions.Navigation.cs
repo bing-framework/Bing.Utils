@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Bing.Date.DateUtils;
 
 namespace Bing.Date;
 
@@ -8,24 +9,36 @@ public static partial class DateTimeExtensions
     #region Offset
 
     /// <summary>
-    /// 偏移指定值
+    /// 日期偏移
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="offsetVal">偏移值</param>
-    /// <param name="styles">时间偏移样式</param>
-    public static DateTime OffsetBy(this DateTime dt, int offsetVal, DateTimeOffsetStyles styles) =>
+    /// <param name="styles">日期偏移风格</param>
+    public static DateTime OffsetBy(this DateTime dt, int offsetVal, DateOffsetStyles styles) =>
         styles switch
         {
-            DateTimeOffsetStyles.Millisecond => DateTimeCalc.OffsetByMillisecond(dt, offsetVal),
-            DateTimeOffsetStyles.Second => DateTimeCalc.OffsetBySeconds(dt, offsetVal),
-            DateTimeOffsetStyles.Minute => DateTimeCalc.OffsetByMinutes(dt, offsetVal),
-            DateTimeOffsetStyles.Hour => DateTimeCalc.OffsetByHours(dt, offsetVal),
-            DateTimeOffsetStyles.Day => DateTimeCalc.OffsetByDays(dt, offsetVal),
-            DateTimeOffsetStyles.Week => DateTimeCalc.OffsetByWeeks(dt, offsetVal),
-            DateTimeOffsetStyles.Month => DateTimeCalc.OffsetByMonths(dt, offsetVal, DateTimeOffsetOptions.Relatively),
-            DateTimeOffsetStyles.Quarters => DateTimeCalc.OffsetByQuarters(dt, offsetVal, DateTimeOffsetOptions.Relatively),
-            DateTimeOffsetStyles.Year => DateTimeCalc.OffsetByYears(dt, offsetVal, DateTimeOffsetOptions.Relatively),
+            DateOffsetStyles.Day => DateTimeCalc.OffsetByDays(dt, offsetVal),
+            DateOffsetStyles.Week => DateTimeCalc.OffsetByWeeks(dt, offsetVal),
+            DateOffsetStyles.Month => DateTimeCalc.OffsetByMonths(dt, offsetVal, DateTimeOffsetOptions.Relatively),
+            DateOffsetStyles.Quarters => DateTimeCalc.OffsetByQuarters(dt, offsetVal, DateTimeOffsetOptions.Relatively),
+            DateOffsetStyles.Year => DateTimeCalc.OffsetByYears(dt, offsetVal, DateTimeOffsetOptions.Relatively),
             _ => DateTimeCalc.OffsetByDays(dt, offsetVal)
+        };
+
+    /// <summary>
+    /// 时间偏移
+    /// </summary>
+    /// <param name="dt">时间</param>
+    /// <param name="offsetVal">偏移值</param>
+    /// <param name="styles">时间偏移风格</param>
+    public static DateTime OffsetBy(this DateTime dt, int offsetVal, TimeOffsetStyles styles) =>
+        styles switch
+        {
+            TimeOffsetStyles.Millisecond => DateTimeCalc.OffsetByMillisecond(dt, offsetVal),
+            TimeOffsetStyles.Second => DateTimeCalc.OffsetBySeconds(dt, offsetVal),
+            TimeOffsetStyles.Minute => DateTimeCalc.OffsetByMinutes(dt, offsetVal),
+            TimeOffsetStyles.Hour => DateTimeCalc.OffsetByHours(dt, offsetVal),
+            _ => DateTimeCalc.OffsetBySeconds(dt, offsetVal)
         };
 
     #endregion
@@ -444,61 +457,61 @@ public static partial class DateTimeExtensions
     /// 下一年（明年）
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime NextYear(this DateTime dt) => dt.OffsetBy(1, DateTimeOffsetStyles.Year);
+    public static DateTime NextYear(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Year);
 
     /// <summary>
     /// 上一年（去年）
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime PreviousYear(this DateTime dt) => dt.OffsetBy(-1, DateTimeOffsetStyles.Year);
+    public static DateTime PreviousYear(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Year);
 
     /// <summary>
     /// 下个季度
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime NextQuarter(this DateTime dt) => dt.OffsetBy(1, DateTimeOffsetStyles.Quarters);
+    public static DateTime NextQuarter(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Quarters);
 
     /// <summary>
     /// 上个季度
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime PreviousQuarter(this DateTime dt) => dt.OffsetBy(-1, DateTimeOffsetStyles.Quarters);
+    public static DateTime PreviousQuarter(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Quarters);
 
     /// <summary>
     /// 下个月
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime NextMonth(this DateTime dt) => dt.OffsetBy(1, DateTimeOffsetStyles.Month);
+    public static DateTime NextMonth(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Month);
 
     /// <summary>
     /// 上个月
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime PreviousMonth(this DateTime dt) => dt.OffsetBy(-1, DateTimeOffsetStyles.Month);
+    public static DateTime PreviousMonth(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Month);
 
     /// <summary>
     /// 下个星期
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime NextWeek(this DateTime dt) => dt.OffsetBy(1, DateTimeOffsetStyles.Week);
+    public static DateTime NextWeek(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Week);
 
     /// <summary>
     /// 上个星期
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime PreviousWeek(this DateTime dt) => dt.OffsetBy(-1, DateTimeOffsetStyles.Week);
+    public static DateTime PreviousWeek(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Week);
 
     /// <summary>
     /// 下一天（明天）
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime NextDay(this DateTime dt) => dt.OffsetBy(1, DateTimeOffsetStyles.Day);
+    public static DateTime NextDay(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Day);
 
     /// <summary>
     /// 上一天（昨天）
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime PreviousDay(this DateTime dt) => dt.OffsetBy(-1, DateTimeOffsetStyles.Day);
+    public static DateTime PreviousDay(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Day);
 
     /// <summary>
     /// 明天
