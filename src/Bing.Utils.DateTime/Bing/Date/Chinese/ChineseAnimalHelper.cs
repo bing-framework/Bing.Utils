@@ -8,13 +8,12 @@ public static class ChineseAnimalHelper
     /// <summary>
     /// 生肖 - 简体
     /// </summary>
-    private static readonly string[] ANIMALS = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+    private static readonly string[] ANIMAL_S = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
 
     /// <summary>
     /// 生肖 - 繁体
     /// </summary>
-    // ReSharper disable once IdentifierTypo
-    private static readonly string[] ANIMALZ = ["鼠", "牛", "虎", "兔", "龍", "蛇", "馬", "羊", "猴", "雞", "狗", "豬"];
+    private static readonly string[] ANIMAL_Z = ["鼠", "牛", "虎", "兔", "龍", "蛇", "馬", "羊", "猴", "雞", "狗", "豬"];
 
     /// <summary>
     /// 中国生肖的起始年份，1900年为鼠年
@@ -40,7 +39,7 @@ public static class ChineseAnimalHelper
     /// <returns>指定日期的生肖</returns>
     public static string Get(DateTime dt, bool traditionalChineseCharacters = false)
     {
-        var animal = traditionalChineseCharacters ? ANIMALZ : ANIMALS;
+        var animal = traditionalChineseCharacters ? ANIMAL_Z : ANIMAL_S;
         return animal[Index(dt)];
     }
 }
