@@ -245,7 +245,6 @@ public static class ChineseDateHelper
     /// <param name="calendar">中国农历日历，如果为null，则创建一个新的实例</param>
     /// <param name="dt">日期，用于获取年份、月份和日</param>
     /// <returns>如果指定的日期是闰日，则返回true；否则返回false</returns>
-
     public static bool IsLeapDay(ChineseLunisolarCalendar calendar, DateTime dt)
     {
         calendar ??= new ChineseLunisolarCalendar();
