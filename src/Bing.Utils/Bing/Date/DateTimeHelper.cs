@@ -85,88 +85,12 @@ public static class DateTimeHelper
         {
             //需要判断的时间
             DateTime dTime = Convert.ToDateTime(strDate);
-            return GetWeekDay(dTime);
+            return dTime.DayOfWeek;
         }
         catch (Exception ex)
         {
             throw new Exception(ex.Message);
         }
-    }
-
-    /// <summary>
-    /// 根据当前日期确定当前是星期几
-    /// </summary>
-    /// <param name="dTime">The d time.</param>
-    /// <returns>System.String.</returns>
-    /// <exception cref="Exception"></exception>
-    public static DayOfWeek GetWeekDay(DateTime dTime)
-    {
-        try
-        {
-            //确定星期几
-            int index = (int)dTime.DayOfWeek;
-            return GetWeekDay(index);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-    }
-
-    /// <summary>
-    /// 转换星期的表示方法
-    /// </summary>
-    /// <param name="index">The index.</param>
-    /// <returns>System.String.</returns>
-    private static DayOfWeek GetWeekDay(int index)
-    {
-        return (DayOfWeek)index;
-    }
-
-    /// <summary>
-    /// 转换星期的表示方法
-    /// </summary>
-    /// <param name="dayOfWeek">The index.</param>
-    /// <returns>System.String.</returns>
-    public static string GetChineseWeekDay(DayOfWeek dayOfWeek)
-    {
-        string retVal = string.Empty;
-
-        switch (dayOfWeek)
-        {
-            case DayOfWeek.Sunday:
-                retVal = "星期日";
-                break;
-
-            case DayOfWeek.Monday:
-                retVal = "星期一";
-                break;
-
-            case DayOfWeek.Tuesday:
-                retVal = "星期二";
-                break;
-
-            case DayOfWeek.Wednesday:
-                retVal = "星期三";
-                break;
-
-            case DayOfWeek.Thursday:
-                retVal = "星期四";
-                break;
-
-            case DayOfWeek.Friday:
-                retVal = "星期五";
-                break;
-
-            case DayOfWeek.Saturday:
-                retVal = "星期六";
-                break;
-
-            default:
-                break;
-        }
-
-        return retVal;
     }
 
     #endregion
