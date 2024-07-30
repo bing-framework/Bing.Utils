@@ -155,8 +155,7 @@ public static class DirectoryHelper
     {
         if (!Directory.Exists(directoryPath))
             throw new DirectoryNotFoundException($"目录\"{directoryPath}\"不存在");
-        return Directory.GetFiles(directoryPath, pattern,
-            includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+        return Directory.GetFiles(directoryPath, pattern, includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
     }
 
     #endregion

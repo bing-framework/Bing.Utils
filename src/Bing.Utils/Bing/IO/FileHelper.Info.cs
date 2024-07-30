@@ -50,7 +50,8 @@ public static partial class FileHelper
     /// 获取文件大小
     /// </summary>
     /// <param name="filePath">文件路径</param>
-    /// <returns></returns>
+    /// <returns>文件大小</returns>
+    /// <exception cref="ArgumentNullException">当文件路径为空或仅包含空白字符时抛出</exception>
     public static FileSize GetFileSize(string filePath)
     {
         if (string.IsNullOrWhiteSpace(filePath))
@@ -62,7 +63,8 @@ public static partial class FileHelper
     /// 获取文件大小
     /// </summary>
     /// <param name="fileInfo">文件信息</param>
-    /// <returns></returns>
+    /// <returns>文件大小</returns>
+    /// <exception cref="ArgumentNullException">当文件信息为 null 时抛出</exception>
     public static FileSize GetFileSize(System.IO.FileInfo fileInfo)
     {
         if (fileInfo == null)
