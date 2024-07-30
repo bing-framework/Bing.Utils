@@ -30,7 +30,19 @@ public enum FileSizeUnit
     /// G字节
     /// </summary>
     [Description("GB")]
-    G
+    G,
+
+    /// <summary>
+    /// T字节
+    /// </summary>
+    [Description("TB")]
+    T,
+
+    /// <summary>
+    /// P字节
+    /// </summary>
+    [Description("PB")]
+    P
 }
 
 /// <summary>
