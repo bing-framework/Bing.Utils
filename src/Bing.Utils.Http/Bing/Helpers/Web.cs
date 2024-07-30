@@ -44,10 +44,10 @@ public static class Web
         /// </summary>
         public static Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment { get; set; }
 #elif NETSTANDARD2_0
-        /// <summary>
-        /// 宿主环境
-        /// </summary>
-        public static Microsoft.AspNetCore.Hosting.IHostingEnvironment Environment { get; set; }
+    /// <summary>
+    /// 宿主环境
+    /// </summary>
+    public static Microsoft.AspNetCore.Hosting.IHostingEnvironment Environment { get; set; }
 #endif
     #endregion
 
@@ -157,10 +157,10 @@ public static class Web
     /// </summary>
     public static string Url => throw new NotSupportedException($"{nameof(Url)} 不支持在 NETSTANDARD2_1");
 #else
-        /// <summary>
-        /// 请求地址
-        /// </summary>
-        public static string Url => Request?.GetDisplayUrl();
+    /// <summary>
+    /// 请求地址
+    /// </summary>
+    public static string Url => Request?.GetDisplayUrl();
 #endif
     #endregion
 
@@ -205,7 +205,7 @@ public static class Web
 
     #region RootPath(根路径)
 #if !NETSTANDARD2_1
-    
+
     /// <summary>
     /// 根路径
     /// </summary>
@@ -293,11 +293,16 @@ public static class Web
     /// </summary>
     public static List<IFormFile> GetFiles()
     {
-        var result = new List<IFormFile>();
-        var files = HttpContext.Request.Form.Files;
-        if (files.Count == 0)
-            return result;
-        result.AddRange(files.Where(file => file?.Length > 0));
+        var files = HttpContext?.Request?.Form?.Files;
+        if (files == null || files.Count == 0)
+            return new List<IFormFile>();
+
+        var result = new List<IFormFile>(files.Count);
+        foreach (var file in files)
+        {
+            if (file?.Length > 0)
+                result.Add(file);
+        }
         return result;
     }
 
@@ -308,10 +313,11 @@ public static class Web
     /// <summary>
     /// 获取客户端文件
     /// </summary>
+    /// <returns>第一个有效的客户端文件，如果没有则返回 null。</returns>
     public static IFormFile GetFile()
     {
         var files = GetFiles();
-        return files.Count == 0 ? null : files[0];
+        return files.FirstOrDefault();
     }
 
     #endregion
@@ -324,17 +330,16 @@ public static class Web
     /// <param name="name">参数名</param>
     public static string GetParam(string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(name) || Request == null)
             return string.Empty;
-        if (Request == null)
-            return string.Empty;
+
         string result = Request.Query[name];
         if (string.IsNullOrWhiteSpace(result) == false)
             return result;
         result = Request.Form[name];
         if (string.IsNullOrWhiteSpace(result) == false)
             return result;
-        return Request.Headers[name];;
+        return Request.Headers[name];
     }
 
     #endregion
@@ -379,15 +384,19 @@ public static class Web
     private static string GetUpperEncode(string encode)
     {
         var result = new StringBuilder();
-        var index = int.MinValue;
         for (var i = 0; i < encode.Length; i++)
         {
-            var character = encode[i].ToString();
-            if (character == "%")
-                index = i;
-            if (i - index == 1 || i - index == 2)
-                character = character.ToUpper();
-            result.Append(character);
+            if (encode[i] == '%' && i + 2 < encode.Length)
+            {
+                result.Append('%');
+                result.Append(char.ToUpper(encode[i + 1]));
+                result.Append(char.ToUpper(encode[i + 2]));
+                i += 2;
+            }
+            else
+            {
+                result.Append(encode[i]);
+            }
         }
         return result.ToString();
     }
@@ -407,7 +416,7 @@ public static class Web
     /// </summary>
     /// <param name="url">url</param>
     /// <param name="encoding">字符编码</param>
-    public static string UrlDecode(string url, Encoding encoding) => HttpUtility.UrlDecode(url, encoding);
+    public static string UrlDecode(string url, Encoding encoding) => string.IsNullOrEmpty(url) ? string.Empty : HttpUtility.UrlDecode(url, encoding);
 
     #endregion
 
@@ -479,7 +488,8 @@ public static class Web
     /// </summary>
     /// <param name="filePath">文件绝对路径</param>
     /// <param name="fileName">文件名。包含扩展名</param>
-    public static async Task DownloadFileAsync(string filePath, string fileName) => await DownloadFileAsync(filePath, fileName, Encoding.UTF8);
+    public static Task DownloadFileAsync(string filePath, string fileName) =>
+        DownloadFileAsync(filePath, fileName, Encoding.UTF8);
 
     /// <summary>
     /// 下载文件
@@ -498,7 +508,8 @@ public static class Web
     /// </summary>
     /// <param name="stream">流</param>
     /// <param name="fileName">文件名。包含扩展名</param>
-    public static async Task DownloadAsync(Stream stream, string fileName) => await DownloadAsync(stream, fileName, Encoding.UTF8);
+    public static Task DownloadAsync(Stream stream, string fileName) =>
+        DownloadAsync(stream, fileName, Encoding.UTF8);
 
     /// <summary>
     /// 下载
@@ -509,7 +520,7 @@ public static class Web
     public static async Task DownloadAsync(Stream stream, string fileName, Encoding encoding)
     {
         var bytes = await FileHelper.ToBytesAsync(stream);
-        await DownloadAsync(bytes, fileName, encoding);
+        await DownloadAsync(bytes, fileName, encoding, Response);
     }
 
     /// <summary>
@@ -517,7 +528,8 @@ public static class Web
     /// </summary>
     /// <param name="bytes">字节流</param>
     /// <param name="fileName">文件名。包含扩展名</param>
-    public static async Task DownloadAsync(byte[] bytes, string fileName) => await DownloadAsync(bytes, fileName, Encoding.UTF8);
+    public static Task DownloadAsync(byte[] bytes, string fileName) =>
+        DownloadAsync(bytes, fileName, Encoding.UTF8, Response);
 
     /// <summary>
     /// 下载
@@ -525,16 +537,34 @@ public static class Web
     /// <param name="bytes">字节流</param>
     /// <param name="fileName">文件名。包含扩展名</param>
     /// <param name="encoding">字符编码</param>
-    public static async Task DownloadAsync(byte[] bytes, string fileName, Encoding encoding)
+    public static Task DownloadAsync(byte[] bytes, string fileName, Encoding encoding) =>
+        DownloadAsync(bytes, fileName, encoding, Response);
+
+    /// <summary>
+    /// 下载
+    /// </summary>
+    /// <param name="bytes">字节流</param>
+    /// <param name="fileName">文件名。包含扩展名</param>
+    /// <param name="encoding">字符编码</param>
+    /// <param name="response">HTTP 响应</param>
+    /// <exception cref="ArgumentException">当文件字节数组为空或文件名为空时抛出</exception>
+    /// <exception cref="ArgumentNullException">当字符编码或HTTP响应为空时抛出</exception>
+    public static async Task DownloadAsync(byte[] bytes, string fileName, Encoding encoding, HttpResponse response)
     {
         if (bytes == null || bytes.Length == 0)
-            return;
-        fileName = fileName.Replace(" ", "");
-        fileName = UrlEncode(fileName, encoding);
-        Response.ContentType = "application/octet-stream";
-        Response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
-        Response.Headers.Add("Content-Length", bytes.Length.ToString());
-        await Response.Body.WriteAsync(bytes, 0, bytes.Length);
+            throw new ArgumentException("文件字节数组不能为空", nameof(bytes));
+        if (string.IsNullOrWhiteSpace(fileName))
+            throw new ArgumentException("文件名不能为空", nameof(fileName));
+        if (encoding == null)
+            throw new ArgumentNullException(nameof(encoding));
+        if (response == null)
+            throw new ArgumentNullException(nameof(response));
+
+        fileName = UrlEncode(fileName.Replace(" ", ""), encoding);
+        response.ContentType = "application/octet-stream";
+        response.Headers["Content-Disposition"] = $"attachment; filename={fileName}";
+        response.Headers["Content-Length"] = bytes.Length.ToString();
+        await response.Body.WriteAsync(bytes, 0, bytes.Length);
     }
 
     #endregion

@@ -32,14 +32,20 @@ public static class Ip
     /// </summary>
     public static string GetIp()
     {
-        if (string.IsNullOrWhiteSpace(_ip.Value) == false)
+        if (!string.IsNullOrWhiteSpace(_ip.Value))
             return _ip.Value;
-        var list = new[] { "127.0.0.1", "::1" };
         var result = Web.HttpContext?.Connection.RemoteIpAddress.SafeString();
-        if (string.IsNullOrWhiteSpace(result) || list.Contains(result))
+        if (string.IsNullOrWhiteSpace(result) || IsLocalIp(result))
             result = Platform.IsWindows ? GetLanIp() : GetLanIp(NetworkInterfaceType.Ethernet);
         return result;
     }
+
+    /// <summary>
+    /// 判断是否为本地IP地址
+    /// </summary>
+    /// <param name="ip">IP地址</param>
+    /// <returns>如果是本地IP地址，则为 true；否则为 false。</returns>
+    private static bool IsLocalIp(string ip) => ip == "127.0.0.1" || ip == "::1";
 
     /// <summary>
     /// 获取局域网Ip
@@ -101,7 +107,7 @@ public static class Ip
             (GetIpNum("192.168.0.0"), GetIpNum("192.168.255.255"))   // C类
         };
         // 判断给定的IP地址是否在任何一个内部IP地址范围内，或者是否为本地回环地址（127.0.0.1）
-        return internalRanges.Any(range => IsInner(ipNum, range.begin, range.end)) || ipAddress.Equals("127.0.0.1");
+        return internalRanges.Any(range => IsInner(ipNum, range.begin, range.end)) || ipAddress == "127.0.0.1";
     }
 
     /// <summary>

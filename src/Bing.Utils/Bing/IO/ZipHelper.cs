@@ -50,6 +50,10 @@ public static class ZipHelper
         DirectoryInfo directoryInfo = new(folderPath);
         if(!directoryInfo.Exists)
             directoryInfo.Create();
+#if NETSTANDARD
+        ZipFile.ExtractToDirectory(zipPath, folderPath);
+#else
         ZipFile.ExtractToDirectory(zipPath, folderPath, true);
+#endif
     }
 }
