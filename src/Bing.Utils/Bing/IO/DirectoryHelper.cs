@@ -1,4 +1,5 @@
-﻿using Bing.Extensions;
+﻿using System.Diagnostics;
+using Bing.Extensions;
 using Bing.Helpers;
 using Bing.OS;
 using Bing.Reflection;
@@ -336,33 +337,37 @@ public static class DirectoryHelper
     {
         directory.CheckNotNullOrEmpty(nameof(directory));
 
-        bool flag = false;
-        DirectoryInfo dirPathInfo = new DirectoryInfo(directory);
-        if (dirPathInfo.Exists)
+        DirectoryInfo dirPathInfo = new(directory);
+        if (!dirPathInfo.Exists)
+            return false;
+
+        try
         {
-            //删除目录下所有文件
-            foreach (FileInfo fileInfo in dirPathInfo.GetFiles())
+            // 删除目录下所有文件
+            foreach (var fileInfo in dirPathInfo.GetFiles())
             {
+                fileInfo.Attributes = FileAttributes.Normal;
                 fileInfo.Delete();
             }
 
-            //递归删除所有子目录
-            foreach (DirectoryInfo subDirectory in dirPathInfo.GetDirectories())
-            {
+            // 递归删除所有子目录
+            foreach (var subDirectory in dirPathInfo.GetDirectories()) 
                 Delete(subDirectory.FullName);
-            }
 
-            //删除目录
+            // 删除目录
             if (isDeleteRoot)
             {
                 dirPathInfo.Attributes = FileAttributes.Normal;
                 dirPathInfo.Delete();
             }
-
-            flag = true;
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine($"删除目录时出错：{e.Message}");
+            return false;
         }
 
-        return flag;
+        return true;
     }
 
     #endregion
@@ -396,7 +401,6 @@ public static class DirectoryHelper
                     // 清理文件
                     File.Delete(fileOrFolder);
                 }
-
             }
         }
         catch (Exception e)

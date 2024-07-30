@@ -63,9 +63,7 @@ public static partial class FileHelper
     /// <param name="filePath">文件的绝对路径</param>
     public static void Delete(string filePath)
     {
-        if (string.IsNullOrWhiteSpace(filePath))
-            return;
-        if (!File.Exists(filePath))
+        if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
             return;
 
         // 设置文件的属性为正常（如果文件为只读的话直接删除会报错）
