@@ -3,8 +3,8 @@
     <VersionMajor>1</VersionMajor>
     <VersionMinor>5</VersionMinor>
     <VersionPatch>0</VersionPatch>
-    <VersionQuality>20240229-1</VersionQuality>
+    <VersionQuality></VersionQuality>
     <VersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</VersionPrefix>
-    <VersionSuffix>preview-$(VersionQuality)</VersionSuffix>
+    <!--<VersionSuffix>preview-$(VersionQuality)</VersionSuffix>-->
   </PropertyGroup>
 </Project>
