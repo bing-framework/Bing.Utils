@@ -24,11 +24,17 @@ namespace BuildScript
         public string SolutionFileName { get; set; } = "Bing.Utils.sln";
 
         /// <summary>
-        /// 构建配置
+        /// 构建配置（例如：Debug、Release）
         /// </summary>
         [FromArg("c|configuration")]
         [BuildConfiguration]
         public string BuildConfiguration { get; set; } = "Release";
+
+        /// <summary>
+        /// 构建环境（例如：pred、prod等）
+        /// </summary>
+        [FromArg("env")]
+        public string Env { get; set; } = "pred";
 
         /// <summary>
         /// Nuget推送地址
@@ -131,6 +137,9 @@ namespace BuildScript
         /// </summary>
         private void AddIgnorePackProjects(ITaskContext context)
         {
+            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir,"*/*.Extra.csproj"));
+            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir,"*/*.Guard.csproj"));
+            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir,"*/*.Comments.csproj"));
         }
 
         /// <summary>

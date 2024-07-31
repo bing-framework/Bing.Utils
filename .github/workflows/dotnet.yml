@@ -3,13 +3,9 @@
 
 name: .NET
 run-name: ${{ github.actor }} is publishing a nuget package 🚀
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
+  if: github.ref_name == 'main'
   build:
     name: Build
     runs-on: ${{ matrix.os }}
@@ -31,4 +27,4 @@ jobs:
     - name: Test
       run: flubu test
     - name: pack
-      run: flubu nuget.publish
+      run: flubu nuget.publish -nugetKey=${{ secrets.NUGET_API_KEY }} -env=prod

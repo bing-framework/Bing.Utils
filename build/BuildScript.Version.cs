@@ -27,22 +27,15 @@ namespace BuildScript
 
             var suffix = versionQuality;
 
-            var isCi = false;
-            var isTagged = false;
-            if (!context.BuildServers().IsLocalBuild)
+            switch (Env)
             {
-                isCi = true;
-                var isTagAppveyor = context.BuildServers().AppVeyor().IsTag;
-                if ((context.BuildServers().RunningOn == BuildServerType.AppVeyor && isTagAppveyor) ||
-                    (context.BuildServers().RunningOn == BuildServerType.TravisCI && string.IsNullOrWhiteSpace(context.BuildServers().Travis().TagName)))
-                {
-                    isTagged = true;
-                }
+                case "pred":
+                    suffix += $"preview-{CreateStamp()}";
+                    break;
+                case "prod":
+                    break;
             }
 
-            // 如果没有创建标签，则添加时间戳
-            if (!isTagged)
-                suffix += (isCi ? "preview-" : "dv-") + CreateStamp();
             suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
 
             var version = new BuildVersion
