@@ -5,15 +5,15 @@ name: .NET
 run-name: ${{ github.actor }} is publishing a nuget package 🚀
 
 jobs:
-  if: github.ref_name == 'main'
+  
   build:
+    if: github.ref_name == 'main'
     name: Build
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
