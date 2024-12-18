@@ -31,5 +31,5 @@ public static partial class Id
     /// <summary>
     /// 创建 雪花ID
     /// </summary>
-    public static long CreateSnowflakeId()=> string.IsNullOrWhiteSpace(_id.Value) ? _snowflakeIdGenerateFunc().NextId() : _id.Value.ToLong();
+    public static long CreateSnowflakeId() => string.IsNullOrWhiteSpace(_id.Value) ? _snowflakeIdGenerateFunc().NextId() : _id.Value.ToLong();
 }
