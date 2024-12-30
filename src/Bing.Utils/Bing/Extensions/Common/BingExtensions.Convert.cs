@@ -148,7 +148,7 @@ public static partial class BingExtensions
     /// 将字符串转换为蛇形策略
     /// </summary>
     /// <param name="str">字符串</param>
-    public static string ToSnakeCase(this string str) => Str.ToSnakeCase(str);
+    public static string ToSnakeCase(this string str) => Text.Str.ToSnakeCase(str);
 
     #endregion
 
@@ -158,7 +158,7 @@ public static partial class BingExtensions
     /// 将字符串转换为骆驼策略
     /// </summary>
     /// <param name="str">字符串</param>
-    public static string ToCamelCase(this string str) => Str.ToCamelCase(str);
+    public static string ToCamelCase(this string str) => Text.Str.ToCamelCase(str);
 
     #endregion
 }
