@@ -148,6 +148,9 @@ internal abstract class BaseXCore
     /// <summary>
     /// 计算两个整数的最小公倍数。
     /// </summary>
+    /// <remarks>
+    /// 参照：http://stackoverflow.com/a/13569863/1046374
+    /// </remarks>
     /// <param name="a">第一个整数。</param>
     /// <param name="b">第二个整数。</param>
     /// <returns>最小公倍数。</returns>
