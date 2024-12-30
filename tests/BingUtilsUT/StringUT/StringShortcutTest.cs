@@ -54,6 +54,7 @@ public class StringShortcutTest
     {
         var text = "ABCDE";
 
+        text.EndsWith('E').ShouldBeTrue();
         text.EndsWith().ShouldBeTrue();
         text.EndsWith("").ShouldBeTrue();
         text.EndsWith((List<string>) null).ShouldBeTrue();
@@ -159,6 +160,7 @@ public class StringShortcutTest
     {
         var text = "ABCDE";
 
+        text.StartsWith('A').ShouldBeTrue();
         text.StartsWith().ShouldBeTrue();
         text.StartsWith("").ShouldBeTrue();
         text.StartsWith((List<string>) null).ShouldBeTrue();

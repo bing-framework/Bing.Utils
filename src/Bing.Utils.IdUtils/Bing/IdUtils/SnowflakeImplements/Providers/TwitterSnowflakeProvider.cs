@@ -127,7 +127,7 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     #region 属性
 
     /// <summary>
-    /// 机器ID(0 ~ 31)
+    /// 工作机器ID(0 ~ 31)
     /// </summary>
     public long WorkerId { get; protected set; }
 

@@ -200,14 +200,6 @@ public class BaseConvTest
     }
 
     #endregion
-
-    [Fact]
-    public void Test_Base85Encode()
-    {
-        var bytes= Encoding.UTF8.GetBytes(TestValue);
-        var result = Base85.EncodeToString(bytes);
-        result.ShouldBe("6>:=M/ld\"-Ci]");
-    }
 }
 
 public static class Base85

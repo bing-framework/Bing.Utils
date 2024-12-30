@@ -7,7 +7,7 @@ namespace Bing.Text;
 /// </summary>
 public static partial class Strings
 {
-	#region Contains
+    #region Contains
 
     /// <summary>
     /// 在字符串中是否包含任意一个给定的子字符串。
@@ -325,6 +325,14 @@ public static partial class StringsShortcutExtensions
     #region EndsWith
 
     /// <summary>
+    /// 确定此字符串实例的结尾是否与指定的字符匹配。
+    /// </summary>
+    /// <param name="text">字符串</param>
+    /// <param name="value">待检查的字符</param>
+    /// <returns>如果匹配则返回 true，否则返回 false</returns>
+    public static bool EndsWith(this string text, char value) => !string.IsNullOrEmpty(text) && text[^1] == value;
+
+    /// <summary>
     /// 确定此字符串实例的结尾是否与指定的字符串数组中的某一成员匹配。
     /// <para>只要有一个匹配，则返回 True，不然返回 False</para>
     /// </summary>
@@ -401,6 +409,14 @@ public static partial class StringsShortcutExtensions
     #endregion
 
     #region StartsWith
+
+    /// <summary>
+    /// 确定此字符串实例的开头是否与指定的字符匹配。
+    /// </summary>
+    /// <param name="text">字符串</param>
+    /// <param name="value">待检查的字符</param>
+    /// <returns>如果匹配则返回 true，否则返回 false</returns>
+    public static bool StartsWith(this string text, char value) => !string.IsNullOrEmpty(text) && text![0] == value;
 
     /// <summary>
     /// 确定此字符串实例的开头是否与指定的字符串数组中的某一成员匹配。

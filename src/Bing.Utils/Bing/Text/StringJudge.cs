@@ -10,15 +10,13 @@ public static class StringJudge
     #region StartsWith/EndsWith
 
     /// <summary>
-    /// 判断字符串是否以指定的字符串开头。
+    /// 判断字符串是否以指定的字符开头。
     /// </summary>
     /// <param name="str">字符串</param>
-    /// <param name="values">字符串集合</param>
+    /// <param name="value">字符</param>
+    /// <returns>如果匹配则返回 true，否则返回 false</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool StartsWithThese(string str, params string[] values)
-    {
-        return str.StartsWith(values);
-    }
+    public static bool StartsWithThese(string str, char value) => str.StartsWith(value);
 
     /// <summary>
     /// 判断字符串是否以指定的字符串开头。
@@ -26,10 +24,24 @@ public static class StringJudge
     /// <param name="str">字符串</param>
     /// <param name="values">字符串集合</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool StartsWithThese(string str, ICollection<string> values)
-    {
-        return str.StartsWith(values);
-    }
+    public static bool StartsWithThese(string str, params string[] values) => str.StartsWith(values);
+
+    /// <summary>
+    /// 判断字符串是否以指定的字符串开头。
+    /// </summary>
+    /// <param name="str">字符串</param>
+    /// <param name="values">字符串集合</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool StartsWithThese(string str, ICollection<string> values) => str.StartsWith(values);
+
+    /// <summary>
+    /// 判断字符串是否以指定的字符结尾。
+    /// </summary>
+    /// <param name="str">字符串</param>
+    /// <param name="value">字符</param>
+    /// <returns>如果匹配则返回 true，否则返回 false</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool EndsWithThese(string str, char value) => str.StartsWith(value);
 
     /// <summary>
     /// 判断字符串是否以指定的字符串结尾。
@@ -37,10 +49,7 @@ public static class StringJudge
     /// <param name="str">字符串</param>
     /// <param name="values">字符串集合</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EndsWithThese(string str, params string[] values)
-    {
-        return str.EndsWith(values);
-    }
+    public static bool EndsWithThese(string str, params string[] values) => str.EndsWith(values);
 
     /// <summary>
     /// 判断字符串是否以指定的字符串结尾。
@@ -48,10 +57,7 @@ public static class StringJudge
     /// <param name="str">字符串</param>
     /// <param name="values">字符串集合</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EndsWithThese(string str, ICollection<string> values)
-    {
-        return str.EndsWith(values);
-    }
+    public static bool EndsWithThese(string str, ICollection<string> values) => str.EndsWith(values);
 
     #endregion
 
