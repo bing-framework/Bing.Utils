@@ -15,6 +15,7 @@
     <ProjectReference Include="..\..\src\Bing.Utils.IdUtils\Bing.Utils.IdUtils.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Net\Bing.Utils.Net.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Reflection\Bing.Utils.Reflection.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Text\Bing.Utils.Text.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils\Bing.Utils.csproj" />
     <ProjectReference Include="..\Bing.Tests.Samples\Bing.Tests.Samples.csproj" />
   </ItemGroup>

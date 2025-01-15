@@ -90,6 +90,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{2FC0D5CE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildScript", "build\BuildScript.csproj", "{1B4C762F-CA20-4874-BE8B-0197FAE795A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Text", "src\Bing.Utils.Text\Bing.Utils.Text.csproj", "{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +182,10 @@ Global
 		{1B4C762F-CA20-4874-BE8B-0197FAE795A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B4C762F-CA20-4874-BE8B-0197FAE795A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B4C762F-CA20-4874-BE8B-0197FAE795A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -213,6 +219,7 @@ Global
 		{7637892D-2A6C-4FAD-B558-8F5B1F4FFA7A} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 		{2FC0D5CE-1363-4D9C-9488-2340C0B28D15} = {08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}
 		{1B4C762F-CA20-4874-BE8B-0197FAE795A6} = {2FC0D5CE-1363-4D9C-9488-2340C0B28D15}
+		{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4B464B4-BF6F-4831-A0EE-2FC007AE32A1}

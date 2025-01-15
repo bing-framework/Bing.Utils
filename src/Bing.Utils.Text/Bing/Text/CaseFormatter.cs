@@ -128,7 +128,7 @@ public class CaseFormatter
                 if(string.IsNullOrWhiteSpace(list[i]))
                     continue;
                 var array = list[i].ToCharArray();
-                array[0] = array[0].ToLowerInvariant();
+                array[0] = char.ToLowerInvariant(array[0]);
                 list[i] = new string(array);
             }
         }
@@ -144,7 +144,7 @@ public class CaseFormatter
                 if(string.IsNullOrWhiteSpace(list[i]))
                     continue;
                 var array = list[i].ToCharArray();
-                array[0] = array[0].ToUpperInvariant();
+                array[0] = char.ToUpperInvariant(array[0]);
                 list[i] = new string(array);
             }
         }
@@ -158,7 +158,7 @@ public class CaseFormatter
             if (list != null && list.Any() && !string.IsNullOrWhiteSpace(list[0]))
             {
                 var array = list[0].ToCharArray();
-                array[0] = array[0].ToLowerInvariant();
+                array[0] = char.ToLowerInvariant(array[0]);
                 list[0] = new string(array);
             }
         }
@@ -172,7 +172,7 @@ public class CaseFormatter
             if (list != null && list.Any() && !string.IsNullOrWhiteSpace(list[0]))
             {
                 var array = list[0].ToCharArray();
-                array[0] = array[0].ToUpperInvariant();
+                array[0] = char.ToUpperInvariant(array[0]);
                 list[0] = new string(array);
             }
         }
