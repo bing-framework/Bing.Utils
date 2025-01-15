@@ -1,7 +1,5 @@
-﻿
-
-// ReSharper disable once CheckNamespace
-namespace Bing.Extensions;
+﻿// ReSharper disable once CheckNamespace
+namespace Bing.IO;
 
 /// <summary>
 /// 内存流(<see cref="MemoryStream"/>) 扩展
@@ -16,7 +14,7 @@ public static class MemoryStreamExtensions
     /// <returns></returns>
     public static string AsString(this MemoryStream ms, Encoding encoding = null)
     {
-        if (encoding == null) encoding = Encoding.UTF8;
+        encoding ??= Encoding.UTF8;
         return encoding.GetString(ms.ToArray());
     }
 
@@ -28,8 +26,8 @@ public static class MemoryStreamExtensions
     /// <param name="encoding">字符编码，默认值：UTF-8</param>
     public static void FromString(this MemoryStream ms, string input, Encoding encoding = null)
     {
-        if (encoding == null) encoding = Encoding.UTF8;
-        byte[] buffer = encoding.GetBytes(input);
+        encoding ??= Encoding.UTF8;
+        var buffer = encoding.GetBytes(input);
         ms.Write(buffer, 0, buffer.Length);
     }
 }

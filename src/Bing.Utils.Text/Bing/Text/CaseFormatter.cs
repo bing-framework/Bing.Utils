@@ -52,20 +52,53 @@ public class CaseFormatter
         switch (style)
         {
             case Style.LowerCamel:
-            {
-                CaseFormatterUtils.LowerCase(list);
-                CaseFormatterUtils.UpperCaseEachFirstChar(list);
-                CaseFormatterUtils.LowerCaseFirstItemFirstChar(list);
-                joiner = Joiner.On("");
-                break;
-            }
+                {
+                    CaseFormatterUtils.LowerCase(list);
+                    CaseFormatterUtils.UpperCaseEachFirstChar(list);
+                    CaseFormatterUtils.LowerCaseFirstItemFirstChar(list);
+                    joiner = Joiner.On("");
+                    break;
+                }
+            case Style.LowerCamelWithWhiteSpace:
+                {
+                    CaseFormatterUtils.LowerCase(list);
+                    CaseFormatterUtils.UpperCaseEachFirstChar(list);
+                    CaseFormatterUtils.LowerCaseFirstItemFirstChar(list);
+                    joiner = Joiner.On(" ");
+                    break;
+                }
+            case Style.LowerHyphen:
+                {
+                    CaseFormatterUtils.LowerCase(list);
+                    joiner = Joiner.On("-");
+                    break;
+                }
+            case Style.LowerUnderscore:
+                {
+                    CaseFormatterUtils.LowerCase(list);
+                    joiner = Joiner.On("_");
+                    break;
+                }
             case Style.UpperCamel:
-            {
-                CaseFormatterUtils.LowerCase(list);
-                CaseFormatterUtils.UpperCaseEachFirstChar(list);
-                joiner = Joiner.On("");
-                break;
-            }
+                {
+                    CaseFormatterUtils.LowerCase(list);
+                    CaseFormatterUtils.UpperCaseEachFirstChar(list);
+                    joiner = Joiner.On("");
+                    break;
+                }
+            case Style.UpperCamelWithWhiteSpace:
+                {
+                    CaseFormatterUtils.LowerCase(list);
+                    CaseFormatterUtils.UpperCaseEachFirstChar(list);
+                    joiner = Joiner.On(" ");
+                    break;
+                }
+            case Style.UpperUnderscore:
+                {
+                    CaseFormatterUtils.UpperCase(list);
+                    joiner = Joiner.On("_");
+                    break;
+                }
             default:
                 throw new InvalidOperationException("Invalid operation.");
         }
@@ -103,7 +136,7 @@ public class CaseFormatter
         /// <param name="list">列表</param>
         public static void LowerCase(List<string> list)
         {
-            for (var i = 0; i < list.Count; i++) 
+            for (var i = 0; i < list.Count; i++)
                 list[i] = list[i].ToLower();
         }
 
@@ -113,7 +146,7 @@ public class CaseFormatter
         /// <param name="list">列表</param>
         public static void UpperCase(List<string> list)
         {
-            for (var i = 0; i < list.Count; i++) 
+            for (var i = 0; i < list.Count; i++)
                 list[i] = list[i].ToUpper();
         }
 
@@ -125,7 +158,7 @@ public class CaseFormatter
         {
             for (var i = 0; i < list.Count; i++)
             {
-                if(string.IsNullOrWhiteSpace(list[i]))
+                if (string.IsNullOrWhiteSpace(list[i]))
                     continue;
                 var array = list[i].ToCharArray();
                 array[0] = char.ToLowerInvariant(array[0]);
@@ -141,7 +174,7 @@ public class CaseFormatter
         {
             for (var i = 0; i < list.Count; i++)
             {
-                if(string.IsNullOrWhiteSpace(list[i]))
+                if (string.IsNullOrWhiteSpace(list[i]))
                     continue;
                 var array = list[i].ToCharArray();
                 array[0] = char.ToUpperInvariant(array[0]);
@@ -184,13 +217,38 @@ public class CaseFormatter
     public enum Style
     {
         /// <summary>
-        /// 小驼峰式命名法。第一个单词以小写字母开始，第二个单词的首字母大写。例如：firstName、lastName。
+        /// 小写与驼峰。例如：firstName、lastName。
         /// </summary>
         LowerCamel,
 
         /// <summary>
-        /// 大驼峰式命名法。每一个单词的首字母都采用大写字母。例如：FirstName、LastName、CamelCase，也被称为 Pascal 命名法。
+        /// 小写与驼峰，单词之间使用空格分隔。例如：first Name、last Name。
+        /// </summary>
+        LowerCamelWithWhiteSpace,
+
+        /// <summary>
+        /// 小写与横线，单词之间使用短横线分隔。例如：first-name、last-name。
+        /// </summary>
+        LowerHyphen,
+
+        /// <summary>
+        /// 小写与下划线，单词之间使用下划线分隔。例如：first_name、last_name。
+        /// </summary>
+        LowerUnderscore,
+
+        /// <summary>
+        /// 大写与驼峰。例如：FirstName、LastName、CamelCase，也被称为 Pascal 命名法。
         /// </summary>
         UpperCamel,
+
+        /// <summary>
+        /// 大写与驼峰，单词之间使用空格分隔。例如：First Name、Last Name。
+        /// </summary>
+        UpperCamelWithWhiteSpace,
+
+        /// <summary>
+        /// 大写与下划线，单词之间使用下划线分隔。例如：FIRST-NAME、LAST-NAME。
+        /// </summary>
+        UpperUnderscore
     }
 }

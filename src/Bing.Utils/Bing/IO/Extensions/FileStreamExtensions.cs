@@ -1,4 +1,5 @@
-﻿namespace Bing.IO;
+﻿// ReSharper disable once CheckNamespace
+namespace Bing.IO;
 
 /// <summary>
 /// 文件流(<see cref="FileStream"/>) 扩展
