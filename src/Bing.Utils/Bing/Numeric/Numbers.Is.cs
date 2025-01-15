@@ -6,6 +6,14 @@
 public static partial class Numbers
 {
     /// <summary>
+    /// 最大的JSON安全整数
+    /// </summary>
+    /// <remarks>
+    /// 参考：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER
+    /// </remarks>
+    public const long MaxJsonSafeInteger = 9007199254740991L;
+
+    /// <summary>
     /// 是否NaN
     /// </summary>
     /// <param name="value">值</param>
@@ -24,6 +32,13 @@ public static partial class Numbers
     /// </summary>
     /// <param name="value">值</param>
     public static bool IsDefaultValue(double value) => value.Equals(default);
+
+    /// <summary>
+    /// 判断值是否为JSON安全整数
+    /// </summary>
+    /// <param name="value">值</param>
+    /// <returns>如果值是JSON安全整数，则返回true；否则返回false</returns>
+    public static bool IsJsonSafeInteger(ulong value) => value <= MaxJsonSafeInteger;
 }
 
 /// <summary>

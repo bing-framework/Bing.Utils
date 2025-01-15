@@ -1,4 +1,5 @@
-﻿namespace Bing.Threading;
+﻿// ReSharper disable once CheckNamespace
+namespace Bing.Threading;
 
 /// <summary>
 /// <see cref="AsyncLocal{T}"/> 扩展

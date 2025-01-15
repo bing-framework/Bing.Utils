@@ -1,4 +1,5 @@
-﻿namespace Bing.Threading;
+﻿// ReSharper disable once CheckNamespace
+namespace Bing.Threading;
 
 /// <summary>
 /// 信号量(<see cref="SemaphoreSlim"/>) 扩展

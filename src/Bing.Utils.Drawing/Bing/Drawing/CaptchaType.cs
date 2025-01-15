@@ -18,5 +18,5 @@ public enum CaptchaType
     /// <summary>
     /// 汉字
     /// </summary>
-    ChineseChar
+    ChineseChar,
 }

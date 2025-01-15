@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
+using Bing.Helpers;
 
 namespace Bing.Drawing;
 
@@ -139,7 +140,7 @@ public class CaptchaBuilder
     {
         var result = new StringBuilder();
         for (var i = 0; i < length; i++) 
-            result.Append(Random.Next(0, 9));
+            result.Append(Encrypt.Random.Next(0, 9));
         return result.ToString();
     }
 
@@ -150,10 +151,10 @@ public class CaptchaBuilder
     private static string GetRandomNumbersAndLetters(int length)
     {
         var allChars = Seed.Split(',');
-        StringBuilder result = new StringBuilder();
+        var result = new StringBuilder();
         for (var i = 0; i < length; i++)
         {
-            var index = Random.Next(allChars.Length);
+            var index = Encrypt.Random.Next(allChars.Length);
             result.Append(allChars[index]);
         }
         return result.ToString();
@@ -182,7 +183,7 @@ public class CaptchaBuilder
         var encoding = Encoding.GetEncoding("GB2312");
 
         // 汉字由四个区位码组成，1、2作为字节数组的第一元素，3、4作为第二元素
-        Random rnd = Random;
+        var rnd = Encrypt.Random;
 
         var index1 = rnd.Next(11, 14);
         var str1 = hexStrs[index1];
