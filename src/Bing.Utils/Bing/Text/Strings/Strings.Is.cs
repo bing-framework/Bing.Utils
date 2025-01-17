@@ -18,6 +18,25 @@ public static partial class Strings
     /// <param name="text">字符串</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsLower(string text) => FilterForLetters(text).All(char.IsLower);
+
+    /// <summary>
+    /// 判断是否为中文字符。
+    /// </summary>
+    /// <param name="value">字符</param>
+    /// <returns>如果字符是中文字符，则返回 true；否则返回 false。</returns>
+    public static bool IsChinese(char value) => (value >= 19968 && value <= 40869);
+
+    /// <summary>
+    /// 判断字符串是否全部为中文字符。
+    /// </summary>
+    /// <param name="text">字符串</param>
+    /// <returns>如果字符串全部为中文字符，则返回 true；否则返回 false。</returns>
+    public static bool IsChinese(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+        return text.All(IsChinese);
+    }
 }
 
 /// <summary>

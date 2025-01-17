@@ -237,7 +237,7 @@ public static partial class Strings
     {
         var enumerator = StringInfo.GetTextElementEnumerator(text);
         var length = 0;
-        while (enumerator.MoveNext()) 
+        while (enumerator.MoveNext())
             length++;
         return length;
     }
@@ -367,6 +367,17 @@ public static partial class Strings
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetLetters(string text) => Merge(FilterForLetters(text));
+
+    /// <summary>
+    /// 获取一个新的 GUID 字符串。
+    /// </summary>
+    /// <param name="removeSymbol">是否移除符号“-”，默认为 true</param>
+    /// <returns>新的 GUID 字符串</returns>
+    public static string GetGuidString(bool removeSymbol = true)
+    {
+        var ret = Guid.NewGuid().ToString();
+        return removeSymbol ? ret.Replace("-", "") : ret;
+    }
 
     #endregion
 

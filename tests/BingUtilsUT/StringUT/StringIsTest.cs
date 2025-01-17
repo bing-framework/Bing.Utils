@@ -70,4 +70,100 @@ public class StringIsTest
         Strings.IsLower("a A").ShouldBeFalse();
         Strings.IsLower("A a").ShouldBeFalse();
     }
+
+    /// <summary>
+    /// 测试 IsChinese(char value) 方法，当字符是中文时应返回 True
+    /// </summary>
+    [Fact]
+    public void IsChineseChar_Should_Return_True_For_Chinese_Character()
+    {
+        // Arrange
+        var character = '你';
+
+        // Act
+        var result = Strings.IsChinese(character);
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 IsChinese(char value) 方法，当字符不是中文时应返回 False
+    /// </summary>
+    [Fact]
+    public void IsChineseChar_Should_Return_False_For_Non_Chinese_Character()
+    {
+        // Arrange
+        var character = 'A';
+
+        // Act
+        var result = Strings.IsChinese(character);
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 IsChinese(string text) 方法，当字符串全部由中文字符组成时应返回 True
+    /// </summary>
+    [Fact]
+    public void IsChineseString_Should_Return_True_For_Chinese_String()
+    {
+        // Arrange
+        var text = "你好世界";
+
+        // Act
+        var result = Strings.IsChinese(text);
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 IsChinese(string text) 方法，当字符串含有非中文字符时应返回 False
+    /// </summary>
+    [Fact]
+    public void IsChineseString_Should_Return_False_For_Non_Chinese_String()
+    {
+        // Arrange
+        var text = "Hello";
+
+        // Act
+        var result = Strings.IsChinese(text);
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 IsChinese(string text) 方法，当字符串包含中英文混合时应返回 False
+    /// </summary>
+    [Fact]
+    public void IsChineseString_Should_Return_False_For_Mixed_String()
+    {
+        // Arrange
+        var text = "你好World";
+
+        // Act
+        var result = Strings.IsChinese(text);
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 IsChinese(string text) 方法，当字符串为空时应返回 False
+    /// </summary>
+    [Fact]
+    public void IsChineseString_Should_Return_False_For_Empty_String()
+    {
+        // Arrange
+        var text = string.Empty;
+
+        // Act
+        var result = Strings.IsChinese(text);
+
+        // Assert
+        Assert.False(result);
+    }
 }
