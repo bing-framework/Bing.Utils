@@ -20,8 +20,7 @@ public class ReaderWriteLockDisposable : IDisposable
     /// </summary>
     /// <param name="rwLock">读写锁</param>
     /// <param name="readerWriteLockType">读写锁类型</param>
-    public ReaderWriteLockDisposable(ReaderWriterLockSlim rwLock,
-        ReaderWriteLockType readerWriteLockType = ReaderWriteLockType.Write)
+    public ReaderWriteLockDisposable(ReaderWriterLockSlim rwLock, ReaderWriteLockType readerWriteLockType = ReaderWriteLockType.Write)
     {
         _rwLock = rwLock;
         _readerWriteLockType = readerWriteLockType;

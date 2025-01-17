@@ -58,25 +58,25 @@ public static class ExceptionHelper
     /// 解包异常，获取指定类型的异常
     /// </summary>
     /// <param name="exception">需要解包的异常</param>
-    /// <param name="untilType">需要获取的异常类型</param>
+    /// <param name="targetType">需要获取的异常类型</param>
     /// <param name="mayDerivedClass">是否可以是指定异常类型的派生类，默认为 true</param>
     /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
     /// <exception cref="ArgumentNullException">当输入的异常或指定的类型为 null 时抛出此异常</exception>
     /// <exception cref="ArgumentException">当指定的类型不是 Exception 类型或其派生类时抛出此异常</exception>
-    public static Exception Unwrap(Exception exception, Type untilType, bool mayDerivedClass = true)
+    public static Exception Unwrap(Exception exception, Type targetType, bool mayDerivedClass = true)
     {
         if (exception is null)
             throw new ArgumentNullException(nameof(exception));
-        if (untilType is null)
-            throw new ArgumentNullException(nameof(untilType));
-        if (!untilType.IsSubclassOf(typeof(Exception)))
-            throw new ArgumentException($"Type '{untilType}' does not divided from {typeof(Exception)}", nameof(untilType));
+        if (targetType is null)
+            throw new ArgumentNullException(nameof(targetType));
+        if (!targetType.IsSubclassOf(typeof(Exception)))
+            throw new ArgumentException($"Type '{targetType}' does not divided from {typeof(Exception)}", nameof(targetType));
 
-        return exception.GetType() == untilType || mayDerivedClass && exception.GetType().IsSubclassOf(untilType)
+        return exception.GetType() == targetType || mayDerivedClass && exception.GetType().IsSubclassOf(targetType)
             ? exception
             : exception.InnerException is null
                 ? null
-                : Unwrap(exception.InnerException, untilType, mayDerivedClass);
+                : Unwrap(exception.InnerException, targetType, mayDerivedClass);
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public static class ExceptionHelper
     /// <param name="exception">需要解包的异常</param>
     /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Exception Unwrap<TException>(this Exception exception) where TException : Exception => exception.Unwrap(Reflection.Types.Of<TException>());
+    public static TException Unwrap<TException>(this Exception exception) where TException : Exception => exception.Unwrap(Reflection.Types.Of<TException>()) as TException;
 }
 
 /// <summary>
@@ -106,12 +106,12 @@ public static class ExceptionHelperExtensions
     /// 解包异常，获取指定类型的异常
     /// </summary>
     /// <param name="exception">需要解包的异常</param>
-    /// <param name="untilType">需要获取的异常类型</param>
+    /// <param name="targetType">需要获取的异常类型</param>
     /// <param name="mayDerivedClass">是否可以是指定异常类型的派生类，默认为 true</param>
     /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
     /// <exception cref="ArgumentNullException">当输入的异常或指定的类型为 null 时抛出此异常</exception>
     /// <exception cref="ArgumentException">当指定的类型不是 Exception 类型或其派生类时抛出此异常</exception>
-    public static Exception Unwrap(this Exception exception, Type untilType, bool mayDerivedClass = true) => ExceptionHelper.Unwrap(exception, untilType, mayDerivedClass);
+    public static Exception Unwrap(this Exception exception, Type targetType, bool mayDerivedClass = true) => ExceptionHelper.Unwrap(exception, targetType, mayDerivedClass);
 
     /// <summary>
     /// 解包异常，获取指定类型的异常
@@ -120,7 +120,7 @@ public static class ExceptionHelperExtensions
     /// <param name="exception">需要解包的异常</param>
     /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Exception Unwrap<TException>(this Exception exception) where TException : Exception => ExceptionHelper.Unwrap<TException>(exception);
+    public static TException Unwrap<TException>(this Exception exception) where TException : Exception => ExceptionHelper.Unwrap<TException>(exception);
 
     /// <summary>
     /// 解包并返回消息
