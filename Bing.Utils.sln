@@ -92,6 +92,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildScript", "build\BuildS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Text", "src\Bing.Utils.Text\Bing.Utils.Text.csproj", "{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.DependencyInjection", "src\Bing.Utils.DependencyInjection\Bing.Utils.DependencyInjection.csproj", "{13E10244-EAB5-4233-AC4E-7A1F7368088D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -186,6 +188,10 @@ Global
 		{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13E10244-EAB5-4233-AC4E-7A1F7368088D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13E10244-EAB5-4233-AC4E-7A1F7368088D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13E10244-EAB5-4233-AC4E-7A1F7368088D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13E10244-EAB5-4233-AC4E-7A1F7368088D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -220,6 +226,7 @@ Global
 		{2FC0D5CE-1363-4D9C-9488-2340C0B28D15} = {08A7D7EC-513F-40F6-9FC8-9D370FE19E2F}
 		{1B4C762F-CA20-4874-BE8B-0197FAE795A6} = {2FC0D5CE-1363-4D9C-9488-2340C0B28D15}
 		{2828F7A0-22C0-404D-8EC1-5A8C9EE9FE1C} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
+		{13E10244-EAB5-4233-AC4E-7A1F7368088D} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4B464B4-BF6F-4831-A0EE-2FC007AE32A1}
