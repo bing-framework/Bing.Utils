@@ -411,12 +411,19 @@ public static class StreamExtensions
     /// </summary>
     /// <param name="stream">源</param>
     /// <param name="fileName">文件名</param>
-    public static void SaveFile(this Stream stream, string fileName)
+    /// <param name="bufferSize">缓冲区大小。默认：1MB</param>
+    public static void SaveFile(this Stream stream, string fileName, int bufferSize = 1 * 1024 * 1024)
     {
+        if (stream == null)
+            throw new ArgumentNullException(nameof(stream));
+        if (string.IsNullOrWhiteSpace(fileName))
+            throw new ArgumentNullException(nameof(fileName));
+        if (!stream.CanRead)
+            throw new InvalidOperationException("流不支持读取操作");
         stream.Seek(0, SeekOrigin.Begin);
         using var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-        var bs = new BufferedStream(stream, 1048576);
-        bs.CopyTo(fs);
+        using (var bs = new BufferedStream(stream, bufferSize)) 
+            bs.CopyTo(fs);
         stream.Seek(0, SeekOrigin.Begin);
     }
 

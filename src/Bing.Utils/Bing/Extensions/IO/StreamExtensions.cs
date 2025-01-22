@@ -15,39 +15,28 @@ public static class StreamExtensions
     /// </summary>
     /// <param name="stream">流</param>
     /// <param name="path">文件路径</param>
-    public static bool ToFile(this Stream stream, string path)
+    /// <param name="bufferSize">缓冲区大小。默认：32KB</param>
+    public static bool ToFile(this Stream stream, string path, int bufferSize = 32 * 1024)
     {
-        if (stream == null)
+        if (stream == null || string.IsNullOrWhiteSpace(path))
             return false;
-        const int bufferSize = 32768;
-        bool result = true;
-        Stream fileStream = null;
-        byte[] buffer = new byte[bufferSize];
         try
         {
-            using (fileStream = File.OpenWrite(path))
+            using (var fileStream = File.OpenWrite(path))
             {
+                var buffer = new byte[bufferSize];
                 int len;
                 while ((len = stream.Read(buffer, 0, bufferSize)) > 0)
                 {
                     fileStream.Write(buffer, 0, len);
                 }
             }
+            return File.Exists(path);
         }
         catch
         {
-            result = false;
+            return false;
         }
-        finally
-        {
-            if (fileStream != null)
-            {
-                fileStream.Close();
-                fileStream.Dispose();
-            }
-        }
-
-        return (result && File.Exists(path));
     }
 
     #endregion
@@ -68,8 +57,8 @@ public static class StreamExtensions
             return false;
 
         const int bufferSize = 2048;
-        byte[] streamBuffer = new byte[bufferSize];
-        byte[] otherBuffer = new byte[bufferSize];
+        var streamBuffer = new byte[bufferSize];
+        var otherBuffer = new byte[bufferSize];
 
         while (true)
         {
