@@ -1,7 +1,7 @@
 ﻿namespace Bing.Reflection;
 
 /// <summary>
-/// 调用帮助辅助类
+/// 调用帮助类
 /// </summary>
 public static class InvokeHelper
 {

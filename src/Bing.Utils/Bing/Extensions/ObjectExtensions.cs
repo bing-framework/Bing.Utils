@@ -11,78 +11,83 @@ public static class ObjectExtensions
     #region As(强制转换)
 
     /// <summary>
-    /// 强制转换
+    /// 强制转换，将 <see cref="object"/> 转换为 <typeparamref name="T"/>。
     /// </summary>
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="this">对象</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T As<T>(this object @this) => (T)@this;
 
     /// <summary>
-    /// 强制转换。如果转换失败，则返回默认值
+    /// 强制转换，将 <see cref="object"/> 转换为 <typeparamref name="T"/> 或默认值。
     /// </summary>
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="this">对象</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T AsOrDefault<T>(this object @this)
     {
         try
         {
             return (T)@this;
         }
-        catch (Exception)
+        catch
         {
-            return default;
+            return default!;
         }
     }
 
     /// <summary>
-    /// 强制转换。如果转换失败，则返回默认值
+    /// 强制转换，将 <see cref="object"/> 转换为 <typeparamref name="T"/> 或给定的默认值。
     /// </summary>
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="this">对象</param>
     /// <param name="defaultVal">默认值</param>
-    public static T AsOrDefault<T>(this object @this,T defaultVal)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T AsOrDefault<T>(this object @this, T defaultVal)
     {
         try
         {
             return (T)@this;
         }
-        catch (Exception)
+        catch
         {
             return defaultVal;
         }
     }
 
     /// <summary>
-    /// 强制转换。如果转换失败，则返回默认值
+    /// 强制转换，将 <see cref="object"/> 转换为 <typeparamref name="T"/> 或根据给定的默认值工厂方法获得默认值。
     /// </summary>
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="this">对象</param>
     /// <param name="defaultValueFactory">默认值</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T AsOrDefault<T>(this object @this, Func<T> defaultValueFactory)
     {
         try
         {
             return (T)@this;
         }
-        catch (Exception)
+        catch
         {
             return defaultValueFactory();
         }
     }
 
     /// <summary>
-    /// 强制转换。如果转换失败，则返回默认值
+    /// 强制转换，将 <see cref="object"/> 转换为 <typeparamref name="T"/> 或根据给定的默认值工厂方法获得默认值。
     /// </summary>
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="this">对象</param>
     /// <param name="defaultValueFactory">默认值</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T AsOrDefault<T>(this object @this, Func<object, T> defaultValueFactory)
     {
         try
         {
             return (T)@this;
         }
-        catch (Exception)
+        catch
         {
             return defaultValueFactory(@this);
         }
@@ -93,11 +98,12 @@ public static class ObjectExtensions
     #region TryAs(尝试强制转换)
 
     /// <summary>
-    /// 尝试强制转换
+    /// 尝试强制转换，尝试将 <see cref="object"/> 转换为 <typeparamref name="T"/>。
     /// </summary>
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="this">对象</param>
     /// <param name="value">值</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryAs<T>(this object @this, out T value)
     {
         try
@@ -107,18 +113,19 @@ public static class ObjectExtensions
         }
         catch
         {
-            value = default;
+            value = default!;
             return false;
         }
     }
 
     /// <summary>
-    /// 尝试强制转换。如果转换失败，则返回默认值
+    /// 尝试强制转换，尝试将 <see cref="object"/> 转换为 <typeparamref name="T"/> 或给定的默认值。
     /// </summary>
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="this">对象</param>
     /// <param name="defaultValue">默认值</param>
     /// <param name="value">值</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryAsOrDefault<T>(this object @this, T defaultValue, out T value)
     {
         try
@@ -134,12 +141,13 @@ public static class ObjectExtensions
     }
 
     /// <summary>
-    /// 尝试强制转换。如果转换失败，则返回默认值
+    /// 尝试强制转换，尝试将 <see cref="object"/> 转换为 <typeparamref name="T"/> 或根据给定的默认值工厂方法获得默认值。
     /// </summary>
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="this">对象</param>
     /// <param name="defaultValueFactory">默认值</param>
     /// <param name="value">值</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryAsOrDefault<T>(this object @this, Func<T> defaultValueFactory, out T value)
     {
         try
@@ -155,12 +163,13 @@ public static class ObjectExtensions
     }
 
     /// <summary>
-    /// 尝试强制转换。如果转换失败，则返回默认值
+    /// 尝试强制转换，尝试将 <see cref="object"/> 转换为 <typeparamref name="T"/> 或根据给定的默认值工厂方法获得默认值。
     /// </summary>
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="this">对象</param>
     /// <param name="defaultValueFactory">默认值</param>
     /// <param name="value">值</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryAsOrDefault<T>(this object @this, Func<object, T> defaultValueFactory, out T value)
     {
         try
@@ -180,48 +189,54 @@ public static class ObjectExtensions
     #region IsOn(是否在指定列表内)
 
     /// <summary>
-    /// 是否在指定列表内
+    /// 是否在指定列表内，判断对象是否存在于给定的 <paramref name="list"/> 内。
     /// </summary>
     /// <param name="source">数据源</param>
     /// <param name="list">列表</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsOn(this byte source, params byte[] list) => IsOn<byte>(source, list);
 
     /// <summary>
-    /// 是否在指定列表内
+    /// 是否在指定列表内，判断对象是否存在于给定的 <paramref name="list"/> 内。
     /// </summary>
     /// <param name="source">数据源</param>
     /// <param name="list">列表</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsOn(this short source, params short[] list) => IsOn<short>(source, list);
 
     /// <summary>
-    /// 是否在指定列表内
+    /// 是否在指定列表内，判断对象是否存在于给定的 <paramref name="list"/> 内。
     /// </summary>
     /// <typeparam name="T">对象类型</typeparam>
     /// <param name="source">数据源</param>
     /// <param name="list">列表</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsOn<T>(this T source, params T[] list) where T : IComparable => list.Any(t => t.CompareTo(source) == 0);
 
     /// <summary>
-    /// 是否在指定列表内
+    /// 是否在指定列表内，判断对象是否存在于给定的 <paramref name="list"/> 内。
     /// </summary>
     /// <typeparam name="T">对象类型</typeparam>
     /// <param name="source">数据源</param>
     /// <param name="list">列表</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsOn<T>(this T source, IEnumerable<T> list) where T : IComparable => list.Any(item => item.CompareTo(source) == 0);
 
     /// <summary>
-    /// 是否在指定列表内
+    /// 是否在指定列表内，判断对象是否存在于给定的 <paramref name="list"/> 内。
     /// </summary>
     /// <typeparam name="T">对象类型</typeparam>
     /// <param name="source">数据源</param>
     /// <param name="list">列表</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsOn<T>(this T source, HashSet<T> list) where T : IComparable => list.Contains(source);
 
     /// <summary>
-    /// 是否在指定列表内
+    /// 是否在指定列表内，判断字符串是否存在于给定的列表内（或略大小写）。
     /// </summary>
     /// <param name="source">数据源</param>
     /// <param name="list">列表</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsOnIgnoreCase(this string source, params string[] list) => list.Any(source.EqualsIgnoreCase);
 
     #endregion

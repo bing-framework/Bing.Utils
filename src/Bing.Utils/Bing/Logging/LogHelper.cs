@@ -347,10 +347,10 @@ public abstract class BaseLogHelper
     /// <summary>
     /// 写错误日志
     /// </summary>
-    /// <param name="message">日志消息</param>
     /// <param name="exception">日志异常</param>
+    /// <param name="message">日志消息</param>
     /// <param name="args">日志参数</param>
-    public void LogError(string message, Exception exception, params object[] args) => Log(LogLevel.Error, message, exception, args);
+    public void LogError(Exception exception, string message, params object[] args) => Log(LogLevel.Error, message, exception, args);
 
     /// <summary>
     /// 写严重错误日志
@@ -362,10 +362,10 @@ public abstract class BaseLogHelper
     /// <summary>
     /// 写严重错误日志
     /// </summary>
-    /// <param name="message">日志消息</param>
     /// <param name="exception">日志异常</param>
+    /// <param name="message">日志消息</param>
     /// <param name="args">日志参数</param>
-    public void LogCritical(string message, Exception exception, params object[] args) => Log(LogLevel.Critical, message, null, args);
+    public void LogCritical(Exception exception, string message, params object[] args) => Log(LogLevel.Critical, message, null, args);
 
     #endregion
 }
