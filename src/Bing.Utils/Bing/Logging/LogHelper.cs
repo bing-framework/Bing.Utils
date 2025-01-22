@@ -299,7 +299,7 @@ public abstract class BaseLogHelper
         try
         {
             BeforeLog?.Invoke(level, message, exception, args);
-            Logger.Log(level, exception, message, args);
+            Logger.Log(level, 0, exception, message, args);
             AfterLog?.Invoke(level, message, exception, args);
         }
         catch (Exception e)
