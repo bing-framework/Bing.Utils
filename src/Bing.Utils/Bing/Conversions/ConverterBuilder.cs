@@ -6,6 +6,32 @@
 public static class ConverterBuilder
 {
     /// <summary>
+    /// 获取Guid类型的转换器
+    /// </summary>
+    /// <param name="format">
+    /// Guid 格式字符串（可选）。如果提供，必须为标准 Guid 格式说明符之一（如 "N", "D", "B", "P", "X"）。
+    /// 如果未提供，将使用默认解析方式。
+    /// </param>
+    /// <returns>用于将对象转换为 Guid 的转换器</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="FormatException">当提供的字符串格式不正确时抛出</exception>
+    /// <exception cref="InvalidCastException">当无法将输入转换为 Guid 时抛出</exception>
+    internal static Converter<object, Guid> GetGuidConverter(string format = null)
+    {
+        return (value) =>
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+            if (value is Guid guid)
+                return guid;
+            var s = Convert.ToString(value);
+            if (string.IsNullOrEmpty(s))
+                throw new InvalidCastException("The provided value cannot be converted to a valid GUID.");
+            return string.IsNullOrEmpty(format) ? Guid.Parse(s) : Guid.ParseExact(s, format);
+        };
+    }
+
+    /// <summary>
     /// 获取枚举类型的转换器。
     /// </summary>
     /// <typeparam name="T">枚举类型</typeparam>
