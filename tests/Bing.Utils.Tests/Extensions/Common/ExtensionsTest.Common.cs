@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Bing.Extensions;
+﻿using Bing.Extensions;
 using Bing.Tests.Samples;
-using Xunit;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Utils.Tests.Extensions;

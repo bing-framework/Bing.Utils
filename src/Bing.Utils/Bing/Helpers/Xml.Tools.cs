@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using Bing.IO;
 
 namespace Bing.Helpers;
 
@@ -66,5 +64,39 @@ public partial class Xml
         {
             reader?.Close();
         }
+    }
+
+    /// <summary>
+    /// 加载Xml文件到XDocument
+    /// </summary>
+    /// <param name="filePath">Xml文件绝对路径</param>
+    public static Task<XDocument> LoadFileToDocumentAsync(string filePath) => LoadFileToDocumentAsync(filePath, Encoding.UTF8);
+
+    /// <summary>
+    /// 加载Xml文件到XDocument
+    /// </summary>
+    /// <param name="filePath">Xml文件绝对路径</param>
+    /// <param name="encoding">字符编码</param>
+    public static async Task<XDocument> LoadFileToDocumentAsync(string filePath, Encoding encoding)
+    {
+        var xml = await FileHelper.ReadToStringAsync(filePath, encoding);
+        return ToDocument(xml);
+    }
+
+    /// <summary>
+    /// 加载Xml文件到XElement列表
+    /// </summary>
+    /// <param name="filePath">Xml文件绝对路径</param>
+    public static Task<List<XElement>> LoadFileToElementsAsync(string filePath) => LoadFileToElementsAsync(filePath, Encoding.UTF8);
+
+    /// <summary>
+    /// 加载Xml文件到XElement列表
+    /// </summary>
+    /// <param name="filePath">Xml文件绝对路径</param>
+    /// <param name="encoding">字符编码</param>
+    public static async Task<List<XElement>> LoadFileToElementsAsync(string filePath, Encoding encoding)
+    {
+        var xml = await FileHelper.ReadToStringAsync(filePath, encoding);
+        return ToElements(xml);
     }
 }

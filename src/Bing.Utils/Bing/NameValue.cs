@@ -3,6 +3,7 @@
 /// <summary>
 /// 名称 - 值
 /// </summary>
+[Serializable]
 public class NameValue : NameValue<string>
 {
     /// <summary>
@@ -26,6 +27,7 @@ public class NameValue : NameValue<string>
 /// 名称 - 值
 /// </summary>
 /// <typeparam name="T">类型</typeparam>
+[Serializable]
 public class NameValue<T>
 {
     /// <summary>

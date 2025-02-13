@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using Bing.Tests.Samples;
+﻿using Bing.Tests.Samples;
 using Bing.Tests.XUnitHelpers;
-using Xunit;
-using Xunit.Abstractions;
 using Enum = Bing.Helpers.Enum;
 
 namespace Bing.Utils.Tests.Helpers;
@@ -252,7 +248,7 @@ public class EnumTest : TestBase
     }
 
     /// <summary>
-    /// 测试获取项集合 - 可空枚举
+    /// 测试 - 获取项集合 - 可空枚举
     /// </summary>
     [Fact]
     public void Test_GetItems_Nullable_Type()
@@ -268,7 +264,7 @@ public class EnumTest : TestBase
     }
 
     /// <summary>
-    /// 测试获取项集合 - 验证枚举类型
+    /// 测试 - 获取项集合 - 验证枚举类型
     /// </summary>
     [Fact]
     public void Test_GetItems_Validate()
@@ -279,7 +275,7 @@ public class EnumTest : TestBase
     }
 
     /// <summary>
-    /// 测试获取名称集合
+    /// 测试 - 获取名称集合
     /// </summary>
     [Fact]
     public void Test_GetNames()

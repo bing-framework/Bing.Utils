@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Bing.Date.DateUtils;
 using NodaTime;
 
 namespace Bing.Date;
@@ -213,7 +213,7 @@ public static partial class DateTimeExtensions
     public static bool IsMorning(this DateTime dt)
     {
         var hour = dt.Hour;
-        return 6 <= hour && hour < 12;
+        return hour is >= 6 and < 12;
     }
 
     /// <summary>
@@ -223,7 +223,7 @@ public static partial class DateTimeExtensions
     public static bool IsEarlyMorning(this DateTime dt)
     {
         var hour = dt.Hour;
-        return 0 <= hour && hour < 6;
+        return hour is >= 0 and < 6;
     }
 
     /// <summary>
@@ -233,7 +233,7 @@ public static partial class DateTimeExtensions
     public static bool IsAfternoon(this DateTime dt)
     {
         var hour = dt.Hour;
-        return 12 <= hour && hour < 18;
+        return hour is >= 12 and < 18;
     }
 
     /// <summary>
@@ -243,7 +243,7 @@ public static partial class DateTimeExtensions
     public static bool IsDusk(this DateTime dt)
     {
         var hour = dt.Hour;
-        return 16 <= hour && hour < 19;
+        return hour is >= 16 and < 19;
     }
 
     /// <summary>
@@ -253,8 +253,20 @@ public static partial class DateTimeExtensions
     public static bool IsEvening(this DateTime dt)
     {
         var hour = dt.Hour;
-        return 18 <= hour && hour < 24 || 0 <= hour && hour < 6;
+        return hour is >= 18 and < 24 or >= 0 and < 6;
     }
+
+    /// <summary>
+    /// 是否为上午
+    /// </summary>
+    /// <param name="dt">时间</param>
+    public static bool IsAM(this DateTime dt) => dt.Hour < 12;
+
+    /// <summary>
+    /// 是否为下午
+    /// </summary>
+    /// <param name="dt">时间</param>
+    public static bool IsPM(this DateTime dt) => dt.Hour >= 12;
 
     /// <summary>
     /// 判断指定时间是否相对给定时间的过去
@@ -295,37 +307,64 @@ public static partial class DateTimeExtensions
     public static bool IsWeekday(this DateTime? dt) => dt.GetValueOrDefault().IsWeekday();
 
     /// <summary>
-    /// 判断是否为周末
+    /// 判断是否为周末（周六、周日）
     /// </summary>
     /// <param name="dt">时间</param>
     public static bool IsWeekend(this DateTime dt) => dt.DayOfWeek == DayOfWeek.Sunday || dt.DayOfWeek == DayOfWeek.Saturday;
 
     /// <summary>
-    /// 判断是否为周末
+    /// 判断是否为周末（周六、周日）
     /// </summary>
     /// <param name="dt">时间</param>
     public static bool IsWeekend(this DateTime? dt) => dt.GetValueOrDefault().IsWeekend();
 
     /// <summary>
-    /// 判断是否同一天
+    /// 判断是否为同一天
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="date">日期</param>
-    public static bool IsSameDay(this DateTime dt, DateTime date) => dt.Date == date.Date;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsSameDay(this DateTime dt, DateTime date) => DateJudge.IsSameDay(dt, date);
 
     /// <summary>
-    /// 判断是否同一个月
+    /// 判断是否为同一天
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="date">日期</param>
-    public static bool IsSameMonth(this DateTime dt, DateTime date) => dt.Month == date.Month;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsSameDay(this DateTime? dt, DateTime? date) => DateJudge.IsSameDay(dt, date);
 
     /// <summary>
-    /// 判断是否同一年
+    /// 判断是否为同一月
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="date">日期</param>
-    public static bool IsSameYear(this DateTime dt, DateTime date) => dt.Year == date.Year;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsSameMonth(this DateTime dt, DateTime date) => DateJudge.IsSameMonth(dt, date);
+
+    /// <summary>
+    /// 判断是否为同一月
+    /// </summary>
+    /// <param name="dt">时间</param>
+    /// <param name="date">日期</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsSameMonth(this DateTime? dt, DateTime? date) => DateJudge.IsSameMonth(dt, date);
+
+    /// <summary>
+    /// 判断是否为同一年
+    /// </summary>
+    /// <param name="dt">时间</param>
+    /// <param name="date">日期</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsSameYear(this DateTime dt, DateTime date) => DateJudge.IsSameYear(dt, date);
+
+    /// <summary>
+    /// 判断是否为同一年
+    /// </summary>
+    /// <param name="dt">时间</param>
+    /// <param name="date">日期</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsSameYear(this DateTime? dt, DateTime? date) => DateJudge.IsSameYear(dt, date);
 
     /// <summary>
     /// 判断日期是否相等
@@ -340,6 +379,12 @@ public static partial class DateTimeExtensions
     /// <param name="dt">时间</param>
     /// <param name="date">日期</param>
     public static bool IsTimeEqual(this DateTime dt, DateTime date) => dt.TimeOfDay == date.TimeOfDay;
+
+    /// <summary>
+    /// 判断给定时间是否闰年
+    /// </summary>
+    /// <param name="dt">时间</param>
+    public static bool IsLeapYear(this DateTime dt) => DateTime.IsLeapYear(dt.Year);
 
     #endregion
 

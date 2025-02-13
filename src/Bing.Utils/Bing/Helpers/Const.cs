@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace Bing.Helpers;
+﻿namespace Bing.Helpers;
 
 /// <summary>
 /// 常量
 /// </summary>
-public static partial class Const
+public sealed class Const
 {
     #region 数字
 
@@ -484,6 +482,20 @@ public static partial class Const
     /// 时间格式化：ISO8601标准时间
     /// </summary>
     public const string TimeFormatIso8601 = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'";
+
+    #endregion
+
+    #region DateTimeFormat
+
+    /// <summary>
+    /// 日期时间格式 <c>[yyyy-MM-dd HH:mm:ss]</c>
+    /// </summary>
+    public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+    /// <summary>
+    /// 日期时间格式 <c>[yyyy-MM-dd HH:mm:ss.fff]</c>
+    /// </summary>
+    public const string DateTimeMsFormat="yyyy-MM-dd HH:mm:ss.fff";
 
     #endregion
 

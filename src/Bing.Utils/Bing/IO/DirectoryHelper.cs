@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Diagnostics;
 using Bing.Extensions;
 using Bing.Helpers;
+using Bing.OS;
 using Bing.Reflection;
 
 namespace Bing.IO;
@@ -12,10 +11,27 @@ namespace Bing.IO;
 /// </summary>
 public static class DirectoryHelper
 {
-    #region CreateIfNotExists(创建文件夹，如果不存在)
+    #region CreateDirectory(创建目录)
 
     /// <summary>
-    /// 创建文件夹，如果不存在
+    /// 创建目录，如果目录已存在则不创建
+    /// </summary>
+    /// <param name="path">文件或目录绝对路径</param>
+    public static void CreateDirectory(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return;
+        var file = new FileInfo(path);
+        var directoryPath = file.Directory?.FullName;
+        CreateIfNotExists(directoryPath);
+    }
+
+    #endregion
+
+    #region CreateIfNotExists(创建文件夹，如果文件夹不存在)
+
+    /// <summary>
+    /// 创建文件夹，如果文件夹不存在
     /// </summary>
     /// <param name="directory">要创建的文件夹路径</param>
     public static void CreateIfNotExists(string directory)
@@ -24,6 +40,47 @@ public static class DirectoryHelper
             return;
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
+    }
+
+    /// <summary>
+    /// 创建文件夹，如果文件夹不存在
+    /// </summary>
+    /// <param name="directory">文件夹信息</param>
+    public static void CreateIfNotExists(DirectoryInfo directory)
+    {
+        if (directory == null)
+            return;
+        if (!directory.Exists)
+            directory.Create();
+    }
+
+    #endregion
+
+    #region DeleteIfExists(删除文件夹，如果文件夹存在)
+
+    /// <summary>
+    /// 删除文件夹，如果文件夹存在
+    /// </summary>
+    /// <param name="directory">要删除的文件夹路径</param>
+    public static void DeleteIfExists(string directory)
+    {
+        if (string.IsNullOrWhiteSpace(directory))
+            return;
+        if (Directory.Exists(directory))
+            Directory.Delete(directory);
+    }
+
+    /// <summary>
+    /// 删除文件夹，如果文件夹存在
+    /// </summary>
+    /// <param name="directory">要删除的文件夹路径</param>
+    /// <param name="recursive">是否递归删除所有子目录和文件</param>
+    public static void DeleteIfExists(string directory, bool recursive)
+    {
+        if (string.IsNullOrWhiteSpace(directory))
+            return;
+        if (Directory.Exists(directory))
+            Directory.Delete(directory, recursive);
     }
 
     #endregion
@@ -71,13 +128,16 @@ public static class DirectoryHelper
     /// 更改当前目录
     /// </summary>
     /// <param name="targetDirectory">目标目录</param>
+    /// <exception cref="ArgumentNullException"></exception>
     public static IDisposable ChangeCurrentDirectory(string targetDirectory)
     {
+        if (string.IsNullOrWhiteSpace(targetDirectory))
+            throw new ArgumentNullException(nameof(targetDirectory));
         var currentDirectory = Directory.GetCurrentDirectory();
         if (currentDirectory.Equals(targetDirectory, StringComparison.OrdinalIgnoreCase))
             return NullDisposable.Instance;
         Directory.SetCurrentDirectory(targetDirectory);
-        return new DisposeAction(() => { Directory.SetCurrentDirectory(currentDirectory); });
+        return new DisposeAction<string>(Directory.SetCurrentDirectory, currentDirectory);
     }
 
     #endregion
@@ -95,8 +155,7 @@ public static class DirectoryHelper
     {
         if (!Directory.Exists(directoryPath))
             throw new DirectoryNotFoundException($"目录\"{directoryPath}\"不存在");
-        return Directory.GetFiles(directoryPath, pattern,
-            includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+        return Directory.GetFiles(directoryPath, pattern, includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
     }
 
     #endregion
@@ -113,7 +172,7 @@ public static class DirectoryHelper
     public static string[] GetFileNames(string directoryPath, string pattern = "*", bool includeChildPath = false)
     {
         var names = new List<string>();
-        foreach (var filePath in GetFiles(directoryPath,pattern,includeChildPath))
+        foreach (var filePath in GetFiles(directoryPath, pattern, includeChildPath))
             names.Add(Path.GetFileName(filePath));
         return names.ToArray();
     }
@@ -221,7 +280,7 @@ public static class DirectoryHelper
         if (!Directory.Exists(sourcePath))
             throw new DirectoryNotFoundException($"递归复制文件夹时源目录\"{sourcePath}\"不存在。");
 
-        if (!Directory.Exists(targetPath)) 
+        if (!Directory.Exists(targetPath))
             Directory.CreateDirectory(targetPath);
 
         string[] dirs = Directory.GetDirectories(sourcePath);
@@ -269,7 +328,7 @@ public static class DirectoryHelper
     #region Delete(递归删除目录)
 
     /// <summary>
-    /// 递归删除目录
+    /// 递归删除目录下所有文件夹/文件包括子文件夹
     /// </summary>
     /// <param name="directory">目录路径</param>
     /// <param name="isDeleteRoot">是否删除根目录</param>
@@ -277,33 +336,37 @@ public static class DirectoryHelper
     {
         directory.CheckNotNullOrEmpty(nameof(directory));
 
-        bool flag = false;
-        DirectoryInfo dirPathInfo = new DirectoryInfo(directory);
-        if (dirPathInfo.Exists)
+        DirectoryInfo dirPathInfo = new(directory);
+        if (!dirPathInfo.Exists)
+            return false;
+
+        try
         {
-            //删除目录下所有文件
-            foreach (FileInfo fileInfo in dirPathInfo.GetFiles())
+            // 删除目录下所有文件
+            foreach (var fileInfo in dirPathInfo.GetFiles())
             {
+                fileInfo.Attributes = FileAttributes.Normal;
                 fileInfo.Delete();
             }
 
-            //递归删除所有子目录
-            foreach (DirectoryInfo subDirectory in dirPathInfo.GetDirectories())
-            {
+            // 递归删除所有子目录
+            foreach (var subDirectory in dirPathInfo.GetDirectories()) 
                 Delete(subDirectory.FullName);
-            }
 
-            //删除目录
+            // 删除目录
             if (isDeleteRoot)
             {
                 dirPathInfo.Attributes = FileAttributes.Normal;
                 dirPathInfo.Delete();
             }
-
-            flag = true;
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine($"删除目录时出错：{e.Message}");
+            return false;
         }
 
-        return flag;
+        return true;
     }
 
     #endregion
@@ -337,7 +400,6 @@ public static class DirectoryHelper
                     // 清理文件
                     File.Delete(fileOrFolder);
                 }
-                        
             }
         }
         catch (Exception e)
@@ -420,6 +482,25 @@ public static class DirectoryHelper
             di.Attributes = di.Attributes & ~attribute;
         }
     }
+
+    #endregion
+
+    #region SetCurrentDirectory(设置当前目录)
+
+    /// <summary>
+    /// 设置当前目录
+    /// </summary>
+    /// <param name="path">目录路径</param>
+    public static string SetCurrentDirectory(string path) => Platform.CurrentDirectory = path;
+
+    #endregion
+
+    #region GetCurrentDirectory(获取当前目录)
+
+    /// <summary>
+    /// 获取当前目录
+    /// </summary>
+    public static string GetCurrentDirectory() => Platform.CurrentDirectory;
 
     #endregion
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using Newtonsoft.Json;
 
 namespace Bing.Utils.Json.Converters.Internals;

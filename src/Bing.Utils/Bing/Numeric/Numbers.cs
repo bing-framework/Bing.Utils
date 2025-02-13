@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Runtime.CompilerServices;
+﻿using System.Globalization;
 
 namespace Bing.Numeric;
 
@@ -25,17 +23,17 @@ public enum NumericMayOptions
 /// </summary>
 public static partial class Numbers
 {
-    #region GetMembersBetween
+    #region GetRangeBetween
 
     /// <summary>
     /// 获取最小值和最大值之间的成员(包括最小值和最大值)
     /// </summary>
     /// <param name="min">最小值</param>
     /// <param name="max">最大值</param>
-    public static int[] GetMembersBetween(int min, int max)
+    public static int[] GetRangeBetween(int min, int max)
     {
         if (min == max)
-            return new[] { min };
+            return [min];
 
         if (min > max)
             (min, max) = (max, min);
@@ -60,7 +58,7 @@ public static partial class Numbers
     /// </summary>
     /// <param name="min">最小值</param>
     /// <param name="max">最大值</param>
-    public static long[] GetMembersBetween(long min, long max)
+    public static long[] GetRangeBetween(long min, long max)
     {
         if (min == max)
             return new[] { min };

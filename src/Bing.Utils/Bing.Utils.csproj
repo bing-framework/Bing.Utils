@@ -5,12 +5,42 @@
 		<Description>Bing.Utils是Bing应用框架的核心帮助类库。</Description>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<!--解决 BinaryFormatter 兼容问题-->
+		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+	</PropertyGroup>
+
 	<Import Project="..\..\common.props" />
 
-	<Import Project="dependency.props" />
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+	  <PackageReference Include="AspectCore.Extensions.Reflection" Version="2.4.0" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	  <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+	  <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Bing\Text\Internal\" />
-  </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+		<PackageReference Include="System.Text.Json" Version="4.6.0" />
+		<PackageReference Include="System.Memory" Version="4.5.5" />
+		<!--用于解决 [1..^1] 的问题-->
+		<PackageReference Include="IndexRange" Version="1.0.3" />
+		<PackageReference Include="PolySharp" Version="1.15.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Properties\R.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>R.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Properties\R.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>R.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
 
 </Project>

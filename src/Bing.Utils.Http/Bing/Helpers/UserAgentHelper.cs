@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bing.Helpers;
+﻿namespace Bing.Helpers;
 
 /// <summary>
 /// UserAgent操作辅助类

@@ -1,5 +1,4 @@
 ﻿using Bing.Extensions;
-using Bing.Helpers;
 
 namespace Bing.IO;
 
@@ -27,20 +26,15 @@ public readonly struct FileSize
     /// <param name="unit">文件大小单位</param>
     private static long GetSize(long size, FileSizeUnit unit)
     {
-        switch (unit)
+        return unit switch
         {
-            case FileSizeUnit.K:
-                return size * 1024;
-
-            case FileSizeUnit.M:
-                return size * 1024 * 1024;
-
-            case FileSizeUnit.G:
-                return size * 1024 * 1024 * 1024;
-
-            default:
-                return size;
-        }
+            FileSizeUnit.K => size * 1024L,
+            FileSizeUnit.M => size * 1024L * 1024L,
+            FileSizeUnit.G => size * 1024L * 1024L * 1024L,
+            FileSizeUnit.T => size * 1024L * 1024L * 1024L * 1024L,
+            FileSizeUnit.P => size * 1024L * 1024L * 1024L * 1024L * 1024L,
+            _ => size
+        };
     }
 
     /// <summary>
@@ -51,28 +45,42 @@ public readonly struct FileSize
     /// <summary>
     /// 获取文件大小，单位：K
     /// </summary>
-    public double GetSizeByK() => Conv.ToDouble(Size / 1024.0, 2);
+    public double GetSizeByK() => Math.Round(Size / 1024.0, 2);
 
     /// <summary>
     /// 获取文件大小，单位：M
     /// </summary>
-    public double GetSizeByM() => Conv.ToDouble(Size / 1024.0 / 1024.0, 2);
+    public double GetSizeByM() => Math.Round(Size / 1024.0 / 1024.0, 2);
 
     /// <summary>
     /// 获取文件大小，单位：G
     /// </summary>
-    public double GetSizeByG() => Conv.ToDouble(Size / 1024.0 / 1024.0 / 1024.0, 2);
+    public double GetSizeByG() => Math.Round(Size / 1024.0 / 1024.0 / 1024.0, 2);
+
+    /// <summary>
+    /// 获取文件大小，单位：T
+    /// </summary>
+    public double GetSizeByT() => Math.Round(Size / 1024.0 / 1024.0 / 1024.0 / 1024.0, 2);
+
+    /// <summary>
+    /// 获取文件大小，单位：P
+    /// </summary>
+    public double GetSizeByP() => Math.Round(Size / 1024.0 / 1024.0 / 1024.0 / 1024.0 / 1024.0, 2);
 
     /// <summary>
     /// 输出描述
     /// </summary>
     public override string ToString()
     {
-        if (Size >= 1024 * 1024 * 1024)
+        if (Size >= 1024L * 1024L * 1024L * 1024L * 1024L)
+            return $"{GetSizeByP()} {FileSizeUnit.P.Description()}";
+        if (Size >= 1024L * 1024L * 1024L * 1024L)
+            return $"{GetSizeByT()} {FileSizeUnit.T.Description()}";
+        if (Size >= 1024L * 1024L * 1024L)
             return $"{GetSizeByG()} {FileSizeUnit.G.Description()}";
-        if (Size >= 1024 * 1024)
+        if (Size >= 1024L * 1024L)
             return $"{GetSizeByM()} {FileSizeUnit.M.Description()}";
-        if (Size >= 1024)
+        if (Size >= 1024L)
             return $"{GetSizeByK()} {FileSizeUnit.K.Description()}";
         return $"{GetSize()} {FileSizeUnit.Byte.Description()}";
     }

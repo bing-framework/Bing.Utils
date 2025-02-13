@@ -5,7 +5,7 @@
 		<Description>Bing.Utils.DateTime是Bing应用框架的时间操作类库。</Description>
 	</PropertyGroup>
 
-  <Import Project="..\..\common.props" />
+	<Import Project="..\..\common.props" />
 
   <Import Project="dependency.props" />
 

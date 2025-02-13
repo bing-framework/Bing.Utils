@@ -1,7 +1,5 @@
 ﻿using Bing.Utils.Signatures;
 using Bing.Utils.Tests.Helpers;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Signatures;
 

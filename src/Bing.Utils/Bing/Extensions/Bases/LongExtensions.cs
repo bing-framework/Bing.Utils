@@ -1,6 +1,9 @@
-﻿using System;
+﻿
 
 // ReSharper disable once CheckNamespace
+
+using Bing.Date;
+
 namespace Bing.Extensions;
 
 /// <summary>
@@ -216,7 +219,7 @@ public static class LongExtensions
     public static DateTime ToDateTime(this long unixTimeStamp)
     {
         var value = (unixTimeStamp + 8 * 60 * 60) * 10000000;
-        return Bing.Utils.Timing.DateTimeExtensions.Date1970.AddTicks(value);
+        return TimeOptions.Date1970.AddTicks(value);
     }
 
     #endregion

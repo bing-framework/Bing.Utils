@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
+﻿
 // ReSharper disable once CheckNamespace
 namespace Bing.Text;
 
@@ -9,18 +7,6 @@ namespace Bing.Text;
 /// </summary>
 public static partial class StringExtensions
 {
-    /// <summary>
-    /// 是否大写字符串
-    /// </summary>
-    /// <param name="text">字符串</param>
-    public static bool IsUpper(this string text) => text.All(ch => char.IsLetter(ch) && !char.IsLower(ch));
-
-    /// <summary>
-    /// 是否小写字符串
-    /// </summary>
-    /// <param name="text">字符串</param>
-    public static bool IsLower(this string text) => text.All(ch => !char.IsLetter(ch) || !char.IsUpper(ch));
-
     /// <summary>
     /// 转换为首字母大写字符串
     /// </summary>

@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Reflection;
 
 namespace Bing.Drawing;

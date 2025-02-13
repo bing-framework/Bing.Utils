@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using System.Globalization;
 
 namespace Bing.Text;
 
@@ -8,62 +8,36 @@ namespace Bing.Text;
 public static partial class Str
 {
     /// <summary>
-    /// 新行
+    /// 敏感信息字符
     /// </summary>
-    public const string NewLine = "\r\n";
+    public const char SensitiveChar = '*';
 
     /// <summary>
-    /// 将 null 转换为 Empty
+    /// 空字符串
     /// </summary>
-    /// <param name="str">字符串</param>
-    public static string NullToEmpty(string str) => str.AvoidNull();
+    public const string Empty = "";
 
     /// <summary>
-    /// 将 Empty 转换为 null
+    /// 回车换行符。等同 NewLine
     /// </summary>
-    /// <param name="str">字符串</param>
-    public static string EmptyToNul(string str) => str.IsNullOrEmpty() ? null : str;
+    public const string CarriageReturnLineFeed = "\r\n";
 
     /// <summary>
-    /// 通用前缀。从左到右，返回共有的字符，直至遇到第一个不同的字符。
+    /// 回车符
     /// </summary>
-    /// <param name="left">比较字符串</param>
-    /// <param name="right">比较字符串</param>
-    public static string CommonPrefix(string left, string right)
-    {
-        if (string.IsNullOrWhiteSpace(left) || string.IsNullOrWhiteSpace(right))
-            return string.Empty;
-        var sb = new StringBuilder();
-        var rangeTimes = left.Length < right.Length ? left.Length : right.Length;
-        for (var i = 0; i < rangeTimes; i++)
-        {
-            if(left[i]!=right[i])
-                break;
-            sb.Append(left[i]);
-        }
-        return sb.ToString();
-    }
+    public const char CarriageReturn = '\r';
 
     /// <summary>
-    /// 通用后缀。从右到左，返回共有的字符，直至遇到第一个不同的字符。
+    /// 换行符
     /// </summary>
-    /// <param name="left">比较字符串</param>
-    /// <param name="right">比较字符串</param>
-    public static string CommonSuffix(string left, string right)
-    {
-        if (string.IsNullOrWhiteSpace(left) || string.IsNullOrWhiteSpace(right))
-            return string.Empty;
-        var sb = new StringBuilder();
-        var rangeTimes = left.Length < right.Length ? left.Length : right.Length;
-        int leftPointer = left.Length - 1, rightPointer = right.Length - 1;
-        for (var i = 0; i < rangeTimes; i++, leftPointer--, rightPointer--)
-        {
-            if (left[leftPointer] != right[rightPointer])
-                break;
-            sb.Append(left[leftPointer]);
-        }
-        return sb.ToReverseString();
-    }
+    public const char LineFeed = '\n';
+
+    /// <summary>
+    /// 制表符
+    /// </summary>
+    public const char Tab = '\t';
+
+    #region Repeat(重复指定次数的字符串)
 
     /// <summary>
     /// 重复指定次数的字符串
@@ -79,6 +53,10 @@ public static partial class Str
     /// <param name="times">次数</param>
     public static string Repeat(char source, int times) => source.Repeat(times);
 
+    #endregion
+
+    #region PadStart(向左填充)
+
     /// <summary>
     /// 填充。向左填充
     /// </summary>
@@ -86,6 +64,10 @@ public static partial class Str
     /// <param name="width">宽度</param>
     /// <param name="appendChar">拼接字符</param>
     public static string PadStart(string source, int width, char appendChar) => source.PadLeft(width, appendChar);
+
+    #endregion
+
+    #region PadEnd(向右填充)
 
     /// <summary>
     /// 填充。向右填充
@@ -95,53 +77,167 @@ public static partial class Str
     /// <param name="appendChar">拼接字符</param>
     public static string PadEnd(string source, int width, char appendChar) => source.PadRight(width, appendChar);
 
+    #endregion
+
+    #region ToPascalCase(转换为帕斯卡命名法)
+
     /// <summary>
-    /// 移除起始字符串
+    /// 将字符串转换为帕斯卡命名法。例如：userName -> UserName
     /// </summary>
-    /// <param name="builder">字符串生成器</param>
-    /// <param name="start">要移除的值</param>
-    public static StringBuilder RemoveStart(StringBuilder builder, string start)
+    /// <param name="s">输入字符串</param>
+    /// <returns>转换后的帕斯卡命名法字符串</returns>
+    public static string ToPascalCase(string s)
     {
-        if (builder == null)
-            return null;
-        if (builder.Length == 0)
-            return builder;
-        if(string.IsNullOrEmpty(start))
-            return builder;
-        if (start.Length > builder.Length)
-            return builder;
-        var chars = start.ToCharArray();
+        if (string.IsNullOrEmpty(s) || !char.IsLower(s[0]))
+            return s;
+        var chars = s.ToCharArray();
         for (var i = 0; i < chars.Length; i++)
         {
-            if (builder[i] != chars[i])
-                return builder;
+            if (i == 1 && !char.IsUpper(chars[i]))
+                break;
+            var hasNext = (i + 1 < chars.Length);
+            if (i > 0 && hasNext && !char.IsUpper(chars[i + 1]))
+                break;
+            chars[i] = char.ToUpperInvariant(chars[i]);
         }
-        return builder.Remove(0, start.Length);
+        return new string(chars);
+    }
+
+    #endregion
+
+    #region ToCamelCase(转换为骆驼命名法)
+
+    /// <summary>
+    /// 将字符串转换为骆驼命名法。例如：UserName -> userName
+    /// </summary>
+    /// <param name="s">输入字符串</param>
+    /// <returns>转换后的骆驼命名法字符串</returns>
+    public static string ToCamelCase(string s)
+    {
+        if (string.IsNullOrEmpty(s) || !char.IsUpper(s[0]))
+            return s;
+        var chars = s.ToCharArray();
+        for (var i = 0; i < chars.Length; i++)
+        {
+            if (i == 1 && !char.IsUpper(chars[i]))
+                break;
+            var hasNext = (i + 1 < chars.Length);
+            if (i > 0 && hasNext && !char.IsUpper(chars[i + 1]))
+            {
+                if (char.IsSeparator(chars[i + 1]))
+                    chars[i] = char.ToLowerInvariant(chars[i]);
+                break;
+            }
+            chars[i] = char.ToLowerInvariant(chars[i]);
+        }
+        return new string(chars);
+    }
+
+    #endregion
+
+    #region ToSnakeCase(转换为蛇形命名法)
+
+    /// <summary>
+    /// 将字符串转换为蛇形命名法。例如：UserName -> user_name
+    /// </summary>
+    /// <param name="s">输入字符串</param>
+    /// <returns>转换后的蛇形命名法字符串</returns>
+    public static string ToSnakeCase(string s) => ToSeparatedCase(s, '_');
+
+    /// <summary>
+    /// 将字符串转换为指定分隔符的命名法。
+    /// </summary>
+    /// <param name="s">输入字符串</param>
+    /// <param name="separator">分隔符</param>
+    /// <returns>转换后的字符串</returns>
+    private static string ToSeparatedCase(string s, char separator)
+    {
+        if (string.IsNullOrEmpty(s))
+            return s;
+        var sb = new StringBuilder();
+        var state = SeparatedCaseState.Start;
+        for (var i = 0; i < s.Length; i++)
+        {
+            if (s[i] == ' ')
+            {
+                if (state != SeparatedCaseState.Start)
+                    state = SeparatedCaseState.NewWord;
+            }
+            else if (char.IsUpper(s[i]))
+            {
+                switch (state)
+                {
+                    case SeparatedCaseState.Upper:
+                        var hasNext = (i + 1 < s.Length);
+                        if (i > 0 && hasNext)
+                        {
+                            var nextChar = s[i + 1];
+                            if (!char.IsUpper(nextChar) && nextChar != separator)
+                                sb.Append(separator);
+                        }
+                        break;
+                    case SeparatedCaseState.Lower:
+                    case SeparatedCaseState.NewWord:
+                        sb.Append(separator);
+                        break;
+                }
+
+                var c = char.ToLower(s[i], CultureInfo.InvariantCulture);
+                sb.Append(c);
+                state = SeparatedCaseState.Upper;
+            }
+            else if (s[i] == separator)
+            {
+                sb.Append(separator);
+                state = SeparatedCaseState.Start;
+            }
+            else
+            {
+                if (state == SeparatedCaseState.NewWord)
+                    sb.Append(separator);
+                sb.Append(s[i]);
+                state = SeparatedCaseState.Lower;
+            }
+        }
+        return sb.ToString();
     }
 
     /// <summary>
-    /// 移除末尾字符串
+    /// 分隔策略状态
     /// </summary>
-    /// <param name="builder">字符串生成器</param>
-    /// <param name="end">要移除的值</param>
-    public static StringBuilder RemoveEnd(StringBuilder builder, string end)
+    private enum SeparatedCaseState
     {
-        if (builder == null)
-            return null;
-        if (builder.Length == 0)
-            return builder;
-        if (string.IsNullOrEmpty(end))
-            return builder;
-        if (end.Length > builder.Length)
-            return builder;
-        var chars = end.ToCharArray();
-        for (var i = chars.Length - 1; i >= 0; i--)
-        {
-            var j = builder.Length - (chars.Length - i);
-            if (builder[j] != chars[i])
-                return builder;
-        }
+        /// <summary>
+        /// 开头状态
+        /// </summary>
+        Start,
 
-        return builder.Remove(builder.Length-end.Length, end.Length);
+        /// <summary>
+        /// 小写状态
+        /// </summary>
+        Lower,
+
+        /// <summary>
+        /// 大写状态
+        /// </summary>
+        Upper,
+
+        /// <summary>
+        /// 新单词状态
+        /// </summary>
+        NewWord
     }
+
+    #endregion
+
+    #region ToKebabCase(转换为烤肉串命名法)
+
+    /// <summary>
+    /// 将字符串转换为烤肉串命名法。例如：UserName -> user-name
+    /// </summary>
+    /// <param name="s">输入字符串</param>
+    /// <returns>转换后的烤肉串命名法字符串</returns>
+    public static string ToKebabCase(string s) => ToSeparatedCase(s, '-');
+
+    #endregion
 }

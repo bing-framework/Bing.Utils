@@ -1,9 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 
 namespace Bing.Drawing;
 
@@ -747,6 +744,47 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+    }
+
+    #endregion
+
+    #region SetOpacity(设置透明度)
+
+    /// <summary>
+    /// 设置透明度
+    /// </summary>
+    /// <param name="image">图片</param>
+    /// <param name="opacity">透明度</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public static Image SetOpacity(Image image, float opacity)
+    {
+        if (image is null)
+            throw new ArgumentNullException(nameof(image));
+        if (opacity < 0 || opacity > 1)
+            throw new ArgumentOutOfRangeException(nameof(opacity), "不透明度必须为0-1之间的浮点数");
+        var colorMatrix = new ColorMatrix([
+            new float[] { 1, 0, 0, 0, 0 },
+            new float[] { 0, 1, 0, 0, 0 },
+            new float[] { 0, 0, 1, 0, 0 },
+            new float[] { 0, 0, 0, opacity, 0 },
+            new float[] { 0, 0, 0, 0, 1 }
+        ]);
+        var imageAttributes = new ImageAttributes();
+        imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+        var bitmap = new Bitmap(image);
+        var output = new Bitmap(image.Width, image.Height, PixelFormat.Format32bppArgb);
+        for (var x = 0; x < image.Width; x++)
+        {
+            for (var y = 0; y < image.Height; y++)
+            {
+                var color = bitmap.GetPixel(x, y);
+                output.SetPixel(x,y, Color.FromArgb((int)(0xFF * opacity), color.R, color.G, color.B));
+            }
+        }
+
+        return output;
     }
 
     #endregion

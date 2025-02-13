@@ -1,0 +1,174 @@
+{
+    "GitCommitPlugin.CustomCommitType": [
+    
+        {
+            "key": "feat",
+            "label": "feat",
+            "detail": "引入新功能",
+            "icon": "✨"
+        },
+        {
+            "key": "fix",
+            "label": "fix",
+            "detail": "修复bug",
+            "icon": "🐛"
+        },
+        {
+            "key": "wip",
+            "label": "wip",
+            "detail": "开发中",
+            "icon": "🚧"
+        },
+        {
+            "key": "style",
+            "label": "style",
+            "detail": "更新UI和样式文件",
+            "icon": "💄"
+        },
+        {
+            "key": "perf",
+            "label": "perf",
+            "detail": "提高性能/优化",
+            "icon": "👌"
+        },
+        {
+            "key": "refactor",
+            "label": "refactor",
+            "detail": "改进代码结构/代码格式",
+            "icon": "🎨"
+        },
+        {
+            "key": "revert",
+            "label": "revert",
+            "detail": "修改工具相关（包括但不限于文档、代码生成等）",
+            "icon": "⏪"
+        },
+        {
+            "key": "test",
+            "label": "test",
+            "detail": "增加测试代码",
+            "icon": "✅"
+        },
+        {
+            "key": "format",
+            "label": "format",
+            "detail": "格式化代码",
+            "icon": "🥚"
+        },
+        {
+            "key": "docs",
+            "label": "docs",
+            "detail": "添加/更新文档",
+            "icon": "📝"
+        },
+        {
+            "key": "chore",
+            "label": "chore",
+            "detail": "修改工具相关（包括但不限于文档、代码生成等）",
+            "icon": "🐳"
+        },
+        {
+            "key": "merge",
+            "label": "merge",
+            "detail": "合并分支",
+            "icon": "🔀"
+        },
+        {
+            "key": "remove",
+            "label": "remove",
+            "detail": "废弃或移除",
+            "icon": "🗑"
+        },
+        {
+            "key": "types",
+            "label": "types",
+            "detail": "增加或更新类型（types）",
+            "icon": "🏷"
+        },
+        {
+            "key": "ci",
+            "label": "ci",
+            "detail": "增加或更新类型（types）",
+            "icon": "👷"
+        },
+        {
+            "key": "init",
+            "label": "init",
+            "detail": "初次提交/初始化项目",
+            "icon": "🎉"
+        },
+        {
+            "key": "patch",
+            "label": "patch",
+            "detail": "添加重要补丁",
+            "icon": "🚑"
+        },
+        {
+            "key": "file",
+            "label": "file",
+            "detail": "添加新文件",
+            "icon": "📦"
+        },
+        {
+            "key": "publish",
+            "label": "publish",
+            "detail": "发布新版本",
+            "icon": "🚀"
+        },
+        {
+            "key": "tag",
+            "label": "tag",
+            "detail": "发布版本/添加标签",
+            "icon": "📌"
+        },
+        {
+            "key": "config",
+            "label": "config",
+            "detail": "修改配置文件",
+            "icon": "🔧"
+        },
+        {
+            "key": "git",
+            "label": "git",
+            "detail": "添加或修改.gitignore文件",
+            "icon": "🙈"
+        },
+        {
+            "key": "deps",
+            "label": "deps",
+            "detail": "升级依赖",
+            "icon": "⬆️"
+        },
+        {
+            "label": "增加依赖",
+            "detail": "增加一个依赖",
+            "icon": "➕"
+        },
+        {
+            "label": "减少依赖",
+            "detail": "减少一个依赖",
+            "icon": "➖"
+        },
+        {
+            "label": "apple",
+            "detail": "修复 macOS 下的问题",
+            "icon": "🍎"
+        },
+        {
+            "label": "linux",
+            "detail": "修复 Linux 下的问题",
+            "icon": "🐧"
+        },
+        {
+            "label": "windows",
+            "detail": "修复 Windows 下的问题",
+            "icon": "🏁"
+        },
+        {
+            "label": "糊屎",
+            "detail": "写了辣鸡代码需要优化",
+            "icon": "💩"
+        }
+    ],
+    "GitCommitPlugin.MaxSubjectCharacters": 50
+}

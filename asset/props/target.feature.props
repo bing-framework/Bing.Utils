@@ -1,5 +1,15 @@
 <Project>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>

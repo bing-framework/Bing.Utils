@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Bing.Exceptions;
+﻿namespace Bing.Exceptions;
 
 /// <summary>
 /// 尝试
@@ -22,7 +19,7 @@ public abstract class Try<T>
     /// <summary>
     /// 异常
     /// </summary>
-    public abstract Exception Exception { get; }
+    public abstract TryCreatingValueException Exception { get; }
 
     /// <summary>
     /// 值
@@ -42,7 +39,7 @@ public abstract class Try<T>
     /// <summary>
     /// 安全获取值
     /// </summary>
-    public virtual T GetSafeValue() => IsSuccess ? Value : default;
+    public virtual T GetSafeValue() => IsSuccess ? Value : default!;
 
     /// <summary>
     /// 安全获取值
@@ -54,13 +51,19 @@ public abstract class Try<T>
     /// 安全获取值
     /// </summary>
     /// <param name="defaultValFunc">默认值函数</param>
-    public virtual T GetSafeValue(Func<T> defaultValFunc) => IsSuccess ? Value : defaultValFunc is null ? default : defaultValFunc();
+    public virtual T GetSafeValue(Func<T> defaultValFunc) => IsSuccess ? Value : defaultValFunc is null ? default! : defaultValFunc();
 
     /// <summary>
     /// 安全获取值
     /// </summary>
     /// <param name="defaultValFunc">默认值函数</param>
-    public virtual T GetSafeValue(Func<Exception, T> defaultValFunc) => IsSuccess ? Value : defaultValFunc is null ? default : defaultValFunc(Exception);
+    public virtual T GetSafeValue(Func<TryCreatingValueException, T> defaultValFunc) => IsSuccess ? Value : defaultValFunc is null ? default! : defaultValFunc(Exception);
+
+    /// <summary>
+    /// 安全获取值
+    /// </summary>
+    /// <param name="defaultValFunc">默认值函数</param>
+    public virtual T GetSafeValue(Func<Exception, string, T> defaultValFunc) => IsSuccess ? Value : defaultValFunc is null ? default! : defaultValFunc(Exception?.InnerException, Exception?.Cause);
 
     /// <summary>
     /// 安全获取值
@@ -83,19 +86,52 @@ public abstract class Try<T>
     /// 安全获取值
     /// </summary>
     /// <param name="defaultValFunc">默认值函数</param>
-    public virtual Task<T> GetSafeValueAsync(Func<Exception, T> defaultValFunc) => Task.FromResult(GetSafeValue(defaultValFunc));
+    public virtual Task<T> GetSafeValueAsync(Func<TryCreatingValueException, T> defaultValFunc) => Task.FromResult(GetSafeValue(defaultValFunc));
+
+    /// <summary>
+    /// 安全获取值
+    /// </summary>
+    /// <param name="defaultValFunc">默认值函数</param>
+    public virtual Task<T> GetSafeValueAsync(Func<Exception, string, T> defaultValFunc) => Task.FromResult(GetSafeValue(defaultValFunc));
 
     /// <summary>
     /// 安全获取值
     /// </summary>
     /// <param name="defaultValAsyncFunc">默认值函数</param>
-    public virtual Task<T> GetSafeValueAsync(Func<Task<T>> defaultValAsyncFunc) => IsSuccess ? Task.FromResult(Value) : defaultValAsyncFunc is null ? Task.FromResult(default(T)) : defaultValAsyncFunc();
+    public virtual Task<T> GetSafeValueAsync(Func<Task<T>> defaultValAsyncFunc)
+    {
+        if (IsSuccess)
+            return Task.FromResult(Value);
+        return defaultValAsyncFunc is null
+            ? Task.FromResult(default(T)!)
+            : defaultValAsyncFunc();
+    }
 
     /// <summary>
     /// 安全获取值
     /// </summary>
     /// <param name="defaultValAsyncFunc">默认值函数</param>
-    public virtual Task<T> GetSafeValueAsync(Func<Exception, Task<T>> defaultValAsyncFunc) => IsSuccess ? Task.FromResult(Value) : defaultValAsyncFunc is null ? Task.FromResult(default(T)) : defaultValAsyncFunc(Exception);
+    public virtual Task<T> GetSafeValueAsync(Func<TryCreatingValueException, Task<T>> defaultValAsyncFunc)
+    {
+        if (IsSuccess)
+            return Task.FromResult(Value);
+        return defaultValAsyncFunc is null
+            ? Task.FromResult(default(T)!)
+            : defaultValAsyncFunc(Exception);
+    }
+
+    /// <summary>
+    /// 安全获取值
+    /// </summary>
+    /// <param name="defaultValAsyncFunc">默认值函数</param>
+    public virtual Task<T> GetSafeValueAsync(Func<Exception, string, Task<T>> defaultValAsyncFunc)
+    {
+        if (IsSuccess)
+            return Task.FromResult(Value);
+        return defaultValAsyncFunc is null
+            ? Task.FromResult(default(T)!)
+            : defaultValAsyncFunc(Exception?.InnerException, Exception?.Cause);
+    }
 
     /// <summary>
     /// 尝试获取值
@@ -132,7 +168,7 @@ public abstract class Try<T>
         }
         catch
         {
-            value = default;
+            value = default!;
             return false;
         }
     }
@@ -142,7 +178,7 @@ public abstract class Try<T>
     /// </summary>
     /// <param name="value">值</param>
     /// <param name="defaultValFunc">默认值函数</param>
-    public virtual bool TryGetValue(out T value, Func<Exception, T> defaultValFunc)
+    public virtual bool TryGetValue(out T value, Func<TryCreatingValueException, T> defaultValFunc)
     {
         try
         {
@@ -151,7 +187,26 @@ public abstract class Try<T>
         }
         catch
         {
-            value = default;
+            value = default!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 尝试获取值
+    /// </summary>
+    /// <param name="value">值</param>
+    /// <param name="defaultValFunc">默认值函数</param>
+    public virtual bool TryGetValue(out T value, Func<Exception, string, T> defaultValFunc)
+    {
+        try
+        {
+            value = GetSafeValue(defaultValFunc);
+            return true;
+        }
+        catch
+        {
+            value = default!;
             return false;
         }
     }
@@ -213,7 +268,18 @@ public abstract class Try<T>
     /// </summary>
     /// <param name="value">值</param>
     /// <param name="defaultValFunc">默认值函数</param>
-    public virtual Try<T> GetSafeValueOut(out T value, Func<Exception, T> defaultValFunc)
+    public virtual Try<T> GetSafeValueOut(out T value, Func<TryCreatingValueException, T> defaultValFunc)
+    {
+        value = GetSafeValue(defaultValFunc);
+        return this;
+    }
+
+    /// <summary>
+    /// 安全获取值并输出
+    /// </summary>
+    /// <param name="value">值</param>
+    /// <param name="defaultValFunc">默认值函数</param>
+    public virtual Try<T> GetSafeValueOut(out T value, Func<Exception, string, T> defaultValFunc)
     {
         value = GetSafeValue(defaultValFunc);
         return this;
@@ -256,7 +322,18 @@ public abstract class Try<T>
     /// </summary>
     /// <param name="value">值</param>
     /// <param name="defaultValFunc">默认值函数</param>
-    public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<Exception, T> defaultValFunc)
+    public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<TryCreatingValueException, T> defaultValFunc)
+    {
+        value = GetSafeValueAsync(defaultValFunc);
+        return this;
+    }
+
+    /// <summary>
+    /// 安全获取值并输出
+    /// </summary>
+    /// <param name="value">值</param>
+    /// <param name="defaultValFunc">默认值函数</param>
+    public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<Exception, string, T> defaultValFunc)
     {
         value = GetSafeValueAsync(defaultValFunc);
         return this;
@@ -278,7 +355,18 @@ public abstract class Try<T>
     /// </summary>
     /// <param name="value">值</param>
     /// <param name="defaultValFunc">默认值函数</param>
-    public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<Exception, Task<T>> defaultValFunc)
+    public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<TryCreatingValueException, Task<T>> defaultValFunc)
+    {
+        value = GetSafeValueAsync(defaultValFunc);
+        return this;
+    }
+
+    /// <summary>
+    /// 安全获取值并输出
+    /// </summary>
+    /// <param name="value">值</param>
+    /// <param name="defaultValFunc">默认值函数</param>
+    public virtual Try<T> GetSafeValueOutAsync(out Task<T> value, Func<Exception, string, Task<T>> defaultValFunc)
     {
         value = GetSafeValueAsync(defaultValFunc);
         return this;
@@ -340,19 +428,38 @@ public abstract class Try<T>
     /// 将异常转换为指定类型异常
     /// </summary>
     /// <typeparam name="TException">异常类型</typeparam>
-    public TException ExceptionAs<TException>() where TException : Exception => Exception as TException;
+    public TException ExceptionAs<TException>() 
+        where TException : Exception
+    {
+        Exception ex = Exception;
+        while (ex is not null && ex is not TException)
+            ex = ex.InnerException;
+        return ex as TException;
+    }
 
     /// <summary>
     /// 恢复
     /// </summary>
-    /// <param name="recoverFunc">恢复函数</param>
-    public abstract Try<T> Recover(Func<Exception, T> recoverFunc);
+    /// <param name="recoverFunction">恢复函数</param>
+    public abstract Try<T> Recover(Func<TryCreatingValueException, T> recoverFunction);
 
     /// <summary>
     /// 恢复
     /// </summary>
-    /// <param name="recoverFunc">恢复函数</param>
-    public abstract Try<T> RecoverWith(Func<Exception, Try<T>> recoverFunc);
+    /// <param name="recoverFunction">恢复函数</param>
+    public abstract Try<T> Recover(Func<Exception, string, T> recoverFunction);
+
+    /// <summary>
+    /// 恢复
+    /// </summary>
+    /// <param name="recoverFunction">恢复函数</param>
+    public abstract Try<T> RecoverWith(Func<TryCreatingValueException, Try<T>> recoverFunction);
+
+    /// <summary>
+    /// 恢复
+    /// </summary>
+    /// <param name="recoverFunction">恢复函数</param>
+    public abstract Try<T> RecoverWith(Func<Exception, string, Try<T>> recoverFunction);
 
     /// <summary>
     /// 匹配
@@ -360,7 +467,15 @@ public abstract class Try<T>
     /// <typeparam name="TResult">结果类型</typeparam>
     /// <param name="whenValue">条件值函数</param>
     /// <param name="whenException">条件异常</param>
-    public abstract TResult Match<TResult>(Func<T, TResult> whenValue, Func<Exception, TResult> whenException);
+    public abstract TResult Match<TResult>(Func<T, TResult> whenValue, Func<TryCreatingValueException, TResult> whenException);
+
+    /// <summary>
+    /// 匹配
+    /// </summary>
+    /// <typeparam name="TResult">结果类型</typeparam>
+    /// <param name="whenValue">条件值函数</param>
+    /// <param name="whenException">条件异常</param>
+    public abstract TResult Match<TResult>(Func<T, TResult> whenValue, Func<Exception, string, TResult> whenException);
 
     /// <summary>
     /// 映射
@@ -379,7 +494,14 @@ public abstract class Try<T>
     /// </summary>
     /// <param name="successAction">成功操作</param>
     /// <param name="failureAction">失败操作</param>
-    public abstract Try<T> Tap(Action<T> successAction = null, Action<Exception> failureAction = null);
+    public abstract Try<T> Tap(Action<T> successAction = null, Action<TryCreatingValueException> failureAction = null);
+
+    /// <summary>
+    /// 触发
+    /// </summary>
+    /// <param name="successAction">成功操作</param>
+    /// <param name="failureAction">失败操作</param>
+    public abstract Try<T> Tap(Action<T> successAction = null, Action<Exception, string> failureAction = null);
 
     /// <summary>
     /// 绑定
@@ -393,5 +515,10 @@ public abstract class Try<T>
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
     /// <param name="exception">异常</param>
-    private static Task<TResult> FromException<TResult>(Exception exception) => Task.FromException<TResult>(exception);
+    private static Task<TResult> FromException<TResult>(Exception exception)
+    {
+        if (exception is null)
+            throw new ArgumentNullException(nameof(exception));
+        return Task.FromException<TResult>(exception);
+    }
 }

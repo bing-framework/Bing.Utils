@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net7.0;net6.0;net5.0;netcoreapp3.1;</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.tests.props" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Bing.Utils.Collections\Bing.Utils.Collections.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.DateTime\Bing.Utils.DateTime.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.Drawing\Bing.Utils.Drawing.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.Http\Bing.Utils.Http.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.IdUtils\Bing.Utils.IdUtils.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.Net\Bing.Utils.Net.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.Reflection\Bing.Utils.Reflection.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils.Text\Bing.Utils.Text.csproj" />
+		<ProjectReference Include="..\..\src\Bing.Utils\Bing.Utils.csproj" />
+		<ProjectReference Include="..\Bing.Tests.Samples\Bing.Tests.Samples.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Resources\**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Samples\FileSample.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>

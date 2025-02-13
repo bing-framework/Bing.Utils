@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bing.Helpers;
 
 namespace Bing.IO;
 
@@ -9,6 +7,13 @@ namespace Bing.IO;
 /// </summary>
 public static partial class FileHelper
 {
+    /// <summary>
+    /// 默认缓冲区大小：4M
+    /// </summary>
+    private const int DefaultBufferSize = 4096;
+
+    #region SaveFile(保存内容到文件)
+
     /// <summary>
     /// 保存内容到文件
     /// <para>
@@ -117,6 +122,8 @@ public static partial class FileHelper
         encoding ??= Encoding.UTF8;
         fileMode ??= FileMode.Create;
         var dir = Path.GetDirectoryName(filePath);
+        if (string.IsNullOrWhiteSpace(dir))
+            return;
         if (!Directory.Exists(dir))
             Directory.CreateDirectory(dir);
         using var fs = new FileStream(filePath, fileMode.Value);
@@ -125,64 +132,54 @@ public static partial class FileHelper
         sw.Flush();
     }
 
+    #endregion
+
+    #region Write(写入文件)
+
     /// <summary>
-    /// 将内容写入文件，文件不存在则创建
+    /// 将字符串写入文件，文件不存在则创建
     /// </summary>
     /// <param name="filePath">文件的绝对路径</param>
-    /// <param name="content">数据</param>
-    public static void Write(string filePath, string content)
+    /// <param name="content">内容</param>
+    public static void Write(string filePath, string content) => Write(filePath, Conv.ToBytes(content));
+
+    /// <summary>
+    /// 将流写入文件，文件不存在则创建
+    /// </summary>
+    /// <param name="filePath">文件的绝对路径</param>
+    /// <param name="stream">内容</param>
+    public static void Write(string filePath, Stream stream)
     {
-        Write(filePath, FileHelper.ToBytes(content));
+        var bytes = ToBytes(stream);
+        Write(filePath, bytes);
     }
 
     /// <summary>
-    /// 将内容写入文件，文件不存在则创建
+    /// 将字节流写入文件，文件不存在则创建
     /// </summary>
     /// <param name="filePath">文件的绝对路径</param>
-    /// <param name="bytes">数据</param>
-    public static void Write(string filePath, byte[] bytes)
+    /// <param name="content">内容</param>
+    public static void Write(string filePath, byte[] content)
     {
         if (string.IsNullOrWhiteSpace(filePath))
             return;
-        if (bytes == null)
+        if (content == null)
             return;
-        File.WriteAllBytes(filePath, bytes);
+        DirectoryHelper.CreateDirectory(filePath);
+        File.WriteAllBytes(filePath, content);
     }
-
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
-    /// <summary>
-    /// 将内容写入文件，文件不存在则创建
-    /// </summary>
-    /// <param name="filePath">文件的绝对路径</param>
-    /// <param name="content">数据</param>
-    public static async Task WriteAsync(string filePath, string content)
-    {
-        await WriteAsync(filePath, FileHelper.ToBytes(content));
-    }
-
-    /// <summary>
-    /// 将内容写入文件，文件不存在则创建
-    /// </summary>
-    /// <param name="filePath">文件的绝对路径</param>
-    /// <param name="bytes">数据</param>
-    public static async Task WriteAsync(string filePath, byte[] bytes)
-    {
-        if (string.IsNullOrWhiteSpace(filePath))
-            return;
-        if (bytes == null)
-            return;
-        await File.WriteAllBytesAsync(filePath, bytes);
-    }
-#endif
 
     /// <summary>
     /// 将字节数组写入目标文件
     /// </summary>
     /// <param name="byteArray">字节数组</param>
-    /// <param name="targetFilePath">目标文件路径</param>
+    /// <param name="targetFilePath">文件的绝对路径</param>
     /// <param name="appendMode">是否追加</param>
     public static bool Write(byte[] byteArray, string targetFilePath, bool appendMode = false)
     {
+        if (string.IsNullOrWhiteSpace(targetFilePath))
+            return false;
+
         if (!appendMode && File.Exists(targetFilePath))
             File.Create(targetFilePath);
 
@@ -191,23 +188,95 @@ public static partial class FileHelper
         return fs.TryWrite(byteArray, 0, byteArray.Length);
     }
 
+    #endregion
+
+    #region WriteAsync(写入文件)
+
+    /// <summary>
+    /// 将字符串写入文件，文件不存在则创建
+    /// </summary>
+    /// <param name="filePath">文件的绝对路径</param>
+    /// <param name="content">内容</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task WriteAsync(string filePath, string content, CancellationToken cancellationToken = default)
+    {
+        await WriteAsync(filePath, Conv.ToBytes(content), cancellationToken);
+    }
+
+    /// <summary>
+    /// 将流写入在文件，文件不存在则创建
+    /// </summary>
+    /// <param name="filePath">文件的绝对路径</param>
+    /// <param name="content">内容</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task WriteAsync(string filePath, Stream content, CancellationToken cancellationToken = default)
+    {
+        var bytes = await ToBytesAsync(content, cancellationToken);
+        await WriteAsync(filePath, bytes, cancellationToken);
+    }
+
+#if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER
+
+    /// <summary>
+    /// 将字节流写入文件，文件不存在则创建
+    /// </summary>
+    /// <param name="filePath">文件的绝对路径</param>
+    /// <param name="content">内容</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task WriteAsync(string filePath, byte[] content, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+            return;
+        if (content == null)
+            return;
+        DirectoryHelper.CreateDirectory(filePath);
+        await File.WriteAllBytesAsync(filePath, content, cancellationToken);
+    }
+
+#else
+
+    /// <summary>
+    /// 将字节流写入文件，文件不存在则创建
+    /// </summary>
+    /// <param name="filePath">文件的绝对路径</param>
+    /// <param name="content">内容</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task WriteAsync(string filePath, byte[] content, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+            return;
+        if (content == null)
+            return;
+        DirectoryHelper.CreateDirectory(filePath);
+        using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read, DefaultBufferSize, FileOptions.Asynchronous | FileOptions.SequentialScan);
+        await fileStream.WriteAsync(content, 0, content.Length, cancellationToken);
+    }
+
+#endif
+
     /// <summary>
     /// 将字节数组写入目标文件
     /// </summary>
     /// <param name="byteArray">字节数组</param>
-    /// <param name="targetFilePath">目标文件路径</param>
+    /// <param name="filePath">文件的绝对路径</param>
     /// <param name="appendMode">是否追加</param>
-    public static async Task<bool> WriteAsync(byte[] byteArray, string targetFilePath, bool appendMode = false)
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task<bool> WriteAsync(byte[] byteArray, string filePath, bool appendMode = false, CancellationToken cancellationToken = default)
     {
-        if (!appendMode && File.Exists(targetFilePath))
-            File.Create(targetFilePath);
+        if (string.IsNullOrWhiteSpace(filePath))
+            return false;
+        DirectoryHelper.CreateDirectory(filePath);
+        if (!appendMode && File.Exists(filePath))
+            File.Create(filePath);
 
         var fileMode = appendMode ? FileMode.Append : FileMode.Open;
-#if NETSTANDARD2_1 || NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
-        await using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
+#if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER
+        await using var fs = new FileStream(filePath, fileMode, FileAccess.Write);
 #else
-            using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
+        using var fs = new FileStream(filePath, fileMode, FileAccess.Write);
 #endif
-        return await fs.TryWriteAsync(byteArray, 0, byteArray.Length);
+        return await fs.TryWriteAsync(byteArray, 0, byteArray.Length, cancellationToken);
     }
+
+    #endregion
 }

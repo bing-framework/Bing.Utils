@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.Guard</AssemblyName>
+		<PackageId>Bing.Utils.Guard</PackageId>
+		<Description>Bing.Utils.Guard是Bing应用框架的守护操作类库。</Description>
+	</PropertyGroup>
+
+	<Import Project="project.dependency.props" />
+
+	<Import Project="..\..\common.props" />
+
+	<ItemGroup>
+	  <Folder Include="IdUtils\" />
+	  <Folder Include="Validation\" />
+	  <Folder Include="新文件夹\" />
+	</ItemGroup>
+
+</Project>

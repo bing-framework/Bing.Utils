@@ -1,5 +1,5 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
+using Bing.Date.DateUtils;
 
 namespace Bing.Date;
 
@@ -9,9 +9,10 @@ public static partial class DateTimeOffsetExtensions
     #region Begin
 
     /// <summary>
-    /// 获取一天的开始时间。
+    /// 获取指定日期时间的当天起始时间（零点零分零秒）。
     /// </summary>
     /// <param name="dto">时间点</param>
+    /// <returns>指定日期时间的当天起始时间。</returns>
     public static DateTimeOffset BeginningOfDay(this DateTimeOffset dto) => new(dto.Year, dto.Month, dto.Day, 0, 0, 0, dto.Offset);
 
     #endregion
@@ -19,9 +20,10 @@ public static partial class DateTimeOffsetExtensions
     #region End
 
     /// <summary>
-    /// 获取一天的结束时间。
+    /// 获取指定日期时间的当天结束时间（23点59分59秒999毫秒）。
     /// </summary>
     /// <param name="dto">时间点</param>
+    /// <returns>指定日期时间的当天结束时间。</returns>
     public static DateTimeOffset EndOfDay(this DateTimeOffset dto) => new(dto.Year, dto.Month, dto.Day, 23, 59, 59, 999, dto.Offset);
 
     #endregion

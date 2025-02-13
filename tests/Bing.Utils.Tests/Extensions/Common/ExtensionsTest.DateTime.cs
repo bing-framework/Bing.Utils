@@ -1,8 +1,6 @@
-﻿using System;
-using Bing.Date;
+﻿using Bing.Date;
 using Bing.Extensions;
 using Bing.Helpers;
-using Xunit;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Utils.Tests.Extensions;

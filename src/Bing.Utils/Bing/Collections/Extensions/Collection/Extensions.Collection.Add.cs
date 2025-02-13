@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
 namespace Bing.Collections;
 
 /// <summary>
 /// 集合(<see cref="ICollection{T}"/>) 扩展
 /// </summary>
-public static partial class CollectionExtensions
+public static partial class BingCollectionExtensions
 {
     /// <summary>
     /// 添加批量项。添加多个元素到集合中

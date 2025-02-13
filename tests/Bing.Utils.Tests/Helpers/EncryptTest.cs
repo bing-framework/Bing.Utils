@@ -1,8 +1,5 @@
-﻿using System.Text;
-using Bing.Extensions;
+﻿using Bing.Extensions;
 using Bing.Helpers;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace Bing.Utils.Tests.Helpers;
 

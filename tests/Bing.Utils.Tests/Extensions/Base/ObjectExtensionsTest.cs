@@ -1,6 +1,4 @@
-﻿using Xunit;
-using Bing.Extensions;
-using System.Collections.Generic;
+﻿using Bing.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Utils.Tests.Extensions;
@@ -120,6 +118,19 @@ public class ObjectExtensionsTest
         Assert.Equal(2, cnt);
         Assert.Equal(b.Id, a.Id);
         Assert.Equal(b.Description, a.Description);
+    }
+
+    /// <summary>
+    /// 测试 - 强制转换
+    /// </summary>
+    [Fact]
+    public void Test_As()
+    {
+        var obj = (object)new ObjectExtensionsTest();
+        obj.As<ObjectExtensionsTest>().ShouldNotBe(null);
+
+        obj = null;
+        obj.As<ObjectExtensionsTest>().ShouldBe(null);
     }
 }
 

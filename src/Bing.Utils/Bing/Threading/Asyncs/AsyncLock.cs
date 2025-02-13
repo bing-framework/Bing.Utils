@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Bing.Threading.Asyncs;
+﻿namespace Bing.Threading.Asyncs;
 
 /// <summary>
 /// 异步锁
@@ -57,18 +53,11 @@ public class AsyncLock
         /// 初始化一个<see cref="Releaser"/>类型的实例
         /// </summary>
         /// <param name="toRelease">异步锁</param>
-        internal Releaser(AsyncLock toRelease)
-        {
-            _toRelease = toRelease;
-        }
+        internal Releaser(AsyncLock toRelease) => _toRelease = toRelease;
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// 释放资源
         /// </summary>
-        /// <filterpriority>2</filterpriority>
-        public void Dispose()
-        {
-            _toRelease?._semaphore.Release();
-        }
+        public void Dispose() => _toRelease?._semaphore.Release();
     }
 }

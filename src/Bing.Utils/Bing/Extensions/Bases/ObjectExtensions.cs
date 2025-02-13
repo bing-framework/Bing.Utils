@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Extensions;
@@ -12,31 +8,6 @@ namespace Bing.Extensions;
 /// </summary>
 public static partial class ObjectExtensions
 {
-    #region DeepClone(对象深拷贝)
-
-    /// <summary>
-    /// 对象深度拷贝，复制相同数据，但指向内存位置不一样的数据
-    /// </summary>
-    /// <typeparam name="T">对象类型</typeparam>
-    /// <param name="obj">值</param>
-    /// <exception cref="NotSupportedException"></exception>
-    public static T DeepClone<T>(this T obj) where T : class
-    {
-        if (obj == null)
-            return default;
-        if (!typeof(T).HasAttribute<SerializableAttribute>(true))
-            throw new NotSupportedException($"当前对象未标记特性“{typeof(SerializableAttribute)}”，无法进行DeepClone操作");
-        var formatter = new BinaryFormatter();
-        using (var ms = new MemoryStream())
-        {
-            formatter.Serialize(ms, obj);
-            ms.Seek(0, SeekOrigin.Begin);
-            return (T)formatter.Deserialize(ms);
-        }
-    }
-
-    #endregion
-
     #region PropertyClone 对象值克隆
 
     /// <summary>

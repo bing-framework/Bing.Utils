@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Date;
+﻿namespace Bing.Date;
 
 /// <summary>
 /// Bing 时间点(<see cref="DateTimeOffset"/>) 扩展
@@ -124,14 +122,15 @@ public static partial class DateTimeOffsetExtensions
     #region Round
 
     /// <summary>
-    /// 将时间点四舍五入到最接近给定精度的值
+    /// 将 <see cref="DateTimeOffset"/> 对象按指定精度进行舍入。
     /// </summary>
     /// <param name="dto">时间点</param>
-    /// <param name="rt">舍入精度</param>
-    public static DateTimeOffset Round(this DateTimeOffset dto, RoundTo rt)
+    /// <param name="roundTo">舍入精度</param>
+    /// <returns>舍入后的 <see cref="DateTimeOffset"/> 对象。</returns>
+    public static DateTimeOffset Round(this DateTimeOffset dto, RoundTo roundTo)
     {
         DateTimeOffset rounded;
-        switch (rt)
+        switch (roundTo)
         {
             case RoundTo.Second:
             {
@@ -162,7 +161,7 @@ public static partial class DateTimeOffsetExtensions
                 break;
             }
             default:
-                throw new ArgumentOutOfRangeException(nameof(rt));
+                throw new ArgumentOutOfRangeException(nameof(roundTo));
         }
         return rounded;
     }

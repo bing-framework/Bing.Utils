@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using Bing.Conversions;
-using Bing.Text;
+﻿using Bing.Text;
 
 namespace Bing;
 
@@ -12,15 +8,6 @@ namespace Bing;
 public static class ByteExtensions
 {
     #region Encoding
-
-    /// <summary>
-    /// 转换字节数组为字符串
-    /// </summary>
-    /// <param name="bytes">字节数组</param>
-    /// <param name="encoding">字符编码。默认为：<see cref="Encoding.UTF8"/></param>
-    public static string GetString(this byte[] bytes, Encoding encoding = null) => bytes is null
-        ? throw new ArgumentNullException(nameof(bytes))
-        : (encoding ?? Encoding.UTF8).GetString(bytes);
 
     /// <summary>
     /// 转换字节数组为字符串
@@ -151,7 +138,7 @@ public static class ByteExtensions
     /// 转换为Base64字符串
     /// </summary>
     /// <param name="inArray">byte[]</param>
-    public static string ToBase64String(this byte[] inArray) => Base64Converter.ToBase64String(inArray);
+    public static string ToBase64String(this byte[] inArray) => Convert.ToBase64String(inArray);
 
     /// <summary>
     /// 转换为Base64字符串
@@ -177,16 +164,6 @@ public static class ByteExtensions
     /// <param name="options">Base64格式化配置</param>
     public static string ToBase64String(this byte[] inArray, int offset, int length,
         Base64FormattingOptions options) => Convert.ToBase64String(inArray, offset, length, options);
-
-    #endregion
-
-    #region ToMemoryStream
-
-    /// <summary>
-    /// 转换为内存流
-    /// </summary>
-    /// <param name="this">byte[]</param>
-    public static MemoryStream ToMemoryStream(this byte[] @this) => new MemoryStream(@this);
 
     #endregion
 }

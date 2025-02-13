@@ -7,13 +7,6 @@
 	<Import Project="..\..\common.tests.props" />
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="3.2.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\Bing.Utils.Comments\Bing.Utils.Comments.csproj" />
   </ItemGroup>
 

@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using Bing.Collections;
 using Bing.Extensions;
 using Bing.Helpers;
+using Bing.IdUtils;
 using Bing.IO;
-using Bing.Utils.IdGenerators.Core;
+using Bing.Numeric;
 using Bing.Utils.Json;
-using Xunit;
-using Xunit.Abstractions;
 using FileHelper = Bing.IO.FileHelper;
 
 namespace Bing.Utils.Tests;
 
-public class UnitTest1: TestBase
+public class UnitTest1 : TestBase
 {
     public UnitTest1(ITestOutputHelper output) : base(output)
     {
@@ -23,21 +18,21 @@ public class UnitTest1: TestBase
     [Fact]
     public void Test1()
     {
-        DateTimeOffset offset=DateTimeOffset.Now;
+        DateTimeOffset offset = DateTimeOffset.Now;
         Output.WriteLine(offset.ToString("yyyy-MM-dd HH:mm:ss"));
     }
 
     [Fact]
     public void Test_GetArrayLowerBound()
     {
-        var strs = new string[] {"1", "2", "3", "4", "5"};
+        var strs = new string[] { "1", "2", "3", "4", "5" };
         var lowerBound = strs.GetLowerBound(0);
         Output.WriteLine(lowerBound.ToString());
     }
 
     [Fact]
     public void Test_GetArrayLowerBound_2()
-    {            
+    {
         string[,] strs = new string[,] {
             {
                 "1","2","3","4","7"
@@ -63,17 +58,17 @@ public class UnitTest1: TestBase
     [Fact]
     public void Test_Except()
     {
-        var list=new string[]{"1","2","3","4","5"};
-        var newList = new string[] {"1", "2"};
-        var result=list.Except(newList);
+        var list = new string[] { "1", "2", "3", "4", "5" };
+        var newList = new string[] { "1", "2" };
+        var result = list.Except(newList);
         Output.WriteLine(result.ToJson());
     }
 
     [Fact]
     public void Test_Except_Int()
     {
-        var list = new int[] {1, 3, 5, 7, 9, 11};
-        var newList = new int[] {1, 4, 7,8, 9, 11};
+        var list = new int[] { 1, 3, 5, 7, 9, 11 };
+        var newList = new int[] { 1, 4, 7, 8, 9, 11 };
         var result = newList.Except(list);
         Output.WriteLine(result.ToJson());
     }
@@ -81,8 +76,8 @@ public class UnitTest1: TestBase
     [Fact]
     public void Test_Except_Int_1()
     {
-        var list = new List<int>{ 1, 3, 5, 7, 9, 11 };
-        var item = list.Where(x => x==10).ToList();
+        var list = new List<int> { 1, 3, 5, 7, 9, 11 };
+        var item = list.Where(x => x == 10).ToList();
     }
 
     [Fact]
@@ -95,7 +90,7 @@ public class UnitTest1: TestBase
         var fiveGuid = Guid.NewGuid();
         var sixGuid = Guid.NewGuid();
         var sevenGuid = Guid.NewGuid();
-        var list = new Guid[] {oneGuid, twoGuid, threeGuid, fourGuid, fiveGuid, sixGuid, sevenGuid};
+        var list = new Guid[] { oneGuid, twoGuid, threeGuid, fourGuid, fiveGuid, sixGuid, sevenGuid };
         var newList = new Guid[] { fourGuid, fiveGuid, sixGuid, sevenGuid };
         var result = list.Except(newList);
         Output.WriteLine(list.ToJson());
@@ -124,7 +119,7 @@ public class UnitTest1: TestBase
         {
             throw new ArgumentNullException(nameof(url));
         }
-        Regex regex=new Regex(@"(http|https)://(?<domain>[^(:|/]*)", RegexOptions.IgnoreCase);
+        Regex regex = new Regex(@"(http|https)://(?<domain>[^(:|/]*)", RegexOptions.IgnoreCase);
         return regex.Match(url, 0).Value;
     }
 
@@ -133,7 +128,7 @@ public class UnitTest1: TestBase
     {
         for (int i = 0; i < 1000; i++)
         {
-            var id = SequentialGuidGenerator.Current.Create();
+            var id = GuidProvider.Create(GuidStyle.SequentialAsStringStyle);
             Output.WriteLine($"{id}");
         }
     }
@@ -143,15 +138,15 @@ public class UnitTest1: TestBase
     {
         string jsonp = @"jsonp({""a"":""1234"",""b"":9999})";
         var json = "{\"a\":\"1234\",\"b\":9999}";
-        var result = Regexs.GetValue(jsonp, @"^\w+\((\{[^()]+\})\)$","$1");
+        var result = Regexs.GetValue(jsonp, @"^\w+\((\{[^()]+\})\)$", "$1");
         Output.WriteLine(result);
-        Assert.Equal(json,result);
+        Assert.Equal(json, result);
     }
 
     [Fact]
     public void Test_SpaceOnUpper()
     {
-        var words = new[] {"StringExtensions", "AA", "AbC", "Cad"};
+        var words = new[] { "StringExtensions", "AA", "AbC", "Cad" };
         foreach (var word in words)
         {
             Output.WriteLine(word.SpaceOnUpper());
@@ -175,7 +170,7 @@ public class UnitTest1: TestBase
     {
         var dirPath = "D:\\TestData";
         DirectoryHelper.CreateIfNotExists(dirPath);
-        FileHelper.Split("D:\\iTestRunner_R1.txt",dirPath);
+        FileHelper.Split("D:\\iTestRunner_R1.txt", dirPath);
     }
 
     /// <summary>
@@ -224,7 +219,7 @@ public class UnitTest1: TestBase
             "005.5.desc.json",
             "006.6.desc.json",
             "007.7.desc.json",
-        };            
+        };
 
         foreach (var item in list)
         {
@@ -241,9 +236,9 @@ public class UnitTest1: TestBase
 
     public enum TestEnum
     {
-        A=0,
-        B=1,
-        C=2
+        A = 0,
+        B = 1,
+        C = 2
     }
 
     [Fact]
@@ -281,7 +276,7 @@ public class UnitTest1: TestBase
     /// <param name="kbLength">单个子文件最大长度。单位：KB</param>
     /// <param name="delete">标识文件分割完成后是否删除原文件</param>
     /// <param name="change">加密密钥</param>
-    private void FileSplit(string filePath,string outPutPath, int kbLength, bool delete, int change)
+    private void FileSplit(string filePath, string outPutPath, int kbLength, bool delete, int change)
     {
         if (filePath == null || !File.Exists(filePath))
         {
@@ -308,7 +303,7 @@ public class UnitTest1: TestBase
             FileStream writeStream = null;
             // 读取数据
             while (readLen > 0 || (readLen = readStream.Read(data, 0, data.Length)) > 0)
-            {                    
+            {
                 // 创建分割后的子文件，已有则覆盖
                 if (len == 0 || writeStream == null)
                 {
@@ -360,7 +355,7 @@ public class UnitTest1: TestBase
     /// <param name="outFileName"></param>
     /// <param name="delete"></param>
     /// <param name="change"></param>
-    private void FileCombine(IList<string> filePaths,string outFileName, bool delete, int change)
+    private void FileCombine(IList<string> filePaths, string outFileName, bool delete, int change)
     {
         if (filePaths == null || filePaths.Count == 0)
         {
@@ -381,7 +376,7 @@ public class UnitTest1: TestBase
         using (FileStream writeStream = new FileStream(outFileName, FileMode.Create))
         {
             filePaths.Sort();
-                
+
             foreach (var filePath in filePaths)
             {
                 if (filePath == null || !File.Exists(filePath))
@@ -390,11 +385,11 @@ public class UnitTest1: TestBase
                 }
 
                 FileStream readStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                byte[] data=new byte[1024];// 流读取，缓存空间
+                byte[] data = new byte[1024];// 流读取，缓存空间
                 int readLen = 0;// 每次实际读取的字节大小
 
                 // 读取数据
-                while ((readLen=readStream.Read(data,0,data.Length))>0)
+                while ((readLen = readStream.Read(data, 0, data.Length)) > 0)
                 {
                     //// 解密逻辑，对data的首字节进行逻辑偏移解密
                     //if (num == 0)
@@ -495,7 +490,7 @@ Where `a`.`IsDeny`=1 And `b`.`ApplicationId`='79c3c002-1474-4b3f-bf83-b17aa173a2
         }
     }
 
-    private void SetLogLevelAndLogName(string item,BingLogModel model)
+    private void SetLogLevelAndLogName(string item, BingLogModel model)
     {
         var firstSplit = Split(item);
         model.Level = firstSplit.Item1;
@@ -529,7 +524,7 @@ Where `a`.`IsDeny`=1 And `b`.`ApplicationId`='79c3c002-1474-4b3f-bf83-b17aa173a2
     [Fact]
     public void Test_ToObject()
     {
-        var json= "[{\"Text\":\"寸\",\"Value\":\"00000002\",\"SortId\":1,\"Group\":\"尺寸\"}]";
+        var json = "[{\"Text\":\"寸\",\"Value\":\"00000002\",\"SortId\":1,\"Group\":\"尺寸\"}]";
         var items = JsonHelper.ToObject<List<Item>>(json);
         foreach (var item in items)
         {
@@ -551,9 +546,77 @@ Where `a`.`IsDeny`=1 And `b`.`ApplicationId`='79c3c002-1474-4b3f-bf83-b17aa173a2
     [Fact]
     public void Test_Regex()
     {
-        var result= Regex.IsMatch("AutoMapper", "^AutoMapper", RegexOptions.IgnoreCase | RegexOptions.Compiled) == false;
+        var result = Regex.IsMatch("AutoMapper", "^AutoMapper", RegexOptions.IgnoreCase | RegexOptions.Compiled) == false;
         Output.WriteLine(result.ToString());
     }
+
+    [Theory]
+    [InlineData(3.0, 0)]
+    [InlineData(3.9, 1)]
+    [InlineData(3.99, 2)]
+    [InlineData(3.999, 3)]
+    [InlineData(3.9999, 4)]
+    [InlineData(3.99999, 5)]
+    [InlineData(3.999991, 6)]
+    [InlineData(3.9999912, 7)]
+    [InlineData(3.99999123, 8)]
+    [InlineData(3.999991234, 9)]
+    [InlineData(3.9999912345, 10)]
+    public void Test_GetDecimalPlaces(decimal input, int places)
+    {
+        var result = Numbers.GetDecimalPlaces((double)input);
+        Assert.Equal(places, result);
+    }
+
+    /// <summary>
+    /// 测试 - 修正长度
+    /// </summary>
+    [Theory]
+    [InlineData(0, 1)]
+    [InlineData(1, 2)]
+    [InlineData(2, 2)]
+    [InlineData(3, 4)]
+    [InlineData(4, 4)]
+    [InlineData(5, 8)]
+    [InlineData(6, 8)]
+    [InlineData(7, 8)]
+    [InlineData(8, 8)]
+    [InlineData(9, 16)]
+    [InlineData(10, 16)]
+    [InlineData(11, 16)]
+    [InlineData(12, 16)]
+    public void Test_FixLength(int length, int result)
+    {
+        FixLength(length).ShouldBe(result);
+    }
+
+    /// <summary>
+    /// 将长度修正为不小于指定值的最近的大于或等于2的幂，如length=7，则返回值为8；length=12，则返回16。
+    /// </summary>
+    /// <param name="length">输入值。</param>
+    /// <returns>修正后的长度。</returns>
+    private int FixLength(int length)
+    {
+        if (length == 0)
+            return 1;
+        var powerOfTwo = 2; // 2的幂等
+        var bitIndex = 2;   // 位索引
+        while (powerOfTwo < length)
+        {
+            powerOfTwo = 1 << bitIndex; // 计算2的幂
+            bitIndex++;                 // 递增位索引
+        }
+        return powerOfTwo;
+    }
+
+    [Fact]
+    public void Test_Repeat()
+    {
+        var result = Repeat(" ", 31);
+        Output.WriteLine($"A{result}A");
+    }
+
+    private string Repeat(string character, int num) => new(character.ToCharArray()[0], num);
 }
 
 public class BingLogModel

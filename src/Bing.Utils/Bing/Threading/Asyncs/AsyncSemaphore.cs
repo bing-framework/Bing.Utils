@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Bing.Extensions;
+﻿using Bing.Extensions;
 
 namespace Bing.Threading.Asyncs;
 
@@ -17,7 +15,7 @@ public class AsyncSemaphore
     /// <summary>
     /// 等待队列
     /// </summary>
-    private readonly Queue<TaskCompletionSource<bool>> _waiters = new Queue<TaskCompletionSource<bool>>();
+    private readonly Queue<TaskCompletionSource<bool>> _waiters = new();
 
     /// <summary>
     /// 当前计数器

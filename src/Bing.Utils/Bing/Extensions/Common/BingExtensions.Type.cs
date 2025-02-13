@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Collections;
 using Bing.Reflection;
 
 // ReSharper disable once CheckNamespace
@@ -19,7 +15,7 @@ public static partial class BingExtensions
     /// 是否可空类型
     /// </summary>
     /// <param name="type">类型</param>
-    public static bool IsNullableType(this Type type) => type != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+    public static bool IsNullableType(this Type type) => TypeJudgment.IsNullableType(type);
 
     /// <summary>
     /// 是否可空类型

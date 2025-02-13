@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
+﻿using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace Bing.Drawing;
@@ -10,6 +8,11 @@ namespace Bing.Drawing;
 /// </summary>
 public static partial class ImageHelper
 {
+    /// <summary>
+    /// 图片DataUrl正则表达式
+    /// </summary>
+    internal static readonly Regex ImageDataUrl = new(@"^data\:(?<MIME>image\/(bmp|emf|exif|gif|icon|jpeg|png|tiff|wmf))\;base64\,(?<DATA>.+)");
+
     #region FromFile(从指定文件创建图片)
 
     /// <summary>
@@ -55,21 +58,28 @@ public static partial class ImageHelper
     /// <param name="base64String">Base64字符串</param>
     public static Image FromBase64String(string base64String)
     {
-        var bytes = Convert.FromBase64String(GetBase64String(base64String));
+        var bytes = Convert.FromBase64String(base64String);
         using var ms = new MemoryStream(bytes);
         return Image.FromStream(ms);
     }
 
+    #endregion
+
+    #region FromDataUrl(从指定DataUrl字符串创建图片)
+
     /// <summary>
-    /// 获取真正的图片Base64数据。
-    /// 即去掉data:image/jpg;base64,这样的格式
+    /// 从指定DataUrl字符串创建图片。<br />
+    /// 格式：data:image/png;base64,base64String
     /// </summary>
-    /// <param name="base64String">带前缀的Base64图片字符串</param>
-    private static string GetBase64String(string base64String)
+    /// <param name="dataUrl">DataUrl字符串</param>
+    public static Image FromDataUrl(string dataUrl)
     {
-        var parttern = "^(data:image/.*?;base64,).*?$";
-        var match = Regex.Match(base64String, parttern);
-        return base64String.Replace(match.Groups[1].ToString(), "");
+        if (string.IsNullOrWhiteSpace(dataUrl))
+            return default;
+        var match = ImageDataUrl.Match(dataUrl);
+        if (!match.Success)
+            return default;
+        return FromBase64String(match.Groups["DATA"].Value);
     }
 
     #endregion

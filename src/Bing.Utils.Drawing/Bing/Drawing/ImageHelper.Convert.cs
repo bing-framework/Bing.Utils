@@ -1,7 +1,5 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 
 namespace Bing.Drawing;
 
@@ -13,39 +11,16 @@ public static partial class ImageHelper
     #region ToBytes(将图像转换为字节数组)
 
     /// <summary>
-    /// 将图像转换为字节数组
-    /// </summary>
-    /// <param name="bitmap">图像</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static byte[] ToBytes(Bitmap bitmap)
-    {
-        if (bitmap == null)
-            throw new ArgumentNullException(nameof(bitmap));
-        using (var newBitmap = new Bitmap(bitmap))
-        {
-            using (var ms = new MemoryStream())
-            {
-                var format = newBitmap.RawFormat;
-                if (ImageFormat.MemoryBmp.Equals(format))
-                    format = ImageFormat.Bmp;
-                newBitmap.Save(ms, format);
-                return ms.ToArray();
-            }
-        }
-    }
-
-    /// <summary>
     /// 将图像转换成字节数组
     /// </summary>
     /// <param name="image">图像</param>
     /// <param name="format">图像格式</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static byte[] ToBytes(Image image, ImageFormat format)
+    public static byte[] ToBytes(Image image, ImageFormat format = default)
     {
         if (image == null)
             throw new ArgumentNullException(nameof(image));
-        if (format == null)
-            throw new ArgumentNullException(nameof(format));
+        format ??= image.RawFormat;
         using var ms = new MemoryStream();
         image.Save(ms, format);
         return ms.ToArray();
@@ -84,26 +59,17 @@ public static partial class ImageHelper
     /// <summary>
     /// 将图像转换为base64字符串
     /// </summary>
-    /// <param name="image">图片</param>
-    /// <param name="appendPrefix">是否追加前缀</param>
-    public static string ToBase64String(Image image, bool appendPrefix = false) => ToBase64String(image, image.RawFormat, appendPrefix);
-
-    /// <summary>
-    /// 将图像转换为base64字符串
-    /// </summary>
     /// <param name="image">图像</param>
     /// <param name="imageFormat">图像格式</param>
-    /// <param name="appendPrefix">是否追加前缀</param>
-    public static string ToBase64String(Image image, ImageFormat imageFormat, bool appendPrefix = false)
+    /// <exception cref="ArgumentNullException"></exception>
+    public static string ToBase64String(Image image, ImageFormat imageFormat = default)
     {
+        if (image is null)
+            throw new ArgumentNullException(nameof(image));
+        imageFormat ??= image.RawFormat;
         using var ms = new MemoryStream();
         image.Save(ms, imageFormat);
-        var bytes = new byte[ms.Length];
-        ms.Position = 0;
-        ms.Read(bytes, 0, (int)ms.Length);
-        var result = Convert.ToBase64String(bytes);
-        if (appendPrefix)
-            result = $"data:image/{imageFormat.ToString().ToLower()};base64,{result}";
+        var result = Convert.ToBase64String(ms.ToArray());
         return result;
     }
 
@@ -111,23 +77,56 @@ public static partial class ImageHelper
     /// 将图像转换为Base64字符串
     /// </summary>
     /// <param name="bitmap">图像</param>
-    /// <param name="appendPrefix">是否追加前缀</param>
-    public static string ToBase64String(Bitmap bitmap, bool appendPrefix = false) => ToBase64String(bitmap, bitmap.RawFormat, appendPrefix);
+    /// <param name="imageFormat">图片格式</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static string ToBase64String(Bitmap bitmap, ImageFormat imageFormat = default)
+    {
+        if (bitmap is null)
+            throw new ArgumentNullException(nameof(bitmap));
+        imageFormat ??= bitmap.RawFormat;
+        using var ms = new MemoryStream();
+        bitmap.Save(ms, imageFormat);
+        return Convert.ToBase64String(ms.ToArray());
+    }
+
+    #endregion
+
+    #region ToDataUrl(转换为DataUrl)
 
     /// <summary>
-    /// 将图像转换为Base64字符串
+    /// 将图像转换为转换为DataUrl。<br />
+    /// 格式：data:image/png;base64,base64String
     /// </summary>
     /// <param name="bitmap">图像</param>
     /// <param name="imageFormat">图片格式</param>
-    /// <param name="appendPrefix">是否追加前缀</param>
-    public static string ToBase64String(Bitmap bitmap, ImageFormat imageFormat, bool appendPrefix = false)
+    /// <exception cref="ArgumentNullException"></exception>
+    public static string ToDataUrl(Bitmap bitmap, ImageFormat imageFormat = default)
     {
+        if (bitmap is null)
+            throw new ArgumentNullException(nameof(bitmap));
+        imageFormat ??= bitmap.RawFormat;
         using var ms = new MemoryStream();
         bitmap.Save(ms, imageFormat);
         var result = Convert.ToBase64String(ms.ToArray());
-        if (appendPrefix)
-            result = $"data:image/{imageFormat.ToString().ToLower()};base64,{result}";
-        return result;
+        return $"data:image/{imageFormat.ToString().ToLower()};base64,{result}";
+    }
+
+    /// <summary>
+    /// 将图像转换为转换为DataUrl。<br />
+    /// 格式：data:image/png;base64,base64String
+    /// </summary>
+    /// <param name="image">图像</param>
+    /// <param name="imageFormat">图片格式</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static string ToDataUrl(Image image, ImageFormat imageFormat = default)
+    {
+        if (image is null)
+            throw new ArgumentNullException(nameof(image));
+        imageFormat ??= image.RawFormat;
+        using var ms = new MemoryStream();
+        image.Save(ms, imageFormat);
+        var result = Convert.ToBase64String(ms.ToArray());
+        return $"data:image/{imageFormat.ToString().ToLower()};base64,{result}";
     }
 
     #endregion

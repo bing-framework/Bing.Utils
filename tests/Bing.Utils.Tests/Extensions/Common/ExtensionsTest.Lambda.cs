@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq.Expressions;
-using Bing.Expressions;
+﻿using Bing.Expressions;
 using Bing.Tests.Samples;
-using Xunit.Abstractions;
-using Xunit;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Utils.Tests.Extensions;
@@ -65,7 +61,7 @@ public partial class ExtensionsTest
     {
         //arrange
         Expression<Func<string, bool>> where1 = s => s.StartsWith("a");
-        Expression<Func<string, bool>> where2 = S => S.Length > 10;
+        Expression<Func<string, bool>> where2 = s => s.Length > 10;
         Func<string, bool> func = where1.And(where2).Compile();
 
         //act assert
@@ -82,6 +78,23 @@ public partial class ExtensionsTest
         var andExpression = _expression1.Or(_expression2).ToLambda<Func<Sample, bool>>(_parameterExpression);
         Expression<Func<Sample, bool>> expected = t => t.StringValue.Contains("A") || t.NullableDateValue.Value.Year > 2000;
         Assert.Equal(expected.ToString(), andExpression.ToString());
+    }
+
+    /// <summary>
+    /// 测试 - Or方法
+    /// </summary>
+    [Fact]
+    public void Test_Or_1()
+    {
+        //arrange
+        Expression<Func<string, bool>> where1 = s => s.StartsWith("a");
+        Expression<Func<string, bool>> where2 = s => s.Length > 10;
+        Func<string, bool> func = where1.Or(where2).Compile();
+
+        //act assert
+        Assert.True(func("abc"));
+        Assert.True(func("abcd12345678"));
+        Assert.False(func("bcd12348"));
     }
 
     /// <summary>

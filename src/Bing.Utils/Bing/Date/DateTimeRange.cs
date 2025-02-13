@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 
 namespace Bing.Date;
 
@@ -11,20 +10,58 @@ public interface IDateTimeRange
     /// <summary>
     /// 获取或设置 起始时间
     /// </summary>
-    DateTime StartTime { get; set; }
+    DateTime StartTime { get; }
 
     /// <summary>
     /// 获取或设置 结束时间
     /// </summary>
-    DateTime EndTime { get; set; }
+    DateTime EndTime { get; }
 }
 
 /// <summary>
 /// 时间范围
 /// </summary>
 [Serializable]
-public class DateTimeRange : IDateTimeRange
+[DebuggerDisplay("{StartTime} {DefaultSeparator} {EndTime}")]
+public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, IComparable<DateTimeRange>
 {
+    #region 常量
+
+    /// <summary>
+    /// 空实例
+    /// </summary>
+    public static readonly DateTimeRange Empty = new(DateTime.MinValue, DateTime.MaxValue);
+
+    /// <summary>
+    /// 默认分隔符
+    /// </summary>
+    public const string DefaultSeparator = " - ";
+
+    #endregion
+
+    #region 字段
+
+    /// <summary>
+    /// 当前时间
+    /// </summary>
+    private static DateTime Now => DateTime.Now;
+
+    /// <summary>
+    /// 周列表
+    /// </summary>
+    private static DayOfWeek[] Weeks =>
+    [
+        DayOfWeek.Sunday,
+        DayOfWeek.Monday,
+        DayOfWeek.Tuesday,
+        DayOfWeek.Wednesday,
+        DayOfWeek.Thursday,
+        DayOfWeek.Friday,
+        DayOfWeek.Saturday
+    ];
+
+    #endregion
+
     #region 构造函数
 
     /// <summary>
@@ -37,12 +74,27 @@ public class DateTimeRange : IDateTimeRange
     /// <summary>
     /// 初始化一个<see cref="DateTimeRange"/>类型的实例
     /// </summary>
-    /// <param name="startTime">起始时间</param>
-    /// <param name="endTime">结束时间</param>
-    public DateTimeRange(DateTime startTime, DateTime endTime)
+    /// <param name="start">起始时间</param>
+    /// <param name="end">结束时间</param>
+    public DateTimeRange(DateTime start, DateTime end)
     {
-        StartTime = startTime;
-        EndTime = endTime;
+        StartTime = start < end ? start : end;
+        UtcStartTime = StartTime != DateTime.MinValue ? StartTime.ToUniversalTime() : StartTime;
+        EndTime = end > start ? end : start;
+        UtcEndTime = EndTime != DateTime.MaxValue ? EndTime.ToUniversalTime() : EndTime;
+    }
+
+    /// <summary>
+    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// </summary>
+    /// <param name="start">起始时间</param>
+    /// <param name="end">结束时间</param>
+    public DateTimeRange(DateTimeOffset start, DateTimeOffset end)
+    {
+        StartTime = (start = start < end ? start : end).DateTime;
+        UtcStartTime = start.UtcDateTime;
+        EndTime = (end = end > start ? end : start).DateTime;
+        UtcEndTime = end.UtcDateTime;
     }
 
     /// <summary>
@@ -55,29 +107,59 @@ public class DateTimeRange : IDateTimeRange
 
     #endregion
 
+    #region 属性
+
     /// <summary>
     /// 获取或设置 起始时间
     /// </summary>
-    public DateTime StartTime { get; set; }
+    public DateTime StartTime { get; }
 
     /// <summary>
     /// 获取或设置 结束时间
     /// </summary>
-    public DateTime EndTime { get; set; }
+    public DateTime EndTime { get; }
 
     /// <summary>
-    /// 当前时间
+    /// 获取 UTC起始时间
     /// </summary>
-    private static DateTime Now => DateTime.Now;
+    public DateTime UtcStartTime { get; }
 
     /// <summary>
-    /// 周列表
+    /// 获取 UTC结束时间
     /// </summary>
-    private static DayOfWeek[] Weeks => new[]
-    {
-        DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday,
-        DayOfWeek.Friday, DayOfWeek.Saturday
-    };
+    public DateTime UtcEndTime { get; }
+
+    /// <summary>
+    /// 相差时间
+    /// </summary>
+    public TimeSpan TimeSpan => EndTime - StartTime;
+
+    /// <summary>
+    /// 总天数
+    /// </summary>
+    public double TotalDays => TimeSpan.TotalDays;
+
+    /// <summary>
+    /// 总小时数
+    /// </summary>
+    public double TotalHours => TimeSpan.TotalHours;
+
+    /// <summary>
+    /// 总分钟数
+    /// </summary>
+    public double TotalMinutes => TimeSpan.TotalMinutes;
+
+    /// <summary>
+    /// 总秒数
+    /// </summary>
+    public double TotalSeconds => TimeSpan.TotalSeconds;
+
+    /// <summary>
+    /// 总毫秒数
+    /// </summary>
+    public double TotalMilliseconds => TimeSpan.TotalMilliseconds;
+
+    #endregion
 
     #region Yesterday(昨天时间范围)
 
@@ -344,15 +426,6 @@ public class DateTimeRange : IDateTimeRange
 
     #endregion
 
-    #region ToString(输出字符串)
-
-    /// <summary>
-    /// 输出字符串
-    /// </summary>
-    public override string ToString() => $"[{StartTime} - {EndTime}]";
-
-    #endregion
-
     #region GetDays(获取相差天数)
 
     /// <summary>
@@ -414,14 +487,23 @@ public class DateTimeRange : IDateTimeRange
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
-    public bool HasIntersect(DateTime start, DateTime end)
-    {
-        return HasIntersect(new DateTimeRange(start, end));
-    }
+    public bool HasIntersect(DateTime start, DateTime end) => HasIntersect(new DateTimeRange(start, end));
 
     #endregion
 
     #region Contains(是否包含指定时间范围)
+
+    /// <summary>
+    /// 判断指定的时间是否在此时间范围内
+    /// </summary>
+    /// <param name="time">需要判断的时间</param>
+    /// <returns>如果指定的时间在此时间范围内，返回 true，否则返回 false。</returns>
+    public bool Contains(DateTime time)
+    {
+        if (time.Kind == DateTimeKind.Utc)
+            return time >= UtcStartTime && time <= UtcEndTime;
+        return time >= StartTime && time <= EndTime;
+    }
 
     /// <summary>
     /// 是否包含指定时间范围
@@ -437,10 +519,7 @@ public class DateTimeRange : IDateTimeRange
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
-    public bool Contains(DateTime start, DateTime end)
-    {
-        return Contains(new DateTimeRange(start, end));
-    }
+    public bool Contains(DateTime start, DateTime end) => Contains(new DateTimeRange(start, end));
 
     #endregion
 
@@ -460,10 +539,7 @@ public class DateTimeRange : IDateTimeRange
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
-    public bool In(DateTime start, DateTime end)
-    {
-        return In(new DateTimeRange(start, end));
-    }
+    public bool In(DateTime start, DateTime end) => In(new DateTimeRange(start, end));
 
     #endregion
 
@@ -521,10 +597,101 @@ public class DateTimeRange : IDateTimeRange
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
-    public DateTimeRange Union(DateTime start, DateTime end)
-    {
-        return Union(new DateTimeRange(start, end));
-    }
+    public DateTimeRange Union(DateTime start, DateTime end) => Union(new DateTimeRange(start, end));
 
     #endregion
+
+    #region ToString(输出字符串)
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <returns>yyyy-MM-dd HH:mm:ss - yyyy-MM-dd HH:mm:ss</returns>
+    public override string ToString() => ToString("yyyy-MM-dd HH:mm:ss");
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    /// <returns>yyyy-MM-dd HH:mm:ss - yyyy-MM-dd HH:mm:ss</returns>
+    public string ToString(string format) => ToString(format, DefaultSeparator);
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    /// <param name="separator">分隔符</param>
+    public string ToString(string format, string separator) => $"{StartTime.ToString(format)}{separator}{EndTime.ToString(format)}";
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    /// <param name="formatProvider">格式化提供程序</param>
+    public string ToString(string format, IFormatProvider formatProvider) => ToString(format, DefaultSeparator, formatProvider);
+
+    /// <summary>
+    /// 输出字符串
+    /// </summary>
+    /// <param name="format">格式</param>
+    /// <param name="separator">分隔符</param>
+    /// <param name="formatProvider">格式化提供程序</param>
+    public string ToString(string format, string separator, IFormatProvider formatProvider) => $"{StartTime.ToString(format, formatProvider)}{separator}{EndTime.ToString(format, formatProvider)}";
+
+    #endregion
+
+    /// <summary>
+    /// 判断两个 DateTimeRange 实例是否相等
+    /// </summary>
+    /// <param name="left">第一个 DateTimeRange 实例</param>
+    /// <param name="right">第二个 DateTimeRange 实例</param>
+    /// <returns>如果两个 DateTimeRange 实例的开始时间和结束时间都相等，返回 true，否则返回 false。</returns>
+    public static bool operator ==(DateTimeRange left, DateTimeRange right)
+    {
+        if (ReferenceEquals(left, right))
+            return true;
+        if ((object)left == null || (object)right == null)
+            return false;
+        return left.StartTime == right.StartTime && left.EndTime == right.EndTime;
+    }
+
+    /// <summary>
+    /// 判断两个 DateTimeRange 实例是否不相等
+    /// </summary>
+    /// <param name="left">第一个 DateTimeRange 实例</param>
+    /// <param name="right">第二个 DateTimeRange 实例</param>
+    /// <returns>如果两个 DateTimeRange 实例的开始时间和结束时间都不相等，返回 true，否则返回 false。</returns>
+    public static bool operator !=(DateTimeRange left, DateTimeRange right) => !(left == right);
+
+    /// <inheritdoc />
+    public int CompareTo(DateTimeRange other)
+    {
+        if (other == null)
+            return 1;
+        if (Equals(other))
+            return 0;
+        return StartTime.CompareTo(other.EndTime);
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+        if (obj == null)
+            return false;
+        var other = obj as DateTimeRange;
+        if ((object)other == null)
+            return false;
+        return (StartTime == other.StartTime) && (EndTime == other.EndTime);
+    }
+
+    /// <inheritdoc />
+    public bool Equals(DateTimeRange other)
+    {
+        if ((object)other == null)
+            return false;
+        return StartTime == other.StartTime && EndTime == other.EndTime;
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode() => (StartTime.Ticks + EndTime.Ticks).GetHashCode();
 }

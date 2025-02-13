@@ -159,4 +159,7 @@
   <data name="ParameterCheck_NotNullOrEmpty_String" xml:space="preserve">
     <value>参数“{0}”不能为空引用或空字符串。</value>
   </data>
+  <data name="TypeNotEnum" xml:space="preserve">
+    <value>类型 {0} 不是枚举</value>
+  </data>
 </root>

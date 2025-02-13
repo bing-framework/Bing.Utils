@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.IO.Compression;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO.Compression;
 
 namespace Bing.Helpers;
 
@@ -57,14 +53,12 @@ public static partial class GZip
     /// <param name="buffer">字节流</param>
     public static byte[] Compress(byte[] buffer)
     {
-        if (buffer == null)
-            return null;
-        using (var ms = new MemoryStream())
-        {
-            using (var zip = new GZipStream(ms, CompressionMode.Compress, true))
-                zip.Write(buffer, 0, buffer.Length);
-            return ms.ToArray();
-        }
+        if (buffer == null|| buffer.Length == 0)
+            return Array.Empty<byte>();
+        using var ms = new MemoryStream();
+        using (var zip = new GZipStream(ms, CompressionMode.Compress, true))
+            zip.Write(buffer, 0, buffer.Length);
+        return ms.ToArray();
     }
 
     /// <summary>
@@ -73,14 +67,12 @@ public static partial class GZip
     /// <param name="buffer">字节流</param>
     public static async Task<byte[]> CompressAsync(byte[] buffer)
     {
-        if (buffer == null)
-            return null;
-        using (var ms = new MemoryStream())
-        {
-            using (var zip = new GZipStream(ms, CompressionMode.Compress, true))
-                await zip.WriteAsync(buffer, 0, buffer.Length);
-            return ms.ToArray();
-        }
+        if (buffer == null || buffer.Length == 0)
+            return Array.Empty<byte>();
+        using var ms = new MemoryStream();
+        using (var zip = new GZipStream(ms, CompressionMode.Compress, true))
+            await zip.WriteAsync(buffer, 0, buffer.Length);
+        return ms.ToArray();
     }
 
     /// <summary>
@@ -90,7 +82,7 @@ public static partial class GZip
     public static byte[] Compress(Stream stream)
     {
         if (stream == null || stream.Length == 0)
-            return null;
+            return Array.Empty<byte>();
         return Compress(StreamToBytes(stream));
     }
 
@@ -101,7 +93,7 @@ public static partial class GZip
     public static async Task<byte[]> CompressAsync(Stream stream)
     {
         if (stream == null || stream.Length == 0)
-            return null;
+            return Array.Empty<byte>();
         return await CompressAsync(await StreamToBytesAsync(stream));
     }
 
@@ -112,9 +104,9 @@ public static partial class GZip
     private static byte[] StreamToBytes(Stream stream)
     {
         stream.Seek(0, SeekOrigin.Begin);
-        var buffer = new byte[stream.Length];
-        stream.Read(buffer, 0, buffer.Length);
-        return buffer;
+        using var ms = new MemoryStream();
+        stream.CopyTo(ms);
+        return ms.ToArray();
     }
 
     /// <summary>
@@ -124,9 +116,9 @@ public static partial class GZip
     private static async Task<byte[]> StreamToBytesAsync(Stream stream)
     {
         stream.Seek(0, SeekOrigin.Begin);
-        var buffer = new byte[stream.Length];
-        await stream.ReadAsync(buffer, 0, buffer.Length);
-        return buffer;
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        return ms.ToArray();
     }
 
     #endregion
@@ -142,14 +134,10 @@ public static partial class GZip
         if (string.IsNullOrWhiteSpace(content))
             return string.Empty;
         var buffer = Convert.FromBase64String(content);
-        using (var ms = new MemoryStream(buffer))
-        {
-            using (var zip = new GZipStream(ms, CompressionMode.Decompress))
-            {
-                using (var reader = new StreamReader(zip))
-                    return reader.ReadToEnd();
-            }
-        }
+        using var ms = new MemoryStream(buffer);
+        using var zip = new GZipStream(ms, CompressionMode.Decompress);
+        using var reader = new StreamReader(zip);
+        return reader.ReadToEnd();
     }
 
     /// <summary>
@@ -161,14 +149,10 @@ public static partial class GZip
         if (string.IsNullOrWhiteSpace(content))
             return string.Empty;
         var buffer = Convert.FromBase64String(content);
-        using (var ms = new MemoryStream(buffer))
-        {
-            using (var zip = new GZipStream(ms, CompressionMode.Decompress))
-            {
-                using (var reader = new StreamReader(zip))
-                    return await reader.ReadToEndAsync();
-            }
-        }
+        using var ms = new MemoryStream(buffer);
+        using var zip = new GZipStream(ms, CompressionMode.Decompress);
+        using var reader = new StreamReader(zip);
+        return await reader.ReadToEndAsync();
     }
 
     /// <summary>
@@ -177,8 +161,8 @@ public static partial class GZip
     /// <param name="buffer">字节流</param>
     public static byte[] Decompress(byte[] buffer)
     {
-        if (buffer == null)
-            return null;
+        if (buffer == null || buffer.Length == 0)
+            return Array.Empty<byte>();
         return Decompress(new MemoryStream(buffer));
     }
 
@@ -196,12 +180,10 @@ public static partial class GZip
     public static byte[] Decompress(Stream stream, Encoding encoding)
     {
         if (stream == null || stream.Length == 0)
-            return null;
-        using (var zip = new GZipStream(stream, CompressionMode.Decompress))
-        {
-            using (var reader = new StreamReader(zip))
-                return encoding.GetBytes(reader.ReadToEnd());
-        }
+            return Array.Empty<byte>();
+        using var zip = new GZipStream(stream, CompressionMode.Decompress);
+        using var reader = new StreamReader(zip);
+        return encoding.GetBytes(reader.ReadToEnd());
     }
 
     #endregion

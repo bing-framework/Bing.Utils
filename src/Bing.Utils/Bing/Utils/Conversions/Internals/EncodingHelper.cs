@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Bing.Utils.Conversions.Internals;
+﻿namespace Bing.Utils.Conversions.Internals;
 
 /// <summary>
 /// 编码操作辅助类

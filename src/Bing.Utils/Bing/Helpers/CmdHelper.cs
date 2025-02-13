@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Bing.Helpers;
 
@@ -46,7 +43,7 @@ public class CmdHelper
     private static void InitProcess(Process process, string cmdPath)
     {
         if (cmdPath == "cmd.exe")
-            cmdPath = Path.Combine(Environment.SystemDirectory, cmdPath);
+            cmdPath = Path.Combine(System.Environment.SystemDirectory, cmdPath);
         process.StartInfo.FileName = cmdPath;
         process.StartInfo.UseShellExecute = false; // 是否使用操作系统shell启动
         process.StartInfo.RedirectStandardInput = true; // 是否接受来自调用程序的输入信息
@@ -119,7 +116,7 @@ public class CmdHelper
         /// <summary>
         /// 由换行符分割的命令输出数组
         /// </summary>
-        public string[] Lines => Output?.Split(Environment.NewLine.ToCharArray());
+        public string[] Lines => Output?.Split(Env.NewLine.ToCharArray());
 
         /// <summary>
         /// 初始化一个<see cref="BashResult"/>类型的实例
@@ -129,8 +126,8 @@ public class CmdHelper
         /// <param name="exitCode">命令的退出代码</param>
         internal BashResult(string output, string errorMsg, int exitCode)
         {
-            Output = output?.TrimEnd(Environment.NewLine.ToCharArray());
-            ErrorMsg = errorMsg?.TrimEnd(Environment.NewLine.ToCharArray());
+            Output = output?.TrimEnd(Env.NewLine.ToCharArray());
+            ErrorMsg = errorMsg?.TrimEnd(Env.NewLine.ToCharArray());
             ExitCode = exitCode;
         }
     }
@@ -178,7 +175,7 @@ public class CmdHelper
         /// <summary>
         /// 由换行符分割的命令输出数组
         /// </summary>
-        public string[] Lines => Output?.Split(Environment.NewLine.ToCharArray());
+        public string[] Lines => Output?.Split(Env.NewLine.ToCharArray());
 
         /// <summary>
         /// 命令的退出代码
@@ -217,8 +214,8 @@ public class CmdHelper
                 bash.Start();
                 if (redirect)
                 {
-                    Output = bash.StandardOutput.ReadToEnd().TrimEnd(Environment.NewLine.ToCharArray());
-                    ErrorMsg = bash.StandardError.ReadToEnd().TrimEnd(Environment.NewLine.ToCharArray());
+                    Output = bash.StandardOutput.ReadToEnd().TrimEnd(Env.NewLine.ToCharArray());
+                    ErrorMsg = bash.StandardError.ReadToEnd().TrimEnd(Env.NewLine.ToCharArray());
                 }
                 else
                 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Security.Cryptography;
 using Bing.Extensions;
 using Bing.Helpers.Internal;
 
@@ -15,6 +12,31 @@ namespace Bing.Helpers;
 /// </summary>
 public static partial class Encrypt
 {
+#if NET
+    /// <summary>
+    /// 随机数生成器
+    /// </summary>
+    public static Random Random => Random.Shared;
+#else
+    /// <summary>
+    /// 随机数生成器
+    /// </summary>
+    [ThreadStatic]
+    private static Random? _random;
+
+    /// <summary>
+    /// 随机数生成器【线程安全】
+    /// </summary>
+    public static Random Random
+    {
+        get
+        {
+            _random ??= new();
+            return _random;
+        }
+    }
+#endif
+
     #region Md5加密
 
     /// <summary>
@@ -660,7 +682,11 @@ public static partial class Encrypt
     /// <param name="size">盐值长度</param>
     public static string CreateSalt(int size)
     {
+#if NET
+        var provider = RandomNumberGenerator.Create();
+#else
         var provider = new RNGCryptoServiceProvider();
+#endif
         var data = new byte[size];
         provider.GetBytes(data);
         return Convert.ToBase64String(data);

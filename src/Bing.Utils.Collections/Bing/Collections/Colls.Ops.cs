@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Bing.Collections;
+﻿namespace Bing.Collections;
 
 /// <summary>
 /// 集合工具

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.Drawing.SkiaSharp</AssemblyName>
+		<PackageId>Bing.Utils.Drawing.SkiaSharp</PackageId>
+		<Description>Bing.Utils.Drawing.SkiaSharp是Bing应用框架的图片操作类库。基于 SkiaSharp 封装的类库</Description>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.props" />
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="SkiaSharp" Version="2.88.6" />
+	</ItemGroup>
+
+</Project>

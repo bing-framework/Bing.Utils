@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Bing.Threading.Locks;
+﻿namespace Bing.Threading.Locks;
 
 /// <summary>
 /// 读写锁释放器
@@ -23,8 +20,7 @@ public class ReaderWriteLockDisposable : IDisposable
     /// </summary>
     /// <param name="rwLock">读写锁</param>
     /// <param name="readerWriteLockType">读写锁类型</param>
-    public ReaderWriteLockDisposable(ReaderWriterLockSlim rwLock,
-        ReaderWriteLockType readerWriteLockType = ReaderWriteLockType.Write)
+    public ReaderWriteLockDisposable(ReaderWriterLockSlim rwLock, ReaderWriteLockType readerWriteLockType = ReaderWriteLockType.Write)
     {
         _rwLock = rwLock;
         _readerWriteLockType = readerWriteLockType;

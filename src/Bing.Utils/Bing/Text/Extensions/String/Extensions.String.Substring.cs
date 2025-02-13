@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 // ReSharper disable once CheckNamespace
 namespace Bing.Text;
 
@@ -9,41 +8,11 @@ namespace Bing.Text;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// 截断字符串。子字符串从指定字符串之后开始
+    /// 从字符串开始处获取指定长度的子字符串
     /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="startText">起始字符串</param>
-    public static string Substring(this string text, string startText)
-    {
-        var index = text.IndexOf(startText, StringComparison.Ordinal);
-        if (index == -1)
-            throw new ArgumentException($"Not found: '{startText}'.");
-        return text.Substring(index);
-    }
-
-    /// <summary>
-    /// 截断字符串。子字符串从指定字符串之前开始
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="from">开始字符串</param>
-    public static string SubstringFrom(this string text, string from)
-    {
-        if (string.IsNullOrEmpty(text))
-            return string.Empty;
-        var index = text.IndexOfIgnoreCase(from);
-        return index < 0 ? string.Empty : text.Substring(index + from.Length);
-    }
-
-    /// <summary>
-    /// 截断字符串。子字符串从0开始到指定字符串之前
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="to">结尾字符串</param>
-    public static string SubstringTo(this string text, string to)
-    {
-        if (string.IsNullOrEmpty(text))
-            return string.Empty;
-        var index = text.IndexOfIgnoreCase(to);
-        return index < 0 ? string.Empty : text.Substring(0, index);
-    }
+    /// <param name="text">原始字符串</param>
+    /// <param name="length">需要获取的子字符串的长度</param>
+    /// <returns>如果原始字符串的长度大于指定长度，则返回原始字符串的前length个字符组成的子字符串；否则，返回原始字符串。如果原始字符串为空或仅包含空格，则返回空字符串。</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Take(this string text, int length) => Strings.Take(text, length);
 }

@@ -1,0 +1,17 @@
+global using System;
+global using System.Collections;
+global using System.Collections.Generic;
+global using System.ComponentModel;
+global using System.ComponentModel.DataAnnotations;
+global using System.IO;
+global using System.Linq;
+global using System.Reflection;
+global using System.Text;
+global using System.Text.RegularExpressions;
+global using System.Threading.Tasks;
+global using Bing;
+global using Bing.Utils;
+global using BingUtilsUT.Samples;
+global using Shouldly;
+global using Xunit;
+global using Xunit.Abstractions;

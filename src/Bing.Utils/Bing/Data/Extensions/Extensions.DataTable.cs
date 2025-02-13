@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Data;
@@ -16,10 +13,7 @@ public static partial class DataTableExtensions
     /// </summary>
     /// <typeparam name="T">类型</typeparam>
     /// <param name="dataTable">数据表</param>
-    public static IList<T> ToList<T>(this DataTable dataTable) where T : class, new()
-    {
-        return DataTableHelper.ToList<T>(dataTable);
-    }
+    public static IList<T> ToList<T>(this DataTable dataTable) where T : class, new() => DataTableHelper.ToList<T>(dataTable);
 
     /// <summary>
     /// 检查<see cref="DataTable"/>是否有数据行

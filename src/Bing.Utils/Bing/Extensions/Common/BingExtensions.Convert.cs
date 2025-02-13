@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Bing.Helpers;
+﻿using Bing.Helpers;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Extensions;
@@ -17,7 +14,7 @@ public static partial class BingExtensions
     /// 安全转换为字符串，去除两端空格，当值为null时返回""
     /// </summary>
     /// <param name="input">输入值</param>
-    public static string SafeString(this object input) => input == null ? string.Empty : input.ToString().Trim();
+    public static string SafeString(this object input) => input?.ToString()?.Trim() ?? string.Empty;
 
     #endregion
 
@@ -151,7 +148,7 @@ public static partial class BingExtensions
     /// 将字符串转换为蛇形策略
     /// </summary>
     /// <param name="str">字符串</param>
-    public static string ToSnakeCase(this string str) => Str.ToSnakeCase(str);
+    public static string ToSnakeCase(this string str) => Text.Str.ToSnakeCase(str);
 
     #endregion
 
@@ -161,7 +158,7 @@ public static partial class BingExtensions
     /// 将字符串转换为骆驼策略
     /// </summary>
     /// <param name="str">字符串</param>
-    public static string ToCamelCase(this string str) => Str.ToCamelCase(str);
+    public static string ToCamelCase(this string str) => Text.Str.ToCamelCase(str);
 
     #endregion
 }

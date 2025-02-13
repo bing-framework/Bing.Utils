@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.DependencyInjection</AssemblyName>
+		<PackageId>Bing.Utils.DependencyInjection</PackageId>
+		<Description>Bing.Utils.DependencyInjection是Bing应用框架的IOC组件操作类库，基于 Microsoft.Extensions.DependencyInjection 所封装的类库。</Description>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Folder Include="Bing\DependencyInjection\" />
+	</ItemGroup>
+
+	<Import Project="..\..\common.props" />
+
+</Project>

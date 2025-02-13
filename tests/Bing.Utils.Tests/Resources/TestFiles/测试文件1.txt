@@ -1,0 +1,180 @@
+parsers: # array
+  - reg: ^.*$
+  #删除服务商提供的策略组和规则
+    code: |
+      module.exports.parse = (raw, { yaml }) => {
+        const rawObj = yaml.parse(raw)
+        const groups = []
+        const rules = []
+        return yaml.stringify({ ...rawObj, 'proxy-groups': groups, rules })
+      } 
+
+    yaml:
+      prepend-proxy-groups:
+        - name: PROXY
+          type: select
+          proxies:
+            - URL-TEST
+            - LOAD-BALANCE
+            - SELECT
+            - DIRECT
+
+        - name: OTHER #规则未命中
+          type: select
+          proxies:
+            - PROXY
+            - DIRECT
+            
+        - name: AD
+          type: select
+          proxies:
+            - REJECT
+            - DIRECT
+            - PROXY
+               
+        - name: URL-TEST
+          type: url-test
+          url: http://www.gstatic.com/generate_204
+          interval: 60
+          lazy: true
+          tolerance: 100
+        
+        - name: LOAD-BALANCE
+          type: load-balance
+          url: http://www.gstatic.com/generate_204
+          interval: 60
+        
+        - name: SELECT
+          type: select
+          
+      commands:
+        - proxy-groups.(URL-TEST).proxies=[]proxyNames
+        - proxy-groups.(LOAD-BALANCE).proxies=[]proxyNames
+        - proxy-groups.(SELECT).proxies=[]proxyNames
+        
+        # 一些可能用到的正则过滤节点示例，使分组更细致
+        # []proxyNames|a                         # 包含a
+        # []proxyNames|^(.*)(a|b)+(.*)$          # 包含a或b
+        # []proxyNames|^(?=.*a)(?=.*b).*$        # 包含a和b
+        # []proxyNames|^((?!b).)*a((?!b).)*$     # 包含a且不包含b
+        # []proxyNames|^((?!b|c).)*a((?!b|c).)*$ # 包含a且不包含b或c
+
+      prepend-rules:
+        - RULE-SET,applications,DIRECT
+        - DOMAIN,clash.razord.top,DIRECT
+        - DOMAIN,yacd.haishan.me,DIRECT
+        - RULE-SET,private,DIRECT
+        - RULE-SET,reject,AD
+        - RULE-SET,icloud,DIRECT #
+        - RULE-SET,apple,DIRECT # 这三个为国内可直连地址，如果希望走代理改为PROXY
+        - RULE-SET,google,DIRECT # 
+        - RULE-SET,tld-not-cn,PROXY
+        - RULE-SET,gfw,PROXY
+        - RULE-SET,greatfire,PROXY
+        - RULE-SET,telegramcidr,PROXY
+        - RULE-SET,lancidr,DIRECT
+        - RULE-SET,cncidr,DIRECT
+        - GEOIP,CN,DIRECT
+        - RULE-SET,direct,DIRECT
+        - RULE-SET,proxy,OTHER
+        - MATCH,OTHER # 规则之外的
+
+      mix-proxy-providers:
+      mix-rule-providers: 
+        reject: # 广告域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
+          path: ./ruleset/reject.yaml
+          interval: 86400
+          
+        icloud: # iCloud 域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt"
+          path: ./ruleset/icloud.yaml
+          interval: 86400
+          
+        apple: # Apple 在中国大陆可直连的域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt"
+          path: ./ruleset/apple.yaml
+          interval: 86400
+          
+        google: # Google 在中国大陆可直连的域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt"
+          path: ./ruleset/google.yaml
+          interval: 86400
+          
+        proxy: # 代理域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt"
+          path: ./ruleset/proxy.yaml
+          interval: 86400
+          
+        direct: # 直连域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt"
+          path: ./ruleset/direct.yaml
+          interval: 86400
+          
+        private: # 私有网络专用域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt"
+          path: ./ruleset/private.yaml
+          interval: 86400
+          
+        gfw: # GFWList 域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt"
+          path: ./ruleset/gfw.yaml
+          interval: 86400
+          
+        greatfire: # GreatFire 域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/greatfire.txt"
+          path: ./ruleset/greatfire.yaml
+          interval: 86400
+          
+        tld-not-cn: # 非中国大陆使用的顶级域名列表
+          type: http
+          behavior: domain
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt"
+          path: ./ruleset/tld-not-cn.yaml
+          interval: 86400
+          
+        telegramcidr: # Telegram 使用的 IP 地址列表
+          type: http
+          behavior: ipcidr
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt"
+          path: ./ruleset/telegramcidr.yaml
+          interval: 86400
+          
+        cncidr: # 中国大陆 IP 地址列表
+          type: http
+          behavior: ipcidr
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt"
+          path: ./ruleset/cncidr.yaml
+          interval: 86400
+          
+        lancidr: # 局域网 IP 及保留 IP 地址列表
+          type: http
+          behavior: ipcidr
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt"
+          path: ./ruleset/lancidr.yaml
+          interval: 86400
+          
+        applications: # 需要直连的常见软件列表
+          type: http
+          behavior: classical
+          url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt"
+          path: ./ruleset/applications.yaml
+          interval: 86400

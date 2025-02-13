@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Date;
+﻿namespace Bing.Date;
 
 // 日期时间 - 更新
 public static partial class DateTimeExtensions

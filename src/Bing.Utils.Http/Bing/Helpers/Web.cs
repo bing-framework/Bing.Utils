@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
+﻿using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using Bing.Extensions;
-using Bing.Http.Clients;
 using Bing.IO;
 using Microsoft.AspNetCore.Http;
 #if !NETSTANDARD2_1
 using Microsoft.AspNetCore.Http.Extensions;
 #endif
 using HttpRequest = Microsoft.AspNetCore.Http.HttpRequest;
-using WebClient = Bing.Http.Clients.WebClient;
 
 namespace Bing.Helpers;
 
@@ -47,16 +38,16 @@ public static class Web
 
     #region Environment(宿主环境)
 
-#if NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
+#if NETCOREAPP3_0_OR_GREATER
         /// <summary>
         /// 宿主环境
         /// </summary>
         public static Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment { get; set; }
 #elif NETSTANDARD2_0
-        /// <summary>
-        /// 宿主环境
-        /// </summary>
-        public static Microsoft.AspNetCore.Hosting.IHostingEnvironment Environment { get; set; }
+    /// <summary>
+    /// 宿主环境
+    /// </summary>
+    public static Microsoft.AspNetCore.Hosting.IHostingEnvironment Environment { get; set; }
 #endif
     #endregion
 
@@ -152,7 +143,6 @@ public static class Web
         get
         {
             Request.EnableBuffering();
-            //Request.EnableRewind();
             return FileHelper.ToString(Request.Body, isCloseStream: false);
         }
     }
@@ -167,95 +157,11 @@ public static class Web
     /// </summary>
     public static string Url => throw new NotSupportedException($"{nameof(Url)} 不支持在 NETSTANDARD2_1");
 #else
-        /// <summary>
-        /// 请求地址
-        /// </summary>
-        public static string Url => HttpContext?.Request?.GetDisplayUrl();
+    /// <summary>
+    /// 请求地址
+    /// </summary>
+    public static string Url => Request?.GetDisplayUrl();
 #endif
-    #endregion
-
-    #region IP(客户端IP地址)
-
-    /// <summary>
-    /// IP地址
-    /// </summary>
-    private static string _ip;
-
-    /// <summary>
-    /// 设置IP地址
-    /// </summary>
-    /// <param name="ip">IP地址</param>
-    public static void SetIp(string ip) => _ip = ip;
-
-    /// <summary>
-    /// 重置IP地址
-    /// </summary>
-    public static void ResetIp() => _ip = null;
-
-    /// <summary>
-    /// 客户端IP地址
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    public static string IP
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(_ip) == false)
-                return _ip;
-            var list = new[] { "127.0.0.1", "::1" };
-            var result = HttpContext?.Connection?.RemoteIpAddress.SafeString();
-            if (string.IsNullOrWhiteSpace(result) || list.Contains(result))
-                result = Sys.IsWindows ? GetLanIP() : GetLanIP(NetworkInterfaceType.Ethernet);
-            return result;
-        }
-    }
-
-    /// <summary>
-    /// 获取局域网IP
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    private static string GetLanIP()
-    {
-        foreach (var hostAddress in Dns.GetHostAddresses(Dns.GetHostName()))
-        {
-            if (hostAddress.AddressFamily == AddressFamily.InterNetwork)
-                return hostAddress.ToString();
-        }
-        return string.Empty;
-    }
-
-    /// <summary>
-    /// 获取局域网IP。
-    /// 参考地址：https://stackoverflow.com/questions/6803073/get-local-ip-address/28621250#28621250
-    /// 解决OSX下获取IP地址产生"Device not configured"的问题
-    /// </summary>
-    /// <param name="type">网络接口类型</param>
-    // ReSharper disable once InconsistentNaming
-    private static string GetLanIP(NetworkInterfaceType type)
-    {
-        try
-        {
-            foreach (var item in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                if (item.NetworkInterfaceType != type || item.OperationalStatus != OperationalStatus.Up)
-                    continue;
-                var ipProperties = item.GetIPProperties();
-                if (ipProperties.GatewayAddresses.FirstOrDefault() == null)
-                    continue;
-                foreach (var ip in ipProperties.UnicastAddresses)
-                {
-                    if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
-                        return ip.Address.ToString();
-                }
-            }
-        }
-        catch
-        {
-            return string.Empty;
-        }
-        return string.Empty;
-    }
-
     #endregion
 
     #region Host(主机)
@@ -298,32 +204,24 @@ public static class Web
     #endregion
 
     #region RootPath(根路径)
-#if NETSTANDARD2_0|| NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
-        /// <summary>
-        /// 根路径
-        /// </summary>
-        public static string RootPath => Environment?.ContentRootPath;
-#else
+#if !NETSTANDARD2_1
+
     /// <summary>
     /// 根路径
     /// </summary>
-    public static string RootPath => throw new NotSupportedException($"{nameof(RootPath)} 不支持在 NETSTANDARD2_1");
+    public static string RootPath => Environment?.ContentRootPath;
 #endif
     #endregion
 
     #region WebRootPath(Web根路径)
 
-#if NETSTANDARD2_0|| NETSTANDARD2_0|| NETCOREAPP3_0 || NETCOREAPP3_1 || NET5_0
-        /// <summary>
-        /// Web根路径，即wwwroot
-        /// </summary>
-        public static string WebRootPath => Environment?.WebRootPath;
-#else
+#if !NETSTANDARD2_1
     /// <summary>
     /// Web根路径，即wwwroot
     /// </summary>
-    public static string WebRootPath => throw new NotSupportedException($"{nameof(WebRootPath)} 不支持在 NETSTANDARD2_1");
+    public static string WebRootPath => Environment?.WebRootPath;
 #endif
+
     #endregion
 
     #region ContentType(内容类型)
@@ -388,21 +286,6 @@ public static class Web
 
     #endregion
 
-    #region Client(Web客户端)
-
-    /// <summary>
-    /// Web客户端，用于发送Http请求
-    /// </summary>
-    public static WebClient Client() => new WebClient();
-
-    /// <summary>
-    /// Web客户端，用于发送Http请求
-    /// </summary>
-    /// <typeparam name="TResult">返回结果类型</typeparam>
-    public static WebClient<TResult> Client<TResult>() where TResult : class => new WebClient<TResult>();
-
-    #endregion
-
     #region GetFiles(获取客户端文件集合)
 
     /// <summary>
@@ -410,11 +293,16 @@ public static class Web
     /// </summary>
     public static List<IFormFile> GetFiles()
     {
-        var result = new List<IFormFile>();
-        var files = HttpContext.Request.Form.Files;
+        var files = HttpContext?.Request?.Form?.Files;
         if (files == null || files.Count == 0)
-            return result;
-        result.AddRange(files.Where(file => file?.Length > 0));
+            return new List<IFormFile>();
+
+        var result = new List<IFormFile>(files.Count);
+        foreach (var file in files)
+        {
+            if (file?.Length > 0)
+                result.Add(file);
+        }
         return result;
     }
 
@@ -425,10 +313,11 @@ public static class Web
     /// <summary>
     /// 获取客户端文件
     /// </summary>
+    /// <returns>第一个有效的客户端文件，如果没有则返回 null。</returns>
     public static IFormFile GetFile()
     {
         var files = GetFiles();
-        return files.Count == 0 ? null : files[0];
+        return files.FirstOrDefault();
     }
 
     #endregion
@@ -441,22 +330,16 @@ public static class Web
     /// <param name="name">参数名</param>
     public static string GetParam(string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(name) || Request == null)
             return string.Empty;
-        if (Request == null)
-            return string.Empty;
-        var result = string.Empty;
-        if (Request.Query != null)
-            result = Request.Query[name];
+
+        string result = Request.Query[name];
         if (string.IsNullOrWhiteSpace(result) == false)
             return result;
-        if (Request.HasFormContentType && Request.Form != null)
-            result = Request.Form[name];
+        result = Request.Form[name];
         if (string.IsNullOrWhiteSpace(result) == false)
             return result;
-        if (Request.Headers != null)
-            result = Request.Headers[name];
-        return result;
+        return Request.Headers[name];
     }
 
     #endregion
@@ -501,15 +384,19 @@ public static class Web
     private static string GetUpperEncode(string encode)
     {
         var result = new StringBuilder();
-        var index = int.MinValue;
         for (var i = 0; i < encode.Length; i++)
         {
-            var character = encode[i].ToString();
-            if (character == "%")
-                index = i;
-            if (i - index == 1 || i - index == 2)
-                character = character.ToUpper();
-            result.Append(character);
+            if (encode[i] == '%' && i + 2 < encode.Length)
+            {
+                result.Append('%');
+                result.Append(char.ToUpper(encode[i + 1]));
+                result.Append(char.ToUpper(encode[i + 2]));
+                i += 2;
+            }
+            else
+            {
+                result.Append(encode[i]);
+            }
         }
         return result.ToString();
     }
@@ -529,7 +416,7 @@ public static class Web
     /// </summary>
     /// <param name="url">url</param>
     /// <param name="encoding">字符编码</param>
-    public static string UrlDecode(string url, Encoding encoding) => HttpUtility.UrlDecode(url, encoding);
+    public static string UrlDecode(string url, Encoding encoding) => string.IsNullOrEmpty(url) ? string.Empty : HttpUtility.UrlDecode(url, encoding);
 
     #endregion
 
@@ -589,7 +476,6 @@ public static class Web
     public static async Task<string> GetBodyAsync()
     {
         Request.EnableBuffering();
-        //Request.EnableRewind();
         return await FileHelper.ToStringAsync(Request.Body, isCloseStream: false);
     }
 
@@ -602,7 +488,8 @@ public static class Web
     /// </summary>
     /// <param name="filePath">文件绝对路径</param>
     /// <param name="fileName">文件名。包含扩展名</param>
-    public static async Task DownloadFileAsync(string filePath, string fileName) => await DownloadFileAsync(filePath, fileName, Encoding.UTF8);
+    public static Task DownloadFileAsync(string filePath, string fileName) =>
+        DownloadFileAsync(filePath, fileName, Encoding.UTF8);
 
     /// <summary>
     /// 下载文件
@@ -612,15 +499,8 @@ public static class Web
     /// <param name="encoding">字符编码</param>
     public static async Task DownloadFileAsync(string filePath, string fileName, Encoding encoding)
     {
-        if(!File.Exists(filePath))
-            return;
-        var fileInfo = new FileInfo(filePath);
-        int fileSize = (int)fileInfo.Length;
-        using (var reader = new BinaryReader(fileInfo.Open(FileMode.Open)))
-        {
-            var bytes = reader.ReadBytes(fileSize);
-            await DownloadAsync(bytes, fileName, encoding);
-        }
+        var bytes = await FileHelper.ReadToBytesAsync(filePath);
+        await DownloadAsync(bytes, fileName, encoding);
     }
 
     /// <summary>
@@ -628,7 +508,8 @@ public static class Web
     /// </summary>
     /// <param name="stream">流</param>
     /// <param name="fileName">文件名。包含扩展名</param>
-    public static async Task DownloadAsync(Stream stream, string fileName) => await DownloadAsync(stream, fileName, Encoding.UTF8);
+    public static Task DownloadAsync(Stream stream, string fileName) =>
+        DownloadAsync(stream, fileName, Encoding.UTF8);
 
     /// <summary>
     /// 下载
@@ -636,14 +517,19 @@ public static class Web
     /// <param name="stream">流</param>
     /// <param name="fileName">文件名。包含扩展名</param>
     /// <param name="encoding">字符编码</param>
-    public static async Task DownloadAsync(Stream stream, string fileName, Encoding encoding) => await DownloadAsync(await FileHelper.ToBytesAsync(stream), fileName, encoding);
+    public static async Task DownloadAsync(Stream stream, string fileName, Encoding encoding)
+    {
+        var bytes = await FileHelper.ToBytesAsync(stream);
+        await DownloadAsync(bytes, fileName, encoding, Response);
+    }
 
     /// <summary>
     /// 下载
     /// </summary>
     /// <param name="bytes">字节流</param>
     /// <param name="fileName">文件名。包含扩展名</param>
-    public static async Task DownloadAsync(byte[] bytes, string fileName) => await DownloadAsync(bytes, fileName, Encoding.UTF8);
+    public static Task DownloadAsync(byte[] bytes, string fileName) =>
+        DownloadAsync(bytes, fileName, Encoding.UTF8, Response);
 
     /// <summary>
     /// 下载
@@ -651,16 +537,34 @@ public static class Web
     /// <param name="bytes">字节流</param>
     /// <param name="fileName">文件名。包含扩展名</param>
     /// <param name="encoding">字符编码</param>
-    public static async Task DownloadAsync(byte[] bytes, string fileName, Encoding encoding)
+    public static Task DownloadAsync(byte[] bytes, string fileName, Encoding encoding) =>
+        DownloadAsync(bytes, fileName, encoding, Response);
+
+    /// <summary>
+    /// 下载
+    /// </summary>
+    /// <param name="bytes">字节流</param>
+    /// <param name="fileName">文件名。包含扩展名</param>
+    /// <param name="encoding">字符编码</param>
+    /// <param name="response">HTTP 响应</param>
+    /// <exception cref="ArgumentException">当文件字节数组为空或文件名为空时抛出</exception>
+    /// <exception cref="ArgumentNullException">当字符编码或HTTP响应为空时抛出</exception>
+    public static async Task DownloadAsync(byte[] bytes, string fileName, Encoding encoding, HttpResponse response)
     {
         if (bytes == null || bytes.Length == 0)
-            return;
-        fileName = fileName.Replace(" ", "");
-        fileName = UrlEncode(fileName, encoding);
-        Response.ContentType = "application/octet-stream";
-        Response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
-        Response.Headers.Add("Content-Length", bytes.Length.ToString());
-        await Response.Body.WriteAsync(bytes, 0, bytes.Length);
+            throw new ArgumentException("文件字节数组不能为空", nameof(bytes));
+        if (string.IsNullOrWhiteSpace(fileName))
+            throw new ArgumentException("文件名不能为空", nameof(fileName));
+        if (encoding == null)
+            throw new ArgumentNullException(nameof(encoding));
+        if (response == null)
+            throw new ArgumentNullException(nameof(response));
+
+        fileName = UrlEncode(fileName.Replace(" ", ""), encoding);
+        response.ContentType = "application/octet-stream";
+        response.Headers["Content-Disposition"] = $"attachment; filename={fileName}";
+        response.Headers["Content-Length"] = bytes.Length.ToString();
+        await response.Body.WriteAsync(bytes, 0, bytes.Length);
     }
 
     #endregion
@@ -668,28 +572,10 @@ public static class Web
     #region GetCookie(获取Cookie值)
 
     /// <summary>
-    /// 读取Cookie值
+    /// 获取Cookie值
     /// </summary>
-    /// <param name="name">名称</param>
-    public static string GetCookie(string name)
-    {
-        if (HttpContext.Request.Cookies != null && HttpContext.Request.Cookies[name] != null)
-            return HttpContext.Request.Cookies[name];
-        return string.Empty;
-    }
-
-    #endregion
-
-    #region ClearCookie(清空Cookie)
-
-    /// <summary>
-    /// 清空Cookie
-    /// </summary>
-    public static void ClearCookie()
-    {
-        foreach (var cookie in HttpContext.Request.Cookies.Keys)
-            HttpContext.Response.Cookies.Delete(cookie);
-    }
+    /// <param name="key">cookie键名</param>
+    public static string GetCookie(string key) => Request?.Cookies[key];
 
     #endregion
 
@@ -698,13 +584,34 @@ public static class Web
     /// <summary>
     /// 设置Cookie值。未设置过期时间，则写的是浏览器进程Cookie，一旦浏览器（是浏览器，非标签页）关闭，则Cookie自动失效
     /// </summary>
-    /// <param name="name">名称</param>
+    /// <param name="key">cookie键名</param>
     /// <param name="value">值</param>
-    public static void SetCookie(string name, string value)
-    {
-        var cookieOptions = new CookieOptions { HttpOnly = true };
-        HttpContext.Response.Cookies.Append(name, value, cookieOptions);
-    }
+    public static void SetCookie(string key, string value) => Response?.Cookies.Append(key, value);
+
+    /// <summary>
+    /// 设置Cookie值。
+    /// </summary>
+    /// <param name="key">cookie键名</param>
+    /// <param name="value">值</param>
+    /// <param name="options">Cookie配置</param>
+    public static void SetCookie(string key, string value, CookieOptions options) => Response?.Cookies.Append(key, value, options);
+
+    #endregion
+
+    #region RemoveCookie(移除Cookie)
+
+    /// <summary>
+    /// 移除Cookie
+    /// </summary>
+    /// <param name="key">cookie键名</param>
+    public static void RemoveCookie(string key) => Response?.Cookies.Delete(key);
+
+    /// <summary>
+    /// 移除Cookie
+    /// </summary>
+    /// <param name="key">cookie键名</param>
+    /// <param name="options">Cookie配置</param>
+    public static void RemoveCookie(string key, CookieOptions options) => Response?.Cookies.Delete(key, options);
 
     #endregion
 }

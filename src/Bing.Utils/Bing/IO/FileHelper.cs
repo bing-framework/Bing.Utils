@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.IO.Compression;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Bing.Extensions;
+using Bing.Collections;
 
 namespace Bing.IO;
 
@@ -23,9 +18,29 @@ public static partial class FileHelper
     /// <param name="fileName">文件名，绝对路径</param>
     public static void CreateIfNotExists(string fileName)
     {
+        if (string.IsNullOrWhiteSpace(fileName))
+            return;
         if (File.Exists(fileName))
             return;
         File.Create(fileName);
+    }
+
+    #endregion
+
+    #region DeleteIfExists(删除文件，如果文件存在)
+
+    /// <summary>
+    /// 删除文件，如果文件存在
+    /// </summary>
+    /// <param name="filePath">文件的绝对路径</param>
+    public static bool DeleteIfExists(string filePath)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+            return false;
+        if (!File.Exists(filePath))
+            return false;
+        File.Delete(filePath);
+        return true;
     }
 
     #endregion
@@ -48,9 +63,7 @@ public static partial class FileHelper
     /// <param name="filePath">文件的绝对路径</param>
     public static void Delete(string filePath)
     {
-        if (string.IsNullOrWhiteSpace(filePath))
-            return;
-        if (!File.Exists(filePath))
+        if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
             return;
 
         // 设置文件的属性为正常（如果文件为只读的话直接删除会报错）
@@ -553,6 +566,16 @@ public static partial class FileHelper
         var date = DateTime.Now.Date.Subtract(createTime);
         return date.Days > days;
     }
+
+    #endregion
+
+    #region Exists(判断文件是否存在)
+
+    /// <summary>
+    /// 判断文件是否存在
+    /// </summary>
+    /// <param name="path">文件绝对路径</param>
+    public static bool Exists(string path) => System.IO.File.Exists(path);
 
     #endregion
 }

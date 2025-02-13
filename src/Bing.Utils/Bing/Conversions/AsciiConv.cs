@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Bing.Conversions;
+﻿namespace Bing.Conversions;
 
 /// <summary>
 /// ASCII 转换帮助类
@@ -11,24 +9,28 @@ internal static class AsciiConvHelper
     /// 字符转ASCII
     /// </summary>
     /// <param name="char">字符</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte CharToAscii(char @char) => (byte) @char;
 
     /// <summary>
     /// 字符串转ASCII
     /// </summary>
     /// <param name="string">字符串</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte[] StringToAscii(string @string) => Encoding.ASCII.GetBytes(@string);
 
     /// <summary>
     /// ASCII转字符
     /// </summary>
     /// <param name="byte">ASCII字节</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static char AsciiToChar(byte @byte) => (char) @byte;
 
     /// <summary>
     /// ASCII转字符串
     /// </summary>
     /// <param name="bytes">ASCII字节数组</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string AsciiToString(byte[] bytes) => Encoding.ASCII.GetString(bytes, 0, bytes.Length);
 }
 
@@ -42,6 +44,7 @@ public static class AsciiConv
     /// </summary>
     /// <param name="bytes">字节数组</param>
     /// <example>in: new byte[] {65, 66, 67}; out: ABC</example>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string BytesToAsciiString(byte[] bytes) => AsciiConvHelper.AsciiToString(bytes);
 
     /// <summary>
@@ -49,5 +52,6 @@ public static class AsciiConv
     /// </summary>
     /// <param name="asciiStr">ASCII字符串</param>
     /// <example>in: ABC; out: new byte[] {65, 66, 67}</example>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte[] AsciiStringToBytes(string asciiStr) => AsciiConvHelper.StringToAscii(asciiStr);
 }

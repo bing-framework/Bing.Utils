@@ -8,11 +8,15 @@ Bing.Utils 是一个基于`.net core`平台下的工具库，旨在提升小型�
 |包名称|Nuget版本|下载数|
 |---|---|---|
 |Bing.Utils|[![Bing.Utils](https://img.shields.io/nuget/v/Bing.Utils.svg)](https://www.nuget.org/packages/Bing.Utils/)|[![Bing.Utils](https://img.shields.io/nuget/dt/Bing.Utils.svg)](https://www.nuget.org/packages/Bing.Utils/)|
-|Bing.Utils.DateTime|[![Bing.Utils.DateTime](https://img.shields.io/nuget/v/Bing.Utils.DateTime.svg)](https://www.nuget.org/packages/Bing.Utils.DateTime/)|[![Bing.Utils.DateTime](https://img.shields.io/nuget/dt/Bing.Utils.DateTime.svg)](https://www.nuget.org/packages/Bing.Utils.DateTime/)|
-|Bing.Utils.Drawing|[![Bing.Utils.Drawing](https://img.shields.io/nuget/v/Bing.Utils.Drawing.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing/)|[![Bing.Utils.Drawing](https://img.shields.io/nuget/dt/Bing.Utils.Drawing.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing/)|
-|Bing.Utils.Http|[![Bing.Utils.Http](https://img.shields.io/nuget/v/Bing.Utils.Http.svg)](https://www.nuget.org/packages/Bing.Utils.Http/)|[![Bing.Utils.Http](https://img.shields.io/nuget/dt/Bing.Utils.Http.svg)](https://www.nuget.org/packages/Bing.Utils.Http/)|
+|Bing.Utils.Text|[![Bing.Utils.Drawing](https://img.shields.io/nuget/v/Bing.Utils.Text.svg)](https://www.nuget.org/packages/Bing.Utils.Text/)|[![Bing.Utils.Text](https://img.shields.io/nuget/dt/Bing.Utils.Text.svg)](https://www.nuget.org/packages/Bing.Utils.Text/)|
 |Bing.Utils.Collections|[![Bing.Utils.Collections](https://img.shields.io/nuget/v/Bing.Utils.Collections.svg)](https://www.nuget.org/packages/Bing.Utils.Collections/)|[![Bing.Utils.Collections](https://img.shields.io/nuget/dt/Bing.Utils.Collections.svg)](https://www.nuget.org/packages/Bing.Utils.Collections/)|
 |Bing.Utils.Reflection|[![Bing.Utils.Reflection](https://img.shields.io/nuget/v/Bing.Utils.Reflection.svg)](https://www.nuget.org/packages/Bing.Utils.Reflection/)|[![Bing.Utils.Reflectionn](https://img.shields.io/nuget/dt/Bing.Utils.Reflection.svg)](https://www.nuget.org/packages/Bing.Utils.Reflection/)|
+|Bing.Utils.IdUtils|[![Bing.Utils.IdUtils](https://img.shields.io/nuget/v/Bing.Utils.IdUtils.svg)](https://www.nuget.org/packages/Bing.Utils.IdUtils/)|[![Bing.Utils.IdUtils](https://img.shields.io/nuget/dt/Bing.Utils.IdUtils.svg)](https://www.nuget.org/packages/Bing.Utils.IdUtils/)|
+|Bing.Utils.DateTime|[![Bing.Utils.DateTime](https://img.shields.io/nuget/v/Bing.Utils.DateTime.svg)](https://www.nuget.org/packages/Bing.Utils.DateTime/)|[![Bing.Utils.DateTime](https://img.shields.io/nuget/dt/Bing.Utils.DateTime.svg)](https://www.nuget.org/packages/Bing.Utils.DateTime/)|
+|Bing.Utils.Drawing|[![Bing.Utils.Drawing](https://img.shields.io/nuget/v/Bing.Utils.Drawing.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing/)|[![Bing.Utils.Drawing](https://img.shields.io/nuget/dt/Bing.Utils.Drawing.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing/)|
+|Bing.Utils.Drawing.ImageSharp|[![Bing.Utils.Drawing.ImageSharp](https://img.shields.io/nuget/v/Bing.Utils.Drawing.ImageSharp.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing.ImageSharp/)|[![Bing.Utils.Drawing.ImageSharp](https://img.shields.io/nuget/dt/Bing.Utils.Drawing.ImageSharp.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing.ImageSharp/)|
+|Bing.Utils.Drawing.SkiaSharp|[![Bing.Utils.Drawing.SkiaSharp](https://img.shields.io/nuget/v/Bing.Utils.Drawing.SkiaSharp.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing.SkiaSharp/)|[![Bing.Utils.Drawing.SkiaSharp](https://img.shields.io/nuget/dt/Bing.Utils.Drawing.SkiaSharp.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing.SkiaSharp/)|
+|Bing.Utils.Http|[![Bing.Utils.Http](https://img.shields.io/nuget/v/Bing.Utils.Http.svg)](https://www.nuget.org/packages/Bing.Utils.Http/)|[![Bing.Utils.Http](https://img.shields.io/nuget/dt/Bing.Utils.Http.svg)](https://www.nuget.org/packages/Bing.Utils.Http/)|
 
 ## 开发环境以及类库依赖
 
@@ -21,7 +25,7 @@ Bing.Utils 是一个基于`.net core`平台下的工具库，旨在提升小型�
 > 如果没有标注版本号，则采用最新版本。
 
 1. 开发工具
-  - [Visual Studio 2019](https://visualstudio.microsoft.com/zh-hans/vs/)
+  - [Visual Studio 2022](https://visualstudio.microsoft.com/zh-hans/vs/)
   - [Resharper Ultimate](https://www.jetbrains.com/resharper/)
 
 ## 框架开发流程

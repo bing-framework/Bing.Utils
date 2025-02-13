@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Bing.Extensions;
 
@@ -11,6 +9,42 @@ namespace Bing.Helpers;
 /// </summary>
 public static partial class Valid
 {
+    #region IsNull(是否为null)
+
+    /// <summary>
+    /// 判断对象是否为 null
+    /// </summary>
+    /// <param name="value">要检查的对象</param>
+    /// <returns>如果对象为 null，则返回 true；否则返回 false</returns>
+    public static bool IsNull(object value) => null == value;
+
+    #endregion
+
+    #region IsNotNull(是否不为null)
+
+    /// <summary>
+    /// 判断对象是否不为 null
+    /// </summary>
+    /// <param name="value">要检查的对象</param>
+    /// <returns>如果对象不为 null，则返回 true；否则返回 false</returns>
+    public static bool IsNotNull(object value) => null != value;
+
+    #endregion
+
+    #region IsEmpty(验证是否为null)
+
+    /// <summary>
+    /// 判断对象是否为空
+    /// </summary>
+    /// <param name="value">要检查的对象</param>
+    /// <returns>如果对象为 null 或空字符串，则返回 true；否则返回 false</returns>
+    public static bool IsEmpty(object value)
+    {
+        return (null == value || (value is string valueStr && string.IsNullOrWhiteSpace(valueStr)));
+    }
+
+    #endregion
+
     #region IsEmail(是否邮箱)
 
     /// <summary>

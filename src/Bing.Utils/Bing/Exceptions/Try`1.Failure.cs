@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.ExceptionServices;
+﻿using System.Runtime.ExceptionServices;
 
 namespace Bing.Exceptions;
 
@@ -10,34 +9,25 @@ namespace Bing.Exceptions;
 public class Failure<T> : Try<T>
 {
     /// <summary>
-    /// 是否失败
-    /// </summary>
-    public override bool IsFailure => true;
-
-    /// <summary>
-    /// 是否成功
-    /// </summary>
-    public override bool IsSuccess => false;
-
-    /// <summary>
-    /// 异常
-    /// </summary>
-    public override Exception Exception { get; }
-
-    /// <summary>
-    /// 值
-    /// </summary>
-    public override T Value => throw Rethrow();
-
-    /// <summary>
     /// 初始化一个<see cref="Failure{T}"/>类型的实例
     /// </summary>
     /// <param name="exception">异常</param>
-    internal Failure(Exception exception) => Exception = exception ?? new ArgumentNullException(nameof(exception));
+    /// <param name="cause">导致错误的原因</param>
+    internal Failure(Exception exception, string cause) => Exception = new TryCreatingValueException(exception, cause);
 
-    /// <summary>
-    /// 重载输出字符串
-    /// </summary>
+    /// <inheritdoc />
+    public override bool IsFailure => true;
+
+    /// <inheritdoc />
+    public override bool IsSuccess => false;
+
+    /// <inheritdoc />
+    public override TryCreatingValueException Exception { get; }
+
+    /// <inheritdoc />
+    public override T Value => throw Rethrow();
+
+    /// <inheritdoc />
     public override string ToString() => $"Failure<{Exception}>";
 
     /// <summary>
@@ -46,34 +36,20 @@ public class Failure<T> : Try<T>
     /// <param name="other">对象</param>
     public bool Equals(Failure<T> other) => !(other is null) && ReferenceEquals(Exception, other.Exception);
 
-    /// <summary>
-    /// 重载相等
-    /// </summary>
-    /// <param name="obj">对象</param>
+    /// <inheritdoc />
     public override bool Equals(object obj) => obj is Failure<T> failure && Equals(failure);
 
-    /// <summary>
-    /// 重载获取哈希码
-    /// </summary>
+    /// <inheritdoc />
     public override int GetHashCode() => Exception.GetHashCode();
 
-    /// <summary>
-    /// 解构
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="exception">异常</param>
+    /// <inheritdoc />
     public override void Deconstruct(out T value, out Exception exception)
     {
-        value = default;
+        value = default!;
         exception = Exception;
     }
 
-    /// <summary>
-    /// 解构
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="tryResult">尝试结果</param>
-    /// <param name="exception">异常</param>
+    /// <inheritdoc />
     public override void Deconstruct(out T value, out bool tryResult, out Exception exception)
     {
         value = Value;
@@ -81,49 +57,71 @@ public class Failure<T> : Try<T>
         exception = Exception;
     }
 
-    /// <summary>
-    /// 恢复
-    /// </summary>
-    /// <param name="recoverFunc">恢复函数</param>
-    public override Try<T> Recover(Func<Exception, T> recoverFunc) => RecoverWith(ex => Try.LiftValue(recoverFunc(ex)));
+    /// <inheritdoc />
+    public override Try<T> Recover(Func<TryCreatingValueException, T> recoverFunction)
+    {
+        return RecoverWith(ex => Try.LiftValue(recoverFunction(ex)));
+    }
 
-    /// <summary>
-    /// 恢复
-    /// </summary>
-    /// <param name="recoverFunc">恢复函数</param>
-    public override Try<T> RecoverWith(Func<Exception, Try<T>> recoverFunc)
+    /// <inheritdoc />
+    public override Try<T> Recover(Func<Exception, string, T> recoverFunction)
+    {
+        return RecoverWith(ex => Try.LiftValue(recoverFunction(ex?.InnerException, ex?.Cause)));
+    }
+
+    /// <inheritdoc />
+    public override Try<T> RecoverWith(Func<TryCreatingValueException, Try<T>> recoverFunction)
     {
         try
         {
-            return recoverFunc(Exception);
+            return recoverFunction(Exception);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return new Failure<T>(e);
+            return new Failure<T>(ex, "An exception occurred during recovery.");
         }
     }
 
-    /// <summary>
-    /// 匹配
-    /// </summary>
-    /// <typeparam name="TResult">结果类型</typeparam>
-    /// <param name="whenValue">条件值函数</param>
-    /// <param name="whenException">条件异常</param>
-    public override TResult Match<TResult>(Func<T, TResult> whenValue, Func<Exception, TResult> whenException)
+    /// <inheritdoc />
+    public override Try<T> RecoverWith(Func<Exception, string, Try<T>> recoverFunction)
+    {
+        try
+        {
+            return recoverFunction(Exception?.InnerException, Exception?.Cause);
+        }
+        catch (Exception ex)
+        {
+            return new Failure<T>(ex, "An exception occurred during recovery.");
+        }
+    }
+
+    /// <inheritdoc />
+    public override TResult Match<TResult>(Func<T, TResult> whenValue, Func<TryCreatingValueException, TResult> whenException)
     {
         if (whenException is null)
             throw new ArgumentNullException(nameof(whenException));
         return whenException(Exception);
     }
 
-    /// <summary>
-    /// 触发
-    /// </summary>
-    /// <param name="successAction">成功操作</param>
-    /// <param name="failureAction">失败操作</param>
-    public override Try<T> Tap(Action<T> successAction = null, Action<Exception> failureAction = null)
+    /// <inheritdoc />
+    public override TResult Match<TResult>(Func<T, TResult> whenValue, Func<Exception, string, TResult> whenException)
+    {
+        if (whenException is null)
+            throw new ArgumentNullException(nameof(whenException));
+        return whenException(Exception?.InnerException, Exception?.Cause);
+    }
+
+    /// <inheritdoc />
+    public override Try<T> Tap(Action<T> successAction = null, Action<TryCreatingValueException> failureAction = null)
     {
         failureAction?.Invoke(Exception);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public override Try<T> Tap(Action<T> successAction = null, Action<Exception, string> failureAction = null)
+    {
+        failureAction?.Invoke(Exception.InnerException, Exception.Cause);
         return this;
     }
 
@@ -137,5 +135,5 @@ public class Failure<T> : Try<T>
     /// <summary>
     /// 重抛异常
     /// </summary>
-    private Exception Rethrow() => ExceptionDispatchInfo.Capture(Exception).SourceException;
+    private Exception Rethrow() => ExceptionDispatchInfo.Capture(Exception!).SourceException;
 }

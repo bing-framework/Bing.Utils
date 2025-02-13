@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.Text</AssemblyName>
+		<PackageId>Bing.Utils.Text</PackageId>
+		<Description>Bing.Utils.Text是Bing应用框架的文本操作类库。</Description>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.props" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\Bing.Utils\Bing.Utils.csproj" />
+	</ItemGroup>
+
+</Project>

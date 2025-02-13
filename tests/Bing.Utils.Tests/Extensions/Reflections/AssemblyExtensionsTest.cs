@@ -1,5 +1,4 @@
-﻿using Bing.Extensions;
-using Xunit;
+﻿using Bing.Reflection;
 
 namespace Bing.Utils.Tests.Extensions.Reflections;
 
@@ -12,21 +11,22 @@ public class AssemblyExtensionsTest
     /// 测试获取程序集文件版本
     /// </summary>
     [Fact]
-    public void Test_GetFileVersion()
+    public void Test_GetFileVersion_1()
     {
         var assembly = typeof(AssemblyExtensionsTest).Assembly;
-        var result = assembly.GetFileVersion();
-        Assert.Equal("1.0.0.0",result.ToString());
+        var result = AssemblyVisit.GetFileVersion(assembly);
+        Assert.Equal("1.0.0.0", result.ToString());
     }
 
     /// <summary>
     /// 测试获取程序集产品版本
     /// </summary>
     [Fact]
-    public void Test_GetProductVersion()
+    public void Test_GetProductVersion_1()
     {
         var assembly = typeof(AssemblyExtensionsTest).Assembly;
-        var result = assembly.GetProductVersion();
-        Assert.Equal("1.0.0.0", result.ToString());
+        var result = AssemblyVisit.GetProductVersion(assembly);
+        Assert.Equal("1.0.0.0", result);
     }
+
 }

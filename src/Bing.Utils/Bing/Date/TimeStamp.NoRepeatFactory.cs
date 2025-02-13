@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bing.Date;
+﻿namespace Bing.Date;
 
 /// <summary>
 /// 不重复时间戳工厂
@@ -15,10 +13,10 @@ public class NoRepeatTimeStampFactory
     /// <summary>
     /// 对象锁
     /// </summary>
-    private readonly object _lockObj = new object();
+    private readonly object _lockObj = new();
 
     /// <summary>
-    /// 毫秒增量
+    /// 自增毫秒数
     /// </summary>
     public double IncrementMs { get; set; } = 4;
 
