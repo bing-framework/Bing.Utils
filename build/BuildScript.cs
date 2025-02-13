@@ -140,6 +140,8 @@ namespace BuildScript
             IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir,"*/*.Extra.csproj"));
             IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir,"*/*.Guard.csproj"));
             IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir,"*/*.Comments.csproj"));
+            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.DependencyInjection.csproj"));
+            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.Net.csproj"));
         }
 
         /// <summary>

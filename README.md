@@ -21,7 +21,7 @@ Bing.Utils 是一个基于`.net core`平台下的工具库，旨在提升小型�
 > 如果没有标注版本号，则采用最新版本。
 
 1. 开发工具
-  - [Visual Studio 2019](https://visualstudio.microsoft.com/zh-hans/vs/)
+  - [Visual Studio 2022](https://visualstudio.microsoft.com/zh-hans/vs/)
   - [Resharper Ultimate](https://www.jetbrains.com/resharper/)
 
 ## 框架开发流程
