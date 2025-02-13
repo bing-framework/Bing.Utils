@@ -64,6 +64,11 @@ namespace BuildScript
         protected FullPath TestDir => RootDirectory.CombineWith("tests");
 
         /// <summary>
+        /// 性能测试目录
+        /// </summary>
+        protected FullPath BenchmarkDir => RootDirectory.CombineWith("benchmarks");
+
+        /// <summary>
         /// 输出目录
         /// </summary>
         protected FullPath OutputDir => RootDirectory.CombineWith("nuget_packages");
@@ -87,6 +92,11 @@ namespace BuildScript
         /// 忽略测试项目文件列表
         /// </summary>
         protected List<FileFullPath> IgnoreTestProjectFiles { get; set; }
+
+        /// <summary>
+        /// 忽略性能测试项目文件列表
+        /// </summary>
+        protected List<FileFullPath> IgnoreBenchmarkProjectFiles { get; set; }
 
         /// <summary>
         /// 忽略打包项目文件列表
@@ -115,10 +125,11 @@ namespace BuildScript
         /// <param name="context">构建任务上下文</param>
         protected override void BeforeBuildExecution(ITaskContext context)
         {
-            BuildVersion = FetchBuildVersion(context);
+            //BuildVersion = FetchBuildVersion(context);// 默认值不会变更
             ProjectFiles = context.GetFiles(SourceDir, "*/*.csproj");
             UnitTestProjectFiles = context.GetFiles(TestDir, "*/*.csproj");
             IntegrationTestProjectFiles = context.GetFiles(TestDir, "*/*.Tests.Integration.csproj");
+            IgnoreBenchmarkProjectFiles = context.GetFiles(BenchmarkDir, "*/*.Benchmark.csproj");
             IgnoreTestProjectFiles = new List<FileFullPath>();
             IgnorePackProjectFiles = new List<FileFullPath>();
             AddIgnoreTestProjects(context);
@@ -149,6 +160,8 @@ namespace BuildScript
         /// </summary>
         protected override void ConfigureTargets(ITaskContext context)
         {
+            context.LogInfo($"当前环境值: {Env}");
+            BuildVersion = FetchBuildVersion(context);
             var clean = Clean(context);
             var restore = Restore(context, clean);
             var build = Build(context, restore);
