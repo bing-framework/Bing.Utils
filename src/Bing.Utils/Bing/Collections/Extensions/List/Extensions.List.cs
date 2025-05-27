@@ -1,8 +1,6 @@
-﻿
+﻿using Bing.Extensions;
+
 // ReSharper disable once CheckNamespace
-
-using Bing.Extensions;
-
 namespace Bing.Collections;
 
 /// <summary>
@@ -237,5 +235,28 @@ public static partial class BingListExtensions
         var item = source[currentIndex];
         source.RemoveAt(currentIndex);
         source.Insert(targetIndex, item);
+    }
+
+    /// <summary>
+    /// 将 <see cref="List{T}"/> 按指定大小进行分块（通过 GetRange 切片方式实现）
+    /// </summary>
+    /// <typeparam name="T">列表元素类型</typeparam>
+    /// <param name="source">集合</param>
+    /// <param name="chunkSize">每个分组的最大元素数</param>
+    /// <returns>分组后的集合序列，每组为一个 <see cref="List{T}"/></returns>
+    /// <exception cref="ArgumentNullException">当 source 为 null 时抛出</exception>
+    /// <exception cref="ArgumentOutOfRangeException">当 chunkSize 小于等于 0 时抛出</exception>
+    public static IEnumerable<List<T>> ChunkByView<T>(this List<T> source, int chunkSize)
+    {
+        if (source == null) 
+            throw new ArgumentNullException(nameof(source));
+        if (chunkSize <= 0) 
+            throw new ArgumentOutOfRangeException(nameof(chunkSize));
+
+        for (var i = 0; i < source.Count; i += chunkSize)
+        {
+            var count = Math.Min(chunkSize, source.Count - i);
+            yield return source.GetRange(i, count);
+        }
     }
 }
