@@ -10,7 +10,12 @@
           ]
         }
       ],
-      "dest": "api"
+      "dest": "api",
+      "includePrivateMembers": false,
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false,
+      "noRestore": false,
+      "namespaceLayout": "flattened"
     }
   ],
   "build": {
@@ -31,16 +36,31 @@
         ]
       }
     ],
-    "output": "_site",
-    "template": [
-      "default",
-      "modern"
+    "overwrite":[
+      {
+        "files":[
+          "apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**"
+        ]
+      }
     ],
+    "output": "_site",
     "globalMetadata": {
       "_appName": "Bing.Utils",
       "_appTitle": "Bing.Utils",
       "_enableSearch": true,
       "pdf": true
-    }
+    },
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": [
+      "default",
+      "modern"
+    ],
+    "postProcessors": [],
+    "disableGitFeatures": false
   }
 }
