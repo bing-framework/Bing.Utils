@@ -1,13 +1,12 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using System.Collections.Concurrent;
 
-using System.Collections.Concurrent;
-
+// ReSharper disable once CheckNamespace
 namespace Bing.Collections;
 
 /// <summary>
 /// 可枚举类型(<see cref="IEnumerable{T}"/>) 扩展
 /// </summary>
-public static partial class EnumerableExtensions
+public static partial class BingEnumerableExtensions
 {
     /// <summary>
     /// 对指定集合中的每个元素执行指定操作

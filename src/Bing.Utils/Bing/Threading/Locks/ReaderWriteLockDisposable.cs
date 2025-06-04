@@ -6,6 +6,11 @@
 public class ReaderWriteLockDisposable : IDisposable
 {
     /// <summary>
+    /// 是否已释放
+    /// </summary>
+    private bool _disposed = false;
+
+    /// <summary>
     /// 读写锁
     /// </summary>
     private readonly ReaderWriterLockSlim _rwLock;
@@ -22,7 +27,7 @@ public class ReaderWriteLockDisposable : IDisposable
     /// <param name="readerWriteLockType">读写锁类型</param>
     public ReaderWriteLockDisposable(ReaderWriterLockSlim rwLock, ReaderWriteLockType readerWriteLockType = ReaderWriteLockType.Write)
     {
-        _rwLock = rwLock;
+        _rwLock = rwLock ?? throw new ArgumentNullException(nameof(rwLock), "读写锁不能为空");
         _readerWriteLockType = readerWriteLockType;
 
         switch (_readerWriteLockType)
@@ -44,19 +49,38 @@ public class ReaderWriteLockDisposable : IDisposable
     /// <summary>
     /// 释放资源
     /// </summary>
-    void IDisposable.Dispose()
+    public void Dispose()
     {
-        switch (_readerWriteLockType)
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// 释放资源
+    /// </summary>
+    /// <param name="disposing">是否释放中</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+            return;
+
+        if (disposing)
         {
-            case ReaderWriteLockType.Read:
-                _rwLock.ExitReadLock();
-                break;
-            case ReaderWriteLockType.Write:
-                _rwLock.ExitWriteLock();
-                break;
-            case ReaderWriteLockType.UpgradeableRead:
-                _rwLock.ExitUpgradeableReadLock();
-                break;
+            switch (_readerWriteLockType)
+            {
+                case ReaderWriteLockType.Read:
+                    _rwLock.ExitReadLock();
+                    break;
+                case ReaderWriteLockType.Write:
+                    _rwLock.ExitWriteLock();
+                    break;
+                case ReaderWriteLockType.UpgradeableRead:
+                    _rwLock.ExitUpgradeableReadLock();
+                    break;
+            }
         }
+
+        // 标记为已释放
+        _disposed = true;
     }
 }

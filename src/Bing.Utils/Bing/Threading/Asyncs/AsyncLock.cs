@@ -40,7 +40,7 @@ public class AsyncLock
     }
 
     /// <summary>
-    /// 资源释放器
+    /// 内部释放器类
     /// </summary>
     public struct Releaser : IDisposable
     {
