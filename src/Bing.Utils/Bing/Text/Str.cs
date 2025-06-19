@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Bing.Text;
 
@@ -238,6 +239,23 @@ public static partial class Str
     /// <param name="s">输入字符串</param>
     /// <returns>转换后的烤肉串命名法字符串</returns>
     public static string ToKebabCase(string s) => ToSeparatedCase(s, '-');
+
+    #endregion
+
+    #region UnicodeToStr(Unicode转字符串)
+
+    /// <summary>
+    /// 将Unicode转换为字符串
+    /// </summary>
+    /// <param name="value">值</param>
+    /// <returns>转换后的字符串，如果输入为null则返回空字符串</returns>
+    public static string UnicodeToStr(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return string.Empty;
+        return new Regex(@"\\u([0-9A-F]{4})", RegexOptions.IgnoreCase | RegexOptions.Compiled).Replace(value,
+            x => Convert.ToChar(Convert.ToUInt16(x.Result("$1"), 16)).ToString());
+    }
 
     #endregion
 }

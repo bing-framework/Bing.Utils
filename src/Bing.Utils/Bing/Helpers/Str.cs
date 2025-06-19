@@ -73,18 +73,6 @@ public partial class Str
 
     #endregion
 
-    #region UnicodeToStr(Unicode转字符串)
-
-    /// <summary>
-    /// Unicode转字符串
-    /// </summary>
-    /// <param name="value">值</param>
-    public static string UnicodeToStr(string value) =>
-        new Regex(@"\\u([0-9A-F]{4})", RegexOptions.IgnoreCase | RegexOptions.Compiled).Replace(value,
-            x => Convert.ToChar(Convert.ToUInt16(x.Result("$1"), 16)).ToString());
-
-    #endregion
-
     #region PinYin(获取汉字的拼音简码)
 
     /// <summary>

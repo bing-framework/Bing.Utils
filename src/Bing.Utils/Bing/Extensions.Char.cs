@@ -250,10 +250,15 @@ public static class CharExtensions
     }
 
     /// <summary>
-    /// 转换为字符串
+    /// 将字符转换为字符串（使用不变区域性）。
     /// </summary>
-    /// <param name="c">字符</param>
-    public static string ToString(this char c) => char.ToString(c);
+    /// <param name="c">要转换的字符。</param>
+    /// <returns>该字符的字符串表示形式。</returns>
+    ///  <remarks>
+    /// 等价于 <c>c.ToString(CultureInfo.InvariantCulture)</c>，
+    /// 可用于字符与字符串类型的快速转换，避免因区域性导致的差异。
+    /// </remarks>
+    public static string AsString(this char c) => c.ToString(CultureInfo.InvariantCulture);
 
     #endregion
 

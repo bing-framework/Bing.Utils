@@ -279,12 +279,33 @@ public static partial class Strings
     #region Filter
 
     /// <summary>
-    /// 过滤为字符
+    /// 过滤字符串中符合条件的字符
     /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="predicate">条件</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<char> FilterByChar(string text, Func<char, bool> predicate) => text.ToCharArray().Where(predicate);
+    /// <param name="text">要过滤的文本</param>
+    /// <param name="predicate">过滤条件，返回 true 表示保留字符，返回 false 表示过滤掉字符</param>
+    /// <returns>
+    /// 符合条件的字符序列。当 <paramref name="text"/> 为 null 或空字符串时，返回空序列。
+    /// 当 <paramref name="predicate"/> 为 null 时，抛出 <see cref="ArgumentNullException"/> 异常。
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="predicate"/> 为 null。</exception>
+    /// <example>
+    /// <code>
+    /// var result = Strings.FilterByChar("Hello123", c => char.IsLetter(c)); // 返回 "Hello"
+    /// var result = Strings.FilterByChar("Hello123", c => char.IsDigit(c));  // 返回 "123"
+    /// </code>
+    /// </example>
+    public static IEnumerable<char> FilterByChar(string text, Func<char, bool> predicate)
+    {
+        if (predicate == null)
+            throw new ArgumentNullException(nameof(predicate));
+
+        if (string.IsNullOrEmpty(text))
+            yield break;
+
+        foreach (var c in text)
+            if (predicate(c))
+                yield return c;
+    }
 
     /// <summary>
     /// 只获取字母和数字
@@ -668,6 +689,17 @@ public static partial class Strings
     /// </summary>
     /// <param name="text">值</param>
     /// <param name="repeatTimes">重复次数</param>
+    /// <returns>
+    /// 重复后的新字符串。当 <paramref name="text"/> 为 null 或空字符串，或 <paramref name="repeatTimes"/> 小于等于 0 时，返回空字符串。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.Repeat("abc", 3) => "abcabcabc"
+    /// Strings.Repeat("a", 5) => "aaaaa"
+    /// Strings.Repeat("abc", 0) => ""
+    /// Strings.Repeat(null, 3) => ""
+    /// </code>
+    /// </example>
     public static string Repeat(string text, int repeatTimes)
     {
         if (repeatTimes < 0)
