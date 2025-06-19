@@ -1,9 +1,6 @@
-﻿
+﻿using Bing.Date;
 
 // ReSharper disable once CheckNamespace
-
-using Bing.Date;
-
 namespace Bing.Extensions;
 
 /// <summary>
