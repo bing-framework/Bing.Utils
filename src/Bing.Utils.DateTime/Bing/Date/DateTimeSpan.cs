@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.Contracts;
+using System.Runtime.InteropServices;
 using NodaTime;
 
 /*
@@ -37,6 +38,23 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     public TimeSpan TimeSpan { get; set; }
 
+    #region Ctor
+
+    /// <summary>
+    /// 初始化一个<see cref="DateTimeSpan"/>类型的实例
+    /// </summary>
+    /// <param name="years">年</param>
+    /// <param name="months">月</param>
+    /// <param name="timeSpan">时间间隔</param>
+    public DateTimeSpan(int years, int months, TimeSpan timeSpan)
+    {
+        Years = years;
+        Months = months;
+        TimeSpan = timeSpan;
+    }
+
+    #endregion
+
     /// <summary>
     /// 相等
     /// </summary>
@@ -47,18 +65,21 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// 添加
     /// </summary>
     /// <param name="number">日期时间间隔</param>
+    [Pure]
     public DateTimeSpan Add(DateTimeSpan number) => AddInternal(this, number);
 
     /// <summary>
     /// 添加
     /// </summary>
     /// <param name="timeSpan">时间间隔</param>
+    [Pure]
     public DateTimeSpan Add(TimeSpan timeSpan) => AddInternal(this, timeSpan);
 
     /// <summary>
     /// 减去
     /// </summary>
     /// <param name="dateTimeSpan">日期时间间隔</param>
+    [Pure]
     public DateTimeSpan Subtract(DateTimeSpan dateTimeSpan) => SubtractInternal(this, dateTimeSpan);
 
     #region Operators
@@ -68,6 +89,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator +(DateTimeSpan left, DateTimeSpan right) => AddInternal(left, right);
 
     /// <summary>
@@ -75,6 +97,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator +(DateTimeSpan left, TimeSpan right) => AddInternal(left, right);
 
     /// <summary>
@@ -82,6 +105,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator +(TimeSpan left, DateTimeSpan right) => AddInternal(left, right);
 
     /// <summary>
@@ -89,6 +113,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator +(DateTimeSpan left, Period right) => AddInternal(left, right);
 
     /// <summary>
@@ -96,6 +121,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator +(Period left, DateTimeSpan right) => AddInternal(left, right);
 
     /// <summary>
@@ -103,6 +129,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator +(DateTimeSpan left, Duration right) => AddInternal(left, right);
 
     /// <summary>
@@ -110,6 +137,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator +(Duration left, DateTimeSpan right) => AddInternal(left, right);
 
     /// <summary>
@@ -117,6 +145,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator -(DateTimeSpan left, DateTimeSpan right) => SubtractInternal(left, right);
 
     /// <summary>
@@ -124,6 +153,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator -(DateTimeSpan left, TimeSpan right) => SubtractInternal(left, right);
 
     /// <summary>
@@ -131,6 +161,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator -(TimeSpan left, DateTimeSpan right) => SubtractInternal(left, right);
 
     /// <summary>
@@ -138,6 +169,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator -(DateTimeSpan left, Period right) => SubtractInternal(left, right);
 
     /// <summary>
@@ -145,6 +177,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator -(Period left, DateTimeSpan right) => SubtractInternal(left, right);
 
     /// <summary>
@@ -152,6 +185,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator -(DateTimeSpan left, Duration right) => SubtractInternal(left, right);
 
     /// <summary>
@@ -159,6 +193,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static DateTimeSpan operator -(Duration left, DateTimeSpan right) => SubtractInternal(left, right);
 
     /// <summary>
@@ -166,6 +201,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator ==(DateTimeSpan left, DateTimeSpan right) => left.Years == right.Years && left.Months == right.Months && left.TimeSpan == right.TimeSpan;
 
     /// <summary>
@@ -173,6 +209,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator ==(DateTimeSpan left, TimeSpan right) => left == (DateTimeSpan)right;
 
     /// <summary>
@@ -180,6 +217,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator ==(TimeSpan left, DateTimeSpan right) => (DateTimeSpan)left == right;
 
     /// <summary>
@@ -187,6 +225,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator ==(DateTimeSpan left, Period right) => left == (DateTimeSpan)right;
 
     /// <summary>
@@ -194,6 +233,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator ==(Period left, DateTimeSpan right) => (DateTimeSpan)left == right;
 
     /// <summary>
@@ -201,6 +241,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator ==(DateTimeSpan left, Duration right) => left == (DateTimeSpan)right;
 
     /// <summary>
@@ -208,6 +249,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator ==(Duration left, DateTimeSpan right) => (DateTimeSpan)left == right;
 
     /// <summary>
@@ -215,6 +257,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator !=(DateTimeSpan left, DateTimeSpan right) => !(left == right);
 
     /// <summary>
@@ -222,6 +265,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator !=(DateTimeSpan left, TimeSpan right) => !(left == right);
 
     /// <summary>
@@ -229,6 +273,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator !=(TimeSpan left, DateTimeSpan right) => !(left == right);
 
     /// <summary>
@@ -236,6 +281,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator !=(DateTimeSpan left, Period right) => !(left == right);
 
     /// <summary>
@@ -243,6 +289,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator !=(Period left, DateTimeSpan right) => !(left == right);
 
     /// <summary>
@@ -250,6 +297,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator !=(DateTimeSpan left, Duration right) => !(left == right);
 
     /// <summary>
@@ -257,6 +305,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator !=(Duration left, DateTimeSpan right) => !(left == right);
 
     /// <summary>
@@ -277,6 +326,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator <(DateTimeSpan left, TimeSpan right) => (TimeSpan)left < right;
 
     /// <summary>
@@ -284,6 +334,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator <(TimeSpan left, DateTimeSpan right) => left < (TimeSpan)right;
 
     /// <summary>
@@ -319,6 +370,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator <=(DateTimeSpan left, DateTimeSpan right) => (TimeSpan)left <= (TimeSpan)right;
 
     /// <summary>
@@ -326,6 +378,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator <=(DateTimeSpan left, TimeSpan right) => (TimeSpan)left <= right;
 
     /// <summary>
@@ -333,6 +386,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator <=(TimeSpan left, DateTimeSpan right) => left <= (TimeSpan)right;
 
     /// <summary>
@@ -368,6 +422,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator >(DateTimeSpan left, DateTimeSpan right) => (TimeSpan)left > (TimeSpan)right;
 
     /// <summary>
@@ -375,6 +430,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator >(DateTimeSpan left, TimeSpan right) => (TimeSpan)left > right;
 
     /// <summary>
@@ -382,6 +438,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator >(TimeSpan left, DateTimeSpan right) => left > (TimeSpan)right;
 
     /// <summary>
@@ -417,6 +474,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator >=(DateTimeSpan left, DateTimeSpan right) => (TimeSpan)left >= (TimeSpan)right;
 
     /// <summary>
@@ -424,6 +482,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator >=(DateTimeSpan left, TimeSpan right) => (TimeSpan)left >= right;
 
     /// <summary>
@@ -431,6 +490,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
+    [Pure]
     public static bool operator >=(TimeSpan left, DateTimeSpan right) => left >= (TimeSpan)right;
 
     /// <summary>
@@ -477,7 +537,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// 将 <see cref="System.TimeSpan"/> 显式转换为 <see cref="DateTimeSpan"/>
     /// </summary>
     /// <param name="timeSpan">时间间隔</param>
-    public static implicit operator DateTimeSpan(TimeSpan timeSpan) => new DateTimeSpan { TimeSpan = timeSpan };
+    public static implicit operator DateTimeSpan(TimeSpan timeSpan) => new() { TimeSpan = timeSpan };
 
     /// <summary>
     /// 将 <see cref="DateTimeSpan"/> 显式转换为 <see cref="Period"/>
@@ -490,7 +550,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="period">期间</param>
     public static implicit operator DateTimeSpan(Period period) =>
-        new DateTimeSpan
+        new()
         {
             Years = period.Years,
             Months = period.Months,
@@ -508,7 +568,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// </summary>
     /// <param name="duration">持续时间</param>
     public static implicit operator DateTimeSpan(Duration duration) =>
-        new DateTimeSpan
+        new()
         {
             TimeSpan = duration.ToTimeSpan()
         };
@@ -560,7 +620,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
     static DateTimeSpan AddInternal(DateTimeSpan left, TimeSpan right) =>
-        new DateTimeSpan
+        new()
         {
             Years = left.Years,
             Months = left.Months,
@@ -573,7 +633,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
     static DateTimeSpan SubtractInternal(DateTimeSpan left, TimeSpan right) =>
-        new DateTimeSpan
+        new()
         {
             Years = left.Years,
             Months = left.Months,
@@ -618,7 +678,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
     internal static DateTimeSpan SubtractInternal(TimeSpan left, DateTimeSpan right) =>
-        new DateTimeSpan
+        new()
         {
             Years = -right.Years,
             Months = -right.Months,
@@ -649,7 +709,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
     static DateTimeSpan AddInternal(DateTimeSpan left, DateTimeSpan right) =>
-        new DateTimeSpan
+        new()
         {
             Years = left.Years + right.Years,
             Months = left.Months + right.Months,
@@ -662,7 +722,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// <param name="left">左对象</param>
     /// <param name="right">右对象</param>
     static DateTimeSpan SubtractInternal(DateTimeSpan left, DateTimeSpan right) =>
-        new DateTimeSpan
+        new()
         {
             Years = left.Years - right.Years,
             Months = left.Months - right.Months,
@@ -772,6 +832,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// <summary>
     /// 取反
     /// </summary>
+    [Pure]
     public TimeSpan Negate() =>
         new DateTimeSpan
         {

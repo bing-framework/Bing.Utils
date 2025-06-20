@@ -183,16 +183,16 @@ namespace Bing.Tests.Samples
         /// <summary>
         /// 静态对象
         /// </summary>
-        public static Sample2 StaticSample => new Sample2() { StringValue = "TestStaticSample" };
+        public static Sample2 StaticSample => new() { StringValue = "TestStaticSample" };
 
         /// <summary>
         /// 创建测试实例1
         /// </summary>
-        public static Sample Create1() => new Sample { StringValue = "A" };
+        public static Sample Create1() => new() { StringValue = "A" };
 
         /// <summary>
         /// 创建测试实例2
         /// </summary>
-        public static Sample Create2() => new Sample { StringValue = "B" };
+        public static Sample Create2() => new() { StringValue = "B" };
     }
 }

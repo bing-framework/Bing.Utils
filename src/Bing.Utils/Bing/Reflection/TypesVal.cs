@@ -74,7 +74,7 @@ public class TypesVal
     /// <summary>
     /// 获取空的类型集合值
     /// </summary>
-    public static TypesVal Empty { get; } = new TypesVal(0);
+    public static TypesVal Empty { get; } = new(0);
 
     /// <summary>
     /// 标记是否为空的类型集合值

@@ -15,7 +15,7 @@ public class CaptchaBuilder
     /// <summary>
     /// 随机数
     /// </summary>
-    private static readonly Random Random = new Random((int)DateTime.Now.Ticks);
+    private static readonly Random Random = new((int)DateTime.Now.Ticks);
 
     /// <summary>
     /// 生成种子

@@ -11,7 +11,7 @@ public static class BingDateTimeExtensions
     /// 克隆
     /// </summary>
     /// <param name="dt">日期时间</param>
-    public static DateTime Clone(this DateTime dt) => new DateTime(dt.Ticks, dt.Kind);
+    public static DateTime Clone(this DateTime dt) => new(dt.Ticks, dt.Kind);
 
     #endregion
 }

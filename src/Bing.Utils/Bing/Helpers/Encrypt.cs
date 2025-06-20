@@ -142,7 +142,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="key">密钥，24位</param>
     private static TripleDESCryptoServiceProvider CreateDesProvider(string key) =>
-        new TripleDESCryptoServiceProvider
+        new()
         {
             Key = Encoding.ASCII.GetBytes(key),
             Mode = CipherMode.ECB,
@@ -270,7 +270,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="key">密钥</param>
     private static RijndaelManaged CreateRijndaelManaged(string key) =>
-        new RijndaelManaged
+        new()
         {
             Key = Convert.FromBase64String(key),
             Mode = CipherMode.CBC,

@@ -27,7 +27,7 @@ public class ItemTest
     [Fact]
     public void Test_NotContainsNull()
     {
-        var items = new List<Item> {new Item("Test", "666")};
+        var items = new List<Item> {new("Test", "666")};
         var json = JsonHelper.ToJson(items);
         json.ShouldNotContain("sortId");
         json.ShouldNotContain("group");

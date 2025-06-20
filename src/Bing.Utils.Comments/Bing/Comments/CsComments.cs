@@ -40,7 +40,7 @@ public sealed class CsComments
     /// <summary>
     /// 空注释
     /// </summary>
-    public static readonly CsComments Empty = new CsComments();
+    public static readonly CsComments Empty = new();
 
     /// <summary>
     /// 初始化一个<see cref="CsComments"/>类型的实例

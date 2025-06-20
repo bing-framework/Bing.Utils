@@ -24,9 +24,9 @@ public static class GuidJudge
     /// <summary>
     /// Guid 正则表达式
     /// </summary>
-    private static readonly Regex GuidSchema = new Regex("^[A-Fa-f0-9]{32}$|" +
-                                                         "^({|\\()?[A-Fa-f0-9]{8}-([A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}(}|\\))?$|" +
-                                                         "^({)?[0xA-Fa-f0-9]{3,10}(, {0,1}[0xA-Fa-f0-9]{3,6}){2},{0,1}({)([0xA-Fa-f0-9]{3,4}, {0,1}){7}[0xA-Fa-f0-9]{3,4}(}})$");
+    private static readonly Regex GuidSchema = new("^[A-Fa-f0-9]{32}$|" +
+                                                   "^({|\\()?[A-Fa-f0-9]{8}-([A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}(}|\\))?$|" +
+                                                   "^({)?[0xA-Fa-f0-9]{3,10}(, {0,1}[0xA-Fa-f0-9]{3,6}){2},{0,1}({)([0xA-Fa-f0-9]{3,4}, {0,1}){7}[0xA-Fa-f0-9]{3,4}(}})$");
 
     /// <summary>
     /// 判断 字符串是否有效<see cref="Guid"/>

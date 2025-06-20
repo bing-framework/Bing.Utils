@@ -20,7 +20,7 @@ public sealed class CsCommentsParam
     /// <summary>
     /// 空对象
     /// </summary>
-    public static readonly CsCommentsParam Empty = new CsCommentsParam();
+    public static readonly CsCommentsParam Empty = new();
 
     /// <summary>
     /// 初始化一个<see cref="CsCommentsParam"/>类型的实例

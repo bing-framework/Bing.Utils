@@ -89,7 +89,7 @@ public static class StringJudge
     /// <summary>
     /// WebUrl 正则表达式
     /// </summary>
-    private static readonly Regex WebUrlExpressionSchema = new Regex(@"(http|https)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?", INTERNAL_SCHEMA);
+    private static readonly Regex WebUrlExpressionSchema = new(@"(http|https)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?", INTERNAL_SCHEMA);
 
     /// <summary>
     /// 判断字符串是否为 Web Url 地址。
@@ -104,7 +104,7 @@ public static class StringJudge
     /// <summary>
     /// Email 正则表达式
     /// </summary>
-    private static readonly Regex EmailExpressionSchema = new Regex(@"^([0-9a-zA-Z]+[-._+&])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}$", INTERNAL_SCHEMA);
+    private static readonly Regex EmailExpressionSchema = new(@"^([0-9a-zA-Z]+[-._+&])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}$", INTERNAL_SCHEMA);
 
     /// <summary>
     /// 判断字符串是否为电子邮件。

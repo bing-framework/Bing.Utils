@@ -239,7 +239,7 @@ public class CmdHelper
         /// <param name="input">输入字符串</param>
         /// <param name="redirectOutput">是否重定向输出</param>
         private ProcessStartInfo BashInfo(string input, bool redirectOutput) =>
-            new ProcessStartInfo
+            new()
             {
                 FileName = _bashPath,
                 Arguments = $"-c \"{input}\"",

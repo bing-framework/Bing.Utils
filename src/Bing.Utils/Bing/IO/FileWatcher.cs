@@ -33,8 +33,7 @@ public class FileWatcher
     /// <summary>
     /// 监控器字典
     /// </summary>
-    private ConcurrentDictionary<string, FileSystemWatcher> _watchers =
-        new ConcurrentDictionary<string, FileSystemWatcher>();
+    private ConcurrentDictionary<string, FileSystemWatcher> _watchers = new();
 
     /// <summary>
     /// 初始化一个<see cref="FileWatcher"/>类型的实例

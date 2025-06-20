@@ -168,7 +168,7 @@ public static class RandomExtensions
     /// <param name="minValue">时间起始</param>
     /// <param name="maxValue">时间截止</param>
     public static DateTime NextDateTime(this Random random, DateTime minValue, DateTime maxValue) =>
-        new DateTime(minValue.Ticks + (long)((maxValue.Ticks - minValue.Ticks) * random.NextDouble()));
+        new(minValue.Ticks + (long)((maxValue.Ticks - minValue.Ticks) * random.NextDouble()));
 
     #endregion
 

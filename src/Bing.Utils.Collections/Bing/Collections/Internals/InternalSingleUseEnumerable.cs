@@ -11,7 +11,7 @@ internal class InternalSingleUseEnumerable<T> : IEnumerable<T>
     /// <summary>
     /// 迭代器对象锁
     /// </summary>
-    private readonly object _enumeratorLock = new object();
+    private readonly object _enumeratorLock = new();
 
     /// <summary>
     /// 迭代器

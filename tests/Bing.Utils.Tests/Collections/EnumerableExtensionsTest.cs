@@ -218,11 +218,11 @@ public class EnumerableExtensionsTest: TestBase
         // Arrange
         var source = new List<TestItem>
             {
-                new TestItem { Id = 1, Name = "Item 1" },
-                new TestItem { Id = 2, Name = "Item 2" },
-                new TestItem { Id = 3, Name = "Item 3" },
-                new TestItem { Id = 4, Name = "Item 4" },
-                new TestItem { Id = 5, Name = "Item 5" }
+                new() { Id = 1, Name = "Item 1" },
+                new() { Id = 2, Name = "Item 2" },
+                new() { Id = 3, Name = "Item 3" },
+                new() { Id = 4, Name = "Item 4" },
+                new() { Id = 5, Name = "Item 5" }
             };
         var chunkSize = 2;
 

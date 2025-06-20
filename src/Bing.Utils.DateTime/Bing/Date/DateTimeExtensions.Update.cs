@@ -6,6 +6,14 @@ public static partial class DateTimeExtensions
     #region At
 
     /// <summary>
+    /// 时间，修改它的时分
+    /// </summary>
+    /// <param name="dt">时间</param>
+    /// <param name="hour">时</param>
+    /// <param name="minute">分</param>
+    public static DateTime At(this DateTime dt, int hour, int minute) => dt.SetTime(hour, minute);
+
+    /// <summary>
     /// 时间，修改它的时分秒
     /// </summary>
     /// <param name="dt">时间</param>
@@ -23,6 +31,18 @@ public static partial class DateTimeExtensions
     /// <param name="second">秒</param>
     /// <param name="milliseconds">毫秒</param>
     public static DateTime At(this DateTime dt, int hour, int minute, int second, int milliseconds) => dt.SetTime(hour, minute, second, milliseconds);
+
+    /// <summary>
+    /// 设置时间为凌晨0点（午夜）
+    /// </summary>
+    /// <param name="dt">时间</param>
+    public static DateTime AtMidnight(this DateTime dt) => dt.SetTime(0, 0, 0, 0);
+
+    /// <summary>
+    /// 设置时间为中午12点（正午）
+    /// </summary>
+    /// <param name="dt">时间</param>
+    public static DateTime AtNoon(this DateTime dt) => dt.SetTime(12, 0, 0, 0);
 
     #endregion
 
@@ -102,18 +122,6 @@ public static partial class DateTimeExtensions
     /// <param name="dt">时间</param>
     /// <param name="millisecond">毫秒</param>
     public static DateTime SetMillisecond(this DateTime dt, int millisecond) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, millisecond, dt.Kind);
-
-    /// <summary>
-    /// 设置时间为凌晨0点（午夜）
-    /// </summary>
-    /// <param name="dt">时间</param>
-    public static DateTime Midnight(this DateTime dt) => dt.BeginningOfDay();
-
-    /// <summary>
-    /// 设置时间为中午12点（正午）
-    /// </summary>
-    /// <param name="dt">时间</param>
-    public static DateTime Noon(this DateTime dt) => dt.SetTime(12, 0, 0, 0);
 
     /// <summary>
     /// 设置日期

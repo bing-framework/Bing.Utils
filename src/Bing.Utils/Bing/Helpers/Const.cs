@@ -56,7 +56,7 @@ public sealed class Const
     /// <summary>
     /// 文件扩展类型字典
     /// </summary>
-    public static Dictionary<string, string> FileExtensionDict => new Dictionary<string, string>()
+    public static Dictionary<string, string> FileExtensionDict => new()
     {
         {".*", "application/octet-stream"},
         {".tif", "image/tiff"},
@@ -501,7 +501,7 @@ public sealed class Const
 
     #region Mime
 
-    public static Dictionary<string, string> Mime => new Dictionary<string, string>()
+    public static Dictionary<string, string> Mime => new()
     {
         {"3gp", "video/3gpp"},
         {"aab", "application/x-authoware-bin"},

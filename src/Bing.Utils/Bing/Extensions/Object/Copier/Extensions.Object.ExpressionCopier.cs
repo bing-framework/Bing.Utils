@@ -33,7 +33,7 @@ public static partial class ObjectExtensions
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once CollectionNeverUpdated.Local
         // ReSharper disable once StaticMemberInGenericType
-        private static readonly Dictionary<string, Expression> _check = new Dictionary<string, Expression>();
+        private static readonly Dictionary<string, Expression> _check = new();
 
         /// <summary>
         /// 函数

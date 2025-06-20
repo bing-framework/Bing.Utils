@@ -32,6 +32,18 @@ public static partial class DateTimeOffsetExtensions
     /// <param name="milliseconds">毫秒</param>
     public static DateTimeOffset At(this DateTimeOffset dto, int hour, int minute, int second, int milliseconds) => dto.SetTime(hour, minute, second, milliseconds);
 
+    /// <summary>
+    /// 设置时间点为凌晨0点（午夜）
+    /// </summary>
+    /// <param name="dto">时间点</param>
+    public static DateTimeOffset AtMidnight(this DateTimeOffset dto) => dto.SetTime(0, 0, 0, 0);
+
+    /// <summary>
+    /// 设置时间点为中午12点（正午）
+    /// </summary>
+    /// <param name="dto">时间点</param>
+    public static DateTimeOffset AtNoon(this DateTimeOffset dto) => dto.SetTime(12, 0, 0, 0);
+
     #endregion
 
     #region On
@@ -118,18 +130,6 @@ public static partial class DateTimeOffsetExtensions
     /// <param name="millisecond">毫秒</param>
     public static DateTimeOffset SetMillisecond(this DateTimeOffset originalDate, int millisecond) =>
         new(originalDate.Year, originalDate.Month, originalDate.Day, originalDate.Hour, originalDate.Minute, originalDate.Second, millisecond, originalDate.Offset);
-
-    /// <summary>
-    /// 设置时间点为凌晨0点（午夜）
-    /// </summary>
-    /// <param name="dto">时间点</param>
-    public static DateTimeOffset Midnight(this DateTimeOffset dto) => dto.BeginningOfDay();
-
-    /// <summary>
-    /// 设置时间点为中午12点（正午）
-    /// </summary>
-    /// <param name="dto">时间点</param>
-    public static DateTimeOffset Noon(this DateTimeOffset dto) => dto.SetTime(12, 0, 0, 0);
 
     /// <summary>
     /// 设置日期

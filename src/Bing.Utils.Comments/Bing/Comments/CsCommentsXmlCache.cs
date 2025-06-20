@@ -14,12 +14,12 @@ public static class CsCommentsXmlCache
     /// <summary>
     /// 缓存项。Key:Assembly.FullName   Value:XmlDocument
     /// </summary>
-    private static readonly Dictionary<string, XmlDocument> _cache = new Dictionary<string, XmlDocument>();
+    private static readonly Dictionary<string, XmlDocument> _cache = new();
 
     /// <summary>
     /// 缓存项。Key:XmlPath     Value:XmlDocument
     /// </summary>
-    private static readonly Dictionary<string, XmlDocument> _cacheByPath = new Dictionary<string, XmlDocument>(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, XmlDocument> _cacheByPath = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// 获取缓存项

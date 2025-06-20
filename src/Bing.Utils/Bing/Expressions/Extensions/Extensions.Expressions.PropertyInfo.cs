@@ -20,7 +20,7 @@ public static partial class ExpressionExtensions
             throw new ArgumentNullException(nameof(expression));
         var member = expression.Body as MemberExpression;
 
-        ArgumentException CreateExpressionNotPropertyException() => new ArgumentException($"The expression parameter ({nameof(expression)}) is not a property expression.");
+        ArgumentException CreateExpressionNotPropertyException() => new($"The expression parameter ({nameof(expression)}) is not a property expression.");
 
         if (member is null && expression.Body.NodeType == ExpressionType.Convert)
         {

@@ -69,9 +69,9 @@ public class SnowflakeIdGeneratorTest : TestBase
         Output.WriteLine("数量：" + _set.Count);
     }
 
-    private static object _lock = new object();
+    private static object _lock = new();
 
-    private static HashSet<long> _set = new HashSet<long>();
+    private static HashSet<long> _set = new();
 
     private void Create(long length)
     {

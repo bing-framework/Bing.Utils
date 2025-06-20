@@ -16,7 +16,7 @@ public static partial class DictionaryExtensions
     /// <typeparam name="TKey">键类型</typeparam>
     /// <typeparam name="TValue">值类型</typeparam>
     /// <param name="this">字典</param>
-    public static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IDictionary<TKey, TValue> @this) => new SortedDictionary<TKey, TValue>(@this);
+    public static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IDictionary<TKey, TValue> @this) => new(@this);
 
     /// <summary>
     /// 转换为有序字典
@@ -26,7 +26,7 @@ public static partial class DictionaryExtensions
     /// <param name="this">字典</param>
     /// <param name="comparer">键比较器</param>
     public static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IDictionary<TKey, TValue> @this, IComparer<TKey> comparer) =>
-        new SortedDictionary<TKey, TValue>(@this, comparer);
+        new(@this, comparer);
 
     /// <summary>
     /// 转换为集合(名称-值)

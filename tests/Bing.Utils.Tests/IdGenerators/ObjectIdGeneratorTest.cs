@@ -65,9 +65,9 @@ public class ObjectIdGeneratorTest : TestBase
         Output.WriteLine("数量：" + _set.Count);
     }
 
-    private static object _lock = new object();
+    private static object _lock = new();
 
-    private static HashSet<string> _set = new HashSet<string>();
+    private static HashSet<string> _set = new();
 
     private void Create(long length)
     {

@@ -10,7 +10,7 @@ public class DateTimeNullTo1900Converter : JsonConverter
     /// <summary>
     /// 默认日期
     /// </summary>
-    private static readonly DateTime DefaultDate = new DateTime(1900, 1, 1);
+    private static readonly DateTime DefaultDate = new(1900, 1, 1);
 
     /// <summary>
     /// 确定此实例是否可以转换指定的对象类型

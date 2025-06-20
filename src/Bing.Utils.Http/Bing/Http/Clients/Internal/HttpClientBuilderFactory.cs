@@ -18,8 +18,7 @@ internal static class HttpClientBuilderFactory
     /// <summary>
     /// 域名正则表达式
     /// </summary>
-    private static readonly Regex _domainRegex =
-        new Regex(@"(http|https)://(?<domain>[^(:|/]*)", RegexOptions.IgnoreCase);
+    private static readonly Regex _domainRegex = new(@"(http|https)://(?<domain>[^(:|/]*)", RegexOptions.IgnoreCase);
 
     /// <summary>
     /// 创建Http客户端

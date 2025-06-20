@@ -537,7 +537,7 @@ Where `a`.`IsDeny`=1 And `b`.`ApplicationId`='79c3c002-1474-4b3f-bf83-b17aa173a2
     {
         var list = new List<Tuple<int, decimal>>()
         {
-            new Tuple<int, decimal>(1, 20), new Tuple<int, decimal>(2, 20),
+            new(1, 20), new(2, 20),
         };
         var item = list.FirstOrDefault(x => x.Item1 == 3);
         Assert.Equal(default, item);

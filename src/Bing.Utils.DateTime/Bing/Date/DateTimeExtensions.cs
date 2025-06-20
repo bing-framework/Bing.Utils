@@ -82,7 +82,7 @@ public static partial class DateTimeExtensions
     /// 克隆
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime Clone(this DateTime dt) => new DateTime(dt.Ticks, dt.Kind);
+    public static DateTime Clone(this DateTime dt) => new(dt.Ticks, dt.Kind);
 
     #endregion
 
@@ -442,7 +442,7 @@ public static partial class DateTimeExtensions
     /// 转换为 UTC 时间
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime ToUtc(this DateTime dt) => new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, DateTimeKind.Utc);
+    public static DateTime ToUtc(this DateTime dt) => new(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, DateTimeKind.Utc);
 
     /// <summary>
     /// 转换为 CST 标准时间（北京时间，解决Linux时区问题）
@@ -477,7 +477,7 @@ public static partial class DateTimeExtensions
     /// 转换为 <see cref="LocalTime"/>
     /// </summary>
     /// <param name="dt">时间</param>
-    public static LocalTime ToLocalTime(this DateTime dt) => new LocalTime(dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
+    public static LocalTime ToLocalTime(this DateTime dt) => new(dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
 
     #endregion
 }
