@@ -308,13 +308,33 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 只获取字母和数字
+    /// 只获取字符串中的字母和数字字符
     /// </summary>
-    /// <param name="text">文本</param>
+    /// <param name="text">要过滤的文本</param>
+    /// <param name="mode">字符过滤模式，默认为ASCII模式</param>
+    /// <returns>
+    /// 仅包含字母和数字的字符序列。如果 <paramref name="text"/> 为 null 或空字符串，则返回空序列。
+    /// </returns>
+    /// <remarks>
+    /// 在标准模式下，使用 <see cref="char.IsLetterOrDigit(char)"/> 判断字符是否为字母或数字，
+    /// 因此会识别英文字母、数字以及其他 Unicode 字母和数字字符。
+    /// 在ASCII模式下，只识别基本的拉丁字母(a-z, A-Z)和阿拉伯数字(0-9)。
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// // 标准模式 (Unicode)
+    /// var result1 = Strings.FilterForNumbersAndLetters("Hello123!@#");       // 返回 "Hello123"
+    /// var result2 = Strings.FilterForNumbersAndLetters("测试ABC123");         // 返回 "测试ABC123"
+    /// 
+    /// // ASCII模式
+    /// var result3 = Strings.FilterForNumbersAndLetters("Hello123!@#", CharFilterMode.Ascii);       // 返回 "Hello123"
+    /// var result4 = Strings.FilterForNumbersAndLetters("测试ABC123", CharFilterMode.Ascii);         // 返回 "ABC123"
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<char> FilterForNumbersAndLetters(string text)
+    public static IEnumerable<char> FilterForNumbersAndLetters(string text, CharFilterMode mode = CharFilterMode.Ascii)
     {
-        return FilterByChar(text, LocalCheck);
+        return mode == CharFilterMode.Standard ? FilterByChar(text, char.IsLetterOrDigit) : FilterByChar(text, LocalCheck);
 
         bool LocalCheck(char @char) => (@char >= 'a' && @char <= 'z') || (@char >= 'A' && @char <= 'Z') || (@char >= '0' && @char <= '9');
     }
@@ -323,10 +343,19 @@ public static partial class Strings
     /// 只获取数字
     /// </summary>
     /// <param name="text">文本</param>
+    /// <param name="mode">字符过滤模式，默认为ASCII模式</param>
+    /// <returns>
+    /// 仅包含数字的字符序列。如果 <paramref name="text"/> 为 null 或空字符串，则返回空序列。
+    /// </returns>
+    /// <remarks>
+    /// 在标准模式下，使用 <see cref="char.IsDigit(char)"/> 判断字符是否为数字，
+    /// 会识别阿拉伯数字以及其他 Unicode 数字字符。
+    /// 在ASCII模式下，只识别阿拉伯数字(0-9)。
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<char> FilterForNumbers(string text)
+    public static IEnumerable<char> FilterForNumbers(string text, CharFilterMode mode = CharFilterMode.Ascii)
     {
-        return FilterByChar(text, LocalCheck);
+        return mode == CharFilterMode.Standard ? FilterByChar(text, char.IsDigit) : FilterByChar(text, LocalCheck);
 
         bool LocalCheck(char @char) => @char >= '0' && @char <= '9';
     }
@@ -335,10 +364,19 @@ public static partial class Strings
     /// 只获取字母
     /// </summary>
     /// <param name="text">文本</param>
+    /// <param name="mode">字符过滤模式，默认为ASCII模式</param>
+    /// <returns>
+    /// 仅包含字母的字符序列。如果 <paramref name="text"/> 为 null 或空字符串，则返回空序列。
+    /// </returns>
+    /// <remarks>
+    /// 在标准模式下，使用 <see cref="char.IsLetter(char)"/> 判断字符是否为字母，
+    /// 会识别英文字母以及其他 Unicode 字母字符。
+    /// 在ASCII模式下，只识别基本的拉丁字母(a-z, A-Z)。
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<char> FilterForLetters(string text)
+    public static IEnumerable<char> FilterForLetters(string text, CharFilterMode mode = CharFilterMode.Ascii)
     {
-        return FilterByChar(text, LocalCheck);
+        return mode == CharFilterMode.Standard ? FilterByChar(text, char.IsLetter) : FilterByChar(text, LocalCheck);
 
         bool LocalCheck(char @char) => (@char >= 'a' && @char <= 'z') || (@char >= 'A' && @char <= 'Z');
     }
@@ -372,22 +410,28 @@ public static partial class Strings
     /// 只获取字母和数字。
     /// </summary>
     /// <param name="text">文本</param>
+    /// <param name="mode">字符过滤模式，默认为ASCII模式</param>
+    /// <returns>仅包含字母和数字的字符串</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetNumbersAndLetters(string text) => Merge(FilterForNumbersAndLetters(text));
+    public static string GetNumbersAndLetters(string text, CharFilterMode mode = CharFilterMode.Ascii) => Merge(FilterForNumbersAndLetters(text, mode));
 
     /// <summary>
     /// 只获取数字。
     /// </summary>
     /// <param name="text">文本</param>
+    /// <param name="mode">字符过滤模式，默认为标准Unicode模式</param>
+    /// <returns>仅包含数字的字符串</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetNumbers(string text) => Merge(FilterForNumbers(text));
+    public static string GetNumbers(string text, CharFilterMode mode = CharFilterMode.Ascii) => Merge(FilterForNumbers(text, mode));
 
     /// <summary>
     /// 只获取字母。
     /// </summary>
     /// <param name="text">文本</param>
+    /// <param name="mode">字符过滤模式，默认为标准Unicode模式</param>
+    /// <returns>仅包含字母的字符串</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetLetters(string text) => Merge(FilterForLetters(text));
+    public static string GetLetters(string text, CharFilterMode mode = CharFilterMode.Ascii) => Merge(FilterForLetters(text, mode));
 
     /// <summary>
     /// 获取一个新的 GUID 字符串。

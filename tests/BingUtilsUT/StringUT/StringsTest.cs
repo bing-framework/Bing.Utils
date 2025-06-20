@@ -218,7 +218,199 @@ public class StringsTest
     }
 
     /// <summary>
-    /// 测试 - 只过滤字母和数字
+    /// 测试 - 字符过滤模式 - 标准模式和ASCII模式对比
+    /// </summary>
+    [Fact]
+    public void Test_CharFilterMode_Comparison()
+    {
+        // 准备含有各种类型字符的测试字符串
+        string testString = "Hello123测试世界!@#";
+
+        // 标准模式 - 保留Unicode字母和数字
+        var standardLettersAndNumbers = Strings.GetNumbersAndLetters(testString, CharFilterMode.Standard);
+        Assert.Equal("Hello123测试世界", standardLettersAndNumbers);
+
+        // ASCII模式 - 只保留ASCII字母和数字
+        var asciiLettersAndNumbers = Strings.GetNumbersAndLetters(testString, CharFilterMode.Ascii);
+        Assert.Equal("Hello123", asciiLettersAndNumbers);
+
+        // 标准模式 - 数字过滤
+        var standardNumbers = Strings.GetNumbers(testString, CharFilterMode.Standard);
+        Assert.Equal("123", standardNumbers);
+
+        // ASCII模式 - 数字过滤 (对数字结果应该相同)
+        var asciiNumbers = Strings.GetNumbers(testString, CharFilterMode.Ascii);
+        Assert.Equal("123", asciiNumbers);
+
+        // 标准模式 - 字母过滤
+        var standardLetters = Strings.GetLetters(testString, CharFilterMode.Standard);
+        Assert.Equal("Hello测试世界", standardLetters);
+
+        // ASCII模式 - 字母过滤
+        var asciiLetters = Strings.GetLetters(testString, CharFilterMode.Ascii);
+        Assert.Equal("Hello", asciiLetters);
+    }
+
+    /// <summary>
+    /// 测试 - 过滤字母和数字 - 各种Unicode字符集
+    /// </summary>
+    [Fact]
+    public void Test_FilterForNumbersAndLetters_UnicodeCharsets()
+    {
+        // 测试各种Unicode字符集
+
+        // 1. 拉丁字母扩展
+        string latinExtended = "ĀāĂăĄąĆćĈĉĊċČč";
+        var standardLatinExt = Strings.GetNumbersAndLetters(latinExtended, CharFilterMode.Standard);
+        var asciiLatinExt = Strings.GetNumbersAndLetters(latinExtended, CharFilterMode.Ascii);
+        Assert.Equal(latinExtended, standardLatinExt); // 标准模式保留所有拉丁扩展字母
+        Assert.Equal("", asciiLatinExt);              // ASCII模式过滤掉所有非ASCII字母
+
+        // 2. 希腊字母
+        string greek = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρςστυφχψω";
+        var standardGreek = Strings.GetNumbersAndLetters(greek, CharFilterMode.Standard);
+        var asciiGreek = Strings.GetNumbersAndLetters(greek, CharFilterMode.Ascii);
+        Assert.Equal(greek, standardGreek);  // 标准模式保留希腊字母
+        Assert.Equal("", asciiGreek);        // ASCII模式过滤掉希腊字母
+
+        // 3. 西里尔字母
+        string cyrillic = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+        var standardCyrillic = Strings.GetNumbersAndLetters(cyrillic, CharFilterMode.Standard);
+        var asciiCyrillic = Strings.GetNumbersAndLetters(cyrillic, CharFilterMode.Ascii);
+        Assert.Equal(cyrillic, standardCyrillic); // 标准模式保留西里尔字母
+        Assert.Equal("", asciiCyrillic);         // ASCII模式过滤掉西里尔字母
+
+        // 4. 阿拉伯文
+        string arabic = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
+        var standardArabic = Strings.GetNumbersAndLetters(arabic, CharFilterMode.Standard);
+        var asciiArabic = Strings.GetNumbersAndLetters(arabic, CharFilterMode.Ascii);
+        Assert.Equal(arabic, standardArabic); // 标准模式保留阿拉伯文
+        Assert.Equal("", asciiArabic);       // ASCII模式过滤掉阿拉伯文
+
+        // 5. 中日韩统一表意文字
+        string cjk = "你好世界こんにちは안녕하세요";
+        var standardCjk = Strings.GetNumbersAndLetters(cjk, CharFilterMode.Standard);
+        var asciiCjk = Strings.GetNumbersAndLetters(cjk, CharFilterMode.Ascii);
+        Assert.Equal(cjk, standardCjk); // 标准模式保留中日韩文字
+        Assert.Equal("", asciiCjk);    // ASCII模式过滤掉中日韩文字
+    }
+
+    /// <summary>
+    /// 测试 - 过滤数字 - Unicode和ASCII数字
+    /// </summary>
+    [Fact]
+    public void Test_FilterForNumbers_UnicodeDigits()
+    {
+        // 测试各种数字形式
+
+        // 1. 阿拉伯数字（ASCII数字）
+        string arabicNumerals = "0123456789";
+        var standardArabic = Strings.GetNumbers(arabicNumerals, CharFilterMode.Standard);
+        var asciiArabic = Strings.GetNumbers(arabicNumerals, CharFilterMode.Ascii);
+        Assert.Equal(arabicNumerals, standardArabic);
+        Assert.Equal(arabicNumerals, asciiArabic);
+
+        // 2. 全角数字
+        string fullWidthNumerals = "０１２３４５６７８９";
+        var standardFullWidth = Strings.GetNumbers(fullWidthNumerals, CharFilterMode.Standard);
+        var asciiFullWidth = Strings.GetNumbers(fullWidthNumerals, CharFilterMode.Ascii);
+        Assert.Equal(fullWidthNumerals, standardFullWidth); // 标准模式识别全角数字
+        Assert.Equal("", asciiFullWidth);                  // ASCII模式不识别全角数字
+
+        // 3. 其他Unicode数字
+        // 例如泰文数字、印度-阿拉伯数字等
+        string thaiNumerals = "๐๑๒๓๔๕๖๗๘๙"; // 泰文数字0-9
+        var standardThai = Strings.GetNumbers(thaiNumerals, CharFilterMode.Standard);
+        var asciiThai = Strings.GetNumbers(thaiNumerals, CharFilterMode.Ascii);
+        Assert.Equal(thaiNumerals, standardThai); // 标准模式识别泰文数字
+        Assert.Equal("", asciiThai);             // ASCII模式不识别泰文数字
+    }
+
+    /// <summary>
+    /// 测试 - 过滤字母和数字 - 正常情况
+    /// </summary>
+    [Theory]
+    [InlineData("Hello123!@#", "Hello123")]
+    [InlineData("测试ABC123", "ABC123")] // 中文也是字母的一种
+    [InlineData("12345", "12345")]
+    [InlineData("ABCDE", "ABCDE")]
+    [InlineData("!@#$%^", "")]
+    public void Test_FilterForNumbersAndLetters_Normal(string input, string expected)
+    {
+        var result = Strings.Merge(Strings.FilterForNumbersAndLetters(input));
+        Assert.Equal(expected, result);
+    }
+
+    /// <summary>
+    /// 测试 - 过滤字母和数字 - 边界情况
+    /// </summary>
+    [Theory]
+    [InlineData(null, "")]
+    [InlineData("", "")]
+    [InlineData(" ", "")]
+    public void Test_FilterForNumbersAndLetters_Edge(string input, string expected)
+    {
+        var result = Strings.Merge(Strings.FilterForNumbersAndLetters(input));
+        Assert.Equal(expected, result);
+    }
+
+    /// <summary>
+    /// 测试 - 过滤字母和数字 - 国际字符
+    /// </summary>
+    [Fact]
+    public void Test_FilterForNumbersAndLetters_International()
+    {
+        // 测试中文字符
+        string chineseInput = "你好123世界";
+        var chineseResult = Strings.Merge(Strings.FilterForNumbersAndLetters(chineseInput, CharFilterMode.Standard));
+        Assert.Equal("你好123世界", chineseResult);
+
+        // 测试希腊字母
+        string greekInput = "α β γ 123";
+        var greekResult = Strings.Merge(Strings.FilterForNumbersAndLetters(greekInput, CharFilterMode.Standard));
+        // 只保留希腊字母和数字，空格会被过滤掉
+        Assert.Equal("αβγ123", greekResult);
+
+        // 测试西里尔字母
+        string cyrillicInput = "Привет123";
+        var cyrillicResult = Strings.Merge(Strings.FilterForNumbersAndLetters(cyrillicInput, CharFilterMode.Standard));
+        Assert.Equal("Привет123", cyrillicResult);
+    }
+
+    /// <summary>
+    /// 测试 - 过滤字母和数字 - 混合各种字符
+    /// </summary>
+    [Fact]
+    public void Test_FilterForNumbersAndLetters_Mixed()
+    {
+        string mixedInput = "Hello世界123!@#$%^&*()_+";
+        var mixedResult = Strings.Merge(Strings.FilterForNumbersAndLetters(mixedInput, CharFilterMode.Standard));
+        Assert.Equal("Hello世界123", mixedResult);
+    }
+
+    /// <summary>
+    /// 测试 - 过滤字母和数字 - 与相关方法的比较
+    /// </summary>
+    [Fact]
+    public void Test_FilterForNumbersAndLetters_CompareWithRelated()
+    {
+        string input = "Hello123!@#";
+
+        // 获取字母和数字
+        var lettersAndNumbers = Strings.Merge(Strings.FilterForNumbersAndLetters(input));
+
+        // 分别获取字母和数字，然后合并
+        var letters = Strings.Merge(Strings.FilterForLetters(input));
+        var numbers = Strings.Merge(Strings.FilterForNumbers(input));
+        var combined = letters + numbers;
+
+        // 字母+数字的结果应当与直接获取字母和数字的结果相符（顺序可能不同）
+        Assert.Equal(lettersAndNumbers.Length, combined.Length);
+        Assert.Equal(lettersAndNumbers.OrderBy(c => c), combined.OrderBy(c => c));
+    }
+
+    /// <summary>
+    /// 测试 - GetNumbersAndLetters方法
     /// </summary>
     [Theory]
     [InlineData("Hello123!@#", "Hello123")]
@@ -226,9 +418,9 @@ public class StringsTest
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("!@#$%^", "")]
-    public void Test_FilterForNumbersAndLetters(string input, string expected)
+    public void Test_GetNumbersAndLetters(string input, string expected)
     {
-        var result = Strings.Merge(Strings.FilterForNumbersAndLetters(input));
+        var result = Strings.GetNumbersAndLetters(input);
         Assert.Equal(expected, result);
     }
 
@@ -289,21 +481,6 @@ public class StringsTest
     public void Test_GetLetters(string input, string expected)
     {
         var result = Strings.GetLetters(input);
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// 测试 - GetNumbersAndLetters方法
-    /// </summary>
-    [Theory]
-    [InlineData("Hello123!@#", "Hello123")]
-    [InlineData("测试ABC123", "ABC123")]
-    [InlineData("", "")]
-    [InlineData(null, "")]
-    [InlineData("!@#$%^", "")]
-    public void Test_GetNumbersAndLetters(string input, string expected)
-    {
-        var result = Strings.GetNumbersAndLetters(input);
         Assert.Equal(expected, result);
     }
 
