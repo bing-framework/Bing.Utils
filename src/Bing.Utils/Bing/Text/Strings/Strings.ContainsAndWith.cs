@@ -10,13 +10,27 @@ public static partial class Strings
     #region Contains
 
     /// <summary>
-    /// 在字符串中是否包含任意一个给定的子字符串。
+    /// 检查字符串中是否包含任意一个给定的子字符串
     /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="value">包含字符串</param>
-    /// <param name="values">包含字符串数组</param>
+    /// <param name="text">要检查的源字符串</param>
+    /// <param name="value">需要检查的第一个子字符串</param>
+    /// <param name="values">需要检查的其他子字符串</param>
+    /// <returns>
+    /// 如果源字符串包含任意一个给定的子字符串，则返回 true；否则返回 false。
+    /// 如果源字符串为 null 或空字符串，则始终返回 false。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.Contains("Hello World", "Hello") => true
+    /// Strings.Contains("Hello World", "xyz", "World") => true
+    /// Strings.Contains("Hello World", "xyz", "abc") => false
+    /// Strings.Contains(null, "Hello") => false
+    /// </code>
+    /// </example>
     public static bool Contains(string text, string value, params string[] values)
     {
+        if (string.IsNullOrEmpty(text))
+            return false;
         return YieldReturnStrings().Any(text.Contains);
 
         IEnumerable<string> YieldReturnStrings()
@@ -30,41 +44,83 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 在字符串中是否包含给定的字符。
+    /// 检查字符串中是否包含指定字符
     /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
+    /// <param name="text">要检查的源字符串</param>
+    /// <param name="character">需要检查的字符</param>
+    /// <returns>
+    /// 如果源字符串包含指定字符，则返回 true；否则返回 false。
+    /// 如果源字符串为 null 或空字符串，则返回 false。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.Contains("Hello", 'e') => true
+    /// Strings.Contains("Hello", 'x') => false
+    /// Strings.Contains("", 'e') => false
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(string text, char character) => text.Any(c => c == character);
-
-    /// <summary>
-    /// 在字符串中是否包含任意一个给定的字符。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
-    /// <param name="characters">包含字符数组</param>
-    public static bool Contains(string text, char character, params char[] characters)
+    public static bool Contains(string text, char character)
     {
-        return YieldReturnCharacters().Any(text.Contains);
-
-        IEnumerable<char> YieldReturnCharacters()
-        {
-            yield return character;
-            if (characters is null)
-                yield break;
-            foreach (var val in characters)
-                yield return val;
-        }
+        if (string.IsNullOrEmpty(text))
+            return false;
+        return text.IndexOf(character) >= 0;
     }
 
     /// <summary>
-    /// 在字符串中是否包含任意一个给定的子字符串，忽略大小写。
+    /// 检查字符串中是否包含任意一个给定的字符
     /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="value">包含字符串</param>
-    /// <param name="values">包含字符串数组</param>
+    /// <param name="text">要检查的源字符串</param>
+    /// <param name="character">需要检查的第一个字符</param>
+    /// <param name="characters">需要检查的其他字符</param>
+    /// <returns>
+    /// 如果源字符串包含任意一个给定的字符，则返回 true；否则返回 false。
+    /// 如果源字符串为 null 或空字符串，则返回 false。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.Contains("Hello", 'e', 'o') => true
+    /// Strings.Contains("Hello", 'x', 'y', 'z') => false
+    /// Strings.Contains("Hello", 'x', 'e') => true
+    /// </code>
+    /// </example>
+    public static bool Contains(string text, char character, params char[] characters)
+    {
+        if (string.IsNullOrEmpty(text))
+            return false;
+        if (text.IndexOf(character) >= 0)
+            return true;
+        if (characters is null || characters.Length == 0)
+            return false;
+        foreach (var c in characters)
+        {
+            if (text.IndexOf(c) >= 0)
+                return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 检查字符串中是否包含任意一个给定的子字符串（忽略大小写）
+    /// </summary>
+    /// <param name="text">要检查的源字符串</param>
+    /// <param name="value">需要检查的第一个子字符串</param>
+    /// <param name="values">需要检查的其他子字符串</param>
+    /// <returns>
+    /// 如果源字符串包含任意一个给定的子字符串（忽略大小写），则返回 true；否则返回 false。
+    /// 如果源字符串为 null 或空字符串，则返回 false。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.ContainsIgnoreCase("Hello World", "hello") => true
+    /// Strings.ContainsIgnoreCase("Hello World", "WORLD") => true
+    /// Strings.ContainsIgnoreCase("Hello World", "xyz", "world") => true
+    /// </code>
+    /// </example>
     public static bool ContainsIgnoreCase(string text, string value, params string[] values)
     {
+        if (string.IsNullOrEmpty(text))
+            return false;
         return YieldReturnStrings().Any(v => text.Contains(v, StringComparison.OrdinalIgnoreCase));
 
         IEnumerable<string> YieldReturnStrings()
@@ -78,76 +134,158 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 在字符串中是否包含给定的字符，忽略大小写。
+    /// 检查字符串中是否包含指定字符（忽略大小写）
     /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
+    /// <param name="text">要检查的源字符串</param>
+    /// <param name="character">需要检查的字符</param>
+    /// <returns>
+    /// 如果源字符串包含指定字符（忽略大小写），则返回 true；否则返回 false。
+    /// 如果源字符串为 null 或空字符串，则返回 false。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.ContainsIgnoreCase("Hello", 'E') => true
+    /// Strings.ContainsIgnoreCase("Hello", 'x') => false
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ContainsIgnoreCase(string text, char character)
     {
-        return text.Any(c => c == char.ToUpperInvariant(character) || c == char.ToLowerInvariant(character));
+        if (string.IsNullOrEmpty(text))
+            return false;
+        return text.IndexOf(character.ToString(), StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
     /// <summary>
-    /// 在字符串中是否包含任意一个给定的字符，忽略大小写。
+    /// 检查字符串中是否包含任意一个给定的字符（忽略大小写）
     /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
-    /// <param name="characters">包含字符数组</param>
+    /// <param name="text">要检查的源字符串</param>
+    /// <param name="character">需要检查的第一个字符</param>
+    /// <param name="characters">需要检查的其他字符</param>
+    /// <returns>
+    /// 如果源字符串包含任意一个给定的字符（忽略大小写），则返回 true；否则返回 false。
+    /// 如果源字符串为 null 或空字符串，则返回 false。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.ContainsIgnoreCase("Hello", 'E', 'O') => true
+    /// Strings.ContainsIgnoreCase("Hello", 'X', 'Y', 'Z') => false
+    /// </code>
+    /// </example>
     public static bool ContainsIgnoreCase(string text, char character, params char[] characters)
     {
-        return YieldReturnCharacters().Any(v => text.Contains(v, StringComparison.OrdinalIgnoreCase));
+        if (string.IsNullOrEmpty(text))
+            return false;
 
-        IEnumerable<char> YieldReturnCharacters()
+        if (text.IndexOf(character.ToString(), StringComparison.OrdinalIgnoreCase) >= 0)
+            return true;
+
+        if (characters is null || characters.Length == 0)
+            return false;
+
+        foreach (var c in characters)
         {
-            yield return character;
-            if (characters is null)
-                yield break;
-            foreach (var val in characters)
-                yield return val;
+            if (text.IndexOf(c.ToString(), StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
         }
+
+        return false;
     }
 
     /// <summary>
-    /// 在字符串中是否包含任意一个给定的子字符串，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
+    /// 检查字符串中是否包含任意一个给定的子字符串，根据忽略大小写选项决定比较方式
     /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="values">包含字符串数组</param>
+    /// <param name="text">要检查的源字符串</param>
+    /// <param name="values">需要检查的子字符串数组</param>
     /// <param name="case">忽略大小写选项</param>
+    /// <returns>
+    /// 如果源字符串包含任意一个给定的子字符串，则返回 true；否则返回 false。
+    /// 如果源字符串为 null 或空字符串，则返回 false。
+    /// 如果 values 为 null 或空数组，则返回 false。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.Contains("Hello World", new[]{"hello"}, IgnoreCase.True) => true
+    /// Strings.Contains("Hello World", new[]{"hello"}, IgnoreCase.False) => false
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Contains(string text, string[] values, IgnoreCase @case)
     {
+        if (string.IsNullOrEmpty(text) || values == null || values.Length == 0)
+            return false;
         return @case.X()
             ? values.Any(v => text.Contains(v, StringComparison.OrdinalIgnoreCase))
             : values.Any(text.Contains);
     }
 
     /// <summary>
-    /// 在字符串中是否包含给定的字符，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
+    /// 检查字符串中是否包含指定字符，根据忽略大小写选项决定比较方式
     /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
+    /// <param name="text">要检查的源字符串</param>
+    /// <param name="character">需要检查的字符</param>
     /// <param name="case">忽略大小写选项</param>
+    /// <returns>
+    /// 如果源字符串包含指定字符，则返回 true；否则返回 false。
+    /// 如果源字符串为 null 或空字符串，则返回 false。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.Contains("Hello", 'E', IgnoreCase.True) => true
+    /// Strings.Contains("Hello", 'E', IgnoreCase.False) => false
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Contains(string text, char character, IgnoreCase @case)
     {
+        if (string.IsNullOrEmpty(text))
+            return false;
         return @case.X()
             ? text.Any(c => c == char.ToUpperInvariant(character) || c == char.ToLowerInvariant(character))
             : text.Any(c => c == character);
     }
 
     /// <summary>
-    /// 在字符串中是否包含任意一个给定的字符，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
+    /// 检查字符串中是否包含任意一个给定的字符，根据忽略大小写选项决定比较方式
     /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="characters">包含字符数组</param>
+    /// <param name="text">要检查的源字符串</param>
+    /// <param name="characters">需要检查的字符数组</param>
     /// <param name="case">忽略大小写选项</param>
+    /// <returns>
+    /// 如果源字符串包含任意一个给定的字符，则返回 true；否则返回 false。
+    /// 如果源字符串为 null 或空字符串，则返回 false。
+    /// 如果 characters 为 null 或空数组，则返回 false。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Strings.Contains("Hello", new[]{'E','O'}, IgnoreCase.True) => true
+    /// Strings.Contains("Hello", new[]{'E','O'}, IgnoreCase.False) => false
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Contains(string text, char[] characters, IgnoreCase @case)
     {
-        return @case.X()
-            ? characters.Any(v => text.Contains(v, StringComparison.OrdinalIgnoreCase))
-            : characters.Any(text.Contains);
+        if (string.IsNullOrEmpty(text) || characters == null || characters.Length == 0)
+            return false;
+
+        if (@case.X())
+        {
+            foreach (var c in characters)
+            {
+                if (text.IndexOf(c.ToString(), StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+            return false;
+        }
+        else
+        {
+            foreach (var c in characters)
+            {
+                if (text.IndexOf(c) >= 0)
+                    return true;
+            }
+            return false;
+        }
     }
 
     #endregion
@@ -160,159 +298,6 @@ public static partial class Strings
     /// <param name="text">需要检查的字符串</param>
     /// <returns>如果字符串中包含 Emoji 表情，则返回 true，否则返回 false</returns>
     public static bool MatchEmoji(string text) => Regex.IsMatch(text, @"(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])");
-
-    #endregion
-}
-
-/// <summary>
-/// 字符串扩展
-/// </summary>
-public static partial class StringsExtensions
-{
-    #region Contains
-
-#if NETSTANDARD2_0
-
-    /// <summary>
-    /// 确定输入字符串是否包含指定字符串
-    /// </summary>
-    /// <param name="inputValue">输入字符串</param>
-    /// <param name="comparisonValue">包含字符串</param>
-    /// <param name="comparisonType">区域</param>
-    internal static bool Contains(this string inputValue, string comparisonValue, StringComparison comparisonType)
-    {
-        return (inputValue.IndexOf(comparisonValue, comparisonType) != -1);
-    }
-
-    /// <summary>
-    /// 确定输入字符串是否包含指定字符
-    /// </summary>
-    /// <param name="inputValue">输入字符串</param>
-    /// <param name="comparisonValue">包含字符</param>
-    /// <param name="comparisonType">区域</param>
-    internal static bool Contains(this string inputValue, char comparisonValue, StringComparison comparisonType)
-    {
-        return (inputValue.IndexOf(comparisonValue.ToString(), comparisonType) != -1);
-    }
-
-#endif
-
-    /// <summary>
-    /// 在字符串中是否包含任意一个给定的子字符串。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="value">包含字符串</param>
-    /// <param name="values">包含字符串数组</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(this string text, string value, params string[] values)
-    {
-        return Strings.Contains(text, value, values);
-    }
-
-    /// <summary>
-    /// 在字符串中是否包含给定的字符。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(this string text, char character)
-    {
-        return Strings.Contains(text, character);
-    }
-
-    /// <summary>
-    /// 在字符串中是否包含任意一个给定的字符。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
-    /// <param name="characters">包含字符数组</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(this string text, char character, params char[] characters)
-    {
-        return Strings.Contains(text, character, characters);
-    }
-
-    /// <summary>
-    /// 在字符串中是否包含任意一个给定的子字符串，忽略大小写。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="value">包含字符串</param>
-    /// <param name="values">包含字符串数组</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ContainsIgnoreCase(this string text, string value, params string[] values)
-    {
-        return Strings.ContainsIgnoreCase(text, value, values);
-    }
-
-    /// <summary>
-    /// 在字符串中是否包含给定的字符，忽略大小写。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ContainsIgnoreCase(this string text, char character)
-    {
-        return Strings.ContainsIgnoreCase(text, character);
-    }
-
-    /// <summary>
-    /// 在字符串中是否包含任意一个给定的字符，忽略大小写。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
-    /// <param name="characters">包含字符数组</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ContainsIgnoreCase(this string text, char character, params char[] characters)
-    {
-        return Strings.ContainsIgnoreCase(text, character, characters);
-    }
-
-    /// <summary>
-    /// 在字符串中是否包含任意一个给定的子字符串，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="values">包含字符串数组</param>
-    /// <param name="case">忽略大小写选项</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(this string text, string[] values, IgnoreCase @case)
-    {
-        return Strings.Contains(text, values, @case);
-    }
-
-    /// <summary>
-    /// 在字符串中是否包含给定的字符，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="character">包含字符</param>
-    /// <param name="case">忽略大小写选项</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(this string text, char character, IgnoreCase @case)
-    {
-        return Strings.Contains(text, character, @case);
-    }
-
-    /// <summary>
-    /// 在字符串中是否包含任意一个给定的字符，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    /// <param name="characters">包含字符数组</param>
-    /// <param name="case">忽略大小写选项</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(this string text, char[] characters, IgnoreCase @case)
-    {
-        return Strings.Contains(text, characters, @case);
-    }
-
-    #endregion
-
-    #region Match
-
-    /// <summary>
-    /// 匹配字符串中是否包含 Emoji 表情
-    /// </summary>
-    /// <param name="text">需要检查的字符串</param>
-    /// <returns>如果字符串中包含 Emoji 表情，则返回 true，否则返回 false</returns>
-    public static bool MatchEmoji(this string text) => Strings.MatchEmoji(text);
 
     #endregion
 }
