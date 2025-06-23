@@ -1,6 +1,4 @@
-﻿
-
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
 namespace Bing.Extensions;
 
 /// <summary>
@@ -19,10 +17,10 @@ public static partial class StringExtensions
         if (!File.Exists(fileName))
             return false;
 
-        byte[] fileData = File.ReadAllBytes(fileName);
+        var fileData = File.ReadAllBytes(fileName);
         if (fileData.Length == 0)
             return false;
-        ushort code = BitConverter.ToUInt16(fileData, 0);
+        var code = BitConverter.ToUInt16(fileData, 0);
         switch (code)
         {
             case 0x4D42://bmp
@@ -37,8 +35,6 @@ public static partial class StringExtensions
     }
 
     #endregion
-
-    
 
     #region IsItemInEnum(判断数据是否在给定的枚举定义中)
 

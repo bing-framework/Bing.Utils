@@ -2,7 +2,7 @@
 
 namespace BingUtilsUT.StringUT.Extensions;
 
-[Trait("StringUT", "StringExtensions.Is")]
+[Trait("StringUT.Extensions", "String.Is")]
 public class StringIsExtensionsTest
 {
     /// <summary>

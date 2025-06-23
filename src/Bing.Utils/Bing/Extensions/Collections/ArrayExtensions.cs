@@ -1,6 +1,4 @@
-﻿
-
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
 namespace Bing.Extensions;
 
 /// <summary>
@@ -25,7 +23,7 @@ public static partial class ArrayExtensions
     /// </example>
     public static T[] CombineArray<T>(this T[] combineWith, T[] arrayToCombine)
     {
-        if (combineWith != default(T[]) && arrayToCombine != default(T[]))
+        if (combineWith != null && arrayToCombine != null)
         {
             int initialSize = combineWith.Length;
             Array.Resize(ref combineWith, initialSize + arrayToCombine.Length);
@@ -69,8 +67,7 @@ public static partial class ArrayExtensions
                 b = new T[length];
         }
 
-        if (b == null)
-            b = new T[n];
+        b ??= new T[n];
         Array.Copy(source, index, b, 0, n);// 从source数组指定索引开始复制数据到b数组当中，直至到达指定长度结束复制
         return b;
     }

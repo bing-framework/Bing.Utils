@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Bing.Text;
 
@@ -546,26 +547,57 @@ public static partial class Strings
     #region Remove
 
     /// <summary>
-    /// 从字符串中移除给定的子字符串，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
+    /// 从字符串中移除给定的子字符串，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写
     /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="removeText">移除字符串</param>
-    /// <param name="case">忽略大小写选项</param>
+    /// <param name="text">源文本</param>
+    /// <param name="removeText">要移除的子字符串</param>
+    /// <param name="case">是否忽略大小写</param>
+    /// <returns>
+    /// 处理后的字符串。如果 <paramref name="text"/> 为 null，则返回 null；
+    /// 如果 <paramref name="removeText"/> 为 null 或空，则返回原字符串。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Remove("Hello World", "World") => "Hello "
+    /// Remove("Hello World", "world", IgnoreCase.True) => "Hello "
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Remove(string text, string removeText, IgnoreCase @case = IgnoreCase.False)
     {
+        if (text == null || string.IsNullOrEmpty(removeText))
+            return text;
         return @case.X()
             ? text.Replace(removeText, string.Empty, StringComparison.OrdinalIgnoreCase)
             : text.Replace(removeText, string.Empty);
     }
 
     /// <summary>
-    /// 移除所有指定的字符。
+    /// 从字符串中移除指定的一组字符
     /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="toRemove">移除字符集合</param>
+    /// <param name="text">源文本</param>
+    /// <param name="toRemove">要移除的字符数组</param>
+    /// <returns>
+    /// 处理后的字符串，不包含指定的任何字符。如果 <paramref name="text"/> 为 null，则返回 null；
+    /// 如果 <paramref name="toRemove"/> 为 null 或空数组，则返回原字符串。
+    /// </returns>
+    /// <remarks>
+    /// 该方法使用 <see cref="StringBuilder"/> 进行高效处理，移除所有匹配的字符。
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// RemoveChars("Hello World", 'e', 'o') => "Hll Wrld"
+    /// RemoveChars("Hello World", ' ') => "HelloWorld"
+    /// </code>
+    /// </example>
     public static string RemoveChars(string text, params char[] toRemove)
     {
+        if (text == null)
+            return null;
+
+        if (toRemove == null || toRemove.Length == 0)
+            return text;
+
         var builder = new StringBuilder(text);
         foreach (var remove in toRemove)
             builder.Replace(remove, char.MinValue);
@@ -574,88 +606,150 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 移除所有空格。
+    /// 移除字符串中的所有空格
     /// </summary>
-    /// <param name="text">文本</param>
+    /// <param name="text">源文本</param>
+    /// <returns>处理后的字符串，不包含任何空格</returns>
+    /// <example>
+    /// <code>
+    /// RemoveWhiteSpace("Hello World") => "HelloWorld"
+    /// RemoveWhiteSpace("  Hello  World  ") => "HelloWorld"
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string RemoveWhiteSpace(string text) => RemoveChars(text, ' ');
 
     /// <summary>
-    /// 从字符串中移除所有重复的空格。
+    /// 从字符串中移除连续的空白字符，将多个连续空白字符替换为单个空格
     /// </summary>
-    /// <param name="text">文本</param>
+    /// <param name="text">源文本</param>
+    /// <returns>
+    /// 处理后的字符串，连续的空白字符被替换为单个空格。
+    /// 如果 <paramref name="text"/> 为 null 或空字符串，则返回原值。
+    /// </returns>
+    /// <remarks>
+    /// 此方法使用正则表达式 <c>\s+</c> 匹配任意连续的空白字符，包括空格、制表符、换行符等。
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// RemoveDuplicateWhiteSpaces("Hello  World") => "Hello World"
+    /// RemoveDuplicateWhiteSpaces("Hello\t\nWorld") => "Hello World"
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveDuplicateWhiteSpaces(string text) => RemoveDuplicateChar(text, ' ');
+    public static string RemoveDuplicateWhiteSpaces(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+        return Regex.Replace(text, @"\s+", " ");
+    }
 
     /// <summary>
-    /// 从字符串中移除所有重复的字符。
+    /// 从字符串中移除指定字符的重复出现，只保留首次出现
     /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="charRemove">移除字符</param>
-    /// <param name="case">忽略大小写选项</param>
+    /// <param name="text">源文本</param>
+    /// <param name="charRemove">需要移除重复的字符</param>
+    /// <param name="case">是否忽略大小写</param>
+    /// <returns>
+    /// 处理后的字符串，其中指定字符的重复出现被移除。
+    /// 如果 <paramref name="text"/> 为 null 或空字符串，则返回原值。
+    /// </returns>
+    /// <remarks>
+    /// 当 <paramref name="case"/> 设为 <see cref="IgnoreCase.True"/> 时，将忽略大小写；
+    /// 例如，如果移除重复的 'a'，那么 'A' 也会被视为重复并移除。
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// RemoveDuplicateChar("Hello", 'l') => "Helo"
+    /// RemoveDuplicateChar("aAabBb", 'a', IgnoreCase.False) => "aAbBb"
+    /// RemoveDuplicateChar("aAabBb", 'a', IgnoreCase.True) => "abBb"
+    /// </code>
+    /// </example>
     public static string RemoveDuplicateChar(string text, char charRemove, IgnoreCase @case = IgnoreCase.False)
     {
         if (string.IsNullOrEmpty(text))
             return text;
         var builder = new StringBuilder();
-        int index = 0, offset, length = text.Length;
+        int index = 0, length = text.Length;
 
         Func<char, char, bool> equals = @case.X()
             ? (l, r) => l.EqualsIgnoreCase(r)
             : (l, r) => l == r;
 
-        while (true)
+        while (index < length)
         {
-            if (index >= length)
-                break;
-            var @char = text[index];
-            if (!equals(@char, charRemove))
+            var currentChar = text[index];
+            // 如果当前字符与要移除的字符不匹配，直接添加并移到下一个字符
+            if (!equals(currentChar, charRemove))
             {
-                builder.Append(@char);
+                builder.Append(currentChar);
                 index++;
+                continue;
             }
-            else
+
+            // 当前字符与要移除的字符匹配时，添加一次该字符
+            builder.Append(currentChar);
+
+            // 跳过所有连续的匹配字符
+            index++;
+            while (index < length && equals(text[index], charRemove))
             {
-                builder.Append(charRemove);
-                UpdateOffset();
-                index += offset;
+                index++;
             }
         }
 
         return builder.ToString();
-
-        void UpdateOffset()
-        {
-            offset = 0;
-            while (IsMatchedNextChar()) ++offset;
-        }
-
-        bool IsMatchedNextChar()
-        {
-            if (index + offset >= length)
-                return false;
-            return text[index + offset] == charRemove;
-        }
     }
 
     /// <summary>
-    /// 从给定的位置开始移除所有字符，位置从 0 开始计算。
+    /// 从字符串中移除指定索引位置之后的所有字符
     /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="indexOfStartToRemove">索引</param>
+    /// <param name="text">源文本</param>
+    /// <param name="indexOfStartToRemove">开始移除的索引位置（包含该位置的字符）</param>
+    /// <returns>
+    /// 处理后的字符串，不包含指定索引之后的任何字符。
+    /// 如果 <paramref name="indexOfStartToRemove"/> 小于或等于 0，则返回原字符串；
+    /// 如果大于字符串长度，则返回空字符串。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// RemoveSince("Hello World", 5) => "Hello"
+    /// RemoveSince("Hello World", 0) => "Hello World"
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string RemoveSince(string text, int indexOfStartToRemove)
     {
-        return indexOfStartToRemove <= 0 ? text : text[..indexOfStartToRemove];
+        if (text == null)
+            return null;
+        if (indexOfStartToRemove <= 0)
+            return text;
+        if (indexOfStartToRemove >= text.Length)
+            return string.Empty;
+        return text[..indexOfStartToRemove];
     }
 
     /// <summary>
-    /// 根据给定子字符串在字符串中的位置，移除该位置之后的所有字符。
+    /// 从字符串中移除指定子字符串首次出现位置之后的所有字符
     /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="removeFromThis">移除位置的字符串</param>
+    /// <param name="text">源文本</param>
+    /// <param name="removeFromThis">标记移除起始位置的子字符串</param>
+    /// <returns>
+    /// 处理后的字符串，不包含标记字符串首次出现位置及之后的任何字符。
+    /// 如果 <paramref name="text"/> 为 null，则返回 null；
+    /// 如果 <paramref name="removeFromThis"/> 为 null、空字符串或在源文本中未找到，则返回原字符串。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// RemoveSince("Hello World", "World") => "Hello "
+    /// RemoveSince("Hello World", "o") => "Hell"
+    /// RemoveSince("Hello World", "xyz") => "Hello World"
+    /// </code>
+    /// </example>
     public static string RemoveSince(string text, string removeFromThis)
     {
+        if (text == null)
+            return null;
         if (string.IsNullOrEmpty(removeFromThis))
             return text;
         var index = text.IndexOf(removeFromThis, StringComparison.Ordinal);
@@ -663,12 +757,28 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 根据给定子字符串在字符串中的位置，移除该位置之后的所有字符，并忽略大小写。
+    /// 从字符串中移除指定子字符串首次出现位置之后的所有字符（忽略大小写）
     /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="removeFromThis">移除位置的字符串</param>
+    /// <param name="text">源文本</param>
+    /// <param name="removeFromThis">标记移除起始位置的子字符串</param>
+    /// <returns>
+    /// 处理后的字符串，不包含标记字符串首次出现位置及之后的任何字符。
+    /// 如果 <paramref name="text"/> 为 null，则返回 null；
+    /// 如果 <paramref name="removeFromThis"/> 为 null、空字符串或在源文本中未找到，则返回原字符串。
+    /// </returns>
+    /// <remarks>
+    /// 此方法在查找子字符串时忽略大小写。
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// RemoveSinceIgnoreCase("Hello World", "world") => "Hello "
+    /// RemoveSinceIgnoreCase("Hello World", "HELLO") => ""
+    /// </code>
+    /// </example>
     public static string RemoveSinceIgnoreCase(string text, string removeFromThis)
     {
+        if (text == null)
+            return null;
         if (string.IsNullOrEmpty(removeFromThis))
             return text;
         var index = text.IndexOf(removeFromThis, StringComparison.OrdinalIgnoreCase);
@@ -676,11 +786,20 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 根据给定子字符串在字符串中的位置，移除该位置之后的所有字符，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
+    /// 从字符串中移除指定子字符串首次出现位置之后的所有字符，支持选择是否忽略大小写
     /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="removeFromThis">移除位置的字符串</param>
-    /// <param name="case">忽略大小写选项</param>
+    /// <param name="text">源文本</param>
+    /// <param name="removeFromThis">标记移除起始位置的子字符串</param>
+    /// <param name="case">是否忽略大小写</param>
+    /// <returns>
+    /// 处理后的字符串，根据 <paramref name="case"/> 参数确定查找子字符串的匹配规则。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// RemoveSince("Hello World", "world", IgnoreCase.True) => "Hello "
+    /// RemoveSince("Hello World", "world", IgnoreCase.False) => "Hello World"
+    /// </code>
+    /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string RemoveSince(string text, string removeFromThis, IgnoreCase @case)
     {
@@ -693,10 +812,21 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 移除起始字符串
+    /// 移除字符串开头的指定子字符串
     /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="start">要移除的值</param>
+    /// <param name="value">源文本</param>
+    /// <param name="start">需要移除的起始子字符串</param>
+    /// <returns>
+    /// 处理后的字符串，如果源字符串以指定子字符串开头，则移除该部分。
+    /// 如果 <paramref name="value"/> 为 null 或空白字符串，则返回空字符串；
+    /// 如果 <paramref name="start"/> 为 null 或空字符串，或源文本不以此开头，则返回源文本。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// RemoveStart("Hello World", "Hello") => " World"
+    /// RemoveStart("Hello World", "hello") => "Hello World" // 大小写敏感
+    /// </code>
+    /// </example>
     public static string RemoveStart(string value, string start)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -709,10 +839,21 @@ public static partial class Strings
     }
 
     /// <summary>
-    /// 移除末尾字符串
+    /// 移除字符串末尾的指定子字符串
     /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="end">要移除的值</param>
+    /// <param name="value">源文本</param>
+    /// <param name="end">需要移除的末尾子字符串</param>
+    /// <returns>
+    /// 处理后的字符串，如果源字符串以指定子字符串结尾，则移除该部分。
+    /// 如果 <paramref name="value"/> 为 null 或空白字符串，则返回空字符串；
+    /// 如果 <paramref name="end"/> 为 null 或空字符串，或源文本不以此结尾，则返回源文本。
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// RemoveEnd("Hello World", "World") => "Hello "
+    /// RemoveEnd("Hello World", "world") => "Hello World" // 大小写敏感
+    /// </code>
+    /// </example>
     public static string RemoveEnd(string value, string end)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -1248,99 +1389,6 @@ public static partial class StringsExtensions
     /// <exception cref="ArgumentException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Right(this string text, int length) => Strings.Right(text, length);
-
-    #endregion
-
-    #region Remove
-
-    /// <summary>
-    /// 从字符串中移除给定的子字符串，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
-    /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="removeText">移除字符串</param>
-    /// <param name="case">忽略大小写选项</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Remove(this string text, string removeText, IgnoreCase @case = IgnoreCase.False) => Strings.Remove(text, removeText, @case);
-
-    /// <summary>
-    /// 移除所有指定的字符。
-    /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="toRemove">移除字符集合</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveChars(this string text, params char[] toRemove) => Strings.RemoveChars(text, toRemove);
-
-    /// <summary>
-    /// 移除所有空格。
-    /// </summary>
-    /// <param name="text">文本</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveWhiteSpace(this string text) => Strings.RemoveWhiteSpace(text);
-
-    /// <summary>
-    /// 从字符串中移除所有重复的空格。
-    /// </summary>
-    /// <param name="text">文本</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveDuplicateWhiteSpaces(this string text) => Strings.RemoveDuplicateWhiteSpaces(text);
-
-    /// <summary>
-    /// 从字符串中移除所有重复的字符。
-    /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="charRemove">移除字符</param>
-    /// <param name="case">忽略大小写选项</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveDuplicateChar(this string text, char charRemove, IgnoreCase @case = IgnoreCase.False) => Strings.RemoveDuplicateChar(text, charRemove, @case);
-
-    /// <summary>
-    /// 从给定的位置开始移除所有字符，位置从 0 开始计算。
-    /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="indexOfStartToRemove">索引</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveSince(this string text, int indexOfStartToRemove) => Strings.RemoveSince(text, indexOfStartToRemove);
-
-    /// <summary>
-    /// 根据给定子字符串在字符串中的位置，移除该位置之后的所有字符。
-    /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="removeFromThis">移除位置的字符串</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveSince(this string text, string removeFromThis) => Strings.RemoveSince(text, removeFromThis);
-
-    /// <summary>
-    /// 根据给定子字符串在字符串中的位置，移除该位置之后的所有字符，并忽略大小写。
-    /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="removeFromThis">移除位置的字符串</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveSinceIgnoreCase(this string text, string removeFromThis) => Strings.RemoveSinceIgnoreCase(text, removeFromThis);
-
-    /// <summary>
-    /// 根据给定子字符串在字符串中的位置，移除该位置之后的所有字符，根据给定的 <see cref="IgnoreCase"/> 选项来决定是否忽略大小写。
-    /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="removeFromThis">移除位置的字符串</param>
-    /// <param name="case">忽略大小写选项</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveSince(string text, string removeFromThis, IgnoreCase @case) => Strings.RemoveSince(text, removeFromThis, @case);
-
-    /// <summary>
-    /// 移除起始字符串
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="start">要移除的值</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveStart(this string value, string start) => Strings.RemoveStart(value, start);
-
-    /// <summary>
-    /// 移除末尾字符串
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="end">要移除的值</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string RemoveEnd(this string value, string end) => Strings.RemoveEnd(value, end);
 
     #endregion
 
