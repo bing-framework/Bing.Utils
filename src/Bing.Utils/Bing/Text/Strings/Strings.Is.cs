@@ -40,26 +40,6 @@ public static partial class Strings
 }
 
 /// <summary>
-/// 字符串扩展
-/// </summary>
-public static partial class StringsExtensions
-{
-    /// <summary>
-    /// 判断是否为大写。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsUpper(this string text) => Strings.IsUpper(text);
-
-    /// <summary>
-    /// 判断是否为小写。
-    /// </summary>
-    /// <param name="text">字符串</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsLower(this string text) => Strings.IsLower(text);
-}
-
-/// <summary>
 /// 字符串捷径扩展
 /// </summary>
 public static partial class StringsShortcutExtensions

@@ -38,34 +38,7 @@ public static partial class StringExtensions
 
     #endregion
 
-    #region IsLike(通配符比较)
-
-    /// <summary>
-    /// 任何模式通配符比较
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="patterns">模式</param>
-    public static bool IsLikeAny(this string value, params string[] patterns) => patterns.Any(value.IsLike);
-
-    /// <summary>
-    /// 通配符比较
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="pattern">模式</param>
-    public static bool IsLike(this string value, string pattern)
-    {
-        if (value == pattern)
-            return true;
-        if (pattern[0] == '*' && pattern.Length > 1)
-            return value.Where((t, index) => value.Substring(index).IsLike(pattern.Substring(1))).Any();
-        if (pattern[0] == '*')
-            return true;
-        if (pattern[0] == value[0])
-            return value.Substring(1).IsLike(pattern.Substring(1));
-        return false;
-    }
-
-    #endregion
+    
 
     #region IsItemInEnum(判断数据是否在给定的枚举定义中)
 
