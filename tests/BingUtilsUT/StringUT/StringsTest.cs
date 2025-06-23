@@ -1,4 +1,5 @@
-﻿using Bing.Text;
+﻿using Bing.Extensions;
+using Bing.Text;
 
 namespace BingUtilsUT.StringUT;
 
@@ -44,30 +45,6 @@ public class StringsTest
     }
 
     /// <summary>
-    /// 测试 - 相等判断，忽略大小写 - 2个字符串
-    /// </summary>
-    [Fact]
-    public void Test_EqualsIgnoreCase()
-    {
-        "AAA".EqualsIgnoreCase("aaa").ShouldBeTrue();
-        "aaa".EqualsIgnoreCase("AAA").ShouldBeTrue();
-        "AaA".EqualsIgnoreCase("aAa").ShouldBeTrue();
-        "".EqualsIgnoreCase("").ShouldBeTrue();
-    }
-
-    /// <summary>
-    /// 测试 - 相等判断，忽略大小写 - 多个字符串
-    /// </summary>
-    [Fact]
-    public void Test_EqualsToAnyIgnoreCase()
-    {
-        "AAA".EqualsToAnyIgnoreCase("a", "aa", "aaa").ShouldBeTrue();
-        "aaa".EqualsToAnyIgnoreCase("b", "a", "bb", "AA", "AAA").ShouldBeTrue();
-        "ZZZ".EqualsToAnyIgnoreCase().ShouldBeFalse();
-        "ZZZ".EqualsToAnyIgnoreCase(null).ShouldBeFalse();
-    }
-
-    /// <summary>
     /// 测试 - 返回是否包含字母
     /// </summary>
     [Fact]
@@ -90,6 +67,396 @@ public class StringsTest
         Strings.HasLettersAtLeast("1234567890a", 1).ShouldBeTrue();
         Strings.HasLettersAtLeast("1234567890a", 2).ShouldBeFalse();
     }
+
+    #region Equals
+
+    /// <summary>
+    /// 测试 - 确定字符串是否与指定集合中的任一字符串相等
+    /// </summary>
+    [Fact]
+    public void Test_EqualsAnyOf()
+    {
+        // 区分大小写
+        "Hello".EqualsAnyOf(StringComparison.Ordinal, "Hello", "World").ShouldBeTrue();
+        "Hello".EqualsAnyOf(StringComparison.Ordinal, "hello", "World").ShouldBeFalse();
+
+        // 忽略大小写
+        "Hello".EqualsAnyOf(StringComparison.OrdinalIgnoreCase, "hello", "World").ShouldBeTrue();
+        "Hello".EqualsAnyOf(StringComparison.OrdinalIgnoreCase, "HELLO", "WORLD").ShouldBeTrue();
+        "Hello".EqualsAnyOf(StringComparison.OrdinalIgnoreCase, "hi", "world").ShouldBeFalse();
+
+        // 空字符串比较
+        "".EqualsAnyOf(StringComparison.Ordinal, "").ShouldBeTrue();
+        "".EqualsAnyOf(StringComparison.Ordinal, "Empty").ShouldBeFalse();
+
+        // null 值处理
+        string nullString = null;
+        nullString.EqualsAnyOf(StringComparison.Ordinal, null).ShouldBeFalse();
+        "Hello".EqualsAnyOf(StringComparison.Ordinal, null).ShouldBeFalse();
+        nullString.EqualsAnyOf(StringComparison.Ordinal, "").ShouldBeFalse();
+
+        // 空参数数组
+        "Hello".EqualsAnyOf(StringComparison.Ordinal).ShouldBeFalse();
+
+        // 匹配集合中的不同元素
+        "Hello".EqualsAnyOf(StringComparison.Ordinal, "Bye", "Hello", "Hi").ShouldBeTrue();
+        "World".EqualsAnyOf(StringComparison.Ordinal, "Hello", "World", "Hi").ShouldBeTrue();
+        "Hi".EqualsAnyOf(StringComparison.Ordinal, "Hello", "World", "Hi").ShouldBeTrue();
+
+        // 不匹配任何元素
+        "Hello".EqualsAnyOf(StringComparison.Ordinal, "Bye", "Good", "Hi").ShouldBeFalse();
+
+        // 各种 StringComparison 选项
+        "Hello".EqualsAnyOf(StringComparison.CurrentCulture, "Hello", "World").ShouldBeTrue();
+        "Hello".EqualsAnyOf(StringComparison.InvariantCulture, "Hello", "World").ShouldBeTrue();
+        "Hello".EqualsAnyOf(StringComparison.CurrentCultureIgnoreCase, "hello", "World").ShouldBeTrue();
+        "Hello".EqualsAnyOf(StringComparison.InvariantCultureIgnoreCase, "hello", "World").ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// 测试 - 确定字符串是否与指定集合中的任一字符串相等，忽略大小写
+    /// </summary>
+    [Fact]
+    public void Test_EqualsAnyOfIgnoreCase()
+    {
+        // 基本测试，忽略大小写
+        "AAA".EqualsAnyOfIgnoreCase("a", "aa", "aaa").ShouldBeTrue();
+        "aaa".EqualsAnyOfIgnoreCase("b", "a", "bb", "AA", "AAA").ShouldBeTrue();
+        "Hello".EqualsAnyOfIgnoreCase("hello", "HELLO", "HeLLo").ShouldBeTrue();
+        "Hello".EqualsAnyOfIgnoreCase("hi", "world", "bye").ShouldBeFalse();
+
+        // 空字符串
+        "".EqualsAnyOfIgnoreCase("").ShouldBeTrue();
+        "".EqualsAnyOfIgnoreCase("Empty").ShouldBeFalse();
+
+        // null 值处理
+        string nullString = null;
+        nullString.EqualsAnyOfIgnoreCase(null).ShouldBeFalse();
+        nullString.EqualsAnyOfIgnoreCase("").ShouldBeFalse();
+        "Hello".EqualsAnyOfIgnoreCase(null).ShouldBeFalse();
+
+        // 空参数数组
+        "ZZZ".EqualsAnyOfIgnoreCase().ShouldBeFalse();
+
+        // 文化相关的字符处理
+        "café".EqualsAnyOfIgnoreCase("CAFÉ", "COFFEE").ShouldBeTrue();
+        "istanbul".EqualsAnyOfIgnoreCase("ISTANBUL", "TURKEY").ShouldBeTrue();
+
+        // 匹配集合中的不同元素
+        "Hello".EqualsAnyOfIgnoreCase("bye", "hello", "hi").ShouldBeTrue();
+        "World".EqualsAnyOfIgnoreCase("hello", "world", "hi").ShouldBeTrue();
+        "Hi".EqualsAnyOfIgnoreCase("hello", "world", "hi").ShouldBeTrue();
+
+        // 不匹配任何元素
+        "Hello".EqualsAnyOfIgnoreCase("bye", "good", "hi").ShouldBeFalse();
+    }
+
+    /// <summary>
+    /// 测试 - EqualsAnyOf 和 EqualsAnyOfIgnoreCase 的特殊情况
+    /// </summary>
+    [Fact]
+    public void Test_EqualsAnyOf_SpecialCases()
+    {
+        // 特殊字符串
+        "Hello\r\nWorld".EqualsAnyOf(StringComparison.Ordinal, "Hello\r\nWorld").ShouldBeTrue();
+        "Hello\r\nWorld".EqualsAnyOf(StringComparison.Ordinal, "Hello\nWorld").ShouldBeFalse();
+
+        // 特殊字符
+        "Hello@World".EqualsAnyOf(StringComparison.Ordinal, "Hello@World", "Test").ShouldBeTrue();
+        "Hello🙂World".EqualsAnyOf(StringComparison.Ordinal, "Hello🙂World", "Test").ShouldBeTrue();
+
+        // 不可见字符
+        "Hello\u200BWorld".EqualsAnyOf(StringComparison.Ordinal, "Hello\u200BWorld").ShouldBeTrue(); // 零宽空格
+        "Hello\u200BWorld".EqualsAnyOf(StringComparison.Ordinal, "HelloWorld").ShouldBeFalse();
+
+        // 首尾空格处理 (这些方法不应修剪空格，区别于 EqualsInvariant)
+        "  Hello  ".EqualsAnyOf(StringComparison.Ordinal, "  Hello  ").ShouldBeTrue();
+        "  Hello  ".EqualsAnyOf(StringComparison.Ordinal, "Hello").ShouldBeFalse();
+
+        // 同样测试 EqualsAnyOfIgnoreCase
+        "Hello\r\nWorld".EqualsAnyOfIgnoreCase("HELLO\r\nWORLD").ShouldBeTrue();
+        "Hello@World".EqualsAnyOfIgnoreCase("HELLO@WORLD", "TEST").ShouldBeTrue();
+        "  Hello  ".EqualsAnyOfIgnoreCase("  HELLO  ").ShouldBeTrue();
+        "  Hello  ".EqualsAnyOfIgnoreCase("HELLO").ShouldBeFalse();
+    }
+
+    /// <summary>
+    /// 测试 - 比较不同方法实现的性能差异 (仅用于标记潜在优化点)
+    /// </summary>
+    [Fact]
+    public void Test_EqualsAnyOf_Performance_Comparison()
+    {
+        string testValue = "HelloWorld";
+        string[] testArray = new[] { "Test1", "Test2", "Test3", "Test4", "Test5", "HelloWorld" };
+
+        // 对比优化前后的性能
+        // 1. 直接使用 LINQ Any 方法
+        bool result1 = testArray.Any(v => string.Equals(testValue, v, StringComparison.Ordinal));
+
+        // 2. 使用优化后的 EqualsAnyOf 方法
+        bool result2 = testValue.EqualsAnyOf(StringComparison.Ordinal, testArray);
+
+        // 结果应该是相同的
+        Assert.Equal(result1, result2);
+    }
+
+    /// <summary>
+    /// 测试 - 相等判断，忽略大小写 - 2个字符串
+    /// </summary>
+    [Fact]
+    public void Test_EqualsIgnoreCase()
+    {
+        "AAA".EqualsIgnoreCase("aaa").ShouldBeTrue();
+        "aaa".EqualsIgnoreCase("AAA").ShouldBeTrue();
+        "AaA".EqualsIgnoreCase("aAa").ShouldBeTrue();
+        "".EqualsIgnoreCase("").ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// 测试 - 相等判断，使用不变区域性比较并忽略大小写
+    /// </summary>
+    [Fact]
+    public void Test_EqualsInvariant()
+    {
+        // 基本比较，大小写不同
+        "AAA".EqualsInvariant("aaa").ShouldBeTrue();
+        "aaa".EqualsInvariant("AAA").ShouldBeTrue();
+        "AaA".EqualsInvariant("aAa").ShouldBeTrue();
+
+        // 带空格的比较
+        "  AAA  ".EqualsInvariant("aaa").ShouldBeTrue();
+        "AAA".EqualsInvariant("  aaa  ").ShouldBeTrue();
+        "  AaA  ".EqualsInvariant("  aAa  ").ShouldBeTrue();
+
+        // 空字符串比较
+        "".EqualsInvariant("").ShouldBeTrue();
+        "  ".EqualsInvariant("").ShouldBeTrue();
+        "".EqualsInvariant("  ").ShouldBeTrue();
+        "  ".EqualsInvariant("  ").ShouldBeTrue();
+
+        // null 值比较
+        string nullString = null;
+        string anotherNullString = null;
+        nullString.EqualsInvariant(anotherNullString).ShouldBeTrue();
+        nullString.EqualsInvariant("").ShouldBeFalse();
+        "".EqualsInvariant(nullString).ShouldBeFalse();
+        "AAA".EqualsInvariant(nullString).ShouldBeFalse();
+        nullString.EqualsInvariant("AAA").ShouldBeFalse();
+
+        // 不相等的情况
+        "AAA".EqualsInvariant("BBB").ShouldBeFalse();
+        "AAA".EqualsInvariant("AAAA").ShouldBeFalse();
+        "AAAA".EqualsInvariant("AAA").ShouldBeFalse();
+
+        // 特殊字符比较
+        "Hello!".EqualsInvariant("hello!").ShouldBeTrue();
+        "Привет".EqualsInvariant("привет").ShouldBeTrue();
+        "你好".EqualsInvariant("你好").ShouldBeTrue();
+
+        // 带重音符号字符的比较 (区域性相关)
+        "café".EqualsInvariant("CAFÉ").ShouldBeTrue();
+        "résumé".EqualsInvariant("RÉSUMÉ").ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// 测试 - 特殊区域性情况下的相等判断
+    /// </summary>
+    [Fact]
+    public void Test_EqualsInvariant_Culture()
+    {
+        // 土耳其区域性中 'i' 和 'I' 的大小写转换规则不同
+        // 但使用 InvariantCultureIgnoreCase 可以保证一致性
+        "istanbul".EqualsInvariant("ISTANBUL").ShouldBeTrue();
+        "file".EqualsInvariant("FILE").ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// 测试 - 使用可定制选项比较两个字符串是否相等
+    /// </summary>
+    [Fact]
+    public void Test_EqualsWithOptions()
+    {
+        // 基本比较 - 默认使用 InvariantCultureIgnoreCase
+        "Hello".EqualsWithOptions("hello").ShouldBeTrue();
+        "Hello".EqualsWithOptions("HELLO").ShouldBeTrue();
+        "Hello".EqualsWithOptions("world").ShouldBeFalse();
+
+        // 使用不同的比较类型
+        "Hello".EqualsWithOptions("hello", StringComparison.Ordinal).ShouldBeFalse();
+        "Hello".EqualsWithOptions("Hello", StringComparison.Ordinal).ShouldBeTrue();
+        "café".EqualsWithOptions("café", StringComparison.Ordinal).ShouldBeTrue();
+        "cafe".EqualsWithOptions("café", StringComparison.InvariantCulture).ShouldBeFalse();
+
+        // 带 trim 参数
+        "  Hello  ".EqualsWithOptions("hello", trim: true).ShouldBeTrue();
+        "  Hello  ".EqualsWithOptions("hello", trim: false).ShouldBeFalse();
+        "  ".EqualsWithOptions("", trim: true).ShouldBeTrue();
+        "  ".EqualsWithOptions("", trim: false).ShouldBeFalse();
+
+        // 处理 null 值
+        string nullString = null;
+        string anotherNullString = null;
+        nullString.EqualsWithOptions(anotherNullString, handleNull: true).ShouldBeTrue();
+        nullString.EqualsWithOptions("", handleNull: true).ShouldBeFalse();
+        "".EqualsWithOptions(nullString, handleNull: true).ShouldBeFalse();
+
+        // 不特殊处理null值时遵循普通string.Equals行为
+        nullString.EqualsWithOptions(anotherNullString).ShouldBeTrue();
+        nullString.EqualsWithOptions("").ShouldBeFalse();
+        "".EqualsWithOptions(nullString).ShouldBeFalse();
+
+        // 组合使用选项
+        "  Hello  ".EqualsWithOptions("hello", StringComparison.OrdinalIgnoreCase, trim: true, handleNull: true).ShouldBeTrue();
+        "  Hello  ".EqualsWithOptions("hello", StringComparison.Ordinal, trim: true, handleNull: true).ShouldBeFalse();
+    }
+
+    /// <summary>
+    /// 测试 - EqualsTo 方法（兼容性方法）
+    /// </summary>
+    [Fact]
+    public void Test_EqualsTo()
+    {
+        // 基本比较 - 默认使用 InvariantCultureIgnoreCase
+        "Hello".EqualsTo("hello").ShouldBeTrue();
+        "Hello".EqualsTo("HELLO").ShouldBeTrue();
+        "Hello".EqualsTo("world").ShouldBeFalse();
+
+        // 使用不同的比较类型
+        "Hello".EqualsTo("hello", StringComparison.Ordinal).ShouldBeFalse();
+        "Hello".EqualsTo("Hello", StringComparison.Ordinal).ShouldBeTrue();
+
+        // 不应该处理空格（这是与 EqualsWithOptions 的区别）
+        "  Hello  ".EqualsTo("hello").ShouldBeFalse();
+
+        // 验证 null 值处理行为与 EqualsWithOptions(..., handleNull: false) 一致
+        string nullString = null;
+        string anotherNullString = null;
+        nullString.EqualsTo(anotherNullString).ShouldBeTrue();
+        nullString.EqualsTo("").ShouldBeFalse();
+        "".EqualsTo(nullString).ShouldBeFalse();
+    }
+
+    /// <summary>
+    /// 测试 - 字符串比较方法的一致性
+    /// </summary>
+    [Fact]
+    public void Test_StringComparisonConsistency()
+    {
+        // 测试三个相关方法的行为是否一致
+
+        // 1. 简单大小写忽略比较
+        "Hello".EqualsIgnoreCase("hello").ShouldBeTrue();
+        "Hello".EqualsWithOptions("hello", StringComparison.OrdinalIgnoreCase).ShouldBeTrue();
+
+        // 2. 带空格的比较
+        "  Hello  ".EqualsInvariant("hello").ShouldBeTrue();
+        "  Hello  ".EqualsWithOptions("hello", trim: true).ShouldBeTrue();
+
+        // 3. null值比较
+        string nullString = null;
+        string anotherNull = null;
+        nullString.EqualsInvariant(anotherNull).ShouldBeTrue();
+        nullString.EqualsWithOptions(anotherNull, handleNull: true).ShouldBeTrue();
+
+        // 4. 确认不同方法在相同参数下行为一致
+        // a. EqualsInvariant 相当于 EqualsWithOptions 使用特定参数
+        string test1 = "  Hello  ";
+        string test2 = "hello";
+        test1.EqualsInvariant(test2).ShouldBeEquivalentTo(
+            test1.EqualsWithOptions(test2, StringComparison.InvariantCultureIgnoreCase, trim: true, handleNull: true));
+
+        // b. EqualsIgnoreCase 相当于 EqualsWithOptions 使用特定参数
+        string test3 = "Hello";
+        string test4 = "HELLO";
+        test3.EqualsIgnoreCase(test4).ShouldBeEquivalentTo(
+            test3.EqualsWithOptions(test4, StringComparison.OrdinalIgnoreCase));
+
+        // c. EqualsTo 相当于 EqualsWithOptions 不使用高级选项
+        string test5 = "Hello";
+        string test6 = "hello";
+        test5.EqualsTo(test6).ShouldBeEquivalentTo(
+            test5.EqualsWithOptions(test6, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    /// <summary>
+    /// 测试 - 字符串比较方法在区域性敏感场景下的行为
+    /// </summary>
+    [Fact]
+    public void Test_StringComparison_CultureSensitive()
+    {
+        // 1. 土耳其语区域性中，'i' 大写是 'İ' (带点的I)，而不是 'I'
+        // 使用InvariantCulture可以避免这种区域性差异
+
+        // 在土耳其语环境下，这个比较会失败
+        "file".EqualsWithOptions("FILE", StringComparison.CurrentCultureIgnoreCase).ShouldBeTrue();
+
+        // 使用InvariantCultureIgnoreCase保证在所有区域都一致
+        "file".EqualsWithOptions("FILE", StringComparison.InvariantCultureIgnoreCase).ShouldBeTrue();
+        "file".EqualsInvariant("FILE").ShouldBeTrue();
+
+        // 2. 测试带重音符号的字符串比较
+        "café".EqualsWithOptions("CAFÉ", StringComparison.InvariantCultureIgnoreCase).ShouldBeTrue();
+        "café".EqualsInvariant("CAFÉ").ShouldBeTrue();
+
+        // 3. 测试Unicode标准化形式的差异
+        // 如："é" 可以是单个字符，也可以是 'e' + 组合重音符
+        string normalizedE1 = "é"; // 单个字符
+        string normalizedE2 = "e\u0301"; // 'e' + 组合重音符
+
+        // 使用Ordinal比较时会认为不同
+        normalizedE1.EqualsWithOptions(normalizedE2, StringComparison.Ordinal).ShouldBeFalse();
+
+        // 对于用户界面显示的字符串，使用InvariantCultureIgnoreCase更合适
+        normalizedE1.EqualsInvariant(normalizedE2).ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// 测试 - 字符串比较方法的特殊场景
+    /// </summary>
+    [Fact]
+    public void Test_StringComparison_SpecialCases()
+    {
+        // 1. 空字符串与null比较
+        string emptyString = "";
+        string nullString = null;
+        string whitespaceString = "   ";
+
+        // null值处理
+        nullString.EqualsWithOptions(nullString, handleNull: true).ShouldBeTrue();
+        nullString.EqualsWithOptions(emptyString, handleNull: true).ShouldBeFalse();
+
+        // 空格处理
+        whitespaceString.EqualsWithOptions(emptyString, trim: true).ShouldBeTrue();
+        whitespaceString.EqualsWithOptions(emptyString, trim: false).ShouldBeFalse();
+
+        // 2. 非打印字符比较
+        string withNonPrintable1 = "Hello\u200BWorld"; // 零宽空格
+        string withNonPrintable2 = "Hello\u200BWorld";
+        string withoutNonPrintable = "HelloWorld";
+
+        withNonPrintable1.EqualsWithOptions(withNonPrintable2).ShouldBeTrue();
+        withNonPrintable1.EqualsWithOptions(withoutNonPrintable, StringComparison.Ordinal).ShouldBeFalse();
+
+        // 3. 组合使用选项处理复杂情况
+        string complexString1 = "  Hello\u200BWorld  ";
+        string complexString2 = "hello\u200Bworld";
+
+        // 忽略大小写 + 修剪空格 + 继续保留非打印字符
+        complexString1.EqualsWithOptions(complexString2,
+            StringComparison.OrdinalIgnoreCase, trim: true).ShouldBeTrue();
+
+        // 4. 特殊场景：验证方法的鲁棒性
+        // 当一个字符串为null，另一个不为null时
+        nullString.EqualsWithOptions("anything").ShouldBeFalse();
+        "anything".EqualsWithOptions(nullString).ShouldBeFalse();
+
+        // 极端空格场景
+        string extremeWhitespace = "                  ";
+        extremeWhitespace.EqualsWithOptions("", trim: true).ShouldBeTrue();
+        extremeWhitespace.EqualsWithOptions(" ", trim: true).ShouldBeTrue();
+    }
+
+    #endregion
 
     #region Filter
 

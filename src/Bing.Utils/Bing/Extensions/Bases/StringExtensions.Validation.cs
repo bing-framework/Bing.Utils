@@ -90,30 +90,6 @@ public static partial class StringExtensions
 
     #endregion
 
-    #region EqualsAny(确定字符串是否与所提供的值相等)
-
-    /// <summary>
-    /// 确定字符串是否与所提供的值相等
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="comparisonType">区域性比较</param>
-    /// <param name="values">提供的值</param>
-    public static bool EqualsAny(this string value, StringComparison comparisonType, params string[] values) => values.Any(v => value.Equals(v, comparisonType));
-
-    #endregion
-
-    #region EquivalentTo(字符串是否全等)
-
-    /// <summary>
-    /// 确定两个指定的字符串具有相同的值，参数指定区域性、大小写及比较所选用的规则
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="whateverCaseString">比较字符串</param>
-    /// <param name="comparison">区域性</param>
-    public static bool EquivalentTo(this string value, string whateverCaseString, StringComparison comparison = StringComparison.InvariantCultureIgnoreCase) => string.Equals(value, whateverCaseString, comparison);
-
-    #endregion
-
     #region Contains(确定输入字符串是否包含指定字符串)
 
     /// <summary>

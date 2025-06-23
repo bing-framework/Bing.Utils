@@ -167,4 +167,14 @@ public static class StringCollectionExtensions
         CommonJoinUtils.JoinToString(sb, (c, s) => c.Append(s), list, delimiter, predicate, to, replaceFunc);
         return sb.ToString();
     }
+
+    //public static bool ContainsInvariant(this IEnumerable<string> list, string sub)
+    //{
+    //    if (list == null)
+    //        return false;
+    //    foreach (var item in list)
+    //    {
+    //        if(item.Equals(sub,StringComparison.InvariantCultureIgnoreCase))
+    //    }
+    //}
 }
