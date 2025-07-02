@@ -3,7 +3,7 @@
 /// <summary>
 /// 类型(<see cref="Type"/>) 判断器
 /// </summary>
-public static class TypeJudgment
+public static class TypeJudge
 {
     #region IsEnumType(是否枚举类型)
 

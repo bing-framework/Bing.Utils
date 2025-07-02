@@ -25,12 +25,12 @@ public static class TypeConverter
     /// </summary>
     /// <param name="type">类型</param>
     public static Type ToSafeNonNullableType(Type type) =>
-        TypeJudgment.IsNullableType(type) ? ToNonNullableType(type) : type;
+        TypeJudge.IsNullableType(type) ? ToNonNullableType(type) : type;
 
     /// <summary>
     /// 将 可空类型信息 安全转换为 非可空基础类型信息
     /// </summary>
     /// <param name="typeInfo">类型信息</param>
     public static TypeInfo ToSafeNonNullableTypeInfo(TypeInfo typeInfo) =>
-        TypeJudgment.IsNullableType(typeInfo) ? ToNonNullableTypeInfo(typeInfo) : typeInfo;
+        TypeJudge.IsNullableType(typeInfo) ? ToNonNullableTypeInfo(typeInfo) : typeInfo;
 }

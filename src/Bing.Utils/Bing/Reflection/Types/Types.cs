@@ -36,14 +36,14 @@ public static partial class Types
     /// </summary>
     /// <param name="type">类型</param>
     /// <param name="genericType">泛型类型</param>
-    public static bool IsGenericImplementation(Type type, Type genericType) => TypeJudgment.IsGenericImplementation(type, genericType);
+    public static bool IsGenericImplementation(Type type, Type genericType) => TypeJudge.IsGenericImplementation(type, genericType);
 
     /// <summary>
     /// 是否泛型实现类型
     /// </summary>
     /// <typeparam name="TGot">类型</typeparam>
     /// <typeparam name="TGeneric">泛型类型</typeparam>
-    public static bool IsGenericImplementation<TGot, TGeneric>() => TypeJudgment.IsGenericImplementation<TGot, TGeneric>();
+    public static bool IsGenericImplementation<TGot, TGeneric>() => TypeJudge.IsGenericImplementation<TGot, TGeneric>();
 
     #endregion
 
