@@ -31,14 +31,4 @@ public partial class ExtensionsTest : TestBase
             test.CheckNull("test");
         }, "test");
     }
-
-    /// <summary>
-    /// 测试 - 是否默认值
-    /// </summary>
-    [Fact]
-    public void Test_IsDefault()
-    {
-        Assert.True(Guid.Empty.IsDefault());
-        Assert.False(Guid.NewGuid().IsDefault());
-    }
 }

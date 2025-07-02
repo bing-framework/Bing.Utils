@@ -1671,4 +1671,397 @@ public class BingExtensionsValidateTest
     #endregion
 
     #endregion
+
+    #region IsDefault
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 引用类型值为 null 时应返回 true
+    /// </summary>
+    [Fact]
+    public void IsDefault_ReferenceType_WithNull_ReturnsTrue()
+    {
+        // Arrange
+        string value = null;
+
+        // Act
+        bool result = value.IsDefault();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 引用类型值不为 null 时应返回 false
+    /// </summary>
+    [Fact]
+    public void IsDefault_ReferenceType_WithNonNull_ReturnsFalse()
+    {
+        // Arrange
+        string value = "test";
+
+        // Act
+        bool result = value.IsDefault();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 值类型为默认值时应返回 true
+    /// </summary>
+    [Theory]
+    [InlineData(0)]      // int 的默认值
+    [InlineData(0.0)]    // double 的默认值
+    [InlineData(false)]  // bool 的默认值
+    public void IsDefault_ValueType_WithDefault_ReturnsTrue<T>(T value)
+    {
+        // Act
+        bool result = value.IsDefault();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 值类型不为默认值时应返回 false
+    /// </summary>
+    [Theory]
+    [InlineData(1)]      // 非默认 int
+    [InlineData(0.1)]    // 非默认 double
+    [InlineData(true)]   // 非默认 bool
+    public void IsDefault_ValueType_WithNonDefault_ReturnsFalse<T>(T value)
+    {
+        // Act
+        bool result = value.IsDefault();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 结构类型为默认值时应返回 true
+    /// </summary>
+    [Fact]
+    public void IsDefault_StructType_WithDefault_ReturnsTrue()
+    {
+        // Arrange
+        DateTime value = default;
+        Guid guid = default;
+
+        // Act
+        bool dateResult = value.IsDefault();
+        bool guidResult = guid.IsDefault();
+
+        // Assert
+        Assert.True(dateResult);
+        Assert.True(guidResult);
+    }
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 结构类型不为默认值时应返回 false
+    /// </summary>
+    [Fact]
+    public void IsDefault_StructType_WithNonDefault_ReturnsFalse()
+    {
+        // Arrange
+        DateTime value = DateTime.Now;
+        Guid guid = Guid.NewGuid();
+
+        // Act
+        bool dateResult = value.IsDefault();
+        bool guidResult = guid.IsDefault();
+
+        // Assert
+        Assert.False(dateResult);
+        Assert.False(guidResult);
+    }
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 可空类型为 null 时应返回 true
+    /// </summary>
+    [Fact]
+    public void IsDefault_NullableType_WithNull_ReturnsTrue()
+    {
+        // Arrange
+        int? value = null;
+
+        // Act
+        bool result = value.IsDefault();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 可空类型不为 null 时应返回 false（即使值等于基础类型默认值）
+    /// </summary>
+    [Fact]
+    public void IsDefault_NullableType_WithValue_ReturnsFalse()
+    {
+        // Arrange
+        int? value = 0; // 虽然 0 是 int 的默认值，但 int? 的默认值是 null
+
+        // Act
+        bool result = value.IsDefault();
+
+        // Assert
+        Assert.False(result); // 因为可空类型的默认值是 null，而不是 0
+    }
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 自定义类型为默认值时应返回 true
+    /// </summary>
+    [Fact]
+    public void IsDefault_CustomType_WithDefault_ReturnsTrue()
+    {
+        // Arrange
+        CustomStruct value = default;
+
+        // Act
+        bool result = value.IsDefault();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsDefault 方法 - 自定义类型不为默认值时应返回 false
+    /// </summary>
+    [Fact]
+    public void IsDefault_CustomType_WithNonDefault_ReturnsFalse()
+    {
+        // Arrange
+        CustomStruct value = new CustomStruct { Value = 42 };
+
+        // Act
+        bool result = value.IsDefault();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    // 用于测试的自定义结构
+    private struct CustomStruct
+    {
+        public int Value;
+    }
+
+    #endregion
+
+    #region IsNull / NotNull
+
+    /// <summary>
+    /// 测试 - IsNull 方法 - 传入 null 对象应返回 true
+    /// </summary>
+    [Fact]
+    public void IsNull_WithNullObject_ReturnsTrue()
+    {
+        // Arrange
+        object obj = null;
+
+        // Act
+        bool result = obj.IsNull();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsNull 方法 - 传入非 null 对象应返回 false
+    /// </summary>
+    [Fact]
+    public void IsNull_WithNonNullObject_ReturnsFalse()
+    {
+        // Arrange
+        object obj = new object();
+
+        // Act
+        bool result = obj.IsNull();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsNull 泛型方法 - 传入 null 字符串应返回 true
+    /// </summary>
+    [Fact]
+    public void IsNull_Generic_WithNullString_ReturnsTrue()
+    {
+        // Arrange
+        string str = null;
+
+        // Act
+        bool result = str.IsNull<string>();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsNull 泛型方法 - 传入空字符串应返回 false
+    /// </summary>
+    [Fact]
+    public void IsNull_Generic_WithEmptyString_ReturnsFalse()
+    {
+        // Arrange
+        string str = string.Empty;
+
+        // Act
+        bool result = str.IsNull<string>();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsNull 泛型方法 - 传入非 null 字符串应返回 false
+    /// </summary>
+    [Fact]
+    public void IsNull_Generic_WithNonNullString_ReturnsFalse()
+    {
+        // Arrange
+        string str = "test";
+
+        // Act
+        bool result = str.IsNull<string>();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsNull 泛型方法 - 传入 null 的自定义类应返回 true
+    /// </summary>
+    [Fact]
+    public void IsNull_Generic_WithNullCustomClass_ReturnsTrue()
+    {
+        // Arrange
+        TestClass obj = null;
+
+        // Act
+        bool result = obj.IsNull<TestClass>();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsNull 泛型方法 - 传入非 null 的自定义类应返回 false
+    /// </summary>
+    [Fact]
+    public void IsNull_Generic_WithNonNullCustomClass_ReturnsFalse()
+    {
+        // Arrange
+        TestClass obj = new TestClass();
+
+        // Act
+        bool result = obj.IsNull<TestClass>();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsNull 方法 - 传入 null 的可空值类型应返回 true
+    /// </summary>
+    [Fact]
+    public void IsNull_WithNullableValueType_Null_ReturnsTrue()
+    {
+        // Arrange
+        int? nullableInt = null;
+
+        // Act
+        bool result = nullableInt.IsNull();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 - IsNull 方法 - 传入非 null 的可空值类型应返回 false
+    /// </summary>
+    [Fact]
+    public void IsNull_WithNullableValueType_NonNull_ReturnsFalse()
+    {
+        // Arrange
+        int? nullableInt = 0;
+
+        // Act
+        bool result = nullableInt.IsNull();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 - NotNull 方法 - 传入 null 对象应返回 false
+    /// </summary>
+    [Fact]
+    public void NotNull_WithNullObject_ReturnsFalse()
+    {
+        // Arrange
+        object obj = null;
+
+        // Act
+        bool result = obj.NotNull();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 - NotNull 方法 - 传入非 null 对象应返回 true
+    /// </summary>
+    [Fact]
+    public void NotNull_WithNonNullObject_ReturnsTrue()
+    {
+        // Arrange
+        object obj = new object();
+
+        // Act
+        bool result = obj.NotNull();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 测试 - NotNull 泛型方法 - 传入 null 字符串应返回 false
+    /// </summary>
+    [Fact]
+    public void NotNull_Generic_WithNullString_ReturnsFalse()
+    {
+        // Arrange
+        string str = null;
+
+        // Act
+        bool result = str.NotNull<string>();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// 测试 - NotNull 泛型方法 - 传入非 null 字符串应返回 true
+    /// </summary>
+    [Fact]
+    public void NotNull_Generic_WithNonNullString_ReturnsTrue()
+    {
+        // Arrange
+        string str = "test";
+
+        // Act
+        bool result = str.NotNull<string>();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    /// <summary>
+    /// 用于测试的自定义类
+    /// </summary>
+    private class TestClass { }
+
+    #endregion
 }

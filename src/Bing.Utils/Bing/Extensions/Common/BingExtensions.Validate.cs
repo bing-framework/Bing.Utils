@@ -459,37 +459,6 @@ public static partial class BingExtensions
 
     #endregion
 
-    #region IsDefault(是否默认值)
-
-    /// <summary>
-    /// 判断值是否为类型的默认值
-    /// </summary>
-    /// <typeparam name="T">值类型</typeparam>
-    /// <param name="value">值</param>
-    /// <returns>如果值是类型的默认值，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-    public static bool IsDefault<T>(this T value) => EqualityComparer<T>.Default.Equals(value, default);
-
-    #endregion
-
-    #region IsNull(是否为空)
-
-    /// <summary>
-    /// 判断对象是否为 <c>null</c>
-    /// </summary>
-    /// <param name="target">对象</param>
-    /// <returns>如果对象为 <c>null</c>，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-    public static bool IsNull(this object target) => target.IsNull<object>();
-
-    /// <summary>
-    /// 判断对象是否为 <c>null</c>
-    /// </summary>
-    /// <typeparam name="T">对象类型</typeparam>
-    /// <param name="target">对象</param>
-    /// <returns>如果对象为 <c>null</c>，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-    public static bool IsNull<T>(this T target) => ReferenceEquals(target, null);
-
-    #endregion
-
     #region NotEmpty(是否非空)
 
     /// <summary>
@@ -534,6 +503,129 @@ public static partial class BingExtensions
             return true;
         return false;
     }
+
+    #endregion
+
+    #region IsDefault(是否默认值)
+
+    /// <summary>
+    /// 判断值是否为类型的默认值
+    /// </summary>
+    /// <typeparam name="T">值类型</typeparam>
+    /// <param name="value">要检查的值</param>
+    /// <returns>如果值等于类型 <typeparamref name="T"/> 的默认值，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+    /// <remarks>
+    /// 该方法使用 <see cref="EqualityComparer{T}"/> 来比较值和类型的默认值，适用于引用类型和值类型。
+    /// 对于引用类型，默认值为 <c>null</c>；对于值类型，默认值通常为 0 或其等效值。
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsDefault<T>(this T value) => EqualityComparer<T>.Default.Equals(value, default);
+
+    #endregion
+
+    #region IsNull(是否为空)
+
+    /// <summary>
+    /// 判断对象是否为 <c>null</c>
+    /// </summary>
+    /// <param name="target">要检查的对象</param>
+    /// <returns>如果对象为 <c>null</c>，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+    /// <remarks>
+    /// 此方法是 <see cref="IsNull{T}(T)"/> 的非泛型版本，内部调用泛型版本实现。
+    /// 推荐在不确定对象具体类型时使用此方法。
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// object obj1 = null;
+    /// bool result1 = obj1.IsNull();  // 返回 true
+    /// 
+    /// object obj2 = new object();
+    /// bool result2 = obj2.IsNull();  // 返回 false
+    /// 
+    /// string str = null;
+    /// bool result3 = str.IsNull();  // 返回 true
+    /// </code>
+    /// </example>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNull(this object target) => target.IsNull<object>();
+
+    /// <summary>
+    /// 判断对象是否为 <c>null</c>
+    /// </summary>
+    /// <typeparam name="T">对象类型</typeparam>
+    /// <param name="target">要检查的对象</param>
+    /// <returns>如果对象为 <c>null</c>，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+    /// <remarks>
+    /// 此方法使用 <see cref="object.ReferenceEquals(object, object)"/> 进行 null 检查，
+    /// 比直接使用 == 操作符更安全，因为它不会调用类型可能重载的 == 操作符。
+    /// 适用于所有引用类型，包括字符串、数组、集合和自定义类等。
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// // 字符串示例
+    /// string str1 = null;
+    /// string str2 = "";
+    /// bool result1 = str1.IsNull();  // 返回 true
+    /// bool result2 = str2.IsNull();  // 返回 false（空字符串不是 null）
+    /// 
+    /// // 自定义类示例
+    /// class Person { public string Name { get; set; } }
+    /// Person person1 = null;
+    /// Person person2 = new Person();
+    /// bool result3 = person1.IsNull();  // 返回 true
+    /// bool result4 = person2.IsNull();  // 返回 false
+    /// 
+    /// // 值类型装箱示例
+    /// int? nullableInt = null;
+    /// bool result5 = nullableInt.IsNull();  // 返回 true
+    /// </code>
+    /// </example>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNull<T>(this T target) => ReferenceEquals(target, null);
+
+    #endregion
+
+    #region NotNull(是否不为空)
+
+    /// <summary>
+    /// 判断对象是否不为 <c>null</c>
+    /// </summary>
+    /// <param name="target">要检查的对象</param>
+    /// <returns>如果对象不为 <c>null</c>，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+    /// <remarks>
+    /// 此方法是 <see cref="IsNull(object)"/> 的反向操作，可用于提高代码的可读性。
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// object obj1 = null;
+    /// bool result1 = obj1.NotNull();  // 返回 false
+    /// 
+    /// object obj2 = new object();
+    /// bool result2 = obj2.NotNull();  // 返回 true
+    /// </code>
+    /// </example>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool NotNull(this object target) => !target.IsNull();
+
+    /// <summary>
+    /// 判断对象是否不为 <c>null</c>
+    /// </summary>
+    /// <typeparam name="T">对象类型</typeparam>
+    /// <param name="target">要检查的对象</param>
+    /// <returns>如果对象不为 <c>null</c>，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+    /// <remarks>
+    /// 此方法是 <see cref="IsNull{T}(T)"/> 的反向操作，可用于提高代码的可读性。
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// string str1 = null;
+    /// string str2 = "Hello";
+    /// bool result1 = str1.NotNull();  // 返回 false
+    /// bool result2 = str2.NotNull();  // 返回 true
+    /// </code>
+    /// </example>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool NotNull<T>(this T target) => !target.IsNull<T>();
 
     #endregion
 
