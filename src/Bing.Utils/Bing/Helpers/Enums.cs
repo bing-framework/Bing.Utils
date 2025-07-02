@@ -8,8 +8,7 @@ namespace Bing.Helpers;
 /// <summary>
 /// 枚举 操作
 /// </summary>
-[Obsolete("请使用 Enums 静态类，下个版本将会弃用!")]
-public static partial class Enum
+public static class Enums
 {
     /// <summary>
     /// 枚举值字段

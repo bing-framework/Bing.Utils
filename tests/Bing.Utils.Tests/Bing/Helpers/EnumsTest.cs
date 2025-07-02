@@ -1,22 +1,13 @@
 ﻿using Bing.Tests.Samples;
 using Bing.Tests.XUnitHelpers;
-using Enum = Bing.Helpers.Enum;
 
-namespace Bing.Utils.Tests.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
-/// 枚举操作测试
+/// 枚举操作 测试
 /// </summary>
-[Obsolete("已弃用")]
-public class EnumTest : TestBase
+public class EnumsTest
 {
-    /// <summary>
-    /// 初始化一个<see cref="EnumTest"/>类型的实例
-    /// </summary>
-    public EnumTest(ITestOutputHelper output) : base(output)
-    {
-    }
-
     /// <summary>
     /// 测试获取枚举实例
     /// </summary>
@@ -25,7 +16,7 @@ public class EnumTest : TestBase
     [InlineData("3", EnumSample.C)]
     public void Test_Parse(string member, EnumSample sample)
     {
-        Assert.Equal(sample, Enum.Parse<EnumSample>(member));
+        Assert.Equal(sample, Enums.Parse<EnumSample>(member));
     }
 
     /// <summary>
@@ -38,7 +29,7 @@ public class EnumTest : TestBase
     {
         AssertHelper.Throws<ArgumentNullException>(() =>
         {
-            Enum.Parse<EnumSample>(member);
+            Enums.Parse<EnumSample>(member);
         }, "member");
     }
 
@@ -53,20 +44,20 @@ public class EnumTest : TestBase
     [InlineData("3", EnumSample.C)]
     public void Test_Parse_Nullable(string member, EnumSample? sample)
     {
-        Assert.Equal(sample, Enum.Parse<EnumSample?>(member));
+        Assert.Equal(sample, Enums.Parse<EnumSample?>(member));
     }
 
     /// <summary>
     /// 测试通过描述获取实例
     /// </summary>
     [Theory]
-    [InlineData("B2",EnumSample.B)]
+    [InlineData("B2", EnumSample.B)]
     [InlineData("C3", EnumSample.C)]
     [InlineData("D4", EnumSample.D)]
     [InlineData("E5", EnumSample.E)]
     public void Test_ParseByDescription(string desc, EnumSample sample)
     {
-        Assert.Equal(sample, Enum.ParseByDescription<EnumSample>(desc));
+        Assert.Equal(sample, Enums.ParseByDescription<EnumSample>(desc));
     }
 
     /// <summary>
@@ -79,7 +70,7 @@ public class EnumTest : TestBase
     {
         AssertHelper.Throws<ArgumentNullException>(() =>
         {
-            Enum.ParseByDescription<EnumSample>(desc);
+            Enums.ParseByDescription<EnumSample>(desc);
         }, "desc");
     }
 
@@ -93,7 +84,7 @@ public class EnumTest : TestBase
     [InlineData("C3", EnumSample.C)]
     public void Test_ParseByDescription_Nullable(string member, EnumSample? sample)
     {
-        Assert.Equal(sample, Enum.ParseByDescription<EnumSample?>(member));
+        Assert.Equal(sample, Enums.ParseByDescription<EnumSample?>(member));
     }
 
     /// <summary>
@@ -108,7 +99,7 @@ public class EnumTest : TestBase
     [InlineData(EnumSample.C, "C")]
     public void Test_GetName(object member, string name)
     {
-        Assert.Equal(name, Enum.GetName<EnumSample>(member));
+        Assert.Equal(name, Enums.GetName<EnumSample>(member));
     }
 
     /// <summary>
@@ -117,7 +108,7 @@ public class EnumTest : TestBase
     [Fact]
     public void Test_GetName_Validate()
     {
-        Assert.Equal(string.Empty, Enum.GetName(typeof(Sample), 3));
+        Assert.Equal(string.Empty, Enums.GetName(typeof(Sample), 3));
     }
 
     /// <summary>
@@ -132,7 +123,7 @@ public class EnumTest : TestBase
     [InlineData(EnumSample.C, "C")]
     public void Test_GetName_Nullable(object member, string name)
     {
-        Assert.Equal(name, Enum.GetName<EnumSample?>(member));
+        Assert.Equal(name, Enums.GetName<EnumSample?>(member));
     }
 
     /// <summary>
@@ -141,9 +132,9 @@ public class EnumTest : TestBase
     [Fact]
     public void Test_GetValue_Validate()
     {
-        AssertHelper.Throws<ArgumentNullException>(() => Enum.GetValue<EnumSample>(null), "member");
-        AssertHelper.Throws<ArgumentNullException>(() => Enum.GetValue<EnumSample>(string.Empty), "member");
-        AssertHelper.Throws<ArgumentNullException>(() => Enum.GetValue<Sample>(string.Empty), "member");
+        AssertHelper.Throws<ArgumentNullException>(() => Enums.GetValue<EnumSample>(null), "member");
+        AssertHelper.Throws<ArgumentNullException>(() => Enums.GetValue<EnumSample>(string.Empty), "member");
+        AssertHelper.Throws<ArgumentNullException>(() => Enums.GetValue<Sample>(string.Empty), "member");
     }
 
     /// <summary>
@@ -155,7 +146,7 @@ public class EnumTest : TestBase
     [InlineData(EnumSample.C, 3)]
     public void Test_GetValue(object member, int value)
     {
-        Assert.Equal(value, Enum.GetValue<EnumSample>(member));
+        Assert.Equal(value, Enums.GetValue<EnumSample>(member));
     }
 
     /// <summary>
@@ -167,7 +158,7 @@ public class EnumTest : TestBase
     [InlineData(EnumSample.C, 3)]
     public void Test_GetValue_Nullable(object member, int value)
     {
-        Assert.Equal(value, Enum.GetValue<EnumSample?>(member));
+        Assert.Equal(value, Enums.GetValue<EnumSample?>(member));
     }
 
     /// <summary>
@@ -182,7 +173,7 @@ public class EnumTest : TestBase
     [InlineData(EnumSample.B, "B2")]
     public void Test_GetDescription(object member, string description)
     {
-        Assert.Equal(description, Enum.GetDescription<EnumSample>(member));
+        Assert.Equal(description, Enums.GetDescription<EnumSample>(member));
     }
 
     /// <summary>
@@ -197,7 +188,7 @@ public class EnumTest : TestBase
     [InlineData(EnumSample.B, "B2")]
     public void Test_GetDescription_Nullable(object member, string description)
     {
-        Assert.Equal(description, Enum.GetDescription<EnumSample?>(member));
+        Assert.Equal(description, Enums.GetDescription<EnumSample?>(member));
     }
 
     /// <summary>
@@ -206,7 +197,7 @@ public class EnumTest : TestBase
     [Fact]
     public void Test_GetItems()
     {
-        var items = Enum.GetItems<EnumSample>();
+        var items = Enums.GetItems<EnumSample>();
         Assert.Equal(5, items.Count);
         Assert.Equal("A", items[0].Text);
         Assert.Equal(1, items[0].Value);
@@ -222,7 +213,7 @@ public class EnumTest : TestBase
     [Fact]
     public void Test_GetItems_Type()
     {
-        var items = Enum.GetItems(typeof(EnumSample));
+        var items = Enums.GetItems(typeof(EnumSample));
         Assert.Equal(5, items.Count);
         Assert.Equal("A", items[0].Text);
         Assert.Equal(1, items[0].Value);
@@ -238,7 +229,7 @@ public class EnumTest : TestBase
     [Fact]
     public void Test_GetItems_Nullable()
     {
-        var items = Enum.GetItems<EnumSample?>();
+        var items = Enums.GetItems<EnumSample?>();
         Assert.Equal(5, items.Count);
         Assert.Equal("A", items[0].Text);
         Assert.Equal(1, items[0].Value);
@@ -254,7 +245,7 @@ public class EnumTest : TestBase
     [Fact]
     public void Test_GetItems_Nullable_Type()
     {
-        var items = Enum.GetItems(typeof(EnumSample?));
+        var items = Enums.GetItems(typeof(EnumSample?));
         Assert.Equal(5, items.Count);
         Assert.Equal("A", items[0].Text);
         Assert.Equal(1, items[0].Value);
@@ -271,7 +262,7 @@ public class EnumTest : TestBase
     public void Test_GetItems_Validate()
     {
         AssertHelper.Throws<InvalidOperationException>(() => {
-            Enum.GetItems<Sample>();
+            Enums.GetItems<Sample>();
         }, "类型 Bing.Tests.Samples.Sample 不是枚举");
     }
 
@@ -281,7 +272,7 @@ public class EnumTest : TestBase
     [Fact]
     public void Test_GetNames()
     {
-        var names = Enum.GetNames<EnumSample>().OrderBy(t => t).ToList();
+        var names = Enums.GetNames<EnumSample>().OrderBy(t => t).ToList();
         Assert.Equal(5, names.Count);
         Assert.Equal("A", names[0]);
         Assert.Equal("D", names[3]);
