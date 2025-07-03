@@ -926,25 +926,69 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、非布尔格式的字符串等），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法首先通过 GetBool 方法尝试处理特殊字符串输入（如"0"/"1"、"是"/"否"等），
-    /// 如果不是这些特殊输入，则通过标准的 bool.TryParse 方法进行解析。
+    /// 此方法支持多种类型的输入值转换：
+    /// <list type="bullet">
+    /// <item><description><strong>null 或 DBNull</strong>：返回 null</description></item>
+    /// <item><description><strong>布尔类型</strong>：直接返回原值</description></item>
+    /// <item><description><strong>数值类型</strong>：非零值转换为 true，零值转换为 false</description></item>
+    /// <item><description><strong>枚举类型</strong>：非零枚举值转换为 true，零值转换为 false</description></item>
+    /// <item><description><strong>字符串类型</strong>：除标准的 "true"/"false" 外，还支持以下扩展转换：</description></item>
+    /// </list>
     /// 
-    /// 支持以下特殊字符串的转换：
-    /// - 返回 true："1"、"是"、"ok"、"yes"
-    /// - 返回 false："0"、"否"、"不"、"no"、"fail"
-    /// - 其他情况通过 bool.TryParse 尝试转换，如失败则返回 null
+    /// 表示 true 的特殊字符串（不区分大小写）：
+    /// <list type="bullet">
+    /// <item><description>"1"、"是"、"ok"、"yes"、"y"</description></item>
+    /// <item><description>"on"、"enable"、"enabled"、"t"、"true"</description></item>
+    /// </list>
+    /// 
+    /// 表示 false 的特殊字符串（不区分大小写）：
+    /// <list type="bullet">
+    /// <item><description>"0"、"否"、"不"、"no"、"fail"、"n"</description></item>
+    /// <item><description>"off"、"disable"、"disabled"、"f"、"false"</description></item>
+    /// </list>
     /// </remarks>
     /// <example>
     /// <code>
-    /// bool? value1 = Conv.ToBoolOrNull("true");    // 返回 true
-    /// bool? value2 = Conv.ToBoolOrNull("1");       // 返回 true
-    /// bool? value3 = Conv.ToBoolOrNull("是");      // 返回 true
-    /// bool? value4 = Conv.ToBoolOrNull("false");   // 返回 false
-    /// bool? value5 = Conv.ToBoolOrNull("0");       // 返回 false
-    /// bool? value6 = Conv.ToBoolOrNull("abc");     // 转换失败，返回 null
-    /// bool? value7 = Conv.ToBoolOrNull(null);      // 转换失败，返回 null
+    /// // 基本布尔值示例
+    /// bool? value1 = Conv.ToBoolOrNull(true);         // 返回 true
+    /// bool? value2 = Conv.ToBoolOrNull(false);        // 返回 false
+    /// 
+    /// // 数值类型示例
+    /// bool? value3 = Conv.ToBoolOrNull(1);            // 返回 true
+    /// bool? value4 = Conv.ToBoolOrNull(0);            // 返回 false
+    /// bool? value5 = Conv.ToBoolOrNull(1.5);          // 返回 true（非零值）
+    /// 
+    /// // 枚举示例（假设有枚举 TestEnum { Zero = 0, One = 1 }）
+    /// bool? value6 = Conv.ToBoolOrNull(TestEnum.Zero); // 返回 false
+    /// bool? value7 = Conv.ToBoolOrNull(TestEnum.One);  // 返回 true
+    /// 
+    /// // 字符串示例 - 标准布尔值表示
+    /// bool? value8 = Conv.ToBoolOrNull("true");       // 返回 true
+    /// bool? value9 = Conv.ToBoolOrNull("false");      // 返回 false
+    /// bool? value10 = Conv.ToBoolOrNull("True");      // 返回 true（不区分大小写）
+    /// 
+    /// // 字符串示例 - 扩展表示方式
+    /// bool? value11 = Conv.ToBoolOrNull("1");         // 返回 true
+    /// bool? value12 = Conv.ToBoolOrNull("0");         // 返回 false
+    /// bool? value13 = Conv.ToBoolOrNull("是");        // 返回 true
+    /// bool? value14 = Conv.ToBoolOrNull("否");        // 返回 false
+    /// bool? value15 = Conv.ToBoolOrNull("yes");       // 返回 true
+    /// bool? value16 = Conv.ToBoolOrNull("no");        // 返回 false
+    /// bool? value17 = Conv.ToBoolOrNull("on");        // 返回 true
+    /// bool? value18 = Conv.ToBoolOrNull("off");       // 返回 false
+    /// bool? value19 = Conv.ToBoolOrNull("enable");    // 返回 true
+    /// bool? value20 = Conv.ToBoolOrNull("disable");   // 返回 false
+    /// 
+    /// // 无效输入示例
+    /// bool? value21 = Conv.ToBoolOrNull(null);        // 返回 null
+    /// bool? value22 = Conv.ToBoolOrNull("");          // 返回 null（空字符串）
+    /// bool? value23 = Conv.ToBoolOrNull(" ");         // 返回 null（空白字符串）
+    /// bool? value24 = Conv.ToBoolOrNull("invalid");   // 返回 null（无法识别的字符串）
+    /// bool? value25 = Conv.ToBoolOrNull(DBNull.Value);// 返回 null
     /// </code>
     /// </example>
+    /// <seealso cref="ToBool(object)"/>
+    /// <seealso cref="ToBool(object, bool)"/>
     public static bool? ToBoolOrNull(object input)
     {
         if (input == null || input is DBNull)
