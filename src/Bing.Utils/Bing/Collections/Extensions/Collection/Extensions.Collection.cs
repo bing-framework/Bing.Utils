@@ -1,4 +1,5 @@
-﻿using Bing.Extensions;
+﻿using System.Collections.ObjectModel;
+using Bing.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Collections;
@@ -63,4 +64,47 @@ public static partial class BingCollectionExtensions
     }
 
     #endregion
+
+    /// <summary>
+    /// 将集合转换为指定的可观察集合
+    /// </summary>
+    /// <typeparam name="T">集合元素类型</typeparam>
+    /// <param name="collection">要转换的源集合</param>
+    /// <param name="observableCollection">目标可观察集合</param>
+    /// <returns>填充了源集合元素的可观察集合</returns>
+    /// <remarks>
+    /// 此方法会清空目标可观察集合，然后将源集合中的所有元素添加到目标集合中。
+    /// 适用于需要复用现有可观察集合实例的场景。
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">源集合或目标可观察集合为 null</exception>
+    public static ObservableCollection<T> ToObservableCollection<T>(this ICollection<T> collection, ObservableCollection<T> observableCollection)
+    {
+        collection.CheckNotNull(nameof(collection));
+        observableCollection.CheckNotNull(nameof(observableCollection));
+
+        observableCollection.Clear();
+        foreach (var item in collection) 
+            observableCollection.Add(item);
+        return observableCollection;
+    }
+
+    /// <summary>
+    /// 将集合转换为新的可观察集合
+    /// </summary>
+    /// <typeparam name="T">集合元素类型</typeparam>
+    /// <param name="collection">要转换的源集合</param>
+    /// <returns>包含源集合所有元素的新可观察集合</returns>
+    /// <remarks>
+    /// 此方法创建一个新的可观察集合实例，并将源集合中的所有元素添加到新集合中。
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">源集合为 null</exception>
+    public static ObservableCollection<T> ToObservableCollection<T>(this ICollection<T> collection)
+    {
+        collection.CheckNotNull(nameof(collection));
+
+        var observableCollection = new ObservableCollection<T>();
+        foreach (var item in collection)
+            observableCollection.Add(item);
+        return observableCollection;
+    }
 }
