@@ -1136,14 +1136,28 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">要转换的日期时间</param>
     /// <returns>等效的NodaTime LocalTime（只包含时分秒毫秒）</returns>
+    /// <remarks>
+    /// 此方法提取日期时间中的时间部分，创建不含日期信息的NodaTime LocalTime对象
+    /// </remarks>
     /// <example>
     /// <code>
     /// var dateTime = new DateTime(2023, 1, 1, 12, 30, 45, 500);
-    /// var localTime = dateTime.ToLocalTime();
-    /// Console.WriteLine(localTime); // 输出: 12:30:45.500
+    /// var nodaTime = dateTime.ToNodaLocalTime();
+    /// Console.WriteLine(nodaTime); // 输出: 12:30:45.500
     /// </code>
     /// </example>
-    public static LocalTime ToLocalTime(this DateTime dt) => new(dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
+    public static LocalTime ToNodaLocalTime(this DateTime dt) => new(dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
+
+    /// <summary>
+    /// 将日期时间转换为字节数组
+    /// </summary>
+    /// <param name="dt">要转换的日期时间</param>
+    /// <returns>表示日期时间的字节数组</returns>
+    /// <remarks>
+    /// 使用 <see cref="DateTime.ToBinary"/> 方法将日期时间转换为长整数，
+    /// 然后使用 <see cref="BitConverter.GetBytes(long)"/> 将长整数转换为字节数组
+    /// </remarks>
+    public static byte[] ToBytes(this DateTime dt) => BitConverter.GetBytes(dt.ToBinary());
 
     #endregion
 }

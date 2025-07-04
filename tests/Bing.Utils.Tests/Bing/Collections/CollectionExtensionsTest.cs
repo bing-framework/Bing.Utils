@@ -20,7 +20,7 @@ public class CollectionExtensionsTest
 
         // Act
         var result = source.ToObservableCollection();
-
+         
         // Assert
         Assert.IsType<ObservableCollection<string>>(result);
         Assert.Equal(source.Count, result.Count);
