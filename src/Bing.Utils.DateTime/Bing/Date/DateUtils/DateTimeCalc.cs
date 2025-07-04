@@ -9,54 +9,56 @@ namespace Bing.Date.DateUtils;
 internal static class DateTimeCalcHelper
 {
     /// <summary>
-    /// 获取目标天数
+    /// 获取指定月份中某个星期几的日期
     /// </summary>
-    /// <param name="year">年</param>
-    /// <param name="month">月</param>
-    /// <param name="weekAtMonth">第几个周</param>
-    /// <param name="dayOfWeek">星期几</param>
+    /// <param name="year">年份</param>
+    /// <param name="month">月份</param>
+    /// <param name="weekAtMonth">第几个周，从1开始</param>
+    /// <param name="dayOfWeek">星期几，0表示星期日，1-6表示星期一至星期六</param>
+    /// <returns>目标日期的天数</returns>
     public static int GetTargetDays(int year, int month, int weekAtMonth, int dayOfWeek)
     {
+        if (year <= 0)
+            throw new ArgumentOutOfRangeException(nameof(year), "年份必须大于0");
+        if (month < 1 || month > 12)
+            throw new ArgumentOutOfRangeException(nameof(month), "月份必须在1到12之间");
+        if (weekAtMonth < 1 || weekAtMonth > 5)
+            throw new ArgumentOutOfRangeException(nameof(weekAtMonth), "周数必须在1到5之间");
+        if (dayOfWeek < 0 || dayOfWeek > 6)
+            throw new ArgumentOutOfRangeException(nameof(dayOfWeek), "星期几必须在0到6之间");
+        // 获取当月第一天
         var fd = DateTimeFactory.Create(year, month, 1);
+        // 计算当月第一天到指定星期几的天数
         var daysNeeded = dayOfWeek - (int)fd.DayOfWeek;
+        // 如果为负数，表示需要到下一周才能找到指定的星期几
         if (daysNeeded < 0)
             daysNeeded += 7;
+        // 计算目标日期的天数：第一个符合条件的日期 + (周数-1)*7
         return daysNeeded + 1 + 7 * (weekAtMonth - 1);
     }
 
     /// <summary>
-    /// 计算
+    /// 计算偏移指定月份后的年月
     /// </summary>
-    /// <param name="year">年</param>
-    /// <param name="month">月</param>
-    /// <param name="offsetMonths">偏移月份</param>
-    /// <returns>(年，月)</returns>
+    /// <param name="year">起始年份</param>
+    /// <param name="month">起始月份</param>
+    /// <param name="offsetMonths">偏移月份数，正数表示向后，负数表示向前</param>
+    /// <returns>偏移后的年月元组</returns>
+    /// <exception cref="ArgumentOutOfRangeException">当年份或月份超出有效范围时抛出</exception>
     public static (int Year, int Month) Calc(int year, int month, int offsetMonths)
     {
+        if (year <= 0)
+            throw new ArgumentOutOfRangeException(nameof(year), "年份必须大于0");
+        if (month < 1 || month > 12)
+            throw new ArgumentOutOfRangeException(nameof(month), "月份必须在1到12之间");
         if (offsetMonths == 0)
             return (year, month);
-        var z = offsetMonths > 0 ? 1 : -1;
-        var offset = Math.Abs(offsetMonths);
+        
+        var totalMonths = year * 12 + (month - 1) + offsetMonths;
+        var newYear = totalMonths / 12;
+        var newMonth = totalMonths % 12 + 1;
 
-        for (var i = 0; i < offset; i++)
-        {
-            if (z > 0 && month == 12)
-            {
-                year++;
-                month = 1;
-            }
-            else if (z < 0 && month == 1)
-            {
-                year--;
-                month = 12;
-            }
-            else
-            {
-                month += 1 * z;
-            }
-        }
-
-        return (year, month);
+        return (newYear, newMonth);
     }
 }
 
@@ -68,10 +70,11 @@ public static class DateTimeCalc
     #region Offset by Milliseconds
 
     /// <summary>
-    /// 毫秒偏移量。
+    /// 按毫秒偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="millisecond">毫秒数</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="millisecond">要偏移的毫秒数，正数表示向后，负数表示向前</param>
+    /// <returns>偏移后的新日期时间</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime OffsetByMillisecond(DateTime dt, int millisecond) => dt + millisecond.Milliseconds();
 
@@ -80,10 +83,11 @@ public static class DateTimeCalc
     #region Offset by Seconds
 
     /// <summary>
-    /// 秒数偏移量。
+    /// 按秒数偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="seconds">秒数</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="seconds">要偏移的秒数，正数表示向后，负数表示向前</param>
+    /// <returns>偏移后的新日期时间</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime OffsetBySeconds(DateTime dt, int seconds) => dt + seconds.Seconds();
 
@@ -92,10 +96,11 @@ public static class DateTimeCalc
     #region Offset by Minutes
 
     /// <summary>
-    /// 分钟数偏移量。
+    /// 按分钟数偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="minutes">分钟数</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="minutes">要偏移的分钟数，正数表示向后，负数表示向前</param>
+    /// <returns>偏移后的新日期时间</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime OffsetByMinutes(DateTime dt, int minutes) => dt + minutes.Minutes();
 
@@ -104,10 +109,11 @@ public static class DateTimeCalc
     #region Offset by Hours
 
     /// <summary>
-    /// 小时数偏移量。
+    /// 按小时数偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="hours">小时数</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="hours">要偏移的小时数，正数表示向后，负数表示向前</param>
+    /// <returns>偏移后的新日期时间</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime OffsetByHours(DateTime dt, int hours) => dt + hours.Hours();
 
@@ -116,10 +122,11 @@ public static class DateTimeCalc
     #region Offset by Days
 
     /// <summary>
-    /// 天数偏移量。
+    /// 按天数偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="days">天数</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="days">要偏移的天数，正数表示向后，负数表示向前</param>
+    /// <returns>偏移后的新日期时间</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime OffsetByDays(DateTime dt, int days) => dt + days.Days();
 
@@ -128,27 +135,31 @@ public static class DateTimeCalc
     #region Offset by Week
 
     /// <summary>
-    /// 根据指定的年月和偏移信息创建 <see cref="DateTime"/>
+    /// 获取指定年月的特定星期几的日期
     /// </summary>
-    /// <param name="year">年</param>
-    /// <param name="month">月</param>
-    /// <param name="weekAtMonth">第几个星期</param>
+    /// <param name="year">年份</param>
+    /// <param name="month">月份，1-12</param>
+    /// <param name="weekAtMonth">第几个星期，1-5</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>计算得到的日期时间，如果不存在则返回DateTime.MinValue</returns>
+    /// <exception cref="ArgumentException">当weekAtMonth无效时抛出</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime OffsetByWeek(int year, int month, int weekAtMonth, DayOfWeek dayOfWeek) => OffsetByWeek(year, month, weekAtMonth, dayOfWeek.CastToInt32(0));
 
     /// <summary>
-    /// 根据指定的年月和偏移信息创建 <see cref="DateTime"/>
+    /// 获取指定年月的特定星期几的日期
     /// </summary>
-    /// <param name="year">年</param>
-    /// <param name="month">月</param>
-    /// <param name="weekAtMonth">第几个星期</param>
-    /// <param name="dayOfWeek">星期几</param>
+    /// <param name="year">年份</param>
+    /// <param name="month">月份，1-12</param>
+    /// <param name="weekAtMonth">第几个星期，1-5</param>
+    /// <param name="dayOfWeek">星期几，0-6，0表示周日</param>
+    /// <returns>计算得到的日期时间，如果不存在则返回DateTime.MinValue</returns>
+    /// <exception cref="ArgumentException">当weekAtMonth无效时抛出</exception>
     /// <exception cref="ArgumentException"></exception>
     public static DateTime OffsetByWeek(int year, int month, int weekAtMonth, int dayOfWeek)
     {
-        if (weekAtMonth == 0 || weekAtMonth > 5)
-            throw new ArgumentException("weekAtMonth is invalid.", nameof(weekAtMonth));
+        if (weekAtMonth < 1 || weekAtMonth > 5)
+            throw new ArgumentException("weekAtMonth必须在1到5之间", nameof(weekAtMonth));
         var targetDay = DateTimeCalcHelper.GetTargetDays(year, month, weekAtMonth, dayOfWeek);
         if (targetDay > DateTime.DaysInMonth(year, month))
             return DateTime.MinValue;
@@ -156,30 +167,32 @@ public static class DateTimeCalc
     }
 
     /// <summary>
-    /// 根据指定的年月和偏移信息创建 <see cref="DateTime"/>
+    /// 尝试获取指定年月的特定星期几的日期
     /// </summary>
-    /// <param name="year">年</param>
-    /// <param name="month">月</param>
-    /// <param name="weekAtMonth">第几个星期</param>
+    /// <param name="year">年份</param>
+    /// <param name="month">月份，1-12</param>
+    /// <param name="weekAtMonth">第几个星期，1-5</param>
     /// <param name="dayOfWeek">星期几</param>
-    /// <param name="result">结果</param>
+    /// <param name="result">输出参数，存储计算结果</param>
+    /// <returns>如果成功计算出有效日期则返回true，否则返回false</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryOffsetByWeek(int year, int month, int weekAtMonth, DayOfWeek dayOfWeek, out DateTime result) =>
         TryOffsetByWeek(year, month, weekAtMonth, dayOfWeek.CastToInt32(0), out result);
 
     /// <summary>
-    /// 根据指定的年月和偏移信息创建 <see cref="DateTime"/>
+    /// 尝试获取指定年月的特定星期几的日期
     /// </summary>
-    /// <param name="year">年</param>
-    /// <param name="month">月</param>
-    /// <param name="weekAtMonth">第几个星期</param>
-    /// <param name="dayOfWeek">星期几</param>
-    /// <param name="result">结果</param>
-    /// <exception cref="ArgumentException"></exception>
+    /// <param name="year">年份</param>
+    /// <param name="month">月份，1-12</param>
+    /// <param name="weekAtMonth">第几个星期，1-5</param>
+    /// <param name="dayOfWeek">星期几，0-6，0表示周日</param>
+    /// <param name="result">输出参数，存储计算结果</param>
+    /// <returns>如果成功计算出有效日期则返回true，否则返回false</returns>
+    /// <exception cref="ArgumentException">当weekAtMonth无效时抛出</exception>
     public static bool TryOffsetByWeek(int year, int month, int weekAtMonth, int dayOfWeek, out DateTime result)
     {
-        if (weekAtMonth == 0 || weekAtMonth > 5)
-            throw new ArgumentException("weekAtMonth is invalid.", nameof(weekAtMonth));
+        if (weekAtMonth < 1 || weekAtMonth > 5)
+            throw new ArgumentException("weekAtMonth必须在1到5之间", nameof(weekAtMonth));
         var targetDay = DateTimeCalcHelper.GetTargetDays(year, month, weekAtMonth, dayOfWeek);
         var invalid = targetDay > DateTime.DaysInMonth(year, month);
         result = invalid ? DateTime.MinValue : DateTimeFactory.Create(year, month, targetDay);
@@ -191,33 +204,42 @@ public static class DateTimeCalc
     #region Offset by Week Before / After
 
     /// <summary>
-    /// 偏移指定周数
+    /// 按周数偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="weeks">周数</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="weeks">要偏移的周数，正数表示向后，负数表示向前</param>
+    /// <returns>偏移后的新日期时间</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime OffsetByWeeks(DateTime dt, int weeks) => dt + weeks.Weeks();
 
     /// <summary>
-    /// 根据指定的日期，获取上一个工作日（如周一）
+    /// 获取指定日期的上一个指定星期几
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="dayOfWeek">星期几</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="dayOfWeek">目标星期几</param>
+    /// <returns>上一个匹配的日期</returns>
     public static DateTime OffsetByWeekBefore(DateTime dt, DayOfWeek dayOfWeek)
     {
         var daysSubtract = (int)dayOfWeek - (int)dt.DayOfWeek;
-        return (int)dayOfWeek < (int)dt.DayOfWeek ? dt.AddDays(daysSubtract) : dt.AddDays(daysSubtract - 7);
+        return (int)dayOfWeek < (int)dt.DayOfWeek 
+            ? dt.AddDays(daysSubtract) 
+            : dt.AddDays(daysSubtract - 7);
     }
 
     /// <summary>
-    /// 根据指定的日期，获取下一个工作日（如周一）
+    /// 获取指定日期的下一个指定星期几
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="dayOfWeek">星期几</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="dayOfWeek">目标星期几</param>
+    /// <returns>下一个匹配的日期</returns>
     public static DateTime OffsetByWeekAfter(DateTime dt, DayOfWeek dayOfWeek)
     {
         var daysNeeded = (int)dayOfWeek - (int)dt.DayOfWeek;
-        return (int)dayOfWeek >= (int)dt.DayOfWeek ? dt.AddDays(daysNeeded) : dt.AddDays(daysNeeded + 7);
+        if (dayOfWeek == dt.DayOfWeek)
+            return dt.AddDays(7);
+        return (int)dayOfWeek >= (int)dt.DayOfWeek 
+            ? dt.AddDays(daysNeeded) 
+            : dt.AddDays(daysNeeded + 7);
     }
 
     #endregion
@@ -225,17 +247,45 @@ public static class DateTimeCalc
     #region Offset by DayOfWeek
 
     /// <summary>
-    /// 偏移指定星期
+    /// 按指定星期几和周数偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="dayOfWeek">星期几</param>
-    /// <param name="weekOffset">偏移星期数</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="dayOfWeek">目标星期几</param>
+    /// <param name="weekOffset">周偏移量，正数表示向后几周，负数表示向前几周</param>
+    /// <returns>偏移后的新日期时间</returns>
     public static DateTime OffsetOfDayOfWeek(DateTime dt, DayOfWeek dayOfWeek, int weekOffset)
     {
-        var z = weekOffset > 0 ? 1 : -1;
-        var offset = DayOfWeekCalc.DaysBetween(dt.DayOfWeek, dayOfWeek);
-        offset = offset == 0 ? 7 : offset;
-        return dt.OffsetBy(offset * z * weekOffset, DateOffsetStyles.Day);
+        // 如果周偏移为0且目标星期几与当前日期的星期几相同，则返回当前日期
+        if (weekOffset == 0)
+        {
+            if (dayOfWeek == dt.DayOfWeek)
+                return dt;
+
+            // weekOffset为0但星期几不同，则返回本周对应的星期几
+            int daysToAdd = ((int)dayOfWeek - (int)dt.DayOfWeek + 7) % 7;
+            return dt.AddDays(daysToAdd);
+        }
+
+        if (weekOffset > 0)
+        {
+            // 向后偏移：先找到本周或下周的目标星期几，再增加(weekOffset-1)周
+            if (dayOfWeek == dt.DayOfWeek)
+                return dt.AddDays(7 * weekOffset); // 如果当天就是目标星期几，则直接增加weekOffset周
+
+            int daysToAdd = ((int)dayOfWeek - (int)dt.DayOfWeek + 7) % 7;
+            if (daysToAdd == 0) daysToAdd = 7; // 确保不会返回当天
+            return dt.AddDays(daysToAdd + 7 * (weekOffset - 1));
+        }
+        else // weekOffset < 0
+        {
+            // 向前偏移：先找到本周或上周的目标星期几，再减去(|weekOffset|-1)周
+            if (dayOfWeek == dt.DayOfWeek)
+                return dt.AddDays(7 * weekOffset); // 如果当天就是目标星期几，则直接减去|weekOffset|周
+
+            int daysToSubtract = ((int)dt.DayOfWeek - (int)dayOfWeek + 7) % 7;
+            if (daysToSubtract == 0) daysToSubtract = 7; // 确保不会返回当天
+            return dt.AddDays(-daysToSubtract + 7 * (weekOffset + 1));
+        }
     }
 
     #endregion
@@ -243,16 +293,19 @@ public static class DateTimeCalc
     #region Offset by Months
 
     /// <summary>
-    /// 偏移指定月份数
+    /// 按月份数偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="months">月份数</param>
-    /// <param name="options">日期时间偏移选项</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="months">要偏移的月份数，正数表示向后，负数表示向前</param>
+    /// <param name="options">日期时间偏移选项，指定偏移行为</param>
+    /// <returns>偏移后的新日期时间</returns>
     public static DateTime OffsetByMonths(DateTime dt, int months, DateTimeOffsetOptions options = DateTimeOffsetOptions.Absolute)
     {
+        // 绝对偏移模式，直接使用TimeSpan偏移
         if (options == DateTimeOffsetOptions.Absolute)
-            return dt + months.Months();
+            return dt.AddMonths(months);
 
+        // 相对偏移模式，需要考虑月份天数变化
         var calcResult = DateTimeCalcHelper.Calc(dt.Year, dt.Month, months);
         var firstDayOfMonth = dt.SetDate(calcResult.Year, calcResult.Month, 1);
         var lastDayOfMonth = firstDayOfMonth.LastDayOfMonth().Day;
@@ -265,14 +318,15 @@ public static class DateTimeCalc
     #region Offset by Quarters
 
     /// <summary>
-    /// 偏移指定季度数
+    /// 按季度数偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="quarters">季度数</param>
-    /// <param name="options">日期时间偏移选项</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="quarters">要偏移的季度数，正数表示向后，负数表示向前</param>
+    /// <param name="options">日期时间偏移选项，指定偏移行为</param>
+    /// <returns>偏移后的新日期时间</returns>
     public static DateTime OffsetByQuarters(DateTime dt, int quarters, DateTimeOffsetOptions options = DateTimeOffsetOptions.Absolute) =>
         options == DateTimeOffsetOptions.Absolute
-            ? dt + quarters.Quarters()
+            ? OffsetByMonths(dt, quarters * 3, DateTimeOffsetOptions.Absolute)
             : OffsetByMonths(dt, quarters * 3, DateTimeOffsetOptions.Relatively);
 
     #endregion
@@ -280,14 +334,15 @@ public static class DateTimeCalc
     #region Offset by Years
 
     /// <summary>
-    /// 偏移指定年数
+    /// 按年数偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="years">年数</param>
-    /// <param name="options">日期时间偏移选项</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="years">要偏移的年数，正数表示向后，负数表示向前</param>
+    /// <param name="options">日期时间偏移选项，指定偏移行为</param>
+    /// <returns>偏移后的新日期时间</returns>
     public static DateTime OffsetByYears(DateTime dt, int years, DateTimeOffsetOptions options = DateTimeOffsetOptions.Absolute) =>
         options == DateTimeOffsetOptions.Absolute
-            ? dt + years.Years()
+            ? dt.AddYears(years)
             : OffsetByMonths(dt, years * 12, DateTimeOffsetOptions.Relatively);
 
     #endregion
@@ -295,10 +350,11 @@ public static class DateTimeCalc
     #region Offset by Duration
 
     /// <summary>
-    /// 偏移指定的持续时间
+    /// 按持续时间偏移时间
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <param name="duration">持续时间</param>
+    /// <param name="dt">原始日期时间</param>
+    /// <param name="duration">要偏移的持续时间</param>
+    /// <returns>偏移后的新日期时间</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime OffsetByDuration(DateTime dt, Duration duration) => dt + duration.ToTimeSpan();
 
