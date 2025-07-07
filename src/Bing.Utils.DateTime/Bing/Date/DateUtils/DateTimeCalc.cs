@@ -268,23 +268,41 @@ public static class DateTimeCalc
 
         if (weekOffset > 0)
         {
-            // 向后偏移：先找到本周或下周的目标星期几，再增加(weekOffset-1)周
+            // 正向偏移：找到下一个目标星期几
+            DateTime nextOccurrence;
             if (dayOfWeek == dt.DayOfWeek)
-                return dt.AddDays(7 * weekOffset); // 如果当天就是目标星期几，则直接增加weekOffset周
+            {
+                // 如果当前日期就是目标星期几，则需要加7天
+                nextOccurrence = dt.AddDays(7);
+            }
+            else
+            {
+                // 否则找到下一次出现的目标星期几
+                int dayDiff = ((int)dayOfWeek - (int)dt.DayOfWeek + 7) % 7;
+                nextOccurrence = dt.AddDays(dayDiff);
+            }
 
-            int daysToAdd = ((int)dayOfWeek - (int)dt.DayOfWeek + 7) % 7;
-            if (daysToAdd == 0) daysToAdd = 7; // 确保不会返回当天
-            return dt.AddDays(daysToAdd + 7 * (weekOffset - 1));
+            // 再加上剩余的周数
+            return nextOccurrence.AddDays(7 * (weekOffset - 1));
         }
         else // weekOffset < 0
         {
-            // 向前偏移：先找到本周或上周的目标星期几，再减去(|weekOffset|-1)周
+            // 负向偏移：找到上一个目标星期几
+            DateTime prevOccurrence;
             if (dayOfWeek == dt.DayOfWeek)
-                return dt.AddDays(7 * weekOffset); // 如果当天就是目标星期几，则直接减去|weekOffset|周
+            {
+                // 如果当前日期就是目标星期几，则需要减7天
+                prevOccurrence = dt.AddDays(-7);
+            }
+            else
+            {
+                // 否则找到上一次出现的目标星期几
+                int dayDiff = ((int)dt.DayOfWeek - (int)dayOfWeek + 7) % 7;
+                prevOccurrence = dt.AddDays(-dayDiff);
+            }
 
-            int daysToSubtract = ((int)dt.DayOfWeek - (int)dayOfWeek + 7) % 7;
-            if (daysToSubtract == 0) daysToSubtract = 7; // 确保不会返回当天
-            return dt.AddDays(-daysToSubtract + 7 * (weekOffset + 1));
+            // 再减去剩余的周数
+            return prevOccurrence.AddDays(7 * (weekOffset + 1));
         }
     }
 
