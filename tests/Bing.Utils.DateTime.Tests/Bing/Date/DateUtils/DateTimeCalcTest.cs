@@ -5,7 +5,7 @@ namespace Bing.Date.DateUtils;
 /// <summary>
 /// 时间日期计算器 测试
 /// </summary>
-[Trait("DateTimeUT", "DateTimeCalc")]
+[Trait("DateTimeUT", "DateTime.Calc")]
 public class DateTimeCalcTest : TestBase
 {
     /// <inheritdoc />

@@ -6,9 +6,9 @@
 public static class ConstellationHelper
 {
     /// <summary>
-    /// 星座名称
+    /// 星座名称数组
     /// </summary>
-    private static readonly string[] ConstellationName =
+    private static readonly string[] ConstellationNames =
     [
         "白羊座",
         "金牛座",
@@ -25,64 +25,72 @@ public static class ConstellationHelper
     ];
 
     /// <summary>
+    /// 星座日期区间数组，每个元素表示一个星座的起始月日
+    /// </summary>
+    private static readonly (int Month, int Day)[] ConstellationDateRanges =
+    [
+        (3, 21), // 白羊座起始日期
+        (4, 20), // 金牛座起始日期
+        (5, 21), // 双子座起始日期
+        (6, 21), // 巨蟹座起始日期
+        (7, 23), // 狮子座起始日期
+        (8, 23), // 处女座起始日期
+        (9, 23), // 天秤座起始日期
+        (10, 23), // 天蝎座起始日期
+        (11, 22), // 射手座起始日期
+        (12, 22), // 摩羯座起始日期
+        (1, 20), // 水瓶座起始日期
+        (2, 19)  // 双鱼座起始日期
+    ];
+
+    /// <summary>
     /// 获取指定日期的星座名称
     /// </summary>
-    /// <param name="dt">指定的日期</param>
-    /// <returns>返回指定日期对应的星座名称</returns>
-    public static string Get(DateTime dt) => Get(dt.Month, dt.Day);
+    /// <param name="dateTime">日期时间</param>
+    /// <returns>对应的星座名称</returns>
+    public static string Get(DateTime dateTime) => Get(dateTime.Month, dateTime.Day);
 
     /// <summary>
     /// 获取指定月份和日期的星座名称
     /// </summary>
-    /// <param name="month">指定的月份</param>
-    /// <param name="day">指定的日期</param>
-    /// <returns>返回指定月份和日期对应的星座名称</returns>
+    /// <param name="month">月份，范围1-12</param>
+    /// <param name="day">日期</param>
+    /// <returns>对应的星座名称</returns>
+    /// <exception cref="ArgumentOutOfRangeException">月份或日期超出有效范围时抛出</exception>
     public static string Get(int month, int day)
     {
-        int index;
-        var m = month;
-        var d = day;
-        var y = m * 100 + d;
-        switch (y)
+        // 验证月份和日期范围
+        if (month < 1 || month > 12)
+            throw new ArgumentOutOfRangeException(nameof(month), "月份必须在1到12之间");
+
+        // 验证日期在当月的有效范围内
+        var daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, month);
+        if (day < 1 || day > daysInMonth)
+            throw new ArgumentOutOfRangeException(nameof(day), $"日期必须在1到{daysInMonth}之间");
+        // 计算星座索引
+        for (var i = 0; i < ConstellationDateRanges.Length; i++)
         {
-            case >= 321 and <= 419:
-                index = 0;
-                break;
-            case >= 420 and <= 520:
-                index = 1;
-                break;
-            case >= 521 and <= 620:
-                index = 2;
-                break;
-            case >= 621 and <= 722:
-                index = 3;
-                break;
-            case >= 723 and <= 822:
-                index = 4;
-                break;
-            case >= 823 and <= 922:
-                index = 5;
-                break;
-            case >= 923 and <= 1022:
-                index = 6;
-                break;
-            case >= 1023 and <= 1121:
-                index = 7;
-                break;
-            case >= 1122 and <= 1221:
-                index = 8;
-                break;
-            case >= 1222:
-            case <= 119:
-                index = 9;
-                break;
-            case >= 120 and <= 218:
-                index = 10;
-                break;
-            case >= 219 and <= 320:
-                index = 11;
-                break;
+            var currentRange = ConstellationDateRanges[i];
+            var nextRangeIndex = (i + 1) % ConstellationDateRanges.Length;
+            var nextRange = ConstellationDateRanges[nextRangeIndex];
+
+            // 处理特殊情况：摩羯座跨年（12月22日 - 1月19日）
+            if (i == 9) // 摩羯座
+            {
+                if ((month == 12 && day >= 22) || (month == 1 && day <= 19))
+                    return ConstellationNames[i];
+                continue;
+            }
+
+            // 处理普通情况
+            if ((month == currentRange.Month && day >= currentRange.Day) ||
+                (month == nextRange.Month && day < nextRange.Day))
+            {
+                return ConstellationNames[i];
+            }
         }
-        return ConstellationName[index];
+
+        // 理论上代码不会执行到这里
+        throw new InvalidOperationException("无法确定星座");
     }
 }
