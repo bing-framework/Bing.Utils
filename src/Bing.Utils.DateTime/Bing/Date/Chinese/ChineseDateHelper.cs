@@ -123,17 +123,24 @@ public static class ChineseDateHelper
     /// 获取农历年
     /// </summary>
     /// <param name="dt">日期</param>
-    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符，默认为 false，即使用简体中文字符</param>
+    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符</param>
     /// <returns>农历年</returns>
+    /// <exception cref="ArgumentNullException">日期为空时抛出</exception>
     public static string GetChineseYear(DateTime dt, bool traditionalChineseCharacters = false)
     {
+        if (!DateJudge.IsValid(dt))
+            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+
         var hzNumP = traditionalChineseCharacters ? HZNUM_Z : HZNUM_S;
 
-        var year = dt.Year.ToString().ToCharArray();
-        var yearStr = new string[year.Length];
-        for (var i = 0; i < year.Length; i++)
-            yearStr[i] = hzNumP[year[i]];
-        return $"{string.Join("", yearStr)}年";
+        var result = string.Empty;
+        foreach (var digit in dt.Year.ToString())
+        {
+            // 将字符转换为数字并获取对应的中文数字
+            if (int.TryParse(digit.ToString(), out int number) && number >= 0 && number <= 9)
+                result += hzNumP[number];
+        }
+        return $"{result}年";
     }
 
     /// <summary>
@@ -141,10 +148,16 @@ public static class ChineseDateHelper
     /// </summary>
     /// <param name="calendar">中国农历日历</param>
     /// <param name="dt">日期</param>
-    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符，默认为 false，即使用简体中文字符</param>
+    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符</param>
     /// <returns>干支年份</returns>
+    /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static string GetSexagenaryYear(ChineseLunisolarCalendar calendar, DateTime dt, bool traditionalChineseCharacters = false)
     {
+        if (calendar == null)
+            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
+        if (!DateJudge.IsValid(dt))
+            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+
         var ganP = traditionalChineseCharacters ? GAN_Z : GAN_S;
         var zhiP = traditionalChineseCharacters ? ZHI_Z : ZHI_S;
 
@@ -159,15 +172,52 @@ public static class ChineseDateHelper
     /// </summary>
     /// <param name="calendar">中国农历日历</param>
     /// <param name="dt">日期</param>
-    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符，默认为 false，即使用简体中文字符</param>
+    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符</param>
     /// <returns>农历月</returns>
+    /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static string GetChineseMonth(ChineseLunisolarCalendar calendar, DateTime dt, bool traditionalChineseCharacters = false)
     {
+        if (calendar == null)
+            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
+        if (!DateJudge.IsValid(dt))
+            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+
         var run = traditionalChineseCharacters ? RUN_Z : RUN_S;
         var yueP = traditionalChineseCharacters ? YUE_Z : YUE_S;
 
-        var isLeapMonth = calendar.IsLeapMonth(dt.Year, dt.Month);
-        return $"{(isLeapMonth ? run : string.Empty)}{yueP[calendar.GetMonth(dt)]}月";
+        // 获取农历年和月
+        var lunarYear = calendar.GetYear(dt);
+        var lunarMonth = calendar.GetMonth(dt);
+
+        // 获取当年的闰月
+        var leapMonth = calendar.GetLeapMonth(lunarYear);
+
+        // 判断是否是闰月
+        var isLeapMonth = calendar.IsLeapMonth(lunarYear, lunarMonth);
+
+        // 计算月份索引：对于闰N月，显示为"闰N月"；对于大于闰月的月份，索引-1以正确映射
+        int monthIndex;
+        if (isLeapMonth)
+        {
+            // 闰月使用前一个月的索引
+            monthIndex = lunarMonth - 2;
+        }
+        else if (leapMonth > 0 && lunarMonth > leapMonth)
+        {
+            // 闰月之后的月份索引减1
+            monthIndex = lunarMonth - 2;
+        }
+        else
+        {
+            // 正常月份
+            monthIndex = lunarMonth - 1;
+        }
+
+        // 确保索引在有效范围内
+        if (monthIndex < 0 || monthIndex >= yueP.Length)
+            monthIndex = 0;
+
+        return $"{(isLeapMonth ? run : string.Empty)}{yueP[monthIndex]}月";
     }
 
     /// <summary>
@@ -175,10 +225,16 @@ public static class ChineseDateHelper
     /// </summary>
     /// <param name="calendar">中国农历日历</param>
     /// <param name="dt">日期</param>
-    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符，默认为 false，即使用简体中文字符</param>
+    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符</param>
     /// <returns>农历日</returns>
+    /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static string GetChineseDay(ChineseLunisolarCalendar calendar, DateTime dt, bool traditionalChineseCharacters = false)
     {
+        if (calendar == null)
+            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
+        if (!DateJudge.IsValid(dt))
+            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+
         var day = calendar.GetDayOfMonth(dt);
         var priP = traditionalChineseCharacters ? PRI_Z : PRI_S;
         var sriP = traditionalChineseCharacters ? SRI_Z : SRI_S;
@@ -198,12 +254,15 @@ public static class ChineseDateHelper
     /// <summary>
     /// 获取农历时辰
     /// </summary>
-    /// <param name="calendar">中国农历日历</param>
     /// <param name="dt">日期</param>
-    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符，默认为 false，即使用简体中文字符</param>
+    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符</param>
     /// <returns>农历时辰</returns>
-    public static string GetChineseHour(ChineseLunisolarCalendar calendar, DateTime dt, bool traditionalChineseCharacters = false)
+    /// <exception cref="ArgumentNullException">日期为空时抛出</exception>
+    public static string GetChineseHour(DateTime dt, bool traditionalChineseCharacters = false)
     {
+        if (!DateJudge.IsValid(dt))
+            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+
         var shiP = traditionalChineseCharacters ? SHI_Z : SHI_S;
         var zhiP = traditionalChineseCharacters ? ZHI_Z : ZHI_S;
         var hour = dt.Hour;
@@ -216,38 +275,105 @@ public static class ChineseDateHelper
     }
 
     /// <summary>
+    /// 获取完整农历日期
+    /// </summary>
+    /// <param name="calendar">中国农历日历</param>
+    /// <param name="dt">日期</param>
+    /// <param name="includeHour">是否包含时辰</param>
+    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符</param>
+    /// <returns>完整农历日期表示</returns>
+    /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
+    public static string GetChineseDateTime(ChineseLunisolarCalendar calendar, DateTime dt, bool includeHour = true, bool traditionalChineseCharacters = false)
+    {
+        if (calendar == null)
+            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
+        if (!DateJudge.IsValid(dt))
+            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+
+        var year = GetSexagenaryYear(calendar, dt, traditionalChineseCharacters);
+        var month = GetChineseMonth(calendar, dt, traditionalChineseCharacters);
+        var day = GetChineseDay(calendar, dt, traditionalChineseCharacters);
+
+        var result = $"{year}{month}{day}";
+        if (includeHour)
+            result += GetChineseHour(dt, traditionalChineseCharacters);
+        return result;
+    }
+
+    /// <summary>
     /// 指定年份是否为闰年
     /// </summary>
-    /// <param name="calendar">中国农历日历，如果为null，则创建一个新的实例</param>
-    /// <param name="dt">日期，用于获取年份</param>
-    /// <returns>如果指定的年份是闰年，则返回true；否则返回false</returns>
+    /// <param name="calendar">中国农历日历</param>
+    /// <param name="year">年份</param>
+    /// <returns>如果指定的年份是闰年，则返回true</returns>
+    /// <exception cref="ArgumentNullException">日历为空时抛出</exception>
+    public static bool IsLeapYear(ChineseLunisolarCalendar calendar, int year)
+    {
+        if (calendar == null)
+            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
+        return calendar.IsLeapYear(year);
+    }
+
+    /// <summary>
+    /// 指定年份是否为闰年
+    /// </summary>
+    /// <param name="calendar">中国农历日历</param>
+    /// <param name="dt">日期</param>
+    /// <returns>如果指定的年份是闰年，则返回true</returns>
+    /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static bool IsLeapYear(ChineseLunisolarCalendar calendar, DateTime dt)
     {
-        calendar ??= new ChineseLunisolarCalendar();
+        if (calendar == null)
+            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
+        if (!DateJudge.IsValid(dt))
+            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
         return calendar.IsLeapYear(dt.Year);
     }
 
     /// <summary>
     /// 指定月份是否为闰月
     /// </summary>
-    /// <param name="calendar">中国农历日历，如果为null，则创建一个新的实例</param>
-    /// <param name="dt">日期，用于获取年份和月份</param>
-    /// <returns>如果指定的月份是闰月，则返回true；否则返回false</returns>
+    /// <param name="calendar">中国农历日历</param>
+    /// <param name="year">年份</param>
+    /// <param name="month">月份</param>
+    /// <returns>如果指定的月份是闰月，则返回true</returns>
+    /// <exception cref="ArgumentNullException">日历为空时抛出</exception>
+    public static bool IsLeapMonth(ChineseLunisolarCalendar calendar, int year, int month)
+    {
+        if (calendar == null)
+            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
+        return calendar.IsLeapMonth(year, month);
+    }
+
+    /// <summary>
+    /// 指定月份是否为闰月
+    /// </summary>
+    /// <param name="calendar">中国农历日历</param>
+    /// <param name="dt">日期</param>
+    /// <returns>如果指定的月份是闰月，则返回true</returns>
+    /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static bool IsLeapMonth(ChineseLunisolarCalendar calendar, DateTime dt)
     {
-        calendar ??= new ChineseLunisolarCalendar();
+        if (calendar == null)
+            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
+        if (!DateJudge.IsValid(dt))
+            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
         return calendar.IsLeapMonth(dt.Year, dt.Month);
     }
 
     /// <summary>
     /// 指定日期是否为闰日
     /// </summary>
-    /// <param name="calendar">中国农历日历，如果为null，则创建一个新的实例</param>
-    /// <param name="dt">日期，用于获取年份、月份和日</param>
-    /// <returns>如果指定的日期是闰日，则返回true；否则返回false</returns>
+    /// <param name="calendar">中国农历日历</param>
+    /// <param name="dt">日期</param>
+    /// <returns>如果指定的日期是闰日，则返回true</returns>
+    /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static bool IsLeapDay(ChineseLunisolarCalendar calendar, DateTime dt)
     {
-        calendar ??= new ChineseLunisolarCalendar();
+        if (calendar == null)
+            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
+        if (!DateJudge.IsValid(dt))
+            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
         return calendar.IsLeapDay(dt.Year, dt.Month, dt.Day);
     }
 }
