@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using Bing.Extensions;
 using Bing.Reflection;
-using Bing.Utils.Properties;
 
 namespace Bing.Helpers;
 
