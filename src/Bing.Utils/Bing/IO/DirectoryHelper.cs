@@ -17,13 +17,27 @@ public static class DirectoryHelper
     /// 创建目录，如果目录已存在则不创建
     /// </summary>
     /// <param name="path">文件或目录绝对路径</param>
-    public static void CreateDirectory(string path)
+    /// <returns>创建的目录信息</returns>
+    /// <exception cref="ArgumentException">当路径为空或无效时抛出</exception>
+    public static DirectoryInfo CreateDirectory(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
-            return;
-        var file = new FileInfo(path);
-        var directoryPath = file.Directory?.FullName;
-        CreateIfNotExists(directoryPath);
+            throw new ArgumentException("路径不能为空或空白字符", nameof(path));
+
+        try
+        {
+            // 判断路径是文件路径还是目录路径
+            var directoryPath = Path.HasExtension(path) ? Path.GetDirectoryName(path) : path;
+
+            if (string.IsNullOrEmpty(directoryPath))
+                throw new ArgumentException("无法确定有效的目录路径", nameof(path));
+
+            return Directory.CreateDirectory(directoryPath);
+        }
+        catch (Exception ex) when (!(ex is ArgumentException))
+        {
+            throw new InvalidOperationException($"创建目录失败: {ex.Message}", ex);
+        }
     }
 
     #endregion
@@ -34,24 +48,31 @@ public static class DirectoryHelper
     /// 创建文件夹，如果文件夹不存在
     /// </summary>
     /// <param name="directory">要创建的文件夹路径</param>
-    public static void CreateIfNotExists(string directory)
+    /// <returns>目录信息</returns>
+    public static DirectoryInfo CreateIfNotExists(string directory)
     {
         if (string.IsNullOrWhiteSpace(directory))
-            return;
+            return null;
         if (!Directory.Exists(directory))
-            Directory.CreateDirectory(directory);
+            return Directory.CreateDirectory(directory);
+        return new DirectoryInfo(directory);
     }
 
     /// <summary>
     /// 创建文件夹，如果文件夹不存在
     /// </summary>
     /// <param name="directory">文件夹信息</param>
-    public static void CreateIfNotExists(DirectoryInfo directory)
+    /// <returns>目录信息</returns>
+    public static DirectoryInfo CreateIfNotExists(DirectoryInfo directory)
     {
         if (directory == null)
-            return;
+            return null;
         if (!directory.Exists)
+        {
             directory.Create();
+            directory.Refresh(); // 刷新状态
+        }
+        return directory;
     }
 
     #endregion
@@ -62,25 +83,33 @@ public static class DirectoryHelper
     /// 删除文件夹，如果文件夹存在
     /// </summary>
     /// <param name="directory">要删除的文件夹路径</param>
-    public static void DeleteIfExists(string directory)
-    {
-        if (string.IsNullOrWhiteSpace(directory))
-            return;
-        if (Directory.Exists(directory))
-            Directory.Delete(directory);
-    }
+    /// <returns>是否成功删除</returns>
+    public static bool DeleteIfExists(string directory) => DeleteIfExists(directory, false);
 
     /// <summary>
     /// 删除文件夹，如果文件夹存在
     /// </summary>
     /// <param name="directory">要删除的文件夹路径</param>
     /// <param name="recursive">是否递归删除所有子目录和文件</param>
-    public static void DeleteIfExists(string directory, bool recursive)
+    /// <returns>是否成功删除</returns>
+    public static bool DeleteIfExists(string directory, bool recursive)
     {
         if (string.IsNullOrWhiteSpace(directory))
-            return;
-        if (Directory.Exists(directory))
-            Directory.Delete(directory, recursive);
+            return false;
+        try
+        {
+            if (Directory.Exists(directory))
+            {
+                Directory.Delete(directory, recursive);
+                return true;
+            }
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"删除目录失败: {ex.Message}");
+            return false;
+        }
     }
 
     #endregion
@@ -92,12 +121,24 @@ public static class DirectoryHelper
     /// </summary>
     /// <param name="parentDirectoryPath">父目录路径</param>
     /// <param name="childDirectoryPath">子目录路径</param>
+    /// <returns>是否为子目录</returns>
+    /// <exception cref="ArgumentNullException">当参数为null时抛出</exception>
     public static bool IsSubDirectoryOf(string parentDirectoryPath, string childDirectoryPath)
     {
         Check.NotNull(parentDirectoryPath, nameof(parentDirectoryPath));
         Check.NotNull(childDirectoryPath, nameof(childDirectoryPath));
 
-        return IsSubDirectoryOf(new DirectoryInfo(parentDirectoryPath), new DirectoryInfo(childDirectoryPath));
+        try
+        {
+            var parentInfo = new DirectoryInfo(parentDirectoryPath);
+            var childInfo = new DirectoryInfo(childDirectoryPath);
+            return IsSubDirectoryOf(parentInfo, childInfo);
+        }
+        catch (Exception e)
+        {
+            InvokeHelper.OnInvokeException?.Invoke(e);
+            return false;
+        }
     }
 
     /// <summary>
@@ -105,6 +146,8 @@ public static class DirectoryHelper
     /// </summary>
     /// <param name="parentDirectory">父目录</param>
     /// <param name="childDirectory">子目录</param>
+    /// <returns>是否为子目录</returns>
+    /// <exception cref="ArgumentNullException">当参数为null时抛出</exception>
     public static bool IsSubDirectoryOf(DirectoryInfo parentDirectory, DirectoryInfo childDirectory)
     {
         Check.NotNull(parentDirectory, nameof(parentDirectory));
@@ -128,14 +171,20 @@ public static class DirectoryHelper
     /// 更改当前目录
     /// </summary>
     /// <param name="targetDirectory">目标目录</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>用于恢复原目录的 IDisposable 对象</returns>
+    /// <exception cref="ArgumentNullException">当目标目录为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当目标目录不存在时抛出</exception>
     public static IDisposable ChangeCurrentDirectory(string targetDirectory)
     {
         if (string.IsNullOrWhiteSpace(targetDirectory))
             throw new ArgumentNullException(nameof(targetDirectory));
+        if (!Directory.Exists(targetDirectory))
+            throw new DirectoryNotFoundException($"目录不存在: {targetDirectory}");
+
         var currentDirectory = Directory.GetCurrentDirectory();
         if (currentDirectory.Equals(targetDirectory, StringComparison.OrdinalIgnoreCase))
             return NullDisposable.Instance;
+
         Directory.SetCurrentDirectory(targetDirectory);
         return new DisposeAction<string>(Directory.SetCurrentDirectory, currentDirectory);
     }
@@ -150,12 +199,32 @@ public static class DirectoryHelper
     /// <param name="directoryPath">目录绝对路径</param>
     /// <param name="pattern">模式字符串。"*"代表0或N个字符，"?"代表1个字符。范例："Log*.xml"表示搜索所有以Log开头的Xml文件。默认：*</param>
     /// <param name="includeChildPath">是否包含子目录</param>
-    /// <exception cref="DirectoryNotFoundException"></exception>
+    /// <returns>文件路径数组</returns>
+    /// <exception cref="ArgumentNullException">当目录路径为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
     public static string[] GetFiles(string directoryPath, string pattern = "*", bool includeChildPath = false)
     {
+        if (string.IsNullOrWhiteSpace(directoryPath))
+            throw new ArgumentNullException(nameof(directoryPath));
+
         if (!Directory.Exists(directoryPath))
-            throw new DirectoryNotFoundException($"目录\"{directoryPath}\"不存在");
-        return Directory.GetFiles(directoryPath, pattern, includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+            throw new DirectoryNotFoundException($"目录不存在: {directoryPath}");
+
+        pattern = string.IsNullOrWhiteSpace(pattern) ? "*" : pattern;
+
+        try
+        {
+            return Directory.GetFiles(directoryPath, pattern, includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Array.Empty<string>();
+        }
+        catch (Exception ex)
+        {
+            InvokeHelper.OnInvokeException?.Invoke(ex);
+            return Array.Empty<string>();
+        }
     }
 
     #endregion
@@ -168,13 +237,16 @@ public static class DirectoryHelper
     /// <param name="directoryPath">目录绝对路径</param>
     /// <param name="pattern">模式字符串。"*"代表0或N个字符，"?"代表1个字符。范例："Log*.xml"表示搜索所有以Log开头的Xml文件。默认：*</param>
     /// <param name="includeChildPath">是否包含子目录</param>
-    /// <exception cref="DirectoryNotFoundException"></exception>
+    /// <returns>文件名数组</returns>
+    /// <exception cref="ArgumentNullException">当目录路径为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
     public static string[] GetFileNames(string directoryPath, string pattern = "*", bool includeChildPath = false)
     {
-        var names = new List<string>();
-        foreach (var filePath in GetFiles(directoryPath, pattern, includeChildPath))
-            names.Add(Path.GetFileName(filePath));
-        return names.ToArray();
+        var filePaths = GetFiles(directoryPath, pattern, includeChildPath);
+        var names = new string[filePaths.Length];
+        for (var i = 0; i < filePaths.Length; i++) 
+            names[i] = Path.GetFileName(filePaths[i]);
+        return names;
     }
 
     #endregion
@@ -187,13 +259,29 @@ public static class DirectoryHelper
     /// <param name="directoryPath">目录绝对路径</param>
     /// <param name="pattern">模式字符串。"*"代表0或N个字符，"?"代表1个字符。</param>
     /// <param name="includeChildPath">是否包含子目录</param>
-    /// <exception cref="DirectoryNotFoundException"></exception>
+    /// <returns>目录路径数组</returns>
+    /// <exception cref="ArgumentNullException">当目录路径为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
     public static string[] GetDirectories(string directoryPath, string pattern = "*", bool includeChildPath = false)
     {
+        if (string.IsNullOrWhiteSpace(directoryPath))
+            throw new ArgumentNullException(nameof(directoryPath));
         if (!Directory.Exists(directoryPath))
-            throw new DirectoryNotFoundException($"目录\"{directoryPath}\"不存在");
-        return Directory.GetDirectories(directoryPath, pattern,
-            includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+            throw new DirectoryNotFoundException($"目录不存在: {directoryPath}");
+
+        try
+        {
+            Directory.GetDirectories(directoryPath, pattern, includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Array.Empty<string>();
+        }
+        catch (Exception ex)
+        {
+            InvokeHelper.OnInvokeException?.Invoke(ex);
+            return Array.Empty<string>();
+        }
     }
 
     #endregion
@@ -206,10 +294,19 @@ public static class DirectoryHelper
     /// <param name="directoryPath">目录的绝对路径</param>
     /// <param name="pattern">模式字符串。"*"代表0或N个字符，"?"代表1个字符。范例："Log*.xml"表示搜索所有以Log开头的Xml文件。</param>
     /// <param name="includeChildPath">是否包含子目录</param>
+    /// <returns>是否存在匹配的文件</returns>
     public static bool Contains(string directoryPath, string pattern, bool includeChildPath = false)
     {
-        var fileNames = GetFiles(directoryPath, pattern, includeChildPath);
-        return fileNames.Length != 0;
+        try
+        {
+            var fileNames = GetFiles(directoryPath, pattern, includeChildPath);
+            return fileNames.Length != 0;
+        }
+        catch (Exception e)
+        {
+            InvokeHelper.OnInvokeException?.Invoke(e);
+            return false;
+        }
     }
 
     #endregion
@@ -219,10 +316,26 @@ public static class DirectoryHelper
     /// <summary>
     /// 检查文件夹是否为空目录
     /// </summary>
-    /// <param name="folderName">文件夹名称</param>
-    public static bool IsEmptyDirectory(string folderName)
+    /// <param name="folderPath">文件夹路径</param>
+    /// <returns>是否为空目录</returns>
+    /// <exception cref="ArgumentNullException">当文件夹路径为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当文件夹不存在时抛出</exception>
+    public static bool IsEmptyDirectory(string folderPath)
     {
-        return Directory.GetFiles(folderName).Length == 0 && Directory.GetDirectories(folderName).Length == 0;
+        if (string.IsNullOrWhiteSpace(folderPath))
+            throw new ArgumentNullException(nameof(folderPath));
+
+        if (!Directory.Exists(folderPath))
+            throw new DirectoryNotFoundException($"目录不存在: {folderPath}");
+
+        try
+        {
+            return !Directory.EnumerateFileSystemEntries(folderPath).Any();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
     }
 
     #endregion
@@ -234,11 +347,31 @@ public static class DirectoryHelper
     /// </summary>
     /// <param name="folderPath">文件夹路径</param>
     /// <param name="days">指定天数</param>
+    /// <returns>是否超过指定天数</returns>
+    /// <exception cref="ArgumentNullException">当文件夹路径为空时抛出</exception>
+    /// <exception cref="ArgumentOutOfRangeException">当天数为负数时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当文件夹不存在时抛出</exception>
     public static bool IsOverdueDirectory(string folderPath, int days)
     {
-        var createTime = Directory.GetCreationTime(folderPath);
-        var date = DateTime.Now.Date.Subtract(createTime);
-        return date.Days > days;
+        if (string.IsNullOrWhiteSpace(folderPath))
+            throw new ArgumentNullException(nameof(folderPath));
+        if (days < 0)
+            throw new ArgumentOutOfRangeException(nameof(days), "天数不能为负数");
+
+        if (!Directory.Exists(folderPath))
+            throw new DirectoryNotFoundException($"目录不存在: {folderPath}");
+
+        try
+        {
+            var createTime = Directory.GetCreationTime(folderPath);
+            var daysSinceCreation = (DateTime.Now - createTime).Days;
+            return daysSinceCreation > days;
+        }
+        catch (Exception ex)
+        {
+            InvokeHelper.OnInvokeException?.Invoke(ex);
+            return false;
+        }
     }
 
     #endregion
