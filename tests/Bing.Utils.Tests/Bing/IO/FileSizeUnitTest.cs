@@ -7,6 +7,8 @@ namespace Bing.IO;
 /// </summary>
 public class FileSizeUnitTest
 {
+    #region 基础功能测试
+
     /// <summary>
     /// 测试 - Description - 获取单位描述
     /// </summary>
@@ -64,6 +66,10 @@ public class FileSizeUnitTest
         result.ShouldBe(expected);
     }
 
+    #endregion
+
+    #region 单位转换测试
+
     /// <summary>
     /// 测试 - ConvertFromBytes - 从字节转换
     /// </summary>
@@ -84,6 +90,24 @@ public class FileSizeUnitTest
     }
 
     /// <summary>
+    /// 测试 - ConvertFromBytes - 从字节转换为指定单位
+    /// </summary>
+    [Theory]
+    [InlineData(FileSizeUnit.K, 1024L, 2, 1.0)]
+    [InlineData(FileSizeUnit.M, 1048576L, 2, 1.0)]
+    [InlineData(FileSizeUnit.G, 1073741824L, 2, 1.0)]
+    [InlineData(FileSizeUnit.K, 1536L, 1, 1.5)]
+    [InlineData(FileSizeUnit.M, 2621440L, 1, 2.5)]
+    public void ConvertFromBytes_WithValidInput_ShouldReturnCorrectValue(FileSizeUnit unit, long bytes, int precision, double expected)
+    {
+        // Act
+        var result = unit.ConvertFromBytes(bytes, precision);
+
+        // Assert
+        result.ShouldBe(expected);
+    }
+
+    /// <summary>
     /// 测试 - ConvertFromBytes - 负数字节抛出异常
     /// </summary>
     [Fact]
@@ -94,14 +118,37 @@ public class FileSizeUnitTest
     }
 
     /// <summary>
-    /// 测试 - ConvertToBytes - 转换为字节
+    /// 测试 - ConvertFromBytes - 负数字节应抛出异常
+    /// </summary>
+    [Fact]
+    public void ConvertFromBytes_WithNegativeBytes_ShouldThrowArgumentOutOfRangeException()
+    {
+        // Act & Assert
+        Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.ConvertFromBytes(-1))
+            .ParamName.ShouldBe("bytes");
+    }
+
+    /// <summary>
+    /// 测试 - ConvertFromBytes - 负数精度应抛出异常
+    /// </summary>
+    [Fact]
+    public void ConvertFromBytes_WithNegativePrecision_ShouldThrowArgumentOutOfRangeException()
+    {
+        // Act & Assert
+        Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.ConvertFromBytes(1024, -1))
+            .ParamName.ShouldBe("precision");
+    }
+
+    /// <summary>
+    /// 测试 - ConvertToBytes - 转换为字节数
     /// </summary>
     [Theory]
     [InlineData(FileSizeUnit.K, 1.0, 1024L)]
     [InlineData(FileSizeUnit.M, 2.5, 2621440L)]
     [InlineData(FileSizeUnit.G, 0.5, 536870912L)]
     [InlineData(FileSizeUnit.P, 1.0, 1125899906842624L)]
-    public void ConvertToBytes_ValidInput_ReturnsCorrectBytes(FileSizeUnit unit, double value, long expected)
+    [InlineData(FileSizeUnit.Byte, 100.0, 100L)]
+    public void ConvertToBytes_WithValidInput_ShouldReturnCorrectBytes(FileSizeUnit unit, double value, long expected)
     {
         // Act
         var result = unit.ConvertToBytes(value);
@@ -117,46 +164,36 @@ public class FileSizeUnitTest
     public void ConvertToBytes_NegativeValue_ThrowsException()
     {
         // Act & Assert
-        Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.ConvertToBytes(-1.0));
+        Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.ConvertToBytes(-1.0))
+            .ParamName.ShouldBe("value");
     }
 
     /// <summary>
-    /// 测试 - GetBestUnit - 获取最佳单位
-    /// </summary>
-    [Theory]
-    [InlineData(512L, FileSizeUnit.Byte)]
-    [InlineData(1024L, FileSizeUnit.K)]
-    [InlineData(1048576L, FileSizeUnit.M)]
-    [InlineData(1073741824L, FileSizeUnit.G)]
-    [InlineData(1099511627776L, FileSizeUnit.T)]
-    [InlineData(1125899906842624L, FileSizeUnit.P)]
-    public void GetBestUnit_ValidBytes_ReturnsCorrectUnit(long bytes, FileSizeUnit expected)
-    {
-        // Act
-        var result = FileSizeUnitExtensions.GetBestUnit(bytes);
-
-        // Assert
-        result.ShouldBe(expected);
-    }
-
-    /// <summary>
-    /// 测试 - GetBestUnit - 负数字节抛出异常
+    /// 测试 - ConvertToBytes - 溢出应抛出异常
     /// </summary>
     [Fact]
-    public void GetBestUnit_NegativeBytes_ThrowsException()
+    public void ConvertToBytes_WithOverflowValue_ShouldThrowOverflowException()
     {
         // Act & Assert
-        Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnitExtensions.GetBestUnit(-1));
+        Should.Throw<OverflowException>(() => FileSizeUnit.P.ConvertToBytes(double.MaxValue))
+            .Message.ShouldContain("转换结果超出长整型范围");
     }
+
+    #endregion
+
+    #region 格式化测试
 
     /// <summary>
     /// 测试 - FormatSize - 格式化文件大小
     /// </summary>
     [Theory]
-    [InlineData(FileSizeUnit.K, 1.5, 2, "1.50 KB")]
-    [InlineData(FileSizeUnit.M, 2.0, 1, "2.0 MB")]
+    [InlineData(FileSizeUnit.K, 1.5, 2, "1.5 KB")]
+    [InlineData(FileSizeUnit.M, 2.0, 1, "2 MB")]
     [InlineData(FileSizeUnit.G, 1.0, 0, "1 GB")]
+    [InlineData(FileSizeUnit.G, 1.25, 2, "1.25 GB")]
+    [InlineData(FileSizeUnit.P, 5.0, 1, "5 PB")]
     [InlineData(FileSizeUnit.P, 5.25, 2, "5.25 PB")]
+    [InlineData(FileSizeUnit.Byte, 512.0, 0, "512 B")]
     public void FormatSize_ValidInput_ReturnsFormattedString(FileSizeUnit unit, double value, int precision, string expected)
     {
         // Act
@@ -167,42 +204,36 @@ public class FileSizeUnitTest
     }
 
     /// <summary>
-    /// 测试 - AutoFormat - 自动格式化
+    /// 测试 - FormatSize - 自动移除尾随零
     /// </summary>
     [Theory]
-    [InlineData(512L, 2, "512.00 B")]
-    [InlineData(1536L, 2, "1.50 KB")]
-    [InlineData(2097152L, 1, "2.0 MB")]
-    [InlineData(1024L, 0, "1 KB")]
-    [InlineData(1125899906842624L, 2, "1.00 PB")]
-    public void AutoFormat_ValidBytes_ReturnsFormattedString(long bytes, int precision, string expected)
+    [InlineData(FileSizeUnit.K, 1.0, 2, "1 KB")]      // 移除 .00
+    [InlineData(FileSizeUnit.M, 2.5, 2, "2.5 MB")]    // 移除 .50 -> .5
+    [InlineData(FileSizeUnit.G, 3.125, 3, "3.125 GB")] // 保留有效位数
+    [InlineData(FileSizeUnit.T, 4.100, 3, "4.1 TB")]   // 移除尾随0
+    public void FormatSize_TrailingZeroRemoval_ReturnsCleanString(FileSizeUnit unit, double value, int precision, string expected)
     {
         // Act
-        var result = FileSizeUnitExtensions.AutoFormat(bytes, precision);
+        var result = unit.FormatSize(value, precision);
 
         // Assert
         result.ShouldBe(expected);
     }
 
     /// <summary>
-    /// 测试 - TryParseSize - 解析文件大小字符串
+    /// 测试 - FormatSize - 负数精度应抛出异常
     /// </summary>
-    [Theory]
-    [InlineData("1.5 KB", true, 1536L)]
-    [InlineData("2 MB", true, 2097152L)]
-    [InlineData("1 GB", true, 1073741824L)]
-    [InlineData("invalid", false, 0L)]
-    [InlineData("", false, 0L)]
-    [InlineData("1.5", false, 0L)]
-    public void TryParseSize_VariousInputs_ReturnsExpectedResults(string input, bool expectedSuccess, long expectedBytes)
+    [Fact]
+    public void FormatSize_WithNegativePrecision_ShouldThrowArgumentOutOfRangeException()
     {
-        // Act
-        var success = FileSizeUnitExtensions.TryParseSize(input, out var bytes);
-
-        // Assert
-        success.ShouldBe(expectedSuccess);
-        bytes.ShouldBe(expectedBytes);
+        // Act & Assert
+        Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.FormatSize(1.5, -1))
+            .ParamName.ShouldBe("precision");
     }
+
+    #endregion
+
+    #region 兼容性和集成测试
 
     /// <summary>
     /// 测试 - Value - 获取枚举值
@@ -243,38 +274,22 @@ public class FileSizeUnitTest
     }
 
     /// <summary>
-    /// 测试 - 精度处理
+    /// 测试 - 往返转换一致性
     /// </summary>
     [Theory]
-    [InlineData(1536L, 0, "2 KB")]
-    [InlineData(1536L, 1, "1.5 KB")]
-    [InlineData(1536L, 3, "1.500 KB")]
-    public void Precision_HandledCorrectly(long bytes, int precision, string expected)
+    [InlineData(FileSizeUnit.K, 1.5)]
+    [InlineData(FileSizeUnit.M, 2.5)]
+    [InlineData(FileSizeUnit.G, 1.25)]
+    [InlineData(FileSizeUnit.T, 0.75)]
+    public void RoundTrip_ConversionConsistency(FileSizeUnit unit, double originalValue)
     {
         // Act
-        var result = FileSizeUnitExtensions.AutoFormat(bytes, precision);
+        var bytes = unit.ConvertToBytes(originalValue);
+        var convertedBack = unit.ConvertFromBytes(bytes);
 
-        // Assert
-        result.ShouldBe(expected);
+        // Assert - 允许微小的浮点精度差异
+        Math.Abs(convertedBack - originalValue).ShouldBeLessThan(0.01);
     }
 
-    /// <summary>
-    /// 测试 - 与FileSize类的兼容性
-    /// </summary>
-    [Fact]
-    public void Compatibility_WithFileSizeClass()
-    {
-        // Arrange
-        var fileSize = new FileSize(1536, FileSizeUnit.K); // 1.5MB
-
-        // Act
-        var sizeInBytes = fileSize.Size;
-        var bestUnit = FileSizeUnitExtensions.GetBestUnit(sizeInBytes);
-        var formatted = FileSizeUnitExtensions.AutoFormat(sizeInBytes);
-
-        // Assert
-        sizeInBytes.ShouldBe(1572864L); // 1536 * 1024
-        bestUnit.ShouldBe(FileSizeUnit.M);
-        formatted.ShouldBe("1.50 MB");
-    }
+    #endregion
 }

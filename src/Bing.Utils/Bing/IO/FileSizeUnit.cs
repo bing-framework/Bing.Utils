@@ -1,5 +1,6 @@
-﻿using System.ComponentModel;
-using Bing.Extensions;
+﻿using Bing.Extensions;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace Bing.IO;
 
@@ -51,20 +52,17 @@ public enum FileSizeUnit
 public static class FileSizeUnitExtensions
 {
     /// <summary>
-    /// 基础字节数（1024）
-    /// </summary>
-    private const long ByteBase = 1024L;
-
-    /// <summary>
     /// 获取描述
     /// </summary>
     /// <param name="unit">文件大小单位</param>
-    public static string Description(this FileSizeUnit? unit) => unit == null ? string.Empty : unit.Value.Description();
+    /// <returns>单位描述字符串</returns>
+    public static string Description(this FileSizeUnit? unit) => unit?.Description() ?? string.Empty;
 
     /// <summary>
     /// 获取值
     /// </summary>
     /// <param name="unit">文件大小单位</param>
+    /// <returns>枚举值</returns>
     public static int? Value(this FileSizeUnit? unit) => unit?.Value();
 
     /// <summary>
@@ -77,11 +75,11 @@ public static class FileSizeUnitExtensions
         return unit switch
         {
             FileSizeUnit.Byte => 1L,
-            FileSizeUnit.K => ByteBase,
-            FileSizeUnit.M => ByteBase * ByteBase,
-            FileSizeUnit.G => ByteBase * ByteBase * ByteBase,
-            FileSizeUnit.T => ByteBase * ByteBase * ByteBase * ByteBase,
-            FileSizeUnit.P => ByteBase * ByteBase * ByteBase * ByteBase * ByteBase,
+            FileSizeUnit.K => FileSize.KiloByteSize,
+            FileSizeUnit.M => FileSize.MegaByteSize,
+            FileSizeUnit.G => FileSize.GigaByteSize,
+            FileSizeUnit.T => FileSize.TeraByteSize,
+            FileSizeUnit.P => FileSize.PetaByteSize,
             _ => 1L
         };
     }
@@ -93,6 +91,7 @@ public static class FileSizeUnitExtensions
     /// <param name="bytes">字节数</param>
     /// <param name="precision">小数位数，默认为2</param>
     /// <returns>转换后的数值</returns>
+    /// <exception cref="ArgumentOutOfRangeException">当字节数或精度为负数时抛出</exception>
     public static double ConvertFromBytes(this FileSizeUnit unit, long bytes, int precision = 2)
     {
         if (bytes < 0)
@@ -111,32 +110,22 @@ public static class FileSizeUnitExtensions
     /// <param name="unit">源单位</param>
     /// <param name="value">数值</param>
     /// <returns>字节数</returns>
+    /// <exception cref="ArgumentOutOfRangeException">当数值为负数时抛出</exception>
+    /// <exception cref="OverflowException">当计算结果溢出时抛出</exception>
     public static long ConvertToBytes(this FileSizeUnit unit, double value)
     {
         if (value < 0)
             throw new ArgumentOutOfRangeException(nameof(value), "数值不能为负数");
 
         var multiplier = unit.GetByteMultiplier();
-        return (long)(value * multiplier);
-    }
-
-    /// <summary>
-    /// 自动选择最合适的文件大小单位
-    /// </summary>
-    /// <param name="bytes">字节数</param>
-    /// <returns>最合适的单位</returns>
-    public static FileSizeUnit GetBestUnit(long bytes)
-    {
-        if (bytes < 0)
-            throw new ArgumentOutOfRangeException(nameof(bytes), "字节数不能为负数");
-
-        if (bytes < ByteBase) return FileSizeUnit.Byte;
-        if (bytes < ByteBase * ByteBase) return FileSizeUnit.K;
-        if (bytes < ByteBase * ByteBase * ByteBase) return FileSizeUnit.M;
-        if (bytes < ByteBase * ByteBase * ByteBase * ByteBase) return FileSizeUnit.G;
-        if (bytes < ByteBase * ByteBase * ByteBase * ByteBase * ByteBase) return FileSizeUnit.T;
-
-        return FileSizeUnit.P;
+        try
+        {
+            return checked((long)(value * multiplier));
+        }
+        catch (OverflowException)
+        {
+            throw new OverflowException($"转换结果超出长整型范围: {value} {unit.Description()}");
+        }
     }
 
     /// <summary>
@@ -146,69 +135,19 @@ public static class FileSizeUnitExtensions
     /// <param name="value">数值</param>
     /// <param name="precision">小数位数，默认为2</param>
     /// <returns>格式化后的字符串</returns>
+    /// <exception cref="ArgumentOutOfRangeException">当精度为负数时抛出</exception>
     public static string FormatSize(this FileSizeUnit unit, double value, int precision = 2)
     {
         if (precision < 0)
             throw new ArgumentOutOfRangeException(nameof(precision), "精度不能为负数");
 
-        var formattedValue = Math.Round(value, precision).ToString($"F{precision}");
-        var unitDescription = unit.Description();
-        return $"{formattedValue} {unitDescription}";
-    }
+        var roundedValue = Math.Round(value, precision);
+        var formatString = precision == 0 ? "F0" : $"F{precision}";
+        var formattedValue = roundedValue.ToString(formatString, CultureInfo.InvariantCulture);
 
-    /// <summary>
-    /// 自动格式化字节数为最合适的单位字符串
-    /// </summary>
-    /// <param name="bytes">字节数</param>
-    /// <param name="precision">小数位数，默认为2</param>
-    /// <returns>格式化后的字符串</returns>
-    public static string AutoFormat(long bytes, int precision = 2)
-    {
-        var bestUnit = GetBestUnit(bytes);
-        var value = bestUnit.ConvertFromBytes(bytes, precision);
-        return bestUnit.FormatSize(value, precision);
-    }
-
-    /// <summary>
-    /// 尝试解析文件大小字符串
-    /// </summary>
-    /// <param name="sizeString">文件大小字符串（如 "1.5 GB"）</param>
-    /// <param name="bytes">解析出的字节数</param>
-    /// <returns>是否解析成功</returns>
-    public static bool TryParseSize(string sizeString, out long bytes)
-    {
-        bytes = 0;
-
-        if (string.IsNullOrWhiteSpace(sizeString))
-            return false;
-
-        var parts = sizeString.Trim().Split([' '], StringSplitOptions.RemoveEmptyEntries);
-        if (parts.Length != 2)
-            return false;
-
-        if (!double.TryParse(parts[0], out var value))
-            return false;
-
-        var unitString = parts[1].ToUpperInvariant();
-
-        // 尝试匹配单位
-        var enumValues = (FileSizeUnit[])Enum.GetValues(typeof(FileSizeUnit));
-        foreach (var unit in enumValues)
-        {
-            if (unit.Description().ToUpperInvariant() == unitString)
-            {
-                try
-                {
-                    bytes = unit.ConvertToBytes(value);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-        }
-
-        return false;
+        // 移除不必要的尾随零
+        if (precision > 0 && formattedValue.Contains('.'))
+            formattedValue = formattedValue.TrimEnd('0').TrimEnd('.');
+        return $"{formattedValue} {unit.Description()}";
     }
 }
