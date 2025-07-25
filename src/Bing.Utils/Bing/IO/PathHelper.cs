@@ -274,7 +274,10 @@ public static class PathHelper
 
         var dirInfo = new DirectoryInfo(directoryPath);
         if (!dirInfo.Exists)
+        {
             dirInfo.Create();
+            dirInfo.Refresh();
+        }
 
         return dirInfo;
     }

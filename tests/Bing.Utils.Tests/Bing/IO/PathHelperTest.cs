@@ -248,7 +248,38 @@ public class PathHelperTest
 
         // Assert
         result.ShouldNotBeNullOrEmpty();
-        result.ShouldNotBe(path); // 应该有转换
+
+        // 验证结果使用了正确的系统路径分隔符
+        if (Path.DirectorySeparatorChar == '/')
+        {
+            // Linux/Unix 系统：结果应该使用 '/' 分隔符
+            if (path.Contains('\\'))
+            {
+                // 如果输入包含Windows分隔符，应该被转换
+                result.ShouldNotContain('\\');
+                result.ShouldContain('/');
+            }
+            else
+            {
+                // 如果输入已经是Unix格式，可能不会改变
+                result.ShouldNotContain('\\');
+            }
+        }
+        else
+        {
+            // Windows 系统：结果应该使用 '\' 分隔符
+            if (path.Contains('/'))
+            {
+                // 如果输入包含Unix分隔符，应该被转换
+                result.ShouldNotContain('/');
+                result.ShouldContain('\\');
+            }
+            else
+            {
+                // 如果输入已经是Windows格式，可能不会改变
+                result.ShouldNotContain('/');
+            }
+        }
     }
 
     /// <summary>
@@ -590,6 +621,79 @@ public class PathHelperTest
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => PathHelper.EnsureDirectoryExists(directoryPath))
             .ParamName.ShouldBe("directoryPath");
+    }
+
+    /// <summary>
+    /// 测试 - EnsureDirectoryExists - 验证 DirectoryInfo.Exists 属性更新
+    /// </summary>
+    [Fact]
+    public void EnsureDirectoryExists_WithNewDirectory_ShouldUpdateExistsProperty()
+    {
+        // Arrange
+        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+        // 确保目录不存在
+        Directory.Exists(tempDir).ShouldBeFalse();
+
+        try
+        {
+            // Act
+            var result = PathHelper.EnsureDirectoryExists(tempDir);
+
+            // Assert
+            result.ShouldNotBeNull();
+
+            // 验证 DirectoryInfo.Exists 属性已正确更新
+            result.Exists.ShouldBeTrue("DirectoryInfo.Exists 属性应该在创建目录后更新为 true");
+
+            // 验证目录确实存在于文件系统中
+            Directory.Exists(tempDir).ShouldBeTrue("目录应该在文件系统中实际存在");
+
+            // 验证路径匹配
+            result.FullName.ShouldBe(Path.GetFullPath(tempDir));
+        }
+        finally
+        {
+            // Cleanup
+            if (Directory.Exists(tempDir))
+                Directory.Delete(tempDir);
+        }
+    }
+
+    /// <summary>
+    /// 测试 - EnsureDirectoryExists - 验证缓存问题
+    /// </summary>
+    [Fact]
+    public void EnsureDirectoryExists_DirectoryInfoCaching_ShouldHandleCorrectly()
+    {
+        // Arrange
+        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+        try
+        {
+            // 先创建一个 DirectoryInfo 对象（此时目录不存在）
+            var dirInfoBefore = new DirectoryInfo(tempDir);
+            dirInfoBefore.Exists.ShouldBeFalse("目录应该不存在");
+
+            // Act - 通过 PathHelper 创建目录
+            var result = PathHelper.EnsureDirectoryExists(tempDir);
+
+            // Assert
+            result.Exists.ShouldBeTrue("EnsureDirectoryExists 返回的 DirectoryInfo.Exists 应该为 true");
+
+            // 验证原来的 DirectoryInfo 对象仍然缓存旧状态（除非刷新）
+            dirInfoBefore.Exists.ShouldBeFalse("原始 DirectoryInfo 对象的 Exists 属性仍然是缓存的旧值");
+
+            // 刷新后应该更新
+            dirInfoBefore.Refresh();
+            dirInfoBefore.Exists.ShouldBeTrue("刷新后 DirectoryInfo.Exists 应该更新");
+        }
+        finally
+        {
+            // Cleanup
+            if (Directory.Exists(tempDir))
+                Directory.Delete(tempDir);
+        }
     }
 
     /// <summary>
