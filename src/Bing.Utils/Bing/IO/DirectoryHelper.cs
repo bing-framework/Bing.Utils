@@ -206,7 +206,6 @@ public static class DirectoryHelper
     {
         if (string.IsNullOrWhiteSpace(directoryPath))
             throw new ArgumentNullException(nameof(directoryPath));
-
         if (!Directory.Exists(directoryPath))
             throw new DirectoryNotFoundException($"目录不存在: {directoryPath}");
 
@@ -271,7 +270,7 @@ public static class DirectoryHelper
 
         try
         {
-            Directory.GetDirectories(directoryPath, pattern, includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+            return Directory.GetDirectories(directoryPath, pattern, includeChildPath ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
         }
         catch (UnauthorizedAccessException)
         {
@@ -300,7 +299,7 @@ public static class DirectoryHelper
         try
         {
             var fileNames = GetFiles(directoryPath, pattern, includeChildPath);
-            return fileNames.Length != 0;
+            return fileNames.Length > 0;
         }
         catch (Exception e)
         {
@@ -324,7 +323,6 @@ public static class DirectoryHelper
     {
         if (string.IsNullOrWhiteSpace(folderPath))
             throw new ArgumentNullException(nameof(folderPath));
-
         if (!Directory.Exists(folderPath))
             throw new DirectoryNotFoundException($"目录不存在: {folderPath}");
 
@@ -357,7 +355,6 @@ public static class DirectoryHelper
             throw new ArgumentNullException(nameof(folderPath));
         if (days < 0)
             throw new ArgumentOutOfRangeException(nameof(days), "天数不能为负数");
-
         if (!Directory.Exists(folderPath))
             throw new DirectoryNotFoundException($"目录不存在: {folderPath}");
 
@@ -379,20 +376,21 @@ public static class DirectoryHelper
     #region GetDirectoryPath(获取目录路径)
 
     /// <summary>
-    /// 获取目录路径
+    /// 获取目录路径，标准化路径分隔符
     /// </summary>
     /// <param name="path">路径。例如：C:\Users\A\</param>
+    /// <returns>标准化后的目录路径</returns>
     public static string GetDirectoryPath(string path)
     {
-        var result = "";
-        if (path.IndexOf("\\", StringComparison.OrdinalIgnoreCase) > 0)
-            path = path.Replace("\\", "/");
-        var sArray = path.Split('/');
-        for (var i = 0; i < sArray.Length - 1; i++)
-            result += sArray[i] + "/";
-        if (result == "/")
-            result = "";
-        return result;
+        if (string.IsNullOrWhiteSpace(path))
+            return string.Empty;
+
+        var normalizedPath = path.Replace("\\", "/");
+        var pathSegments = normalizedPath.Split('/');
+        if (pathSegments.Length <= 1)
+            return string.Empty;
+        var result = string.Join("/", pathSegments.Take(pathSegments.Length - 1)) + "/";
+        return result == "/" ? string.Empty : result;
     }
 
     #endregion
@@ -405,53 +403,67 @@ public static class DirectoryHelper
     /// <param name="sourcePath">源文件夹路径</param>
     /// <param name="targetPath">目标文件夹路径</param>
     /// <param name="searchPatterns">要复制的文件扩展名数组</param>
-    public static void Copy(string sourcePath, string targetPath, string[] searchPatterns = null)
+    /// <param name="overwrite">是否覆盖已存在的文件</param>
+    /// <exception cref="ArgumentNullException">当路径参数为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当源目录不存在时抛出</exception>
+    public static void Copy(string sourcePath, string targetPath, string[] searchPatterns = null, bool overwrite = false)
     {
-        sourcePath.CheckNotNullOrEmpty(nameof(sourcePath));
-        sourcePath.CheckNotNullOrEmpty(nameof(targetPath));
-
+        if (string.IsNullOrWhiteSpace(sourcePath))
+            throw new ArgumentNullException(nameof(sourcePath));
+        if (string.IsNullOrWhiteSpace(targetPath))
+            throw new ArgumentNullException(nameof(targetPath));
         if (!Directory.Exists(sourcePath))
             throw new DirectoryNotFoundException($"递归复制文件夹时源目录\"{sourcePath}\"不存在。");
 
-        if (!Directory.Exists(targetPath))
-            Directory.CreateDirectory(targetPath);
+        // 创建目标目录
+        Directory.CreateDirectory(targetPath);
 
-        string[] dirs = Directory.GetDirectories(sourcePath);
-        if (dirs.Length > 0)
+        // 复制子目录
+        var directories = Directory.GetDirectories(sourcePath);
+        foreach (var directory in directories)
         {
-            foreach (var dir in dirs)
-            {
-                Copy(dir, targetPath + dir.Substring(dir.LastIndexOf("\\", StringComparison.Ordinal)));
-            }
+            var dirName = Path.GetFileName(directory);
+            var targetDir = Path.Combine(targetPath, dirName);
+            Copy(directory, targetDir, searchPatterns, overwrite);
         }
 
+        // 复制文件
+        CopyFiles(sourcePath, targetPath, searchPatterns, overwrite);
+    }
+
+    /// <summary>
+    /// 复制文件到目标目录
+    /// </summary>
+    /// <param name="sourcePath">源目录路径</param>
+    /// <param name="targetPath">目标目录路径</param>
+    /// <param name="searchPatterns">搜索模式数组</param>
+    /// <param name="overwrite">是否覆盖已存在的文件</param>
+    private static void CopyFiles(string sourcePath, string targetPath, string[] searchPatterns, bool overwrite)
+    {
         if (searchPatterns != null && searchPatterns.Length > 0)
         {
-            foreach (var searchPattern in searchPatterns)
+            foreach (var pattern in searchPatterns)
             {
-                string[] files = Directory.GetFiles(sourcePath, searchPattern);
-                if (files.Length <= 0)
-                {
+                if (string.IsNullOrWhiteSpace(pattern))
                     continue;
-                }
 
+                var files = Directory.GetFiles(sourcePath, pattern);
                 foreach (var file in files)
                 {
-                    File.Copy(file, targetPath + file.Substring(file.LastIndexOf("\\", StringComparison.Ordinal)));
+                    var fileName = Path.GetFileName(file);
+                    var targetFile = Path.Combine(targetPath, fileName);
+                    File.Copy(file, targetFile, overwrite);
                 }
             }
         }
         else
         {
-            string[] files = Directory.GetFiles(sourcePath);
-            if (files.Length <= 0)
-            {
-                return;
-            }
-
+            var files = Directory.GetFiles(sourcePath);
             foreach (var file in files)
             {
-                File.Copy(file, targetPath + file.Substring(file.LastIndexOf("\\", StringComparison.Ordinal)));
+                var fileName = Path.GetFileName(file);
+                var targetFile = Path.Combine(targetPath, fileName);
+                File.Copy(file, targetFile, overwrite);
             }
         }
     }
@@ -465,32 +477,42 @@ public static class DirectoryHelper
     /// </summary>
     /// <param name="directory">目录路径</param>
     /// <param name="isDeleteRoot">是否删除根目录</param>
+    /// <returns>是否删除成功</returns>
+    /// <exception cref="ArgumentNullException">当目录路径为空时抛出</exception>
     public static bool Delete(string directory, bool isDeleteRoot = true)
     {
-        directory.CheckNotNullOrEmpty(nameof(directory));
+        if (string.IsNullOrWhiteSpace(directory))
+            throw new ArgumentNullException(nameof(directory));
 
-        DirectoryInfo dirPathInfo = new(directory);
+        var dirPathInfo = new DirectoryInfo(directory);
         if (!dirPathInfo.Exists)
             return false;
 
         try
         {
             // 删除目录下所有文件
-            foreach (var fileInfo in dirPathInfo.GetFiles())
-            {
-                fileInfo.Attributes = FileAttributes.Normal;
-                fileInfo.Delete();
-            }
+            DeleteFiles(dirPathInfo);
 
             // 递归删除所有子目录
-            foreach (var subDirectory in dirPathInfo.GetDirectories()) 
-                Delete(subDirectory.FullName);
+            foreach (var subDirectory in dirPathInfo.GetDirectories())
+                Delete(subDirectory.FullName, true);
 
             // 删除目录
             if (isDeleteRoot)
             {
-                dirPathInfo.Attributes = FileAttributes.Normal;
-                dirPathInfo.Delete();
+                try
+                {
+                    // 移除只读属性
+                    if ((dirPathInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                        dirPathInfo.Attributes &= ~FileAttributes.ReadOnly;
+
+                    dirPathInfo.Delete();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"删除目录 {dirPathInfo.FullName} 失败: {ex.Message}");
+                    return false;
+                }
             }
         }
         catch (Exception e)
@@ -502,6 +524,29 @@ public static class DirectoryHelper
         return true;
     }
 
+    /// <summary>
+    /// 删除目录中的所有文件
+    /// </summary>
+    /// <param name="dirPathInfo">目录信息</param>
+    private static void DeleteFiles(DirectoryInfo dirPathInfo)
+    {
+        foreach (var fileInfo in dirPathInfo.GetFiles())
+        {
+            try
+            {
+                // 移除只读属性
+                if ((fileInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    fileInfo.Attributes &= ~FileAttributes.ReadOnly;
+                fileInfo.Delete();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"删除文件 {fileInfo.FullName} 失败: {ex.Message}");
+                InvokeHelper.OnInvokeException?.Invoke(ex);
+            }
+        }
+    }
+
     #endregion
 
     #region TryClearFolder(尝试删除文件夹及子文件夹)
@@ -510,12 +555,14 @@ public static class DirectoryHelper
     /// 尝试删除文件夹及子文件夹
     /// </summary>
     /// <param name="directory">目录路径</param>
+    /// <returns>是否清理成功</returns>
     public static bool TryClearFolder(string directory)
     {
         try
         {
             if (!Directory.Exists(directory))
                 return false;
+
             var fileSystemEntries = Directory.GetFileSystemEntries(directory);
             foreach (var fileOrFolder in fileSystemEntries)
             {
@@ -524,6 +571,7 @@ public static class DirectoryHelper
                     // 递归清理子文件夹
                     if (!TryClearFolder(fileOrFolder))
                         return false;
+
                     // 删除空文件夹
                     if (IsEmptyDirectory(fileOrFolder))
                         Directory.Delete(fileOrFolder);
@@ -534,13 +582,14 @@ public static class DirectoryHelper
                     File.Delete(fileOrFolder);
                 }
             }
+
+            return true;
         }
         catch (Exception e)
         {
             InvokeHelper.OnInvokeException?.Invoke(e);
             return false;
         }
-        return true;
     }
 
     #endregion
@@ -552,12 +601,14 @@ public static class DirectoryHelper
     /// </summary>
     /// <param name="directory">目录路径</param>
     /// <param name="days">指定天数</param>
+    /// <returns>是否清理成功</returns>
     public static bool TryClearOverdueFolder(string directory, int days)
     {
         try
         {
             if (!Directory.Exists(directory))
                 return false;
+
             var fileSystemEntries = Directory.GetFileSystemEntries(directory);
             foreach (var fileOrFolder in fileSystemEntries)
             {
@@ -566,6 +617,7 @@ public static class DirectoryHelper
                     // 递归清理子文件夹
                     if (!TryClearOverdueFolder(fileOrFolder, days))
                         return false;
+
                     // 删除过期的空文件夹
                     if (IsEmptyDirectory(fileOrFolder) && IsOverdueDirectory(fileOrFolder, days))
                         Directory.Delete(fileOrFolder);
@@ -596,24 +648,20 @@ public static class DirectoryHelper
     /// <param name="directory">目录路径</param>
     /// <param name="attribute">要设置的目录属性</param>
     /// <param name="isSet">是否为设置属性,true:设置,false:取消</param>
+    /// <exception cref="ArgumentNullException">当目录路径为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
     public static void SetAttributes(string directory, FileAttributes attribute, bool isSet)
     {
-        directory.CheckNotNullOrEmpty(nameof(directory));
-
-        DirectoryInfo di = new DirectoryInfo(directory);
+        if(string.IsNullOrWhiteSpace(directory))
+            throw new ArgumentNullException(nameof(directory));
+        var di = new DirectoryInfo(directory);
         if (!di.Exists)
-        {
             throw new DirectoryNotFoundException("设置目录属性时指定文件夹不存在");
-        }
 
         if (isSet)
-        {
             di.Attributes = di.Attributes | attribute;
-        }
         else
-        {
             di.Attributes = di.Attributes & ~attribute;
-        }
     }
 
     #endregion
@@ -634,6 +682,176 @@ public static class DirectoryHelper
     /// 获取当前目录
     /// </summary>
     public static string GetCurrentDirectory() => Platform.CurrentDirectory;
+
+    #endregion
+
+    #region GetDirectorySize(获取目录大小)
+
+    /// <summary>
+    /// 获取目录大小（包含所有子目录和文件）
+    /// </summary>
+    /// <param name="directoryPath">目录路径</param>
+    /// <returns>目录大小（字节）</returns>
+    /// <exception cref="ArgumentNullException">当目录路径为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
+    public static long GetDirectorySize(string directoryPath)
+    {
+        if (string.IsNullOrWhiteSpace(directoryPath))
+            throw new ArgumentNullException(nameof(directoryPath));
+        if (!Directory.Exists(directoryPath))
+            throw new DirectoryNotFoundException($"目录不存在: {directoryPath}");
+
+        try
+        {
+            var dirInfo = new DirectoryInfo(directoryPath);
+            return GetDirectorySize(dirInfo);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return 0;
+        }
+    }
+
+    /// <summary>
+    /// 获取目录大小（包含所有子目录和文件）
+    /// </summary>
+    /// <param name="directoryInfo">目录信息</param>
+    /// <returns>目录大小（字节）</returns>
+    public static long GetDirectorySize(DirectoryInfo directoryInfo)
+    {
+        if (directoryInfo == null || !directoryInfo.Exists)
+            return 0;
+
+        long size = 0;
+
+        try
+        {
+            // 计算文件大小
+            foreach (var file in directoryInfo.GetFiles())
+            {
+                try
+                {
+                    size += file.Length;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // 跳过无权限访问的文件
+                }
+            }
+
+            // 递归计算子目录大小
+            foreach (var subDir in directoryInfo.GetDirectories())
+            {
+                try
+                {
+                    size += GetDirectorySize(subDir);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // 跳过无权限访问的目录
+                }
+            }
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // 跳过无权限访问的目录
+        }
+
+        return size;
+    }
+
+    #endregion
+
+    #region Move(移动目录到新位置)
+
+    /// <summary>
+    /// 移动目录到新位置
+    /// </summary>
+    /// <param name="sourcePath">源目录路径</param>
+    /// <param name="destinationPath">目标目录路径</param>
+    /// <param name="overwrite">是否覆盖已存在的目录</param>
+    /// <exception cref="ArgumentNullException">当路径参数为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当源目录不存在时抛出</exception>
+    /// <exception cref="InvalidOperationException">当目标目录已存在且不允许覆盖时抛出</exception>
+    public static void Move(string sourcePath, string destinationPath, bool overwrite = false)
+    {
+        if (string.IsNullOrWhiteSpace(sourcePath))
+            throw new ArgumentNullException(nameof(sourcePath));
+        if (string.IsNullOrWhiteSpace(destinationPath))
+            throw new ArgumentNullException(nameof(destinationPath));
+
+        if (!Directory.Exists(sourcePath))
+            throw new DirectoryNotFoundException($"源目录不存在: {sourcePath}");
+
+        if (Directory.Exists(destinationPath))
+        {
+            if (!overwrite)
+                throw new InvalidOperationException($"目标目录已存在: {destinationPath}");
+
+            // 删除目标目录
+            Directory.Delete(destinationPath, true);
+        }
+
+        Directory.Move(sourcePath, destinationPath);
+    }
+
+    #endregion
+
+    #region GetFileCount(计算目录中文件的数量)
+
+    /// <summary>
+    /// 计算目录中文件的数量
+    /// </summary>
+    /// <param name="directoryPath">目录路径</param>
+    /// <param name="includeSubDirectories">是否包含子目录</param>
+    /// <returns>文件数量</returns>
+    /// <exception cref="ArgumentNullException">当目录路径为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
+    public static int GetFileCount(string directoryPath, bool includeSubDirectories = false)
+    {
+        if (string.IsNullOrWhiteSpace(directoryPath))
+            throw new ArgumentNullException(nameof(directoryPath));
+        if (!Directory.Exists(directoryPath))
+            throw new DirectoryNotFoundException($"目录不存在: {directoryPath}");
+
+        try
+        {
+            return Directory.GetFiles(directoryPath, "*", includeSubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Length;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return 0;
+        }
+    }
+
+    #endregion
+
+    #region GetDirectoryCount(计算目录中子目录的数量)
+
+    /// <summary>
+    /// 计算目录中子目录的数量
+    /// </summary>
+    /// <param name="directoryPath">目录路径</param>
+    /// <param name="includeSubDirectories">是否包含子目录</param>
+    /// <returns>目录数量</returns>
+    /// <exception cref="ArgumentNullException">当目录路径为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
+    public static int GetDirectoryCount(string directoryPath, bool includeSubDirectories = false)
+    {
+        if (string.IsNullOrWhiteSpace(directoryPath))
+            throw new ArgumentNullException(nameof(directoryPath));
+        if (!Directory.Exists(directoryPath))
+            throw new DirectoryNotFoundException($"目录不存在: {directoryPath}");
+
+        try
+        {
+            return Directory.GetDirectories(directoryPath, "*", includeSubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Length;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return 0;
+        }
+    }
 
     #endregion
 }
