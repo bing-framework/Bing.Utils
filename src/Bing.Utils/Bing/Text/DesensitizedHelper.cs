@@ -1,7 +1,7 @@
 ﻿namespace Bing.Text;
 
 /// <summary>
-/// 脱敏帮助类
+/// 数据脱敏帮助类，提供多种常见数据类型的脱敏处理功能
 /// </summary>
 public class DesensitizedHelper
 {
@@ -11,7 +11,7 @@ public class DesensitizedHelper
     public enum DesensitizedType
     {
         /// <summary>
-        /// 中文名
+        /// 中文姓名
         /// </summary>
         ChineseName,
 
@@ -83,55 +83,32 @@ public class DesensitizedHelper
     {
         if (string.IsNullOrWhiteSpace(value))
             return string.Empty;
-        var newStr = value;
-        switch (type)
+        return type switch
         {
-            case DesensitizedType.ChineseName:
-                newStr = ChineseName(value);
-                break;
-            case DesensitizedType.IdCard:
-                newStr = IdCardNum(value, 1, 2);
-                break;
-            case DesensitizedType.FixedPhone:
-                newStr = FixedPhone(value);
-                break;
-            case DesensitizedType.MobilePhone:
-                newStr = MobilePhone(value);
-                break;
-            case DesensitizedType.Address:
-                newStr = Address(value, 8);
-                break;
-            case DesensitizedType.Email:
-                newStr = Email(value);
-                break;
-            case DesensitizedType.Password:
-                newStr = Password(value);
-                break;
-            case DesensitizedType.CarLicense:
-                newStr = CarLicense(value);
-                break;
-            case DesensitizedType.BankCard:
-                newStr = BankCard(value);
-                break;
-            case DesensitizedType.IPv4:
-                newStr = IPv4(value);
-                break;
-            case DesensitizedType.IPv6:
-                newStr = IPv6(value);
-                break;
-            case DesensitizedType.FirstMask:
-                newStr = FirstMask(value);
-                break;
-        }
-        return newStr;
+            DesensitizedType.ChineseName => ChineseName(value),
+            DesensitizedType.IdCard => IdCardNum(value, 1, 2),
+            DesensitizedType.FixedPhone => FixedPhone(value),
+            DesensitizedType.MobilePhone => MobilePhone(value),
+            DesensitizedType.Address => Address(value, 8),
+            DesensitizedType.Email => Email(value),
+            DesensitizedType.Password => Password(value),
+            DesensitizedType.CarLicense => CarLicense(value),
+            DesensitizedType.BankCard => BankCard(value),
+            DesensitizedType.IPv4 => IPv4(value),
+            DesensitizedType.IPv6 => IPv6(value),
+            DesensitizedType.FirstMask => FirstMask(value),
+            _ => value
+        };
     }
 
     /// <summary>
-    /// 只显示第一个字符。
+    /// 仅显示第一个字符，其余字符用星号替换
     /// </summary>
-    /// <param name="value">字符串</param>
-    /// <returns>脱敏后的字符串</returns>
-    /// <remarks>脱敏前：123456789；脱敏后：1********。</remarks>
+    /// <param name="value">待脱敏的字符串</param>
+    /// <returns>脱敏后的字符串，格式：第一个字符 + N个星号</returns>
+    /// <example>
+    /// 脱敏前：123456789；脱敏后：1********
+    /// </example>
     public static string FirstMask(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -140,90 +117,113 @@ public class DesensitizedHelper
     }
 
     /// <summary>
-    /// 【中文姓名】只显示第一个汉字，其他隐藏为2个星号，比如：李**
+    /// 中文姓名脱敏，仅显示第一个汉字，其余用星号替换
     /// </summary>
-    /// <param name="fullName">姓名</param>
-    /// <returns>脱敏后的姓名</returns>
+    /// <param name="fullName">完整姓名</param>
+    /// <returns>脱敏后的姓名，格式：姓 + **</returns>
+    /// <example>
+    /// 脱敏前：张三丰；脱敏后：张**
+    /// </example>
     public static string ChineseName(string fullName) => FirstMask(fullName);
 
     /// <summary>
-    /// 【身份证号】前1位，后2位
+    /// 身份证号脱敏，保留前N位和后N位，中间用星号替换
     /// </summary>
-    /// <param name="idCardNum">身份证</param>
-    /// <param name="front">保留：前面的front位数；从1开始</param>
-    /// <param name="end">保留：后面的end位数；从1开始</param>
-    /// <returns>脱敏后的身份证</returns>
-    public static string IdCardNum(string idCardNum, int front, int end)
+    /// <param name="idCard">身份证号码</param>
+    /// <param name="frontKeep">保留前面的位数，从1开始</param>
+    /// <param name="endKeep">保留后面的位数，从1开始</param>
+    /// <returns>脱敏后的身份证号</returns>
+    /// <example>
+    /// 脱敏前：51343620000320711X；脱敏后：5***************1X
+    /// </example>
+    public static string IdCardNum(string idCard, int frontKeep, int endKeep)
     {
-        if (string.IsNullOrWhiteSpace(idCardNum))
+        if (string.IsNullOrWhiteSpace(idCard))
             return string.Empty;
-        // 需要截取的长度不能大于身份证号长度
-        if ((front + end) > idCardNum.Length)
+        // 参数验证
+        if (frontKeep < 0 || endKeep < 0)
             return string.Empty;
-        // 需要截取的不能小于0
-        if (front < 0 || end < 0)
+        // 保留位数不能超过身份证号长度
+        if ((frontKeep + endKeep) >= idCard.Length)
             return string.Empty;
-        return Strings.Hide(idCardNum, front, idCardNum.Length - end);
+        return Strings.Hide(idCard, frontKeep, idCard.Length - endKeep);
     }
 
     /// <summary>
-    /// 【固定电话】前4位，后2位
+    /// 固定电话脱敏，保留前4位和后2位，中间用星号替换
     /// </summary>
-    /// <param name="num">固定电话</param>
+    /// <param name="phoneNumber">固定电话号码</param>
     /// <returns>脱敏后的固定电话</returns>
-    public static string FixedPhone(string num)
+    /// <example>
+    /// 脱敏前：09157518479；脱敏后：0915*****79
+    /// </example>
+    public static string FixedPhone(string phoneNumber)
     {
-        if (string.IsNullOrWhiteSpace(num))
+        if (string.IsNullOrWhiteSpace(phoneNumber))
             return string.Empty;
-        return Strings.Hide(num, 4, num.Length - 2);
+        return Strings.Hide(phoneNumber, 4, phoneNumber.Length - 2);
     }
 
     /// <summary>
-    /// 【手机号码】前3位，后4位，其它隐藏，比如136****2210
+    /// 手机号码脱敏，保留前3位和后4位，中间用星号替换
     /// </summary>
-    /// <param name="num">移动电话</param>
-    /// <returns>脱敏后的移动电话</returns>
-    public static string MobilePhone(string num)
+    /// <param name="mobileNumber">手机号码</param>
+    /// <returns>脱敏后的手机号码</returns>
+    /// <example>
+    /// 脱敏前：13610000000；脱敏后：136****0000
+    /// </example>
+    public static string MobilePhone(string mobileNumber)
     {
-        if (string.IsNullOrWhiteSpace(num))
+        if (string.IsNullOrWhiteSpace(mobileNumber))
             return string.Empty;
-        return Strings.Hide(num, 3, num.Length - 4);
+        return Strings.Hide(mobileNumber, 3, mobileNumber.Length - 4);
     }
 
     /// <summary>
-    /// 【地址】只显示到地区，不显示详细地址，比如：广东省广州市****
+    /// 地址脱敏，仅显示前面部分，后面指定长度用星号替换
     /// </summary>
-    /// <param name="address">家庭地址</param>
-    /// <param name="sensitiveSize">敏感信息长度</param>
-    /// <returns>脱敏后的家庭地址</returns>
-    public static string Address(string address, int sensitiveSize)
+    /// <param name="address">完整地址</param>
+    /// <param name="sensitiveLength">需要脱敏的长度</param>
+    /// <returns>脱敏后的地址</returns>
+    /// <example>
+    /// 脱敏前：广东省广州市天河区猎德街道289号；脱敏后：广东省广州市天河区猎德街*****
+    /// </example>
+    public static string Address(string address, int sensitiveLength)
     {
         if (string.IsNullOrWhiteSpace(address))
             return string.Empty;
-        var length = address.Length;
-        return Strings.Hide(address, length - sensitiveSize, length);
+        if (sensitiveLength <= 0)
+            return address;
+        var hideStart = Math.Max(0, address.Length - sensitiveLength);
+        return Strings.Hide(address, hideStart, address.Length);
     }
 
     /// <summary>
-    /// 【电子邮箱】邮箱前缀仅显示第一个字母，前缀其它隐藏，用星号代替，@及后面的地址显示，比如：j**@126.com
+    /// 电子邮箱脱敏，保留第一个字符和@后的域名，中间用星号替换
     /// </summary>
-    /// <param name="email">邮箱</param>
-    /// <returns>脱敏后的邮箱</returns>
+    /// <param name="email">电子邮箱地址</param>
+    /// <returns>脱敏后的邮箱地址</returns>
+    /// <example>
+    /// 脱敏前：wang@126.com；脱敏后：w***@126.com
+    /// </example>
     public static string Email(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
             return string.Empty;
-        var index = email.IndexOf('@');
-        if (index <= 1)
+        var atIndex = email.IndexOf('@');
+        if (atIndex <= 1)
             return email;
-        return Strings.Hide(email, 1, index);
+        return Strings.Hide(email, 1, atIndex);
     }
 
     /// <summary>
-    /// 【密码】密码的全部字符都用*代替，比如：******
+    /// 密码脱敏，所有字符用星号替换
     /// </summary>
-    /// <param name="password">密码</param>
-    /// <returns>脱敏后的密码</returns>
+    /// <param name="password">密码字符串</param>
+    /// <returns>脱敏后的密码，全部显示为星号</returns>
+    /// <example>
+    /// 脱敏前：password123；脱敏后：***********
+    /// </example>
     public static string Password(string password)
     {
         if (string.IsNullOrWhiteSpace(password))
@@ -232,88 +232,87 @@ public class DesensitizedHelper
     }
 
     /// <summary>
-    /// 【中国车牌】车牌中间用*代替
+    /// 中国车牌号脱敏，保留前3位和最后1位，中间用星号替换
     /// </summary>
-    /// <param name="carLicense">完整的车牌号</param>
-    /// <returns>脱敏后的车牌</returns>
-    /// <remarks>
-    /// <para>eg1: null      -》 ""</para>
-    /// <para>eg2: ""        -》 ""</para>
-    /// <para>eg3: 粤A40000  -》 粤A4***0</para>
-    /// <para>eg4: 粤J12345D -》 粤J1***D</para>
-    /// <para>eg5: 粤B123    -》 粤B123</para>
-    /// </remarks>
+    /// <param name="carLicense">完整车牌号</param>
+    /// <returns>脱敏后的车牌号</returns>
+    /// <example>
+    /// <para>粤A40000 -> 粤A4***0</para>
+    /// <para>粤J12345D -> 粤J1***D</para>
+    /// <para>粤B123 -> 粤B123 (长度不足7位不脱敏)</para>
+    /// </example>
     public static string CarLicense(string carLicense)
     {
         if (string.IsNullOrWhiteSpace(carLicense))
             return string.Empty;
-        carLicense = carLicense.Length switch
+        return carLicense.Length switch
         {
-            // 普通车牌
-            7 => Strings.Hide(carLicense, 3, 6),
-            // 新能源车牌
-            8 => Strings.Hide(carLicense, 3, 7),
-            _ => carLicense
+            7 => Strings.Hide(carLicense, 3, 6),  // 普通车牌：7位
+            8 => Strings.Hide(carLicense, 3, 7),  // 新能源车牌：8位
+            _ => carLicense  // 其他长度不处理
         };
-        return carLicense;
     }
 
     /// <summary>
-    /// 【银行卡】由于银行卡号长度不定，所以只展示前4位，后面的位数根据卡号决定展示1-4位
+    /// 银行卡号脱敏，保留前4位和后N位（根据总长度确定），中间用星号替换
     /// </summary>
-    /// <param name="bankCardNo">银行卡号</param>
-    /// <returns>脱敏之后的银行卡号</returns>
-    /// <remarks>
-    /// 例如：
-    /// <para>1. "1234 2222 3333 4444 6789 9"    ->   "1234 **** **** **** **** 9"</para>
-    /// <para>2. "1234 2222 3333 4444 6789 91"   ->   "1234 **** **** **** **** 91"</para>
-    /// <para>3. "1234 2222 3333 4444 678"       ->    "1234 **** **** **** 678"</para>
-    /// <para>4. "1234 2222 3333 4444 6789"      ->    "1234 **** **** **** 6789"</para>
-    /// </remarks>
-    public static string BankCard(string bankCardNo)
+    /// <param name="bankCardNumber">银行卡号</param>
+    /// <returns>脱敏后的银行卡号，保持原有格式</returns>
+    /// <example>
+    /// <para>1234 2222 3333 4444 6789 9 -> 1234 **** **** **** **** 9</para>
+    /// <para>1234 2222 3333 4444 6789 91 -> 1234 **** **** **** **** 91</para>
+    /// <para>1234 2222 3333 4444 678 -> 1234 **** **** **** 678</para>
+    /// <para>1234 2222 3333 4444 6789 -> 1234 **** **** **** 6789</para>
+    /// </example>
+    public static string BankCard(string bankCardNumber)
     {
-        if (string.IsNullOrWhiteSpace(bankCardNo))
+        if (string.IsNullOrWhiteSpace(bankCardNumber))
             return string.Empty;
-        bankCardNo = Strings.CleanBlank(bankCardNo);
-        if (bankCardNo.Length < 9)
-            return bankCardNo;
-        var length = bankCardNo.Length;
+        var cleanCard = Strings.CleanBlank(bankCardNumber);
+        if (cleanCard.Length < 9)
+            return bankCardNumber;
+
+        var length = cleanCard.Length;
         var endLength = length % 4 == 0 ? 4 : length % 4;
         var midLength = length - 4 - endLength;
 
         var sb = new StringBuilder();
-        sb.Append(bankCardNo[..4]);
-        for (var i = 0; i < midLength; ++i)
+
+        // 前4位
+        sb.Append(cleanCard[..4]);
+
+        // 中间星号部分，每4位加一个空格
+        for (var i = 0; i < midLength; i++)
         {
             if (i % 4 == 0)
                 sb.Append(' ');
             sb.Append('*');
         }
-        sb.Append(' ').Append(bankCardNo[^endLength..]); // 添加最后的数字
+
+        // 最后N位
+        sb.Append(' ').Append(cleanCard[^endLength..]);
         return sb.ToString();
     }
 
     /// <summary>
-    /// 【IPv4】
+    /// IPv4地址脱敏，仅保留第一段，其余段用星号替换
     /// </summary>
-    /// <remarks>
-    /// 例如：<br />
-    /// 脱敏前：192.0.2.1；脱敏后：192.*.*.*
-    /// </remarks>
     /// <param name="ipv4">IPv4地址</param>
-    /// <returns>脱敏后的地址</returns>
+    /// <returns>脱敏后的IPv4地址</returns>
+    /// <example>
+    /// 脱敏前：192.0.2.1；脱敏后：192.*.*.*
+    /// </example>
     // ReSharper disable once InconsistentNaming
     public static string IPv4(string ipv4) => Strings.SubstringBefore(ipv4, '.', false) + ".*.*.*";
 
     /// <summary>
-    /// 【IPv6】
+    /// IPv6地址脱敏，仅保留第一段，其余段用星号替换
     /// </summary>
-    /// <remarks>
-    /// 例如：<br />
-    /// 脱敏前：2001:0db8:86a3:08d3:1319:8a2e:0370:7344；脱敏后：2001:*:*:*:*:*:*:*
-    /// </remarks>
     /// <param name="ipv6">IPv6地址</param>
-    /// <returns>脱敏后的地址</returns>
+    /// <returns>脱敏后的IPv6地址</returns>
+    /// <example>
+    /// 脱敏前：2001:0db8:86a3:08d3:1319:8a2e:0370:7344；脱敏后：2001:*:*:*:*:*:*:*
+    /// </example>
     // ReSharper disable once InconsistentNaming
     public static string IPv6(string ipv6) => Strings.SubstringBefore(ipv6, ':', false) + ":*:*:*:*:*:*:*";
 }
