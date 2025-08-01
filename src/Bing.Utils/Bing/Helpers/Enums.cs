@@ -116,6 +116,187 @@ public static class Enums
 
     #endregion
 
+    #region GetValues(获取枚举所有值)
+
+    /// <summary>
+    /// 获取枚举所有值
+    /// </summary>
+    /// <typeparam name="TEnum">枚举类型</typeparam>
+    /// <returns>枚举值数组</returns>
+#if NET5_0_OR_GREATER
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TEnum[] GetValues<TEnum>() where TEnum : struct, System.Enum
+    {
+        return System.Enum.GetValues<TEnum>();
+    }
+#else
+    public static TEnum[] GetValues<TEnum>() where TEnum : struct, System.Enum
+    {
+        var type = typeof(TEnum);
+        ValidateEnum(type);
+        return (TEnum[])System.Enum.GetValues(type);
+    }
+#endif
+
+    /// <summary>
+    /// 获取枚举所有值作为整数数组
+    /// </summary>
+    /// <typeparam name="TEnum">枚举类型</typeparam>
+    /// <returns>枚举值对应的整数数组</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int[] GetValuesAsInt<TEnum>() where TEnum : struct, System.Enum
+    {
+        var enumValues = GetValues<TEnum>();
+        var result = new int[enumValues.Length];
+        for (var i = 0; i < enumValues.Length; i++) 
+            result[i] = Unsafe.As<TEnum, int>(ref enumValues[i]);
+        return result;
+    }
+
+    /// <summary>
+    /// 获取枚举所有值作为字符串数组（.NET 5.0+ 优化版本）
+    /// </summary>
+    /// <typeparam name="TEnum">枚举类型</typeparam>
+    /// <returns>枚举值对应的字符串数组</returns>
+    /// <remarks>
+    /// 返回枚举值的字符串表示，不是名称
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string[] GetValuesAsString<TEnum>() where TEnum : struct, System.Enum
+    {
+        var enumValues = GetValues<TEnum>();
+        var result = new string[enumValues.Length];
+        for (var i = 0; i < enumValues.Length; i++) 
+            result[i] = enumValues[i].ToString();
+        return result;
+    }
+
+    /// <summary>
+    /// 获取枚举值与名称的键值对
+    /// </summary>
+    /// <typeparam name="TEnum">枚举类型</typeparam>
+    /// <returns>值为键，名称为值的字典</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Dictionary<int, string> GetValueNamePairs<TEnum>() where TEnum : struct, System.Enum
+    {
+        var enumValues = GetValues<TEnum>();
+        var enumNames = GetNames<TEnum>();
+        var result = new Dictionary<int, string>(enumValues.Length);
+
+        for (var i = 0; i < enumValues.Length; i++)
+        {
+            var value = Unsafe.As<TEnum, int>(ref enumValues[i]);
+            result[value] = enumNames[i];
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 获取枚举值与描述的键值对
+    /// </summary>
+    /// <typeparam name="TEnum">枚举类型</typeparam>
+    /// <returns>值为键，描述为值的字典</returns>
+    public static Dictionary<int, string> GetValueDescriptionPairs<TEnum>() where TEnum : struct, System.Enum
+    {
+        var enumValues = GetValues<TEnum>();
+        var result = new Dictionary<int, string>(enumValues.Length);
+        var type = typeof(TEnum);
+
+        foreach (var enumValue in enumValues)
+        {
+            var value = Unsafe.As<TEnum, int>(ref Unsafe.AsRef(in enumValue));
+            var fieldInfo = type.GetField(enumValue.ToString());
+            var description = fieldInfo?.GetCustomAttribute<DescriptionAttribute>()?.Description
+                              ?? enumValue.ToString();
+            result[value] = description;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 获取枚举所有值（非泛型版本）
+    /// </summary>
+    /// <param name="enumType">枚举类型</param>
+    /// <returns>枚举值数组</returns>
+    /// <exception cref="ArgumentNullException">枚举类型为空</exception>
+    /// <exception cref="InvalidOperationException">类型不是枚举</exception>
+    public static Array GetValues(Type enumType)
+    {
+        if (enumType == null)
+            throw new ArgumentNullException(nameof(enumType));
+
+        enumType = Common.GetType(enumType);
+        ValidateEnum(enumType);
+        return System.Enum.GetValues(enumType);
+    }
+
+    /// <summary>
+    /// 获取枚举值与名称的键值对（非泛型版本）
+    /// </summary>
+    /// <param name="enumType">枚举类型</param>
+    /// <returns>值为键，名称为值的字典</returns>
+    /// <exception cref="ArgumentNullException">枚举类型为空</exception>
+    /// <exception cref="InvalidOperationException">类型不是枚举</exception>
+    public static Dictionary<int, string> GetValueNamePairs(Type enumType)
+    {
+        if (enumType == null)
+            throw new ArgumentNullException(nameof(enumType));
+
+        enumType = Common.GetType(enumType);
+        ValidateEnum(enumType);
+
+        var enumValues = System.Enum.GetValues(enumType);
+        var enumNames = System.Enum.GetNames(enumType);
+        var result = new Dictionary<int, string>(enumValues.Length);
+
+        for (int i = 0; i < enumValues.Length; i++)
+        {
+            var value = (int)enumValues.GetValue(i);
+            result[value] = enumNames[i];
+        }
+        return result;
+    }
+
+#endregion
+
+    #region HasValue(是否包含指定值)
+
+    /// <summary>
+    /// 检查枚举中是否包含指定值
+    /// </summary>
+    /// <typeparam name="TEnum">枚举类型</typeparam>
+    /// <param name="value">要检查的值</param>
+    /// <returns>如果包含返回true，否则返回false</returns>
+#if NET5_0_OR_GREATER
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasValue<TEnum>(TEnum value) where TEnum : struct, System.Enum
+    {
+        return System.Enum.IsDefined<TEnum>(value);
+    }
+#else
+    public static bool HasValue<TEnum>(TEnum value) where TEnum : struct
+    {
+        var type = typeof(TEnum);
+        ValidateEnum(type);
+        return System.Enum.IsDefined(type, value);
+    }
+#endif
+
+    /// <summary>
+    /// 检查枚举中是否包含指定整数值
+    /// </summary>
+    /// <typeparam name="TEnum">枚举类型</typeparam>
+    /// <param name="value">要检查的整数值</param>
+    /// <returns>如果包含返回true，否则返回false</returns>
+    public static bool HasValue<TEnum>(int value) where TEnum : struct
+    {
+        var type = typeof(TEnum);
+        ValidateEnum(type);
+        return System.Enum.IsDefined(type, value);
+    }
+
+    #endregion
+
     #region GetDescription(获取描述)
 
     /// <summary>
@@ -260,7 +441,7 @@ public static class Enums
     {
         type = Common.GetType(type);
         if (type.IsEnum == false)
-            throw new InvalidOperationException(string.Format("类型 {0} 不是枚举", type));
+            throw new InvalidOperationException($"类型 {type} 不是枚举");
         var result = new List<string>();
         foreach (var field in type.GetFields())
         {
