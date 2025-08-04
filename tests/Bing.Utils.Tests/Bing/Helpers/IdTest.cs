@@ -17,7 +17,7 @@ public class IdTest
         // Arrange
         var idSet = new HashSet<long>();
         var snowflakeIdProvider = SnowflakeGenerator.Create(1);
-        Id.Configure(() => snowflakeIdProvider);
+        Id.ConfigureSnowflakeId(() => snowflakeIdProvider);
 
         // Act
         for (var i = 0; i < 100000; i++)
@@ -39,7 +39,7 @@ public class IdTest
     {
         // Arrange
         var defaultProvider = SnowflakeGenerator.Create(1);
-        Id.Configure(() => defaultProvider);
+        Id.ConfigureSnowflakeId(() => defaultProvider);
         var defaultId = Id.CreateSnowflakeId();
 
         // Act
@@ -59,7 +59,7 @@ public class IdTest
         // Arrange
         var idSet = new ConcurrentDictionary<long, byte>();
         var snowflakeIdProvider = SnowflakeGenerator.Create(1);
-        Id.Configure(() => snowflakeIdProvider);
+        Id.ConfigureSnowflakeId(() => snowflakeIdProvider);
         var tasks = new List<Task>();
 
         // Act
