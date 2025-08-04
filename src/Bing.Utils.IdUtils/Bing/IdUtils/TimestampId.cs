@@ -26,10 +26,8 @@ public class TimestampId
     /// <returns></returns>
     public static TimestampId GetInstance(DateTime? initialDateTime = null)
     {
-        if (initialDateTime.IsNull())
-        {
+        if (initialDateTime.IsNull()) 
             Interlocked.CompareExchange(ref _timestampId, new TimestampId(initialDateTime), null);
-        }
         return _timestampId;
     }
 
@@ -114,9 +112,7 @@ public class TimestampId
     private long GetTimeStamp()
     {
         if (InitialDateTime >= DateTime.Now)
-        {
             throw new Exception("初始化时间比当前时间还大，不合理");
-        }
         var ts = DateTime.UtcNow - InitialDateTime;
         return (long)ts.TotalMilliseconds;
     }

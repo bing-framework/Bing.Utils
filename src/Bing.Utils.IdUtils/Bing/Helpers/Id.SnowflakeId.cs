@@ -40,16 +40,6 @@ public static partial class Id
     }
 
     /// <summary>
-    /// 默认雪花ID生成器工厂，使用机器ID为1的Seata算法实现
-    /// </summary>
-    private static readonly Func<ISnowflakeId> _defaultSnowflakeIdGenerateFunc = () => SnowflakeGenerator.Create(1);
-
-    /// <summary>
-    /// 当前雪花ID生成器工厂函数
-    /// </summary>
-    private static Func<ISnowflakeId> _snowflakeIdGenerateFunc = _defaultSnowflakeIdGenerateFunc;
-
-    /// <summary>
     /// 配置雪花ID生成器工厂函数
     /// </summary>
     /// <param name="generatorFactory">雪花ID生成器工厂函数，用于创建ISnowflakeId实例</param>

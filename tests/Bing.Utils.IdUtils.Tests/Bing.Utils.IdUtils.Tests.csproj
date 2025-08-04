@@ -10,8 +10,4 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Bing.Utils.IdUtils\Bing.Utils.IdUtils.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Bing\IdUtils\" />
-	</ItemGroup>
 </Project>
