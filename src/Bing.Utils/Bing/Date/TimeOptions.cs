@@ -40,7 +40,7 @@ public static class TimeOptions
     /// <summary>
     /// 本地时间（GMT+8时区）
     /// </summary>
-    internal static readonly TimeZoneInfo GMT8 =TimeZoneInfo.CreateCustomTimeZone("GMT-8",TimeSpan.FromHours(8), "China Standard Time","(UTC+8)China Standard Time");
+    internal static readonly TimeZoneInfo GMT8 = TimeZoneInfo.CreateCustomTimeZone("GMT-8", TimeSpan.FromHours(8), "China Standard Time", "(UTC+8)China Standard Time");
 
     /// <summary>
     /// 初始化js日期时间戳
