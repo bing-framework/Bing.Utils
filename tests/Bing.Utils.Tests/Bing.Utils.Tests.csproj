@@ -20,6 +20,11 @@
     <ProjectReference Include="..\Bing.Tests.Samples\Bing.Tests.Samples.csproj" />
   </ItemGroup>
 
+	<!--NET8.0+ 必须设置该属性，否则会报错-->
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+	</PropertyGroup>
+
   <ItemGroup>
     <Folder Include="Net\FTP\" />
   </ItemGroup>
