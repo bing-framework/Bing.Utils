@@ -1068,7 +1068,7 @@ public static partial class Conv
     /// 如果转换失败，先尝试返回指定的默认值，若默认值未指定则返回 DateTime.MinValue
     /// </returns>
     /// <remarks>
-    /// 此方法使用 <see cref="DateTime.TryParse"/> 进行日期解析，所以支持多种日期格式。
+    /// 此方法使用 <see cref="DateTime.TryParse(string, out DateTime)"/> 进行日期解析，所以支持多种日期格式。
     /// 当输入为 null 或转换失败时，返回指定的默认值或 DateTime.MinValue。
     /// </remarks>
     /// <example>
@@ -1093,7 +1093,7 @@ public static partial class Conv
     /// 如果转换失败，则返回 null 或指定的默认值
     /// </returns>
     /// <remarks>
-    /// 此方法使用 <see cref="DateTime.TryParse"/> 进行日期解析，所以支持多种日期格式。
+    /// 此方法使用 <see cref="DateTime.TryParse(string, out DateTime)"/> 进行日期解析，所以支持多种日期格式。
     /// 区别于 ToDate 方法，此方法在转换失败时可返回 null。
     /// </remarks>
     /// <example>
@@ -1125,7 +1125,7 @@ public static partial class Conv
     /// 如果转换失败，则返回 Guid.Empty (00000000-0000-0000-0000-000000000000)
     /// </returns>
     /// <remarks>
-    /// 此方法使用 <see cref="Guid.TryParse"/> 进行解析，支持多种Guid字符串格式。
+    /// 此方法使用 <see cref="Guid.TryParse(string, out Guid)"/> 进行解析，支持多种Guid字符串格式。
     /// Guid通常用于生成唯一标识符，例如用作数据库主键或唯一ID。
     /// </remarks>
     /// <example>
@@ -1147,7 +1147,7 @@ public static partial class Conv
     /// 如果转换失败（输入为null、空字符串或格式不正确），则返回null
     /// </returns>
     /// <remarks>
-    /// 此方法使用 <see cref="Guid.TryParse"/> 进行解析，支持多种Guid字符串格式。
+    /// 此方法使用 <see cref="Guid.TryParse(string, out Guid)"/> 进行解析，支持多种Guid字符串格式。
     /// 与 ToGuid 方法不同，此方法在转换失败时返回 null 而非 Guid.Empty。
     /// </remarks>
     /// <example>
@@ -1200,7 +1200,7 @@ public static partial class Conv
     #region ToBytes(转换为字节数组)
 
     /// <summary>
-    /// 将字符串转换为字节数组（<see cref="byte[]"/>）
+    /// 将字符串转换为字节数组（<see cref="byte"/>[]）
     /// </summary>
     /// <param name="input">输入字符串</param>
     /// <returns>
@@ -1223,7 +1223,7 @@ public static partial class Conv
     public static byte[] ToBytes(string input) => ToBytes(input, Encoding.UTF8);
 
     /// <summary>
-    /// 使用指定编码将字符串转换为字节数组（<see cref="byte[]"/>）
+    /// 使用指定编码将字符串转换为字节数组（<see cref="byte"/>[]）
     /// </summary>
     /// <param name="input">输入字符串</param>
     /// <param name="encoding">字符编码，例如 <see cref="Encoding.UTF8"/>、<see cref="Encoding.Unicode"/> 等</param>
@@ -1259,7 +1259,7 @@ public static partial class Conv
     /// <seealso cref="Encoding"/>
     /// <seealso cref="Encoding.GetBytes(string)"/>
     public static byte[] ToBytes(string input, Encoding encoding) =>
-        string.IsNullOrWhiteSpace(input) ? Array.Empty<byte>() : encoding.GetBytes(input);
+        string.IsNullOrWhiteSpace(input) ? [] : encoding.GetBytes(input);
 
     #endregion
 
@@ -1641,7 +1641,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、不存在的枚举名称或无效值），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法使用 <see cref="System.Enum.TryParse{T}"/> 进行枚举值的解析，支持名称匹配（不区分大小写）和数值匹配。
+    /// 此方法使用 <see cref="System.Enum.TryParse{T}(string, bool, out T)"/> 进行枚举值的解析，支持名称匹配（不区分大小写）和数值匹配。
     /// 相比于直接使用 Enum.TryParse 或 Enum.Parse，此方法更安全，不会在转换失败时抛出异常。
     /// </remarks>
     /// <example>

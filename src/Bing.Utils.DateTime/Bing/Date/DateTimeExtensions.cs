@@ -263,8 +263,8 @@ public static partial class DateTimeExtensions
     /// <param name="includeBoundary">是否包含边界值（起始和结束时间）</param>
     /// <returns>如果在范围内则为true，否则为false</returns>
     /// <remarks>
-    /// 默认情况下包含边界值，即 dt >= from && dt <= to。
-    /// 如果 includeBoundary = false，则使用开区间: dt > from && dt < to。
+    /// 默认情况下包含边界值，即 dt >= from &amp;&amp; dt 	&lt;= to。
+    /// 如果 includeBoundary = false，则使用开区间: dt > from &amp;&amp; dt &lt; to。
     /// </remarks>
     /// <example>
     /// <code>
