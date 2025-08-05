@@ -1412,7 +1412,7 @@ public static partial class Conv
             if (typeName == "STRING" || typeName == "GUID")
                 return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(input.ToString());
             if (type.IsEnum)
-                return Bing.Helpers.Enum.Parse<T>(input);
+                return Enums.Parse<T>(input);
             if (input is IConvertible)
                 return (T)System.Convert.ChangeType(input, type, CultureInfo.InvariantCulture);
             if (input is JsonElement element)
