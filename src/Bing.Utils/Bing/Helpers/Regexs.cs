@@ -37,23 +37,25 @@ public static partial class Regexs
     #region Match
 
     /// <summary>
-    /// 获取第一个匹配项
+    /// 在输入字符串中搜索第一个匹配指定模式的子字符串
     /// </summary>
-    /// <param name="input">要搜索匹配项的字符串</param>
-    /// <param name="pattern">要匹配的正则表达式模式</param>
-    /// <param name="options">正则表达式选项</param>
-    /// <returns>匹配结果</returns>
+    /// <param name="input">要搜索的输入字符串</param>
+    /// <param name="pattern">正则表达式模式</param>
+    /// <param name="options">正则表达式编译选项</param>
+    /// <returns>表示第一个匹配项的 Match 对象，如果未找到匹配项则返回失败的 Match 对象</returns>
+    /// <exception cref="ArgumentNullException">当输入字符串或模式为 null 时抛出</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Match Match(string input, string pattern, RegexOptions options = RegexOptions.IgnoreCase)
         => RegexPool.Match(input, pattern, options, useCache: false);
 
     /// <summary>
-    /// 使用缓存获取第一个匹配项
+    /// 使用缓存在输入字符串中搜索第一个匹配指定模式的子字符串
     /// </summary>
-    /// <param name="input">要搜索匹配项的字符串</param>
-    /// <param name="pattern">要匹配的正则表达式模式</param>
-    /// <param name="options">正则表达式选项</param>
-    /// <returns>匹配结果</returns>
+    /// <param name="input">要搜索的输入字符串</param>
+    /// <param name="pattern">正则表达式模式</param>
+    /// <param name="options">正则表达式编译选项</param>
+    /// <returns>表示第一个匹配项的 Match 对象，如果未找到匹配项则返回失败的 Match 对象</returns>
+    /// <exception cref="ArgumentNullException">当输入字符串或模式为 null 时抛出</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Match MatchCached(string input, string pattern, RegexOptions options = RegexOptions.IgnoreCase)
         => RegexPool.Match(input, pattern, options, useCache: true);
@@ -63,23 +65,25 @@ public static partial class Regexs
     #region Matches
 
     /// <summary>
-    /// 获取所有匹配项
+    /// 在输入字符串中搜索所有匹配指定模式的子字符串
     /// </summary>
-    /// <param name="input">要搜索匹配项的字符串</param>
-    /// <param name="pattern">要匹配的正则表达式模式</param>
-    /// <param name="options">正则表达式选项</param>
-    /// <returns>匹配结果集合</returns>
+    /// <param name="input">要搜索的输入字符串</param>
+    /// <param name="pattern">正则表达式模式</param>
+    /// <param name="options">正则表达式编译选项</param>
+    /// <returns>包含所有匹配项的 MatchCollection 集合</returns>
+    /// <exception cref="ArgumentNullException">当输入字符串或模式为 null 时抛出</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MatchCollection Matches(string input, string pattern, RegexOptions options = RegexOptions.IgnoreCase)
         => RegexPool.Matches(input, pattern, options, useCache: false);
 
     /// <summary>
-    /// 使用缓存获取所有匹配项
+    /// 使用缓存在输入字符串中搜索所有匹配指定模式的子字符串
     /// </summary>
-    /// <param name="input">要搜索匹配项的字符串</param>
-    /// <param name="pattern">要匹配的正则表达式模式</param>
-    /// <param name="options">正则表达式选项</param>
-    /// <returns>匹配结果集合</returns>
+    /// <param name="input">要搜索的输入字符串</param>
+    /// <param name="pattern">正则表达式模式</param>
+    /// <param name="options">正则表达式编译选项</param>
+    /// <returns>包含所有匹配项的 MatchCollection 集合</returns>
+    /// <exception cref="ArgumentNullException">当输入字符串或模式为 null 时抛出</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MatchCollection MatchesCached(string input, string pattern, RegexOptions options = RegexOptions.IgnoreCase)
         => RegexPool.Matches(input, pattern, options, useCache: true);
@@ -89,25 +93,27 @@ public static partial class Regexs
     #region Replace
 
     /// <summary>
-    /// 替换匹配的字符串
+    /// 使用指定的替换字符串替换输入字符串中匹配正则表达式模式的所有子字符串
     /// </summary>
-    /// <param name="input">要搜索匹配项的字符串</param>
-    /// <param name="pattern">要匹配的正则表达式模式</param>
-    /// <param name="replacement">替换字符串</param>
-    /// <param name="options">正则表达式选项</param>
-    /// <returns>替换后的字符串</returns>
+    /// <param name="input">要执行替换操作的输入字符串</param>
+    /// <param name="pattern">正则表达式模式</param>
+    /// <param name="replacement">替换字符串，可包含捕获组引用如 $1、$2 等</param>
+    /// <param name="options">正则表达式编译选项</param>
+    /// <returns>替换完成后的新字符串</returns>
+    /// <exception cref="ArgumentNullException">当模式或替换字符串为 null 时抛出</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Replace(string input, string pattern, string replacement, RegexOptions options = RegexOptions.IgnoreCase)
         => RegexPool.Replace(input, pattern, replacement, options, useCache: false);
 
     /// <summary>
-    /// 使用缓存替换匹配的字符串
+    /// 使用缓存和指定的替换字符串替换输入字符串中匹配正则表达式模式的所有子字符串
     /// </summary>
-    /// <param name="input">要搜索匹配项的字符串</param>
-    /// <param name="pattern">要匹配的正则表达式模式</param>
-    /// <param name="replacement">替换字符串</param>
-    /// <param name="options">正则表达式选项</param>
-    /// <returns>替换后的字符串</returns>
+    /// <param name="input">要执行替换操作的输入字符串</param>
+    /// <param name="pattern">正则表达式模式</param>
+    /// <param name="replacement">替换字符串，可包含捕获组引用如 $1、$2 等</param>
+    /// <param name="options">正则表达式编译选项</param>
+    /// <returns>替换完成后的新字符串</returns>
+    /// <exception cref="ArgumentNullException">当模式或替换字符串为 null 时抛出</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ReplaceCached(string input, string pattern, string replacement, RegexOptions options = RegexOptions.IgnoreCase)
         => RegexPool.Replace(input, pattern, replacement, options, useCache: true);
@@ -117,23 +123,25 @@ public static partial class Regexs
     #region Split
 
     /// <summary>
-    /// 使用正则表达式分割字符串
+    /// 使用正则表达式模式作为分隔符将输入字符串分割成子字符串数组
     /// </summary>
-    /// <param name="input">要拆分的字符串</param>
-    /// <param name="pattern">要匹配的正则表达式模式</param>
-    /// <param name="options">正则表达式选项</param>
+    /// <param name="input">要分割的输入字符串</param>
+    /// <param name="pattern">作为分隔符的正则表达式模式</param>
+    /// <param name="options">正则表达式编译选项</param>
     /// <returns>分割后的字符串数组</returns>
+    /// <exception cref="ArgumentNullException">当模式为 null 时抛出</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string[] Split(string input, string pattern, RegexOptions options = RegexOptions.IgnoreCase)
         => RegexPool.Split(input, pattern, options, useCache: false);
 
     /// <summary>
-    /// 使用缓存的正则表达式分割字符串
+    /// 使用缓存和正则表达式模式作为分隔符将输入字符串分割成子字符串数组
     /// </summary>
-    /// <param name="input">要拆分的字符串</param>
-    /// <param name="pattern">要匹配的正则表达式模式</param>
-    /// <param name="options">正则表达式选项</param>
+    /// <param name="input">要分割的输入字符串</param>
+    /// <param name="pattern">作为分隔符的正则表达式模式</param>
+    /// <param name="options">正则表达式编译选项</param>
     /// <returns>分割后的字符串数组</returns>
+    /// <exception cref="ArgumentNullException">当模式为 null 时抛出</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string[] SplitCached(string input, string pattern, RegexOptions options = RegexOptions.IgnoreCase)
         => RegexPool.Split(input, pattern, options, useCache: true);
@@ -143,13 +151,14 @@ public static partial class Regexs
     #region GetValues
 
     /// <summary>
-    /// 获取匹配值集合
+    /// 获取正则表达式匹配的多个值，将结果组织为字典形式
     /// </summary>
-    /// <param name="input">输入字符串</param>
-    /// <param name="pattern">模式字符串</param>
-    /// <param name="resultPatterns">结果模式字符串数组，例如：new[]{"$1","$2"}</param>
-    /// <param name="options">正则表达式选项</param>
-    /// <returns>匹配值字典</returns>
+    /// <param name="input">要搜索的输入字符串</param>
+    /// <param name="pattern">正则表达式模式</param>
+    /// <param name="resultPatterns">结果模式字符串数组，例如 new[]{"$1","$2"} 用于获取多个捕获组</param>
+    /// <param name="options">正则表达式编译选项</param>
+    /// <returns>包含匹配值的字典，键为结果模式，值为对应的匹配结果</returns>
+    /// <exception cref="ArgumentNullException">当模式为 null 时抛出</exception>
     public static Dictionary<string, string> GetValues(string input, string pattern, string[] resultPatterns, RegexOptions options = RegexOptions.IgnoreCase) =>
         RegexPool.GetValues(input, pattern, resultPatterns, options, useCache: true);
 
@@ -158,13 +167,14 @@ public static partial class Regexs
     #region GetValue
 
     /// <summary>
-    /// 获取匹配值
+    /// 获取正则表达式匹配的单个值，支持结果模式转换
     /// </summary>
-    /// <param name="input">输入字符串</param>
-    /// <param name="pattern">模式字符串</param>
-    /// <param name="resultPattern">结果模式字符串，范例："$1"用来获取第一个()内的值</param>
-    /// <param name="options">选项</param>
-    /// <returns>匹配的值</returns>
+    /// <param name="input">要搜索的输入字符串</param>
+    /// <param name="pattern">正则表达式模式</param>
+    /// <param name="resultPattern">结果模式字符串，例如 "$1" 用来获取第一个捕获组内的值，空字符串表示获取整个匹配结果</param>
+    /// <param name="options">正则表达式编译选项</param>
+    /// <returns>匹配的值，如果未匹配或输入为空则返回空字符串</returns>
+    /// <exception cref="ArgumentNullException">当模式为 null 时抛出</exception>
     public static string GetValue(string input, string pattern, string resultPattern = "", RegexOptions options = RegexOptions.IgnoreCase) => 
         RegexPool.GetValue(input, pattern, resultPattern, options, useCache: true);
 

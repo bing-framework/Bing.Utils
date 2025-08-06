@@ -254,7 +254,7 @@ public static class RegexPool
     public static string[] Split(string input, string pattern, RegexOptions options = RegexOptions.IgnoreCase, bool useCache = true)
     {
         if (string.IsNullOrWhiteSpace(input))
-            return Array.Empty<string>();
+            return [];
         if (pattern == null)
             throw new ArgumentNullException(nameof(pattern));
 
