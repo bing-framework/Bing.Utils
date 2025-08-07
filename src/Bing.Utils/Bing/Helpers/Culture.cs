@@ -146,63 +146,6 @@ public static class Culture
     }
 
     /// <summary>
-    /// 获取系统中所有可用的区域文化信息
-    /// </summary>
-    /// <returns>包含所有可用区域文化的列表</returns>
-    /// <remarks>
-    /// 返回系统中安装的所有区域文化，包括特定的、中性的和不变的区域文化。
-    /// 这个列表可能会很大，包含数百个区域文化。
-    /// </remarks>
-    /// <example>
-    /// <code>
-    /// var allCultures = Culture.GetAllCultures();
-    /// foreach (var culture in allCultures)
-    /// {
-    ///     Console.WriteLine($"{culture.Name} - {culture.DisplayName}");
-    /// }
-    /// </code>
-    /// </example>
-    public static CultureInfo[] GetAllCultures() => CultureInfo.GetCultures(CultureTypes.AllCultures);
-
-    /// <summary>
-    /// 获取系统中所有中性区域文化信息（不包含地区信息的语言）
-    /// </summary>
-    /// <returns>包含所有中性区域文化的数组</returns>
-    /// <remarks>
-    /// 中性区域文化只包含语言信息，不包含特定地区信息。
-    /// 例如："zh"（中文）、"en"（英语）、"fr"（法语）等。
-    /// </remarks>
-    /// <example>
-    /// <code>
-    /// var neutralCultures = Culture.GetNeutralCultures();
-    /// foreach (var culture in neutralCultures)
-    /// {
-    ///     Console.WriteLine($"{culture.Name} - {culture.EnglishName}");
-    /// }
-    /// </code>
-    /// </example>
-    public static CultureInfo[] GetNeutralCultures() => CultureInfo.GetCultures(CultureTypes.NeutralCultures);
-
-    /// <summary>
-    /// 获取系统中所有特定区域文化信息（包含地区信息的语言）
-    /// </summary>
-    /// <returns>包含所有特定区域文化的数组</returns>
-    /// <remarks>
-    /// 特定区域文化包含语言和地区信息。
-    /// 例如："zh-CN"（中文-中国）、"en-US"（英语-美国）、"fr-FR"（法语-法国）等。
-    /// </remarks>
-    /// <example>
-    /// <code>
-    /// var specificCultures = Culture.GetSpecificCultures();
-    /// foreach (var culture in specificCultures)
-    /// {
-    ///     Console.WriteLine($"{culture.Name} - {culture.DisplayName}");
-    /// }
-    /// </code>
-    /// </example>
-    public static CultureInfo[] GetSpecificCultures() => CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-
-    /// <summary>
     /// 临时切换到指定的区域文化，返回一个可释放的对象用于恢复原始设置
     /// </summary>
     /// <param name="culture">要切换到的区域文化名称，如 "zh-CN"、"en-US" 等</param>
