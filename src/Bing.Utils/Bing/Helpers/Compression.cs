@@ -313,6 +313,155 @@ public static partial class Compression
 
     #endregion
 
+    #region Compress(对Stream进行压缩)
+
+    /// <summary>
+    /// 对流进行 GZip 压缩
+    /// </summary>
+    /// <param name="stream">输入流</param>
+    /// <param name="compressionLevel">压缩级别</param>
+    /// <returns>压缩后的字节数组</returns>
+    /// <exception cref="ArgumentNullException">当 stream 为 null 时抛出</exception>
+    /// <exception cref="InvalidOperationException">当压缩操作失败时抛出</exception>
+    public static byte[] Compress(Stream stream, CompressionLevel compressionLevel = CompressionLevel.Optimal)
+    {
+        if (stream == null)
+            throw new ArgumentNullException(nameof(stream), "待压缩的流不能为 null");
+        if (stream.Length == 0)
+            return [];
+        try
+        {
+            var bytes = StreamToBytes(stream);
+            return Compress(bytes, compressionLevel);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("流压缩操作失败", ex);
+        }
+    }
+
+    /// <summary>
+    /// 异步对流进行 GZip 压缩
+    /// </summary>
+    /// <param name="stream">输入流</param>
+    /// <param name="compressionLevel">压缩级别</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>压缩后的字节数组</returns>
+    public static async Task<byte[]> CompressAsync(Stream stream, CompressionLevel compressionLevel = CompressionLevel.Optimal, CancellationToken cancellationToken = default)
+    {
+        if (stream == null)
+            throw new ArgumentNullException(nameof(stream), "待压缩的流不能为 null");
+        if (stream.Length == 0)
+            return [];
+        try
+        {
+            var bytes = await StreamToBytesAsync(stream, cancellationToken);
+            return await CompressAsync(bytes, compressionLevel, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("异步流压缩操作失败", ex);
+        }
+    }
+
+    /// <summary>
+    /// 流转换为字节数组
+    /// </summary>
+    /// <param name="stream">输入流</param>
+    /// <returns>字节数组</returns>
+    private static byte[] StreamToBytes(Stream stream)
+    {
+        if (stream.CanSeek)
+            stream.Seek(0, SeekOrigin.Begin);
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        return memoryStream.ToArray();
+    }
+
+    /// <summary>
+    /// 异步将流转换为字节数组
+    /// </summary>
+    /// <param name="stream">输入流</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>字节数组</returns>
+    private static async Task<byte[]> StreamToBytesAsync(Stream stream, CancellationToken cancellationToken = default)
+    {
+        if (stream.CanSeek)
+            stream.Seek(0, SeekOrigin.Begin);
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream, DefaultBufferSize, cancellationToken);
+        return memoryStream.ToArray();
+    }
+
+    #endregion
+
+    #region Decompress(对Stream进行解压)
+
+    /// <summary>
+    /// 对流进行 GZip 解压
+    /// </summary>
+    /// <param name="stream">压缩流</param>
+    /// <returns>解压后的字节数组</returns>
+    /// <exception cref="ArgumentNullException">当 stream 为 null 时抛出</exception>
+    /// <exception cref="InvalidOperationException">当解压操作失败时抛出</exception>
+    public static byte[] Decompress(Stream stream)
+    {
+        if (stream == null)
+            throw new ArgumentNullException(nameof(stream), "待解压的流不能为 null");
+        if (stream.Length == 0)
+            return [];
+        try
+        {
+            using var outputStream = new MemoryStream();
+            using (var gzipStream = new GZipStream(stream, CompressionMode.Decompress))
+            {
+                gzipStream.CopyTo(outputStream);
+            }
+            return outputStream.ToArray();
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("流解压操作失败", ex);
+        }
+    }
+
+    /// <summary>
+    /// 异步对流进行 GZip 解压
+    /// </summary>
+    /// <param name="stream">压缩流</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>解压后的字节数组</returns>
+    public static async Task<byte[]> DecompressAsync(Stream stream, CancellationToken cancellationToken = default)
+    {
+        if (stream == null)
+            throw new ArgumentNullException(nameof(stream), "待解压的流不能为 null");
+        if (stream.Length == 0)
+            return [];
+        try
+        {
+            using var outputStream = new MemoryStream();
+            using (var gzipStream = new GZipStream(stream, CompressionMode.Decompress))
+            {
+                await gzipStream.CopyToAsync(outputStream, DefaultBufferSize, cancellationToken);
+            }
+            return outputStream.ToArray();
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("异步流解压操作失败", ex);
+        }
+    }
+
+    #endregion
+
     #region Zip(将文件夹压缩成zip文件)
 
     /// <summary>

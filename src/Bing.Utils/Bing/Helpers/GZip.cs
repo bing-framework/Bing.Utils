@@ -1,189 +1,119 @@
-﻿using System.IO.Compression;
-
-namespace Bing.Helpers;
+﻿namespace Bing.Helpers;
 
 /// <summary>
 /// GZip压缩 操作
 /// </summary>
+[Obsolete("建议使用 Compression 类获得更完整的功能和更好的异常处理")]
 public static partial class GZip
 {
     #region Compress(压缩)
 
     /// <summary>
-    /// 压缩
+    /// 压缩字符串（使用 UTF-8 编码）
     /// </summary>
-    /// <param name="content">内容</param>
-    public static string Compress(string content) => Compress(content, Encoding.UTF8);
+    /// <param name="content">待压缩的内容</param>
+    /// <returns>压缩后的 Base64 编码字符串</returns>
+    public static string Compress(string content) => Compression.Compress(content, Encoding.UTF8);
 
     /// <summary>
-    /// 压缩
+    /// 异步压缩字符串（使用 UTF-8 编码）
     /// </summary>
-    /// <param name="content">内容</param>
-    public static async Task<string> CompressAsync(string content) => await CompressAsync(content, Encoding.UTF8);
+    /// <param name="content">待压缩的内容</param>
+    /// <returns>压缩后的 Base64 编码字符串</returns>
+    public static async Task<string> CompressAsync(string content) => await Compression.CompressAsync(content, Encoding.UTF8);
 
     /// <summary>
-    /// 压缩
+    /// 压缩字符串（指定编码）
     /// </summary>
-    /// <param name="content">内容</param>
+    /// <param name="content">待压缩的内容</param>
     /// <param name="encoding">字符编码</param>
-    public static string Compress(string content, Encoding encoding)
-    {
-        if (string.IsNullOrWhiteSpace(content))
-            return string.Empty;
-        var buffer = encoding.GetBytes(content);
-        return Convert.ToBase64String(Compress(buffer));
-    }
+    /// <returns>压缩后的 Base64 编码字符串</returns>
+    public static string Compress(string content, Encoding encoding) =>
+        Compression.Compress(content, encoding);
 
     /// <summary>
-    /// 压缩
+    /// 异步压缩字符串（指定编码）
     /// </summary>
-    /// <param name="content">内容</param>
+    /// <param name="content">待压缩的内容</param>
     /// <param name="encoding">字符编码</param>
-    public static async Task<string> CompressAsync(string content, Encoding encoding)
-    {
-        if (string.IsNullOrWhiteSpace(content))
-            return string.Empty;
-        var buffer = encoding.GetBytes(content);
-        return Convert.ToBase64String(await CompressAsync(buffer));
-    }
+    /// <returns>压缩后的 Base64 编码字符串</returns>
+    public static async Task<string> CompressAsync(string content, Encoding encoding) =>
+        await Compression.CompressAsync(content, encoding);
 
     /// <summary>
-    /// 压缩
+    /// 压缩字节数组
     /// </summary>
-    /// <param name="buffer">字节流</param>
-    public static byte[] Compress(byte[] buffer)
-    {
-        if (buffer == null|| buffer.Length == 0)
-            return Array.Empty<byte>();
-        using var ms = new MemoryStream();
-        using (var zip = new GZipStream(ms, CompressionMode.Compress, true))
-            zip.Write(buffer, 0, buffer.Length);
-        return ms.ToArray();
-    }
+    /// <param name="buffer">待压缩的字节数组</param>
+    /// <returns>压缩后的字节数组</returns>
+    public static byte[] Compress(byte[] buffer) => Compression.Compress(buffer);
 
     /// <summary>
-    /// 压缩
+    /// 异步压缩字节数组
     /// </summary>
-    /// <param name="buffer">字节流</param>
-    public static async Task<byte[]> CompressAsync(byte[] buffer)
-    {
-        if (buffer == null || buffer.Length == 0)
-            return Array.Empty<byte>();
-        using var ms = new MemoryStream();
-        using (var zip = new GZipStream(ms, CompressionMode.Compress, true))
-            await zip.WriteAsync(buffer, 0, buffer.Length);
-        return ms.ToArray();
-    }
+    /// <param name="buffer">待压缩的字节数组</param>
+    /// <returns>压缩后的字节数组</returns>
+    public static async Task<byte[]> CompressAsync(byte[] buffer) =>
+        await Compression.CompressAsync(buffer);
 
     /// <summary>
-    /// 压缩
+    /// 压缩流
     /// </summary>
-    /// <param name="stream">流</param>
-    public static byte[] Compress(Stream stream)
-    {
-        if (stream == null || stream.Length == 0)
-            return Array.Empty<byte>();
-        return Compress(StreamToBytes(stream));
-    }
+    /// <param name="stream">待压缩的流</param>
+    /// <returns>压缩后的字节数组</returns>
+    public static byte[] Compress(Stream stream) => Compression.Compress(stream);
 
     /// <summary>
-    /// 压缩
+    /// 异步压缩流
     /// </summary>
-    /// <param name="stream">流</param>
-    public static async Task<byte[]> CompressAsync(Stream stream)
-    {
-        if (stream == null || stream.Length == 0)
-            return Array.Empty<byte>();
-        return await CompressAsync(await StreamToBytesAsync(stream));
-    }
-
-    /// <summary>
-    /// 流转换为字节流
-    /// </summary>
-    /// <param name="stream">流</param>
-    private static byte[] StreamToBytes(Stream stream)
-    {
-        stream.Seek(0, SeekOrigin.Begin);
-        using var ms = new MemoryStream();
-        stream.CopyTo(ms);
-        return ms.ToArray();
-    }
-
-    /// <summary>
-    /// 流转换为字节流
-    /// </summary>
-    /// <param name="stream">流</param>
-    private static async Task<byte[]> StreamToBytesAsync(Stream stream)
-    {
-        stream.Seek(0, SeekOrigin.Begin);
-        using var ms = new MemoryStream();
-        await stream.CopyToAsync(ms);
-        return ms.ToArray();
-    }
+    /// <param name="stream">待压缩的流</param>
+    /// <returns>压缩后的字节数组</returns>
+    public static async Task<byte[]> CompressAsync(Stream stream) =>
+        await Compression.CompressAsync(stream);
 
     #endregion
 
     #region Decompress(解压缩)
 
     /// <summary>
-    /// 解压缩
+    /// 解压缩 Base64 编码的字符串
     /// </summary>
-    /// <param name="content">内容</param>
-    public static string Decompress(string content)
-    {
-        if (string.IsNullOrWhiteSpace(content))
-            return string.Empty;
-        var buffer = Convert.FromBase64String(content);
-        using var ms = new MemoryStream(buffer);
-        using var zip = new GZipStream(ms, CompressionMode.Decompress);
-        using var reader = new StreamReader(zip);
-        return reader.ReadToEnd();
-    }
+    /// <param name="content">Base64 编码的压缩内容</param>
+    /// <returns>解压后的原始字符串</returns>
+    public static string Decompress(string content) => Compression.Decompress(content);
 
     /// <summary>
-    /// 解压缩
+    /// 异步解压缩 Base64 编码的字符串
     /// </summary>
-    /// <param name="content">内容</param>
-    public static async Task<string> DecompressAsync(string content)
-    {
-        if (string.IsNullOrWhiteSpace(content))
-            return string.Empty;
-        var buffer = Convert.FromBase64String(content);
-        using var ms = new MemoryStream(buffer);
-        using var zip = new GZipStream(ms, CompressionMode.Decompress);
-        using var reader = new StreamReader(zip);
-        return await reader.ReadToEndAsync();
-    }
+    /// <param name="content">Base64 编码的压缩内容</param>
+    /// <returns>解压后的原始字符串</returns>
+    public static async Task<string> DecompressAsync(string content) =>
+        await Compression.DecompressAsync(content);
 
     /// <summary>
-    /// 解压缩
+    /// 解压缩字节数组
     /// </summary>
-    /// <param name="buffer">字节流</param>
-    public static byte[] Decompress(byte[] buffer)
-    {
-        if (buffer == null || buffer.Length == 0)
-            return Array.Empty<byte>();
-        return Decompress(new MemoryStream(buffer));
-    }
+    /// <param name="buffer">压缩的字节数组</param>
+    /// <returns>解压后的字节数组</returns>
+    public static byte[] Decompress(byte[] buffer) => Compression.Decompress(buffer);
 
     /// <summary>
-    /// 解压缩
+    /// 解压缩流
     /// </summary>
-    /// <param name="stream">流</param>
-    public static byte[] Decompress(Stream stream) => Decompress(stream, Encoding.UTF8);
+    /// <param name="stream">压缩流</param>
+    /// <returns>解压后的字节数组</returns>
+    public static byte[] Decompress(Stream stream) => Compression.Decompress(stream);
 
     /// <summary>
-    /// 解压缩
+    /// 解压缩流（指定编码）
     /// </summary>
-    /// <param name="stream">流</param>
+    /// <param name="stream">压缩流</param>
     /// <param name="encoding">字符编码</param>
+    /// <returns>解压后的字节数组</returns>
     public static byte[] Decompress(Stream stream, Encoding encoding)
     {
-        if (stream == null || stream.Length == 0)
-            return Array.Empty<byte>();
-        using var zip = new GZipStream(stream, CompressionMode.Decompress);
-        using var reader = new StreamReader(zip);
-        return encoding.GetBytes(reader.ReadToEnd());
+        var decompressedBytes = Compression.Decompress(stream);
+        var text = encoding.GetString(decompressedBytes);
+        return encoding.GetBytes(text);
     }
 
     #endregion
