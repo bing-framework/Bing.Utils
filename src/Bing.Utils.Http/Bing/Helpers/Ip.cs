@@ -2,7 +2,6 @@
 using System.Net.Sockets;
 using System.Net;
 using Bing.Extensions;
-using Bing.OS;
 
 namespace Bing.Helpers;
 
@@ -36,7 +35,7 @@ public static class Ip
             return _ip.Value;
         var result = Web.HttpContext?.Connection.RemoteIpAddress.SafeString();
         if (string.IsNullOrWhiteSpace(result) || IsLocalIp(result))
-            result = Platform.IsWindows ? GetLanIp() : GetLanIp(NetworkInterfaceType.Ethernet);
+            result = Env.IsWindows ? GetLanIp() : GetLanIp(NetworkInterfaceType.Ethernet);
         return result;
     }
 

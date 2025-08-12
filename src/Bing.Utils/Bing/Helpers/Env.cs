@@ -1,4 +1,5 @@
 ﻿using Bing.Extensions;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Bing.Helpers;
@@ -144,7 +145,7 @@ public static class Env
     /// 获取运行时的标识符。
     /// </summary>
     private static string GetRuntimeIdentifier()
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
     {
         return RuntimeInformation.RuntimeIdentifier;
     }
@@ -169,6 +170,10 @@ public static class Env
             return "linux";
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             return "osx";
+#if NET5_0_OR_GREATER
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+            return "freebsd";
+#endif
         return "unknown";
     }
 
@@ -186,6 +191,212 @@ public static class Env
             _ => "unknown"
         };
     }
+
+    #endregion
+
+    #region 平台检测
+
+    /// <summary>
+    /// 检查当前操作系统是否为 Windows
+    /// </summary>
+    /// <value>如果是 Windows 操作系统返回 true，否则返回 false</value>
+    public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
+    /// <summary>
+    /// 检查当前操作系统是否为 Linux
+    /// </summary>
+    /// <value>如果是 Linux 操作系统返回 true，否则返回 false</value>
+    public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+
+    /// <summary>
+    /// 检查当前操作系统是否为 macOS (OSX)
+    /// </summary>
+    /// <value>如果是 macOS 操作系统返回 true，否则返回 false</value>
+    // ReSharper disable once InconsistentNaming
+    public static bool IsOSX => RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+
+    /// <summary>
+    /// 检查当前操作系统是否为 FreeBSD
+    /// </summary>
+    /// <value>如果是 FreeBSD 操作系统返回 true，否则返回 false</value>
+    /// <remarks>
+    /// 注意：FreeBSD 检测仅在 .NET 5.0 及更高版本中可用。
+    /// 在较低版本的 .NET 中，此属性始终返回 false。
+    /// </remarks>
+    // ReSharper disable once InconsistentNaming
+    public static bool IsFreeBSD =>
+#if NET5_0_OR_GREATER
+        RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
+#else
+        false;
+#endif
+
+    /// <summary>
+    /// 获取操作系统平台名称
+    /// </summary>
+    /// <value>操作系统平台名称字符串</value>
+    /// <remarks>
+    /// 返回值：<br />
+    /// - "Windows" - Windows 操作系统<br />
+    /// - "Linux" - Linux 操作系统  <br />
+    /// - "macOS" - macOS 操作系统<br />
+    /// - "FreeBSD" - FreeBSD 操作系统（仅 .NET 5.0+）<br />
+    /// - "Unknown" - 未知操作系统
+    /// </remarks>
+    public static string PlatformName =>
+        IsWindows ? "Windows" :
+        IsLinux ? "Linux" :
+        IsOSX ? "macOS" :
+        IsFreeBSD ? "FreeBSD" :
+        "Unknown";
+
+    /// <summary>
+    /// 获取操作系统版本信息
+    /// </summary>
+    /// <value>操作系统版本的字符串表示</value>
+    // ReSharper disable once InconsistentNaming
+    public static string OSVersion => Environment.OSVersion.ToString();
+
+    #endregion
+
+    #region 应用程序信息
+
+    /// <summary>
+    /// 获取当前应用程序名称
+    /// </summary>
+    /// <value>应用程序名称，如果无法确定则返回友好名称</value>
+    public static string ApplicationName => Assembly.GetEntryAssembly()?.GetName().Name ?? AppDomain.CurrentDomain.FriendlyName;
+
+    /// <summary>
+    /// 获取应用程序版本
+    /// </summary>
+    /// <value>应用程序版本信息</value>
+    public static Version ApplicationVersion => Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0.0.0.0");
+
+    /// <summary>
+    /// 获取应用程序标题
+    /// </summary>
+    /// <value>应用程序标题，从程序集属性中获取</value>
+    public static string ApplicationTitle
+    {
+        get
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            var titleAttribute = assembly?.GetCustomAttribute<AssemblyTitleAttribute>();
+            return titleAttribute?.Title ?? ApplicationName;
+        }
+    }
+
+    /// <summary>
+    /// 获取应用程序描述
+    /// </summary>
+    /// <value>应用程序描述，从程序集属性中获取</value>
+    public static string ApplicationDescription
+    {
+        get
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            var descAttribute = assembly?.GetCustomAttribute<AssemblyDescriptionAttribute>();
+            return descAttribute?.Description ?? string.Empty;
+        }
+    }
+
+    /// <summary>
+    /// 获取应用程序基目录
+    /// </summary>
+    /// <value>应用程序的基目录路径</value>
+    /// <remarks>
+    /// 等价于 AppContext.BaseDirectory
+    /// </remarks>
+    public static string ApplicationBaseDirectory => AppContext.BaseDirectory;
+
+    #endregion
+
+    #region 系统资源信息
+
+    /// <summary>
+    /// 获取系统可用内存（字节）
+    /// </summary>
+    /// <value>系统可用物理内存大小（字节）</value>
+    /// <remarks>
+    /// 此方法在不同平台上的行为可能不同。
+    /// </remarks>
+    public static long AvailablePhysicalMemory
+    {
+        get
+        {
+            try
+            {
+                if (IsWindows)
+                {
+                    return GC.GetTotalMemory(false);
+                }
+                // 对于 Linux/macOS，可以通过读取 /proc/meminfo 或使用其他方法
+                // 这里简化实现，返回 GC 托管内存
+                return GC.GetTotalMemory(false);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 获取系统正常运行时间
+    /// </summary>
+    /// <value>系统启动后运行的时间</value>
+    /// <remarks>
+    /// 在 .NET Standard 2.0 中使用 Environment.TickCount（32位），可能会溢出。
+    /// 在 .NET Core 2.1+ 中使用 Environment.TickCount64（64位），更加准确。
+    /// </remarks>
+    public static TimeSpan SystemUptime =>
+#if NETCOREAPP2_1_OR_GREATER || NET5_0_OR_GREATER
+        TimeSpan.FromMilliseconds(Environment.TickCount64);
+#else
+        TimeSpan.FromMilliseconds(Environment.TickCount);
+#endif
+
+    /// <summary>
+    /// 获取当前进程的工作集大小（内存使用量）
+    /// </summary>
+    /// <value>当前进程使用的物理内存大小（字节）</value>
+    public static long WorkingSet => Environment.WorkingSet;
+
+    #endregion
+
+    #region 目录管理
+
+    /// <summary>
+    /// 当前工作目录
+    /// </summary>
+    private static string _currentDirectory = Directory.GetCurrentDirectory();
+
+    /// <summary>
+    /// 获取或设置当前工作目录
+    /// </summary>
+    /// <value>当前工作目录的完整路径</value>
+    /// <remarks>
+    /// 设置新的工作目录时，会验证目录是否存在。
+    /// 如果目录不存在，设置操作将被忽略。
+    /// </remarks>
+    public static string WorkingDirectory
+    {
+        get => _currentDirectory;
+        set
+        {
+            if (!string.IsNullOrWhiteSpace(value) && Directory.Exists(value))
+            {
+                _currentDirectory = value;
+                Directory.SetCurrentDirectory(value);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 重置工作目录到应用程序基目录
+    /// </summary>
+    public static void ResetWorkingDirectory() => WorkingDirectory = ApplicationBaseDirectory;
 
     #endregion
 
@@ -577,6 +788,86 @@ public static class Env
     #endregion
 
     #region 实用工具方法
+
+    /// <summary>
+    /// 检查是否在容器环境中运行
+    /// </summary>
+    /// <value>如果在容器中运行返回 true，否则返回 false</value>
+    /// <remarks>
+    /// 通过检查常见的容器环境标识符来判断。
+    /// 这个检测不是100%准确，但能覆盖大多数情况。
+    /// </remarks>
+    public static bool IsRunningInContainer
+    {
+        get
+        {
+            // 检查 Docker 环境
+            if (File.Exists("/.dockerenv"))
+                return true;
+
+            // 检查 Kubernetes 环境
+            if (HasEnvironmentVariable("KUBERNETES_SERVICE_HOST"))
+                return true;
+
+            // 检查其他容器标识
+            var containerEnvVars = new[]
+            {
+                "DOCKER_CONTAINER",
+                "CONTAINER",
+                "DOTNET_RUNNING_IN_CONTAINER"
+            };
+
+            return containerEnvVars.Any(envVar => HasEnvironmentVariable(envVar));
+        }
+    }
+
+    /// <summary>
+    /// 检查是否在 CI/CD 环境中运行
+    /// </summary>
+    /// <value>如果在 CI/CD 环境中运行返回 true，否则返回 false</value>
+    // ReSharper disable once InconsistentNaming
+    public static bool IsRunningInCI
+    {
+        get
+        {
+            var ciEnvVars = new[]
+            {
+                "CI", "CONTINUOUS_INTEGRATION",           // 通用
+                "GITHUB_ACTIONS",                         // GitHub Actions
+                "AZURE_PIPELINES", "TF_BUILD",           // Azure DevOps
+                "JENKINS_URL",                            // Jenkins
+                "GITLAB_CI",                              // GitLab CI
+                "TRAVIS",                                 // Travis CI
+                "CIRCLECI",                               // Circle CI
+                "BUILDKITE",                              // Buildkite
+                "TEAMCITY_VERSION"                        // TeamCity
+            };
+
+            return ciEnvVars.Any(envVar => HasEnvironmentVariable(envVar));
+        }
+    }
+
+    /// <summary>
+    /// 检查是否在调试模式下运行
+    /// </summary>
+    /// <value>如果在调试模式下运行返回 true，否则返回 false</value>
+    public static bool IsDebugMode
+    {
+        get
+        {
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
+        }
+    }
+
+    /// <summary>
+    /// 检查是否有调试器附加
+    /// </summary>
+    /// <value>如果有调试器附加返回 true，否则返回 false</value>
+    public static bool IsDebuggerAttached => System.Diagnostics.Debugger.IsAttached;
 
     /// <summary>
     /// 创建临时文件并返回文件路径

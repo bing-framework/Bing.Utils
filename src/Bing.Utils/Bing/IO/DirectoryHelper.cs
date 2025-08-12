@@ -672,7 +672,7 @@ public static class DirectoryHelper
     /// 设置当前目录
     /// </summary>
     /// <param name="path">目录路径</param>
-    public static string SetCurrentDirectory(string path) => Platform.CurrentDirectory = path;
+    public static string SetCurrentDirectory(string path) => Env.WorkingDirectory = path;
 
     #endregion
 
@@ -681,7 +681,7 @@ public static class DirectoryHelper
     /// <summary>
     /// 获取当前目录
     /// </summary>
-    public static string GetCurrentDirectory() => Platform.CurrentDirectory;
+    public static string GetCurrentDirectory() => Env.WorkingDirectory;
 
     #endregion
 

@@ -1,5 +1,4 @@
 ﻿using Bing.Helpers;
-using Bing.OS;
 
 namespace Bing.IO;
 
@@ -106,9 +105,9 @@ public static class PathHelper
     {
         if (string.IsNullOrWhiteSpace(path))
             return null;
-        if (Platform.IsLinux)
+        if (Env.IsLinux)
             return path.Replace('\\', '/');
-        if (Platform.IsWindows || Platform.IsOSX)
+        if (Env.IsWindows || Env.IsOSX)
             return path.Replace('/', '\\');
         throw new PlatformNotSupportedException($"不支持的操作系统平台: {Environment.OSVersion.Platform}");
     }
