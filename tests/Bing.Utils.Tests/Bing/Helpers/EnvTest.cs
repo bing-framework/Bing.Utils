@@ -1,5 +1,4 @@
-﻿using Bing.Tests;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace Bing.Helpers;
 

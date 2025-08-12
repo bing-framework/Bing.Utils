@@ -1,6 +1,4 @@
-﻿using Bing.Utils.Tests;
-
-namespace Bing.Helpers;
+﻿namespace Bing.Helpers;
 
 /// <summary>
 /// 时间操作测试

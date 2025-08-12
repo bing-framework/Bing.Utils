@@ -1,6 +1,4 @@
-﻿using Bing.Tests;
-
-namespace Bing.Helpers;
+﻿namespace Bing.Helpers;
 
 /// <summary>
 /// 快速路径匹配器测试

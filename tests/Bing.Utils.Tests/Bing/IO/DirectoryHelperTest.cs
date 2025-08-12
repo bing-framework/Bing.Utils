@@ -1,6 +1,4 @@
-﻿using Bing.Utils.Tests;
-
-namespace Bing.IO;
+﻿namespace Bing.IO;
 
 /// <summary>
 /// 目录操作辅助类 测试

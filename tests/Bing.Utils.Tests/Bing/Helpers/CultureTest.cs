@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.Utilities;
-using System.Globalization;
-using Bing.Tests;
+﻿using System.Globalization;
 
 namespace Bing.Helpers;
 

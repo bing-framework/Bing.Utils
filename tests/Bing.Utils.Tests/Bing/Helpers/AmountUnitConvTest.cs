@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using Bing.Tests;
 
 namespace Bing.Helpers;
 

@@ -1,6 +1,4 @@
-﻿using Bing.Tests;
-
-namespace Bing.Collections;
+﻿namespace Bing.Collections;
 
 /// <summary>
 /// 数组扩展方法 - 索引 测试
