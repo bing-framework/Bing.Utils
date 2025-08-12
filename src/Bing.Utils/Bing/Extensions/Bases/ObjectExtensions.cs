@@ -8,7 +8,7 @@ namespace Bing.Extensions;
 /// </summary>
 public static partial class ObjectExtensions
 {
-    #region PropertyClone 对象值克隆
+    #region PropertyClone(对象值克隆)
 
     /// <summary>
     /// 从源对象赋值到当前对象
