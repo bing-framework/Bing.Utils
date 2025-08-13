@@ -100,6 +100,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Collections.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.IdUtils.Tests", "tests\Bing.Utils.IdUtils.Tests\Bing.Utils.IdUtils.Tests.csproj", "{11C5F1A0-FA2B-4C63-99FB-BD640EFB0068}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bing.Utils.Http.Tests", "tests\Bing.Utils.Http.Tests\Bing.Utils.Http.Tests.csproj", "{766AB550-DE77-44E4-A754-8F9DA4F39362}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -206,6 +208,10 @@ Global
 		{11C5F1A0-FA2B-4C63-99FB-BD640EFB0068}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11C5F1A0-FA2B-4C63-99FB-BD640EFB0068}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11C5F1A0-FA2B-4C63-99FB-BD640EFB0068}.Release|Any CPU.Build.0 = Release|Any CPU
+		{766AB550-DE77-44E4-A754-8F9DA4F39362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{766AB550-DE77-44E4-A754-8F9DA4F39362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{766AB550-DE77-44E4-A754-8F9DA4F39362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{766AB550-DE77-44E4-A754-8F9DA4F39362}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -244,6 +250,7 @@ Global
 		{629A2AD1-E536-47A4-9BDC-12E7B47B8655} = {2F180CBD-D79B-4264-8468-3D8A01AACDC6}
 		{78D02DFD-EF47-41EA-8BF3-2E9FADABAC2D} = {0B23CC67-872A-4F9C-AA7C-B6B63F305D7A}
 		{11C5F1A0-FA2B-4C63-99FB-BD640EFB0068} = {0B23CC67-872A-4F9C-AA7C-B6B63F305D7A}
+		{766AB550-DE77-44E4-A754-8F9DA4F39362} = {0B23CC67-872A-4F9C-AA7C-B6B63F305D7A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4B464B4-BF6F-4831-A0EE-2FC007AE32A1}

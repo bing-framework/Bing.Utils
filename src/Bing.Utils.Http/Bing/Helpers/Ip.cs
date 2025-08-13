@@ -1,138 +1,70 @@
-﻿using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Net;
-using Bing.Extensions;
+﻿using Bing.Net;
 
 namespace Bing.Helpers;
 
 /// <summary>
-/// Ip地址操作
+/// IP地址操作工具类
 /// </summary>
+/// <remarks>
+/// 提供IP地址获取、验证、转换等功能，支持IPv4和IPv6地址处理。
+/// 包含内网IP判断、地址格式验证、网络接口查询等实用方法。
+/// </remarks>
 public static class Ip
 {
-    /// <summary>
-    /// Ip地址
-    /// </summary>
-    private static readonly AsyncLocal<string> _ip = new();
+    #region 基础IP操作
 
     /// <summary>
-    /// 设置Ip地址
+    /// 设置当前线程的IP地址
     /// </summary>
-    /// <param name="ip">Ip地址</param>
-    public static void SetIp(string ip) => _ip.Value = ip;
+    /// <param name="ip">IP地址字符串</param>
+    /// <exception cref="ArgumentException">当IP地址格式无效时抛出</exception>
+    /// <example>
+    /// <code>
+    /// Ip.SetIp("192.168.1.100");
+    /// Ip.SetIp("2001:db8::1");  // IPv6地址
+    /// </code>
+    /// </example>
+    public static void SetIp(string ip) => IpAddressProvider.SetIp(ip);
 
     /// <summary>
-    /// 重置Ip地址
+    /// 重置当前线程的IP地址缓存
     /// </summary>
-    public static void Reset() => _ip.Value = null;
+    public static void Reset() => IpAddressProvider.Reset();
 
     /// <summary>
-    /// 获取客户端Ip地址
+    /// 获取客户端IP地址
     /// </summary>
-    public static string GetIp()
-    {
-        if (!string.IsNullOrWhiteSpace(_ip.Value))
-            return _ip.Value;
-        var result = Web.HttpContext?.Connection.RemoteIpAddress.SafeString();
-        if (string.IsNullOrWhiteSpace(result) || IsLocalIp(result))
-            result = Env.IsWindows ? GetLanIp() : GetLanIp(NetworkInterfaceType.Ethernet);
-        return result;
-    }
+    /// <returns>
+    /// 返回客户端IP地址。优先级：<br />
+    /// 1. 手动设置的IP地址<br />
+    /// 2. HTTP上下文中的远程IP地址<br />
+    /// 3. 本机局域网IP地址
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// string clientIp = Ip.GetIp();
+    /// Console.WriteLine($"客户端IP: {clientIp}");
+    /// </code>
+    /// </example>
+    public static string GetIp() => IpAddressProvider.GetIp();
 
     /// <summary>
-    /// 判断是否为本地IP地址
+    /// 获取本机所有IP地址
     /// </summary>
-    /// <param name="ip">IP地址</param>
-    /// <returns>如果是本地IP地址，则为 true；否则为 false。</returns>
-    private static bool IsLocalIp(string ip) => ip == "127.0.0.1" || ip == "::1";
+    /// <param name="includeIPv6">是否包含IPv6地址</param>
+    /// <param name="includeLoopback">是否包含回环地址</param>
+    /// <returns>本机IP地址列表</returns>
+    /// <example>
+    /// <code>
+    /// var allIps = Ip.GetAllLocalIps(includeIPv6: true, includeLoopback: false);
+    /// foreach (var ip in allIps)
+    /// {
+    ///     Console.WriteLine($"本机IP: {ip}");
+    /// }
+    /// </code>
+    /// </example>
+    public static List<string> GetAllLocalIps(bool includeIPv6 = false, bool includeLoopback = false) =>
+        IpAddressProvider.GetAllLocalIps(includeIPv6, includeLoopback);
 
-    /// <summary>
-    /// 获取局域网Ip
-    /// </summary>
-    private static string GetLanIp()
-    {
-        foreach (var hostAddress in Dns.GetHostAddresses(Dns.GetHostName()))
-        {
-            if (hostAddress.AddressFamily == AddressFamily.InterNetwork)
-                return hostAddress.ToString();
-        }
-        return string.Empty;
-    }
-
-    /// <summary>
-    /// 获取局域网Ip。
-    /// 参考地址：https://stackoverflow.com/questions/6803073/get-local-ip-address/28621250#28621250
-    /// 解决OSX下获取Ip地址产生"Device not configured"的问题
-    /// </summary>
-    /// <param name="type">网络接口类型</param>
-    private static string GetLanIp(NetworkInterfaceType type)
-    {
-        try
-        {
-            foreach (var item in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                if (item.NetworkInterfaceType != type || item.OperationalStatus != OperationalStatus.Up)
-                    continue;
-                var ipProperties = item.GetIPProperties();
-                if (ipProperties.GatewayAddresses.FirstOrDefault() == null)
-                    continue;
-                foreach (var ip in ipProperties.UnicastAddresses)
-                {
-                    if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
-                        return ip.Address.ToString();
-                }
-            }
-        }
-        catch
-        {
-            return string.Empty;
-        }
-        return string.Empty;
-    }
-
-    /// <summary>
-    /// 判断给定的IP地址是否为内部IP地址。
-    /// </summary>
-    /// <param name="ipAddress">要检查的IP地址字符串</param>
-    /// <returns>如果是内部IP地址，则为 true；否则为 false。</returns>
-    public static bool IsInnerIp(string ipAddress)
-    {
-        var ipNum = GetIpNum(ipAddress);
-        // 定义内部IP地址范围。
-        var internalRanges = new (long begin, long end)[]
-        {
-            (GetIpNum("10.0.0.0"), GetIpNum("10.255.255.255")),      // A类
-            (GetIpNum("172.16.0.0"), GetIpNum("172.31.255.255")),    // B类
-            (GetIpNum("192.168.0.0"), GetIpNum("192.168.255.255"))   // C类
-        };
-        // 判断给定的IP地址是否在任何一个内部IP地址范围内，或者是否为本地回环地址（127.0.0.1）
-        return internalRanges.Any(range => IsInner(ipNum, range.begin, range.end)) || ipAddress == "127.0.0.1";
-    }
-
-    /// <summary>
-    /// 将IP地址转换为long。
-    /// </summary>
-    /// <param name="ipAddress">IP地址字符串</param>
-    /// <returns>IP地址的long表示。</returns>
-    private static long GetIpNum(string ipAddress)
-    {
-        if (IPAddress.TryParse(ipAddress, out var ip))
-        {
-            var ipBytes = ip.GetAddressBytes();
-            // 如果系统是小端序（Little Endian），则翻转字节数组，以确保正确的顺序。
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(ipBytes);
-            return BitConverter.ToInt32(ipBytes, 0);
-        }
-        throw new ArgumentException($@"Invalid IP address format: {ipAddress}", nameof(ipAddress));
-    }
-
-    /// <summary>
-    /// 判断用户IP是否在指定范围内。
-    /// </summary>
-    /// <param name="userIp">用户的IP地址（长整型表示）</param>
-    /// <param name="begin">IP范围的起始值</param>
-    /// <param name="end">IP范围的结束值</param>
-    /// <returns>如果用户IP在指定范围内，则为 true；否则为 false。</returns>
-    private static bool IsInner(long userIp, long begin, long end) => userIp >= begin && userIp <= end;
+    #endregion
 }
