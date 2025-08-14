@@ -1,5 +1,8 @@
 ﻿namespace Bing.Net.IPv6.Internal;
 
+/// <summary>
+/// 地址操作类
+/// </summary>
 internal static class AddressOperations
 {
     /// <summary>

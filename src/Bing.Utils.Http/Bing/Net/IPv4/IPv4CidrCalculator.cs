@@ -12,6 +12,11 @@ namespace Bing.Net.IPv4;
 public static class IPv4CidrCalculator
 {
     /// <summary>
+    /// 默认最大IP生成数量
+    /// </summary>
+    private const int DEFAULT_MAX_IP_COUNT = 65536;
+
+    /// <summary>
     /// 判断IP地址是否在指定的CIDR网段内
     /// </summary>
     /// <param name="ipAddress">要检查的IP地址</param>
@@ -39,7 +44,7 @@ public static class IPv4CidrCalculator
         {
             var ip = IPv4Converter.IpToUInt32(ipAddress);
             var network = IPv4Converter.IpToUInt32(parts[0]);
-            var mask = CreateIPv4Mask(prefixLength);
+            var mask = AddressOperations.CreateIPv4Mask(prefixLength);
             return (ip & mask) == (network & mask);
         }
         catch
@@ -54,43 +59,39 @@ public static class IPv4CidrCalculator
     /// <param name="cidr">CIDR表示法的网段</param>
     /// <param name="maxCount">最大生成数量，默认65536</param>
     /// <returns>网段内所有IP地址的列表</returns>
+    /// <exception cref="ArgumentException">当CIDR格式无效时抛出</exception>
+    /// <exception cref="ArgumentOutOfRangeException">当网段过大超过限制时抛出</exception>
     /// <example>
     /// <code>
     /// var ips = IPv4CidrCalculator.GenerateIpRange("192.168.1.0/30");
     /// // 返回: 192.168.1.0, 192.168.1.1, 192.168.1.2, 192.168.1.3
     /// </code>
     /// </example>
-    public static List<string> GenerateIpRange(string cidr, int maxCount = 65536)
+    public static List<string> GenerateIpRange(string cidr, int maxCount = DEFAULT_MAX_IP_COUNT)
     {
-        var result = new List<string>();
         if (string.IsNullOrWhiteSpace(cidr))
-            return result;
+            throw new ArgumentException("CIDR不能为空", nameof(cidr));
+        if (maxCount <= 0)
+            throw new ArgumentOutOfRangeException(nameof(maxCount), "最大数量必须大于0");
 
         var parts = cidr.Split('/');
         if (parts.Length != 2 || !IPv4Validator.IsValid(parts[0]) || !int.TryParse(parts[1], out var prefixLength))
-            return result;
-
+            throw new ArgumentException("无效的CIDR格式", nameof(cidr));
         if (prefixLength < 0 || prefixLength > 32)
-            return result;
+            throw new ArgumentException("前缀长度必须在0-32之间", nameof(cidr));
 
-        try
-        {
-            var network = IPv4Converter.IpToUInt32(parts[0]);
-            var mask = CreateIPv4Mask(prefixLength);
-            var networkAddress = network & mask;
-            var hostCount = (uint)(1 << (32 - prefixLength));
+        var network = IPv4Converter.IpToUInt32(parts[0]);
+        var mask = AddressOperations.CreateIPv4Mask(prefixLength);
+        var networkAddress = network & mask;
+        var hostCount = (uint)(1 << (32 - prefixLength));
 
-            // 限制生成的IP数量，避免内存溢出
-            if (hostCount > maxCount)
-                throw new ArgumentException($"网段过大，包含{hostCount}个地址，超过最大限制{maxCount}");
+        // 限制生成的IP数量，避免内存溢出
+        if (hostCount > maxCount)
+            throw new ArgumentOutOfRangeException(nameof(maxCount), $"网段过大，包含{hostCount}个地址，超过最大限制{maxCount}");
 
-            for (uint i = 0; i < hostCount; i++)
-                result.Add(IPv4Converter.UInt32ToIp(networkAddress + i));
-        }
-        catch
-        {
-            // 忽略异常，返回空列表
-        }
+        var result = new List<string>((int)hostCount);
+        for (uint i = 0; i < hostCount; i++)
+            result.Add(IPv4Converter.UInt32ToIp(networkAddress + i));
 
         return result;
     }
@@ -100,6 +101,7 @@ public static class IPv4CidrCalculator
     /// </summary>
     /// <param name="subnetMask">子网掩码，如 "255.255.255.0"</param>
     /// <returns>CIDR前缀长度</returns>
+    /// <exception cref="ArgumentException">当子网掩码格式无效时抛出</exception>
     /// <example>
     /// <code>
     /// int prefix = IPv4CidrCalculator.SubnetMaskToCidr("255.255.255.0");
@@ -110,8 +112,16 @@ public static class IPv4CidrCalculator
     {
         if (!IPv4Validator.IsValid(subnetMask))
             throw new ArgumentException("无效的子网掩码格式", nameof(subnetMask));
+
         var maskNum = IPv4Converter.IpToUInt32(subnetMask);
-        return AddressOperations.CountLeadingOnes(maskNum);
+        var prefix = AddressOperations.CountLeadingOnes(maskNum);
+
+        // 验证掩码的有效性（连续的1后面必须是连续的0）
+        var expectedMask = AddressOperations.CreateIPv4Mask(prefix);
+        if (maskNum != expectedMask)
+            throw new ArgumentException("无效的子网掩码，必须是连续的二进制位", nameof(subnetMask));
+
+        return prefix;
     }
 
     /// <summary>
@@ -119,6 +129,7 @@ public static class IPv4CidrCalculator
     /// </summary>
     /// <param name="prefixLength">CIDR前缀长度</param>
     /// <returns>子网掩码字符串</returns>
+    /// <exception cref="ArgumentOutOfRangeException">当前缀长度超出范围时抛出</exception>
     /// <example>
     /// <code>
     /// string mask = IPv4CidrCalculator.CidrToSubnetMask(24);
@@ -129,7 +140,8 @@ public static class IPv4CidrCalculator
     {
         if (prefixLength < 0 || prefixLength > 32)
             throw new ArgumentOutOfRangeException(nameof(prefixLength), "前缀长度必须在0-32之间");
-        var mask = CreateIPv4Mask(prefixLength);
+
+        var mask = AddressOperations.CreateIPv4Mask(prefixLength);
         return IPv4Converter.UInt32ToIp(mask);
     }
 
@@ -138,6 +150,8 @@ public static class IPv4CidrCalculator
     /// </summary>
     /// <param name="cidr">CIDR网段</param>
     /// <returns>网段信息</returns>
+    /// <exception cref="ArgumentNullException">当CIDR为null或空白时抛出</exception>
+    /// <exception cref="ArgumentException">当CIDR格式无效时抛出</exception>
     /// <example>
     /// <code>
     /// var info = IPv4CidrCalculator.GetSubnetInfo("192.168.1.0/24");
@@ -146,7 +160,7 @@ public static class IPv4CidrCalculator
     /// Console.WriteLine($"可用主机数: {info.AvailableHosts}");
     /// </code>
     /// </example>
-    public static SubnetInfo GetSubnetInfo(string cidr)
+    public static IPv4SubnetInfo GetSubnetInfo(string cidr)
     {
         if (string.IsNullOrWhiteSpace(cidr))
             throw new ArgumentNullException(nameof(cidr));
@@ -154,18 +168,17 @@ public static class IPv4CidrCalculator
         var parts = cidr.Split('/');
         if (parts.Length != 2 || !IPv4Validator.IsValid(parts[0]) || !int.TryParse(parts[1], out var prefixLength))
             throw new ArgumentException("无效的CIDR格式", nameof(cidr));
-
         if (prefixLength < 0 || prefixLength > 32)
             throw new ArgumentException("无效的前缀长度", nameof(cidr));
 
         var networkIp = IPv4Converter.IpToUInt32(parts[0]);
-        var mask = CreateIPv4Mask(prefixLength);
+        var mask = AddressOperations.CreateIPv4Mask(prefixLength);
         var networkAddress = networkIp & mask;
         var broadcastAddress = networkAddress | ~mask;
         var totalHosts = (uint)(1 << (32 - prefixLength));
         var availableHosts = totalHosts > 2 ? totalHosts - 2 : totalHosts; // 减去网络地址和广播地址
 
-        return new SubnetInfo
+        return new IPv4SubnetInfo
         {
             NetworkAddress = IPv4Converter.UInt32ToIp(networkAddress),
             BroadcastAddress = IPv4Converter.UInt32ToIp(broadcastAddress),
@@ -184,6 +197,8 @@ public static class IPv4CidrCalculator
     /// <param name="cidr">原始CIDR网段</param>
     /// <param name="newPrefixLength">新的前缀长度（必须大于原前缀长度）</param>
     /// <returns>划分后的子网列表</returns>
+    /// <exception cref="ArgumentNullException">当CIDR为null或空白时抛出</exception>
+    /// <exception cref="ArgumentException">当CIDR格式无效或新前缀长度不合理时抛出</exception>
     /// <example>
     /// <code>
     /// var subnets = IPv4CidrCalculator.SubdivideNetwork("192.168.1.0/24", 26);
@@ -192,40 +207,29 @@ public static class IPv4CidrCalculator
     /// </example>
     public static List<string> SubdivideNetwork(string cidr, int newPrefixLength)
     {
-        var result = new List<string>();
-
         if (string.IsNullOrWhiteSpace(cidr))
-            return result;
+            throw new ArgumentNullException(nameof(cidr));
 
         var parts = cidr.Split('/');
         if (parts.Length != 2 || !IPv4Validator.IsValid(parts[0]) || !int.TryParse(parts[1], out var originalPrefix))
-            return result;
-
+            throw new ArgumentException("无效的CIDR格式", nameof(cidr));
         if (originalPrefix < 0 || originalPrefix > 32 || newPrefixLength < 0 || newPrefixLength > 32)
-            return result;
-
+            throw new ArgumentException("前缀长度必须在0-32之间");
         if (newPrefixLength <= originalPrefix)
             throw new ArgumentException("新前缀长度必须大于原前缀长度", nameof(newPrefixLength));
 
-        try
-        {
-            var subnetInfo = GetSubnetInfo(cidr);
-            var networkNum = IPv4Converter.IpToUInt32(subnetInfo.NetworkAddress);
-            var subnetSize = (uint)(1 << (32 - newPrefixLength));
-            var subnetCount = (uint)(1 << (newPrefixLength - originalPrefix));
+        var subnetInfo = GetSubnetInfo(cidr);
+        var networkNum = IPv4Converter.IpToUInt32(subnetInfo.NetworkAddress);
+        var subnetSize = (uint)(1 << (32 - newPrefixLength));
+        var subnetCount = (uint)(1 << (newPrefixLength - originalPrefix));
 
-            for (uint i = 0; i < subnetCount; i++)
-            {
-                var subnetNetwork = networkNum + (i * subnetSize);
-                var subnetAddress = IPv4Converter.UInt32ToIp(subnetNetwork);
-                result.Add($"{subnetAddress}/{newPrefixLength}");
-            }
-        }
-        catch
+        var result = new List<string>((int)subnetCount);
+        for (uint i = 0; i < subnetCount; i++)
         {
-            // 忽略异常，返回空列表
+            var subnetNetwork = networkNum + (i * subnetSize);
+            var subnetAddress = IPv4Converter.UInt32ToIp(subnetNetwork);
+            result.Add($"{subnetAddress}/{newPrefixLength}");
         }
-
         return result;
     }
 
@@ -243,6 +247,9 @@ public static class IPv4CidrCalculator
     /// </example>
     public static string GetNetworkIntersection(string cidr1, string cidr2)
     {
+        if (string.IsNullOrWhiteSpace(cidr1) || string.IsNullOrWhiteSpace(cidr2))
+            return null;
+
         try
         {
             var info1 = GetSubnetInfo(cidr1);
@@ -259,11 +266,23 @@ public static class IPv4CidrCalculator
             if (intersectionStart > intersectionEnd)
                 return null; // 没有交集
 
-            // 计算交集的前缀长度
+            // 找到能包含整个交集范围的最小CIDR网段
             var intersectionSize = intersectionEnd - intersectionStart + 1;
-            var prefixLength = 32 - AddressOperations.CalculateLog2(intersectionSize);
 
-            return $"{IPv4Converter.UInt32ToIp(intersectionStart)}/{prefixLength}";
+            // 计算最大可能的前缀长度
+            var maxPrefixLength = 32;
+            var requiredSize = 1u;
+            while (requiredSize < intersectionSize && maxPrefixLength > 0)
+            {
+                maxPrefixLength--;
+                requiredSize <<= 1;
+            }
+
+            // 确保起始地址在该前缀长度下是网络边界对齐的
+            var mask = AddressOperations.CreateIPv4Mask(maxPrefixLength);
+            var alignedStart = intersectionStart & mask;
+
+            return $"{IPv4Converter.UInt32ToIp(alignedStart)}/{maxPrefixLength}";
         }
         catch
         {
@@ -275,7 +294,12 @@ public static class IPv4CidrCalculator
     /// 超网聚合：将多个连续的小网段聚合为大网段
     /// </summary>
     /// <param name="cidrs">要聚合的CIDR网段列表</param>
-    /// <returns>聚合后的网段，如果无法聚合则返回原列表</returns>
+    /// <returns>聚合后的网段列表</returns>
+    /// <exception cref="ArgumentNullException">当网段列表为null时抛出</exception>
+    /// <remarks>
+    /// 此方法会尝试将相邻的、可以合并的网段聚合为更大的网段，以减少路由表条目。
+    /// 聚合条件：两个网段必须相邻且大小相同，聚合后的网段大小是原来的两倍。
+    /// </remarks>
     /// <example>
     /// <code>
     /// var cidrs = new[] { "192.168.0.0/25", "192.168.0.128/25" };
@@ -285,62 +309,139 @@ public static class IPv4CidrCalculator
     /// </example>
     public static List<string> AggregateNetworks(IEnumerable<string> cidrs)
     {
-        var validCidrs = cidrs.Where(c => !string.IsNullOrWhiteSpace(c)).ToList();
+        if (cidrs == null)
+            throw new ArgumentNullException(nameof(cidrs));
+
+        var validCidrs = cidrs.Where(c => !string.IsNullOrWhiteSpace(c) && IsValidCidrFormat(c)).ToList();
         if (validCidrs.Count <= 1)
             return validCidrs;
+
+        // 按网络地址排序
+        var sortedCidrs = validCidrs
+            .Select(c => new CidrInfo(c, GetSubnetInfo(c)))
+            .OrderBy(x => IPv4Converter.IpToUInt32(x.Info.NetworkAddress))
+            .ToList();
 
         var result = new List<string>();
         var processed = new HashSet<string>();
 
-        foreach (var cidr in validCidrs.OrderBy(c => c))
+        for (int i = 0; i < sortedCidrs.Count; i++)
         {
-            if (processed.Contains(cidr))
+            var current = sortedCidrs[i];
+            if (processed.Contains(current.Cidr))
                 continue;
 
-            var parts = cidr.Split('/');
-            if (parts.Length != 2 || !IPv4Validator.IsValid(parts[0]) || !int.TryParse(parts[1], out var prefix))
-            {
-                result.Add(cidr);
-                continue;
-            }
-
-            // 尝试与其他网段聚合
-            var aggregated = TryAggregateWithOthers(cidr, validCidrs, processed);
+            // 尝试与下一个网段聚合
+            var aggregated = TryAggregateWithNext(current, sortedCidrs, i + 1, processed);
             result.Add(aggregated);
-            processed.Add(cidr);
+            processed.Add(current.Cidr);
         }
 
-        return result.Distinct().ToList();
+        return result;
+    }
+
+    /// <summary>
+    /// 判断两个CIDR网段是否相邻且可以聚合
+    /// </summary>
+    /// <param name="cidr1">第一个网段</param>
+    /// <param name="cidr2">第二个网段</param>
+    /// <returns>如果可以聚合返回聚合后的网段，否则返回null</returns>
+    /// <example>
+    /// <code>
+    /// var aggregated = IPv4CidrCalculator.TryAggregate("192.168.0.0/25", "192.168.0.128/25");
+    /// // 返回: "192.168.0.0/24"
+    /// </code>
+    /// </example>
+    public static string TryAggregate(string cidr1, string cidr2)
+    {
+        if (string.IsNullOrWhiteSpace(cidr1) || string.IsNullOrWhiteSpace(cidr2))
+            return null;
+
+        try
+        {
+            var info1 = GetSubnetInfo(cidr1);
+            var info2 = GetSubnetInfo(cidr2);
+
+            // 必须是相同大小的网段
+            if (info1.PrefixLength != info2.PrefixLength)
+                return null;
+
+            var net1 = IPv4Converter.IpToUInt32(info1.NetworkAddress);
+            var net2 = IPv4Converter.IpToUInt32(info2.NetworkAddress);
+            var size = info1.TotalHosts;
+
+            // 检查是否相邻
+            if (Math.Abs((long)net1 - (long)net2) != size)
+                return null;
+
+            // 检查是否可以在更小的前缀长度下对齐
+            var newPrefixLength = info1.PrefixLength - 1;
+            if (newPrefixLength < 0)
+                return null;
+
+            var newMask = AddressOperations.CreateIPv4Mask(newPrefixLength);
+            var alignedNetwork = Math.Min(net1, net2) & newMask;
+
+            return $"{IPv4Converter.UInt32ToIp(alignedNetwork)}/{newPrefixLength}";
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     #region 私有辅助方法
 
     /// <summary>
-    /// 创建IPv4掩码
+    /// CIDR信息包装类
     /// </summary>
-    /// <param name="prefixLength">前缀长度</param>
-    /// <returns>掩码值</returns>
-    private static uint CreateIPv4Mask(int prefixLength)
+    /// <param name="Cidr">CIDR字符串</param>
+    /// <param name="Info">子网信息</param>
+    private readonly record struct CidrInfo(string Cidr, IPv4SubnetInfo Info);
+
+    /// <summary>
+    /// 验证CIDR格式是否有效
+    /// </summary>
+    /// <param name="cidr">CIDR字符串</param>
+    /// <returns>格式是否有效</returns>
+    private static bool IsValidCidrFormat(string cidr)
     {
-        if (prefixLength == 0)
-            return 0;
-        if (prefixLength == 32)
-            return 0xFFFFFFFF;
-        return 0xFFFFFFFF << (32 - prefixLength);
+        var parts = cidr.Split('/');
+        return parts.Length == 2
+               && IPv4Validator.IsValid(parts[0])
+               && int.TryParse(parts[1], out var prefix)
+               && prefix >= 0 && prefix <= 32;
     }
 
     /// <summary>
-    /// 尝试与其他网段聚合
+    /// 尝试与下一个网段聚合
     /// </summary>
-    /// <param name="cidr">当前网段</param>
-    /// <param name="allCidrs">所有网段</param>
-    /// <param name="processed">已处理的网段</param>
+    /// <param name="current">当前网段信息</param>
+    /// <param name="allCidrs">所有网段列表</param>
+    /// <param name="nextIndex">下一个网段的索引</param>
+    /// <param name="processed">已处理的网段集合</param>
     /// <returns>聚合后的网段</returns>
-    private static string TryAggregateWithOthers(string cidr, List<string> allCidrs, HashSet<string> processed)
+    private static string TryAggregateWithNext(
+        CidrInfo current,
+        List<CidrInfo> allCidrs,
+        int nextIndex,
+        HashSet<string> processed)
     {
-        // 这里可以实现更复杂的聚合逻辑
-        // 简化实现：直接返回原网段
-        return cidr;
+        if (nextIndex >= allCidrs.Count)
+            return current.Cidr;
+
+        var next = allCidrs[nextIndex];
+        if (processed.Contains(next.Cidr))
+            return current.Cidr;
+
+        var aggregated = TryAggregate(current.Cidr, next.Cidr);
+        if (aggregated != null)
+        {
+            processed.Add(next.Cidr);
+            return aggregated;
+        }
+
+        return current.Cidr;
     }
 
     #endregion

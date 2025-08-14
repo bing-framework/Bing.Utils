@@ -156,9 +156,7 @@ public static class IPv6CidrCalculator
             {
                 result.Add(subnetInfo.NetworkPrefix);
                 if (subnetInfo.FirstUsableAddress != null && subnetInfo.FirstUsableAddress != subnetInfo.NetworkPrefix)
-                {
                     result.Add(subnetInfo.FirstUsableAddress);
-                }
                 return result;
             }
 

@@ -6,6 +6,20 @@
 internal static class AddressOperations
 {
     /// <summary>
+    /// 创建IPv4掩码
+    /// </summary>
+    /// <param name="prefixLength">前缀长度</param>
+    /// <returns>掩码值</returns>
+    public static uint CreateIPv4Mask(int prefixLength)
+    {
+        if (prefixLength == 0)
+            return 0;
+        if (prefixLength == 32)
+            return 0xFFFFFFFF;
+        return 0xFFFFFFFF << (32 - prefixLength);
+    }
+
+    /// <summary>
     /// 计算以2为底的对数（整数版本）
     /// </summary>
     /// <param name="value">要计算对数的值</param>
@@ -15,7 +29,7 @@ internal static class AddressOperations
         if (value == 0)
             return 0;
         // 使用位运算快速计算 log2
-        int result = 0;
+        var result = 0;
         if (value >= 0x10000) { value >>= 16; result += 16; }
         if (value >= 0x100) { value >>= 8; result += 8; }
         if (value >= 0x10) { value >>= 4; result += 4; }

@@ -1,9 +1,9 @@
 ﻿namespace Bing.Net.IPv4;
 
 /// <summary>
-/// 子网信息
+/// IPv4子网信息
 /// </summary>
-public class SubnetInfo
+public class IPv4SubnetInfo
 {
     /// <summary>
     /// 网络地址
