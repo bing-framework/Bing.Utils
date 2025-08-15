@@ -197,10 +197,8 @@ public static class IPv6Converter
     {
         // 创建 IPv6 最大值: 2^128 - 1
         var maxValueBytes = new byte[17]; // 16字节全为0xFF，加一个0字节防止符号位
-        for (int i = 0; i < 16; i++)
-        {
+        for (var i = 0; i < 16; i++) 
             maxValueBytes[i] = 0xFF;
-        }
         maxValueBytes[16] = 0;
         var maxValue = new BigInteger(maxValueBytes);
 
@@ -209,23 +207,24 @@ public static class IPv6Converter
 
         var bytes = value.ToByteArray();
 
-        // 确保字节数组长度为16
-        if (bytes.Length > 16)
-        {
-            // 移除多余的符号位字节
+        // 移除符号位字节（如果存在）
+        if (bytes.Length > 16 && bytes[bytes.Length - 1] == 0) 
+            bytes = bytes.Take(bytes.Length - 1).ToArray();
+        // 确保字节数组长度不超过16
+        if (bytes.Length > 16) 
             bytes = bytes.Take(16).ToArray();
-        }
-        else if (bytes.Length < 16)
+
+        // 创建16字节的IPv6地址数组（大端序）
+        var ipv6Bytes = new byte[16];
+
+        // BigInteger.ToByteArray() 返回小端序，我们需要将其转换为大端序
+        // 将 bytes 逆序复制到 ipv6Bytes 的末尾
+        for (int i = 0; i < bytes.Length; i++)
         {
-            // 补充前导零字节
-            var paddedBytes = new byte[16];
-            Array.Copy(bytes, 0, paddedBytes, 16 - bytes.Length, bytes.Length);
-            bytes = paddedBytes;
+            ipv6Bytes[15 - i] = bytes[i];
         }
 
-        // 转换为大端序
-        Array.Reverse(bytes);
-        return FromBytes(bytes);
+        return FromBytes(ipv6Bytes);
     }
 
     /// <summary>
