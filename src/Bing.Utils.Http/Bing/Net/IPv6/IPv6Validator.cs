@@ -58,6 +58,32 @@ public static class IPv6Validator
     }
 
     /// <summary>
+    /// 验证IPv6地址并获取详细信息
+    /// </summary>
+    /// <param name="ip">IP地址字符串</param>
+    /// <param name="address">解析后的IPAddress对象</param>
+    /// <param name="addressType">地址类型</param>
+    /// <returns>如果是有效的IPv6地址返回true，否则返回false</returns>
+    public static bool TryValidate(string ip, out IPAddress address, out IPv6AddressType addressType)
+    {
+        address = null;
+        addressType = IPv6AddressType.Invalid;
+
+        if (string.IsNullOrWhiteSpace(ip))
+            return false;
+
+        if (IPAddress.TryParse(ip, out var parsedAddress) && parsedAddress.AddressFamily == AddressFamily.InterNetworkV6)
+        {
+            address = parsedAddress;
+            addressType = IPv6AddressAnalyzer.GetAddressType(ip);
+            return true;
+        }
+
+        address = null;
+        return false;
+    }
+
+    /// <summary>
     /// 判断IPv6地址是否为本地回环地址
     /// </summary>
     /// <param name="ip">IP地址字符串</param>
@@ -72,7 +98,11 @@ public static class IPv6Validator
     {
         if (string.IsNullOrWhiteSpace(ip))
             return false;
-        return ip == "::1";
+        if (!IPAddress.TryParse(ip, out var address))
+            return false;
+
+        return address.AddressFamily == AddressFamily.InterNetworkV6 &&
+               IPAddress.IsLoopback(address);
     }
 
     /// <summary>
@@ -159,6 +189,34 @@ public static class IPv6Validator
     /// </example>
     public static bool IsLinkLocal(string ipv6Address) =>
         IPv6AddressAnalyzer.GetAddressType(ipv6Address) == IPv6AddressType.LinkLocal;
+
+    /// <summary>
+    /// 判断IPv6地址是否为唯一本地地址 (ULA)
+    /// </summary>
+    /// <param name="ipv6Address">IPv6地址字符串</param>
+    /// <returns>如果是ULA地址返回true，否则返回false</returns>
+    /// <example>
+    /// <code>
+    /// bool isULA = IPv6Validator.IsUniqueLocal("fc00::1");
+    /// Console.WriteLine(isULA); // true
+    /// </code>
+    /// </example>
+    public static bool IsUniqueLocal(string ipv6Address) =>
+        IPv6AddressAnalyzer.GetAddressType(ipv6Address) == IPv6AddressType.UniqueLocal;
+
+    /// <summary>
+    /// 判断IPv6地址是否为文档用途地址
+    /// </summary>
+    /// <param name="ipv6Address">IPv6地址字符串</param>
+    /// <returns>如果是文档用途地址返回true，否则返回false</returns>
+    /// <example>
+    /// <code>
+    /// bool isDoc = IPv6Validator.IsDocumentation("2001:db8::1");
+    /// Console.WriteLine(isDoc); // true
+    /// </code>
+    /// </example>
+    public static bool IsDocumentation(string ipv6Address) =>
+        IPv6AddressAnalyzer.GetAddressType(ipv6Address) == IPv6AddressType.Documentation;
 
     /// <summary>
     /// 检查IPv6地址是否在指定的地址范围内

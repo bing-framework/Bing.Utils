@@ -6,7 +6,7 @@ namespace Bing.Net.IPv6;
 /// <summary>
 /// IPv6地址转换器单元测试
 /// </summary>
-[Trait("Bing.Net", "IPConverter")]
+[Trait("Bing.Net", "IpConverter")]
 public class IPv6ConverterTest : TestBase
 {
     /// <inheritdoc />

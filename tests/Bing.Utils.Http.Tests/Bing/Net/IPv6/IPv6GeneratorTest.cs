@@ -5,7 +5,7 @@ namespace Bing.Net.IPv6;
 /// <summary>
 /// IPv6地址生成器单元测试
 /// </summary>
-[Trait("Bing.Net", "IPGenerator")]
+[Trait("Bing.Net", "IpGenerator")]
 public class IPv6GeneratorTest : TestBase
 {
     /// <inheritdoc />
