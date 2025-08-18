@@ -10,8 +10,4 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Bing.Utils.Http\Bing.Utils.Http.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Bing\Net\IPv6\" />
-	</ItemGroup>
 </Project>
