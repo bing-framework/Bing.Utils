@@ -16,7 +16,7 @@ public static partial class StringExtensions
     /// <param name="inputValue">输入字符串</param>
     /// <param name="comparisonValue">包含字符串</param>
     /// <param name="comparisonType">区域</param>
-    internal static bool Contains(this string inputValue, string comparisonValue, StringComparison comparisonType)
+    public static bool Contains(this string inputValue, string comparisonValue, StringComparison comparisonType)
     {
         return (inputValue.IndexOf(comparisonValue, comparisonType) != -1);
     }
