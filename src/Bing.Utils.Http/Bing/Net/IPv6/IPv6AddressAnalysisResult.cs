@@ -3,7 +3,7 @@
 /// <summary>
 /// IPv6地址分析结果
 /// </summary>
-public class IPv6AddressAnalysis
+public class IPv6AddressAnalysisResult
 {
     /// <summary>
     /// 原始地址

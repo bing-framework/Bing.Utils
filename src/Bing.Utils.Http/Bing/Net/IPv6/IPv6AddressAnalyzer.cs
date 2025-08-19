@@ -401,7 +401,7 @@ public static class IPv6AddressAnalyzer
     /// Console.WriteLine($"是否私有: {analysis.IsPrivate}");
     /// </code>
     /// </example>
-    public static IPv6AddressAnalysis AnalyzeAddress(string ipv6Address)
+    public static IPv6AddressAnalysisResult AnalyzeAddress(string ipv6Address)
     {
         var addressType = GetAddressType(ipv6Address);
         var scope = GetAddressScope(ipv6Address);
@@ -412,7 +412,7 @@ public static class IPv6AddressAnalyzer
         string description = GetAddressTypeDescription(addressType);
         string scopeDescription = GetScopeDescription(scope);
 
-        return new IPv6AddressAnalysis
+        return new IPv6AddressAnalysisResult
         {
             Address = ipv6Address,
             AddressType = addressType,

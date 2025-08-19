@@ -209,6 +209,85 @@ public class IPv6OperatorTest : TestBase
 
     #endregion
 
+    #region SortOptimized 测试
+
+    /// <summary>
+    /// 测试 - SortOptimized - 性能优化排序
+    /// </summary>
+    [Fact]
+    public void SortOptimized_PerformanceTest()
+    {
+        // Arrange
+        var addresses = new[]
+        {
+            "2001:db8::3",
+            "2001:db8::1",
+            "::1",
+            "2001:db8::2",
+            "::",
+            "fe80::1",
+            "invalid",
+            null,
+            ""
+        };
+
+        // Act
+        var result = IPv6Operator.SortOptimized(addresses);
+        var standardResult = IPv6Operator.Sort(addresses);
+
+        // Assert
+        result.Count.ShouldBe(standardResult.Count);
+        for (int i = 0; i < result.Count; i++)
+        {
+            IPv6Converter.AreEqual(result[i], standardResult[i]).ShouldBeTrue();
+        }
+
+        Output.WriteLine("优化排序测试通过，结果与标准排序一致");
+    }
+
+
+    #endregion
+
+    #region FindClosest 测试
+
+    /// <summary>
+    /// 测试 - FindClosest - 查找最接近的地址
+    /// </summary>
+    [Theory]
+    [InlineData("2001:db8::5", new[] { "2001:db8::1", "2001:db8::10", "2001:db8::3" }, "2001:db8::3")]
+    [InlineData("::5", new[] { "::1", "::10", "::15" }, "::1")]
+    [InlineData("fe80::5", new[] { "fe80::1", "fe80::10" }, "fe80::1")]
+    public void FindClosest_VariousScenarios_ReturnsClosestAddress(string target, string[] candidates, string expected)
+    {
+        // Act
+        var result = IPv6Operator.FindClosest(target, candidates);
+
+        // Assert
+        IPv6Converter.AreEqual(result, expected).ShouldBeTrue();
+        Output.WriteLine($"目标 '{target}' 最接近的地址: '{result}'");
+    }
+
+    /// <summary>
+    /// 测试 - FindClosest - 异常处理
+    /// </summary>
+    [Fact]
+    public void FindClosest_InvalidInput_ThrowsException()
+    {
+        // Invalid target
+        Should.Throw<ArgumentException>(() =>
+            IPv6Operator.FindClosest("invalid", new[] { "2001:db8::1" }));
+
+        // Empty candidates
+        Should.Throw<ArgumentException>(() =>
+            IPv6Operator.FindClosest("2001:db8::1", new string[0]));
+
+        // No valid candidates
+        Should.Throw<ArgumentException>(() =>
+            IPv6Operator.FindClosest("2001:db8::1", new[] { "invalid", null, "" }));
+    }
+
+    #endregion
+
     #region GetIpDistance 测试
 
     /// <summary>
@@ -514,6 +593,122 @@ public class IPv6OperatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv6Operator.GetPreviousIp(address, -1))
             .Message.ShouldContain("步长不能为负数");
     }
+
+    #endregion
+
+    #region GetMidpoint 测试
+
+    /// <summary>
+    /// 测试 - GetMidpoint - 获取中点地址
+    /// </summary>
+    [Theory]
+    [InlineData("::", "::2", "::1")]
+    [InlineData("2001:db8::", "2001:db8::100", "2001:db8::80")]
+    public void GetMidpoint_VariousPairs_ReturnsCorrectMidpoint(string addr1, string addr2, string expectedMidpoint)
+    {
+        // Act
+        var result = IPv6Operator.GetMidpoint(addr1, addr2);
+
+        // Assert
+        IPv6Converter.AreEqual(result, expectedMidpoint).ShouldBeTrue();
+        Output.WriteLine($"中点地址: '{addr1}' 和 '{addr2}' 的中点是 '{result}'");
+    }
+
+    #endregion
+
+    #region GetNetworkPrefix 测试
+
+    /// <summary>
+    /// 测试 - GetNetworkPrefix - 网络前缀计算
+    /// </summary>
+    [Theory]
+    [InlineData("2001:db8:1234:5678:abcd:ef01:2345:6789", 64, "2001:db8:1234:5678::")]
+    [InlineData("2001:db8:1234:5678:abcd:ef01:2345:6789", 48, "2001:db8:1234::")]
+    [InlineData("2001:db8:1234:5678:abcd:ef01:2345:6789", 32, "2001:db8::")]
+    [InlineData("2001:db8::1", 128, "2001:db8::1")]
+    public void GetNetworkPrefix_VariousPrefixLengths_ReturnsCorrectPrefix(string address, int prefixLength, string expected)
+    {
+        // Act
+        var result = IPv6Operator.GetNetworkPrefix(address, prefixLength);
+
+        // Assert
+        IPv6Converter.AreEqual(result, expected).ShouldBeTrue();
+        Output.WriteLine($"网络前缀: '{address}' /{prefixLength} -> '{result}'");
+    }
+
+
+    #endregion
+
+    #region GetStatistics 测试
+
+    /// <summary>
+    /// 测试 - GetStatistics - 地址统计
+    /// </summary>
+    [Fact]
+    public void GetStatistics_MixedAddresses_ReturnsCorrectStatistics()
+    {
+        // Arrange
+        var addresses = new[]
+        {
+        "2001:db8::1",  // Documentation
+        "::1",          // Loopback
+        "fe80::1",      // LinkLocal
+        "ff02::1",      // Multicast
+        "invalid",      // Invalid
+        null,           // Invalid
+        "",             // Invalid
+        "192.168.1.1",  // Invalid (IPv4)
+        "2001:db8::2"   // Documentation
+    };
+
+        // Act
+        var stats = IPv6Operator.GetStatistics(addresses);
+
+        // Assert
+        stats.TotalCount.ShouldBe(9);
+        stats.ValidCount.ShouldBe(5);
+        stats.InvalidCount.ShouldBe(4);
+        stats.SmallestAddress.ShouldNotBeNull();
+        stats.LargestAddress.ShouldNotBeNull();
+        stats.AddressRange.ShouldBeGreaterThan(0);
+        stats.AddressTypes.ShouldNotBeEmpty();
+
+        // 验证地址类型统计
+        stats.AddressTypes.ContainsKey(IPv6AddressType.Documentation).ShouldBeTrue();
+        stats.AddressTypes.ContainsKey(IPv6AddressType.Loopback).ShouldBeTrue();
+        stats.AddressTypes.ContainsKey(IPv6AddressType.LinkLocal).ShouldBeTrue();
+        stats.AddressTypes.ContainsKey(IPv6AddressType.Multicast).ShouldBeTrue();
+
+        stats.AddressTypes[IPv6AddressType.Documentation].ShouldBe(2);
+        stats.AddressTypes[IPv6AddressType.Loopback].ShouldBe(1);
+
+        Output.WriteLine($"统计信息: {stats}");
+        Output.WriteLine("地址类型分布:");
+        foreach (var kvp in stats.AddressTypes)
+        {
+            Output.WriteLine($"  {kvp.Key}: {kvp.Value}");
+        }
+    }
+
+    /// <summary>
+    /// 测试 - GetStatistics - 空列表处理
+    /// </summary>
+    [Fact]
+    public void GetStatistics_EmptyList_ReturnsEmptyStatistics()
+    {
+        // Act
+        var stats = IPv6Operator.GetStatistics(new string[0]);
+
+        // Assert
+        stats.TotalCount.ShouldBe(0);
+        stats.ValidCount.ShouldBe(0);
+        stats.InvalidCount.ShouldBe(0);
+        stats.SmallestAddress.ShouldBeNull();
+        stats.LargestAddress.ShouldBeNull();
+        stats.AddressRange.ShouldBe(0);
+        stats.AddressTypes.ShouldBeEmpty();
+    }
+
 
     #endregion
 

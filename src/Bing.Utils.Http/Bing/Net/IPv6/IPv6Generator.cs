@@ -145,6 +145,44 @@ public static class IPv6Generator
         return IPv6Converter.FromBytes(ulaBytes);
     }
 
+    /// <summary>
+    /// 生成IPv6地址范围
+    /// </summary>
+    /// <param name="startAddress">起始地址</param>
+    /// <param name="endAddress">结束地址</param>
+    /// <param name="maxCount">最大生成数量，防止内存溢出</param>
+    /// <returns>地址范围列表</returns>
+    public static List<string> GenerateRange(string startAddress, string endAddress, int maxCount = 1000)
+    {
+        if (!IPv6Validator.IsValid(startAddress) || !IPv6Validator.IsValid(endAddress))
+            throw new ArgumentException("无效的IPv6地址");
+
+        var result = new List<string>();
+        var current = startAddress;
+        var distance = IPv6Operator.GetIpDistance(startAddress, endAddress);
+
+        if (distance > (ulong)maxCount)
+            throw new ArgumentException($"地址范围过大，超过最大限制 {maxCount}");
+
+        var compareResult = IPv6CidrCalculator.CompareIPv6Addresses(startAddress, endAddress);
+        if (compareResult > 0)
+            throw new ArgumentException("起始地址不能大于结束地址");
+
+        while (IPv6CidrCalculator.CompareIPv6Addresses(current, endAddress) <= 0)
+        {
+            result.Add(current);
+            if (result.Count >= maxCount)
+                break;
+
+            if (IPv6Converter.AreEqual(current, endAddress))
+                break;
+
+            current = IPv6Operator.GetNextIp(current);
+        }
+
+        return result;
+    }
+
     #region 私有辅助方法
 
     /// <summary>
