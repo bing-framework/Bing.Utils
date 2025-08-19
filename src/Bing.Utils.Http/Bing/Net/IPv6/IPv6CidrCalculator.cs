@@ -151,8 +151,8 @@ public static class IPv6CidrCalculator
         {
             var subnetInfo = GetIPv6SubnetInfo(ipv6Cidr);
 
-            // 如果总地址数超过maxCount或者无法计算，只返回网络地址
-            if (!subnetInfo.TotalAddresses.HasValue || subnetInfo.TotalAddresses > (ulong)maxCount)
+            // 如果没有地址信息，只返回网络地址
+            if (!subnetInfo.TotalAddresses.HasValue)
             {
                 result.Add(subnetInfo.NetworkPrefix);
                 if (subnetInfo.FirstUsableAddress != null && subnetInfo.FirstUsableAddress != subnetInfo.NetworkPrefix)
@@ -163,7 +163,7 @@ public static class IPv6CidrCalculator
             var currentBytes = IPv6Converter.ToBytes(subnetInfo.NetworkPrefix);
             var count = Math.Min((int)subnetInfo.TotalAddresses.Value, maxCount);
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 result.Add(IPv6Converter.FromBytes(currentBytes));
                 if (i < count - 1) // 避免最后一次不必要的增加
@@ -334,13 +334,21 @@ public static class IPv6CidrCalculator
         try
         {
             var subnetInfo = GetIPv6SubnetInfo(ipv6Cidr);
-            var networkBytes = IPv6Converter.ToBytes(subnetInfo.NetworkPrefix);
-            var subnetCount = (ulong)(1 << (newPrefixLength - originalPrefix));
-
-            // 限制子网数量，避免内存溢出
+            
+            // 计算子网数量的位数差
+            var prefixDiff = newPrefixLength - originalPrefix;
+            
+            // 检查是否会产生过多子网
+            if (prefixDiff > 13) // 2^13 = 8192 < 10000 < 2^14 = 16384
+                throw new ArgumentException($"子网数量过大：2^{prefixDiff} = {(long)Math.Pow(2, prefixDiff)}，超过最大限制10000");
+            
+            var subnetCount = (ulong)(1UL << prefixDiff);
+            
+            // 双重检查，确保不会超过限制
             if (subnetCount > 10000)
                 throw new ArgumentException($"子网数量过大：{subnetCount}，超过最大限制10000");
 
+            var networkBytes = IPv6Converter.ToBytes(subnetInfo.NetworkPrefix);
             for (ulong i = 0; i < subnetCount; i++)
             {
                 var currentBytes = IPv6AddressManipulator.Clone(networkBytes);
@@ -356,6 +364,10 @@ public static class IPv6CidrCalculator
                 var subnetAddress = IPv6Converter.FromBytes(currentBytes);
                 result.Add($"{subnetAddress}/{newPrefixLength}");
             }
+        }
+        catch (ArgumentException)
+        {
+            throw;
         }
         catch
         {

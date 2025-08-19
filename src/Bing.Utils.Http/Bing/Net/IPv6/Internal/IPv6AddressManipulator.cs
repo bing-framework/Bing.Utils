@@ -227,7 +227,7 @@ internal static class IPv6AddressManipulator
             return result;
 
         // 增加1得到第一个主机地址
-        Increment(result);
+        //Increment(result);// 如果需要第一个可用地址为网络地址加1
 
         return result;
     }
@@ -266,7 +266,7 @@ internal static class IPv6AddressManipulator
 
         // 设置主机部分为全1，然后减1得到最后一个主机地址
         SetHostBits(result, prefixLength, 0xFF);
-        Decrement(result);
+        //Decrement(result);// 如果需要最后一个可用地址为网络地址的主机部分减1
 
         return result;
     }
