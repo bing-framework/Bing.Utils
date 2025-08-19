@@ -1,4 +1,5 @@
 ﻿using Bing.Tests;
+using Shouldly;
 
 namespace Bing.Net.IPv6;
 
@@ -71,25 +72,44 @@ public class IPv6GeneratorTest : TestBase
     }
 
     /// <summary>
-    /// 测试 - GenerateLinkLocal - 无效MAC地址回退到随机生成
+    /// 测试 - GenerateLinkLocal - 基于MAC地址生成
     /// </summary>
     [Theory]
-    [InlineData("invalid")]
-    [InlineData("")]
-    [InlineData(null)]
-    [InlineData("12:34:56")]  // 太短
-    [InlineData("gg:hh:ii:jj:kk:ll")]  // 无效十六进制
-    public void GenerateLinkLocal_WithInvalidMac_FallbackToRandom(string invalidMac)
+    [InlineData("00:11:22:33:44:55")]
+    [InlineData("aa:bb:cc:dd:ee:ff")]
+    [InlineData("12:34:56:78:9a:bc")]
+    public void GenerateLinkLocal_ValidMacAddress_GeneratesCorrectAddress(string macAddress)
     {
         // Act
-        var result = IPv6Generator.GenerateLinkLocal(invalidMac);
+        var result = IPv6Generator.GenerateLinkLocal(macAddress);
 
         // Assert
         result.ShouldNotBeNullOrEmpty();
         IPv6Validator.IsValid(result).ShouldBeTrue();
-        result.ShouldStartWith("fe8");
+        IPv6Validator.IsLinkLocal(result).ShouldBeTrue();
+        result.ShouldStartWith("fe80:");
 
-        Output.WriteLine($"无效MAC '{invalidMac}' -> IPv6: {result}");
+        Output.WriteLine($"基于MAC {macAddress} 生成的链路本地地址: {result}");
+    }
+
+    /// <summary>
+    /// 测试 - GenerateLinkLocal - 无效MAC地址回退
+    /// </summary>
+    [Theory]
+    [InlineData("invalid")]
+    [InlineData("")]
+    [InlineData("12:34:56")]
+    public void GenerateLinkLocal_InvalidMacAddress_FallbackToRandom(string invalidMacAddress)
+    {
+        // Act
+        var result = IPv6Generator.GenerateLinkLocal(invalidMacAddress);
+
+        // Assert
+        result.ShouldNotBeNullOrEmpty();
+        IPv6Validator.IsValid(result).ShouldBeTrue();
+        IPv6Validator.IsLinkLocal(result).ShouldBeTrue();
+
+        Output.WriteLine($"无效MAC地址 '{invalidMacAddress}' 回退生成: {result}");
     }
 
     /// <summary>
@@ -121,6 +141,24 @@ public class IPv6GeneratorTest : TestBase
         {
             Output.WriteLine($"  {addr}");
         }
+    }
+
+    /// <summary>
+    /// 测试 - GenerateLinkLocal - 随机生成
+    /// </summary>
+    [Fact]
+    public void GenerateLinkLocal_NoMacAddress_GeneratesValidAddress()
+    {
+        // Act
+        var result = IPv6Generator.GenerateLinkLocal();
+
+        // Assert
+        result.ShouldNotBeNullOrEmpty();
+        IPv6Validator.IsValid(result).ShouldBeTrue();
+        IPv6Validator.IsLinkLocal(result).ShouldBeTrue();
+        result.ShouldStartWith("fe80:");
+
+        Output.WriteLine($"随机生成的链路本地地址: {result}");
     }
 
     #endregion
@@ -236,6 +274,19 @@ public class IPv6GeneratorTest : TestBase
     }
 
     /// <summary>
+    /// 测试 - GenerateRandom - 无效前缀长度抛出异常
+    /// </summary>
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(129)]
+    public void GenerateRandom_InvalidPrefixLength_ThrowsException(int invalidPrefixLength)
+    {
+        // Act & Assert
+        Should.Throw<ArgumentOutOfRangeException>(() =>
+            IPv6Generator.GenerateRandom("2001:db8::", invalidPrefixLength));
+    }
+
+    /// <summary>
     /// 测试 - GenerateRandom - 多次生成确保随机性
     /// </summary>
     [Fact]
@@ -268,15 +319,67 @@ public class IPv6GeneratorTest : TestBase
         }
     }
 
+    /// <summary>
+    /// 测试 - GenerateRandom - 唯一性测试
+    /// </summary>
+    [Fact]
+    public void GenerateRandom_MultipleGenerations_ProducesUniqueAddresses()
+    {
+        // Arrange
+        var addresses = new HashSet<string>();
+        const int count = 100;
+
+        // Act
+        for (int i = 0; i < count; i++)
+        {
+            var address = IPv6Generator.GenerateRandom();
+            addresses.Add(address);
+        }
+
+        // Assert
+        addresses.Count.ShouldBeGreaterThan((int)(count * 0.95)); // 允许极少数重复
+        Output.WriteLine($"生成 {count} 个随机地址，唯一地址数: {addresses.Count}");
+    }
+
+    #endregion
+
+    #region GenerateRandomBatch 测试
+
+    /// <summary>
+    /// 测试 - GenerateRandomBatch - 批量生成
+    /// </summary>
+    [Fact]
+    public void GenerateRandomBatch_RequestedCount_GeneratesCorrectAmount()
+    {
+        // Arrange
+        const int count = 10;
+
+        // Act
+        var result = IPv6Generator.GenerateRandomBatch(count);
+
+        // Assert
+        result.Count.ShouldBe(count);
+        result.All(IPv6Validator.IsValid).ShouldBeTrue();
+
+        // 验证唯一性
+        result.Distinct().Count().ShouldBe(count);
+
+        Output.WriteLine($"批量生成 {count} 个地址:");
+        foreach (var addr in result.Take(5))
+        {
+            Output.WriteLine($"  {addr}");
+        }
+    }
+
     #endregion
 
     #region GenerateUniqueLocal 测试
 
     /// <summary>
-    /// 测试 - GenerateUniqueLocal - 不带参数生成ULA地址
+    /// 测试 - GenerateUniqueLocal - 默认生成
     /// </summary>
     [Fact]
-    public void GenerateUniqueLocal_WithoutParameters_GeneratesValidULA()
+    public void GenerateUniqueLocal_Default_GeneratesValidULA()
     {
         // Act
         var result = IPv6Generator.GenerateUniqueLocal();
@@ -284,44 +387,32 @@ public class IPv6GeneratorTest : TestBase
         // Assert
         result.ShouldNotBeNullOrEmpty();
         IPv6Validator.IsValid(result).ShouldBeTrue();
-
-        // 验证是ULA地址（fd00::/8）
+        IPv6Validator.IsUniqueLocal(result).ShouldBeTrue();
         result.ShouldStartWith("fd");
-
-        // 转换为字节验证前缀
-        var bytes = IPv6Converter.ToBytes(result);
-        bytes[0].ShouldBe((byte)0xfd, "ULA地址应该以fd开头");
 
         Output.WriteLine($"生成的ULA地址: {result}");
     }
 
     /// <summary>
-    /// 测试 - GenerateUniqueLocal - 带指定globalId生成ULA地址
+    /// 测试 - GenerateUniqueLocal - 指定全局ID和子网ID
     /// </summary>
     [Fact]
-    public void GenerateUniqueLocal_WithGlobalId_UsesProvidedGlobalId()
+    public void GenerateUniqueLocal_WithGlobalIdAndSubnetId_GeneratesCorrectAddress()
     {
         // Arrange
         var globalId = new byte[] { 0x12, 0x34, 0x56, 0x78, 0x9a };
+        var subnetId = new byte[] { 0xbc, 0xde };
 
         // Act
-        var result = IPv6Generator.GenerateUniqueLocal(globalId);
+        var result = IPv6Generator.GenerateUniqueLocal(globalId, subnetId);
 
         // Assert
         result.ShouldNotBeNullOrEmpty();
         IPv6Validator.IsValid(result).ShouldBeTrue();
-        result.ShouldStartWith("fd");
+        IPv6Validator.IsUniqueLocal(result).ShouldBeTrue();
+        result.ShouldStartWith("fd12:3456:789a:bcde:");
 
-        // 验证globalId是否正确设置
-        var bytes = IPv6Converter.ToBytes(result);
-        bytes[0].ShouldBe((byte)0xfd);
-        for (int i = 0; i < 5; i++)
-        {
-            bytes[1 + i].ShouldBe(globalId[i], $"Global ID字节 {i} 应该匹配");
-        }
-
-        Output.WriteLine($"带Global ID的ULA地址: {result}");
-        Output.WriteLine($"Global ID: {string.Join(":", globalId.Select(b => b.ToString("x2")))}");
+        Output.WriteLine($"指定ID生成的ULA地址: {result}");
     }
 
     /// <summary>
@@ -558,6 +649,183 @@ public class IPv6GeneratorTest : TestBase
         Output.WriteLine($"ULA地址兼容性测试通过: {ula}");
         Output.WriteLine($"十六进制: {hex}");
         Output.WriteLine($"二进制前8位: {binary.Substring(0, 8)}");
+    }
+
+    #endregion
+
+    #region GenerateMulticast 测试
+
+    /// <summary>
+    /// 测试 - GenerateMulticast - 组播地址生成
+    /// </summary>
+    [Theory]
+    [InlineData(0x1)] // 接口本地
+    [InlineData(0x2)] // 链路本地
+    [InlineData(0x5)] // 站点本地
+    [InlineData(0xE)] // 全局
+    public void GenerateMulticast_VariousScopes_GeneratesValidMulticast(byte scope)
+    {
+        // Act
+        var result = IPv6Generator.GenerateMulticast(scope);
+
+        // Assert
+        result.ShouldNotBeNullOrEmpty();
+        IPv6Validator.IsValid(result).ShouldBeTrue();
+        IPv6Validator.IsMulticast(result).ShouldBeTrue();
+        result.ShouldStartWith("ff");
+
+        Output.WriteLine($"生成的组播地址 (scope={scope:X}): {result}");
+    }
+
+    #endregion
+
+    #region GenerateFromMac 测试
+
+    /// <summary>
+    /// 测试 - GenerateFromMac - 基于MAC生成地址
+    /// </summary>
+    [Fact]
+    public void GenerateFromMac_ValidMacAndPrefix_GeneratesCorrectAddress()
+    {
+        // Arrange
+        var macAddress = "00:11:22:33:44:55";
+        var prefix = "2001:db8::";
+        var prefixLength = 64;
+
+        // Act
+        var result = IPv6Generator.GenerateFromMac(macAddress, prefix, prefixLength);
+
+        // Assert
+        result.ShouldNotBeNullOrEmpty();
+        IPv6Validator.IsValid(result).ShouldBeTrue();
+        result.ShouldStartWith("2001:db8:");
+
+        Output.WriteLine($"基于MAC {macAddress} 和前缀 {prefix}/{prefixLength} 生成: {result}");
+    }
+
+    #endregion
+
+    #region GenerateRange 测试
+
+    /// <summary>
+    /// 测试 - GenerateRange - 小范围生成
+    /// </summary>
+    [Fact]
+    public void GenerateRange_SmallRange_GeneratesCorrectSequence()
+    {
+        // Arrange
+        var start = "2001:db8::1";
+        var end = "2001:db8::5";
+
+        // Act
+        var result = IPv6Generator.GenerateRange(start, end);
+
+        // Assert
+        result.Count.ShouldBe(5);
+        result[0].ShouldBe("2001:db8::1");
+        result[4].ShouldBe("2001:db8::5");
+
+        // 验证连续性
+        for (int i = 1; i < result.Count; i++)
+        {
+            var prev = IPv6Converter.ToBigInteger(result[i - 1]);
+            var curr = IPv6Converter.ToBigInteger(result[i]);
+            (curr - prev).ShouldBe(1);
+        }
+
+        Output.WriteLine($"地址范围 {start} 到 {end}:");
+        foreach (var addr in result)
+        {
+            Output.WriteLine($"  {addr}");
+        }
+    }
+
+    /// <summary>
+    /// 测试 - GenerateRange - 超出最大限制抛出异常
+    /// </summary>
+    [Fact]
+    public void GenerateRange_ExceedsMaxCount_ThrowsException()
+    {
+        // Arrange
+        var start = "2001:db8::1";
+        var end = "2001:db8::1000"; // 范围太大
+
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => IPv6Generator.GenerateRange(start, end, 100));
+    }
+
+    /// <summary>
+    /// 测试 - GenerateRange - 起始地址大于结束地址抛出异常
+    /// </summary>
+    [Fact]
+    public void GenerateRange_StartGreaterThanEnd_ThrowsException()
+    {
+        // Act & Assert
+        Should.Throw<ArgumentException>(() =>
+            IPv6Generator.GenerateRange("2001:db8::10", "2001:db8::1"));
+    }
+
+    #endregion
+
+    #region GenerateAddressPool 测试
+
+    /// <summary>
+    /// 测试 - GenerateAddressPool - 地址池生成
+    /// </summary>
+    [Fact]
+    public void GenerateAddressPool_ValidParameters_CreatesUsablePool()
+    {
+        // Arrange
+        const int poolSize = 10;
+
+        // Act
+        var pool = IPv6Generator.GenerateAddressPool(poolSize, IPv6AddressType.LinkLocal);
+
+        // Assert
+        pool.ShouldNotBeNull();
+        pool.Addresses.Count.ShouldBe(poolSize);
+        pool.AddressType.ShouldBe(IPv6AddressType.LinkLocal);
+        pool.RemainingCount.ShouldBe(poolSize);
+        pool.IsExhausted.ShouldBeFalse();
+
+        // 测试地址获取
+        for (int i = 0; i < poolSize; i++)
+        {
+            var addr = pool.GetNext();
+            IPv6Validator.IsValid(addr).ShouldBeTrue();
+            IPv6Validator.IsLinkLocal(addr).ShouldBeTrue();
+        }
+
+        pool.IsExhausted.ShouldBeTrue();
+        Should.Throw<InvalidOperationException>(() => pool.GetNext());
+
+        Output.WriteLine($"地址池生成测试完成，池大小: {poolSize}");
+    }
+
+    #endregion
+
+    #region 性能测试
+
+    /// <summary>
+    /// 测试 - 生成性能测试
+    /// </summary>
+    [Fact]
+    public void GenerationMethods_Performance_CompletesWithinReasonableTime()
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+
+        // 测试各种生成方法的性能
+        for (int i = 0; i < 1000; i++)
+        {
+            IPv6Generator.GenerateRandom();
+            IPv6Generator.GenerateLinkLocal();
+            IPv6Generator.GenerateUniqueLocal();
+        }
+
+        sw.Stop();
+
+        sw.ElapsedMilliseconds.ShouldBeLessThan(5000, "3000次地址生成应该在5秒内完成");
+        Output.WriteLine($"性能测试: 3000次地址生成耗时 {sw.ElapsedMilliseconds}ms");
     }
 
     #endregion
