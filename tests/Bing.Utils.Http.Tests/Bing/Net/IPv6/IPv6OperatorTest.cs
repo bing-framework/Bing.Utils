@@ -1,5 +1,4 @@
-﻿using Bing.Tests;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace Bing.Net.IPv6;
 

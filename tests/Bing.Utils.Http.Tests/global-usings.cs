@@ -11,6 +11,7 @@ global using System.Text;
 global using System.Text.RegularExpressions;
 global using System.Threading.Tasks;
 global using Bing;
+global using Bing.Tests;
 global using Bing.Utils;
 global using Shouldly;
 global using Xunit;

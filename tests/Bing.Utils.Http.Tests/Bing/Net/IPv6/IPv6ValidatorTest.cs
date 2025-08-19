@@ -1,6 +1,4 @@
-﻿using Bing.Tests;
-
-namespace Bing.Net.IPv6;
+﻿namespace Bing.Net.IPv6;
 
 /// <summary>
 /// IPv6地址验证器单元测试

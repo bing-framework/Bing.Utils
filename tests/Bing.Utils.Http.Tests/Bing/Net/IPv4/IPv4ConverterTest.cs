@@ -1,6 +1,4 @@
-﻿using Bing.Tests;
-
-namespace Bing.Net.IPv4;
+﻿namespace Bing.Net.IPv4;
 
 /// <summary>
 /// IPv4地址转换器 测试

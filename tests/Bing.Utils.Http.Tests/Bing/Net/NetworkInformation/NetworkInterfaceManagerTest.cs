@@ -1,6 +1,4 @@
-﻿using Bing.Tests;
-using Shouldly;
-using System.Net.NetworkInformation;
+﻿using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 namespace Bing.Net.NetworkInformation;

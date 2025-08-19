@@ -1,6 +1,4 @@
-﻿using Bing.Tests;
-
-namespace Bing.Net.IPv4;
+﻿namespace Bing.Net.IPv4;
 
 /// <summary>
 /// IPv4 CIDR网络计算器 测试

@@ -1,7 +1,4 @@
-﻿using Bing.Tests;
-using Shouldly;
-
-namespace Bing.Net.IPv6;
+﻿namespace Bing.Net.IPv6;
 
 /// <summary>
 /// IPv6地址生成器单元测试

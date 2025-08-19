@@ -127,7 +127,6 @@ public static class IpAddressProvider
         return string.Empty;
     }
 
-
     /// <summary>
     /// 获取本机所有IP地址
     /// </summary>

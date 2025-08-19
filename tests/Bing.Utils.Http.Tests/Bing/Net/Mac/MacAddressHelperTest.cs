@@ -1,6 +1,4 @@
-﻿using Bing.Tests;
-
-namespace Bing.Net.Mac;
+﻿namespace Bing.Net.Mac;
 
 /// <summary>
 /// MAC地址帮助类单元测试
