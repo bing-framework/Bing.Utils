@@ -1157,7 +1157,7 @@ public static partial class Conv
     /// Guid? value3 = Conv.ToGuidOrNull("abc");  // 转换失败，返回 null
     /// Guid? value4 = Conv.ToGuidOrNull(null);   // 转换失败，返回 null
     /// </code>
-    /// </example>
+    /// </example> 
     public static Guid? ToGuidOrNull(object input) => Guid.TryParse(input.SafeString(), out var result) ? result : null;
 
     #endregion

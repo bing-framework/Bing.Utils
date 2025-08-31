@@ -2,7 +2,6 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using System.Xml.Serialization;
-using Bing.Extensions;
 
 namespace Bing.Helpers;
 
