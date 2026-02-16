@@ -6,6 +6,7 @@ using Bing.Utils.Parameters;
 namespace Bing.Parameters;
 
 [Trait("Bing.Parameters", "UrlParameterBuilderExtensions")]
+[Collection(Bing.Helpers.WebHttpContextCollection.Name)]
 public class UrlParameterBuilderExtensionsTest
 {
     [Fact]

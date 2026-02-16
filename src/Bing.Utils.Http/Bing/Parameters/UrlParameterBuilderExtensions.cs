@@ -17,7 +17,10 @@ public static class UrlParameterBuilderExtensions
         var form = Web.Request?.Form;
         if (form == null)
             return;
-        foreach (var key in form.Keys)
+        var keys = form.Keys;
+        if (keys == null)
+            return;
+        foreach (var key in keys)
         {
             if (form.ContainsKey(key))
                 builder.Add(key, form[key]);
@@ -33,7 +36,10 @@ public static class UrlParameterBuilderExtensions
         var query = Web.Request?.Query;
         if (query == null)
             return;
-        foreach (var key in query.Keys)
+        var keys = query.Keys;
+        if (keys == null)
+            return;
+        foreach (var key in keys)
         {
             if (query.ContainsKey(key))
                 builder.Add(key, query[key]);

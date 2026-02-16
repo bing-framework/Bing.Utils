@@ -519,51 +519,40 @@ public class IpAddressProviderTest : TestBase
             var task1Ip = "192.168.1.2";
             var task2Ip = "192.168.1.3";
 
-            var results = new ConcurrentDictionary<int, string>();
             var mainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
 
             // Act
             // 在主线程设置IP
             IpAddressProvider.SetIp(mainThreadIp);
             var mainThreadResult = IpAddressProvider.GetIp();
-            results.TryAdd(mainThreadId, mainThreadResult);
 
-            var task1 = Task.Run(() =>
+            var task1 = Task.Factory.StartNew(() =>
             {
                 var currentThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
                 IpAddressProvider.SetIp(task1Ip);
                 var taskResult = IpAddressProvider.GetIp();
-                results.TryAdd(currentThreadId, taskResult);
                 return new { ThreadId = currentThreadId, Result = taskResult };
-            });
+            }, System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
-            var task2 = Task.Run(() =>
+            var task2 = Task.Factory.StartNew(() =>
             {
                 var currentThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
                 IpAddressProvider.SetIp(task2Ip);
                 var taskResult = IpAddressProvider.GetIp();
-                results.TryAdd(currentThreadId, taskResult);
                 return new { ThreadId = currentThreadId, Result = taskResult };
-            });
+            }, System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
             var taskResults = await Task.WhenAll(task1, task2);
 
             // Assert
-            results.Count.ShouldBe(3, "应该有3个线程的结果");
-
-            // 验证主线程的结果
-            results.ShouldContainKey(mainThreadId);
-            results[mainThreadId].ShouldBe(mainThreadIp, "主线程应该返回主线程设置的IP");
+            mainThreadResult.ShouldBe(mainThreadIp, "主线程应该返回主线程设置的IP");
 
             // 验证任务线程的结果
             var task1Result = taskResults[0];
             var task2Result = taskResults[1];
 
-            results.ShouldContainKey(task1Result.ThreadId);
-            results.ShouldContainKey(task2Result.ThreadId);
-
-            results[task1Result.ThreadId].ShouldBe(task1Ip, "任务1应该返回任务1设置的IP");
-            results[task2Result.ThreadId].ShouldBe(task2Ip, "任务2应该返回任务2设置的IP");
+            task1Result.Result.ShouldBe(task1Ip, "任务1应该返回任务1设置的IP");
+            task2Result.Result.ShouldBe(task2Ip, "任务2应该返回任务2设置的IP");
 
             // 验证线程隔离性
             task1Result.ThreadId.ShouldNotBe(mainThreadId, "任务1应该在不同的线程");

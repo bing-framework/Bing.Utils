@@ -9,7 +9,8 @@ namespace Bing.Helpers;
 /// Web操作 测试
 /// </summary>
 [Trait("Bing.Helpers", "Web")]
-public class WebTest : TestBase
+[Collection(WebHttpContextCollection.Name)]
+public class WebTest : TestBase, IDisposable
 {
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
     private readonly Mock<HttpContext> _mockHttpContext;
@@ -49,6 +50,11 @@ public class WebTest : TestBase
 
         // 设置 Web 类的静态属性
         Web.HttpContextAccessor = _mockHttpContextAccessor.Object;
+    }
+
+    public void Dispose()
+    {
+        Web.HttpContextAccessor = null;
     }
 
     #region 属性测试
