@@ -59,6 +59,38 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
+    /// Test - send before can cancel request
+    /// </summary>
+    [Fact]
+    public async Task Test_Get_OnSendBefore_Cancel_1()
+    {
+        var called = false;
+        var result = await _client.Get("/api/test1")
+            .OnSendBefore(_ =>
+            {
+                called = true;
+                return false;
+            })
+            .GetResultAsync();
+
+        called.ShouldBeTrue();
+        result.ShouldBeNull();
+    }
+
+    /// <summary>
+    /// Test - send after works without send before callback
+    /// </summary>
+    [Fact]
+    public async Task Test_Get_OnSendAfter_WithoutSendBefore_1()
+    {
+        var result = await _client.Get("/api/test1")
+            .OnSendAfter(_ => Task.FromResult("custom"))
+            .GetResultAsync();
+
+        result.ShouldBe("custom");
+    }
+
+    /// <summary>
     /// Test - get byte stream
     /// </summary>
     [Fact]

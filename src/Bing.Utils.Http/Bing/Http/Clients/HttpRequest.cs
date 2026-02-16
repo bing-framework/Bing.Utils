@@ -953,7 +953,7 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     /// <param name="message">请求消息</param>
     protected virtual bool SendBefore(HttpRequestMessage message)
     {
-        if (SendAfterAction == null)
+        if (SendBeforeAction == null)
             return true;
         return SendBeforeAction(message);
     }

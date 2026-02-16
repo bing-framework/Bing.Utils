@@ -266,10 +266,7 @@ public static partial class FileHelper
         if (string.IsNullOrWhiteSpace(filePath))
             return false;
         DirectoryHelper.CreateDirectory(filePath);
-        if (!appendMode && File.Exists(filePath))
-            File.Create(filePath);
-
-        var fileMode = appendMode ? FileMode.Append : FileMode.Open;
+        var fileMode = appendMode ? FileMode.Append : FileMode.Create;
 #if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER
         await using var fs = new FileStream(filePath, fileMode, FileAccess.Write);
 #else
