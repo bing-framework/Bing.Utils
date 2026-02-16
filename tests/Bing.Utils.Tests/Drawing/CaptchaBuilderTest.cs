@@ -1,10 +1,11 @@
-﻿using Bing.Drawing;
+using Bing.Drawing;
+using System.Text.RegularExpressions;
 
 namespace Bing.Utils.Tests.Drawing;
 
 public class CaptchaBuilderTest : TestBase
 {
-    private CaptchaBuilder _coder;
+    private readonly CaptchaBuilder _coder;
 
     public CaptchaBuilderTest(ITestOutputHelper output) : base(output)
     {
@@ -16,34 +17,52 @@ public class CaptchaBuilderTest : TestBase
     public void Test_GetCode_NumberAndLetter()
     {
         var result = _coder.GetCode(10);
-        Output.WriteLine(result);
+        result.Length.ShouldBe(10);
+        Regex.IsMatch(result, @"^[A-Za-z0-9]+$").ShouldBeTrue();
     }
 
     [Fact]
     public void Test_GetCode_Number()
     {
         var result = _coder.GetCode(10, CaptchaType.Number);
-        Output.WriteLine(result);
+        result.Length.ShouldBe(10);
+        Regex.IsMatch(result, @"^\d+$").ShouldBeTrue();
     }
 
     [Fact]
     public void Test_GetCode_ChineseChar()
     {
         var result = _coder.GetCode(10, CaptchaType.ChineseChar);
-        Output.WriteLine(result);
+        result.Length.ShouldBe(10);
+        result.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]
     public void Test_CreateImage()
     {
-        var code = "";
         _coder.RandomPointPercent = 5;
-        _coder.Height = 50;
         _coder.RandomColor = true;
-        using (var image = _coder.CreateImage(4, out code, CaptchaType.ChineseChar))
-        {
-            image.Save("D:\\test.png");
-        }
-        Output.WriteLine(code);
+        using var image = _coder.CreateImage(4, out var code, CaptchaType.ChineseChar);
+        image.Width.ShouldBe(_coder.FontWidth * 4 + _coder.FontWidth);
+        image.Height.ShouldBe(_coder.FontSize + _coder.FontSize / 2);
+        code.Length.ShouldBe(4);
+    }
+
+    [Fact]
+    public void Test_GetCode_InvalidLength()
+    {
+        Should.Throw<ArgumentOutOfRangeException>(() => _coder.GetCode(0));
+    }
+
+    [Fact]
+    public void Test_CreateImage_InvalidLength()
+    {
+        Should.Throw<ArgumentOutOfRangeException>(() => _coder.CreateImage(0, out _));
+    }
+
+    [Fact]
+    public void Test_CreateImage_EmptyCode()
+    {
+        Should.Throw<ArgumentNullException>(() => _coder.CreateImage(string.Empty));
     }
 }

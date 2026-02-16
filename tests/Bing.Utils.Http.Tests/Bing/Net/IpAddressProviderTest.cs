@@ -632,10 +632,10 @@ public class IpAddressProviderTest : TestBase
                 IpValidator.IsValid(getValue).ShouldBeTrue($"线程 {threadId} 获取的IP应该是有效的");
             }
 
-            // 验证所有线程ID都不同
+            // 线程池任务可能复用线程，不对线程唯一性做强假设
             var threadIds = resultList.Select(r => r.ThreadId).ToList();
             var uniqueThreadIds = threadIds.Distinct().ToList();
-            uniqueThreadIds.Count.ShouldBe(threadIds.Count, "每个任务应该在不同的线程中运行");
+            uniqueThreadIds.Count.ShouldBeGreaterThan(0);
 
             // 验证每个线程都有独立的IP值
             var setValues = resultList.Select(r => r.SetValue).ToList();
@@ -643,6 +643,7 @@ public class IpAddressProviderTest : TestBase
             uniqueSetValues.Count.ShouldBe(setValues.Count, "每个线程应该设置不同的IP");
 
             Output.WriteLine("健壮的线程隔离测试结果:");
+            Output.WriteLine($"  任务数={resultList.Count}, 实际线程数={uniqueThreadIds.Count}");
             foreach (var (threadId, setValue, getValue) in resultList.OrderBy(r => r.ThreadId))
             {
                 Output.WriteLine($"  线程 {threadId}: 设置={setValue}, 获取={getValue}");
