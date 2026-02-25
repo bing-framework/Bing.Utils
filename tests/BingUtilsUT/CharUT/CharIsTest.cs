@@ -1,12 +1,9 @@
-﻿using Bing.Text;
-
+using Bing.Text;
 namespace BingUtilsUT.CharUT;
-
 [Trait("CharUT", "Char.Is")]
 public class CharIsTest
 {
     #region IsBlankChar 方法测试
-
     /// <summary>
     /// 测试 - IsBlankChar - 标准空白字符
     /// </summary>
@@ -21,11 +18,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsBlankChar(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsBlankChar - Unicode空白字符
     /// </summary>
@@ -50,11 +45,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsBlankChar(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsBlankChar - Unicode分隔符
     /// </summary>
@@ -65,11 +58,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsBlankChar(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsBlankChar - 特殊空白字符
     /// </summary>
@@ -84,11 +75,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsBlankChar(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsBlankChar - 非空白字符
     /// </summary>
@@ -108,11 +97,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsBlankChar(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsBlankChar - 边界条件
     /// </summary>
@@ -126,11 +113,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsBlankChar(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsBlankChar - 验证与.NET内置方法的一致性
     /// </summary>
@@ -139,7 +124,6 @@ public class CharIsTest
     {
         // Arrange
         var standardWhitespaceChars = new char[] { ' ', '\t', '\n', '\r', '\v', '\f' };
-
         // Act & Assert
         foreach (var ch in standardWhitespaceChars)
         {
@@ -148,7 +132,6 @@ public class CharIsTest
             CharJudge.IsBlankChar(ch).ShouldBeTrue($"CharJudge should identify '{ch}' (U+{(int)ch:X4}) as blank");
         }
     }
-
     /// <summary>
     /// 测试 - IsBlankChar - 性能测试
     /// </summary>
@@ -158,7 +141,6 @@ public class CharIsTest
         // Arrange
         const int iterations = 100000;
         var testChars = new char[] { ' ', '\t', 'a', '中', '\u3000', '\u0000' };
-
         // Act & Assert
         Should.CompleteIn(() =>
         {
@@ -171,11 +153,8 @@ public class CharIsTest
             }
         }, TimeSpan.FromSeconds(1), "IsBlankChar should complete within 1 second");
     }
-
     #endregion
-
     #region IsEmoji 方法测试
-
     /// <summary>
     /// 测试 - IsEmoji - 单字节emoji符号范围
     /// </summary>
@@ -194,11 +173,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsEmoji(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsEmoji - 使用字符串索引访问emoji
     /// </summary>
@@ -219,7 +196,6 @@ public class CharIsTest
             "🐶", // DOG FACE
             "🍎"  // RED APPLE
         };
-
         // Act & Assert
         foreach (var emojiStr in emojiStrings)
         {
@@ -229,17 +205,14 @@ public class CharIsTest
                 // 高代理字符应该被识别为emoji范围
                 var highSurrogate = emojiStr[0];
                 var result = CharJudge.IsEmoji(highSurrogate);
-
                 // 检查字符是否在emoji的高代理范围内
                 var codePoint = (int)highSurrogate;
                 var isInEmojiRange = (codePoint >= 0xD83C && codePoint <= 0xD83F); // emoji高代理范围
-
                 result.ShouldBe(isInEmojiRange,
                     $"High surrogate '{highSurrogate}' (U+{codePoint:X4}) from emoji '{emojiStr}' should match emoji range check");
             }
         }
     }
-
     /// <summary>
     /// 测试 - IsEmoji - Unicode范围边界测试
     /// </summary>
@@ -257,11 +230,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsEmoji(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsEmoji - 非emoji字符
     /// </summary>
@@ -287,11 +258,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsEmoji(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsEmoji - 控制字符和特殊字符
     /// </summary>
@@ -308,11 +277,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsEmoji(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsEmoji - 代理字符处理
     /// </summary>
@@ -326,11 +293,9 @@ public class CharIsTest
     {
         // Act
         var result = CharJudge.IsEmoji(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsEmoji - 性能测试
     /// </summary>
@@ -340,7 +305,6 @@ public class CharIsTest
         // Arrange
         const int iterations = 100000;
         var testChars = new char[] { '\u2600', '\u2764', 'a', '中', ' ', '\uD83D', '\u26FF' };
-
         // Act & Assert
         Should.CompleteIn(() =>
         {
@@ -353,11 +317,8 @@ public class CharIsTest
             }
         }, TimeSpan.FromSeconds(1), "IsEmoji should complete within 1 second");
     }
-
     #endregion
-
     #region 集成测试
-
     /// <summary>
     /// 测试 - 综合字符分类测试
     /// </summary>
@@ -376,18 +337,15 @@ public class CharIsTest
         // Act
         var isBlank = CharJudge.IsBlankChar(input);
         var isEmoji = CharJudge.IsEmoji(input);
-
         // Assert
         isBlank.ShouldBe(expectedBlank, $"Character '{input}' (U+{(int)input:X4}) blank check failed");
         isEmoji.ShouldBe(expectedEmoji, $"Character '{input}' (U+{(int)input:X4}) emoji check failed");
-
         // 一个字符不应该既是空白符又是emoji（根据当前实现）
         if (isBlank && isEmoji)
         {
             Assert.True(false, $"Character '{input}' (U+{(int)input:X4}) cannot be both blank and emoji");
         }
     }
-
     /// <summary>
     /// 测试 - 字符串处理场景测试
     /// </summary>
@@ -396,13 +354,11 @@ public class CharIsTest
     {
         // Arrange - 使用包含单字节emoji的字符串
         var testString = "Hello ☀ World\t\n中文⭐test";
-
         // Act & Assert
         foreach (char ch in testString)
         {
             var isBlank = CharJudge.IsBlankChar(ch);
             var isEmoji = CharJudge.IsEmoji(ch);
-
             // 验证一些预期结果
             switch (ch)
             {
@@ -437,7 +393,6 @@ public class CharIsTest
             }
         }
     }
-
     /// <summary>
     /// 测试 - 多字节Emoji字符串处理
     /// </summary>
@@ -446,13 +401,11 @@ public class CharIsTest
     {
         // Arrange
         var testString = "😀🌟💖";
-
         // Act & Assert
         foreach (char ch in testString)
         {
             var isBlank = CharJudge.IsBlankChar(ch);
             var isEmoji = CharJudge.IsEmoji(ch);
-
             // 多字节emoji的高代理字符应该被正确识别
             if (char.IsHighSurrogate(ch))
             {
@@ -469,11 +422,8 @@ public class CharIsTest
             }
         }
     }
-
     #endregion
-
     #region 原有测试（保留兼容性）
-
     /// <summary>
     /// 测试 - 是否空白符（原有测试）
     /// </summary>
@@ -482,23 +432,17 @@ public class CharIsTest
     {
         char a = '\u00A0';
         CharJudge.IsBlankChar(a).ShouldBeTrue();
-
         char a2 = '\u0020';
         CharJudge.IsBlankChar(a2).ShouldBeTrue();
-
         char a3 = '\u3000';
         CharJudge.IsBlankChar(a3).ShouldBeTrue();
-
         char a4 = '\u0000';
         CharJudge.IsBlankChar(a4).ShouldBeTrue();
-
         char a5 = ' ';
         CharJudge.IsBlankChar(a5).ShouldBeTrue();
-
         char a6 = '\u202a';
         CharJudge.IsBlankChar(a6).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 是否 Emoji 表情符（原有测试）
     /// </summary>
@@ -509,7 +453,6 @@ public class CharIsTest
         CharJudge.IsEmoji(a[0]).ShouldBeFalse();
         CharJudge.IsEmoji(a[1]).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - Trim操作（原有测试）
     /// </summary>
@@ -523,11 +466,8 @@ public class CharIsTest
         str[0].ShouldBe('C');
         CharJudge.IsBlankChar(str[0]).ShouldBeFalse();
     }
-
     #endregion
-
     #region 实用方法测试
-
     /// <summary>
     /// 测试 - 字符分类统计
     /// </summary>
@@ -539,7 +479,6 @@ public class CharIsTest
         int blankCount = 0;
         int emojiCount = 0;
         int otherCount = 0;
-
         // Act
         foreach (char ch in testText)
         {
@@ -550,13 +489,11 @@ public class CharIsTest
             else
                 otherCount++;
         }
-
         // Assert
         blankCount.ShouldBe(5); // 空格、制表符、换行符
         emojiCount.ShouldBe(2); // ☀ 和 ⭐
         otherCount.ShouldBe(testText.Length - blankCount - emojiCount);
     }
-
     /// <summary>
     /// 测试 - Unicode分类一致性检查
     /// </summary>
@@ -564,7 +501,6 @@ public class CharIsTest
     public void UnicodeClassificationConsistency_CommonCharacters_MaintainsLogicalRelationships()
     {
         // Arrange & Act & Assert
-
         // 所有标准空白字符都应该被IsBlankChar识别
         for (char ch = '\u0009'; ch <= '\u000D'; ch++) // Tab到Carriage Return
         {
@@ -573,20 +509,17 @@ public class CharIsTest
                 CharJudge.IsBlankChar(ch).ShouldBeTrue($"Standard whitespace char U+{(int)ch:X4} should be blank");
             }
         }
-
         // ASCII字母数字字符不应该是空白或emoji
         for (char ch = 'A'; ch <= 'Z'; ch++)
         {
             CharJudge.IsBlankChar(ch).ShouldBeFalse($"Letter '{ch}' should not be blank");
             CharJudge.IsEmoji(ch).ShouldBeFalse($"Letter '{ch}' should not be emoji");
         }
-
         for (char ch = '0'; ch <= '9'; ch++)
         {
             CharJudge.IsBlankChar(ch).ShouldBeFalse($"Digit '{ch}' should not be blank");
             CharJudge.IsEmoji(ch).ShouldBeFalse($"Digit '{ch}' should not be emoji");
         }
     }
-
     #endregion
 }
