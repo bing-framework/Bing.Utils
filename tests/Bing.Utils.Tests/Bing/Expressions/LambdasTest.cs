@@ -1,9 +1,8 @@
-using Bing.Expressions;
-using Bing.Extensions;
+﻿using Bing.Extensions;
 using Bing.Helpers;
 using Bing.Tests.Samples;
-using Enum = Bing.Helpers.Enum;
-namespace Bing.Utils.Tests.Helpers;
+
+namespace Bing.Expressions;
 /// <summary>
 /// 测试Lambda表达式操作
 /// </summary>
@@ -59,7 +58,7 @@ public class LambdasTest : TestBase
     [Fact]
     public void Test_GetNames()
     {
-        Expression<Func<Sample, object[]>> expression = (t => new object[] { t.Test2.StringValue, t.IntValue });
+        Expression<Func<Sample, object[]>> expression = t => new object[] { t.Test2.StringValue, t.IntValue };
         Assert.Equal(2, Lambdas.GetNames(expression).Count);
         Assert.Equal("Test2.StringValue", Lambdas.GetNames(expression)[0]);
         Assert.Equal("IntValue", Lambdas.GetNames(expression)[1]);
@@ -237,7 +236,7 @@ public class LambdasTest : TestBase
     [Fact]
     public void Test_GetLastNames()
     {
-        Expression<Func<Sample, object[]>> expression = (t => new object[] { t.Test2.StringValue, t.IntValue });
+        Expression<Func<Sample, object[]>> expression = t => new object[] { t.Test2.StringValue, t.IntValue };
         Assert.Equal(2, Lambdas.GetLastNames(expression).Count);
         Assert.Equal("StringValue", Lambdas.GetLastNames(expression)[0]);
         Assert.Equal("IntValue", Lambdas.GetLastNames(expression)[1]);
@@ -424,7 +423,7 @@ public class LambdasTest : TestBase
     {
         var test1 = new Sample { NullableEnumValue = EnumSample.C };
         Expression<Func<Sample, bool>> expression = test => test.EnumValue == EnumSample.D;
-        Assert.Equal(EnumSample.D.Value(), Enum.GetValue<EnumSample>(Lambdas.GetValue(expression)));
+        Assert.Equal(EnumSample.D.Value(), Enums.GetValue<EnumSample>(Lambdas.GetValue(expression)));
         expression = test => test.EnumValue == test1.NullableEnumValue;
         Assert.Equal(EnumSample.C, Lambdas.GetValue(expression));
         expression = test => test.NullableEnumValue == EnumSample.E;

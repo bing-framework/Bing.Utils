@@ -1,5 +1,4 @@
-using Bing.Threading;
-namespace Bing.Utils.Tests.Threading;
+﻿namespace Bing.Threading;
 /// <summary>
 /// 一次性运行器 测试
 /// </summary>

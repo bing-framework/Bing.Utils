@@ -1,5 +1,5 @@
+﻿using Bing.Helpers;
 using Bing.Utils.Signatures;
-using Bing.Utils.Tests.Helpers;
 namespace Bing.Utils.Tests.Signatures;
 /// <summary>
 /// 签名管理器测试

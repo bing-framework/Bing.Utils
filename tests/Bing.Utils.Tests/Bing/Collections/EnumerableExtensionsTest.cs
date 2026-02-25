@@ -1,5 +1,7 @@
-using Bing.Collections;
-namespace Bing.Utils.Tests.Collections;
+﻿using Bing.Collections;
+
+namespace Bing.Collections;
+
 /// <summary>
 /// 可枚举类型(<see cref="IEnumerable{T}"/>) 扩展 - ChunkBy 方法测试
 /// </summary>

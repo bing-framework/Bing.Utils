@@ -1,5 +1,4 @@
-using Bing.Maths;
-namespace Bing.Utils.Tests.Maths;
+﻿namespace Bing.Maths;
 public class CoordinateConvTest
 {
     /// <summary>

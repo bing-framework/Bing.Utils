@@ -1,5 +1,4 @@
-using Bing.IO;
-namespace Bing.Utils.Tests.IO;
+﻿namespace Bing.IO;
 public class ByteBufferTest
 {
     /// <summary>

@@ -1,6 +1,4 @@
-﻿using Str = Bing.Helpers.Str;
-
-namespace Bing.Utils.Tests.Helpers;
+﻿namespace Bing.Helpers;
 
 /// <summary>
 /// 字符串操作测试

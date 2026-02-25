@@ -1,6 +1,7 @@
-using Bing.Extensions;
-using Bing.Helpers;
-namespace Bing.Utils.Tests.Helpers;
+﻿using Bing.Extensions;
+
+namespace Bing.Helpers;
+
 /// <summary>
 /// 加密操作测试
 /// </summary>

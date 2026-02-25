@@ -1,6 +1,4 @@
-using Bing.Text.Formatting;
-
-namespace Bing.Utils.Tests.Text.Formatting;
+﻿namespace Bing.Text.Formatting;
 
 /// <summary>
 /// 测试类：FormattedStringValueExtractor 回归测试

@@ -1,6 +1,5 @@
-using System.Threading;
-using Bing.Threading;
-namespace Bing.Utils.Tests.Threading;
+﻿using System.Threading;
+namespace Bing.Threading;
 /// <summary>
 /// 信号量(<see cref="SemaphoreSlim"/>) 扩展 测试
 /// </summary>

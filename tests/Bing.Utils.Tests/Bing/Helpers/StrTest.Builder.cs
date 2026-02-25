@@ -1,6 +1,4 @@
-﻿using Bing.Helpers;
-
-namespace Bing.Utils.Tests.Helpers;
+﻿namespace Bing.Helpers;
 
 /// <summary>
 /// 测试字符串生成器

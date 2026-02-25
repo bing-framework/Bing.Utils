@@ -1,5 +1,4 @@
-using Bing.Text.Formatting;
-namespace Bing.Utils.Tests.Text.Formatting;
+﻿namespace Bing.Text.Formatting;
 /// <summary>
 /// 格式化字符串提取器测试
 /// </summary>

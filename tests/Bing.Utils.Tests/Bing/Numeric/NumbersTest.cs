@@ -1,5 +1,4 @@
-using Bing.Numeric;
-namespace Bing.Utils.Tests.Numeric;
+﻿namespace Bing.Numeric;
 /// <summary>
 /// 测试类：覆盖 `Numbers` 相关行为。
 /// </summary>

@@ -1,5 +1,4 @@
-using Bing.IO;
-namespace Bing.Utils.Tests.IO;
+﻿namespace Bing.IO;
 /// <summary>
 /// 临时目录 测试
 /// </summary>

@@ -1,5 +1,5 @@
-using Bing.Helpers;
-namespace Bing.Utils.Tests.Helpers;
+﻿namespace Bing.Helpers;
+
 /// <summary>
 /// GZip压缩操作测试
 /// </summary>
@@ -8,6 +8,7 @@ public class GZipTest : TestBase
     public GZipTest(ITestOutputHelper output) : base(output)
     {
     }
+
     /// <summary>
     /// 测试压缩以及解压缩
     /// </summary>
