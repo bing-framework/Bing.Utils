@@ -177,7 +177,7 @@ public static class IPv6Converter
             throw new ArgumentException("无效的IPv6地址格式", nameof(ipv6Address));
         var bytes = ToBytes(ipv6Address);
         // 将字节数组转换为BigInteger（大端序）
-        return new BigInteger(bytes.Reverse().Concat(new byte[] { 0 }).ToArray());
+        return new BigInteger(System.Linq.Enumerable.Reverse(bytes).Concat(new byte[] { 0 }).ToArray());
     }
 
     /// <summary>

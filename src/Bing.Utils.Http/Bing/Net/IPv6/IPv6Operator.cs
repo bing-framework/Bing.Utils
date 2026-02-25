@@ -93,8 +93,8 @@ public static class IPv6Operator
         var bytes2 = IPv6Converter.ToBytes(ipv6Address2);
 
         // 将字节数组转换为BigInteger（大端序）
-        var value1 = new System.Numerics.BigInteger(bytes1.Reverse().Concat(new byte[] { 0 }).ToArray());
-        var value2 = new System.Numerics.BigInteger(bytes2.Reverse().Concat(new byte[] { 0 }).ToArray());
+        var value1 = new System.Numerics.BigInteger(System.Linq.Enumerable.Reverse(bytes1).Concat(new byte[] { 0 }).ToArray());
+        var value2 = new System.Numerics.BigInteger(System.Linq.Enumerable.Reverse(bytes2).Concat(new byte[] { 0 }).ToArray());
 
         return BigInteger.Abs(value1 - value2);
     }
