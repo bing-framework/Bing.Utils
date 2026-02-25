@@ -1,4 +1,4 @@
-using Bing.IdUtils;
+﻿using Bing.IdUtils;
 using System.Collections.Concurrent;
 namespace Bing.Helpers;
 /// <summary>
@@ -33,7 +33,7 @@ public class IdTest
     public void CreateSnowflakeId_Should_Reset_To_Default_Provider()
     {
         // Arrange
-        var defaultProvider = SnowflakeGenerator.Create(1);
+        var defaultProvider = SnowflakeGenerator.Create(2);
         Id.ConfigureSnowflakeId(() => defaultProvider);
         var defaultId = Id.CreateSnowflakeId();
         // Act

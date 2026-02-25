@@ -1,7 +1,5 @@
-﻿using System.Runtime.InteropServices;
-
+using System.Runtime.InteropServices;
 namespace Bing.Helpers;
-
 /// <summary>
 /// 序列化操作 测试类
 /// </summary>
@@ -12,7 +10,6 @@ public class SerializeTest : IDisposable
     /// 测试目录
     /// </summary>
     private readonly string _testDirectory;
-
     /// <summary>
     /// 测试初始化
     /// </summary>
@@ -21,7 +18,6 @@ public class SerializeTest : IDisposable
         _testDirectory = Path.Combine(Path.GetTempPath(), $"SerializeTest_{Guid.NewGuid():N}");
         Directory.CreateDirectory(_testDirectory);
     }
-
     /// <summary>
     /// 释放资源
     /// </summary>
@@ -30,9 +26,7 @@ public class SerializeTest : IDisposable
         if (Directory.Exists(_testDirectory))
             Directory.Delete(_testDirectory, true);
     }
-
     #region 结构体序列化测试
-
     [StructLayout(LayoutKind.Sequential)]
     public struct TestStruct
     {
@@ -40,7 +34,6 @@ public class SerializeTest : IDisposable
         public double DoubleValue;
         public bool BoolValue;
     }
-
     /// <summary>
     /// 测试 - ToBytes/FromBytes - 结构体序列化往返
     /// </summary>
@@ -54,11 +47,9 @@ public class SerializeTest : IDisposable
             DoubleValue = 3.14159,
             BoolValue = true
         };
-
         // Act
         var bytes = Serialize.ToBytes(original);
         var restored = Serialize.FromBytes<TestStruct>(bytes);
-
         // Assert
         bytes.ShouldNotBeNull();
         bytes.Length.ShouldBe(Marshal.SizeOf<TestStruct>());
@@ -66,7 +57,6 @@ public class SerializeTest : IDisposable
         restored.DoubleValue.ShouldBe(original.DoubleValue);
         restored.BoolValue.ShouldBe(original.BoolValue);
     }
-
     /// <summary>
     /// 测试 - FromBytes - 无效字节数组长度抛出异常
     /// </summary>
@@ -75,12 +65,10 @@ public class SerializeTest : IDisposable
     {
         // Arrange
         var invalidBytes = new byte[5]; // TestStruct需要更多字节
-
         // Act & Assert
         Should.Throw<ArgumentException>(() => Serialize.FromBytes<TestStruct>(invalidBytes))
             .Message.ShouldContain("字节数组长度");
     }
-
     /// <summary>
     /// 测试 - FromBytes - null字节数组抛出异常
     /// </summary>
@@ -91,11 +79,20 @@ public class SerializeTest : IDisposable
         Should.Throw<ArgumentNullException>(() => Serialize.FromBytes<TestStruct>(null))
             .ParamName.ShouldBe("bytes");
     }
-
+    /// <summary>
+    /// 测试 - ToBytes - 默认值结构体抛出异常
+    /// </summary>
+    [Fact]
+    public void ToBytes_DefaultStruct_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var value = default(TestStruct);
+        // Act & Assert
+        Should.Throw<ArgumentNullException>(() => Serialize.ToBytes(value))
+            .ParamName.ShouldBe("data");
+    }
     #endregion
-
     #region 二进制序列化测试
-
     [Serializable]
     public class TestSerializableClass
     {
@@ -103,7 +100,6 @@ public class SerializeTest : IDisposable
         public int Value { get; set; }
         public DateTime Date { get; set; }
     }
-
     /// <summary>
     /// 测试 - ToBinary/FromBinary - 二进制序列化往返
     /// </summary>
@@ -117,11 +113,9 @@ public class SerializeTest : IDisposable
             Value = 123,
             Date = new DateTime(2023, 6, 15)
         };
-
         // Act
         var bytes = Serialize.ToBinary(original);
         var restored = Serialize.FromBinary<TestSerializableClass>(bytes);
-
         // Assert
         bytes.ShouldNotBeNull();
         bytes.Length.ShouldBeGreaterThan(0);
@@ -130,7 +124,6 @@ public class SerializeTest : IDisposable
         restored.Value.ShouldBe(original.Value);
         restored.Date.ShouldBe(original.Date);
     }
-
     /// <summary>
     /// 测试 - ToBinary - null对象抛出异常
     /// </summary>
@@ -141,7 +134,6 @@ public class SerializeTest : IDisposable
         Should.Throw<ArgumentNullException>(() => Serialize.ToBinary(null))
             .ParamName.ShouldBe("data");
     }
-
     /// <summary>
     /// 测试 - FromBinary - null字节数组抛出异常
     /// </summary>
@@ -152,7 +144,6 @@ public class SerializeTest : IDisposable
         Should.Throw<ArgumentNullException>(() => Serialize.FromBinary<object>(null))
             .ParamName.ShouldBe("bytes");
     }
-
     /// <summary>
     /// 测试 - FromBinary - 空字节数组抛出异常
     /// </summary>
@@ -163,7 +154,6 @@ public class SerializeTest : IDisposable
         Should.Throw<ArgumentException>(() => Serialize.FromBinary<object>(new byte[0]))
             .ParamName.ShouldBe("bytes");
     }
-
     /// <summary>
     /// 测试 - ToBinaryFile/FromBinaryFile - 二进制文件序列化往返
     /// </summary>
@@ -178,11 +168,9 @@ public class SerializeTest : IDisposable
             Date = DateTime.Today
         };
         var fileName = Path.Combine(_testDirectory, "test.bin");
-
         // Act
         Serialize.ToBinaryFile(fileName, original);
         var restored = Serialize.FromBinaryFile<TestSerializableClass>(fileName);
-
         // Assert
         File.Exists(fileName).ShouldBeTrue();
         restored.ShouldNotBeNull();
@@ -190,7 +178,6 @@ public class SerializeTest : IDisposable
         restored.Value.ShouldBe(original.Value);
         restored.Date.ShouldBe(original.Date);
     }
-
     /// <summary>
     /// 测试 - FromBinaryFile - 文件不存在抛出异常
     /// </summary>
@@ -199,15 +186,47 @@ public class SerializeTest : IDisposable
     {
         // Arrange
         var nonExistentFile = Path.Combine(_testDirectory, "nonexistent.bin");
-
         // Act & Assert
         Should.Throw<FileNotFoundException>(() => Serialize.FromBinaryFile<object>(nonExistentFile));
     }
-
+    /// <summary>
+    /// 测试 - ToBinaryFile - 文件名无效抛出异常
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void ToBinaryFile_InvalidFileName_ThrowsArgumentException(string fileName)
+    {
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => Serialize.ToBinaryFile(fileName, new TestSerializableClass()))
+            .ParamName.ShouldBe("fileName");
+    }
+    /// <summary>
+    /// 测试 - ToBinaryFile - 空对象抛出异常
+    /// </summary>
+    [Fact]
+    public void ToBinaryFile_NullData_ThrowsArgumentNullException()
+    {
+        var fileName = Path.Combine(_testDirectory, "test.bin");
+        Should.Throw<ArgumentNullException>(() => Serialize.ToBinaryFile(fileName, null))
+            .ParamName.ShouldBe("data");
+    }
+    /// <summary>
+    /// 测试 - FromBinaryFile - 文件名无效抛出异常
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void FromBinaryFile_InvalidFileName_ThrowsArgumentException(string fileName)
+    {
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => Serialize.FromBinaryFile<object>(fileName))
+            .ParamName.ShouldBe("fileName");
+    }
     #endregion
-
     #region XML序列化测试
-
     [Serializable]
     public class XmlTestClass
     {
@@ -215,7 +234,6 @@ public class SerializeTest : IDisposable
         public int Value { get; set; }
         public DateTime Date { get; set; }
     }
-
     /// <summary>
     /// 测试 - ToXml/FromXml - XML序列化往返
     /// </summary>
@@ -229,11 +247,9 @@ public class SerializeTest : IDisposable
             Value = 100,
             Date = new DateTime(2023, 6, 15)
         };
-
         // Act
         var xml = Serialize.ToXml(original);
         var restored = Serialize.FromXml<XmlTestClass>(xml);
-
         // Assert
         xml.ShouldNotBeNullOrEmpty();
         xml.ShouldContain("XML Test");
@@ -243,7 +259,6 @@ public class SerializeTest : IDisposable
         restored.Value.ShouldBe(original.Value);
         restored.Date.ShouldBe(original.Date);
     }
-
     /// <summary>
     /// 测试 - ToXmlFile/FromXmlFile - XML文件序列化往返
     /// </summary>
@@ -258,11 +273,9 @@ public class SerializeTest : IDisposable
             Date = DateTime.Today
         };
         var fileName = Path.Combine(_testDirectory, "test.xml");
-
         // Act
         Serialize.ToXmlFile(fileName, original);
         var restored = Serialize.FromXmlFile<XmlTestClass>(fileName);
-
         // Assert
         File.Exists(fileName).ShouldBeTrue();
         var xmlContent = File.ReadAllText(fileName);
@@ -272,7 +285,6 @@ public class SerializeTest : IDisposable
         restored.Value.ShouldBe(original.Value);
         restored.Date.ShouldBe(original.Date);
     }
-
     /// <summary>
     /// 测试 - ToXml - null对象抛出异常
     /// </summary>
@@ -283,7 +295,6 @@ public class SerializeTest : IDisposable
         Should.Throw<ArgumentNullException>(() => Serialize.ToXml(null))
             .ParamName.ShouldBe("data");
     }
-
     /// <summary>
     /// 测试 - FromXml - 无效XML抛出异常
     /// </summary>
@@ -297,11 +308,59 @@ public class SerializeTest : IDisposable
         Should.Throw<ArgumentException>(() => Serialize.FromXml<XmlTestClass>(invalidXml))
             .ParamName.ShouldBe("xml");
     }
-
+    /// <summary>
+    /// 测试 - ToXmlFile - 文件名无效抛出异常
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void ToXmlFile_InvalidFileName_ThrowsArgumentException(string fileName)
+    {
+        // Arrange
+        var data = new XmlTestClass { Name = "xml", Value = 1, Date = DateTime.Today };
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => Serialize.ToXmlFile(fileName, data))
+            .ParamName.ShouldBe("fileName");
+    }
+    /// <summary>
+    /// 测试 - ToXmlFile - 空对象抛出异常
+    /// </summary>
+    [Fact]
+    public void ToXmlFile_NullData_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var fileName = Path.Combine(_testDirectory, "test.xml");
+        // Act & Assert
+        Should.Throw<ArgumentNullException>(() => Serialize.ToXmlFile(fileName, null))
+            .ParamName.ShouldBe("data");
+    }
+    /// <summary>
+    /// 测试 - FromXmlFile - 文件名无效抛出异常
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void FromXmlFile_InvalidFileName_ThrowsArgumentException(string fileName)
+    {
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => Serialize.FromXmlFile<XmlTestClass>(fileName))
+            .ParamName.ShouldBe("fileName");
+    }
+    /// <summary>
+    /// 测试 - FromXmlFile - 文件不存在抛出异常
+    /// </summary>
+    [Fact]
+    public void FromXmlFile_FileNotExists_ThrowsFileNotFoundException()
+    {
+        // Arrange
+        var nonExistentFile = Path.Combine(_testDirectory, "nonexistent.xml");
+        // Act & Assert
+        Should.Throw<FileNotFoundException>(() => Serialize.FromXmlFile<XmlTestClass>(nonExistentFile));
+    }
     #endregion
-
     #region 性能对比测试
-
     /// <summary>
     /// 测试 - 不同序列化方式的性能对比
     /// </summary>
@@ -315,7 +374,6 @@ public class SerializeTest : IDisposable
             Value = 12345,
             Date = DateTime.UtcNow
         };
-
         // Act & Assert - Binary序列化
         Should.CompleteIn(() =>
         {
@@ -325,7 +383,6 @@ public class SerializeTest : IDisposable
                 var restored = Serialize.FromBinary<TestSerializableClass>(bytes);
             }
         }, TimeSpan.FromSeconds(2), "100次二进制序列化应该在2秒内完成");
-
         // Act & Assert - JSON序列化
         //Should.CompleteIn(() =>
         //{
@@ -335,7 +392,6 @@ public class SerializeTest : IDisposable
         //        var restored = Serialize.FromJson<TestSerializableClass>(json);
         //    }
         //}, TimeSpan.FromSeconds(2), "100次JSON序列化应该在2秒内完成");
-
         // Act & Assert - XML序列化
         var xmlData = new XmlTestClass
         {
@@ -343,7 +399,6 @@ public class SerializeTest : IDisposable
             Value = testData.Value,
             Date = testData.Date
         };
-
         Should.CompleteIn(() =>
         {
             for (int i = 0; i < 100; i++)
@@ -353,11 +408,8 @@ public class SerializeTest : IDisposable
             }
         }, TimeSpan.FromSeconds(3), "100次XML序列化应该在3秒内完成");
     }
-
     #endregion
-
     #region 集成测试
-
     /// <summary>
     /// 测试 - 混合序列化场景
     /// </summary>
@@ -371,17 +423,14 @@ public class SerializeTest : IDisposable
             Value = 999,
             Date = new DateTime(2023, 12, 25)
         };
-
         // Act & Assert - Binary
         var binaryBytes = Serialize.ToBinary(testData);
         var fromBinary = Serialize.FromBinary<TestSerializableClass>(binaryBytes);
         fromBinary.Name.ShouldBe(testData.Name);
-
         // Act & Assert - JSON
         //var json = Serialize.ToJson(testData);
         //var fromJson = Serialize.FromJson<TestSerializableClass>(json);
         //fromJson.Name.ShouldBe(testData.Name);
-
         // Act & Assert - XML
         var xmlData = new XmlTestClass
         {
@@ -392,13 +441,11 @@ public class SerializeTest : IDisposable
         var xml = Serialize.ToXml(xmlData);
         var fromXml = Serialize.FromXml<XmlTestClass>(xml);
         fromXml.Name.ShouldBe(xmlData.Name);
-
         // Act & Assert - Base64JSON
         //var base64Json = Serialize.ToBase64Json(testData);
         //var fromBase64Json = Serialize.FromBase64Json<TestSerializableClass>(base64Json);
         //fromBase64Json.Name.ShouldBe(testData.Name);
     }
-
     /// <summary>
     /// 测试 - 文件操作完整流程
     /// </summary>
@@ -412,15 +459,12 @@ public class SerializeTest : IDisposable
             Value = 888,
             Date = DateTime.UtcNow
         };
-
         var binaryFile = Path.Combine(_testDirectory, "workflow.bin");
         var jsonFile = Path.Combine(_testDirectory, "workflow.json");
         var xmlFile = Path.Combine(_testDirectory, "workflow.xml");
-
         // Act - 写入文件
         Serialize.ToBinaryFile(binaryFile, testData);
         //Serialize.ToJsonFile(jsonFile, testData);
-
         var xmlData = new XmlTestClass
         {
             Name = testData.Name,
@@ -428,21 +472,17 @@ public class SerializeTest : IDisposable
             Date = testData.Date
         };
         Serialize.ToXmlFile(xmlFile, xmlData);
-
         // Act - 从文件读取
         var fromBinaryFile = Serialize.FromBinaryFile<TestSerializableClass>(binaryFile);
         //var fromJsonFile = Serialize.FromJsonFile<TestSerializableClass>(jsonFile);
         var fromXmlFile = Serialize.FromXmlFile<XmlTestClass>(xmlFile);
-
         // Assert
         File.Exists(binaryFile).ShouldBeTrue();
         //File.Exists(jsonFile).ShouldBeTrue();
         File.Exists(xmlFile).ShouldBeTrue();
-
         fromBinaryFile.Name.ShouldBe(testData.Name);
         //fromJsonFile.Name.ShouldBe(testData.Name);
         fromXmlFile.Name.ShouldBe(testData.Name);
     }
-
     #endregion
 }

@@ -11,6 +11,41 @@ namespace Bing.Utils.Tests.Extensions;
 public partial class ExtensionsTest
 {
     /// <summary>
+    /// 测试 - 设置 DateTime 时间部分
+    /// </summary>
+    [Fact]
+    public void SetDateTime_DateTimeOverloads_ReturnExpectedTime()
+    {
+        var date = new DateTime(2024, 1, 15, 12, 30, 45);
+
+        var byParts = date.SetDateTime(1, 2, 3);
+        var byTimeSpan = date.SetDateTime(new TimeSpan(4, 5, 6));
+
+        byParts.ShouldBe(new DateTime(2024, 1, 15, 1, 2, 3));
+        byTimeSpan.ShouldBe(new DateTime(2024, 1, 15, 4, 5, 6));
+    }
+
+    /// <summary>
+    /// 测试 - 设置 DateTimeOffset 时间部分
+    /// </summary>
+    [Fact]
+    public void SetDateTime_DateTimeOffsetOverloads_ReturnExpectedTime()
+    {
+        var localOffset = TimeZoneInfo.Local.GetUtcOffset(new DateTime(2024, 1, 15));
+        var date = new DateTimeOffset(2024, 1, 15, 12, 30, 45, localOffset);
+
+        var byParts = date.SetDateTime(1, 2, 3);
+        var byTimeSpan = date.SetDateTime(new TimeSpan(4, 5, 6), TimeZoneInfo.Utc);
+
+        byParts.Hour.ShouldBe(1);
+        byParts.Minute.ShouldBe(2);
+        byParts.Second.ShouldBe(3);
+        byTimeSpan.Offset.ShouldBe(TimeSpan.Zero);
+        byTimeSpan.Minute.ShouldBe(5);
+        byTimeSpan.Second.ShouldBe(6);
+    }
+
+    /// <summary>
     /// 测试 - 获取格式化日期时间字符串
     /// </summary>
     [Fact]

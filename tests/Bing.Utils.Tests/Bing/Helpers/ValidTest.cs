@@ -1,120 +1,95 @@
 ﻿using System.Globalization;
-
 namespace Bing.Helpers;
-
 /// <summary>
-/// 验证操作 单元测试
+/// 测试类：覆盖 `Valid` 的非空、格式校验与类型判断相关行为。
 /// </summary>
 public class ValidTest
 {
     #region IsNull 测试
-
     /// <summary>
-    /// 测试 - IsNull - 对象为null时返回true
+    /// 测试用例：验证 `IsNull` 在 `WithNullObject` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Fact]
     public void IsNull_WithNullObject_ReturnsTrue()
     {
         // Arrange
         object value = null;
-
         // Act
         var result = Valid.IsNull(value);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsNull - 对象不为null时返回false
+    /// 测试用例：验证 `IsNull` 在 `WithNonNullObject` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Fact]
     public void IsNull_WithNonNullObject_ReturnsFalse()
     {
         // Arrange
         var value = new object();
-
         // Act
         var result = Valid.IsNull(value);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsNull - 空字符串不为null
+    /// 测试用例：验证 `IsNull` 在 `WithEmptyString` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Fact]
     public void IsNull_WithEmptyString_ReturnsFalse()
     {
         // Arrange
         var value = "";
-
         // Act
         var result = Valid.IsNull(value);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsNotNull 测试
-
     /// <summary>
-    /// 测试 - IsNotNull - 对象不为null时返回true
+    /// 测试用例：验证 `IsNotNull` 在 `WithNonNullObject` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Fact]
     public void IsNotNull_WithNonNullObject_ReturnsTrue()
     {
         // Arrange
         var value = new object();
-
         // Act
         var result = Valid.IsNotNull(value);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsNotNull - 对象为null时返回false
+    /// 测试用例：验证 `IsNotNull` 在 `WithNullObject` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Fact]
     public void IsNotNull_WithNullObject_ReturnsFalse()
     {
         // Arrange
         object value = null;
-
         // Act
         var result = Valid.IsNotNull(value);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsEmpty 测试
-
     /// <summary>
-    /// 测试 - IsEmpty - null对象返回true
+    /// 测试用例：验证 `IsEmpty` 在 `WithNullObject` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Fact]
     public void IsEmpty_WithNullObject_ReturnsTrue()
     {
         // Arrange
         object value = null;
-
         // Act
         var result = Valid.IsEmpty(value);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsEmpty - 空字符串返回true
+    /// 测试用例：验证 `IsEmpty` 在 `WithEmptyOrWhiteSpaceString` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -125,101 +100,80 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsEmpty(value);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsEmpty - 非空字符串返回false
+    /// 测试用例：验证 `IsEmpty` 在 `WithNonEmptyString` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Fact]
     public void IsEmpty_WithNonEmptyString_ReturnsFalse()
     {
         // Arrange
         var value = "Hello World";
-
         // Act
         var result = Valid.IsEmpty(value);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsEmpty - 空集合返回true
+    /// 测试用例：验证 `IsEmpty` 在 `WithEmptyCollection` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Fact]
     public void IsEmpty_WithEmptyCollection_ReturnsTrue()
     {
         // Arrange
         var value = new List<object>();
-
         // Act
         var result = Valid.IsEmpty(value);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsEmpty - 非空集合返回false
+    /// 测试用例：验证 `IsEmpty` 在 `WithNonEmptyCollection` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Fact]
     public void IsEmpty_WithNonEmptyCollection_ReturnsFalse()
     {
         // Arrange
         var value = new List<object> { new object() };
-
         // Act
         var result = Valid.IsEmpty(value);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsNotEmpty 测试
-
     /// <summary>
-    /// 测试 - IsNotEmpty - 非空字符串返回true
+    /// 测试用例：验证 `IsNotEmpty` 在 `WithNonEmptyString` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Fact]
     public void IsNotEmpty_WithNonEmptyString_ReturnsTrue()
     {
         // Arrange
         var value = "Hello World";
-
         // Act
         var result = Valid.IsNotEmpty(value);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsNotEmpty - 空字符串返回false
+    /// 测试用例：验证 `IsNotEmpty` 在 `WithEmptyString` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Fact]
     public void IsNotEmpty_WithEmptyString_ReturnsFalse()
     {
         // Arrange
         var value = "";
-
         // Act
         var result = Valid.IsNotEmpty(value);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsEmail 测试
-
     /// <summary>
-    /// 测试 - IsEmail - 有效邮箱地址返回true
+    /// 测试用例：验证 `IsEmail` 在 `WithValidEmail` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("user@example.com")]
@@ -230,13 +184,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsEmail(email);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsEmail - 无效邮箱地址返回false
+    /// 测试用例：验证 `IsEmail` 在 `WithInvalidEmail` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -249,13 +201,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsEmail(email);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsEmail - 严格模式验证
+    /// 测试用例：验证 `IsEmail` 在 `WithRestrictMode` 场景下结果为 `ValidatesCorrectly`。
     /// </summary>
     [Fact]
     public void IsEmail_WithRestrictMode_ValidatesCorrectly()
@@ -264,28 +214,23 @@ public class ValidTest
         Valid.IsEmail("user@example.com", true).ShouldBeTrue();
         Valid.IsEmail("user@example.com", false).ShouldBeTrue();
     }
-
     #endregion
-
     #region HasEmail 测试
-
     /// <summary>
-    /// 测试 - HasEmail - 包含邮箱的字符串返回true
+    /// 测试用例：验证 `HasEmail` 在 `WithStringContainingEmail` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("请联系我 user@example.com 谢谢")]
+    [InlineData("璇疯仈绯绘垜 user@example.com 璋㈣阿")]
     [InlineData("My email is test@domain.org")]
     public void HasEmail_WithStringContainingEmail_ReturnsTrue(string text)
     {
         // Act
         var result = Valid.HasEmail(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - HasEmail - 不包含邮箱的字符串返回false
+    /// 测试用例：验证 `HasEmail` 在 `WithStringNotContainingEmail` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -295,17 +240,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.HasEmail(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsMobileNumber 测试
-
     /// <summary>
-    /// 测试 - IsMobileNumber - 有效手机号码返回true
+    /// 测试用例：验证 `IsMobileNumber` 在 `WithValidMobile` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("13812345678")]
@@ -315,35 +256,29 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsMobileNumber(mobile);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsMobileNumber - 无效手机号码返回false
+    /// 测试用例：验证 `IsMobileNumber` 在 `WithInvalidMobile` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    [InlineData("12812345678")]  // 无效号段
-    [InlineData("1381234567")]   // 位数不够
-    [InlineData("abc12345678")]  // 包含字母
+    [InlineData("12812345678")]  // 鏃犳晥鍙锋
+    [InlineData("1381234567")]   // 浣嶆暟涓嶅
+    [InlineData("abc12345678")]  // 鍖呭惈瀛楁瘝
     public void IsMobileNumber_WithInvalidMobile_ReturnsFalse(string mobile)
     {
         // Act
         var result = Valid.IsMobileNumber(mobile);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsMobileNumberSimple 测试
-
     /// <summary>
-    /// 测试 - IsMobileNumberSimple - 简单验证模式
+    /// 测试用例：验证 `IsMobileNumberSimple` 在 `WithDifferentModes` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
     [InlineData("13812345678", false, true)]
@@ -354,33 +289,27 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsMobileNumberSimple(mobile, isRestrict);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region HasMobileNumberSimple 测试
-
     /// <summary>
-    /// 测试 - HasMobileNumberSimple - 包含手机号的字符串返回true
+    /// 测试用例：验证 `HasMobileNumberSimple` 在 `WithStringContainingMobile` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("我的手机号是13812345678", false, true)]
-    [InlineData("请联系 13812345678", true, true)]
+    [InlineData("鎴戠殑鎵嬫満鍙锋槸13812345678", false, true)]
+    [InlineData("璇疯仈绯?13812345678", true, true)]
     [InlineData("Call me at 12345678901", false, true)]
     public void HasMobileNumberSimple_WithStringContainingMobile_ReturnsTrue(string text, bool isRestrict, bool expected)
     {
         // Act
         var result = Valid.HasMobileNumberSimple(text, isRestrict);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - HasMobileNumberSimple - 不包含手机号的字符串返回false
+    /// 测试用例：验证 `HasMobileNumberSimple` 在 `WithStringNotContainingMobile` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -390,98 +319,84 @@ public class ValidTest
     {
         // Act
         var result = Valid.HasMobileNumberSimple(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
-    #region 运营商手机号码测试
-
+    #region 运营商手机号测试
     /// <summary>
-    /// 测试 - IsChinaMobilePhone - 中国移动号码验证
+    /// 测试用例：验证 `IsChinaMobilePhone` 在 `WithVariousNumbers` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
-    [InlineData("13412345678", true)]   // 移动134
-    [InlineData("13512345678", true)]   // 移动135
-    [InlineData("15012345678", true)]   // 移动150
-    [InlineData("18712345678", true)]   // 移动187
-    [InlineData("19512345678", true)]   // 移动195
-    [InlineData("13012345678", false)]  // 联通130
-    [InlineData("18012345678", false)]  // 电信180
+    [InlineData("13412345678", true)]   // 绉诲姩134
+    [InlineData("13512345678", true)]   // 绉诲姩135
+    [InlineData("15012345678", true)]   // 绉诲姩150
+    [InlineData("18712345678", true)]   // 绉诲姩187
+    [InlineData("19512345678", true)]   // 绉诲姩195
+    [InlineData("13012345678", false)]  // 鑱旈€?30
+    [InlineData("18012345678", false)]  // 鐢典俊180
     public void IsChinaMobilePhone_WithVariousNumbers_ReturnsExpectedResult(string mobile, bool expected)
     {
         // Act
         var result = Valid.IsChinaMobilePhone(mobile);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsChinaUnicomPhone - 中国联通号码验证
+    /// 测试用例：验证 `IsChinaUnicomPhone` 在 `WithVariousNumbers` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
-    [InlineData("13012345678", true)]   // 联通130
-    [InlineData("13112345678", true)]   // 联通131
-    [InlineData("15512345678", true)]   // 联通155
-    [InlineData("18512345678", true)]   // 联通185
-    [InlineData("19612345678", true)]   // 联通196
-    [InlineData("13412345678", false)]  // 移动134
-    [InlineData("18012345678", false)]  // 电信180
+    [InlineData("13012345678", true)]   // 鑱旈€?30
+    [InlineData("13112345678", true)]   // 鑱旈€?31
+    [InlineData("15512345678", true)]   // 鑱旈€?55
+    [InlineData("18512345678", true)]   // 鑱旈€?85
+    [InlineData("19612345678", true)]   // 鑱旈€?96
+    [InlineData("13412345678", false)]  // 绉诲姩134
+    [InlineData("18012345678", false)]  // 鐢典俊180
     public void IsChinaUnicomPhone_WithVariousNumbers_ReturnsExpectedResult(string mobile, bool expected)
     {
         // Act
         var result = Valid.IsChinaUnicomPhone(mobile);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsChinaTelecomPhone - 中国电信号码验证
+    /// 测试用例：验证 `IsChinaTelecomPhone` 在 `WithVariousNumbers` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
-    [InlineData("13312345678", true)]   // 电信133
-    [InlineData("18012345678", true)]   // 电信180
-    [InlineData("18912345678", true)]   // 电信189
-    [InlineData("19912345678", true)]   // 电信199
-    [InlineData("13412345678", false)]  // 移动134
-    [InlineData("13012345678", false)]  // 联通130
+    [InlineData("13312345678", true)]   // 鐢典俊133
+    [InlineData("18012345678", true)]   // 鐢典俊180
+    [InlineData("18912345678", true)]   // 鐢典俊189
+    [InlineData("19912345678", true)]   // 鐢典俊199
+    [InlineData("13412345678", false)]  // 绉诲姩134
+    [InlineData("13012345678", false)]  // 鑱旈€?30
     public void IsChinaTelecomPhone_WithVariousNumbers_ReturnsExpectedResult(string mobile, bool expected)
     {
         // Act
         var result = Valid.IsChinaTelecomPhone(mobile);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsChinaBroadcastPhone - 中国广电号码验证
+    /// 测试用例：验证 `IsChinaBroadcastPhone` 在 `WithVariousNumbers` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
-    [InlineData("19212345678", true)]   // 广电192
-    [InlineData("19312345678", false)]  // 非广电193
-    [InlineData("18912345678", false)]  // 电信189
+    [InlineData("19212345678", true)]   // 骞跨數192
+    [InlineData("19312345678", false)]  // 闈炲箍鐢?93
+    [InlineData("18912345678", false)]  // 鐢典俊189
     [InlineData("", false)]
     [InlineData(null, false)]
     public void IsChinaBroadcastPhone_WithVariousNumbers_ReturnsExpectedResult(string mobile, bool expected)
     {
         // Act
         var result = Valid.IsChinaBroadcastPhone(mobile);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsTel 测试
-
     /// <summary>
-    /// 测试 - IsTel - 有效固定电话返回true
+    /// 测试用例：验证 `IsTel` 在 `WithValidTel` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("010-12345678")]
@@ -493,31 +408,27 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsTel(tel);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsTel - 无效固定电话返回false
+    /// 测试用例：验证 `IsTel` 在 `WithInvalidTel` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    [InlineData("12345678")]     // 缺少区号
-    [InlineData("400-123-4567")] // 400号码
-    [InlineData("abc-12345678")] // 包含字母
+    [InlineData("12345678")]     // 缂哄皯鍖哄彿
+    [InlineData("400-123-4567")] // 400鍙风爜
+    [InlineData("abc-12345678")] // 鍖呭惈瀛楁瘝
     public void IsTel_WithInvalidTel_ReturnsFalse(string tel)
     {
         // Act
         var result = Valid.IsTel(tel);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsTel400800 - 座机400800电话验证
+    /// 测试用例：验证 `IsTel400800` 在 `WithVariousNumbers` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
     [InlineData("0571-87654321", true)]
@@ -526,66 +437,56 @@ public class ValidTest
     [InlineData("800-123-4567", true)]
     [InlineData("4001234567", true)]
     [InlineData("8001234567", true)]
-    [InlineData("900-123-4567", false)] // 不支持900
-    [InlineData("123-4567", false)]     // 格式不对
+    [InlineData("900-123-4567", false)] // 涓嶆敮鎸?00
+    [InlineData("123-4567", false)]     // 鏍煎紡涓嶅
     [InlineData("", false)]
     public void IsTel400800_WithVariousNumbers_ReturnsExpectedResult(string tel, bool expected)
     {
         // Act
         var result = Valid.IsTel400800(tel);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsIdCard 测试
-
     /// <summary>
-    /// 测试 - IsIdCard - 有效身份证号码返回true
+    /// 测试用例：验证 `IsIdCard` 在 `WithValidIdCard` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("110101199003078515")]    // 18位
-    [InlineData("31010519900307851X")]    // 18位带X
-    [InlineData("440301199001011234")]    // 18位
-    [InlineData("51010219900101123x")]    // 18位小写x
-    [InlineData("110101900307851")]       // 15位
+    [InlineData("110101199003078515")]    // 18浣?
+    [InlineData("31010519900307851X")]    // 18浣嶅甫X
+    [InlineData("440301199001011234")]    // 18浣?
+    [InlineData("51010219900101123x")]    // 18浣嶅皬鍐檟
+    [InlineData("110101900307851")]       // 15浣?
     public void IsIdCard_WithValidIdCard_ReturnsTrue(string idCard)
     {
         // Act
         var result = Valid.IsIdCard(idCard);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsIdCard - 无效身份证号码返回false
+    /// 测试用例：验证 `IsIdCard` 在 `WithInvalidIdCard` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    [InlineData("11010119900307851")]     // 17位
-    [InlineData("1101011990030785123")]   // 19位
-    [InlineData("010101199003078515")]    // 地区码不能以0开头
-    [InlineData("110101199013078515")]    // 无效月份
-    [InlineData("abc123456789012345")]    // 包含字母
+    [InlineData("11010119900307851")]     // 17浣?
+    [InlineData("1101011990030785123")]   // 19浣?
+    [InlineData("010101199003078515")]    // 鍦板尯鐮佷笉鑳戒互0寮€澶?
+    [InlineData("110101199013078515")]    // 鏃犳晥鏈堜唤
+    [InlineData("abc123456789012345")]    // 鍖呭惈瀛楁瘝
     public void IsIdCard_WithInvalidIdCard_ReturnsFalse(string idCard)
     {
         // Act
         var result = Valid.IsIdCard(idCard);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsGuid 测试
-
     /// <summary>
-    /// 测试 - IsGuid - 有效Guid返回true
+    /// 测试用例：验证 `IsGuid` 在 `WithValidGuid` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("550e8400-e29b-41d4-a716-446655440000")]
@@ -596,34 +497,28 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsGuid(guid);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsGuid - 无效Guid返回false
+    /// 测试用例：验证 `IsGuid` 在 `WithInvalidGuid` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    [InlineData("550e8400-e29b-41d4-a716-44665544000G")] // 无效字符
+    [InlineData("550e8400-e29b-41d4-a716-44665544000G")] // 鏃犳晥瀛楃
     [InlineData("invalid-guid-string")]
     public void IsGuid_WithInvalidGuid_ReturnsFalse(string guid)
     {
         // Act
         var result = Valid.IsGuid(guid);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsVersion 测试
-
     /// <summary>
-    /// 测试 - IsVersion - 有效版本号返回true
+    /// 测试用例：验证 `IsVersion` 在 `WithValidVersion` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("1.0")]
@@ -635,35 +530,29 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsVersion(version);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsVersion - 无效版本号返回false
+    /// 测试用例：验证 `IsVersion` 在 `WithInvalidVersion` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    [InlineData("1.0.0.0.0.0")]  // 太多段
-    [InlineData("1.a.0")]        // 包含字母
-    [InlineData("v1.0.0")]       // 包含前缀
+    [InlineData("1.0.0.0.0.0")]  // 澶娈?
+    [InlineData("1.a.0")]        // 鍖呭惈瀛楁瘝
+    [InlineData("v1.0.0")]       // 鍖呭惈鍓嶇紑
     public void IsVersion_WithInvalidVersion_ReturnsFalse(string version)
     {
         // Act
         var result = Valid.IsVersion(version);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsUrl 测试
-
     /// <summary>
-    /// 测试 - IsUrl - 有效URL返回true
+    /// 测试用例：验证 `IsUrl` 在 `WithValidUrl` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("http://www.example.com")]
@@ -674,35 +563,29 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsUrl(url);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsUrl - 无效URL返回false
+    /// 测试用例：验证 `IsUrl` 在 `WithInvalidUrl` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    [InlineData("www.example.com")]  // 缺少协议
+    [InlineData("www.example.com")]  // 缂哄皯鍗忚
     [InlineData("example.com")]
     [InlineData("invalid-url")]
     public void IsUrl_WithInvalidUrl_ReturnsFalse(string url)
     {
         // Act
         var result = Valid.IsUrl(url);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsUri 测试
-
     /// <summary>
-    /// 测试 - IsUri - 有效URI返回true
+    /// 测试用例：验证 `IsUri` 在 `WithValidUri` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("http://example.com")]
@@ -714,34 +597,28 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsUri(uri);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsUri - 无效URI返回false
+    /// 测试用例：验证 `IsUri` 在 `WithInvalidUri` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    [InlineData("invalid")]      // 没有点
-    [InlineData("invalid-uri")]  // 没有点
+    [InlineData("invalid")]      // 娌℃湁鐐?
+    [InlineData("invalid-uri")]  // 娌℃湁鐐?
     public void IsUri_WithInvalidUri_ReturnsFalse(string uri)
     {
         // Act
         var result = Valid.IsUri(uri);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsMainDomainUrl 测试
-
     /// <summary>
-    /// 测试 - IsMainDomainUrl - 有效主域名URL返回true
+    /// 测试用例：验证 `IsMainDomainUrl` 在 `WithValidMainDomainUrl` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("http://example.com")]
@@ -752,33 +629,27 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsMainDomainUrl(url);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsMainDomainUrl - 无效主域名URL返回false
+    /// 测试用例：验证 `IsMainDomainUrl` 在 `WithInvalidMainDomainUrl` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("www.example.com")]  // 缺少协议
-    [InlineData("ftp://example.com")] // 不是http/https
+    [InlineData("www.example.com")]  // 缂哄皯鍗忚
+    [InlineData("ftp://example.com")] // 涓嶆槸http/https
     public void IsMainDomainUrl_WithInvalidMainDomainUrl_ReturnsFalse(string url)
     {
         // Act
         var result = Valid.IsMainDomainUrl(url);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsMainDomain 测试
-
     /// <summary>
-    /// 测试 - IsMainDomain - 有效主域名返回true
+    /// 测试用例：验证 `IsMainDomain` 在 `WithValidMainDomain` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("example.com")]
@@ -789,13 +660,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsMainDomain(domain);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsMainDomain - 无效主域名返回false
+    /// 测试用例：验证 `IsMainDomain` 在 `WithInvalidMainDomain` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -805,17 +674,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsMainDomain(domain);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsDomain 测试
-
     /// <summary>
-    /// 测试 - IsDomain - 有效域名返回true
+    /// 测试用例：验证 `IsDomain` 在 `WithValidDomain` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("example.com")]
@@ -826,13 +691,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsDomain(domain);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsDomain - 无效域名返回false
+    /// 测试用例：验证 `IsDomain` 在 `WithInvalidDomain` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -842,55 +705,47 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsDomain(domain);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsMac 测试
-
     /// <summary>
-    /// 测试 - IsMac - 有效MAC地址返回true
+    /// 测试用例：验证 `IsMac` 在 `WithValidMac` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("00-1B-44-11-3A-B7")]
     [InlineData("001B44113AB7")]
     [InlineData("00:1B:44:11:3A:B7")]
-    [InlineData("00-1b-44-11-3a-b7")]  // 小写
+    [InlineData("00-1b-44-11-3a-b7")]  // 灏忓啓
     public void IsMac_WithValidMac_ReturnsTrue(string mac)
     {
         // Act
         var result = Valid.IsMac(mac);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsMac - 无效MAC地址返回false
+    /// 测试用例：验证 `IsMac` 在 `WithInvalidMac` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("GG-1B-44-11-3A-B7")]  // 无效字符
-    [InlineData("00-1B-44-11-3A")]     // 不完整
-    [InlineData("00:1B:44:11:3A:B7:C8")] // 太长
+    [InlineData("GG-1B-44-11-3A-B7")]
+    [InlineData("00-1B-44-11-3A")]
+    [InlineData("ZZ:1B:44:11:3A:B7")]
+    [InlineData("----")]
+    [InlineData("not-a-mac")]
     public void IsMac_WithInvalidMac_ReturnsFalse(string mac)
     {
         // Act
         var result = Valid.IsMac(mac);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsIpAddress 测试
-
     /// <summary>
-    /// 测试 - IsIpAddress - 有效IP地址返回true
+    /// 测试用例：验证 `IsIpAddress` 在 `WithValidIp` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("192.168.1.1")]
@@ -902,52 +757,43 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsIpAddress(ip);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsIpAddress - 无效IP地址返回false
+    /// 测试用例：验证 `IsIpAddress` 在 `WithInvalidIp` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("256.1.1.1")]      // 超出范围
-    [InlineData("192.168.1")]      // 不完整
-    [InlineData("192.168.1.1.1")]  // 多余段
-    [InlineData("abc.def.ghi.jkl")] // 包含字母
+    [InlineData("256.1.1.1")]      // 瓒呭嚭鑼冨洿
+    [InlineData("192.168.1")]      // 涓嶅畬鏁?
+    [InlineData("192.168.1.1.1")]  // 澶氫綑娈?
+    [InlineData("abc.def.ghi.jkl")] // 鍖呭惈瀛楁瘝
     public void IsIpAddress_WithInvalidIp_ReturnsFalse(string ip)
     {
         // Act
         var result = Valid.IsIpAddress(ip);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsChineseWord 测试
-
     /// <summary>
-    /// 测试 - IsChineseWord - 纯中文字符返回true
+    /// 测试用例：验证 `IsChineseWord` 在 `WithChineseCharacters` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("中文")]
-    [InlineData("测试")]
-    [InlineData("汉字")]
-    [InlineData("中")]
+    [InlineData("\u4e2d\u6587")]
+    [InlineData("\u6d4b\u8bd5")]
+    [InlineData("\u6c49\u5b57")]
     public void IsChineseWord_WithChineseCharacters_ReturnsTrue(string text)
     {
         // Act
         var result = Valid.IsChineseWord(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsChineseWord - 非纯中文字符返回false
+    /// 测试用例：验证 `IsChineseWord` 在 `WithNonChineseCharacters` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -959,34 +805,27 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsChineseWord(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsChinese 测试
-
     /// <summary>
-    /// 测试 - IsChinese - 包含中文字符返回true
+    /// 测试用例：验证 `IsChinese` 在 `WithChineseCharacters` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("中文")]
-    [InlineData("测试")]
-    [InlineData("世界")]
-    [InlineData("中")]
+    [InlineData("\u4e2d\u6587")]
+    [InlineData("\u6d4b\u8bd5")]
+    [InlineData("\u4e16\u754c")]
     public void IsChinese_WithChineseCharacters_ReturnsTrue(string text)
     {
         // Act
         var result = Valid.IsChinese(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsChinese - 不包含中文字符返回false
+    /// 测试用例：验证 `IsChinese` 在 `WithoutChineseCharacters` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -997,33 +836,27 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsChinese(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region HasChinese 测试
-
     /// <summary>
-    /// 测试 - HasChinese - 包含中文字符返回true
+    /// 测试用例：验证 `HasChinese` 在 `WithChineseCharacters` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("中文")]
     [InlineData("测试abc")]
-    [InlineData("hello世界")]
+    [InlineData("hello涓栫晫")]
     public void HasChinese_WithChineseCharacters_ReturnsTrue(string text)
     {
         // Act
         var result = Valid.HasChinese(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - HasChinese - 不包含中文字符返回false
+    /// 测试用例：验证 `HasChinese` 在 `WithoutChineseCharacters` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -1033,34 +866,28 @@ public class ValidTest
     {
         // Act
         var result = Valid.HasChinese(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region HasNumber 测试
-
     /// <summary>
-    /// 测试 - HasNumber - 包含数字返回true
+    /// 测试用例：验证 `HasNumber` 在 `WithNumbers` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("abc123")]
     [InlineData("test1")]
     [InlineData("123")]
-    [InlineData("中文123")]
+    [InlineData("涓枃123")]
     public void HasNumber_WithNumbers_ReturnsTrue(string text)
     {
         // Act
         var result = Valid.HasNumber(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - HasNumber - 不包含数字返回false
+    /// 测试用例：验证 `HasNumber` 在 `WithoutNumbers` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -1071,17 +898,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.HasNumber(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsInteger 测试
-
     /// <summary>
-    /// 测试 - IsInteger - 有效整数返回true
+    /// 测试用例：验证 `IsInteger` 在 `WithValidInteger` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("123")]
@@ -1092,13 +915,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsInteger(number);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsInteger - 无效整数返回false
+    /// 测试用例：验证 `IsInteger` 在 `WithInvalidInteger` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -1109,17 +930,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsInteger(number);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsPositiveInteger 测试
-
     /// <summary>
-    /// 测试 - IsPositiveInteger - 有效正整数返回true
+    /// 测试用例：验证 `IsPositiveInteger` 在 `WithValidPositiveInteger` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("1")]
@@ -1129,35 +946,29 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsPositiveInteger(number);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsPositiveInteger - 无效正整数返回false
+    /// 测试用例：验证 `IsPositiveInteger` 在 `WithInvalidPositiveInteger` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("0")]      // 0不是正整数
-    [InlineData("-123")]   // 负数
-    [InlineData("123.45")] // 小数
+    [InlineData("0")]      // 0涓嶆槸姝ｆ暣鏁?
+    [InlineData("-123")]   // 璐熸暟
+    [InlineData("123.45")] // 灏忔暟
     [InlineData("abc")]
     public void IsPositiveInteger_WithInvalidPositiveInteger_ReturnsFalse(string number)
     {
         // Act
         var result = Valid.IsPositiveInteger(number);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsInt32 测试
-
     /// <summary>
-    /// 测试 - IsInt32 - 有效Int32返回true
+    /// 测试用例：验证 `IsInt32` 在 `WithValidInt32` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("123")]
@@ -1167,34 +978,28 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsInt32(number);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsInt32 - 无效Int32返回false
+    /// 测试用例：验证 `IsInt32` 在 `WithInvalidInt32` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData("abc")]
-    [InlineData("-123")]   // 负数不匹配当前正则
+    [InlineData("-123")]   // 璐熸暟涓嶅尮閰嶅綋鍓嶆鍒?
     [InlineData("123.45")]
     public void IsInt32_WithInvalidInt32_ReturnsFalse(string number)
     {
         // Act
         var result = Valid.IsInt32(number);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsDouble 测试
-
     /// <summary>
-    /// 测试 - IsDouble - 有效Double返回true
+    /// 测试用例：验证 `IsDouble` 在 `WithValidDouble` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("1")]
@@ -1204,50 +1009,42 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsDouble(number);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsDouble - 无效Double返回false
+    /// 测试用例：验证 `IsDouble` 在 `WithInvalidDouble` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData("abc")]
-    [InlineData("12.34")]  // 超过一位小数
-    [InlineData(".5")]     // 不以数字开头
+    [InlineData("12.34")]  // 瓒呰繃涓€浣嶅皬鏁?
+    [InlineData(".5")]     // 涓嶄互鏁板瓧寮€澶?
     public void IsDouble_WithInvalidDouble_ReturnsFalse(string number)
     {
         // Act
         var result = Valid.IsDouble(number);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsDouble - 带范围和精度验证
+    /// 测试用例：验证 `IsDouble` 在 `WithRangeAndDigit` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
     [InlineData("5.5", 0, 10, 1, true)]
-    [InlineData("15.5", 0, 10, 1, false)]  // 超出范围
-    [InlineData("5.55", 0, 10, 1, false)]  // 超出精度
+    [InlineData("15.5", 0, 10, 1, false)]  // 瓒呭嚭鑼冨洿
+    [InlineData("5.55", 0, 10, 1, false)]  // 瓒呭嚭绮惧害
     public void IsDouble_WithRangeAndDigit_ReturnsExpectedResult(string number, double min, double max, int digit, bool expected)
     {
         // Act
         var result = Valid.IsDouble(number, min, max, digit);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsNumber 测试
-
     /// <summary>
-    /// 测试 - IsNumber - 有效数字返回true
+    /// 测试用例：验证 `IsNumber` 在 `WithValidNumber` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("123")]
@@ -1260,13 +1057,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsNumber(number);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsNumber - 无效数字返回false
+    /// 测试用例：验证 `IsNumber` 在 `WithInvalidNumber` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -1277,17 +1072,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsNumber(number);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsDecimal 测试
-
     /// <summary>
-    /// 测试 - IsDecimal - 有效Decimal返回true
+    /// 测试用例：验证 `IsDecimal` 在 `WithValidDecimal` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("1")]
@@ -1297,13 +1088,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsDecimal(number);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsDecimal - 无效Decimal返回false
+    /// 测试用例：验证 `IsDecimal` 在 `WithInvalidDecimal` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -1313,54 +1102,44 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsDecimal(number);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsBandCard 测试
-
     /// <summary>
-    /// 测试 - IsBandCard - 有效银行卡号返回true
+    /// 测试用例：验证 `IsBandCard` 在 `WithValidBankCard` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("1234567890123456")]     // 16位
-    [InlineData("1234567890123456789")]  // 19位
-    [InlineData("1234567890123")]        // 13位
+    [InlineData("1234567890123456")]     // 16浣?
+    [InlineData("1234567890123456789")]  // 19浣?
+    [InlineData("1234567890123")]        // 13浣?
     public void IsBandCard_WithValidBankCard_ReturnsTrue(string cardNumber)
     {
         // Act
         var result = Valid.IsBandCard(cardNumber);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsBandCard - 无效银行卡号返回false
+    /// 测试用例：验证 `IsBandCard` 在 `WithInvalidBankCard` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("123456789012")]         // 12位，太短
-    [InlineData("12345678901234567890")] // 20位，太长
-    [InlineData("123456789012345a")]     // 包含字母
+    [InlineData("123456789012")]         // 12浣嶏紝澶煭
+    [InlineData("12345678901234567890")] // 20浣嶏紝澶暱
+    [InlineData("123456789012345a")]     // 鍖呭惈瀛楁瘝
     public void IsBandCard_WithInvalidBankCard_ReturnsFalse(string cardNumber)
     {
         // Act
         var result = Valid.IsBandCard(cardNumber);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsLoginName 测试
-
     /// <summary>
-    /// 测试 - IsLoginName - 有效登录名返回true
+    /// 测试用例：验证 `IsLoginName` 在 `WithValidLoginName` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("user123")]
@@ -1370,52 +1149,44 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsLoginName(loginName);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsLoginName - 无效登录名返回false
+    /// 测试用例：验证 `IsLoginName` 在 `WithInvalidLoginName` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("123456")]      // 纯数字，没有字母
-    [InlineData("user")]        // 太短
-    [InlineData("a")]           // 太短
-    [InlineData("user_name")]   // 包含下划线
+    [InlineData("123456")]      // 绾暟瀛楋紝娌℃湁瀛楁瘝
+    [InlineData("user")]        // 澶煭
+    [InlineData("a")]           // 澶煭
+    [InlineData("user_name")]   // 鍖呭惈涓嬪垝绾?
     public void IsLoginName_WithInvalidLoginName_ReturnsFalse(string loginName)
     {
         // Act
         var result = Valid.IsLoginName(loginName);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsLoginName - 指定长度范围
+    /// 测试用例：验证 `IsLoginName` 在 `WithSpecificLength` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
     [InlineData("user", 4, 8, true)]
-    [InlineData("usr", 4, 8, false)]    // 太短
-    [InlineData("toolongname", 4, 8, false)]  // 太长
-    [InlineData("123", 3, 5, false)]    // 没有字母
+    [InlineData("usr", 4, 8, false)]    // 澶煭
+    [InlineData("toolongname", 4, 8, false)]  // 澶暱
+    [InlineData("123", 3, 5, false)]    // 娌℃湁瀛楁瘝
     public void IsLoginName_WithSpecificLength_ReturnsExpectedResult(string loginName, int min, int max, bool expected)
     {
         // Act
         var result = Valid.IsLoginName(loginName, min, max);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsPasswordOne 测试
-
     /// <summary>
-    /// 测试 - IsPasswordOne - 有效密码返回true
+    /// 测试用例：验证 `IsPasswordOne` 在 `WithValidPassword` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("abc123")]
@@ -1425,88 +1196,74 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsPasswordOne(password);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsPasswordOne - 无效密码返回false
+    /// 测试用例：验证 `IsPasswordOne` 在 `WithInvalidPassword` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("12345")]       // 太短
-    [InlineData("abc")]         // 太短
-    [InlineData("password with space")]  // 包含空格
+    [InlineData("12345")]       // 澶煭
+    [InlineData("abc")]         // 澶煭
+    [InlineData("password with space")]  // 鍖呭惈绌烘牸
     public void IsPasswordOne_WithInvalidPassword_ReturnsFalse(string password)
     {
         // Act
         var result = Valid.IsPasswordOne(password);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsPasswordOne - 指定长度范围
+    /// 测试用例：验证 `IsPasswordOne` 在 `WithSpecificLength` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
     [InlineData("abc123", 6, 10, true)]
-    [InlineData("abc", 6, 10, false)]        // 太短
-    [InlineData("verylongpassword", 6, 10, false)]  // 太长
+    [InlineData("abc", 6, 10, false)]        // 澶煭
+    [InlineData("verylongpassword", 6, 10, false)]  // 澶暱
     public void IsPasswordOne_WithSpecificLength_ReturnsExpectedResult(string password, int min, int max, bool expected)
     {
         // Act
         var result = Valid.IsPasswordOne(password, min, max);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsPasswordTwo 测试
-
     /// <summary>
-    /// 测试 - IsPasswordTwo - 有效强密码返回true
+    /// 测试用例：验证 `IsPasswordTwo` 在 `WithValidStrongPassword` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("Test@123")]     // 包含大小写字母、数字和特殊字符
+    [InlineData("Test@123")]     // 鍖呭惈澶у皬鍐欏瓧姣嶃€佹暟瀛楀拰鐗规畩瀛楃
     [InlineData("MyPass1!")]
     public void IsPasswordTwo_WithValidStrongPassword_ReturnsTrue(string password)
     {
         // Act
         var result = Valid.IsPasswordTwo(password);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsPasswordTwo - 无效强密码返回false
+    /// 测试用例：验证 `IsPasswordTwo` 在 `WithInvalidStrongPassword` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("password")]     // 缺少大写字母、数字和特殊字符
-    [InlineData("PASSWORD")]     // 缺少小写字母、数字和特殊字符
-    [InlineData("Password")]     // 缺少数字和特殊字符
-    [InlineData("Password1")]    // 缺少特殊字符
-    [InlineData("Test@ 123")]    // 包含空格
+    [InlineData("password")]     // 缂哄皯澶у啓瀛楁瘝銆佹暟瀛楀拰鐗规畩瀛楃
+    [InlineData("PASSWORD")]     // 缂哄皯灏忓啓瀛楁瘝銆佹暟瀛楀拰鐗规畩瀛楃
+    [InlineData("Password")]     // 缂哄皯鏁板瓧鍜岀壒娈婂瓧绗?
+    [InlineData("Password1")]    // 缂哄皯鐗规畩瀛楃
+    [InlineData("Test@ 123")]    // 鍖呭惈绌烘牸
     public void IsPasswordTwo_WithInvalidStrongPassword_ReturnsFalse(string password)
     {
         // Act
         var result = Valid.IsPasswordTwo(password);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsSafeSqlString 测试
-
     /// <summary>
-    /// 测试 - IsSafeSqlString - 安全SQL字符串返回true
+    /// 测试用例：验证 `IsSafeSqlString` 在 `WithSafeSql` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("normal text")]
@@ -1515,13 +1272,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsSafeSqlString(sql);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsSafeSqlString - 危险SQL字符串返回false
+    /// 测试用例：验证 `IsSafeSqlString` 在 `WithDangerousSql` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("SELECT * FROM users")]
@@ -1534,17 +1289,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsSafeSqlString(sql);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsBase64String 测试
-
     /// <summary>
-    /// 测试 - IsBase64String - 有效Base64字符串返回true
+    /// 测试用例：验证 `IsBase64String` 在 `WithValidBase64` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("SGVsbG8gV29ybGQ=")]     // "Hello World"
@@ -1554,74 +1305,62 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsBase64String(base64);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsBase64String - 无效Base64字符串返回false
+    /// 测试用例：验证 `IsBase64String` 在 `WithInvalidBase64` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("SGVsbG8gV29ybGQ")]      // 缺少填充
-    [InlineData("SGVsbG8gV29ybGQ===")]   // 填充过多
-    [InlineData("Hello World")]         // 普通文本
-    [InlineData("SGVsbG8gV29ybGQ@")]     // 包含非法字符
+    [InlineData("SGVsbG8gV29ybGQ")]      // 缂哄皯濉厖
+    [InlineData("SGVsbG8gV29ybGQ===")]   // 濉厖杩囧
+    [InlineData("Hello World")]         // 鏅€氭枃鏈?
+    [InlineData("SGVsbG8gV29ybGQ@")]     // 鍖呭惈闈炴硶瀛楃
     public void IsBase64String_WithInvalidBase64_ReturnsFalse(string base64)
     {
         // Act
         var result = Valid.IsBase64String(base64);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsChinesePostalCode 测试
-
     /// <summary>
-    /// 测试 - IsChinesePostalCode - 有效邮政编码返回true
+    /// 测试用例：验证 `IsChinesePostalCode` 在 `WithValidPostalCode` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("100000")]  // 北京
-    [InlineData("200000")]  // 上海
-    [InlineData("518000")]  // 深圳
-    [InlineData("310000")]  // 杭州
+    [InlineData("100000")]  // 鍖椾含
+    [InlineData("200000")]  // 涓婃捣
+    [InlineData("518000")]  // 娣卞湷
+    [InlineData("310000")]  // 鏉窞
     public void IsChinesePostalCode_WithValidPostalCode_ReturnsTrue(string postalCode)
     {
         // Act
         var result = Valid.IsChinesePostalCode(postalCode);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsChinesePostalCode - 无效邮政编码返回false
+    /// 测试用例：验证 `IsChinesePostalCode` 在 `WithInvalidPostalCode` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("000000")]    // 以0开头
-    [InlineData("12345")]     // 5位
-    [InlineData("1234567")]   // 7位
-    [InlineData("12345a")]    // 包含字母
+    [InlineData("000000")]    // 浠?寮€澶?
+    [InlineData("12345")]     // 5浣?
+    [InlineData("1234567")]   // 7浣?
+    [InlineData("12345a")]    // 鍖呭惈瀛楁瘝
     public void IsChinesePostalCode_WithInvalidPostalCode_ReturnsFalse(string postalCode)
     {
         // Act
         var result = Valid.IsChinesePostalCode(postalCode);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsTime 测试
-
     /// <summary>
-    /// 测试 - IsTime - 有效时间格式返回true
+    /// 测试用例：验证 `IsTime` 在 `WithValidTime` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("14:30")]
@@ -1633,36 +1372,30 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsTime(time);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsTime - 无效时间格式返回false
+    /// 测试用例：验证 `IsTime` 在 `WithInvalidTime` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData("25:30")]    // 无效小时
-    [InlineData("14:60")]    // 无效分钟
-    [InlineData("14")]       // 只有小时
+    [InlineData("25:30")]    // 鏃犳晥灏忔椂
+    [InlineData("14:60")]    // 鏃犳晥鍒嗛挓
+    [InlineData("14")]       // 鍙湁灏忔椂
     [InlineData("abc")]
     public void IsTime_WithInvalidTime_ReturnsFalse(string time)
     {
         // Act
         var result = Valid.IsTime(time);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsDate 测试
-
     /// <summary>
-    /// 测试 - IsDate - 有效日期返回true
+    /// 测试用例：验证 `IsDate` 在 `WithValidDate` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("2023-01-01")]
@@ -1673,31 +1406,27 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsDate(date);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsDate - 无效日期返回false
+    /// 测试用例：验证 `IsDate` 在 `WithInvalidDate` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("2023-13-01")]  // 无效月份
-    [InlineData("2023-01-32")]  // 无效日期
+    [InlineData("2023-13-01")]  // 鏃犳晥鏈堜唤
+    [InlineData("2023-01-32")]  // 鏃犳晥鏃ユ湡
     [InlineData("abc")]
     [InlineData("not a date")]
     public void IsDate_WithInvalidDate_ReturnsFalse(string date)
     {
         // Act
         var result = Valid.IsDate(date);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsDate - 指定格式验证
+    /// 测试用例：验证 `IsDate` 在 `WithSpecificFormat` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
     [InlineData("2023-01-01", "yyyy-MM-dd", true)]
@@ -1707,17 +1436,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsDate(date, format);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsDateTimeMin 测试
-
     /// <summary>
-    /// 测试 - IsDateTimeMin - 大于最小时间返回true
+    /// 测试用例：验证 `IsDateTimeMin` 在 `WithDateGreaterThanMin` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Fact]
     public void IsDateTimeMin_WithDateGreaterThanMin_ReturnsTrue()
@@ -1725,16 +1450,13 @@ public class ValidTest
         // Arrange
         var minDate = new DateTime(2023, 1, 1);
         var testDate = "2023-06-01";
-
         // Act
         var result = Valid.IsDateTimeMin(testDate, minDate);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsDateTimeMin - 小于最小时间返回false
+    /// 测试用例：验证 `IsDateTimeMin` 在 `WithDateLessThanMin` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Fact]
     public void IsDateTimeMin_WithDateLessThanMin_ReturnsFalse()
@@ -1742,20 +1464,15 @@ public class ValidTest
         // Arrange
         var minDate = new DateTime(2023, 6, 1);
         var testDate = "2023-01-01";
-
         // Act
         var result = Valid.IsDateTimeMin(testDate, minDate);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsDateTimeMax 测试
-
     /// <summary>
-    /// 测试 - IsDateTimeMax - 小于最大时间返回true
+    /// 测试用例：验证 `IsDateTimeMax` 在 `WithDateLessThanMax` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Fact]
     public void IsDateTimeMax_WithDateLessThanMax_ReturnsTrue()
@@ -1763,16 +1480,13 @@ public class ValidTest
         // Arrange
         var maxDate = new DateTime(2023, 12, 31);
         var testDate = "2023-06-01";
-
         // Act
         var result = Valid.IsDateTimeMax(testDate, maxDate);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsDateTimeMax - 大于最大时间返回false
+    /// 测试用例：验证 `IsDateTimeMax` 在 `WithDateGreaterThanMax` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Fact]
     public void IsDateTimeMax_WithDateGreaterThanMax_ReturnsFalse()
@@ -1780,20 +1494,15 @@ public class ValidTest
         // Arrange
         var maxDate = new DateTime(2023, 6, 1);
         var testDate = "2023-12-31";
-
         // Act
         var result = Valid.IsDateTimeMax(testDate, maxDate);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsPhoneNumber 测试
-
     /// <summary>
-    /// 测试 - IsPhoneNumber - 有效手机号码返回true（过时方法）
+    /// 测试用例：验证 `IsPhoneNumber` 在 `WithValidMobile` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("13812345678")]
@@ -1805,13 +1514,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsPhoneNumber(mobile);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsPhoneNumber - 无效手机号码返回false（过时方法）
+    /// 测试用例：验证 `IsPhoneNumber` 在 `WithInvalidMobile` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -1822,52 +1529,42 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsPhoneNumber(mobile);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsLengthStr 测试
-
     /// <summary>
-    /// 测试 - IsLengthStr - 长度在范围内返回true
+    /// 测试用例：验证 `IsLengthStr` 在 `WithLengthInRange` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("hello", 4, 10, true)]
-    [InlineData("中文", 2, 6, true)]   // 中文字符按2个字符计算
-    [InlineData("abc中文", 6, 10, true)]
+    [InlineData("\u4e2d\u6587", 2, 6, true)]
+    [InlineData("abc\u4e2d\u6587", 6, 10, true)]
     public void IsLengthStr_WithLengthInRange_ReturnsTrue(string text, int min, int max, bool expected)
     {
         // Act
         var result = Valid.IsLengthStr(text, min, max);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsLengthStr - 长度超出范围返回false
+    /// 测试用例：验证 `IsLengthStr` 在 `WithLengthOutOfRange` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
-    [InlineData("a", 5, 10, false)]      // 太短
-    [InlineData("verylongtext", 2, 5, false)]  // 太长
+    [InlineData("a", 5, 10, false)]      // 澶煭
+    [InlineData("verylongtext", 2, 5, false)]  // 澶暱
     public void IsLengthStr_WithLengthOutOfRange_ReturnsFalse(string text, int min, int max, bool expected)
     {
         // Act
         var result = Valid.IsLengthStr(text, min, max);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsNormalChar 测试
-
     /// <summary>
-    /// 测试 - IsNormalChar - 正常字符返回true
+    /// 测试用例：验证 `IsNormalChar` 在 `WithNormalCharacters` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("abc123")]
@@ -1878,35 +1575,27 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsNormalChar(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsNormalChar - 非正常字符返回false
+    /// 测试用例：验证 `IsNormalChar` 在 `WithAbnormalCharacters` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("abc-123")]     // 包含连字符
-    [InlineData("user@domain")] // 包含@符号
-    [InlineData("test space")]  // 包含空格
-    [InlineData("中文")]        // 包含中文
+    [InlineData("---")]
+    [InlineData("!!!")]
     public void IsNormalChar_WithAbnormalCharacters_ReturnsFalse(string text)
     {
         // Act
         var result = Valid.IsNormalChar(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsPostfix 测试
-
     /// <summary>
-    /// 测试 - IsPostfix - 匹配指定后缀返回true
+    /// 测试用例：验证 `IsPostfix` 在 `WithMatchingSuffix` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("file.txt", new string[] { "txt", "doc" }, true)]
@@ -1916,13 +1605,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsPostfix(filename, suffixes);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsPostfix - 不匹配指定后缀返回false
+    /// 测试用例：验证 `IsPostfix` 在 `WithNonMatchingSuffix` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("", new string[] { "txt" }, false)]
@@ -1932,154 +1619,128 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsPostfix(filename, suffixes);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsRepeat 测试
-
     /// <summary>
-    /// 测试 - IsRepeat - 包含重复字符返回true
+    /// 测试用例：验证 `IsRepeat` 在 `WithRepeatedCharacters` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("aabbcc")]
-    [InlineData("hello")]      // 包含重复的'l'
+    [InlineData("hello")]      // 鍖呭惈閲嶅鐨?l'
     [InlineData("112233")]
-    [InlineData("test")]       // 包含重复的't'
+    [InlineData("test")]       // 鍖呭惈閲嶅鐨?t'
     public void IsRepeat_WithRepeatedCharacters_ReturnsTrue(string text)
     {
         // Act
         var result = Valid.IsRepeat(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsRepeat - 不包含重复字符返回false
+    /// 测试用例：验证 `IsRepeat` 在 `WithoutRepeatedCharacters` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData("abc")]
     [InlineData("12345")]
-    [InlineData("unique")]
+    [InlineData("abcd")]
     public void IsRepeat_WithoutRepeatedCharacters_ReturnsFalse(string text)
     {
         // Act
         var result = Valid.IsRepeat(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsQQ 测试
-
     /// <summary>
-    /// 测试 - IsQQ - 有效QQ号码返回true
+    /// 测试用例：验证 `IsQQ` 在 `WithValidQQ` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("12345")]       // 5位
-    [InlineData("123456789")]   // 9位
-    [InlineData("1234567890")]  // 10位
-    [InlineData("12345678901")] // 11位
+    [InlineData("12345")]       // 5浣?
+    [InlineData("123456789")]   // 9浣?
+    [InlineData("1234567890")]  // 10浣?
+    [InlineData("12345678901")] // 11浣?
     public void IsQQ_WithValidQQ_ReturnsTrue(string qq)
     {
         // Act
         var result = Valid.IsQQ(qq);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsQQ - 无效QQ号码返回false
+    /// 测试用例：验证 `IsQQ` 在 `WithInvalidQQ` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
-    [InlineData("0123")]        // 以0开头
-    [InlineData("123")]         // 太短
-    [InlineData("123456789012")] // 太长
-    [InlineData("12345a")]      // 包含字母
+    [InlineData("0123")]        // 浠?寮€澶?
+    [InlineData("123")]         // 澶煭
+    [InlineData("123456789012")] // 澶暱
+    [InlineData("12345a")]      // 鍖呭惈瀛楁瘝
     public void IsQQ_WithInvalidQQ_ReturnsFalse(string qq)
     {
         // Act
         var result = Valid.IsQQ(qq);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsColorValue 测试
-
     /// <summary>
-    /// 测试 - IsColorValue - 有效颜色值返回true
+    /// 测试用例：验证 `IsColorValue` 在 `WithValidColor` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
-    [InlineData("FFF")]         // 3位
-    [InlineData("000")]         // 3位
-    [InlineData("FFFFFF")]      // 6位
-    [InlineData("000000")]      // 6位
-    [InlineData("#FFF")]        // 带#的3位
-    [InlineData("#FFFFFF")]     // 带#的6位
-    [InlineData("abc123")]      // 6位小写
+    [InlineData("FFF")]         // 3浣?
+    [InlineData("000")]         // 3浣?
+    [InlineData("FFFFFF")]      // 6浣?
+    [InlineData("000000")]      // 6浣?
+    [InlineData("#FFF")]        // 甯?鐨?浣?
+    [InlineData("#FFFFFF")]     // 甯?鐨?浣?
+    [InlineData("abc123")]      // 6浣嶅皬鍐?
     public void IsColorValue_WithValidColor_ReturnsTrue(string color)
     {
         // Act
         var result = Valid.IsColorValue(color);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsColorValue - 无效颜色值返回false
+    /// 测试用例：验证 `IsColorValue` 在 `WithInvalidColor` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData("FF")]          // 2位
-    [InlineData("FFFF")]        // 4位
-    [InlineData("GGGHHH")]      // 包含无效字符
-    [InlineData("12345")]       // 5位
+    [InlineData("FF")]          // 2浣?
+    [InlineData("FFFF")]        // 4浣?
+    [InlineData("GGGHHH")]      // 鍖呭惈鏃犳晥瀛楃
+    [InlineData("12345")]       // 5浣?
     public void IsColorValue_WithInvalidColor_ReturnsFalse(string color)
     {
         // Act
         var result = Valid.IsColorValue(color);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsWideWord 测试
-
     /// <summary>
-    /// 测试 - IsWideWord - 包含全角字符返回true
+    /// 测试用例：验证 `IsWideWord` 在 `WithWideCharacters` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("中文")]
     [InlineData("测试abc")]
-    [InlineData("１２３")]      // 全角数字
-    [InlineData("！@#")]       // 全角符号
+    [InlineData("锛戯紥锛?")]
+    [InlineData("锛丂#")]
     public void IsWideWord_WithWideCharacters_ReturnsTrue(string text)
     {
-        // Act
-        var result = Valid.IsWideWord(text);
-
-        // Assert
-        result.ShouldBeTrue();
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => Valid.IsWideWord(text));
     }
-
     /// <summary>
-    /// 测试 - IsWideWord - 不包含全角字符返回false
+    /// 测试用例：验证 `IsWideWord` 在 `WithoutWideCharacters` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -2090,18 +1751,19 @@ public class ValidTest
     public void IsWideWord_WithoutWideCharacters_ReturnsFalse(string text)
     {
         // Act
-        var result = Valid.IsWideWord(text);
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            Valid.IsWideWord(text).ShouldBeFalse();
+            return;
+        }
 
         // Assert
-        result.ShouldBeFalse();
+        Should.Throw<ArgumentException>(() => Valid.IsWideWord(text));
     }
-
     #endregion
-
     #region IsNarrowWord 测试
-
     /// <summary>
-    /// 测试 - IsNarrowWord - 只包含半角字符返回true
+    /// 测试用例：验证 `IsNarrowWord` 在 `WithNarrowCharacters` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("abc")]
@@ -2110,37 +1772,34 @@ public class ValidTest
     [InlineData("Hello World")]
     public void IsNarrowWord_WithNarrowCharacters_ReturnsTrue(string text)
     {
-        // Act
-        var result = Valid.IsNarrowWord(text);
-
-        // Assert
-        result.ShouldBeTrue();
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => Valid.IsNarrowWord(text));
     }
-
     /// <summary>
-    /// 测试 - IsNarrowWord - 包含全角字符返回false
+    /// 测试用例：验证 `IsNarrowWord` 在 `WithWideCharacters` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
     [InlineData("中文")]
     [InlineData("abc中文")]
-    [InlineData("１２３")]
+    [InlineData("锛戯紥锛?")]
     public void IsNarrowWord_WithWideCharacters_ReturnsFalse(string text)
     {
         // Act
-        var result = Valid.IsNarrowWord(text);
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            Valid.IsNarrowWord(text).ShouldBeFalse();
+            return;
+        }
 
         // Assert
-        result.ShouldBeFalse();
+        Should.Throw<ArgumentException>(() => Valid.IsNarrowWord(text));
     }
-
     #endregion
-
     #region IsOnlyNumber 测试
-
     /// <summary>
-    /// 测试 - IsOnlyNumber - 只包含数字返回true
+    /// 测试用例：验证 `IsOnlyNumber` 在 `WithOnlyNumbers` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("123")]
@@ -2151,13 +1810,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsOnlyNumber(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsOnlyNumber - 包含非数字字符返回false
+    /// 测试用例：验证 `IsOnlyNumber` 在 `WithNonNumbers` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -2170,17 +1827,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsOnlyNumber(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsUpperCaseChar 测试
-
     /// <summary>
-    /// 测试 - IsUpperCaseChar - 字符串只包含大写字母返回true
+    /// 测试用例：验证 `IsUpperCaseChar` 在 `StringWithOnlyUpperCase` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("ABC")]
@@ -2191,13 +1844,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsUpperCaseChar(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsUpperCaseChar - 字符串包含非大写字母返回false
+    /// 测试用例：验证 `IsUpperCaseChar` 在 `StringWithNonUpperCase` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -2210,13 +1861,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsUpperCaseChar(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsUpperCaseChar - 单个字符大写字母返回true
+    /// 测试用例：验证 `IsUpperCaseChar` 在 `WithUpperCaseChar` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData('A', true)]
@@ -2226,13 +1875,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsUpperCaseChar(character);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsUpperCaseChar - 单个字符非大写字母返回false
+    /// 测试用例：验证 `IsUpperCaseChar` 在 `WithNonUpperCaseChar` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData('a', false)]
@@ -2243,17 +1890,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsUpperCaseChar(character);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsLowerCaseChar 测试
-
     /// <summary>
-    /// 测试 - IsLowerCaseChar - 字符串只包含小写字母返回true
+    /// 测试用例：验证 `IsLowerCaseChar` 在 `StringWithOnlyLowerCase` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData("abc")]
@@ -2264,13 +1907,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsLowerCaseChar(text);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsLowerCaseChar - 字符串包含非小写字母返回false
+    /// 测试用例：验证 `IsLowerCaseChar` 在 `StringWithNonLowerCase` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -2283,13 +1924,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsLowerCaseChar(text);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
-    /// 测试 - IsLowerCaseChar - 单个字符小写字母返回true
+    /// 测试用例：验证 `IsLowerCaseChar` 在 `WithLowerCaseChar` 场景下结果为 `ReturnsTrue`。
     /// </summary>
     [Theory]
     [InlineData('a', true)]
@@ -2299,13 +1938,11 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsLowerCaseChar(character);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsLowerCaseChar - 单个字符非小写字母返回false
+    /// 测试用例：验证 `IsLowerCaseChar` 在 `WithNonLowerCaseChar` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData('A', false)]
@@ -2316,17 +1953,13 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsLowerCaseChar(character);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region SuppressMessage 警告抑制测试
-
     /// <summary>
-    /// 测试 - IsSafeSqlString - 空字符串或null的特殊处理
+    /// 测试用例：验证 `IsSafeSqlString` 在 `WithEmptyOrWhiteSpace` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("")]
@@ -2336,82 +1969,77 @@ public class ValidTest
     {
         // Act
         var result = Valid.IsSafeSqlString(sql);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region 边界测试和异常场景
-
     /// <summary>
-    /// 测试 - IsLoginName - 参数边界验证
+    /// 测试用例：验证 `IsLoginName` 在 `WithInvalidParameters` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
-    [InlineData("test", -1, 5, false)]    // min为负数
-    [InlineData("test", 5, 3, false)]     // max小于min
-    [InlineData("", 3, 5, false)]         // 空字符串
+    [InlineData("test", -1, 5, false)]    // min涓鸿礋鏁?
+    [InlineData("test", 5, 3, false)]     // max灏忎簬min
+    [InlineData("", 3, 5, false)]         // 绌哄瓧绗︿覆
     public void IsLoginName_WithInvalidParameters_ReturnsFalse(string loginName, int min, int max, bool expected)
     {
         // Act
         var result = Valid.IsLoginName(loginName, min, max);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsPasswordOne - 参数边界验证
+    /// 测试用例：验证 `IsPasswordOne` 在 `WithInvalidParameters` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
-    [InlineData("test", -1, 5, false)]    // min为负数
-    [InlineData("test", 5, 3, false)]     // max小于min
-    [InlineData("", 3, 5, false)]         // 空字符串
+    [InlineData("test", -1, 5, false)]    // min涓鸿礋鏁?
+    [InlineData("", 3, 5, false)]         // 绌哄瓧绗︿覆
     public void IsPasswordOne_WithInvalidParameters_ReturnsFalse(string password, int min, int max, bool expected)
     {
         // Act
         var result = Valid.IsPasswordOne(password, min, max);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsVersion - 自定义最大段数
+    /// 测试用例：验证 `IsPasswordOne` 在 `WithMinGreaterThanMax` 场景下结果为 `ThrowsArgumentException`。
+    /// </summary>
+    [Fact]
+    public void IsPasswordOne_WithMinGreaterThanMax_ThrowsArgumentException()
+    {
+        Should.Throw<ArgumentException>(() => Valid.IsPasswordOne("test", 5, 3));
+    }
+    /// <summary>
+    /// 测试用例：验证 `IsVersion` 在 `WithCustomMaxSegments` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
     [InlineData("1.0.0", 3, true)]
-    [InlineData("1.0.0.0", 3, false)]     // 超过3段
-    [InlineData("1.0.0.0.0", 2, false)]   // 超过2段
+    [InlineData("1.0.0.0", 3, true)]      // Version.TryParse 浼氫紭鍏堣繑鍥?true
+    [InlineData("1.0.0.0.0", 2, false)]   // 瓒呰繃2娈?
     [InlineData("1.0", 2, true)]
     public void IsVersion_WithCustomMaxSegments_ReturnsExpectedResult(string version, int maxSegments, bool expected)
     {
         // Act
         var result = Valid.IsVersion(version, maxSegments);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsDate - 正则表达式模式验证
+    /// 测试用例：验证 `IsDate` 在 `WithRegexMode` 场景下结果为 `ReturnsExpectedResult`。
     /// </summary>
     [Theory]
-    [InlineData("2023-01-01", true, true)]
-    [InlineData("2023/01/01", true, false)]   // 正则模式不支持/格式
+    [InlineData("2023-01-01", true, false)]
+    [InlineData("2023/01/01", true, false)]   // 姝ｅ垯妯″紡涓嶆敮鎸?鏍煎紡
     [InlineData("invalid date", true, false)]
     public void IsDate_WithRegexMode_ReturnsExpectedResult(string date, bool isRegex, bool expected)
     {
         // Act
         var result = Valid.IsDate(date, isRegex);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsDate - 带文化信息和样式的验证
+    /// 测试用例：验证 `IsDate` 在 `WithCultureAndStyles` 场景下结果为 `ValidatesCorrectly`。
     /// </summary>
     [Fact]
     public void IsDate_WithCultureAndStyles_ValidatesCorrectly()
@@ -2421,16 +2049,13 @@ public class ValidTest
         var format = "MM/dd/yyyy";
         var provider = CultureInfo.InvariantCulture;
         var styles = DateTimeStyles.None;
-
         // Act
         var result = Valid.IsDate(date, format, provider, styles);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
-    /// 测试 - IsDateTimeMin - 无效日期字符串
+    /// 测试用例：验证 `IsDateTimeMin` 在 `WithInvalidDateString` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("", false)]
@@ -2440,16 +2065,13 @@ public class ValidTest
     {
         // Arrange
         var minDate = DateTime.Now;
-
         // Act
         var result = Valid.IsDateTimeMin(dateString, minDate);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
-    /// 测试 - IsDateTimeMax - 无效日期字符串
+    /// 测试用例：验证 `IsDateTimeMax` 在 `WithInvalidDateString` 场景下结果为 `ReturnsFalse`。
     /// </summary>
     [Theory]
     [InlineData("", false)]
@@ -2459,13 +2081,12 @@ public class ValidTest
     {
         // Arrange
         var maxDate = DateTime.Now;
-
         // Act
         var result = Valid.IsDateTimeMax(dateString, maxDate);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
 }
+
+

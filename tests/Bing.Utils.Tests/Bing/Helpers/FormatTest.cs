@@ -1,7 +1,5 @@
-﻿using System.Globalization;
-
+using System.Globalization;
 namespace Bing.Helpers;
-
 /// <summary>
 /// 格式化操作工具类测试
 /// </summary>
@@ -9,7 +7,6 @@ namespace Bing.Helpers;
 public class FormatTest
 {
     #region EncryptPhoneOfChina 测试
-
     /// <summary>
     /// 测试 - EncryptPhoneOfChina - 正常手机号加密
     /// </summary>
@@ -22,11 +19,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptPhoneOfChina(phone);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - EncryptPhoneOfChina - 非标准长度但足够长的号码
     /// </summary>
@@ -38,11 +33,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptPhoneOfChina(phone);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - EncryptPhoneOfChina - 无效输入返回空字符串
     /// </summary>
@@ -57,11 +50,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptPhoneOfChina(phone);
-
         // Assert
         result.ShouldBe("");
     }
-
     /// <summary>
     /// 测试 - EncryptPhoneOfChina - 包含特殊字符的号码
     /// </summary>
@@ -73,15 +64,11 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptPhoneOfChina(phone);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region EncryptPlateNumberOfChina 测试
-
     /// <summary>
     /// 测试 - EncryptPlateNumberOfChina - 正常车牌号加密
     /// </summary>
@@ -95,11 +82,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptPlateNumberOfChina(plateNumber);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - EncryptPlateNumberOfChina - 最短有效长度
     /// </summary>
@@ -111,11 +96,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptPlateNumberOfChina(plateNumber);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - EncryptPlateNumberOfChina - 无效输入返回空字符串
     /// </summary>
@@ -130,11 +113,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptPlateNumberOfChina(plateNumber);
-
         // Assert
         result.ShouldBe("");
     }
-
     /// <summary>
     /// 测试 - EncryptPlateNumberOfChina - 新能源车牌
     /// </summary>
@@ -145,15 +126,11 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptPlateNumberOfChina(plateNumber);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region EncryptVinCode 测试
-
     /// <summary>
     /// 测试 - EncryptVinCode - 正常VIN码加密
     /// </summary>
@@ -165,11 +142,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptVinCode(vinCode);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - EncryptVinCode - 最短有效长度
     /// </summary>
@@ -181,11 +156,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptVinCode(vinCode);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - EncryptVinCode - 无效输入返回空字符串
     /// </summary>
@@ -200,11 +173,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptVinCode(vinCode);
-
         // Assert
         result.ShouldBe("");
     }
-
     /// <summary>
     /// 测试 - EncryptVinCode - 包含小写字母的VIN码
     /// </summary>
@@ -215,15 +186,11 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptVinCode(vinCode);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region FormatMoney 测试
-
     /// <summary>
     /// 测试 - FormatMoney - 基本金额格式化
     /// </summary>
@@ -238,11 +205,9 @@ public class FormatTest
     {
         // Act
         var result = Format.FormatMoney(money, isEncrypt);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - FormatMoney - 加密模式
     /// </summary>
@@ -255,11 +220,9 @@ public class FormatTest
     {
         // Act
         var result = Format.FormatMoney(money, true);
-
         // Assert
         result.ShouldBe("***");
     }
-
     /// <summary>
     /// 测试 - FormatMoney - 极值测试
     /// </summary>
@@ -280,7 +243,6 @@ public class FormatTest
             result.ShouldNotBeEmpty();
         });
     }
-
     /// <summary>
     /// 测试 - FormatMoney - 自定义格式
     /// </summary>
@@ -293,11 +255,9 @@ public class FormatTest
     {
         // Act
         var result = Format.FormatMoney(money, format);
-
         // Assert
         result.ShouldNotBeNull();
         result.ShouldNotBeEmpty();
-
         // 对于依赖区域设置的格式，只验证不为空
         if (format == "C")
         {
@@ -309,7 +269,6 @@ public class FormatTest
             result.ShouldBe(expectedPattern);
         }
     }
-
     /// <summary>
     /// 测试 - FormatMoney - 无效格式字符串回退到默认格式
     /// </summary>
@@ -323,14 +282,11 @@ public class FormatTest
         // Arrange
         const decimal money = 1234.56m;
         const string expected = "1,234.56";
-
         // Act
         var result = Format.FormatMoney(money, invalidFormat);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - FormatMoney - 不同区域设置
     /// </summary>
@@ -341,21 +297,16 @@ public class FormatTest
         const decimal money = 1234.56m;
         var usCulture = new CultureInfo("en-US");
         var germanCulture = new CultureInfo("de-DE");
-
         // Act
         var usResult = Format.FormatMoney(money, "C", usCulture);
         var germanResult = Format.FormatMoney(money, "C", germanCulture);
-
         // Assert
         usResult.ShouldNotBeNull();
         germanResult.ShouldNotBeNull();
         usResult.ShouldNotBe(germanResult); // 不同区域设置应产生不同结果
     }
-
     #endregion
-
     #region EncryptString 测试
-
     /// <summary>
     /// 测试 - EncryptString - 基本功能
     /// </summary>
@@ -369,11 +320,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptString(input, prefixLength, suffixLength, maskChar, maskLength);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - EncryptString - 最小长度要求
     /// </summary>
@@ -385,12 +334,10 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptString(input, prefixLength, suffixLength);
-
         // Assert
         result.ShouldNotBeEmpty();
         result.Length.ShouldBeGreaterThan(prefixLength + suffixLength);
     }
-
     /// <summary>
     /// 测试 - EncryptString - 长度不足返回空字符串
     /// </summary>
@@ -404,11 +351,9 @@ public class FormatTest
     {
         // Act
         var result = Format.EncryptString(input, prefixLength, suffixLength);
-
         // Assert
         result.ShouldBe("");
     }
-
     /// <summary>
     /// 测试 - EncryptString - 无效参数抛出异常
     /// </summary>
@@ -421,7 +366,6 @@ public class FormatTest
         // Act & Assert
         Should.Throw<ArgumentException>(() => Format.EncryptString("test", prefixLength, suffixLength));
     }
-
     /// <summary>
     /// 测试 - EncryptString - 零长度参数
     /// </summary>
@@ -433,14 +377,11 @@ public class FormatTest
     {
         // Arrange
         const string input = "testdata";
-
         // Act
         var result = Format.EncryptString(input, prefixLength, suffixLength);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - EncryptString - 自定义遮盖长度
     /// </summary>
@@ -452,18 +393,38 @@ public class FormatTest
     {
         // Arrange
         const string input = "testdata";
-
         // Act
         var result = Format.EncryptString(input, 1, 1, '#', maskLength);
-
         // Assert
         result.ShouldBe($"t{expectedMask}a");
     }
-
+    /// <summary>
+    /// 测试 - EncryptString - 遮盖长度小于等于0时至少保留1位遮盖
+    /// </summary>
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(-10)]
+    public void EncryptString_NonPositiveMaskLength_UsesSingleMaskChar(int maskLength)
+    {
+        // Act
+        var result = Format.EncryptString("abcdef", 1, 1, '#', maskLength);
+        // Assert
+        result.ShouldBe("a#f");
+    }
+    /// <summary>
+    /// 测试 - EncryptString - 前后缀长度等于原文长度时仍返回掩码字符串
+    /// </summary>
+    [Fact]
+    public void EncryptString_PrefixAndSuffixEqualInputLength_ReturnsDuplicatedVisibleSegmentsWithMask()
+    {
+        // Act
+        var result = Format.EncryptString("abcd", 2, 2);
+        // Assert
+        result.ShouldBe("ab******cd");
+    }
     #endregion
-
     #region 边界条件和性能测试
-
     /// <summary>
     /// 测试 - 所有方法 - 处理Unicode字符
     /// </summary>
@@ -475,7 +436,6 @@ public class FormatTest
         const string unicodePlate = "京A测试56";
         const string unicodeVin = "测试VIN码1234567";
         const string unicodeString = "测试Unicode字符串";
-
         // Act & Assert - 主要确保不抛异常
         Should.NotThrow(() =>
         {
@@ -483,7 +443,6 @@ public class FormatTest
             var plateResult = Format.EncryptPlateNumberOfChina(unicodePlate);
             var vinResult = Format.EncryptVinCode(unicodeVin);
             var stringResult = Format.EncryptString(unicodeString, 2, 2);
-
             // 验证结果不为null
             phoneResult.ShouldNotBeNull();
             plateResult.ShouldNotBeNull();
@@ -491,7 +450,6 @@ public class FormatTest
             stringResult.ShouldNotBeNull();
         });
     }
-
     /// <summary>
     /// 测试 - 性能测试 - 大量数据处理
     /// </summary>
@@ -503,7 +461,6 @@ public class FormatTest
         const string testPhone = "13812345678";
         const string testPlate = "京A12345";
         const string testVin = "1HGBH41JXMN109186";
-
         // Act & Assert
         Should.CompleteIn(() =>
         {
@@ -517,7 +474,6 @@ public class FormatTest
             }
         }, TimeSpan.FromSeconds(2)); // 应该在2秒内完成1000次操作
     }
-
     /// <summary>
     /// 测试 - 字符串操作 - 内存安全性
     /// </summary>
@@ -528,7 +484,6 @@ public class FormatTest
     {
         // Arrange
         var largeString = new string('A', stringLength);
-
         // Act & Assert - 主要确保不会因为内存问题崩溃
         Should.NotThrow(() =>
         {
@@ -536,7 +491,6 @@ public class FormatTest
             var plateResult = Format.EncryptPlateNumberOfChina(largeString);
             var vinResult = Format.EncryptVinCode(largeString);
             var stringResult = Format.EncryptString(largeString, 10, 10);
-
             // 验证结果的基本属性
             phoneResult.ShouldNotBeNull();
             plateResult.ShouldNotBeNull();
@@ -544,11 +498,8 @@ public class FormatTest
             stringResult.ShouldNotBeNull();
         });
     }
-
     #endregion
-
     #region 实际使用场景测试
-
     /// <summary>
     /// 测试 - 实际使用场景 - 用户隐私保护
     /// </summary>
@@ -562,7 +513,6 @@ public class FormatTest
             new { Phone = "15987654321", Plate = "沪B66666", Vin = "WBAPH7G58ANM12345", Money = 8888.88m },
             new { Phone = "18666666666", Plate = "粤C99999", Vin = "JM1BK32F781234567", Money = 999999.99m }
         };
-
         // Act & Assert
         foreach (var user in users)
         {
@@ -571,23 +521,19 @@ public class FormatTest
             var encryptedVin = Format.EncryptVinCode(user.Vin);
             var encryptedMoney = Format.FormatMoney(user.Money, true);
             var formattedMoney = Format.FormatMoney(user.Money);
-
             // 验证加密后的格式
             encryptedPhone.ShouldContain("******");
             encryptedPlate.ShouldContain("***");
             encryptedVin.ShouldContain("***********");
             encryptedMoney.ShouldBe("***");
-
             // 验证格式化的金额
             formattedMoney.ShouldNotContain("*");
             formattedMoney.ShouldContain(".");
-
             // 验证原始信息不完全暴露
             encryptedPhone.ShouldNotBe(user.Phone);
             encryptedPlate.ShouldNotBe(user.Plate);
             encryptedVin.ShouldNotBe(user.Vin);
         }
     }
-
     #endregion
 }

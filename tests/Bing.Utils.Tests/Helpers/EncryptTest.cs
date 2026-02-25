@@ -1,8 +1,6 @@
-﻿using Bing.Extensions;
+using Bing.Extensions;
 using Bing.Helpers;
-
 namespace Bing.Utils.Tests.Helpers;
-
 /// <summary>
 /// 加密操作测试
 /// </summary>
@@ -14,7 +12,6 @@ public class EncryptTest : TestBase
     public EncryptTest(ITestOutputHelper output) : base(output)
     {
     }
-
     /// <summary>
     /// 测试Md5加密，返回16位结果
     /// </summary>
@@ -30,7 +27,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.Md5By16(input)}");
         Assert.Equal(result, Encrypt.Md5By16(input));
     }
-
     /// <summary>
     /// 测试Md5加密，返回32位结果
     /// </summary>
@@ -46,7 +42,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.Md5By32(input)}");
         Assert.Equal(result, Encrypt.Md5By32(input));
     }
-
     /// <summary>
     /// 测试DES加密验证
     /// </summary>
@@ -60,7 +55,6 @@ public class EncryptTest : TestBase
         Assert.Equal(result, Encrypt.DesEncrypt(input, key, Encoding.UTF8));
         Assert.Equal(result, Encrypt.DesDecrypt(input, key, Encoding.UTF8));
     }
-
     /// <summary>
     /// 测试DES加密
     /// </summary>
@@ -72,7 +66,6 @@ public class EncryptTest : TestBase
         Output.WriteLine(encode);
         Assert.Equal(value.SafeString(), Encrypt.DesDecrypt(encode));
     }
-
     /// <summary>
     /// 测试DES加密
     /// </summary>
@@ -84,7 +77,6 @@ public class EncryptTest : TestBase
         Output.WriteLine(encode);
         Assert.Equal(value, Encrypt.DesDecrypt(encode));
     }
-
     /// <summary>
     /// 测试AES加密验证
     /// </summary>
@@ -97,7 +89,6 @@ public class EncryptTest : TestBase
         Assert.Equal(result, Encrypt.AesEncrypt(input, key, Encoding.UTF8));
         Assert.Equal(result, Encrypt.AesDecrypt(input, key, Encoding.UTF8));
     }
-
     /// <summary>
     /// 测试AES加密
     /// </summary>
@@ -109,7 +100,6 @@ public class EncryptTest : TestBase
         Output.WriteLine(encode);
         Assert.Equal(value, Encrypt.AesDecrypt(encode));
     }
-
     /// <summary>
     /// 测试AES加密
     /// </summary>
@@ -121,7 +111,6 @@ public class EncryptTest : TestBase
         Output.WriteLine(encode);
         Assert.Equal(value, Encrypt.AesDecrypt(encode));
     }
-
     /// <summary>
     /// 测试RSA签名验证
     /// </summary>
@@ -134,12 +123,14 @@ public class EncryptTest : TestBase
         Assert.Equal(result, Encrypt.RsaSign(input, key, Encoding.UTF8));
         Assert.Equal(result, Encrypt.Rsa2Sign(input, key, Encoding.UTF8));
     }
-
     /// <summary>
     /// RSA私钥
     /// </summary>
     public const string RsaKey = "MIIEogIBAAKCAQEAuLbs8Jugb3qhzDu4rvMqQ8n1RS8TQCpJ3+Cg9qR/RgMcpBx8+0tUiYkfOOnzxGlBuIwGF7Hqyho2E1ICNoIeNY4GkUhxBk7/wz4M6/tbfKSmWp1PAi9gVOxT0Io1kNBAV0it+uiDA176qk2tIKPxQ7UBPRB6qVELHuM7Y9AVoOQbHe56+rEoTiRo13NTx01yg0xiZDzS5gAe/vu+rDAKBczm7ZQ0A4U//modw1/rV+GKiqJ8CIDHe7a8oW2rthDNTZ2C/CHug4QMEmhaNazvhzjyAE1rfvYLF0o92qEfkip3IQRJnFM4rrr9QvWjkSPO7sPu5rMyE4oeUZHJ8luhIwIDAQABAoIBAGE8ytaO1pJY+DvPZJWUpLcy5c8ZzQSGPoWAdrvgNK/ii31JEfIn4cTVTn5jilPnJRXFgJ+QpYzm53icP1X6gXSn44UvoXA0vidFzv+bProK4xfon+MCla+fCTBK0Y/+USChvhTLucxYf5SPd4grRaLi8lf3CNuBMl18OZN9wyUCicgcqOp2mwi46daqqqvNLJwzmiKVCMb82JKEVShkmRDp8+ST7imwtXypUzLnwRt00xobiO8Gi1B1jYE4xM0hmkVgEHHLMGUOlfECH/VcWFLRkwosM3P6PYwb/mfBiDrIzN2mbueKZxMZureUqll9uLWRwPEvTosqc+tl+a4jCkECgYEA784SWiUGoSBDuKu9wm2D5Almz0gZavMv15cYsTfbu6UzsLcIRLEqLG1Rv9bFnwR39Gd1Cl3JAKDlxhs8qxJhy5zi0TJUowF9/QAg7TgBkGZVU4p+6SKF4mPKKsC4tnpENM+FnylncpCjFs45+MNruUIq1OVkcfxGBaBxDB/SM6kCgYEAxTBozzAyfH+9HHNisCQ2x7iNWEuaydY39V8vAlGPRZSbbo8OoV3wlidZm2wAhRybUCg7wefdbMAJlH8Uq/HnwuwanEkMO4IH/t5WI/MKk4Wc55iwC1abqQZrAxNCfjG+fShr2AZHO1jTj4oyd3BuQFTQBdRtiB+g8ibrGYG1resCgYA/sJ2TL45JMQaLf6GQiAGliRGzL9UAYMJuIgU+3DUR61iFMLeTdvJahlZV+zbVexxY3zlonWwLLLCaIxXD4cfziiF7qkBsYrMRhP05w8w2i9dRrtDyHmcsr5A8Np9YZ7TByfQVR6vf86Y9IlynQ0/TDk3N6Xb6BySZzfj4XWM4sQKBgBKeW4cUme+/b++7xVm0UafR+SaZHOhp3abBcgLaCJkdSv/Jaiw6XnkPBhryu6nV5aRP6DSK3BFkoILw7Na/ZI63FFwlWY5U3MRn4eJLFHiRaRtFA3pOlywCeyAzNVgNAlt28ZfYH+munWs0NUepyf8xAuNKB32O3vd+TTx/TtQ5AoGAGgD1Rc2hTopjXI8P5K1wuEMrvUp2uo0apguHu2uzIUpFyQYgjp80hBsqDj6e22R0LDzQTPrj8i+KvLZ4Xu8iCCQrUMqOvE6oZbQ7ukJ+wZebLOnrI6/AzD/zza3LZMXt/lKFgbaiYFLOSPEwxg+VBxxe10aQ3ddp5NuBDjQXJW0=";
-
+    /// <summary>
+    /// RSA公钥
+    /// </summary>
+    public const string RsaPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuLbs8Jugb3qhzDu4rvMqQ8n1RS8TQCpJ3+Cg9qR/RgMcpBx8+0tUiYkfOOnzxGlBuIwGF7Hqyho2E1ICNoIeNY4GkUhxBk7/wz4M6/tbfKSmWp1PAi9gVOxT0Io1kNBAV0it+uiDA176qk2tIKPxQ7UBPRB6qVELHuM7Y9AVoOQbHe56+rEoTiRo13NTx01yg0xiZDzS5gAe/vu+rDAKBczm7ZQ0A4U//modw1/rV+GKiqJ8CIDHe7a8oW2rthDNTZ2C/CHug4QMEmhaNazvhzjyAE1rfvYLF0o92qEfkip3IQRJnFM4rrr9QvWjkSPO7sPu5rMyE4oeUZHJ8luhIwIDAQAB";
     /// <summary>
     /// 测试RSA签名算法
     /// </summary>
@@ -152,7 +143,6 @@ public class EncryptTest : TestBase
         Output.WriteLine(encode);
         Assert.Equal(result, encode);
     }
-
     /// <summary>
     /// 测试RSA2签名算法
     /// </summary>
@@ -165,7 +155,58 @@ public class EncryptTest : TestBase
         Output.WriteLine(encode);
         Assert.Equal(result, encode);
     }
-
+    /// <summary>
+    /// 测试RSA验签
+    /// </summary>
+    [Fact]
+    public void Test_RsaVerify()
+    {
+        const string value = "sign_type=RSA";
+        var sign = Encrypt.RsaSign(value, RsaKey);
+        Encrypt.RsaVerify(value, RsaPublicKey, sign).ShouldBeTrue();
+    }
+    /// <summary>
+    /// 测试RSA验签失败
+    /// </summary>
+    [Fact]
+    public void Test_RsaVerify_InvalidSign()
+    {
+        const string value = "sign_type=RSA";
+        var sign = Encrypt.RsaSign(value, RsaKey);
+        Encrypt.RsaVerify($"{value}-tampered", RsaPublicKey, sign).ShouldBeFalse();
+    }
+    /// <summary>
+    /// 测试RSA2验签
+    /// </summary>
+    [Fact]
+    public void Test_Rsa2Verify()
+    {
+        const string value = "sign_type=RSA2";
+        var sign = Encrypt.Rsa2Sign(value, RsaKey);
+        Encrypt.Rsa2Verify(value, RsaPublicKey, sign).ShouldBeTrue();
+    }
+    /// <summary>
+    /// 测试RSA2验签失败
+    /// </summary>
+    [Fact]
+    public void Test_Rsa2Verify_InvalidSign()
+    {
+        const string value = "sign_type=RSA2";
+        var sign = Encrypt.Rsa2Sign(value, RsaKey);
+        Encrypt.Rsa2Verify($"{value}-tampered", RsaPublicKey, sign).ShouldBeFalse();
+    }
+    /// <summary>
+    /// 测试RSA验签参数校验
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Test_RsaVerify_EmptyValue(string input)
+    {
+        Encrypt.RsaVerify(input, RsaPublicKey, "invalid-sign").ShouldBeFalse();
+        Encrypt.Rsa2Verify(input, RsaPublicKey, "invalid-sign").ShouldBeFalse();
+    }
     /// <summary>
     /// 测试HMACMD5加密
     /// </summary>
@@ -182,7 +223,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.HmacMd5(input, key)}");
         Assert.Equal(result, Encrypt.HmacMd5(input, key));
     }
-
     /// <summary>
     /// 测试HMACSHA1加密
     /// </summary>
@@ -199,7 +239,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.HmacSha1(input, key)}");
         Assert.Equal(result, Encrypt.HmacSha1(input, key));
     }
-
     /// <summary>
     /// 测试HMACSHA256加密
     /// </summary>
@@ -216,7 +255,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.HmacSha256(input, key)}");
         Assert.Equal(result, Encrypt.HmacSha256(input, key));
     }
-
     /// <summary>
     /// 测试HMACSHA384加密
     /// </summary>
@@ -236,7 +274,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.HmacSha384(input, key)}");
         Assert.Equal(result, Encrypt.HmacSha384(input, key));
     }
-
     /// <summary>
     /// 测试HMACSHA512加密
     /// </summary>
@@ -253,7 +290,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.HmacSha512(input, key)}");
         Assert.Equal(result, Encrypt.HmacSha512(input, key));
     }
-
     /// <summary>
     /// 测试SHA1加密
     /// </summary>
@@ -269,7 +305,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.Sha1(input)}");
         Assert.Equal(result, Encrypt.Sha1(input));
     }
-
     /// <summary>
     /// 测试SHA256加密
     /// </summary>
@@ -285,7 +320,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.Sha256(input)}");
         Assert.Equal(result, Encrypt.Sha256(input));
     }
-
     /// <summary>
     /// 测试SHA384加密
     /// </summary>
@@ -301,7 +335,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.Sha384(input)}");
         Assert.Equal(result, Encrypt.Sha384(input));
     }
-
     /// <summary>
     /// 测试SHA512加密
     /// </summary>
@@ -317,7 +350,6 @@ public class EncryptTest : TestBase
         Output.WriteLine($"input:{input},result:{Encrypt.Sha512(input)}");
         Assert.Equal(result, Encrypt.Sha512(input));
     }
-
     /// <summary>
     /// 测试Base64加密
     /// </summary>
@@ -328,5 +360,33 @@ public class EncryptTest : TestBase
         var encode = Encrypt.Base64Encrypt(value);
         Output.WriteLine(encode);
         Assert.Equal(value, Encrypt.Base64Decrypt(encode));
+    }
+    /// <summary>
+    /// 测试生成随机盐
+    /// </summary>
+    [Fact]
+    public void Test_CreateSalt()
+    {
+        var salt = Encrypt.CreateSalt(16);
+        salt.ShouldNotBeNullOrWhiteSpace();
+        Convert.FromBase64String(salt).Length.ShouldBe(16);
+    }
+    /// <summary>
+    /// 测试随机盐每次生成不同
+    /// </summary>
+    [Fact]
+    public void Test_CreateSalt_ShouldBeDifferent()
+    {
+        var salt1 = Encrypt.CreateSalt(16);
+        var salt2 = Encrypt.CreateSalt(16);
+        salt1.ShouldNotBe(salt2);
+    }
+    /// <summary>
+    /// 测试空长度随机盐
+    /// </summary>
+    [Fact]
+    public void Test_CreateSalt_ZeroSize()
+    {
+        Encrypt.CreateSalt(0).ShouldBe(string.Empty);
     }
 }

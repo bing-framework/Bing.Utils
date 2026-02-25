@@ -1,10 +1,54 @@
-﻿namespace Bing.Text;
-
+namespace Bing.Text;
 /// <summary>
 /// 字符串操作 测试
 /// </summary>
 public class StrTest
 {
+    [Theory]
+    [InlineData("userName", "UserName")]
+    [InlineData("URLValue", "URLValue")]
+    [InlineData("", "")]
+    [InlineData(null, null)]
+    public void ToPascalCase_InputValue_ReturnsExpectedResult(string input, string expected)
+    {
+        var result = Str.ToPascalCase(input);
+        result.ShouldBe(expected);
+    }
+    [Theory]
+    [InlineData("UserName", "userName")]
+    [InlineData("URLValue", "urlValue")]
+    [InlineData("", "")]
+    [InlineData(null, null)]
+    public void ToCamelCase_InputValue_ReturnsExpectedResult(string input, string expected)
+    {
+        var result = Str.ToCamelCase(input);
+        result.ShouldBe(expected);
+    }
+    [Theory]
+    [InlineData("UserName", "user_name")]
+    [InlineData("HTTPServerError", "http_server_error")]
+    [InlineData("user name", "user_name")]
+    public void ToSnakeCase_InputValue_ReturnsExpectedResult(string input, string expected)
+    {
+        var result = Str.ToSnakeCase(input);
+        result.ShouldBe(expected);
+    }
+    [Theory]
+    [InlineData("UserName", "user-name")]
+    [InlineData("HTTPServerError", "http-server-error")]
+    [InlineData("user name", "user-name")]
+    public void ToKebabCase_InputValue_ReturnsExpectedResult(string input, string expected)
+    {
+        var result = Str.ToKebabCase(input);
+        result.ShouldBe(expected);
+    }
+    [Fact]
+    public void Repeat_TimesLessThanOrEqualToZero_ReturnsEmptyString()
+    {
+        Str.Repeat("ab", 0).ShouldBeEmpty();
+        Str.Repeat("ab", -1).ShouldBeEmpty();
+        Str.Repeat('a', 0).ShouldBeEmpty();
+    }
     /// <summary>
     /// 测试 - 将Unicode转换为字符串
     /// </summary>

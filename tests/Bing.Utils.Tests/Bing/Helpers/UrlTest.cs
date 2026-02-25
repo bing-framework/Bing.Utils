@@ -1,5 +1,4 @@
-﻿namespace Bing.Helpers;
-
+namespace Bing.Helpers;
 /// <summary>
 /// Url操作测试
 /// </summary>
@@ -13,9 +12,7 @@ public class UrlTest : TestBase
     {
         System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
     }
-
     #region Combine 测试
-
     /// <summary>
     /// 测试 - Combine - 正常路径合并场景
     /// </summary>
@@ -37,11 +34,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.Combine(urls);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Combine - 处理反斜杠路径分隔符
     /// </summary>
@@ -53,11 +48,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.Combine(urls);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Combine - 空值和null处理
     /// </summary>
@@ -66,11 +59,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.Combine(null);
-
         // Assert
         result.ShouldBe("");
     }
-
     /// <summary>
     /// 测试 - Combine - 空字符串和空白字符串过滤
     /// </summary>
@@ -83,11 +74,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.Combine(urls);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Combine - 多个路径片段合并
     /// </summary>
@@ -96,18 +85,13 @@ public class UrlTest : TestBase
     {
         // Arrange
         var urls = new[] { "http://example.com", "api", "v1", "users", "123" };
-
         // Act
         var result = Url.Combine(urls);
-
         // Assert
         result.ShouldBe("http://example.com/api/v1/users/123");
     }
-
     #endregion
-
     #region Join 测试
-
     /// <summary>
     /// 测试 - Join - 单个参数连接
     /// </summary>
@@ -120,11 +104,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.Join(url, param);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Join - 多个参数连接
     /// </summary>
@@ -137,11 +119,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.Join(url, parameters);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Join - 空URL参数异常
     /// </summary>
@@ -154,7 +134,6 @@ public class UrlTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => Url.Join(url, "param=value"));
     }
-
     /// <summary>
     /// 测试 - Join - 空参数处理
     /// </summary>
@@ -163,14 +142,11 @@ public class UrlTest : TestBase
     {
         // Arrange
         const string url = "http://test.com";
-
         // Act
         var result = Url.Join(url, "");
-
         // Assert
         result.ShouldBe(url);
     }
-
     /// <summary>
     /// 测试 - Join - 空参数数组处理
     /// </summary>
@@ -179,14 +155,24 @@ public class UrlTest : TestBase
     {
         // Arrange
         const string url = "http://test.com";
-
         // Act
         var result = Url.Join(url, new string[0]);
-
         // Assert
         result.ShouldBe(url);
     }
-
+    /// <summary>
+    /// 测试 - Join - 参数包含空白时自动过滤
+    /// </summary>
+    [Fact]
+    public void Join_ParametersContainNullOrWhitespace_FiltersAndJoinsValidParameters()
+    {
+        // Arrange
+        const string url = "http://demo.com?c=3";
+        // Act
+        var result = Url.Join(url, null, " ", "a=1", "", "b=2");
+        // Assert
+        result.ShouldBe("http://demo.com?c=3&a=1&b=2");
+    }
     /// <summary>
     /// 测试 - Join - Uri对象重载
     /// </summary>
@@ -196,14 +182,11 @@ public class UrlTest : TestBase
         // Arrange
         var baseUri = new Uri("http://test.com");
         const string param = "a=1";
-
         // Act
         var result = Url.Join(baseUri, param);
-
         // Assert
         result.AbsoluteUri.ShouldBe("http://test.com/?a=1");
     }
-
     /// <summary>
     /// 测试 - Join - Uri对象空值异常
     /// </summary>
@@ -213,11 +196,21 @@ public class UrlTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => Url.Join((Uri)null, "param=value"));
     }
-
+    /// <summary>
+    /// 测试 - Join - Uri多参数重载过滤空白参数
+    /// </summary>
+    [Fact]
+    public void Join_UriOverloadWithNullOrWhitespaceParameters_FiltersAndJoinsValidParameters()
+    {
+        // Arrange
+        var baseUri = new Uri("http://test.com/path?c=3");
+        // Act
+        var result = Url.Join(baseUri, null, " ", "a=1", "", "b=2");
+        // Assert
+        result.AbsoluteUri.ShouldBe("http://test.com/path?c=3&a=1&b=2");
+    }
     #endregion
-
     #region GetMainDomain 测试
-
     /// <summary>
     /// 测试 - GetMainDomain - 标准域名提取
     /// </summary>
@@ -232,11 +225,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.GetMainDomain(url);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetMainDomain - 带查询参数的URL
     /// </summary>
@@ -248,11 +239,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.GetMainDomain(url);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetMainDomain - IP地址处理
     /// </summary>
@@ -264,11 +253,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.GetMainDomain(url);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetMainDomain - 空值和无效输入
     /// </summary>
@@ -282,11 +269,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.GetMainDomain(url);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetMainDomain - 本地域名
     /// </summary>
@@ -300,11 +285,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.GetMainDomain(url);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetMainDomain - 特殊本地域名格式
     /// </summary>
@@ -317,11 +300,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.GetMainDomain(url);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetMainDomain - 边界情况
     /// </summary>
@@ -333,15 +314,11 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.GetMainDomain(url);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region UrlEncode 测试
-
     /// <summary>
     /// 测试 - UrlEncode - 基本编码功能
     /// </summary>
@@ -354,11 +331,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.UrlEncode(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - UrlEncode - 大写十六进制编码
     /// </summary>
@@ -371,11 +346,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.UrlEncode(input, isUpper);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - UrlEncode - 指定编码名称
     /// </summary>
@@ -384,17 +357,31 @@ public class UrlTest : TestBase
     {
         // Arrange
         const string input = "测试";
-
         // Act
         var utf8Result = Url.UrlEncode(input, "UTF-8");
         var gbkResult = Url.UrlEncode(input, "GBK");
-
         // Assert
         utf8Result.ShouldNotBeNull();
         gbkResult.ShouldNotBeNull();
         utf8Result.ShouldNotBe(gbkResult); // 不同编码应产生不同结果
     }
-
+    /// <summary>
+    /// 测试 - UrlEncode - 空白编码名称回退到UTF8
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void UrlEncode_NullOrWhitespaceEncoding_FallsBackToUtf8(string encodingName)
+    {
+        // Arrange
+        const string input = "中文测试";
+        var expected = Url.UrlEncode(input, Encoding.UTF8);
+        // Act
+        var result = Url.UrlEncode(input, encodingName);
+        // Assert
+        result.ShouldBe(expected);
+    }
     /// <summary>
     /// 测试 - UrlEncode - 无效编码名称异常
     /// </summary>
@@ -404,7 +391,6 @@ public class UrlTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentException>(() => Url.UrlEncode("test", "INVALID-ENCODING"));
     }
-
     /// <summary>
     /// 测试 - UrlEncode - 空值处理
     /// </summary>
@@ -415,11 +401,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.UrlEncode(input);
-
         // Assert
         result.ShouldBe(input);
     }
-
     /// <summary>
     /// 测试 - UrlEncode - Encoding对象为null异常
     /// </summary>
@@ -429,11 +413,8 @@ public class UrlTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => Url.UrlEncode("test", (Encoding)null));
     }
-
     #endregion
-
     #region UrlDecode 测试
-
     /// <summary>
     /// 测试 - UrlDecode - 基本解码功能
     /// </summary>
@@ -446,11 +427,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.UrlDecode(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - UrlDecode - 大写十六进制解码
     /// </summary>
@@ -462,11 +441,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.UrlDecode(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - UrlDecode - 指定编码解码
     /// </summary>
@@ -475,14 +452,11 @@ public class UrlTest : TestBase
     {
         // Arrange
         const string encoded = "%e4%b8%ad%e6%96%87"; // "中文" 的 UTF-8 编码
-
         // Act
         var result = Url.UrlDecode(encoded, Encoding.UTF8);
-
         // Assert
         result.ShouldBe("中文");
     }
-
     /// <summary>
     /// 测试 - UrlDecode - 空值处理
     /// </summary>
@@ -493,11 +467,9 @@ public class UrlTest : TestBase
     {
         // Act
         var result = Url.UrlDecode(input);
-
         // Assert
         result.ShouldBe(input);
     }
-
     /// <summary>
     /// 测试 - UrlDecode - Encoding对象为null异常
     /// </summary>
@@ -507,11 +479,8 @@ public class UrlTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => Url.UrlDecode("test", (Encoding)null));
     }
-
     #endregion
-
     #region 编码解码往返测试
-
     /// <summary>
     /// 测试 - 编码解码往返 - 数据一致性
     /// </summary>
@@ -526,11 +495,9 @@ public class UrlTest : TestBase
         // Act
         var encoded = Url.UrlEncode(original);
         var decoded = Url.UrlDecode(encoded);
-
         // Assert
         decoded.ShouldBe(original);
     }
-
     /// <summary>
     /// 测试 - 编码解码往返 - 不同编码格式
     /// </summary>
@@ -542,19 +509,14 @@ public class UrlTest : TestBase
         // Arrange
         const string original = "测试中文内容";
         var encoding = Encoding.GetEncoding(encodingName);
-
         // Act
         var encoded = Url.UrlEncode(original, encoding);
         var decoded = Url.UrlDecode(encoded, encoding);
-
         // Assert
         decoded.ShouldBe(original);
     }
-
     #endregion
-
     #region 性能和边界测试
-
     /// <summary>
     /// 测试 - 大字符串处理 - 性能合理性
     /// </summary>
@@ -564,7 +526,6 @@ public class UrlTest : TestBase
         // Arrange
         var largeString = new string('a', 10000);
         var largeUrl = "http://example.com/" + largeString;
-
         // Act & Assert - 主要测试不会抛异常
         Should.NotThrow(() =>
         {
@@ -572,14 +533,12 @@ public class UrlTest : TestBase
             var joined = Url.Join("http://test.com", $"param={largeString}");
             var encoded = Url.UrlEncode(largeString);
             var decoded = Url.UrlDecode(encoded);
-
             combined.ShouldNotBeNull();
             joined.ShouldNotBeNull();
             encoded.ShouldNotBeNull();
             decoded.ShouldBe(largeString);
         });
     }
-
     /// <summary>
     /// 测试 - 特殊Unicode字符 - 正确处理
     /// </summary>
@@ -598,6 +557,5 @@ public class UrlTest : TestBase
             decoded.ShouldBe(input);
         });
     }
-
     #endregion
 }

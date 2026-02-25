@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 namespace Bing.Logging;
 /// <summary>
@@ -108,7 +108,7 @@ public class LogHelperTest
         var message = "Error log message";
         var exception = new Exception("Test exception");
         // Act
-        _logHelper.LogError(message, exception);
+        _logHelper.LogError(exception, message);
         // Assert
         _mockLogger.VerifyLog(logger => logger.LogError(
                 exception, // 验证异常
