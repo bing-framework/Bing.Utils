@@ -1,7 +1,5 @@
-﻿using Bing.Reflection;
-
+using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
-
 [Trait("TypeUT", "TypeIs.EnumType")]
 public class TypeIsEnumTest
 {
@@ -16,7 +14,6 @@ public class TypeIsEnumTest
         Types.IsEnumType(typeof(Int16Enum?)).ShouldBeFalse();
         Types.IsEnumType(typeof(Int16Enum?), TypeIsOptions.IgnoreNullable).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否为枚举类型【泛型】
     /// </summary>
@@ -28,7 +25,6 @@ public class TypeIsEnumTest
         Types.IsEnumType<Int16Enum?>().ShouldBeFalse();
         Types.IsEnumType<Int16Enum?>(TypeIsOptions.IgnoreNullable).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否为枚举类型【类型转换】
     /// </summary>
@@ -41,7 +37,6 @@ public class TypeIsEnumTest
         Types.IsEnumType(1).ShouldBeFalse();
         Types.IsEnumType(null).ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试 - 类型反射 - 是否为枚举类型
     /// </summary>
@@ -54,7 +49,6 @@ public class TypeIsEnumTest
         var t = typeof(NormalValueTypeClass);
         var m0 = (MemberInfo)t;
         var allMembers = t.GetMembers().Where(filter).ToList();
-
         allMembers.ShouldNotBeNull();
         allMembers.ShouldNotBeEmpty();
         var m1 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int99V1));
@@ -62,13 +56,11 @@ public class TypeIsEnumTest
         var m3 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int99V3));
         var m4 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int99V4));
         var m5 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Str));
-
         m1.MemberType.ShouldBe(MemberTypes.Property);
         m2.MemberType.ShouldBe(MemberTypes.Field);
         m3.MemberType.ShouldBe(MemberTypes.Property);
         m4.MemberType.ShouldBe(MemberTypes.Field);
         m5.MemberType.ShouldBe(MemberTypes.Property);
-
         TypeReflections.IsEnum(m0).ShouldBeFalse();
         TypeReflections.IsEnum(m1).ShouldBeTrue();
         TypeReflections.IsEnum(m2).ShouldBeTrue();

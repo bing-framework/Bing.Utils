@@ -1,7 +1,5 @@
-﻿using Bing.Reflection;
-
+using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
-
 [Trait("TypeUT", "TypeIs.DateTimeType")]
 public class TypeIsDateTimeTest
 {
@@ -17,7 +15,6 @@ public class TypeIsDateTimeTest
         var t = typeof(NormalValueTypeClass);
         var m0 = (MemberInfo)t;
         var allMembers = t.GetMembers().Where(filter).ToList();
-
         allMembers.ShouldNotBeNull();
         allMembers.ShouldNotBeEmpty();
         var m1 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.DateTimeV1));
@@ -25,13 +22,11 @@ public class TypeIsDateTimeTest
         var m3 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.DateTimeV3));
         var m4 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.DateTimeV4));
         var m5 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Str));
-
         m1.MemberType.ShouldBe(MemberTypes.Property);
         m2.MemberType.ShouldBe(MemberTypes.Field);
         m3.MemberType.ShouldBe(MemberTypes.Property);
         m4.MemberType.ShouldBe(MemberTypes.Field);
         m5.MemberType.ShouldBe(MemberTypes.Property);
-
         TypeReflections.IsDateTime(m0).ShouldBeFalse();
         TypeReflections.IsDateTime(m1).ShouldBeTrue();
         TypeReflections.IsDateTime(m2).ShouldBeTrue();

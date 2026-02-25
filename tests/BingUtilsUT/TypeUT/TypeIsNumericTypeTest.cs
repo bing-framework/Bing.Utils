@@ -1,7 +1,5 @@
-﻿using Bing.Reflection;
-
+using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
-
 [Trait("TypeUT", "TypeIs.NumericType")]
 public class TypeIsNumericTypeTest
 {
@@ -23,7 +21,6 @@ public class TypeIsNumericTypeTest
         Types.IsNumericType(typeof(double)).ShouldBeTrue();
         Types.IsNumericType(typeof(decimal)).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否为数值类型【泛型】
     /// </summary>
@@ -42,7 +39,6 @@ public class TypeIsNumericTypeTest
         Types.IsNumericType<double>().ShouldBeTrue();
         Types.IsNumericType<decimal>().ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否为数值类型【typeof】
     /// </summary>
@@ -60,7 +56,6 @@ public class TypeIsNumericTypeTest
         Types.IsNumericType(typeof(float?)).ShouldBeFalse();
         Types.IsNumericType(typeof(double?)).ShouldBeFalse();
         Types.IsNumericType(typeof(decimal?)).ShouldBeFalse();
-
         Types.IsNumericType(typeof(byte?), TypeIsOptions.IgnoreNullable).ShouldBeTrue();
         Types.IsNumericType(typeof(sbyte?), TypeIsOptions.IgnoreNullable).ShouldBeTrue();
         Types.IsNumericType(typeof(short?), TypeIsOptions.IgnoreNullable).ShouldBeTrue();
@@ -73,7 +68,6 @@ public class TypeIsNumericTypeTest
         Types.IsNumericType(typeof(double?), TypeIsOptions.IgnoreNullable).ShouldBeTrue();
         Types.IsNumericType(typeof(decimal?), TypeIsOptions.IgnoreNullable).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否为数值类型【泛型】
     /// </summary>
@@ -91,7 +85,6 @@ public class TypeIsNumericTypeTest
         Types.IsNumericType<float?>().ShouldBeFalse();
         Types.IsNumericType<double?>().ShouldBeFalse();
         Types.IsNumericType<decimal?>().ShouldBeFalse();
-
         Types.IsNumericType<byte?>(TypeIsOptions.IgnoreNullable).ShouldBeTrue();
         Types.IsNumericType<sbyte?>(TypeIsOptions.IgnoreNullable).ShouldBeTrue();
         Types.IsNumericType<short?>(TypeIsOptions.IgnoreNullable).ShouldBeTrue();
@@ -104,7 +97,6 @@ public class TypeIsNumericTypeTest
         Types.IsNumericType<double?>(TypeIsOptions.IgnoreNullable).ShouldBeTrue();
         Types.IsNumericType<decimal?>(TypeIsOptions.IgnoreNullable).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 扩展方法 - 是否为数值类型
     /// </summary>
@@ -123,7 +115,6 @@ public class TypeIsNumericTypeTest
         typeof(double).IsNumeric().ShouldBeTrue();
         typeof(decimal).IsNumeric().ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 扩展方法 - 是否为数值类型
     /// </summary>
@@ -134,7 +125,6 @@ public class TypeIsNumericTypeTest
         typeof(int?).IsNumeric().ShouldBeFalse();
         typeof(int?).IsNumeric(TypeIsOptions.IgnoreNullable).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否为数值类型【类型转换】
     /// </summary>
@@ -144,14 +134,12 @@ public class TypeIsNumericTypeTest
         int a = 1;
         int? b = 1;
         int? c = null;
-
         Types.IsNumericType(a).ShouldBeTrue();
         Types.IsNumericType(b).ShouldBeFalse();
         Types.IsNumericType(b, TypeIsOptions.IgnoreNullable).ShouldBeTrue();
         Types.IsNumericType(c).ShouldBeFalse();
         Types.IsNumericType(c, TypeIsOptions.IgnoreNullable).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型反射 - 是否为数值类型
     /// </summary>
@@ -164,7 +152,6 @@ public class TypeIsNumericTypeTest
         var t = typeof(NormalValueTypeClass);
         var m0 = (MemberInfo)t;
         var allMembers = t.GetMembers().Where(filter).ToList();
-
         allMembers.ShouldNotBeNull();
         allMembers.ShouldNotBeEmpty();
         var m1 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int16V1));
@@ -172,13 +159,11 @@ public class TypeIsNumericTypeTest
         var m3 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int16V3));
         var m4 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int16V4));
         var m5 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Str));
-
         m1.MemberType.ShouldBe(MemberTypes.Property);
         m2.MemberType.ShouldBe(MemberTypes.Field);
         m3.MemberType.ShouldBe(MemberTypes.Property);
         m4.MemberType.ShouldBe(MemberTypes.Field);
         m5.MemberType.ShouldBe(MemberTypes.Property);
-
         TypeReflections.IsNumeric(m0).ShouldBeFalse();
         TypeReflections.IsNumeric(m1).ShouldBeTrue();
         TypeReflections.IsNumeric(m2).ShouldBeTrue();

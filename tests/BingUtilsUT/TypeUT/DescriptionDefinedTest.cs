@@ -1,7 +1,5 @@
-﻿ using Bing.Reflection;
-
+ using Bing.Reflection;
  namespace BingUtilsUT.TypeUT;
-
 [Trait("TypeUT", "TypeReflections.IsDescriptionDefined")]
 public class DescriptionDefinedTest
 {
@@ -9,7 +7,6 @@ public class DescriptionDefinedTest
     public Type EntryTwo = typeof(NormalDescriptionOrClass);
     public Type EntryThree = typeof(NormalDisplayNameOrClass);
     public Type Wrapper = typeof(NormalDescriptionWrapper);
-
     /// <summary>
     /// 测试 - 类型 - 是否定义 <see cref="DescriptionAttribute"/> 或 <see cref="DisplayAttribute"/> 
     /// </summary>

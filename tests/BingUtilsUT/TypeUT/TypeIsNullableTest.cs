@@ -1,7 +1,5 @@
-﻿using Bing.Reflection;
-
+using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
-
 [Trait("TypeUT", "TypeIs.Nullable")]
 public class TypeIsNullableTest
 {
@@ -16,7 +14,6 @@ public class TypeIsNullableTest
         Types.IsNullableType(typeof(Nullable)).ShouldBeFalse();
         Types.IsNullableType(typeof(Nullable<int>)).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否为可空类型【泛型】
     /// </summary>
@@ -27,7 +24,6 @@ public class TypeIsNullableTest
         Types.IsNullableType<int?>().ShouldBeTrue();
         Types.IsNullableType<Nullable<int>>().ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否为可空类型【类型转换】
     /// </summary>
@@ -37,7 +33,6 @@ public class TypeIsNullableTest
         int a = 0;
         int? b = 0;
         int? c = null;
-
         Types.IsNullableType(a).ShouldBeFalse();
         Types.IsNullableType(b).ShouldBeTrue();
         Types.IsNullableType(c).ShouldBeTrue();

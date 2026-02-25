@@ -1,7 +1,5 @@
-﻿using Bing.Reflection;
-
+using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
-
 [Trait("TypeUT", "TypeIs.TupleType")]
 public class TypeIsTupleTest
 {
@@ -13,10 +11,8 @@ public class TypeIsTupleTest
     {
         Types.IsTupleType(typeof((int, int))).ShouldBeTrue();
         Types.IsTupleType(typeof((int, int, int))).ShouldBeTrue();
-
         Types.IsTupleType<string>().ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否元组类型【显式】
     /// </summary>
@@ -27,7 +23,6 @@ public class TypeIsTupleTest
         Types.IsTupleType(typeof(ValueTuple<int>)).ShouldBeTrue();
         Types.IsTupleType(typeof(ValueTuple<int, int>)).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否元组类型【显式】
     /// </summary>
@@ -38,7 +33,6 @@ public class TypeIsTupleTest
         Types.IsTupleType(typeof(Tuple<int>)).ShouldBeTrue();
         Types.IsTupleType(typeof(Tuple<int, int>)).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否元组类型 - 继承元组
     /// </summary>
@@ -48,7 +42,6 @@ public class TypeIsTupleTest
         Types.IsTupleType<ChildTupleType>().ShouldBeFalse();
         Types.IsTupleType<ChildTupleType>(TypeOfOptions.Underlying).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 扩展方法 - 是否元组类型
     /// </summary>
@@ -64,7 +57,6 @@ public class TypeIsTupleTest
         typeof(ChildTupleType).IsTupleType(TypeOfOptions.Underlying).ShouldBeTrue();
         typeof(object).IsTupleType().ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否元组类型【类型转换】
     /// </summary>
@@ -82,7 +74,6 @@ public class TypeIsTupleTest
         Types.IsTupleType((object)null).ShouldBeFalse();
         Types.IsTupleType(null).ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试 - 类型 - 是否元组类型【可空】
     /// </summary>

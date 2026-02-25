@@ -1,7 +1,5 @@
-﻿using Bing.Reflection;
-
+using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
-
 [Trait("TypeUT", "TypeIs.CollType")]
 public class TypeIsCollTest
 {
@@ -20,7 +18,6 @@ public class TypeIsCollTest
         Types.IsCollectionType(typeof(ArraySegment<int>)).ShouldBeTrue();
         Types.IsCollectionType(typeof(IEnumerable<string>)).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 基于泛型判断是否数组
     /// </summary>
@@ -36,7 +33,6 @@ public class TypeIsCollTest
         Types.IsCollectionType<ArraySegment<int>>().ShouldBeTrue();
         Types.IsCollectionType<IEnumerable<string>>().ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 基于对象判断是否数组
     /// </summary>
@@ -45,7 +41,6 @@ public class TypeIsCollTest
     {
         var nullList = new List<int>();
         nullList = null;
-
         Types.IsCollectionType(Array.Empty<int>()).ShouldBeTrue();
         Types.IsCollectionType(Array.Empty<int?>()).ShouldBeTrue();
         Types.IsCollectionType(new ArrayList()).ShouldBeTrue();
@@ -55,7 +50,6 @@ public class TypeIsCollTest
         Types.IsCollectionType(nullList).ShouldBeFalse();
         Types.IsCollectionType(nullList, TypeIsOptions.IgnoreNullable).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 基于反射判断是否数组
     /// </summary>
@@ -68,7 +62,6 @@ public class TypeIsCollTest
         var t = typeof(NormalValueTypeClass);
         var m0 = (MemberInfo) t;
         var allMembers = t.GetMembers().Where(filter).ToList();
-
         allMembers.ShouldNotBeNull();
         allMembers.ShouldNotBeEmpty();
         var m01 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int32EnumV1));
@@ -81,7 +74,6 @@ public class TypeIsCollTest
         var m08 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int32EnumA2));
         var m09 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int32EnumA3));
         var m10 = allMembers.Single(x => x.Name == nameof(NormalValueTypeClass.Int32EnumA4));
-
         m01.MemberType.ShouldBe(MemberTypes.Property);
         m02.MemberType.ShouldBe(MemberTypes.Field);
         m03.MemberType.ShouldBe(MemberTypes.Property);
@@ -92,7 +84,6 @@ public class TypeIsCollTest
         m08.MemberType.ShouldBe(MemberTypes.Field);
         m09.MemberType.ShouldBe(MemberTypes.Property);
         m10.MemberType.ShouldBe(MemberTypes.Field);
-            
         TypeReflections.IsCollection(m0).ShouldBeFalse();
         TypeReflections.IsCollection(m01).ShouldBeTrue();
         TypeReflections.IsCollection(m02).ShouldBeTrue();
