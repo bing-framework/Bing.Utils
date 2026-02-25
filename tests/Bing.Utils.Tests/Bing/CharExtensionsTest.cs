@@ -1,7 +1,5 @@
-﻿using System.Globalization;
-
+using System.Globalization;
 namespace Bing;
-
 /// <summary>
 /// 字符(<see cref="char"/>) 扩展 测试
 /// </summary>

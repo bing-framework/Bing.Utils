@@ -1,7 +1,5 @@
-﻿using Bing.Helpers;
-
+using Bing.Helpers;
 namespace Bing.Text;
-
 /// <summary>
 /// 脱敏帮助类 单元测试
 /// </summary>
@@ -9,7 +7,6 @@ namespace Bing.Text;
 public class DesensitizedHelperTest
 {
     #region Desensitized 主方法测试
-
     /// <summary>
     /// 测试 - Desensitized - 所有脱敏类型
     /// </summary>
@@ -30,11 +27,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.Desensitized(input, type);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Desensitized - 空值处理
     /// </summary>
@@ -51,11 +46,8 @@ public class DesensitizedHelperTest
             result.ShouldBe(string.Empty, $"Type: {type}");
         }
     }
-
     #endregion
-
     #region FirstMask 方法测试
-
     /// <summary>
     /// 测试 - FirstMask - 基本功能
     /// </summary>
@@ -70,11 +62,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.FirstMask(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - FirstMask - 空值处理
     /// </summary>
@@ -86,15 +76,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.FirstMask(input);
-
         // Assert
         result.ShouldBe(string.Empty);
     }
-
     #endregion
-
     #region ChineseName 方法测试
-
     /// <summary>
     /// 测试 - ChineseName - 中文姓名脱敏
     /// </summary>
@@ -109,11 +95,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.ChineseName(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - ChineseName - 非中文名字
     /// </summary>
@@ -126,15 +110,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.ChineseName(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IdCardNum 方法测试
-
     /// <summary>
     /// 测试 - IdCardNum - 正常身份证号脱敏
     /// </summary>
@@ -148,11 +128,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.IdCardNum(input, front, end);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IdCardNum - 边界条件
     /// </summary>
@@ -167,11 +145,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.IdCardNum(input, front, end);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IdCardNum - 空值处理
     /// </summary>
@@ -183,15 +159,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.IdCardNum(input, 1, 2);
-
         // Assert
         result.ShouldBe(string.Empty);
     }
-
     #endregion
-
     #region FixedPhone 方法测试
-
     /// <summary>
     /// 测试 - FixedPhone - 固定电话脱敏
     /// </summary>
@@ -206,11 +178,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.FixedPhone(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - FixedPhone - 短号码处理
     /// </summary>
@@ -222,15 +192,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.FixedPhone(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region MobilePhone 方法测试
-
     /// <summary>
     /// 测试 - MobilePhone - 手机号脱敏
     /// </summary>
@@ -244,11 +210,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.MobilePhone(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - MobilePhone - 非标准长度处理
     /// </summary>
@@ -262,15 +226,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.MobilePhone(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region Address 方法测试
-
     /// <summary>
     /// 测试 - Address - 地址脱敏
     /// </summary>
@@ -283,11 +243,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.Address(input, sensitiveSize);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Address - 边界条件
     /// </summary>
@@ -300,15 +258,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.Address(input, sensitiveSize);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region Email 方法测试
-
     /// <summary>
     /// 测试 - Email - 邮箱脱敏
     /// </summary>
@@ -323,11 +277,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.Email(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Email - 特殊情况
     /// </summary>
@@ -341,15 +293,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.Email(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region Password 方法测试
-
     /// <summary>
     /// 测试 - Password - 密码脱敏
     /// </summary>
@@ -364,17 +312,13 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.Password(input);
-
         // Assert
         result.ShouldBe(expected);
         result.Length.ShouldBe(input.Length);
         result.ShouldNotContain(input); // 确保原密码被完全隐藏
     }
-
     #endregion
-
     #region CarLicense 方法测试
-
     /// <summary>
     /// 测试 - CarLicense - 车牌脱敏
     /// </summary>
@@ -389,11 +333,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.CarLicense(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - CarLicense - 非标准长度车牌
     /// </summary>
@@ -407,15 +349,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.CarLicense(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region BankCard 方法测试
-
     /// <summary>
     /// 测试 - BankCard - 银行卡脱敏
     /// </summary>
@@ -432,11 +370,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.BankCard(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - BankCard - 短银行卡号
     /// </summary>
@@ -449,11 +385,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.BankCard(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - BankCard - 包含空格的银行卡号
     /// </summary>
@@ -466,15 +400,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.BankCard(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IPv4 方法测试
-
     /// <summary>
     /// 测试 - IPv4 - IP地址脱敏
     /// </summary>
@@ -489,11 +419,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.IPv4(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IPv4 - 特殊情况
     /// </summary>
@@ -508,15 +436,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.IPv4(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IPv6 方法测试
-
     /// <summary>
     /// 测试 - IPv6 - IP地址脱敏
     /// </summary>
@@ -531,11 +455,9 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.IPv6(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IPv6 - 特殊情况
     /// </summary>
@@ -548,15 +470,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.IPv6(input);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 性能测试
-
     /// <summary>
     /// 测试 - 性能测试 - 大量脱敏操作
     /// </summary>
@@ -573,7 +491,6 @@ public class DesensitizedHelperTest
             ("test@email.com", DesensitizedHelper.DesensitizedType.Email),
             ("6227880100100105123", DesensitizedHelper.DesensitizedType.BankCard)
         };
-
         // Act & Assert
         Should.CompleteIn(() =>
         {
@@ -586,11 +503,8 @@ public class DesensitizedHelperTest
             }
         }, TimeSpan.FromSeconds(5), "Mass desensitization should complete within 5 seconds");
     }
-
     #endregion
-
     #region 安全性测试
-
     /// <summary>
     /// 测试 - 安全性验证 - 确保原始数据不泄露
     /// </summary>
@@ -607,12 +521,10 @@ public class DesensitizedHelperTest
             {"TopSecret123!", DesensitizedHelper.DesensitizedType.Password},
             {"6227880100100105123", DesensitizedHelper.DesensitizedType.BankCard}
         };
-
         // Act & Assert
         foreach (var (originalData, type) in sensitiveData)
         {
             var result = DesensitizedHelper.Desensitized(originalData, type);
-
             // 确保结果不等于原始数据（密码除外，密码应该完全隐藏）
             if (type == DesensitizedHelper.DesensitizedType.Password)
             {
@@ -623,7 +535,6 @@ public class DesensitizedHelperTest
             {
                 result.ShouldNotBe(originalData, $"Original data leaked for type: {type}");
             }
-
             // 确保结果不为空（除非原始数据为空）
             if (!string.IsNullOrWhiteSpace(originalData))
             {
@@ -631,7 +542,6 @@ public class DesensitizedHelperTest
             }
         }
     }
-
     /// <summary>
     /// 测试 - Unicode字符处理
     /// </summary>
@@ -644,15 +554,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.Desensitized(input, type);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 边界和异常情况测试
-
     /// <summary>
     /// 测试 - 极长字符串处理
     /// </summary>
@@ -661,7 +567,6 @@ public class DesensitizedHelperTest
     {
         // Arrange
         var longString = new string('A', 10000);
-
         // Act & Assert
         Should.NotThrow(() =>
         {
@@ -671,7 +576,6 @@ public class DesensitizedHelperTest
             result.Substring(1).ShouldAllBe(c => c == '*');
         });
     }
-
     /// <summary>
     /// 测试 - 特殊字符混合处理
     /// </summary>
@@ -683,15 +587,11 @@ public class DesensitizedHelperTest
     {
         // Act
         var result = DesensitizedHelper.Desensitized(input, type);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 兼容性测试
-
     /// <summary>
     /// 测试 - 向后兼容性验证
     /// </summary>
@@ -708,6 +608,5 @@ public class DesensitizedHelperTest
         DesensitizedHelper.IPv4("192.168.1.1").ShouldBe("192.*.*.*");
         DesensitizedHelper.IPv6("2001:0db8:86a3:08d3:1319:8a2e:0370:7344").ShouldBe("2001:*:*:*:*:*:*:*");
     }
-
     #endregion
 }

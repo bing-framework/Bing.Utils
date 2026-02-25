@@ -1,8 +1,6 @@
-﻿using Bing.Utils.Signatures;
+using Bing.Utils.Signatures;
 using Bing.Utils.Tests.Helpers;
-
 namespace Bing.Utils.Tests.Signatures;
-
 /// <summary>
 /// 签名管理器测试
 /// </summary>
@@ -12,7 +10,6 @@ public class SignManagerTest : TestBase
     /// 签名管理器
     /// </summary>
     private readonly SignManager _manager;
-
     /// <summary>
     /// 初始化一个<see cref="SignManagerTest"/>类型的实例
     /// </summary>
@@ -20,7 +17,6 @@ public class SignManagerTest : TestBase
     {
         _manager = new SignManager(new SignKey(EncryptTest.RsaKey));
     }
-
     /// <summary>
     /// 测试 - 签名
     /// </summary>
@@ -32,7 +28,6 @@ public class SignManagerTest : TestBase
         Output.WriteLine(_manager.Sign());
         Assert.Equal(result, _manager.Sign());
     }
-
     /// <summary>
     /// 测试 - 签名
     /// </summary>

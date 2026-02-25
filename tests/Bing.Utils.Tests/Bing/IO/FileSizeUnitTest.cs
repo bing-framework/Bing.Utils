@@ -1,14 +1,11 @@
-﻿using Bing.Extensions;
-
+using Bing.Extensions;
 namespace Bing.IO;
-
 /// <summary>
 /// 文件大小单位 测试
 /// </summary>
 public class FileSizeUnitTest
 {
     #region 基础功能测试
-
     /// <summary>
     /// 测试 - Description - 获取单位描述
     /// </summary>
@@ -23,11 +20,9 @@ public class FileSizeUnitTest
     {
         // Act
         var result = unit.Description();
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Description - 可空单位
     /// </summary>
@@ -37,16 +32,13 @@ public class FileSizeUnitTest
         // Arrange
         FileSizeUnit? unit = FileSizeUnit.G;
         FileSizeUnit? nullUnit = null;
-
         // Act
         var result = unit.Description();
         var nullResult = nullUnit.Description();
-
         // Assert
         result.ShouldBe("GB");
         nullResult.ShouldBe(string.Empty);
     }
-
     /// <summary>
     /// 测试 - GetByteMultiplier - 获取字节倍数
     /// </summary>
@@ -61,15 +53,11 @@ public class FileSizeUnitTest
     {
         // Act
         var result = unit.GetByteMultiplier();
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 单位转换测试
-
     /// <summary>
     /// 测试 - ConvertFromBytes - 从字节转换
     /// </summary>
@@ -84,11 +72,9 @@ public class FileSizeUnitTest
     {
         // Act
         var result = unit.ConvertFromBytes(bytes);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - ConvertFromBytes - 从字节转换为指定单位
     /// </summary>
@@ -102,11 +88,9 @@ public class FileSizeUnitTest
     {
         // Act
         var result = unit.ConvertFromBytes(bytes, precision);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - ConvertFromBytes - 负数字节抛出异常
     /// </summary>
@@ -116,7 +100,6 @@ public class FileSizeUnitTest
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.ConvertFromBytes(-1));
     }
-
     /// <summary>
     /// 测试 - ConvertFromBytes - 负数字节应抛出异常
     /// </summary>
@@ -127,7 +110,6 @@ public class FileSizeUnitTest
         Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.ConvertFromBytes(-1))
             .ParamName.ShouldBe("bytes");
     }
-
     /// <summary>
     /// 测试 - ConvertFromBytes - 负数精度应抛出异常
     /// </summary>
@@ -138,7 +120,6 @@ public class FileSizeUnitTest
         Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.ConvertFromBytes(1024, -1))
             .ParamName.ShouldBe("precision");
     }
-
     /// <summary>
     /// 测试 - ConvertToBytes - 转换为字节数
     /// </summary>
@@ -152,11 +133,9 @@ public class FileSizeUnitTest
     {
         // Act
         var result = unit.ConvertToBytes(value);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - ConvertToBytes - 负数值抛出异常
     /// </summary>
@@ -167,7 +146,6 @@ public class FileSizeUnitTest
         Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.ConvertToBytes(-1.0))
             .ParamName.ShouldBe("value");
     }
-
     /// <summary>
     /// 测试 - ConvertToBytes - 溢出应抛出异常
     /// </summary>
@@ -178,11 +156,8 @@ public class FileSizeUnitTest
         Should.Throw<OverflowException>(() => FileSizeUnit.P.ConvertToBytes(double.MaxValue))
             .Message.ShouldContain("转换结果超出长整型范围");
     }
-
     #endregion
-
     #region 格式化测试
-
     /// <summary>
     /// 测试 - FormatSize - 格式化文件大小
     /// </summary>
@@ -198,11 +173,9 @@ public class FileSizeUnitTest
     {
         // Act
         var result = unit.FormatSize(value, precision);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - FormatSize - 自动移除尾随零
     /// </summary>
@@ -215,11 +188,9 @@ public class FileSizeUnitTest
     {
         // Act
         var result = unit.FormatSize(value, precision);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - FormatSize - 负数精度应抛出异常
     /// </summary>
@@ -230,11 +201,8 @@ public class FileSizeUnitTest
         Should.Throw<ArgumentOutOfRangeException>(() => FileSizeUnit.K.FormatSize(1.5, -1))
             .ParamName.ShouldBe("precision");
     }
-
     #endregion
-
     #region 兼容性和集成测试
-
     /// <summary>
     /// 测试 - Value - 获取枚举值
     /// </summary>
@@ -249,14 +217,11 @@ public class FileSizeUnitTest
     {
         // Arrange
         FileSizeUnit? nullableUnit = unit;
-
         // Act
         var result = nullableUnit.Value();
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Value - 空单位返回null
     /// </summary>
@@ -265,14 +230,11 @@ public class FileSizeUnitTest
     {
         // Arrange
         FileSizeUnit? nullUnit = null;
-
         // Act
         var result = nullUnit.Value();
-
         // Assert
         result.ShouldBeNull();
     }
-
     /// <summary>
     /// 测试 - 往返转换一致性
     /// </summary>
@@ -286,10 +248,8 @@ public class FileSizeUnitTest
         // Act
         var bytes = unit.ConvertToBytes(originalValue);
         var convertedBack = unit.ConvertFromBytes(bytes);
-
         // Assert - 允许微小的浮点精度差异
         Math.Abs(convertedBack - originalValue).ShouldBeLessThan(0.01);
     }
-
     #endregion
 }

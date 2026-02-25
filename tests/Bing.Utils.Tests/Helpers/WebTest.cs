@@ -1,13 +1,11 @@
-﻿//using System.IO;
+//using System.IO;
 //using System.Net;
 //using System.Threading.Tasks;
 //using Bing.Helpers;
 //using Bing.IO;
 //using Bing.Text;
 //using Xunit.Abstractions;
-
 //namespace Bing.Utils.Tests.Helpers;
-
 ///// <summary>
 ///// Web操作测试
 ///// </summary>
@@ -19,7 +17,6 @@
 //    public WebTest(ITestOutputHelper output) : base(output)
 //    {
 //    }
-
 //    /// <summary>
 //    /// 测试客户端上传文件
 //    /// </summary>
@@ -33,7 +30,6 @@
 //            .ResultAsync();
 //        Output.WriteLine(result);
 //    }
-
 //    /// <summary>
 //    /// 测试客户端网页访问
 //    /// </summary>
@@ -48,7 +44,6 @@
 //        await WriteFile("https://www.cnblogs.com");
 //        await WriteFile("https://www.cnblogs.com/artech/p/logging-for-net-core-05.html");
 //    }
-
 //    private async Task WriteFile(string url)
 //    {
 //        var path = @"D:\Test\File\";
@@ -60,7 +55,6 @@
 //        var key = Bing.Utils.Randoms.GuidRandomGenerator.Instance.Generate();
 //        await File.WriteAllBytesAsync($"{path}test_{key}.txt", result.ToBytes());
 //    }
-
 //    /// <summary>
 //    /// 测试获取主机
 //    /// </summary>
@@ -69,7 +63,6 @@
 //    {
 //        Output.WriteLine(Web.Host);
 //    }
-
 //    /// <summary>
 //    /// 测试获取客户端IP地址
 //    /// </summary>
@@ -78,7 +71,6 @@
 //    {
 //        Output.WriteLine(Ip.GetIp());
 //    }
-
 //    /// <summary>
 //    /// 测试获取本地IP
 //    /// </summary>
@@ -87,13 +79,11 @@
 //    {
 //        Output.WriteLine(Web.LocalIpAddress);
 //    }
-
 //    [Fact]
 //    public void Test_LocalIpAddress_1()
 //    {
 //        Output.WriteLine(GetLocalIPAddress());
 //    }
-
 //    private string GetLocalIPAddress()
 //    {
 //        string AddressIP = string.Empty;

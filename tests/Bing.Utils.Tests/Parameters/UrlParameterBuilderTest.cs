@@ -1,7 +1,5 @@
-﻿using Bing.Utils.Parameters;
-
+using Bing.Utils.Parameters;
 namespace Bing.Utils.Tests.Parameters;
-
 /// <summary>
 /// Url参数生成器测试
 /// </summary>
@@ -11,12 +9,10 @@ public class UrlParameterBuilderTest
     /// Url参数生成器
     /// </summary>
     private UrlParameterBuilder _builder;
-
     /// <summary>
     /// 初始化一个<see cref="UrlParameterBuilderTest"/>类型的实例
     /// </summary>
     public UrlParameterBuilderTest() => _builder = new UrlParameterBuilder();
-
     /// <summary>
     /// 测试 - 默认值
     /// </summary>
@@ -25,7 +21,6 @@ public class UrlParameterBuilderTest
     {
         Assert.Empty(_builder.Result());
     }
-
     /// <summary>
     /// 测试 - 加载Url
     /// </summary>
@@ -35,7 +30,6 @@ public class UrlParameterBuilderTest
         _builder = new UrlParameterBuilder("a");
         Assert.Equal(0, _builder.GetDictionary().Count);
     }
-
     /// <summary>
     /// 测试 - 加载Url
     /// </summary>
@@ -45,7 +39,6 @@ public class UrlParameterBuilderTest
         _builder = new UrlParameterBuilder("a=b");
         Assert.Equal(1, _builder.GetDictionary().Count);
     }
-
     /// <summary>
     /// 测试 - 加载Url
     /// </summary>
@@ -55,7 +48,6 @@ public class UrlParameterBuilderTest
         _builder = new UrlParameterBuilder("a=1&b=2");
         Assert.Equal(2, _builder.GetDictionary().Count);
     }
-
     /// <summary>
     /// 测试 - 加载Url
     /// </summary>
@@ -65,7 +57,6 @@ public class UrlParameterBuilderTest
         _builder = new UrlParameterBuilder("a=1&b");
         Assert.Equal(1, _builder.GetDictionary().Count);
     }
-
     /// <summary>
     /// 测试 - 加载Url
     /// </summary>
@@ -75,7 +66,6 @@ public class UrlParameterBuilderTest
         _builder = new UrlParameterBuilder("a=1&b=");
         Assert.Equal(1, _builder.GetDictionary().Count);
     }
-
     /// <summary>
     /// 测试 - 加载Url
     /// </summary>
@@ -86,7 +76,6 @@ public class UrlParameterBuilderTest
         Assert.Equal(3, _builder.GetDictionary().Count);
         Assert.Equal("a=1&b=2&c=3", _builder.Result(true));
     }
-
     /// <summary>
     /// 测试 - 加载Url
     /// </summary>
@@ -96,7 +85,6 @@ public class UrlParameterBuilderTest
         _builder = new UrlParameterBuilder("http://test.com ? b = 2 & c & a = 1 ");
         Assert.Equal("a=1&b=2", _builder.Result(true));
     }
-
     /// <summary>
     /// 测试 - 添加参数
     /// </summary>
@@ -106,7 +94,6 @@ public class UrlParameterBuilderTest
         Assert.Equal("a=b", _builder.Add("a", "b").Result());
         Assert.Equal("a=b&c=d", _builder.Add("c", "d").Result());
     }
-
     /// <summary>
     /// 测试 - 添加参数 - 测试空格
     /// </summary>
@@ -115,7 +102,6 @@ public class UrlParameterBuilderTest
     {
         Assert.Equal("b=2&a=1", _builder.Add(" b ", " 2 ").Add(" a ", " 1 ").Result());
     }
-
     /// <summary>
     /// 测试 - 添加参数 - 测试排序
     /// </summary>
@@ -124,7 +110,6 @@ public class UrlParameterBuilderTest
     {
         Assert.Equal("a=1&b=2", _builder.Add("b", "2").Add("a", "1").Result(true));
     }
-
     /// <summary>
     /// 测试 - 连接Url
     /// </summary>

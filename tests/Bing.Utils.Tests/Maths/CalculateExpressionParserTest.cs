@@ -1,7 +1,5 @@
-﻿using Bing.Utils.Maths;
-
+using Bing.Utils.Maths;
 namespace Bing.Utils.Tests.Maths;
-
 /// <summary>
 /// 计算表达式解析器
 /// </summary>
@@ -22,7 +20,6 @@ public class CalculateExpressionParserTest
         Assert.Equal(CalculationSymbol.Number, nodes[6].Symbol);
         Assert.Equal(1, nodes[6].Value);
     }
-
     [Fact]
     public void Test_GetNode_100()
     {
@@ -30,7 +27,6 @@ public class CalculateExpressionParserTest
         var nodes = parser.GetAllNodes().ToList();
         Assert.Equal(100.0, nodes[0].Value);
     }
-
     [Fact]
     public void Test_GetNode_123()
     {
@@ -38,7 +34,6 @@ public class CalculateExpressionParserTest
         var nodes = parser.GetAllNodes().ToList();
         Assert.Equal(123.0, nodes[0].Value);
     }
-
     [Fact]
     public void Test_GetNode_1230()
     {
@@ -46,7 +41,6 @@ public class CalculateExpressionParserTest
         var nodes = parser.GetAllNodes().ToList();
         Assert.Equal(123.0, nodes[0].Value);
     }
-
     [Fact]
     public void Test_GetNode_12301()
     {
@@ -54,7 +48,6 @@ public class CalculateExpressionParserTest
         var nodes = parser.GetAllNodes().ToList();
         Assert.Equal(123.01, nodes[0].Value);
     }
-
     [Fact]
     public void Test_GetNode_123456()
     {

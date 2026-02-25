@@ -1,7 +1,5 @@
-﻿using Bing.Helpers;
-
+using Bing.Helpers;
 namespace Bing.Utils.Tests.Helpers;
-
 /// <summary>
 /// 正则操作测试
 /// </summary>
@@ -13,7 +11,6 @@ public class RegexsTest : TestBase
     public RegexsTest(ITestOutputHelper output) : base(output)
     {
     }
-
     /// <summary>
     /// 测试获取值
     /// </summary>
@@ -31,7 +28,6 @@ public class RegexsTest : TestBase
     {
         Assert.Equal(result, Regexs.GetValue(input, pattern, resultPattern));
     }
-
     /// <summary>
     /// 测试获取值集合
     /// </summary>

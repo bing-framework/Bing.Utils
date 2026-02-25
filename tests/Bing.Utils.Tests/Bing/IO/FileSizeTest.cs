@@ -1,12 +1,10 @@
-﻿namespace Bing.IO;
-
+namespace Bing.IO;
 /// <summary>
 /// 测试文件大小
 /// </summary>
 public class FileSizeTest
 {
     #region 构造函数测试
-
     /// <summary>
     /// 测试 - FileSize构造函数 - 正确计算不同单位的字节大小
     /// </summary>
@@ -23,11 +21,9 @@ public class FileSizeTest
     {
         // Act
         var fileSize = new FileSize(size, unit);
-
         // Assert
         fileSize.Size.ShouldBe(expectedBytes);
     }
-
     /// <summary>
     /// 测试 - FileSize构造函数 - 负数应抛出异常
     /// </summary>
@@ -38,7 +34,6 @@ public class FileSizeTest
         Should.Throw<ArgumentOutOfRangeException>(() => new FileSize(-1, FileSizeUnit.Byte))
             .ParamName.ShouldBe("size");
     }
-
     /// <summary>
     /// 测试 - FileSize构造函数 - 溢出应抛出异常
     /// </summary>
@@ -48,11 +43,8 @@ public class FileSizeTest
         // Act & Assert
         Should.Throw<OverflowException>(() => new FileSize(long.MaxValue, FileSizeUnit.P));
     }
-
     #endregion
-
     #region 工厂方法测试
-
     /// <summary>
     /// 测试 - FromBytes工厂方法 - 正确创建实例
     /// </summary>
@@ -64,11 +56,9 @@ public class FileSizeTest
     {
         // Act
         var fileSize = FileSize.FromBytes(bytes);
-
         // Assert
         fileSize.Size.ShouldBe(expectedSize);
     }
-
     /// <summary>
     /// 测试 - FromBytes工厂方法 - 负数应抛出异常
     /// </summary>
@@ -79,7 +69,6 @@ public class FileSizeTest
         Should.Throw<ArgumentOutOfRangeException>(() => FileSize.FromBytes(-1))
             .ParamName.ShouldBe("bytes");
     }
-
     /// <summary>
     /// 测试 - Parse方法 - 正确解析字符串
     /// </summary>
@@ -92,11 +81,9 @@ public class FileSizeTest
     {
         // Act
         var fileSize = FileSize.Parse(sizeString);
-
         // Assert
         fileSize.Size.ShouldBe(expectedBytes);
     }
-
     /// <summary>
     /// 测试 - Parse方法 - 无效字符串应抛出异常
     /// </summary>
@@ -110,7 +97,6 @@ public class FileSizeTest
         // Act & Assert
         Should.Throw<ArgumentException>(() => FileSize.Parse(invalidString));
     }
-
     /// <summary>
     /// 测试 - TryParse方法 - 正确解析有效字符串
     /// </summary>
@@ -123,16 +109,12 @@ public class FileSizeTest
     {
         // Act
         var success = FileSize.TryParse(input, out var fileSize);
-
         // Assert
         success.ShouldBe(expectedSuccess);
         fileSize.Size.ShouldBe(expectedBytes);
     }
-
     #endregion
-
     #region 单位转换测试
-
     /// <summary>
     /// 测试 - GetLongSize - 返回正确的字节大小
     /// </summary>
@@ -144,14 +126,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = new FileSize(inputSize, FileSizeUnit.Byte);
-
         // Act
         var result = fileSize.GetLongSize();
-
         // Assert
         result.ShouldBe(expectedSize);
     }
-
     /// <summary>
     /// 测试 - GetSize通用方法 - 返回指定单位的正确大小
     /// </summary>
@@ -163,14 +142,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(bytes);
-
         // Act
         var result = fileSize.GetSize(unit, precision);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetSizeByK - 返回正确的KB大小
     /// </summary>
@@ -184,14 +160,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(bytes);
-
         // Act
         var result = fileSize.GetSizeByK();
-
         // Assert
         result.ShouldBe(expectedKB);
     }
-
     /// <summary>
     /// 测试 - GetSizeByM - 返回正确的MB大小
     /// </summary>
@@ -204,14 +177,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = new FileSize(bytes, FileSizeUnit.Byte);
-
         // Act
         var result = fileSize.GetSizeByM();
-
         // Assert
         result.ShouldBe(expectedMB);
     }
-
     /// <summary>
     /// 测试 - GetSizeByG - 返回正确的GB大小
     /// </summary>
@@ -223,14 +193,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = new FileSize(bytes, FileSizeUnit.Byte);
-
         // Act
         var result = fileSize.GetSizeByG();
-
         // Assert
         result.ShouldBe(expectedGB);
     }
-
     /// <summary>
     /// 测试 - GetSizeByT - 返回正确的TB大小
     /// </summary>
@@ -242,14 +209,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = new FileSize(bytes, FileSizeUnit.Byte);
-
         // Act
         var result = fileSize.GetSizeByT();
-
         // Assert
         result.ShouldBe(expectedTB);
     }
-
     /// <summary>
     /// 测试 - GetSizeByP - 返回正确的PB大小
     /// </summary>
@@ -261,18 +225,13 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = new FileSize(bytes, FileSizeUnit.Byte);
-
         // Act
         var result = fileSize.GetSizeByP();
-
         // Assert
         result.ShouldBe(expectedPB);
     }
-
     #endregion
-
     #region GetOptimalUnit 测试
-
     /// <summary>
     /// 测试 - GetOptimalUnit - 返回最适合的单位
     /// </summary>
@@ -288,19 +247,14 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(bytes);
-
         // Act
         var (value, unit) = fileSize.GetOptimalUnit();
-
         // Assert
         value.ShouldBe(expectedValue);
         unit.ShouldBe(expectedUnit);
     }
-
     #endregion
-
     #region ToString 测试
-
     /// <summary>
     /// 测试 - ToString方法重载 - 返回正确格式
     /// </summary>
@@ -312,14 +266,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(bytes);
-
         // Act
         var result = fileSize.ToString(unit, precision);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - ToString默认方法 - 自动选择最佳单位
     /// </summary>
@@ -336,18 +287,13 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(bytes);
-
         // Act
         var result = fileSize.ToString();
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 运算符重载测试
-
     /// <summary>
     /// 测试 - 加法运算符 - 正确计算结果
     /// </summary>
@@ -357,14 +303,11 @@ public class FileSizeTest
         // Arrange
         var size1 = FileSize.FromBytes(1024);
         var size2 = FileSize.FromBytes(512);
-
         // Act
         var result = size1 + size2;
-
         // Assert
         result.Size.ShouldBe(1536);
     }
-
     /// <summary>
     /// 测试 - 减法运算符 - 正确计算结果
     /// </summary>
@@ -374,14 +317,11 @@ public class FileSizeTest
         // Arrange
         var size1 = FileSize.FromBytes(1024);
         var size2 = FileSize.FromBytes(512);
-
         // Act
         var result = size1 - size2;
-
         // Assert
         result.Size.ShouldBe(512);
     }
-
     /// <summary>
     /// 测试 - 减法运算符 - 结果为负数应抛出异常
     /// </summary>
@@ -391,11 +331,9 @@ public class FileSizeTest
         // Arrange
         var size1 = FileSize.FromBytes(512);
         var size2 = FileSize.FromBytes(1024);
-
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() => size1 - size2);
     }
-
     /// <summary>
     /// 测试 - 乘法运算符 - 正确计算结果
     /// </summary>
@@ -407,14 +345,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(originalBytes);
-
         // Act
         var result = fileSize * multiplier;
-
         // Assert
         result.Size.ShouldBe(expectedBytes);
     }
-
     /// <summary>
     /// 测试 - 乘法运算符 - 负数倍数应抛出异常
     /// </summary>
@@ -423,11 +358,9 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(1024);
-
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() => fileSize * -1.0);
     }
-
     /// <summary>
     /// 测试 - 除法运算符 - 正确计算结果
     /// </summary>
@@ -439,14 +372,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(originalBytes);
-
         // Act
         var result = fileSize / divisor;
-
         // Assert
         result.Size.ShouldBe(expectedBytes);
     }
-
     /// <summary>
     /// 测试 - 除法运算符 - 零除数应抛出异常
     /// </summary>
@@ -455,15 +385,11 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(1024);
-
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() => fileSize / 0.0);
     }
-
     #endregion
-
     #region 类型转换测试
-
     /// <summary>
     /// 测试 - 隐式转换 - 从长整型转换为FileSize
     /// </summary>
@@ -475,11 +401,9 @@ public class FileSizeTest
     {
         // Act
         FileSize fileSize = bytes;
-
         // Assert
         fileSize.Size.ShouldBe(bytes);
     }
-
     /// <summary>
     /// 测试 - 显式转换 - 从FileSize转换为长整型
     /// </summary>
@@ -491,18 +415,13 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = FileSize.FromBytes(bytes);
-
         // Act
         var result = (long)fileSize;
-
         // Assert
         result.ShouldBe(bytes);
     }
-
     #endregion
-
     #region 相等性和比较测试
-
     /// <summary>
     /// 测试 - Equals - 相同大小应返回true
     /// </summary>
@@ -512,13 +431,11 @@ public class FileSizeTest
         // Arrange
         var fileSize1 = new FileSize(1024, FileSizeUnit.Byte);
         var fileSize2 = new FileSize(1, FileSizeUnit.K);
-
         // Act & Assert
         fileSize1.Equals(fileSize2).ShouldBeTrue();
         (fileSize1 == fileSize2).ShouldBeTrue();
         (fileSize1 != fileSize2).ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试 - Equals - 不同大小应返回false
     /// </summary>
@@ -528,13 +445,11 @@ public class FileSizeTest
         // Arrange
         var fileSize1 = new FileSize(1024, FileSizeUnit.Byte);
         var fileSize2 = new FileSize(2048, FileSizeUnit.Byte);
-
         // Act & Assert
         fileSize1.Equals(fileSize2).ShouldBeFalse();
         (fileSize1 == fileSize2).ShouldBeFalse();
         (fileSize1 != fileSize2).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - CompareTo - 返回正确的比较结果
     /// </summary>
@@ -547,14 +462,11 @@ public class FileSizeTest
         // Arrange
         var fileSize1 = new FileSize(size1, FileSizeUnit.Byte);
         var fileSize2 = new FileSize(size2, FileSizeUnit.Byte);
-
         // Act
         var result = fileSize1.CompareTo(fileSize2);
-
         // Assert
         Math.Sign(result).ShouldBe(expectedSign);
     }
-
     /// <summary>
     /// 测试 - 比较运算符 - 返回正确结果
     /// </summary>
@@ -565,7 +477,6 @@ public class FileSizeTest
         var small = new FileSize(1024, FileSizeUnit.Byte);
         var large = new FileSize(2048, FileSizeUnit.Byte);
         var equal = new FileSize(1024, FileSizeUnit.Byte);
-
         // Act & Assert
         (small < large).ShouldBeTrue();
         (large > small).ShouldBeTrue();
@@ -574,7 +485,6 @@ public class FileSizeTest
         (small <= large).ShouldBeTrue();
         (large >= small).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - GetHashCode - 相等对象应有相同哈希码
     /// </summary>
@@ -584,15 +494,11 @@ public class FileSizeTest
         // Arrange
         var fileSize1 = new FileSize(1024, FileSizeUnit.Byte);
         var fileSize2 = new FileSize(1, FileSizeUnit.K);
-
         // Act & Assert
         fileSize1.GetHashCode().ShouldBe(fileSize2.GetHashCode());
     }
-
     #endregion
-
     #region 边界值测试
-
     /// <summary>
     /// 测试 - 边界值 - 零值处理
     /// </summary>
@@ -601,14 +507,12 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = new FileSize(0, FileSizeUnit.Byte);
-
         // Act & Assert
         fileSize.Size.ShouldBe(0);
         fileSize.GetSizeByK().ShouldBe(0);
         fileSize.GetSizeByM().ShouldBe(0);
         fileSize.ToString().ShouldBe("0 B");
     }
-
     /// <summary>
     /// 测试 - 边界值 - 最大值处理
     /// </summary>
@@ -617,11 +521,9 @@ public class FileSizeTest
     {
         // Arrange
         var fileSize = new FileSize(long.MaxValue, FileSizeUnit.Byte);
-
         // Act & Assert
         fileSize.Size.ShouldBe(long.MaxValue);
         fileSize.GetLongSize().ShouldBe(long.MaxValue);
     }
-
     #endregion
 }

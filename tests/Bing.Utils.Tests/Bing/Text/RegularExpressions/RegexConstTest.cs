@@ -1,12 +1,10 @@
-﻿namespace Bing.Text.RegularExpressions;
-
+namespace Bing.Text.RegularExpressions;
 /// <summary>
 /// 正则表达式常量 测试
 /// </summary>
 public class RegexConstTest
 {
     #region 基础字符和数字测试
-
     /// <summary>
     /// 测试 - General - 英文字母数字下划线完整匹配
     /// </summary>
@@ -26,11 +24,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.General);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Numbers - 数字匹配
     /// </summary>
@@ -47,11 +43,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Numbers);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Word - 英文字母匹配
     /// </summary>
@@ -70,15 +64,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Word);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 中文相关测试
-
     /// <summary>
     /// 测试 - Chinese - 单个中文字符匹配
     /// </summary>
@@ -97,11 +87,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Chinese);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Chineses - 一个或多个中文字符
     /// </summary>
@@ -119,11 +107,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Chineses);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GeneralWithChinese - 中文字母数字下划线
     /// </summary>
@@ -141,11 +127,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.GeneralWithChinese);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - ChineseName - 中文姓名
     /// </summary>
@@ -164,15 +148,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.ChineseName);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 网络相关测试
-
     /// <summary>
     /// 测试 - IPv4 - IP地址格式
     /// </summary>
@@ -193,11 +173,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.IPv4);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IPv6 - IPv6地址格式
     /// </summary>
@@ -214,11 +192,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.IPv6);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - MacAddress - MAC地址格式
     /// </summary>
@@ -237,15 +213,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.MacAddress);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region URL和URI测试
-
     /// <summary>
     /// 测试 - Uri - URI格式
     /// </summary>
@@ -262,11 +234,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Uri);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Url - URL格式
     /// </summary>
@@ -282,11 +252,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Url);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - UrlByHttp - HTTP/HTTPS/FTP/File URL
     /// </summary>
@@ -303,15 +271,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.UrlByHttp);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 邮箱测试
-
     /// <summary>
     /// 测试 - Email - 标准邮箱格式
     /// </summary>
@@ -330,11 +294,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Email);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     ///// <summary>
     ///// 测试 - EmailWithChinese - 支持中文的邮箱
     ///// </summary>
@@ -351,15 +313,11 @@ public class RegexConstTest
     //{
     //    // Act
     //    var result = Regex.IsMatch(input, RegexConst.EmailWithChinese);
-
     //    // Assert
     //    result.ShouldBe(expected);
     //}
-
     #endregion
-
     #region 电话号码测试
-
     /// <summary>
     /// 测试 - Mobile - 中国大陆手机号码
     /// </summary>
@@ -379,11 +337,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Mobile);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - MobileByHK - 中国香港手机号码
     /// </summary>
@@ -400,11 +356,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.MobileByHK);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - MobileByTW - 中国台湾手机号码
     /// </summary>
@@ -421,11 +375,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.MobileByTW);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - MobileByMO - 中国澳门手机号码
     /// </summary>
@@ -443,11 +395,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.MobileByMO);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Tel - 座机号码
     /// </summary>
@@ -465,11 +415,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Tel);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - TEL_400_800 - 座机400800电话
     /// </summary>
@@ -487,15 +435,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Tel400800);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 身份证和证件测试
-
     /// <summary>
     /// 测试 - CitizenId - 18位身份证号码
     /// </summary>
@@ -514,15 +458,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.CitizenId);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 车辆相关测试
-
     /// <summary>
     /// 测试 - PlateNumber - 中国车牌号码
     /// </summary>
@@ -539,11 +479,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.PlateNumber);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - CarVin - 车架号
     /// </summary>
@@ -562,11 +500,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.CarVin);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - CarDrivingLicence - 驾驶证档案编号
     /// </summary>
@@ -582,15 +518,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.CarDrivingLicence);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 日期时间测试
-
     /// <summary>
     /// 测试 - Birthday - 生日格式
     /// </summary>
@@ -609,11 +541,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Birthday);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Time - 时间格式
     /// </summary>
@@ -631,15 +561,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Time);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 编码和标识测试
-
     /// <summary>
     /// 测试 - Uuid - 标准UUID格式
     /// </summary>
@@ -655,11 +581,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Uuid);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - UuidSimple - 不带连字符的UUID
     /// </summary>
@@ -677,11 +601,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.UuidSimple);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Hex - 16进制字符串
     /// </summary>
@@ -699,15 +621,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Hex);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 中国特色标识测试
-
     /// <summary>
     /// 测试 - ZipCode - 邮政编码
     /// </summary>
@@ -726,11 +644,9 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.ZipCode);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - CreditCode - 统一社会信用代码
     /// </summary>
@@ -747,15 +663,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.CreditCode);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 货币和金额测试
-
     /// <summary>
     /// 测试 - Money - 货币金额格式
     /// </summary>
@@ -776,15 +688,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.Money);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 分组变量测试
-
     /// <summary>
     /// 测试 - GroupVar - 分组变量
     /// </summary>
@@ -802,15 +710,11 @@ public class RegexConstTest
     {
         // Act
         var result = Regex.IsMatch(input, RegexConst.GroupVar);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 边界和异常情况测试
-
     /// <summary>
     /// 测试 - 空字符串和null处理
     /// </summary>
@@ -820,16 +724,13 @@ public class RegexConstTest
         // Arrange
         var emptyString = "";
         string nullString = null;
-
         // Act & Assert
         Should.NotThrow(() => Regex.IsMatch(emptyString, RegexConst.General));
         Should.NotThrow(() => Regex.IsMatch(emptyString, RegexConst.Email));
         Should.NotThrow(() => Regex.IsMatch(emptyString, RegexConst.Mobile));
-
         // null 字符串测试
         Should.Throw<ArgumentNullException>(() => Regex.IsMatch(nullString, RegexConst.General));
     }
-
     /// <summary>
     /// 测试 - 极长字符串处理
     /// </summary>
@@ -839,16 +740,13 @@ public class RegexConstTest
         // Arrange
         var longString = new string('a', 10000);
         var longNumberString = new string('1', 1000);
-
         // Act & Assert
         Should.NotThrow(() => Regex.IsMatch(longString, RegexConst.Word));
         Should.NotThrow(() => Regex.IsMatch(longNumberString, RegexConst.Numbers));
-
         // 验证结果
         Regex.IsMatch(longString, RegexConst.Word).ShouldBeTrue();
         Regex.IsMatch(longNumberString, RegexConst.Numbers).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 特殊Unicode字符处理
     /// </summary>
@@ -862,17 +760,14 @@ public class RegexConstTest
     {
         // Act
         var wordResult = Regex.IsMatch(input, RegexConst.Word);
-
         // Assert
         wordResult.ShouldBe(expectedForWord);
-
         // 验证中文正则能正确处理
         if (input.Contains('测') || input.Contains('试'))
         {
             Regex.IsMatch(input, RegexConst.Chinese).ShouldBeTrue();
         }
     }
-
     /// <summary>
     /// 测试 - 正则表达式性能
     /// </summary>
@@ -888,7 +783,6 @@ public class RegexConstTest
             "测试中文内容",
             "abc123_test"
         };
-
         // Act & Assert
         Should.CompleteIn(() =>
         {
@@ -905,11 +799,8 @@ public class RegexConstTest
             }
         }, TimeSpan.FromSeconds(5)); // 应该在5秒内完成
     }
-
     #endregion
-
     #region 综合场景测试
-
     /// <summary>
     /// 测试 - 真实数据验证场景
     /// </summary>
@@ -924,12 +815,10 @@ public class RegexConstTest
             "test.email.with+symbol@example.co.uk",
             "simple@example.org"
         };
-
         foreach (var email in emails)
         {
             Regex.IsMatch(email, RegexConst.Email).ShouldBeTrue($"邮箱 {email} 应该匹配");
         }
-
         // 真实的手机号码
         var mobiles = new[]
         {
@@ -938,12 +827,10 @@ public class RegexConstTest
             "18611111111",
             "+8613912345678"
         };
-
         foreach (var mobile in mobiles)
         {
             Regex.IsMatch(mobile, RegexConst.Mobile).ShouldBeTrue($"手机号 {mobile} 应该匹配");
         }
-
         // 真实的身份证号码格式
         var idCards = new[]
         {
@@ -951,13 +838,11 @@ public class RegexConstTest
             "44030119900101123X",
             "51010219900101123x"
         };
-
         foreach (var idCard in idCards)
         {
             Regex.IsMatch(idCard, RegexConst.CitizenId).ShouldBeTrue($"身份证号 {idCard} 应该匹配");
         }
     }
-
     /// <summary>
     /// 测试 - 组合验证场景
     /// </summary>
@@ -978,13 +863,11 @@ public class RegexConstTest
         var emailResult = Regex.IsMatch(input, RegexConst.Email);
         var mobileResult = Regex.IsMatch(input, RegexConst.Mobile);
         var chineseResult = Regex.IsMatch(input, RegexConst.Chinese);
-
         // Assert
         nameResult.ShouldBe(isName);
         emailResult.ShouldBe(isEmail);
         mobileResult.ShouldBe(isMobile);
         chineseResult.ShouldBe(hasChinese);
     }
-
     #endregion
 }

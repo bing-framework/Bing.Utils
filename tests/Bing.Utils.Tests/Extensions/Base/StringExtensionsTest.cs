@@ -1,9 +1,7 @@
-﻿using Bing.Extensions;
+using Bing.Extensions;
 using Bing.Text;
-
 // ReSharper disable once CheckNamespace
 namespace Bing.Utils.Tests.Extensions;
-
 /// <summary>
 /// 字符串(<see cref="string"/>) 扩展测试 - 操作
 /// </summary>
@@ -19,7 +17,6 @@ public class StringExtensionsTest
         var result = string.Empty;
         Assert.Equal(result, input.Repeat(10));
     }
-
     /// <summary>
     /// 测试 - 重复指定字符串 - 空格
     /// </summary>
@@ -30,7 +27,6 @@ public class StringExtensionsTest
         var result = "     ";
         Assert.Equal(result, input.Repeat(5));
     }
-
     /// <summary>
     /// 测试 - 重复指定字符串 - 字符 - 数字
     /// </summary>
@@ -41,7 +37,6 @@ public class StringExtensionsTest
         var result = "11";
         Assert.Equal(result, input.Repeat(2));
     }
-
     /// <summary>
     /// 测试 - 重复指定字符串 - 字符 - 字母
     /// </summary>
@@ -52,7 +47,6 @@ public class StringExtensionsTest
         var result = "aa";
         Assert.Equal(result, input.Repeat(2));
     }
-
     /// <summary>
     /// 测试 - 重复指定字符串 - 字符 - 符号
     /// </summary>
@@ -63,7 +57,6 @@ public class StringExtensionsTest
         var result = "##";
         Assert.Equal(result, input.Repeat(2));
     }
-
     /// <summary>
     /// 测试 - 重复指定字符串 - 字符 - 汉字
     /// </summary>
@@ -74,7 +67,6 @@ public class StringExtensionsTest
         var result = "隔隔";
         Assert.Equal(result, input.Repeat(2));
     }
-
     /// <summary>
     /// 测试 - 重复指定字符串 - 字符串 - 数字
     /// </summary>
@@ -85,7 +77,6 @@ public class StringExtensionsTest
         var result = "1111";
         Assert.Equal(result, input.Repeat(2));
     }
-
     /// <summary>
     /// 测试 - 重复指定字符串 - 字符串 - 字母
     /// </summary>
@@ -96,7 +87,6 @@ public class StringExtensionsTest
         var result = "AAAA";
         Assert.Equal(result, input.Repeat(2));
     }
-
     /// <summary>
     /// 测试 - 重复指定字符串 - 字符串 - 符号
     /// </summary>
@@ -107,7 +97,6 @@ public class StringExtensionsTest
         var result = "####";
         Assert.Equal(result, input.Repeat(2));
     }
-
     /// <summary>
     /// 测试 - 重复指定字符串 - 字符串 - 汉字
     /// </summary>
@@ -118,7 +107,6 @@ public class StringExtensionsTest
         var result = "隔壁隔壁";
         Assert.Equal(result, input.Repeat(2));
     }
-
     /// <summary>
     /// 测试 - 提取指定范围字符串
     /// </summary>
@@ -133,7 +121,6 @@ public class StringExtensionsTest
     {
         Assert.Equal(result, input.ExtractAround(index, left, right));
     }
-
     /// <summary>
     /// 测试 - 提取字符串中所有字母以及数字
     /// </summary>
@@ -145,7 +132,6 @@ public class StringExtensionsTest
     {
         Assert.Equal(result, input.ExtractLettersNumbers());
     }
-
     /// <summary>
     /// 测试 - 提取字符串中所有数字
     /// </summary>
@@ -158,7 +144,6 @@ public class StringExtensionsTest
     {
         Assert.Equal(result, input.ExtractNumbers());
     }
-
     /// <summary>
     /// 测试 - 提取字符串中所有字母
     /// </summary>
@@ -171,7 +156,6 @@ public class StringExtensionsTest
     {
         Assert.Equal(result, input.ExtractLetters());
     }
-
     /// <summary>
     /// 测试 - 提取字符串中所有汉字
     /// </summary>
@@ -183,7 +167,6 @@ public class StringExtensionsTest
     {
         Assert.Equal(result, input.ExtractChinese());
     }
-        
     /// <summary>
     /// 测试 - 过滤字符
     /// </summary>

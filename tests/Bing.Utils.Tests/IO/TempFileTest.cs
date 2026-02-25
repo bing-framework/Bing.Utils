@@ -1,7 +1,5 @@
-﻿using Bing.IO;
-
+using Bing.IO;
 namespace Bing.Utils.Tests.IO;
-
 /// <summary>
 /// 临时文件 测试
 /// </summary>
@@ -13,21 +11,16 @@ public class TempFileTest : TestBase
     public TempFileTest(ITestOutputHelper output) : base(output)
     {
     }
-
     [Fact]
     public void Test_TempFileRemoveItself()
     {
         var tempFile = new TempFile();
         Output.WriteLine(tempFile.FullPath);
         Output.WriteLine(tempFile.Name);
-
         File.Exists(tempFile.FullPath).ShouldBeTrue();
-
         tempFile.Dispose();
-
         File.Exists(tempFile.FullPath).ShouldBeFalse();
     }
-
     [Fact]
     public void Test_TempFileCanSetPrefix()
     {
@@ -35,7 +28,6 @@ public class TempFileTest : TestBase
         using var tempFile = new TempFile(prefix);
         Output.WriteLine(tempFile.FullPath);
         Output.WriteLine(tempFile.Name);
-
         tempFile.Name.ShouldStartWith(prefix);
     }
 }

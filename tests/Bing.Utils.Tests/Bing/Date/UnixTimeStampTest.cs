@@ -1,8 +1,6 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Globalization;
-
 namespace Bing.Date;
-
 /// <summary>
 /// Unix时间戳类测试
 /// </summary>
@@ -10,7 +8,6 @@ namespace Bing.Date;
 public class UnixTimeStampTest
 {
     #region 常量测试
-
     /// <summary>
     /// 测试 - 常量定义 - 验证Unix纪元和边界值
     /// </summary>
@@ -23,7 +20,6 @@ public class UnixTimeStampTest
         UnixTimeStamp.MaxUnixTimestamp32Bit.ShouldBe(2147483647L);
         UnixTimeStamp.MaxUnixTimestamp.ShouldBeGreaterThan(UnixTimeStamp.MaxUnixTimestamp32Bit);
     }
-
     /// <summary>
     /// 测试 - 常量计算 - 验证MaxUnixTimestamp延迟计算
     /// </summary>
@@ -33,20 +29,15 @@ public class UnixTimeStampTest
         // Act
         var maxTimestamp1 = UnixTimeStamp.MaxUnixTimestamp;
         var maxTimestamp2 = UnixTimeStamp.MaxUnixTimestamp;
-
         // Assert
         maxTimestamp1.ShouldBe(maxTimestamp2); // 验证缓存机制
         maxTimestamp1.ShouldBeGreaterThan(0);
-
         // 验证计算结果的合理性
         var expectedMax = (long)(DateTime.MaxValue.ToUniversalTime() - UnixTimeStamp.UnixEpoch).TotalSeconds;
         maxTimestamp1.ShouldBe(expectedMax);
     }
-
     #endregion
-
     #region 构造函数测试
-
     /// <summary>
     /// 测试 - 默认构造函数 - 使用当前时间
     /// </summary>
@@ -55,18 +46,14 @@ public class UnixTimeStampTest
     {
         // Arrange
         var beforeCreation = UnixTimeStamp.Now();
-
         // Act
         var unixTimeStamp = new UnixTimeStamp();
-
         // Assert
         var afterCreation = UnixTimeStamp.Now();
         var actualTimestamp = unixTimeStamp.ToTimestamp();
-
         actualTimestamp.ShouldBeGreaterThanOrEqualTo(beforeCreation - 1);
         actualTimestamp.ShouldBeLessThanOrEqualTo(afterCreation + 1);
     }
-
     /// <summary>
     /// 测试 - Unix时间戳构造函数 - 有效时间戳
     /// </summary>
@@ -79,15 +66,12 @@ public class UnixTimeStampTest
     {
         // Act
         var unixTimeStampObj = new UnixTimeStamp(unixTimestamp);
-
         // Assert
         unixTimeStampObj.ToTimestamp().ShouldBe(unixTimestamp);
-
         var expectedUtcTime = UnixTimeStamp.UnixEpoch.AddSeconds(unixTimestamp);
         var actualUtcTime = unixTimeStampObj.ToUtcDateTime();
         actualUtcTime.ShouldBe(expectedUtcTime);
     }
-
     /// <summary>
     /// 测试 - Unix时间戳构造函数 - 无效时间戳
     /// </summary>
@@ -100,7 +84,6 @@ public class UnixTimeStampTest
         Should.Throw<ArgumentOutOfRangeException>(() => new UnixTimeStamp(invalidTimestamp))
             .ParamName.ShouldBe("timestamp");
     }
-
     /// <summary>
     /// 测试 - DateTime构造函数 - 各种时区
     /// </summary>
@@ -119,15 +102,12 @@ public class UnixTimeStampTest
             DateTimeKind.Unspecified => DateTime.SpecifyKind(baseUtcTime, DateTimeKind.Unspecified),
             _ => throw new ArgumentException("Invalid DateTimeKind")
         };
-
         // Act
         var unixTimeStamp = new UnixTimeStamp(testDateTime);
-
         // Assert
         var expectedUnixTimestamp = (long)(baseUtcTime - UnixTimeStamp.UnixEpoch).TotalSeconds;
         unixTimeStamp.ToTimestamp().ShouldBe(expectedUnixTimestamp);
     }
-
     /// <summary>
     /// 测试 - 受保护构造函数 - 直接设置时间和时间戳
     /// </summary>
@@ -137,20 +117,14 @@ public class UnixTimeStampTest
         // Arrange
         var testDateTime = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Local);
         var testTimestamp = 1704110400L; // 对应的Unix时间戳
-
         // Act - 通过公共构造函数间接测试受保护构造函数
         var unixTimeStamp = new UnixTimeStamp(testTimestamp);
-
         // Assert
         unixTimeStamp.ToTimestamp().ShouldBe(testTimestamp);
         Assert.NotNull(unixTimeStamp.ToDateTime());
     }
-
-
     #endregion
-
     #region 转换方法测试
-
     /// <summary>
     /// 测试 - ToDateTime - 返回正确的本地时间
     /// </summary>
@@ -162,14 +136,11 @@ public class UnixTimeStampTest
         var expectedUtcTime = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         var expectedLocalTime = expectedUtcTime.ToLocalTime();
         var unixTimeStamp = new UnixTimeStamp(unixTimestamp);
-
         // Act
         var actualLocalTime = unixTimeStamp.ToDateTime();
-
         // Assert
         actualLocalTime.ShouldBe(expectedLocalTime);
     }
-
     /// <summary>
     /// 测试 - ToUtcDateTime - 返回正确的UTC时间
     /// </summary>
@@ -180,14 +151,11 @@ public class UnixTimeStampTest
         var unixTimestamp = 1640995200L; // 2022-01-01 00:00:00 UTC
         var expectedUtcTime = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         var unixTimeStamp = new UnixTimeStamp(unixTimestamp);
-
         // Act
         var actualUtcTime = unixTimeStamp.ToUtcDateTime();
-
         // Assert
         actualUtcTime.ShouldBe(expectedUtcTime);
     }
-
     /// <summary>
     /// 测试 - ToTimestamp - 返回正确的Unix时间戳
     /// </summary>
@@ -197,14 +165,11 @@ public class UnixTimeStampTest
         // Arrange
         var expectedTimestamp = 1640995200L;
         var unixTimeStamp = new UnixTimeStamp(expectedTimestamp);
-
         // Act
         var actualTimestamp = unixTimeStamp.ToTimestamp();
-
         // Assert
         actualTimestamp.ShouldBe(expectedTimestamp);
     }
-
     /// <summary>
     /// 测试 - 双向转换一致性
     /// </summary>
@@ -214,25 +179,19 @@ public class UnixTimeStampTest
         // Arrange
         var originalUnixTimestamp = 1640995200L;
         var originalDateTime = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
         // Act - Unix timestamp -> UnixTimeStamp -> Unix timestamp
         var timeStampFromUnix = new UnixTimeStamp(originalUnixTimestamp);
         var convertedUnixTimestamp = timeStampFromUnix.ToTimestamp();
-
         // Act - DateTime -> UnixTimeStamp -> DateTime
         var timeStampFromDateTime = new UnixTimeStamp(originalDateTime);
         var convertedUtcDateTime = timeStampFromDateTime.ToUtcDateTime();
-
         // Assert
         convertedUnixTimestamp.ShouldBe(originalUnixTimestamp);
         convertedUtcDateTime.ShouldBe(originalDateTime);
         timeStampFromUnix.ToTimestamp().ShouldBe(timeStampFromDateTime.ToTimestamp());
     }
-
     #endregion
-
     #region 静态方法测试
-
     /// <summary>
     /// 测试 - Now - 返回当前Unix时间戳
     /// </summary>
@@ -241,16 +200,13 @@ public class UnixTimeStampTest
     {
         // Arrange
         var beforeCall = (long)(DateTime.Now.ToUniversalTime() - UnixTimeStamp.UnixEpoch).TotalSeconds;
-
         // Act
         var nowTimestamp = UnixTimeStamp.Now();
-
         // Assert
         var afterCall = (long)(DateTime.Now.ToUniversalTime() - UnixTimeStamp.UnixEpoch).TotalSeconds;
         nowTimestamp.ShouldBeGreaterThanOrEqualTo(beforeCall);
         nowTimestamp.ShouldBeLessThanOrEqualTo(afterCall);
     }
-
     /// <summary>
     /// 测试 - UtcNow - 返回当前UTC Unix时间戳
     /// </summary>
@@ -259,16 +215,13 @@ public class UnixTimeStampTest
     {
         // Arrange
         var beforeCall = (long)(DateTime.UtcNow - UnixTimeStamp.UnixEpoch).TotalSeconds;
-
         // Act
         var utcNowTimestamp = UnixTimeStamp.UtcNow();
-
         // Assert
         var afterCall = (long)(DateTime.UtcNow - UnixTimeStamp.UnixEpoch).TotalSeconds;
         utcNowTimestamp.ShouldBeGreaterThanOrEqualTo(beforeCall);
         utcNowTimestamp.ShouldBeLessThanOrEqualTo(afterCall);
     }
-
     /// <summary>
     /// 测试 - CreateNow和CreateUtcNow - 创建时间戳对象
     /// </summary>
@@ -278,15 +231,12 @@ public class UnixTimeStampTest
         // Act
         var nowStamp = UnixTimeStamp.CreateNow();
         var utcNowStamp = UnixTimeStamp.CreateUtcNow();
-
         // Assert
         nowStamp.ShouldNotBeNull();
         utcNowStamp.ShouldNotBeNull();
-
         var timeDiff = Math.Abs(nowStamp.ToTimestamp() - utcNowStamp.ToTimestamp());
         timeDiff.ShouldBeLessThanOrEqualTo(1); // 应该在1秒内
     }
-
     /// <summary>
     /// 测试 - FromUnixTime - 从Unix时间戳创建
     /// </summary>
@@ -295,14 +245,11 @@ public class UnixTimeStampTest
     {
         // Arrange
         var unixTimestamp = 1640995200L;
-
         // Act
         var unixTimeStamp = UnixTimeStamp.FromUnixTime(unixTimestamp);
-
         // Assert
         unixTimeStamp.ToTimestamp().ShouldBe(unixTimestamp);
     }
-
     /// <summary>
     /// 测试 - FromUnixTimeMilliseconds - 从毫秒级时间戳创建
     /// </summary>
@@ -312,14 +259,11 @@ public class UnixTimeStampTest
         // Arrange
         var millisecondsTimestamp = 1640995200000L; // 毫秒级
         var expectedSeconds = 1640995200L;
-
         // Act
         var unixTimeStamp = UnixTimeStamp.FromUnixTimeMilliseconds(millisecondsTimestamp);
-
         // Assert
         unixTimeStamp.ToTimestamp().ShouldBe(expectedSeconds);
     }
-
     /// <summary>
     /// 测试 - FromUnixTimeMilliseconds - 毫秒精度丢失处理
     /// </summary>
@@ -331,15 +275,11 @@ public class UnixTimeStampTest
     {
         // Act
         var unixTimeStamp = UnixTimeStamp.FromUnixTimeMilliseconds(millisecondsTimestamp);
-
         // Assert
         unixTimeStamp.ToTimestamp().ShouldBe(expectedSeconds);
     }
-
     #endregion
-
     #region 实用工具方法测试
-
     /// <summary>
     /// 测试 - ToUnixTimeMilliseconds - 转换为毫秒级时间戳
     /// </summary>
@@ -350,14 +290,11 @@ public class UnixTimeStampTest
         var unixTimestamp = 1640995200L;
         var expectedMilliseconds = 1640995200000L;
         var unixTimeStamp = new UnixTimeStamp(unixTimestamp);
-
         // Act
         var actualMilliseconds = unixTimeStamp.ToUnixTimeMilliseconds();
-
         // Assert
         actualMilliseconds.ShouldBe(expectedMilliseconds);
     }
-
     /// <summary>
     /// 测试 - IsAfter2038Problem - 检查2038年问题
     /// </summary>
@@ -369,14 +306,11 @@ public class UnixTimeStampTest
     {
         // Arrange
         var unixTimeStamp = new UnixTimeStamp(timestamp);
-
         // Act
         var result = unixTimeStamp.IsAfter2038Problem();
-
         // Assert
         result.ShouldBe(expectedResult);
     }
-
     /// <summary>
     /// 测试 - GetDaysSinceEpoch - 计算距离纪元的天数
     /// </summary>
@@ -392,14 +326,11 @@ public class UnixTimeStampTest
     {
         // Arrange
         var unixTimeStamp = new UnixTimeStamp(timestamp);
-
         // Act
         var actualDays = unixTimeStamp.GetDaysSinceEpoch();
-
         // Assert
         actualDays.ShouldBe(expectedDays);
     }
-
     /// <summary>
     /// 测试 - Add方法系列 - 时间加法运算
     /// </summary>
@@ -413,7 +344,6 @@ public class UnixTimeStampTest
         // Arrange
         var baseTimestamp = 1640995200L; // 2022-01-01 00:00:00 UTC
         var unixTimeStamp = new UnixTimeStamp(baseTimestamp);
-
         var expectedTimestamp = methodName switch
         {
             "AddSeconds" => baseTimestamp + value,
@@ -422,7 +352,6 @@ public class UnixTimeStampTest
             "AddDays" => baseTimestamp + value * 86400,
             _ => baseTimestamp
         };
-
         // Act
         var result = methodName switch
         {
@@ -432,11 +361,9 @@ public class UnixTimeStampTest
             "AddDays" => unixTimeStamp.AddDays(value),
             _ => unixTimeStamp
         };
-
         // Assert
         result.ToTimestamp().ShouldBe(expectedTimestamp);
     }
-
     /// <summary>
     /// 测试 - Add方法系列 - 负值处理
     /// </summary>
@@ -450,7 +377,6 @@ public class UnixTimeStampTest
         // Arrange
         var baseTimestamp = 1640995200L; // 2022-01-01 00:00:00 UTC
         var unixTimeStamp = new UnixTimeStamp(baseTimestamp);
-
         // Act
         var result = methodName switch
         {
@@ -460,12 +386,10 @@ public class UnixTimeStampTest
             "AddDays" => unixTimeStamp.AddDays(value),
             _ => unixTimeStamp
         };
-
         // Assert
         result.ToTimestamp().ShouldBeLessThan(baseTimestamp);
         result.ShouldBeOfType<UnixTimeStamp>();
     }
-
     /// <summary>
     /// 测试 - Add和Subtract方法 - TimeSpan重载
     /// </summary>
@@ -475,22 +399,17 @@ public class UnixTimeStampTest
         // Arrange
         var unixTimeStamp = new UnixTimeStamp(1640995200L);
         var timeSpan = TimeSpan.FromHours(2);
-
         // Act
         var addResult = unixTimeStamp.Add(timeSpan);
         var subtractResult = unixTimeStamp.Subtract(timeSpan);
-
         // Assert
         addResult.ShouldBeOfType<UnixTimeStamp>();
         subtractResult.ShouldBeOfType<UnixTimeStamp>();
-
         var addedUnix = addResult as UnixTimeStamp;
         var subtractedUnix = subtractResult as UnixTimeStamp;
-
         addedUnix.ToTimestamp().ShouldBe(unixTimeStamp.ToTimestamp() + (long)timeSpan.TotalSeconds);
         subtractedUnix.ToTimestamp().ShouldBe(unixTimeStamp.ToTimestamp() - (long)timeSpan.TotalSeconds);
     }
-
     /// <summary>
     /// 测试 - Add和Subtract方法 - 精度处理
     /// </summary>
@@ -500,19 +419,14 @@ public class UnixTimeStampTest
         // Arrange
         var unixTimeStamp = new UnixTimeStamp(1640995200L);
         var timeSpanWithMilliseconds = new TimeSpan(0, 0, 0, 1, 500); // 1.5秒
-
         // Act
         var addResult = unixTimeStamp.Add(timeSpanWithMilliseconds) as UnixTimeStamp;
-
         // Assert
         // 由于Unix时间戳是秒级精度，毫秒部分会被截断
         addResult.ToTimestamp().ShouldBe(unixTimeStamp.ToTimestamp() + 1);
     }
-
     #endregion
-
     #region 格式化方法测试
-
     /// <summary>
     /// 测试 - ToIso8601String - ISO 8601格式
     /// </summary>
@@ -522,14 +436,11 @@ public class UnixTimeStampTest
         // Arrange
         var unixTimestamp = 1640995200L; // 2022-01-01 00:00:00 UTC
         var unixTimeStamp = new UnixTimeStamp(unixTimestamp);
-
         // Act
         var result = unixTimeStamp.ToIso8601String();
-
         // Assert
         result.ShouldBe("2022-01-01T00:00:00Z");
     }
-
     /// <summary>
     /// 测试 - ToRfc2822String - RFC 2822格式
     /// </summary>
@@ -539,14 +450,11 @@ public class UnixTimeStampTest
         // Arrange
         var unixTimestamp = 1640995200L; // 2022-01-01 00:00:00 UTC (Saturday)
         var unixTimeStamp = new UnixTimeStamp(unixTimestamp);
-
         // Act
         var result = unixTimeStamp.ToRfc2822String();
-
         // Assert
         result.ShouldBe("Sat, 01 Jan 2022 00:00:00 GMT");
     }
-
     /// <summary>
     /// 测试 - 格式化方法 - 文化无关性
     /// </summary>
@@ -557,16 +465,13 @@ public class UnixTimeStampTest
         var unixTimestamp = 1640995200L;
         var unixTimeStamp = new UnixTimeStamp(unixTimestamp);
         var originalCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
-
         try
         {
             // 设置不同的文化
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("zh-CN");
-
             // Act
             var iso8601 = unixTimeStamp.ToIso8601String();
             var rfc2822 = unixTimeStamp.ToRfc2822String();
-
             // Assert
             iso8601.ShouldBe("2022-01-01T00:00:00Z");
             rfc2822.ShouldBe("Sat, 01 Jan 2022 00:00:00 GMT");
@@ -576,7 +481,6 @@ public class UnixTimeStampTest
             System.Threading.Thread.CurrentThread.CurrentCulture = originalCulture;
         }
     }
-
     /// <summary>
     /// 测试 - ToRelativeString - 相对时间字符串
     /// </summary>
@@ -593,14 +497,11 @@ public class UnixTimeStampTest
         var currentTimestamp = UnixTimeStamp.UtcNow();
         var testTimestamp = currentTimestamp + offsetSeconds;
         var unixTimeStamp = new UnixTimeStamp(testTimestamp);
-
         // Act
         var result = unixTimeStamp.ToRelativeString();
-
         // Assert
         result.ShouldContain(expectedPattern.Split('前', '后')[0]); // 检查数值和单位
     }
-
     /// <summary>
     /// 测试 - ToRelativeString - 边界值处理
     /// </summary>
@@ -616,19 +517,14 @@ public class UnixTimeStampTest
         var currentTimestamp = UnixTimeStamp.UtcNow();
         var testTimestamp = currentTimestamp + offsetSeconds;
         var unixTimeStamp = new UnixTimeStamp(testTimestamp);
-
         // Act
         var result = unixTimeStamp.ToRelativeString();
-
         // Assert
         var expectedNumber = expectedPattern.Split('秒', '分', '小', '天', '个', '年')[0];
         result.ShouldContain(expectedNumber);
     }
-
     #endregion
-
     #region 继承关系测试
-
     /// <summary>
     /// 测试 - 继承关系 - UnixTimeStamp继承自TimeStamp
     /// </summary>
@@ -637,19 +533,15 @@ public class UnixTimeStampTest
     {
         // Arrange & Act
         var unixTimeStamp = new UnixTimeStamp();
-
         // Assert
         unixTimeStamp.ShouldBeOfType<UnixTimeStamp>();
         unixTimeStamp.ShouldBeAssignableTo<TimeStamp>();
-
         // 验证可以调用基类方法
         var dateTime = unixTimeStamp.ToDateTime();
         var timestamp = unixTimeStamp.ToTimestamp();
-
         dateTime.ShouldBeOfType<DateTime>();
         timestamp.ShouldBeOfType<long>();
     }
-
     /// <summary>
     /// 测试 - 多态性 - 基类引用指向派生类对象
     /// </summary>
@@ -658,19 +550,15 @@ public class UnixTimeStampTest
     {
         // Arrange
         TimeStamp baseRef = new UnixTimeStamp(1640995200L);
-
         // Act
         var dateTime = baseRef.ToDateTime();
         var timestamp = baseRef.ToTimestamp();
-
         // Assert
         timestamp.ShouldBe(1640995200L);
         Assert.NotNull(dateTime);
-
         // 验证运行时类型
         baseRef.ShouldBeOfType<UnixTimeStamp>();
     }
-
     /// <summary>
     /// 测试 - 静态方法隐藏 - new关键字的正确行为
     /// </summary>
@@ -680,17 +568,14 @@ public class UnixTimeStampTest
         // Act
         var timeStampNow = TimeStamp.Now();
         var unixTimeStampNow = UnixTimeStamp.Now();
-
         // Assert
         // UnixTimeStamp.Now()应该返回Unix时间戳，而不是.NET Ticks
         unixTimeStampNow.ShouldBeLessThan(timeStampNow); // Unix时间戳比Ticks要小得多
-
         // 验证Unix时间戳的合理范围（应该在当前年份附近）
         var currentYear = DateTime.Now.Year;
         var expectedUnixRange = (long)(new DateTime(currentYear - 1, 1, 1) - UnixTimeStamp.UnixEpoch).TotalSeconds;
         unixTimeStampNow.ShouldBeGreaterThan(expectedUnixRange);
     }
-
     /// <summary>
     /// 测试 - 方法重写 - virtual方法的正确重写
     /// </summary>
@@ -700,27 +585,20 @@ public class UnixTimeStampTest
         // Arrange
         var unixTimeStamp = new UnixTimeStamp(1640995200L);
         var timeSpan = TimeSpan.FromHours(1);
-
         // Act
         TimeStamp baseAddResult = unixTimeStamp.Add(timeSpan);
         TimeStamp baseSubtractResult = unixTimeStamp.Subtract(timeSpan);
-
         // Assert
         baseAddResult.ShouldBeOfType<UnixTimeStamp>();
         baseSubtractResult.ShouldBeOfType<UnixTimeStamp>();
-
         // 验证多态调用的正确性
         var addedUnix = (UnixTimeStamp)baseAddResult;
         var subtractedUnix = (UnixTimeStamp)baseSubtractResult;
-
         addedUnix.ToTimestamp().ShouldBe(1640995200L + 3600L);
         subtractedUnix.ToTimestamp().ShouldBe(1640995200L - 3600L);
     }
-
     #endregion
-
     #region 边界条件测试
-
     /// <summary>
     /// 测试 - Unix纪元时间处理
     /// </summary>
@@ -729,13 +607,11 @@ public class UnixTimeStampTest
     {
         // Arrange & Act
         var epochStamp = new UnixTimeStamp(0);
-
         // Assert
         epochStamp.ToTimestamp().ShouldBe(0);
         epochStamp.ToUtcDateTime().ShouldBe(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc));
         epochStamp.GetDaysSinceEpoch().ShouldBe(0);
     }
-
     /// <summary>
     /// 测试 - 2038年问题边界
     /// </summary>
@@ -745,16 +621,13 @@ public class UnixTimeStampTest
         // Arrange
         var boundaryTimestamp = UnixTimeStamp.MaxUnixTimestamp32Bit;
         var unixTimeStamp = new UnixTimeStamp(boundaryTimestamp);
-
         // Act & Assert
         unixTimeStamp.IsAfter2038Problem().ShouldBeFalse();
         unixTimeStamp.ToTimestamp().ShouldBe(boundaryTimestamp);
-
         // 2038-01-19 03:14:07 UTC
         var expectedUtcTime = new DateTime(2038, 1, 19, 3, 14, 7, DateTimeKind.Utc);
         unixTimeStamp.ToUtcDateTime().ShouldBe(expectedUtcTime);
     }
-
     /// <summary>
     /// 测试 - 最大Unix时间戳处理
     /// </summary>
@@ -763,15 +636,12 @@ public class UnixTimeStampTest
     {
         // Arrange
         var maxTimestamp = UnixTimeStamp.MaxUnixTimestamp;
-
         // Act & Assert
         Should.NotThrow(() => new UnixTimeStamp(maxTimestamp));
-
         var unixTimeStamp = new UnixTimeStamp(maxTimestamp);
         unixTimeStamp.IsAfter2038Problem().ShouldBeTrue();
         unixTimeStamp.ToTimestamp().ShouldBe(maxTimestamp);
     }
-
     /// <summary>
     /// 测试 - 超出最大值的时间戳
     /// </summary>
@@ -780,12 +650,10 @@ public class UnixTimeStampTest
     {
         // Arrange
         var overMaxTimestamp = UnixTimeStamp.MaxUnixTimestamp + 1;
-
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() => new UnixTimeStamp(overMaxTimestamp))
             .ParamName.ShouldBe("timestamp");
     }
-
     /// <summary>
     /// 测试 - 时间戳算术运算的边界处理
     /// </summary>
@@ -795,18 +663,13 @@ public class UnixTimeStampTest
         // Arrange
         var nearMaxTimestamp = UnixTimeStamp.MaxUnixTimestamp - 1000;
         var unixTimeStamp = new UnixTimeStamp(nearMaxTimestamp);
-
         // Act & Assert
         Should.NotThrow(() => unixTimeStamp.AddSeconds(500));
-
         var result = unixTimeStamp.AddSeconds(500);
         result.ToTimestamp().ShouldBe(nearMaxTimestamp + 500);
     }
-
     #endregion
-
     #region 兼容性测试
-
     /// <summary>
     /// 测试 - NowUnixTimeStamp - 过时属性兼容性
     /// </summary>
@@ -815,18 +678,15 @@ public class UnixTimeStampTest
     {
         // Arrange
         var beforeCall = UnixTimeStamp.Now();
-
         // Act
 #pragma warning disable CS0618 // 类型或成员已过时
         var timestamp = UnixTimeStamp.NowUnixTimeStamp();
 #pragma warning restore CS0618 // 类型或成员已过时
-
         // Assert
         var afterCall = UnixTimeStamp.Now();
         timestamp.ShouldBeGreaterThanOrEqualTo(beforeCall - 1);
         timestamp.ShouldBeLessThanOrEqualTo(afterCall + 1);
     }
-
     /// <summary>
     /// 测试 - UtcNowUnixTimeStamp - 过时属性兼容性
     /// </summary>
@@ -835,18 +695,15 @@ public class UnixTimeStampTest
     {
         // Arrange
         var beforeCall = UnixTimeStamp.UtcNow();
-
         // Act
 #pragma warning disable CS0618 // 类型或成员已过时
         var timestamp = UnixTimeStamp.UtcNowUnixTimeStamp();
 #pragma warning restore CS0618 // 类型或成员已过时
-
         // Assert
         var afterCall = UnixTimeStamp.UtcNow();
         timestamp.ShouldBeGreaterThanOrEqualTo(beforeCall - 1);
         timestamp.ShouldBeLessThanOrEqualTo(afterCall + 1);
     }
-
     /// <summary>
     /// 测试 - 过时属性的委托行为
     /// </summary>
@@ -858,19 +715,14 @@ public class UnixTimeStampTest
         var oldStyleNow = UnixTimeStamp.NowUnixTimeStamp.Invoke();
         var oldStyleUtcNow = UnixTimeStamp.UtcNowUnixTimeStamp.Invoke();
 #pragma warning restore CS0618 // 类型或成员已过时
-
         var newStyleNow = UnixTimeStamp.Now();
         var newStyleUtcNow = UnixTimeStamp.UtcNow();
-
         // Assert
         Math.Abs(oldStyleNow - newStyleNow).ShouldBeLessThanOrEqualTo(1);
         Math.Abs(oldStyleUtcNow - newStyleUtcNow).ShouldBeLessThanOrEqualTo(1);
     }
-
     #endregion
-
     #region 性能测试
-
     /// <summary>
     /// 测试 - 构造函数性能
     /// </summary>
@@ -880,7 +732,6 @@ public class UnixTimeStampTest
         // Arrange
         const int iterations = 100000;
         var unixTimestamp = 1640995200L;
-
         // Act & Assert
         Should.CompleteIn(() =>
         {
@@ -890,7 +741,6 @@ public class UnixTimeStampTest
             }
         }, TimeSpan.FromSeconds(1), $"创建{iterations}个UnixTimeStamp实例应该在1秒内完成");
     }
-
     /// <summary>
     /// 测试 - 转换方法性能
     /// </summary>
@@ -900,7 +750,6 @@ public class UnixTimeStampTest
         // Arrange
         const int iterations = 100000;
         var unixTimeStamp = new UnixTimeStamp();
-
         // Act & Assert
         Should.CompleteIn(() =>
         {
@@ -912,7 +761,6 @@ public class UnixTimeStampTest
             }
         }, TimeSpan.FromSeconds(1), $"执行{iterations}次转换操作应该在1秒内完成");
     }
-
     /// <summary>
     /// 测试 - 静态方法性能
     /// </summary>
@@ -921,7 +769,6 @@ public class UnixTimeStampTest
     {
         // Arrange
         const int iterations = 50000;
-
         // Act & Assert
         Should.CompleteIn(() =>
             {
@@ -934,11 +781,8 @@ public class UnixTimeStampTest
                 }
             }, TimeSpan.FromSeconds(1), $"执行{iterations}次静态方法调用应该在1秒内完成");
     }
-
     #endregion
-
     #region 集成测试
-
     /// <summary>
     /// 测试 - 实际使用场景 - Web API时间戳处理
     /// </summary>
@@ -952,7 +796,6 @@ public class UnixTimeStampTest
             1672531200L, // 2023-01-01 00:00:00 UTC
             1704067200L, // 2024-01-01 00:00:00 UTC
         };
-
         // Act - 处理时间戳
         var processedTimes = apiTimestamps
             .Select(ts => new UnixTimeStamp(ts))
@@ -966,26 +809,21 @@ public class UnixTimeStampTest
                 IsAfter2038 = uts.IsAfter2038Problem()
             })
             .ToList();
-
         // Assert
         processedTimes.Count.ShouldBe(3);
-
         // 验证时间递增
         for (int i = 1; i < processedTimes.Count; i++)
         {
             processedTimes[i].UnixTimestamp.ShouldBeGreaterThan(processedTimes[i - 1].UnixTimestamp);
             processedTimes[i].DaysSinceEpoch.ShouldBeGreaterThan(processedTimes[i - 1].DaysSinceEpoch);
         }
-
         // 验证格式
         processedTimes[0].Iso8601.ShouldBe("2022-01-01T00:00:00Z");
         processedTimes[1].Iso8601.ShouldBe("2023-01-01T00:00:00Z");
         processedTimes[2].Iso8601.ShouldBe("2024-01-01T00:00:00Z");
-
         // 验证2038年问题检测
         processedTimes.ShouldAllBe(p => !p.IsAfter2038);
     }
-
     /// <summary>
     /// 测试 - 实际使用场景 - JavaScript时间戳互操作
     /// </summary>
@@ -998,26 +836,21 @@ public class UnixTimeStampTest
             1640995200000L, // 2022-01-01 00:00:00 UTC (毫秒)
             1672531200500L, // 2023-01-01 00:00:00.500 UTC (毫秒)
         };
-
         // Act - 处理JavaScript时间戳
         var processedFromJs = jsTimestamps
             .Select(UnixTimeStamp.FromUnixTimeMilliseconds)
             .ToList();
-
         // 转换回JavaScript格式
         var convertedToJs = processedFromJs
             .Select(uts => uts.ToUnixTimeMilliseconds())
             .ToList();
-
         // Assert
         convertedToJs[0].ShouldBe(1640995200000L);
         convertedToJs[1].ShouldBe(1672531200000L); // 精度丢失，毫秒部分被截断
-
         // 验证秒级精度保持
         processedFromJs[0].ToTimestamp().ShouldBe(1640995200L);
         processedFromJs[1].ToTimestamp().ShouldBe(1672531200L);
     }
-
     /// <summary>
     /// 测试 - 实际使用场景 - 缓存过期时间管理
     /// </summary>
@@ -1032,7 +865,6 @@ public class UnixTimeStampTest
             new { Key = "session:abc", ExpiresAt = currentTime.AddHours(1) },  // 1小时后过期
             new { Key = "token:xyz", ExpiresAt = currentTime.AddDays(7) },     // 7天后过期
         };
-
         // Act - 检查过期状态
         var now = UnixTimeStamp.CreateUtcNow();
         var expirationInfo = cacheItems.Select(item => new
@@ -1043,23 +875,18 @@ public class UnixTimeStampTest
             RelativeExpiration = item.ExpiresAt.ToRelativeString(),
             DaysUntilExpiration = (item.ExpiresAt.ToTimestamp() - now.ToTimestamp()) / 86400
         }).ToList();
-
         // Assert
         expirationInfo.Count.ShouldBe(3);
-
         // 验证过期时间递增
         for (int i = 1; i < expirationInfo.Count; i++)
         {
             expirationInfo[i].ExpiresAt.ShouldBeGreaterThan(expirationInfo[i - 1].ExpiresAt);
         }
-
         // 通常情况下，新创建的缓存项不应该立即过期
         expirationInfo.ShouldAllBe(info => !info.IsExpired);
-
         // 验证相对过期时间包含"后"字
         expirationInfo.ShouldAllBe(info => info.RelativeExpiration.Contains("后"));
     }
-
     /// <summary>
     /// 测试 - 实际使用场景 - 日志时间戳序列化
     /// </summary>
@@ -1073,7 +900,6 @@ public class UnixTimeStampTest
             new { Level = "WARN", Message = "High memory usage", Timestamp = UnixTimeStamp.CreateUtcNow().AddMinutes(5) },
             new { Level = "ERROR", Message = "Database connection failed", Timestamp = UnixTimeStamp.CreateUtcNow().AddMinutes(10) }
         };
-
         // Act - 序列化为不同格式
         var serializedLogs = logEntries.Select(log => new
         {
@@ -1085,27 +911,21 @@ public class UnixTimeStampTest
             MillisecondsTimestamp = log.Timestamp.ToUnixTimeMilliseconds(),
             DaysSinceEpoch = log.Timestamp.GetDaysSinceEpoch()
         }).ToList();
-
         // Assert
         serializedLogs.Count.ShouldBe(3);
-
         // 验证时间戳递增
         for (int i = 1; i < serializedLogs.Count; i++)
         {
             serializedLogs[i].UnixTimestamp.ShouldBeGreaterThan(serializedLogs[i - 1].UnixTimestamp);
             serializedLogs[i].MillisecondsTimestamp.ShouldBeGreaterThan(serializedLogs[i - 1].MillisecondsTimestamp);
         }
-
         // 验证格式化字符串
         serializedLogs.ShouldAllBe(log => log.Iso8601.EndsWith("Z"));
         serializedLogs.ShouldAllBe(log => log.Rfc2822.EndsWith("GMT"));
         serializedLogs.ShouldAllBe(log => log.MillisecondsTimestamp == log.UnixTimestamp * 1000);
     }
-
     #endregion
-
     #region 线程安全测试
-
     /// <summary>
     /// 测试 - 多线程环境下的静态方法调用
     /// </summary>
@@ -1117,7 +937,6 @@ public class UnixTimeStampTest
         const int operationsPerThread = 1000;
         var results = new ConcurrentBag<long>();
         var tasks = new List<Task>();
-
         // Act
         for (int i = 0; i < threadCount; i++)
         {
@@ -1130,21 +949,16 @@ public class UnixTimeStampTest
                 }
             }));
         }
-
         Task.WaitAll(tasks.ToArray());
-
         // Assert
         results.Count.ShouldBe(threadCount * operationsPerThread);
-
         // 验证所有时间戳都是合理的
         var timestampArray = results.ToArray();
         timestampArray.ShouldAllBe(ts => ts > 0);
-
         // 验证时间戳在合理范围内（当前时间附近）
         var currentTimestamp = UnixTimeStamp.UtcNow();
         timestampArray.ShouldAllBe(ts => Math.Abs(ts - currentTimestamp) < 10); // 10秒内
     }
-
     /// <summary>
     /// 测试 - MaxUnixTimestamp延迟计算的线程安全性
     /// </summary>
@@ -1155,7 +969,6 @@ public class UnixTimeStampTest
         const int threadCount = 20;
         var results = new ConcurrentBag<long>();
         var tasks = new List<Task>();
-
         // Act - 多线程同时访问MaxUnixTimestamp
         for (int i = 0; i < threadCount; i++)
         {
@@ -1165,20 +978,15 @@ public class UnixTimeStampTest
                 results.Add(maxTimestamp);
             }));
         }
-
         Task.WaitAll(tasks.ToArray());
-
         // Assert
         results.Count.ShouldBe(threadCount);
-
         // 所有结果应该相同（延迟计算只执行一次）
         var distinctResults = results.Distinct().ToArray();
         distinctResults.Length.ShouldBe(1);
-
         // 验证计算结果正确
         var expectedMax = (long)(DateTime.MaxValue.ToUniversalTime() - UnixTimeStamp.UnixEpoch).TotalSeconds;
         distinctResults[0].ShouldBe(expectedMax);
     }
-
     #endregion
 }

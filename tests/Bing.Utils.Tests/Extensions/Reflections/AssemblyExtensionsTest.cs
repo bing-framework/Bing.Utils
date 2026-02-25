@@ -1,7 +1,5 @@
-﻿using Bing.Reflection;
-
+using Bing.Reflection;
 namespace Bing.Utils.Tests.Extensions.Reflections;
-
 /// <summary>
 /// 程序集 扩展测试
 /// </summary>
@@ -17,7 +15,6 @@ public class AssemblyExtensionsTest
         var result = AssemblyVisit.GetFileVersion(assembly);
         Assert.Equal("1.0.0.0", result.ToString());
     }
-
     /// <summary>
     /// 测试获取程序集产品版本
     /// </summary>
@@ -28,5 +25,4 @@ public class AssemblyExtensionsTest
         var result = AssemblyVisit.GetProductVersion(assembly);
         Assert.Equal("1.0.0.0", result);
     }
-
 }

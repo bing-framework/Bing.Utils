@@ -1,8 +1,6 @@
-﻿using Bing.Tests.Samples;
+using Bing.Tests.Samples;
 using System.Globalization;
-
 namespace Bing.Helpers;
-
 /// <summary>
 /// 类型转换操作测试
 /// </summary>
@@ -14,9 +12,7 @@ public class ConvTest : TestBase
     public ConvTest(ITestOutputHelper output) : base(output)
     {
     }
-
     #region ToByte
-
     /// <summary>
     /// 测试 - 转换为8位整型
     /// </summary>
@@ -34,11 +30,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToByte(input));
     }
-
     #endregion
-
     #region ToByteOrNull
-
     /// <summary>
     /// 测试 - 转换为8位可空整型
     /// </summary>
@@ -56,11 +49,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToByteOrNull(input));
     }
-
     #endregion
-
     #region ToChar
-
     /// <summary>
     /// 测试 - 转换为字符
     /// </summary>
@@ -75,11 +65,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToChar(input));
     }
-
     #endregion
-
     #region ToCharOrNull
-
     /// <summary>
     /// 测试 - 转换为可空字符
     /// </summary>
@@ -94,11 +81,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToCharOrNull(input));
     }
-
     #endregion
-
     #region ToShort
-
     /// <summary>
     /// 测试 - 转换为16位整型
     /// </summary>
@@ -116,11 +100,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToShort(input));
     }
-
     #endregion
-
     #region ToShortOrNull
-
     /// <summary>
     /// 测试 - 转换为16位可空整型
     /// </summary>
@@ -138,11 +119,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToShortOrNull(input));
     }
-
     #endregion
-
     #region ToInt
-
     /// <summary>
     /// 测试 - 转换为32位整型
     /// </summary>
@@ -160,11 +138,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToInt(input));
     }
-
     #endregion
-
     #region ToIntOrNull
-
     /// <summary>
     /// 测试 - 转换为32位可空整型
     /// </summary>
@@ -182,11 +157,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToIntOrNull(input));
     }
-
     #endregion
-
     #region ToLong
-
     /// <summary>
     /// 测试 - 转换为64位整型
     /// </summary>
@@ -204,11 +176,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToLong(input));
     }
-
     #endregion
-
     #region ToLongOrNull
-
     /// <summary>
     /// 测试 - 转换为64位可空整型
     /// </summary>
@@ -226,11 +195,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToLongOrNull(input));
     }
-
     #endregion
-
     #region ToFloat
-
     /// <summary>
     /// 测试 - 转换为32位浮点型
     /// </summary>
@@ -249,11 +215,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToFloat(input, digits));
     }
-
     #endregion
-
     #region ToFloatOrNull
-
     /// <summary>
     /// 测试 - 转换为32位可空浮点型
     /// </summary>
@@ -272,11 +235,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToFloatOrNull(input, digits));
     }
-
     #endregion
-
     #region ToDouble
-
     /// <summary>
     /// 测试 - 转换为64位浮点型
     /// </summary>
@@ -298,11 +258,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToDouble(input, digits));
     }
-
     #endregion
-
     #region ToDoubleOrNull
-
     /// <summary>
     /// 测试 - 转换为64位可空浮点型
     /// </summary>
@@ -321,11 +278,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToDoubleOrNull(input, digits));
     }
-
     #endregion
-
     #region ToDecimal
-
     /// <summary>
     /// 测试 - 转换为128位浮点型
     /// </summary>
@@ -347,7 +301,6 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToDecimal(input, digits));
     }
-
     /// <summary>
     /// 测试 - 转换为128位浮点型
     /// </summary>
@@ -371,11 +324,8 @@ public class ConvTest : TestBase
         Assert.Equal(result, Conv.ToDecimal(input, 0, digits, MidpointRounding.ToZero));
 #endif
     }
-
     #endregion
-
     #region ToDecimalOrNull
-
     /// <summary>
     /// 测试 - 转换为128位可空浮点型，验证
     /// </summary>
@@ -391,7 +341,6 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToDecimalOrNull(input, digits));
     }
-
     /// <summary>
     /// 测试 - 转换为128位可空浮点型，输入值为"0"
     /// </summary>
@@ -402,11 +351,8 @@ public class ConvTest : TestBase
         Assert.Equal(1.2M, Conv.ToDecimalOrNull("1.2"));
         Assert.Equal(23.46M, Conv.ToDecimalOrNull("23.456", 2));
     }
-
     #endregion
-
     #region ToBool
-
     /// <summary>
     /// 测试 - 转换为布尔型（字符串输入场景）
     /// </summary>
@@ -440,7 +386,6 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToBool(input));
     }
-
     /// <summary>
     /// 测试 - 转换为布尔型（数值输入场景）
     /// </summary>
@@ -457,7 +402,6 @@ public class ConvTest : TestBase
         // 验证数值类型输入的布尔转换
         Assert.Equal(result, Conv.ToBool(input));
     }
-
     /// <summary>
     /// 测试 - 转换为布尔型（bool类型输入）
     /// </summary>
@@ -468,12 +412,10 @@ public class ConvTest : TestBase
         Assert.True(Conv.ToBool(true));
         Assert.False(Conv.ToBool(false));
     }
-
     /// <summary>
     /// 测试 - 转换为布尔型（枚举类型输入）
     /// </summary>
     private enum TestEnum { None = 0, Yes = 1 }
-
     [Fact]
     public void Test_ToBool_EnumInput_ReturnsExpected()
     {
@@ -481,7 +423,6 @@ public class ConvTest : TestBase
         Assert.False(Conv.ToBool(TestEnum.None));
         Assert.True(Conv.ToBool(TestEnum.Yes));
     }
-
     /// <summary>
     /// 测试 - ToBool 边界和特殊情况
     /// </summary>
@@ -511,7 +452,6 @@ public class ConvTest : TestBase
         // 验证 ToBool 方法在各种边界和特殊输入下的健壮性
         Assert.Equal(expected, Conv.ToBool(input));
     }
-
     /// <summary>
     /// 测试 - ToBool 复杂类型输入（如对象、数组）
     /// </summary>
@@ -520,16 +460,13 @@ public class ConvTest : TestBase
     {
         // 数据库空值
         Assert.False(Conv.ToBool(DBNull.Value));
-
         // 普通对象
         object obj = new object();
         Assert.False(Conv.ToBool(obj));
-
         // 数组
         int[] arr = new int[] { 1 };
         Assert.False(Conv.ToBool(arr));
     }
-
     /// <summary>
     /// 测试 - 转换为可空布尔型
     /// </summary>
@@ -555,11 +492,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToBoolOrNull(input));
     }
-
     #endregion
-
     #region ToDate
-
     /// <summary>
     /// 测试 - 转换为日期，验证
     /// </summary>
@@ -570,7 +504,6 @@ public class ConvTest : TestBase
         Assert.Equal(DateTime.MinValue, Conv.ToDate(""));
         Assert.Equal(DateTime.MinValue, Conv.ToDate("1A"));
     }
-
     /// <summary>
     /// 测试 - 转换为日期
     /// </summary>
@@ -579,11 +512,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(new DateTime(2000, 1, 1), Conv.ToDate("2000-1-1"));
     }
-
     #endregion
-
     #region ToDateOrNull
-
     /// <summary>
     /// 测试 - 转换为可空日期，验证
     /// </summary>
@@ -597,7 +527,6 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToDateOrNull(input));
     }
-
     /// <summary>
     /// 测试 - 转换为可空日期
     /// </summary>
@@ -606,11 +535,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(new DateTime(2000, 1, 1), Conv.ToDateOrNull("2000-1-1"));
     }
-
     #endregion
-
     #region ToGuid
-
     /// <summary>
     /// 测试 - 转换为Guid，验证
     /// </summary>
@@ -621,7 +547,6 @@ public class ConvTest : TestBase
         Assert.Equal(Guid.Empty, Conv.ToGuid(""));
         Assert.Equal(Guid.Empty, Conv.ToGuid("1A"));
     }
-
     /// <summary>
     /// 测试 - 转换为Guid
     /// </summary>
@@ -630,11 +555,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(new Guid("B9EB56E9-B720-40B4-9425-00483D311DDC"), Conv.ToGuid("B9EB56E9-B720-40B4-9425-00483D311DDC"));
     }
-
     #endregion
-
     #region ToGuidOrNull
-
     /// <summary>
     /// 测试 - 转换为可空Guid，验证
     /// </summary>
@@ -648,7 +570,6 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToGuidOrNull(input));
     }
-
     /// <summary>
     /// 测试 - 转换为可空Guid
     /// </summary>
@@ -657,11 +578,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(new Guid("B9EB56E9-B720-40B4-9425-00483D311DDC"), Conv.ToGuidOrNull("B9EB56E9-B720-40B4-9425-00483D311DDC"));
     }
-
     #endregion
-
     #region ToGuidList
-
     /// <summary>
     /// 测试 - 转换为Guid集合
     /// </summary>
@@ -670,17 +588,14 @@ public class ConvTest : TestBase
     {
         Assert.Empty(Conv.ToGuidList(null));
         Assert.Empty(Conv.ToGuidList(""));
-
         const string guid = "83B0233C-A24F-49FD-8083-1337209EBC9A";
         Assert.Single(Conv.ToGuidList(guid));
         Assert.Equal(new Guid(guid), Conv.ToGuidList(guid)[0]);
-
         const string guid2 = "83B0233C-A24F-49FD-8083-1337209EBC9A,EAB523C6-2FE7-47BE-89D5-C6D440C3033A";
         Assert.Equal(2, Conv.ToGuidList(guid2).Count);
         Assert.Equal(new Guid("83B0233C-A24F-49FD-8083-1337209EBC9A"), Conv.ToGuidList(guid2)[0]);
         Assert.Equal(new Guid("EAB523C6-2FE7-47BE-89D5-C6D440C3033A"), Conv.ToGuidList(guid2)[1]);
     }
-
     /// <summary>
     /// 测试 - 转换为Guid集合
     /// </summary>
@@ -692,11 +607,8 @@ public class ConvTest : TestBase
         Assert.Equal(new Guid("83B0233C-A24F-49FD-8083-1337209EBC9A"), Conv.ToGuidList(guid)[0]);
         Assert.Equal(new Guid("EAB523C6-2FE7-47BE-89D5-C6D440C3033A"), Conv.ToGuidList(guid)[1]);
     }
-
     #endregion
-
     #region ToBytes
-
     /// <summary>
     /// 测试 - 转换为字节数组 - 默认UTF8编码
     /// </summary>
@@ -706,19 +618,15 @@ public class ConvTest : TestBase
         // 测试空字符串
         var emptyResult = Conv.ToBytes(string.Empty);
         Assert.Empty(emptyResult);
-
         // 测试null
         var nullResult = Conv.ToBytes(null);
         Assert.Empty(nullResult);
-
         // 测试普通字符串
         var input = "测试字符串";
         var expected = Encoding.UTF8.GetBytes(input);
         var result = Conv.ToBytes(input);
-
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - 转换为字节数组 - 指定编码
     /// </summary>
@@ -726,24 +634,18 @@ public class ConvTest : TestBase
     public void Test_ToBytes_SpecificEncoding()
     {
         var input = "测试字符串";
-
         // 测试UTF8编码
         var utf8Result = Conv.ToBytes(input, Encoding.UTF8);
         Assert.Equal(Encoding.UTF8.GetBytes(input), utf8Result);
-
         // 测试ASCII编码
         var asciiResult = Conv.ToBytes(input, Encoding.ASCII);
         Assert.Equal(Encoding.ASCII.GetBytes(input), asciiResult);
-
         // 测试Unicode编码
         var unicodeResult = Conv.ToBytes(input, Encoding.Unicode);
         Assert.Equal(Encoding.Unicode.GetBytes(input), unicodeResult);
     }
-
     #endregion
-
     #region ToBase64
-
     /// <summary>
     /// 测试 - 转换为Base64字符串
     /// </summary>
@@ -752,29 +654,21 @@ public class ConvTest : TestBase
     {
         // 测试空字符串
         Assert.Null(Conv.ToBase64(string.Empty));
-
         // 测试null
         Assert.Null(Conv.ToBase64(null));
-
         // 测试普通字符串
         var input = "Hello World";
         var expected = Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
         var result = Conv.ToBase64(input);
-
         Assert.Equal(expected, result);
-
         // 测试包含中文的字符串
         input = "你好，世界";
         expected = Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
         result = Conv.ToBase64(input);
-
         Assert.Equal(expected, result);
     }
-
     #endregion
-
     #region ToList
-
     /// <summary>
     /// 测试 - 泛型集合转换
     /// </summary>
@@ -786,11 +680,8 @@ public class ConvTest : TestBase
         Assert.Equal(2, Conv.ToList<string>("1,2").Count);
         Assert.Equal(2, Conv.ToList<int>("1,2")[1]);
     }
-
     #endregion
-
     #region To
-
     /// <summary>
     /// 测试 - 通用泛型转换
     /// </summary>
@@ -813,23 +704,19 @@ public class ConvTest : TestBase
         Assert.Equal(12.5, Conv.To<double>("12.5"));
         Assert.Equal(12.5, Conv.To<double?>("12.5"));
         Assert.Equal(12.5M, Conv.To<decimal>("12.5"));
-
         Conv.To<double>("12.5").ShouldBe(12.5);
         Conv.To<double>("0.2").ShouldBe(0.2);
         Conv.To<int>(2.0).ShouldBe(2);
-
         Conv.To<bool>("false").ShouldBe(false);
         Conv.To<bool>("True").ShouldBe(true);
         Conv.To<bool>("False").ShouldBe(false);
         Conv.To<bool>("TrUE").ShouldBe(true);
-
         Assert.Equal(new DateTime(2000, 1, 1), Conv.To<DateTime>("2000-1-1"));
         Assert.Equal(new DateTime(2000, 1, 1), Conv.To<DateTime?>("2000-1-1"));
         var guid = Guid.NewGuid();
         Assert.Equal(guid.ToString(), Conv.To<string>(guid));
         Assert.Equal(EnumSample.C, Conv.To<EnumSample>("c"));
     }
-
     /// <summary>
     /// 测试 - 通用泛型转换 - 转换为整数
     /// </summary>
@@ -848,7 +735,6 @@ public class ConvTest : TestBase
     {
         Assert.Equal(expected, Conv.To<int>(input));
     }
-
     /// <summary>
     /// 测试 - 通用泛型转换 - 转换对象副本
     /// </summary>
@@ -859,7 +745,6 @@ public class ConvTest : TestBase
         var result = Conv.To<Sample4>(sample.GetClone());
         Assert.Equal("a", result?.StringValue);
     }
-
     /// <summary>
     /// 测试 - 通用泛型转换 - 转换Json元素
     /// </summary>
@@ -873,19 +758,14 @@ public class ConvTest : TestBase
         };
         var json = Json.ToJson(dic);
         dic = Json.ToObject<Dictionary<string, object>>(json);
-
         //从字典中获取元素并转换
         var element = dic["b"];
         var result = Conv.To<Sample3>(element);
-
         //验证
         Assert.Equal("b", result?.StringValue);
     }
-
     #endregion
-
     #region ToDictionary
-
     /// <summary>
     /// 测试 - 对象转换为字典(属性名-属性值)
     /// </summary>
@@ -913,7 +793,6 @@ public class ConvTest : TestBase
         Assert.Equal("DisplayName2", result["DisplayName2"]);
         Assert.Equal(2, result["IntValue"]);
     }
-
     /// <summary>
     /// 测试 - 对象转换为字典(属性名-属性值)
     /// </summary>
@@ -941,7 +820,6 @@ public class ConvTest : TestBase
         Assert.Equal("DisplayName2", result["DisplayName2"]);
         Assert.Equal(2, result["IntValue"]);
     }
-
     /// <summary>
     /// 测试 - 对象转换为字典(属性名-属性值) - 传入字典
     /// </summary>
@@ -958,13 +836,9 @@ public class ConvTest : TestBase
         Assert.Equal("a", result["Code"]);
         Assert.Equal(0, result["Price"]);
     }
-
     #endregion
-
     #region ToStringOrDefault
-
     #region 无格式参数的ToStringOrDefault测试
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 正常值
     /// </summary>
@@ -976,20 +850,17 @@ public class ConvTest : TestBase
         decimal? nullableDecimal = 123.45m;
         double? nullableDouble = 9876.54;
         DateTime? nullableDateTime = new DateTime(2025, 6, 18, 15, 30, 0);
-
         // Act
         string intResult = Conv.ToStringOrDefault(nullableInt, "默认整数");
         string decimalResult = Conv.ToStringOrDefault(nullableDecimal, "默认小数");
         string doubleResult = Conv.ToStringOrDefault(nullableDouble, "默认双精度");
         string dateResult = Conv.ToStringOrDefault(nullableDateTime, "默认日期");
-
         // Assert
         Assert.Equal("42", intResult);
         Assert.Equal("123.45", decimalResult);
         Assert.Equal("9876.54", doubleResult);
         Assert.Equal(new DateTime(2025, 6, 18, 15, 30, 0).ToString(), dateResult);
     }
-
     /// <summary>
     /// 测试 - ToStringOrDefault - null值返回默认值
     /// </summary>
@@ -1001,20 +872,17 @@ public class ConvTest : TestBase
         decimal? nullableDecimal = null;
         double? nullableDouble = null;
         DateTime? nullableDateTime = null;
-
         // Act
         string intResult = Conv.ToStringOrDefault(nullableInt, "默认整数");
         string decimalResult = Conv.ToStringOrDefault(nullableDecimal, "默认小数");
         string doubleResult = Conv.ToStringOrDefault(nullableDouble, "默认双精度");
         string dateResult = Conv.ToStringOrDefault(nullableDateTime, "默认日期");
-
         // Assert
         Assert.Equal("默认整数", intResult);
         Assert.Equal("默认小数", decimalResult);
         Assert.Equal("默认双精度", doubleResult);
         Assert.Equal("默认日期", dateResult);
     }
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 默认值为空字符串
     /// </summary>
@@ -1023,14 +891,11 @@ public class ConvTest : TestBase
     {
         // Arrange
         int? nullableInt = null;
-
         // Act
         string result = Conv.ToStringOrDefault(nullableInt, string.Empty);
-
         // Assert
         Assert.Equal(string.Empty, result);
     }
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 默认值为null
     /// </summary>
@@ -1039,18 +904,13 @@ public class ConvTest : TestBase
     {
         // Arrange
         int? nullableInt = null;
-
         // Act
         string result = Conv.ToStringOrDefault(nullableInt, null);
-
         // Assert
         Assert.Null(result);
     }
-
     #endregion
-
     #region 带格式参数的ToStringOrDefault测试
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 带格式 - 数字格式
     /// </summary>
@@ -1059,14 +919,11 @@ public class ConvTest : TestBase
     {
         // Arrange
         decimal? price = 1234.56m;
-
         // Act
         string result = Conv.ToStringOrDefault(price, "N2", "未定价");
-
         // Assert
         Assert.Equal(1234.56m.ToString("N2", CultureInfo.CurrentCulture), result);
     }
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 带格式 - 货币格式
     /// </summary>
@@ -1075,14 +932,11 @@ public class ConvTest : TestBase
     {
         // Arrange
         decimal? price = 1234.56m;
-
         // Act
         string result = Conv.ToStringOrDefault(price, "C", "未定价");
-
         // Assert
         Assert.Equal(1234.56m.ToString("C", CultureInfo.CurrentCulture), result);
     }
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 带格式 - 日期格式
     /// </summary>
@@ -1091,14 +945,11 @@ public class ConvTest : TestBase
     {
         // Arrange
         DateTime? date = new DateTime(2025, 6, 18, 15, 30, 0);
-
         // Act
         string result = Conv.ToStringOrDefault(date, "yyyy-MM-dd", "未设置日期");
-
         // Assert
         Assert.Equal("2025-06-18", result);
     }
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 带格式 - 自定义格式
     /// </summary>
@@ -1107,14 +958,11 @@ public class ConvTest : TestBase
     {
         // Arrange
         int? number = 42;
-
         // Act
         string result = Conv.ToStringOrDefault(number, "D5", "未设置编号");
-
         // Assert
         Assert.Equal("00042", result);
     }
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 带格式 - null值返回默认值
     /// </summary>
@@ -1124,16 +972,13 @@ public class ConvTest : TestBase
         // Arrange
         decimal? price = null;
         DateTime? date = null;
-
         // Act
         string priceResult = Conv.ToStringOrDefault(price, "C2", "未定价");
         string dateResult = Conv.ToStringOrDefault(date, "yyyy-MM-dd", "未设置日期");
-
         // Assert
         Assert.Equal("未定价", priceResult);
         Assert.Equal("未设置日期", dateResult);
     }
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 带格式 - 空格式字符串
     /// </summary>
@@ -1142,14 +987,11 @@ public class ConvTest : TestBase
     {
         // Arrange
         decimal? price = 1234.56m;
-
         // Act
         string result = Conv.ToStringOrDefault(price, "", "未定价");
-
         // Assert
         Assert.Equal("1234.56", result);  // 使用默认格式
     }
-
     /// <summary>
     /// 测试 - 在不同区域文化设置下的格式化结果
     /// </summary>
@@ -1158,20 +1000,16 @@ public class ConvTest : TestBase
     {
         // 保存当前区域设置
         var originalCulture = CultureInfo.CurrentCulture;
-
         try
         {
             // Arrange
             decimal? price = 1234.56m;
-
             // 设置为美国区域
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
             string usResult = Conv.ToStringOrDefault(price, "C", "未定价");
-
             // 设置为德国区域
             CultureInfo.CurrentCulture = new CultureInfo("de-DE");
             string deResult = Conv.ToStringOrDefault(price, "C", "未定价");
-
             // Assert
             Assert.Contains("$", usResult);      // 美元符号
             Assert.Contains("€", deResult);      // 欧元符号
@@ -1183,11 +1021,8 @@ public class ConvTest : TestBase
             CultureInfo.CurrentCulture = originalCulture;
         }
     }
-
     #endregion
-
     #region 边界情况测试
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 带格式 - 无效格式字符串
     /// </summary>
@@ -1196,12 +1031,10 @@ public class ConvTest : TestBase
     {
         // Arrange
         decimal? price = 1234.56m;
-
         // Act & Assert
         // 无效的格式字符串应该抛出异常
         Assert.Throws<FormatException>(() => Conv.ToStringOrDefault(price, "Z", "未定价"));
     }
-
     /// <summary>
     /// 测试 - ToStringOrDefault - 极值情况
     /// </summary>
@@ -1213,26 +1046,20 @@ public class ConvTest : TestBase
         int? minInt = int.MinValue;
         double? maxDouble = double.MaxValue;
         double? minDouble = double.MinValue;
-
         // Act
         string maxIntResult = Conv.ToStringOrDefault(maxInt, "默认值");
         string minIntResult = Conv.ToStringOrDefault(minInt, "默认值");
         string maxDoubleResult = Conv.ToStringOrDefault(maxDouble, "默认值");
         string minDoubleResult = Conv.ToStringOrDefault(minDouble, "默认值");
-
         // Assert
         Assert.Equal(int.MaxValue.ToString(), maxIntResult);
         Assert.Equal(int.MinValue.ToString(), minIntResult);
         Assert.Equal(double.MaxValue.ToString(), maxDoubleResult);
         Assert.Equal(double.MinValue.ToString(), minDoubleResult);
     }
-
     #endregion
-
     #endregion
-
     #region ToRMB
-
     /// <summary>
     /// 测试 - 转换为人民币大写金额
     /// </summary>
@@ -1266,11 +1093,8 @@ public class ConvTest : TestBase
     {
         Assert.Equal(result, Conv.ToRMB(input));
     }
-
     #endregion
-
     #region 测试特殊情况和边界条件
-
     /// <summary>
     /// 测试 - 特殊字符串转换
     /// </summary>
@@ -1282,22 +1106,18 @@ public class ConvTest : TestBase
         Assert.Null(Conv.To<string>(spaceStr));
         Assert.Equal(0, Conv.ToInt(spaceStr));
         Assert.Null(Conv.ToIntOrNull(spaceStr));
-
         // 测试超大数字
         var largeNumber = "99999999999999999999999999"; // 超出Int64范围
         Assert.Equal(0, Conv.ToInt(largeNumber));
         Assert.Null(Conv.ToIntOrNull(largeNumber));
-
         // 尝试解析超出范围的数字到decimal
         var decimalResult = Conv.ToDecimalOrNull(largeNumber);
         Assert.NotNull(decimalResult);
-
         // 测试非法格式 - 日期时间
         var invalidDate = "2023-13-32"; // 不存在的月份和日期
         Assert.Equal(DateTime.MinValue, Conv.ToDate(invalidDate));
         Assert.Null(Conv.ToDateOrNull(invalidDate));
     }
-
     /// <summary>
     /// 测试 - 跨类型转换
     /// </summary>
@@ -1307,25 +1127,20 @@ public class ConvTest : TestBase
         // 数值到字符串
         int intValue = 100;
         Assert.Equal("100", Conv.To<string>(intValue));
-
         // 字符串到数值
         string strValue = "100";
         Assert.Equal(100, Conv.To<int>(strValue));
         Assert.Equal(100.0, Conv.To<double>(strValue));
-
         // 浮点数到整数
         double doubleValue = 123.45;
         Assert.Equal(123, Conv.To<int>(doubleValue));
-
         // 字符串到日期
         string dateStr = "2023-01-15";
         Assert.Equal(new DateTime(2023, 1, 15), Conv.To<DateTime>(dateStr));
-
         // 数字到布尔值
         Assert.True(Conv.ToBool(1));
         Assert.False(Conv.ToBool(0));
     }
-
     /// <summary>
     /// 测试 - 区域相关转换
     /// </summary>
@@ -1334,25 +1149,20 @@ public class ConvTest : TestBase
     {
         // 保存当前文化
         var originalCulture = CultureInfo.CurrentCulture;
-
         try
         {
             // 设置为美国文化
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
-
             // 美国文化下的货币格式
             decimal money = 1234.56m;
             var formattedMoney = money.ToString("C", CultureInfo.CurrentCulture); // $1,234.56
             Assert.Contains("$", formattedMoney);
-
             // 转换带逗号的数字字符串
             var numWithCommas = "1,234.56";
             var decimalResult = Conv.ToDecimalOrNull(numWithCommas);
             Assert.Equal(1234.56m, decimalResult);
-
             // 设置为德国文化
             CultureInfo.CurrentCulture = new CultureInfo("de-DE");
-
             // 德国文化下，逗号是小数点，句点是千位分隔符
             var germanFormat = "1.234,56";
             var germanDecimal = Conv.ToDecimalOrNull(germanFormat);
@@ -1364,11 +1174,8 @@ public class ConvTest : TestBase
             CultureInfo.CurrentCulture = originalCulture;
         }
     }
-
     #endregion
-
     #region 测试性能和健壮性
-
     /// <summary>
     /// 测试 - 大量数据处理
     /// </summary>
@@ -1381,13 +1188,10 @@ public class ConvTest : TestBase
         {
             largeGuidList.Add(Guid.NewGuid().ToString());
         }
-
         // 将列表合并为逗号分隔的字符串
         var guidString = string.Join(",", largeGuidList);
-
         // 测试转换为GUID列表
         var resultList = Conv.ToGuidList(guidString);
-
         // 验证结果
         Assert.Equal(1000, resultList.Count);
         for (int i = 0; i < resultList.Count; i++)
@@ -1395,7 +1199,6 @@ public class ConvTest : TestBase
             Assert.Equal(Guid.Parse(largeGuidList[i]), resultList[i]);
         }
     }
-
     /// <summary>
     /// 测试 - 异常处理和容错性
     /// </summary>
@@ -1404,7 +1207,6 @@ public class ConvTest : TestBase
     {
         // 测试格式转换异常处理
         var invalidInput = "abc";
-
         // 这些调用不应抛出异常，而是返回默认值
         Assert.Equal(0, Conv.ToInt(invalidInput));
         Assert.Null(Conv.ToIntOrNull(invalidInput));
@@ -1412,17 +1214,13 @@ public class ConvTest : TestBase
         Assert.Null(Conv.ToFloatOrNull(invalidInput));
         Assert.Equal(DateTime.MinValue, Conv.ToDate(invalidInput));
         Assert.Null(Conv.ToDateOrNull(invalidInput));
-
         // 测试类型转换异常处理
         var nonConvertibleObject = new object();
         Assert.Equal(default(int), Conv.To<int>(nonConvertibleObject));
         Assert.Null(Conv.To<int?>(nonConvertibleObject));
     }
-
     #endregion
-
     #region 测试与其他方法互操作的场景
-
     /// <summary>
     /// 测试 - 复杂对象和集合转换
     /// </summary>
@@ -1436,20 +1234,17 @@ public class ConvTest : TestBase
             Name = "Test",
             Attributes = new Dictionary<string, string> { { "Key1", "Value1" }, { "Key2", "Value2" } }
         };
-
         var dict = Conv.ToDictionary(complexObject);
         Assert.Equal(3, dict.Count);
         Assert.Equal(1, dict["Id"]);
         Assert.Equal("Test", dict["Name"]);
         Assert.IsType<Dictionary<string, string>>(dict["Attributes"]);
-
         // 测试集合转换 - 字符串到集合
         var numString = "1,2,3,4,5";
         var numList = Conv.ToList<int>(numString);
         Assert.Equal(5, numList.Count);
         Assert.Equal(new[] { 1, 2, 3, 4, 5 }, numList);
     }
-
     /// <summary>
     /// 测试 - 链式转换调用
     /// </summary>
@@ -1461,7 +1256,6 @@ public class ConvTest : TestBase
         var doubleValue = Conv.ToDouble(input);
         var roundedInt = Conv.ToInt(doubleValue);
         Assert.Equal(123, roundedInt);
-
         // 测试从对象到字符串再到其他类型
         var obj = new { Value = 42 };
         var dict = Conv.ToDictionary(obj);
@@ -1470,6 +1264,5 @@ public class ConvTest : TestBase
         var intValue = Conv.ToInt(strValue);
         Assert.Equal(42, intValue);
     }
-
     #endregion
 }

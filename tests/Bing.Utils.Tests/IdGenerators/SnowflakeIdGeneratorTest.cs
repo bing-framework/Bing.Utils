@@ -1,13 +1,9 @@
-﻿using Bing.IdUtils;
+using Bing.IdUtils;
 using Bing.Utils.Develops;
-
 namespace Bing.Utils.Tests.IdGenerators;
-
-
 public class SnowflakeIdGeneratorTest : TestBase
 {
     private readonly ISnowflakeId _worker;
-
     /// <summary>
     /// 测试初始化
     /// </summary>
@@ -15,14 +11,12 @@ public class SnowflakeIdGeneratorTest : TestBase
     {
         _worker = SnowflakeGenerator.Create(1);
     }
-
     [Fact]
     public void Test_Create()
     {
         var result = _worker.NextId();
         Output.WriteLine(result.ToString());
     }
-
     [Fact]
     public void Test_Create_100()
     {
@@ -32,7 +26,6 @@ public class SnowflakeIdGeneratorTest : TestBase
             Output.WriteLine(result.ToString());
         }
     }
-
     [Fact]
     public void Test_Create_1000()
     {
@@ -42,7 +35,6 @@ public class SnowflakeIdGeneratorTest : TestBase
             Output.WriteLine(result.ToString());
         }
     }
-
     [Fact]
     public void Test_Create_10000()
     {
@@ -52,13 +44,11 @@ public class SnowflakeIdGeneratorTest : TestBase
             Output.WriteLine(result.ToString());
         }
     }
-
     [Fact]
     public void Test_Create_10W()
     {
         Create(100000);
     }
-
     [Fact]
     public void Test_Create_Thread10_100W()
     {
@@ -68,11 +58,8 @@ public class SnowflakeIdGeneratorTest : TestBase
         }, 10);
         Output.WriteLine("数量：" + _set.Count);
     }
-
     private static object _lock = new();
-
     private static HashSet<long> _set = new();
-
     private void Create(long length)
     {
         for (int i = 0; i < length; i++)

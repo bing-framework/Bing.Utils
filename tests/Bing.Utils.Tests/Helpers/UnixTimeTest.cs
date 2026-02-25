@@ -1,7 +1,5 @@
-﻿using Bing.Helpers;
-
+using Bing.Helpers;
 namespace Bing.Utils.Tests.Helpers;
-
 /// <summary>
 /// Unix时间操作测试
 /// </summary>
@@ -10,7 +8,6 @@ public class UnixTimeTest : TestBase
     public UnixTimeTest(ITestOutputHelper output) : base(output)
     {
     }
-
     [Fact(Skip = "由于运行时间，可能存在延迟")]
     public void Test_ToTimestamp()
     {

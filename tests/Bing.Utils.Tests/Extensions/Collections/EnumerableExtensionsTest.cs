@@ -1,7 +1,5 @@
-﻿using Bing.Extensions;
-
+using Bing.Extensions;
 namespace Bing.Utils.Tests.Extensions;
-
 /// <summary>
 /// 可枚举类型 扩展测试
 /// </summary>
@@ -17,7 +15,6 @@ public class EnumerableExtensionsTest
         var result = "1,2,3,4,5,6";
         Assert.Equal(list.ExpandAndToString(), result);
     }
-
     /// <summary>
     /// 测试 - 展开集合并转换为字符串 - 带有项目包裹符
     /// </summary>

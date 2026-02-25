@@ -1,5 +1,4 @@
-﻿namespace Bing.Text;
-
+namespace Bing.Text;
 /// <summary>
 /// 正则表达式检查器测试
 /// </summary>
@@ -7,7 +6,6 @@
 public class RegexJudgeTest
 {
     #region 基础功能测试
-
     /// <summary>
     /// 测试 - IsMatch - 基本字符串匹配
     /// </summary>
@@ -23,11 +21,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - 带RegexOptions参数
     /// </summary>
@@ -42,15 +38,11 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern, options);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 正则表达式模式测试
-
     /// <summary>
     /// 测试 - IsMatch - 数字正则表达式
     /// </summary>
@@ -66,11 +58,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - 字母正则表达式
     /// </summary>
@@ -85,11 +75,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - 邮箱正则表达式
     /// </summary>
@@ -103,11 +91,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - 手机号正则表达式
     /// </summary>
@@ -122,11 +108,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - 中文字符正则表达式
     /// </summary>
@@ -141,15 +125,11 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 边界条件测试
-
     /// <summary>
     /// 测试 - IsMatch - 空值和null处理
     /// </summary>
@@ -162,11 +142,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - null输入处理
     /// </summary>
@@ -176,7 +154,6 @@ public class RegexJudgeTest
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => RegexJudge.IsMatch(null, @"\d+"));
     }
-
     /// <summary>
     /// 测试 - IsMatch - null模式处理
     /// </summary>
@@ -186,7 +163,6 @@ public class RegexJudgeTest
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => RegexJudge.IsMatch("test", null));
     }
-
     /// <summary>
     /// 测试 - IsMatch - 无效正则表达式模式
     /// </summary>
@@ -200,11 +176,8 @@ public class RegexJudgeTest
         // Act & Assert
         Should.Throw<ArgumentException>(() => RegexJudge.IsMatch(input, pattern));
     }
-
     #endregion
-
     #region 复杂正则表达式测试
-
     /// <summary>
     /// 测试 - IsMatch - URL正则表达式
     /// </summary>
@@ -217,11 +190,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - 日期格式正则表达式
     /// </summary>
@@ -235,11 +206,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - IP地址正则表达式
     /// </summary>
@@ -253,15 +222,11 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 多种RegexOptions测试
-
     /// <summary>
     /// 测试 - IsMatch - 多行模式
     /// </summary>
@@ -273,11 +238,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern, options);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - 单行模式
     /// </summary>
@@ -288,11 +251,9 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern, options);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMatch - 组合选项
     /// </summary>
@@ -305,15 +266,11 @@ public class RegexJudgeTest
     {
         // Act
         var result = RegexJudge.IsMatch(input, pattern, options);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 性能和压力测试
-
     /// <summary>
     /// 测试 - IsMatch - 性能测试
     /// </summary>
@@ -329,7 +286,6 @@ public class RegexJudgeTest
             ("中文测试", @"[\u4e00-\u9fa5]+"),
             ("Hello World", @"[a-zA-Z\s]+")
         };
-
         // Act & Assert - 应该在合理时间内完成
         Should.CompleteIn(() =>
         {
@@ -342,7 +298,6 @@ public class RegexJudgeTest
             }
         }, TimeSpan.FromSeconds(2)); // 应该在2秒内完成
     }
-
     /// <summary>
     /// 测试 - IsMatch - 长字符串处理
     /// </summary>
@@ -352,14 +307,11 @@ public class RegexJudgeTest
         // Arrange
         var longString = new string('a', 10000);
         var pattern = @"a+";
-
         // Act
         var result = RegexJudge.IsMatch(longString, pattern);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - IsMatch - 复杂正则表达式
     /// </summary>
@@ -369,18 +321,13 @@ public class RegexJudgeTest
         // Arrange
         var input = "The quick brown fox jumps over the lazy dog 123";
         var pattern = @"^The\s+(?<adjective1>\w+)\s+(?<color>\w+)\s+(?<animal1>\w+)\s+jumps\s+over\s+the\s+(?<adjective2>\w+)\s+(?<animal2>\w+)\s+(?<number>\d+)$";
-
         // Act
         var result = RegexJudge.IsMatch(input, pattern);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     #endregion
-
     #region 实际应用场景测试
-
     /// <summary>
     /// 测试 - IsMatch - 实际应用场景
     /// </summary>
@@ -390,28 +337,22 @@ public class RegexJudgeTest
         // 邮箱验证
         RegexJudge.IsMatch("user@example.com", @"^[^\s@]+@[^\s@]+\.[^\s@]+$").ShouldBeTrue();
         RegexJudge.IsMatch("invalid.email", @"^[^\s@]+@[^\s@]+\.[^\s@]+$").ShouldBeFalse();
-
         // 手机号验证
         RegexJudge.IsMatch("13812345678", @"^1[3-9]\d{9}$").ShouldBeTrue();
         RegexJudge.IsMatch("12345678901", @"^1[3-9]\d{9}$").ShouldBeFalse();
-
         // 身份证号验证
         RegexJudge.IsMatch("110101199003078515", @"^\d{17}[\dX]$").ShouldBeTrue();
         RegexJudge.IsMatch("11010119900307851X", @"^\d{17}[\dX]$").ShouldBeTrue();
-
         // 密码强度验证（至少8位，包含字母和数字）
         RegexJudge.IsMatch("Password123", @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$").ShouldBeTrue();
         RegexJudge.IsMatch("password", @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$").ShouldBeFalse();
-
         // 中文姓名验证
         RegexJudge.IsMatch("张三", @"^[\u4e00-\u9fa5]{2,4}$").ShouldBeTrue();
         RegexJudge.IsMatch("Zhang San", @"^[\u4e00-\u9fa5]{2,4}$").ShouldBeFalse();
-
         // 版本号验证
         RegexJudge.IsMatch("1.2.3", @"^\d+\.\d+\.\d+$").ShouldBeTrue();
         RegexJudge.IsMatch("v1.2.3", @"^\d+\.\d+\.\d+$").ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试 - IsMatch - 边界值测试
     /// </summary>
@@ -421,25 +362,19 @@ public class RegexJudgeTest
         // 最小匹配
         RegexJudge.IsMatch("a", @"a").ShouldBeTrue();
         RegexJudge.IsMatch("", @"").ShouldBeTrue();
-
         // 特殊字符
         RegexJudge.IsMatch("hello@world", @"hello@world").ShouldBeTrue();
         RegexJudge.IsMatch("test.file", @"test\.file").ShouldBeTrue();
         RegexJudge.IsMatch("test.file", @"test.file").ShouldBeTrue(); // . 匹配任意字符
-
         // Unicode字符
         RegexJudge.IsMatch("café", @"caf[eé]").ShouldBeTrue();
         RegexJudge.IsMatch("测试", @"测试").ShouldBeTrue();
-
         // 转义字符
         RegexJudge.IsMatch("$100", @"\$\d+").ShouldBeTrue();
         RegexJudge.IsMatch("(test)", @"\(test\)").ShouldBeTrue();
     }
-
     #endregion
-
     #region 异常处理测试
-
     /// <summary>
     /// 测试 - IsMatch - 异常输入安全处理
     /// </summary>
@@ -454,11 +389,9 @@ public class RegexJudgeTest
             RegexJudge.IsMatch("test\r\n", @"test");
             RegexJudge.IsMatch("test\t\b", @"test");
         });
-
         // 无效正则表达式应该抛出异常
         Should.Throw<ArgumentException>(() => RegexJudge.IsMatch("test", "["));
         Should.Throw<ArgumentException>(() => RegexJudge.IsMatch("test", "*"));
     }
-
     #endregion
 }

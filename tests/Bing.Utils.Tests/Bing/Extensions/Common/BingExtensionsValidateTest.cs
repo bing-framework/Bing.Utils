@@ -1,14 +1,11 @@
-﻿namespace Bing.Extensions.Common;
-
+namespace Bing.Extensions.Common;
 /// <summary>
 /// 系统扩展 - 验证扩展测试
 /// </summary>
 public class BingExtensionsValidateTest
 {
     #region IsEmpty
-
     #region IsEmpty(bool)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 布尔值为 false 时应返回 true
     /// </summary>
@@ -17,14 +14,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         bool value = false;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 布尔值为 true 时应返回 false
     /// </summary>
@@ -33,18 +27,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         bool value = true;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(bool?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空布尔值为 null 时应返回 true
     /// </summary>
@@ -53,14 +42,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         bool? value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空布尔值为 false 时应返回 true
     /// </summary>
@@ -69,14 +55,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         bool? value = false;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空布尔值为 true 时应返回 false
     /// </summary>
@@ -85,18 +68,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         bool? value = true;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(int)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 整数值为零时应返回 true
     /// </summary>
@@ -105,14 +83,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         int value = 0;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 整数值不为零时应返回 false
     /// </summary>
@@ -125,15 +100,11 @@ public class BingExtensionsValidateTest
     {
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(int?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空整数值为 null 时应返回 true
     /// </summary>
@@ -142,14 +113,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         int? value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空整数值为零时应返回 true
     /// </summary>
@@ -158,14 +126,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         int? value = 0;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空整数值不为 null 且不为零时应返回 false
     /// </summary>
@@ -178,18 +143,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         int? value = input;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(long)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 长整数值为零时应返回 true
     /// </summary>
@@ -198,14 +158,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         long value = 0L;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 长整数值不为零时应返回 false
     /// </summary>
@@ -218,15 +175,11 @@ public class BingExtensionsValidateTest
     {
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(long?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空长整数值为 null 时应返回 true
     /// </summary>
@@ -235,14 +188,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         long? value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空长整数值为零时应返回 true
     /// </summary>
@@ -251,14 +201,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         long? value = 0L;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空长整数值不为 null 且不为零时应返回 false
     /// </summary>
@@ -271,18 +218,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         long? value = input;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(float)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 单精度浮点数为零时应返回 true
     /// </summary>
@@ -291,14 +233,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         float value = 0f;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 单精度浮点数不为零时应返回 false
     /// </summary>
@@ -315,15 +254,11 @@ public class BingExtensionsValidateTest
     {
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(float?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空单精度浮点数为 null 时应返回 true
     /// </summary>
@@ -332,14 +267,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         float? value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空单精度浮点数为零时应返回 true
     /// </summary>
@@ -348,14 +280,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         float? value = 0f;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空单精度浮点数不为 null 且不为零时应返回 false
     /// </summary>
@@ -372,18 +301,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         float? value = input;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(double)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 双精度浮点数为零时应返回 true
     /// </summary>
@@ -392,14 +316,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         double value = 0d;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 双精度浮点数不为零时应返回 false
     /// </summary>
@@ -416,15 +337,11 @@ public class BingExtensionsValidateTest
     {
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(double?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空双精度浮点数为 null 时应返回 true
     /// </summary>
@@ -433,14 +350,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         double? value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空双精度浮点数为零时应返回 true
     /// </summary>
@@ -449,14 +363,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         double? value = 0d;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空双精度浮点数不为 null 且不为零时应返回 false
     /// </summary>
@@ -473,18 +384,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         double? value = input;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(decimal)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 十进制数为零时应返回 true
     /// </summary>
@@ -493,14 +399,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         decimal value = 0m;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 十进制数不为零时应返回 false
     /// </summary>
@@ -513,14 +416,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange - Convert double to decimal for test data
         decimal value = (decimal)input;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 十进制数为最大值时应返回 false
     /// </summary>
@@ -529,14 +429,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         decimal value = decimal.MaxValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 十进制数为最小值时应返回 false
     /// </summary>
@@ -545,18 +442,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         decimal value = decimal.MinValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(decimal?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空十进制数为 null 时应返回 true
     /// </summary>
@@ -565,14 +457,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         decimal? value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空十进制数为零时应返回 true
     /// </summary>
@@ -581,14 +470,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         decimal? value = 0m;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空十进制数不为 null 且不为零时应返回 false
     /// </summary>
@@ -601,14 +487,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange - Convert double to decimal for test data
         decimal? value = (decimal)input;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空十进制数为最大值时应返回 false
     /// </summary>
@@ -617,14 +500,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         decimal? value = decimal.MaxValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空十进制数为最小值时应返回 false
     /// </summary>
@@ -633,18 +513,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         decimal? value = decimal.MinValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(string)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 字符串为 null 时应返回 true
     /// </summary>
@@ -653,14 +528,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         string value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 字符串为空字符串时应返回 true
     /// </summary>
@@ -669,14 +541,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         string value = string.Empty;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 字符串仅包含空白字符时应返回 true
     /// </summary>
@@ -693,11 +562,9 @@ public class BingExtensionsValidateTest
     {
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 字符串包含非空白字符时应返回 false
     /// </summary>
@@ -715,11 +582,9 @@ public class BingExtensionsValidateTest
     {
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 字符串包含空白字符和非空白字符时应返回 false
     /// </summary>
@@ -730,11 +595,9 @@ public class BingExtensionsValidateTest
     {
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 字符串包含零宽空格时应返回 false
     /// </summary>
@@ -743,15 +606,12 @@ public class BingExtensionsValidateTest
     {
         // Arrange - 零宽空格 (U+200B)
         string value = "\u200B";
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         // 零宽空格不是空白字符，而是不可见的字符
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 性能测试，确保方法执行速度足够快
     /// </summary>
@@ -761,7 +621,6 @@ public class BingExtensionsValidateTest
         // Arrange
         const int iterations = 100000;
         string testValue = "   ";
-
         // Act
         var startTime = DateTime.Now;
         for (int i = 0; i < iterations; i++)
@@ -769,17 +628,13 @@ public class BingExtensionsValidateTest
             bool _ = testValue.IsEmpty();
         }
         var endTime = DateTime.Now;
-
         // Assert
         // 这个测试仅检查方法的执行时间，通常应该很快完成
         // 在大多数情况下应该少于几毫秒，具体取决于硬件
         Assert.True((endTime - startTime).TotalMilliseconds < 500);
     }
-
     #endregion
-
     #region IsEmpty(DateTime)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 日期时间为默认值时应返回 true
     /// </summary>
@@ -788,14 +643,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTime value = default;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 日期时间为最小值时应返回 true
     /// </summary>
@@ -804,14 +656,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTime value = DateTime.MinValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 -- IsEmpty 方法 - 日期时间为非空值时应返回 false
     /// </summary>
@@ -823,14 +672,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTime value = new DateTime(year, month, day);
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 日期时间为当前时间时应返回 false
     /// </summary>
@@ -839,18 +685,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTime value = DateTime.Now;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(DateTime?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空日期时间为 null 时应返回 true
     /// </summary>
@@ -859,14 +700,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTime? value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空日期时间为最小值时应返回 true
     /// </summary>
@@ -875,14 +713,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTime? value = DateTime.MinValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空日期时间为非空值时应返回 false
     /// </summary>
@@ -894,14 +729,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTime? value = new DateTime(year, month, day);
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空日期时间为当前时间时应返回 false
     /// </summary>
@@ -910,18 +742,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTime? value = DateTime.Now;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(DateTimeOffset)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 日期时间偏移量为默认值时应返回 true
     /// </summary>
@@ -930,14 +757,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTimeOffset value = default;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 日期时间偏移量为最小值时应返回 true
     /// </summary>
@@ -946,14 +770,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTimeOffset value = DateTimeOffset.MinValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 日期时间偏移量为非空值时应返回 false
     /// </summary>
@@ -965,14 +786,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTimeOffset value = new DateTimeOffset(new DateTime(year, month, day));
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 日期时间偏移量为当前时间时应返回 false
     /// </summary>
@@ -981,18 +799,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTimeOffset value = DateTimeOffset.Now;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(DateTimeOffset?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空日期时间偏移量为 null 时应返回 true
     /// </summary>
@@ -1001,14 +814,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTimeOffset? value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空日期时间偏移量为最小值时应返回 true
     /// </summary>
@@ -1017,14 +827,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTimeOffset? value = DateTimeOffset.MinValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空日期时间偏移量为非空值时应返回 false
     /// </summary>
@@ -1036,14 +843,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTimeOffset? value = new DateTimeOffset(new DateTime(year, month, day));
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空日期时间偏移量为当前时间时应返回 false
     /// </summary>
@@ -1052,18 +856,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         DateTimeOffset? value = DateTimeOffset.Now;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(TimeSpan)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 时间间隔为零时应返回 true
     /// </summary>
@@ -1072,14 +871,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TimeSpan value = TimeSpan.Zero;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 时间间隔不为零时应返回 false
     /// </summary>
@@ -1092,14 +888,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TimeSpan value = TimeSpan.FromMilliseconds(milliseconds);
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 时间间隔为最大值时应返回 false
     /// </summary>
@@ -1108,14 +901,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TimeSpan value = TimeSpan.MaxValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 时间间隔为最小值时应返回 false
     /// </summary>
@@ -1124,18 +914,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TimeSpan value = TimeSpan.MinValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(TimeSpan?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空时间间隔为 null 时应返回 true
     /// </summary>
@@ -1144,14 +929,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TimeSpan? value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空时间间隔为零时应返回 true
     /// </summary>
@@ -1160,14 +942,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TimeSpan? value = TimeSpan.Zero;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空时间间隔不为 null 且不为零时应返回 false
     /// </summary>
@@ -1180,14 +959,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TimeSpan? value = TimeSpan.FromMilliseconds(milliseconds);
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空时间间隔为最大值时应返回 false
     /// </summary>
@@ -1196,14 +972,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TimeSpan? value = TimeSpan.MaxValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 可空时间间隔为最小值时应返回 false
     /// </summary>
@@ -1212,18 +985,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TimeSpan? value = TimeSpan.MinValue;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(Guid)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 空 GUID 应返回 true
     /// </summary>
@@ -1232,14 +1000,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange - 准备一个空 GUID
         Guid value = Guid.Empty;
-
         // Act - 调用 IsEmpty 方法
         bool result = value.IsEmpty();
-
         // Assert - 验证结果为 true
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 非空 GUID 应返回 false
     /// </summary>
@@ -1248,14 +1013,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange - 准备一个非空 GUID
         Guid value = Guid.NewGuid();
-
         // Act - 调用 IsEmpty 方法
         bool result = value.IsEmpty();
-
         // Assert - 验证结果为 false
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 从字符串构造的 GUID 应返回 false
     /// </summary>
@@ -1264,18 +1026,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange - 准备一个从字符串解析的 GUID
         Guid value = new Guid("12345678-1234-1234-1234-123456789012");
-
         // Act - 调用 IsEmpty 方法
         bool result = value.IsEmpty();
-
         // Assert - 验证结果为 false
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(Guid?)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - null 可空 GUID 应返回 true
     /// </summary>
@@ -1284,14 +1041,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange - 准备一个 null 值的可空 GUID
         Guid? value = null;
-
         // Act - 调用 IsEmpty 方法
         bool result = value.IsEmpty();
-
         // Assert - 验证结果为 true
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 空可空 GUID 应返回 true
     /// </summary>
@@ -1300,14 +1054,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange - 准备一个空值的可空 GUID
         Guid? value = Guid.Empty;
-
         // Act - 调用 IsEmpty 方法
         bool result = value.IsEmpty();
-
         // Assert - 验证结果为 true
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 非空可空 GUID 应返回 false
     /// </summary>
@@ -1316,18 +1067,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange - 准备一个非空的可空 GUID
         Guid? value = Guid.NewGuid();
-
         // Act - 调用 IsEmpty 方法
         bool result = value.IsEmpty();
-
         // Assert - 验证结果为 false
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(StringBuilder)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - StringBuilder 为 null 时应返回 true
     /// </summary>
@@ -1336,14 +1082,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         StringBuilder value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - StringBuilder 为空时应返回 true
     /// </summary>
@@ -1352,14 +1095,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         StringBuilder value = new StringBuilder();
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - StringBuilder 仅包含空白字符时应返回 true
     /// </summary>
@@ -1368,14 +1108,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         StringBuilder value = new StringBuilder("   ");
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - StringBuilder 包含内容时应返回 false
     /// </summary>
@@ -1384,18 +1121,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         StringBuilder value = new StringBuilder("Hello");
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(IEnumerable)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 集合为 null 时应返回 true
     /// </summary>
@@ -1404,14 +1136,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         IEnumerable<int> collection = null;
-
         // Act
         bool result = collection.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 空集合应返回 true
     /// </summary>
@@ -1420,14 +1149,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         var collection = new List<int>();
-
         // Act
         bool result = collection.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 空数组应返回 true
     /// </summary>
@@ -1436,14 +1162,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         var array = Array.Empty<string>();
-
         // Act
         bool result = array.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 IsEmpty 方法 - 延迟执行的LINQ查询返回空结果时应返回 true
     /// </summary>
@@ -1453,14 +1176,11 @@ public class BingExtensionsValidateTest
         // Arrange
         var collection = new List<int> { 1, 2, 3 };
         var query = collection.Where(x => x > 10);
-
         // Act
         bool result = query.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 IsEmpty 方法 - 延迟执行的LINQ查询返回非空结果时应返回 false
     /// </summary>
@@ -1470,14 +1190,11 @@ public class BingExtensionsValidateTest
         // Arrange
         var collection = new List<int> { 1, 2, 3 };
         var query = collection.Where(x => x > 0);
-
         // Act
         bool result = query.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 IsEmpty 方法 - 使用自定义迭代器时应正确判断
     /// </summary>
@@ -1487,12 +1204,10 @@ public class BingExtensionsValidateTest
         // Arrange
         var emptyIterator = GetEmptyIterator();
         var nonEmptyIterator = GetNonEmptyIterator();
-
         // Act & Assert
         Assert.True(emptyIterator.IsEmpty());
         Assert.False(nonEmptyIterator.IsEmpty());
     }
-
     /// <summary>
     /// 测试 IsEmpty 方法 - 与 NotEmpty 方法结果应相反
     /// </summary>
@@ -1506,7 +1221,6 @@ public class BingExtensionsValidateTest
             new List<int>(),
             new List<int> { 1, 2, 3 }
         };
-
         // Act & Assert
         foreach (var collection in collections)
         {
@@ -1515,7 +1229,6 @@ public class BingExtensionsValidateTest
             Assert.Equal(!isEmpty, notEmpty);
         }
     }
-
     /// <summary>
     /// 测试 IsEmpty 方法 - 性能检测
     /// </summary>
@@ -1526,7 +1239,6 @@ public class BingExtensionsValidateTest
         var largeCollection = Enumerable.Range(1, 10000).ToList();
         var emptyCollection = new List<int>();
         const int iterations = 10000;
-
         // Act - 测试空集合性能
         var startEmpty = DateTime.Now;
         for (int i = 0; i < iterations; i++)
@@ -1534,7 +1246,6 @@ public class BingExtensionsValidateTest
             bool _ = emptyCollection.IsEmpty();
         }
         var emptyTime = (DateTime.Now - startEmpty).TotalMilliseconds;
-
         // Act - 测试非空大集合性能
         var startNonEmpty = DateTime.Now;
         for (int i = 0; i < iterations; i++)
@@ -1542,12 +1253,10 @@ public class BingExtensionsValidateTest
             bool _ = largeCollection.IsEmpty();
         }
         var nonEmptyTime = (DateTime.Now - startNonEmpty).TotalMilliseconds;
-
         // Assert - 确保性能在可接受范围内
         Assert.True(emptyTime < 500); // 空集合检查应该很快
         Assert.True(nonEmptyTime < 500); // 即使大集合也应该很快，因为只需要检查第一个元素
     }
-
     /// <summary>
     /// 获取空的自定义迭代器
     /// </summary>
@@ -1555,7 +1264,6 @@ public class BingExtensionsValidateTest
     {
         yield break;
     }
-
     /// <summary>
     /// 获取非空的自定义迭代器
     /// </summary>
@@ -1563,11 +1271,8 @@ public class BingExtensionsValidateTest
     {
         yield return 1;
     }
-
     #endregion
-
     #region IsEmpty(IDictionary<TKey, TValue>)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 泛型字典为 null 时应返回 true
     /// </summary>
@@ -1576,14 +1281,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         IDictionary<string, int> value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 泛型字典为空时应返回 true
     /// </summary>
@@ -1592,14 +1294,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         IDictionary<string, int> value = new Dictionary<string, int>();
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 泛型字典包含元素时应返回 false
     /// </summary>
@@ -1608,18 +1307,13 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         IDictionary<string, int> value = new Dictionary<string, int> { { "key", 1 } };
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsEmpty(IDictionary)
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 非泛型字典为 null 时应返回 true
     /// </summary>
@@ -1628,14 +1322,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         IDictionary value = null;
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 非泛型字典为空时应返回 true
     /// </summary>
@@ -1644,14 +1335,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         IDictionary value = new Hashtable();
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsEmpty 方法 - 非泛型字典包含元素时应返回 false
     /// </summary>
@@ -1660,20 +1348,14 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         IDictionary value = new Hashtable { { "key", 1 } };
-
         // Act
         bool result = value.IsEmpty();
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #endregion
-
     #region IsDefault
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 引用类型值为 null 时应返回 true
     /// </summary>
@@ -1682,14 +1364,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         string value = null;
-
         // Act
         bool result = value.IsDefault();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 引用类型值不为 null 时应返回 false
     /// </summary>
@@ -1698,14 +1377,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         string value = "test";
-
         // Act
         bool result = value.IsDefault();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 值类型为默认值时应返回 true
     /// </summary>
@@ -1717,11 +1393,9 @@ public class BingExtensionsValidateTest
     {
         // Act
         bool result = value.IsDefault();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 值类型不为默认值时应返回 false
     /// </summary>
@@ -1733,11 +1407,9 @@ public class BingExtensionsValidateTest
     {
         // Act
         bool result = value.IsDefault();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 结构类型为默认值时应返回 true
     /// </summary>
@@ -1747,16 +1419,13 @@ public class BingExtensionsValidateTest
         // Arrange
         DateTime value = default;
         Guid guid = default;
-
         // Act
         bool dateResult = value.IsDefault();
         bool guidResult = guid.IsDefault();
-
         // Assert
         Assert.True(dateResult);
         Assert.True(guidResult);
     }
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 结构类型不为默认值时应返回 false
     /// </summary>
@@ -1766,16 +1435,13 @@ public class BingExtensionsValidateTest
         // Arrange
         DateTime value = DateTime.Now;
         Guid guid = Guid.NewGuid();
-
         // Act
         bool dateResult = value.IsDefault();
         bool guidResult = guid.IsDefault();
-
         // Assert
         Assert.False(dateResult);
         Assert.False(guidResult);
     }
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 可空类型为 null 时应返回 true
     /// </summary>
@@ -1784,14 +1450,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         int? value = null;
-
         // Act
         bool result = value.IsDefault();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 可空类型不为 null 时应返回 false（即使值等于基础类型默认值）
     /// </summary>
@@ -1800,14 +1463,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         int? value = 0; // 虽然 0 是 int 的默认值，但 int? 的默认值是 null
-
         // Act
         bool result = value.IsDefault();
-
         // Assert
         Assert.False(result); // 因为可空类型的默认值是 null，而不是 0
     }
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 自定义类型为默认值时应返回 true
     /// </summary>
@@ -1816,14 +1476,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         CustomStruct value = default;
-
         // Act
         bool result = value.IsDefault();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsDefault 方法 - 自定义类型不为默认值时应返回 false
     /// </summary>
@@ -1832,24 +1489,18 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         CustomStruct value = new CustomStruct { Value = 42 };
-
         // Act
         bool result = value.IsDefault();
-
         // Assert
         Assert.False(result);
     }
-
     // 用于测试的自定义结构
     private struct CustomStruct
     {
         public int Value;
     }
-
     #endregion
-
     #region IsNull / NotNull
-
     /// <summary>
     /// 测试 - IsNull 方法 - 传入 null 对象应返回 true
     /// </summary>
@@ -1858,14 +1509,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         object obj = null;
-
         // Act
         bool result = obj.IsNull();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsNull 方法 - 传入非 null 对象应返回 false
     /// </summary>
@@ -1874,14 +1522,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         object obj = new object();
-
         // Act
         bool result = obj.IsNull();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsNull 泛型方法 - 传入 null 字符串应返回 true
     /// </summary>
@@ -1890,14 +1535,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         string str = null;
-
         // Act
         bool result = str.IsNull<string>();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsNull 泛型方法 - 传入空字符串应返回 false
     /// </summary>
@@ -1906,14 +1548,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         string str = string.Empty;
-
         // Act
         bool result = str.IsNull<string>();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsNull 泛型方法 - 传入非 null 字符串应返回 false
     /// </summary>
@@ -1922,14 +1561,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         string str = "test";
-
         // Act
         bool result = str.IsNull<string>();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsNull 泛型方法 - 传入 null 的自定义类应返回 true
     /// </summary>
@@ -1938,14 +1574,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TestClass obj = null;
-
         // Act
         bool result = obj.IsNull<TestClass>();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsNull 泛型方法 - 传入非 null 的自定义类应返回 false
     /// </summary>
@@ -1954,14 +1587,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         TestClass obj = new TestClass();
-
         // Act
         bool result = obj.IsNull<TestClass>();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - IsNull 方法 - 传入 null 的可空值类型应返回 true
     /// </summary>
@@ -1970,14 +1600,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         int? nullableInt = null;
-
         // Act
         bool result = nullableInt.IsNull();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - IsNull 方法 - 传入非 null 的可空值类型应返回 false
     /// </summary>
@@ -1986,14 +1613,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         int? nullableInt = 0;
-
         // Act
         bool result = nullableInt.IsNull();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - NotNull 方法 - 传入 null 对象应返回 false
     /// </summary>
@@ -2002,14 +1626,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         object obj = null;
-
         // Act
         bool result = obj.NotNull();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - NotNull 方法 - 传入非 null 对象应返回 true
     /// </summary>
@@ -2018,14 +1639,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         object obj = new object();
-
         // Act
         bool result = obj.NotNull();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - NotNull 泛型方法 - 传入 null 字符串应返回 false
     /// </summary>
@@ -2034,14 +1652,11 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         string str = null;
-
         // Act
         bool result = str.NotNull<string>();
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - NotNull 泛型方法 - 传入非 null 字符串应返回 true
     /// </summary>
@@ -2050,18 +1665,14 @@ public class BingExtensionsValidateTest
     {
         // Arrange
         string str = "test";
-
         // Act
         bool result = str.NotNull<string>();
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 用于测试的自定义类
     /// </summary>
     private class TestClass { }
-
     #endregion
 }

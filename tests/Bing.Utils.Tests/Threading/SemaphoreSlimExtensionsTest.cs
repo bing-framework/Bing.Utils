@@ -1,8 +1,6 @@
-﻿using System.Threading;
+using System.Threading;
 using Bing.Threading;
-
 namespace Bing.Utils.Tests.Threading;
-
 /// <summary>
 /// 信号量(<see cref="SemaphoreSlim"/>) 扩展 测试
 /// </summary>
@@ -19,7 +17,6 @@ public class SemaphoreSlimExtensionsTest
         {
             await semaphore.LockAsync(10);
         });
-
         semaphore = new SemaphoreSlim(1, 1);
         using (await semaphore.LockAsync()) 
             semaphore.CurrentCount.ShouldBe(0);

@@ -1,7 +1,5 @@
-﻿using Bing.IO;
-
+using Bing.IO;
 namespace Bing.Utils.Tests.IO;
-
 public class ByteBufferTest
 {
     /// <summary>
@@ -13,7 +11,6 @@ public class ByteBufferTest
         var buffer = ByteBuffer.Allocate(256);
         buffer.Capacity.ShouldBe(256);
     }
-
     /// <summary>
     /// 测试 - 申请缓冲区 - 根据byte[]初始化
     /// </summary>
@@ -24,7 +21,6 @@ public class ByteBufferTest
         var buffer = ByteBuffer.Allocate(data);
         buffer.Capacity.ShouldBe(512);
     }
-
     /// <summary>
     /// 测试 - 申请缓冲区 - 池化申请
     /// </summary>
@@ -34,7 +30,6 @@ public class ByteBufferTest
         var buffer = ByteBuffer.Allocate(256, true);
         buffer.Capacity.ShouldBe(256);
     }
-
     /// <summary>
     /// 测试 - 申请缓冲区 - 池化申请
     /// </summary>
@@ -47,7 +42,6 @@ public class ByteBufferTest
         buffer.ReadableBytes.ShouldBe(testData.Length);
         buffer.ToArray().ShouldBe(testData);
     }
-
     /// <summary>
     /// 测试 - 写入int
     /// </summary>

@@ -1,5 +1,4 @@
-﻿namespace Bing.Helpers;
-
+namespace Bing.Helpers;
 /// <summary>
 /// 快速路径匹配器测试
 /// </summary>
@@ -10,7 +9,6 @@ public class FastPathMatcherTest : TestBase
     public FastPathMatcherTest(ITestOutputHelper output) : base(output)
     {
     }
-
     /// <summary>
     /// 测试 - 匹配正确的模式 - 成功
     /// </summary>
@@ -18,28 +16,22 @@ public class FastPathMatcherTest : TestBase
     public void Test_Match_WithCorrectPattern_ShouldSuccess()
     {
         var path = "http://localhost:5001/api/values";
-
         var pattern = "http://localhost:5001/api/values";
         var result = FastPathMatcher.Match(pattern, path);
         Assert.True(result);
-
         pattern = "*//localhost:5001/api/values";
         result = FastPathMatcher.Match(pattern, path);
         Assert.True(result);
-
         pattern = "**/localhost:5001/api/values";
         result = FastPathMatcher.Match(pattern, path);
         Assert.True(result);
-
         pattern = "**/localhost:5001/**";
         result = FastPathMatcher.Match(pattern, path);
         Assert.True(result);
-
         pattern = "**localhost:5001**";
         result = FastPathMatcher.Match(pattern, path);
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 - 匹配失败的模式 - 失败
     /// </summary>
@@ -47,24 +39,19 @@ public class FastPathMatcherTest : TestBase
     public void Test_Match_WithWrongPattern_ShouldFail()
     {
         var path = "http://localhost:5001/api/values";
-
         var pattern = "localhost:5001/api/values";
         var result = FastPathMatcher.Match(pattern, path);
         Assert.False(result);
-
         pattern = "//localhost:5001/api/values";
         result = FastPathMatcher.Match(pattern, path);
         Assert.False(result);
-
         pattern = "*localhost:5001/api/values";
         result = FastPathMatcher.Match(pattern, path);
         Assert.False(result);
-
         pattern = "**/LOCALHOST:5001/**";
         result = FastPathMatcher.Match(pattern, path);
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 - 匹配Swagger路径
     /// </summary>
@@ -87,7 +74,6 @@ public class FastPathMatcherTest : TestBase
             Assert.True(result);
         }
     }
-
     /// <summary>
     /// 测试 - 匹配Swagger路径
     /// </summary>
@@ -110,7 +96,6 @@ public class FastPathMatcherTest : TestBase
             Assert.True(result);
         }
     }
-
     /// <summary>
     /// 测试 - 匹配Swagger路径
     /// </summary>
@@ -133,9 +118,7 @@ public class FastPathMatcherTest : TestBase
             Assert.True(result);
         }
     }
-
     #region 基本匹配测试
-
     /// <summary>
     /// 测试 - 精确匹配
     /// </summary>
@@ -149,12 +132,10 @@ public class FastPathMatcherTest : TestBase
     {
         // Act
         var result = FastPathMatcher.Match(pattern, path);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"模式: '{pattern}', 路径: '{path}', 结果: {result}");
     }
-
     /// <summary>
     /// 测试 - null 和空值处理
     /// </summary>
@@ -163,20 +144,15 @@ public class FastPathMatcherTest : TestBase
     {
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => FastPathMatcher.Match(null, "/api/users"));
-
         FastPathMatcher.Match("/api/users", null).ShouldBeFalse();
         FastPathMatcher.Match("", "").ShouldBeTrue();
         FastPathMatcher.Match("*", "").ShouldBeTrue();
         FastPathMatcher.Match("**", "").ShouldBeTrue();
         FastPathMatcher.Match("?", "").ShouldBeFalse();
-
         Output.WriteLine("null 和空值处理测试通过");
     }
-
     #endregion
-
     #region 单级通配符测试
-
     /// <summary>
     /// 测试 - 单级通配符 (*)
     /// </summary>
@@ -193,16 +169,12 @@ public class FastPathMatcherTest : TestBase
     {
         // Act
         var result = FastPathMatcher.Match(pattern, path);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"单级通配符 - 模式: '{pattern}', 路径: '{path}', 结果: {result}");
     }
-
     #endregion
-
     #region 多级通配符测试
-
     /// <summary>
     /// 测试 - 多级通配符 (**)
     /// </summary>
@@ -220,16 +192,12 @@ public class FastPathMatcherTest : TestBase
     {
         // Act
         var result = FastPathMatcher.Match(pattern, path);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"多级通配符 - 模式: '{pattern}', 路径: '{path}', 结果: {result}");
     }
-
     #endregion
-
     #region 单字符通配符测试
-
     /// <summary>
     /// 测试 - 单字符通配符 (?)
     /// </summary>
@@ -247,16 +215,12 @@ public class FastPathMatcherTest : TestBase
     {
         // Act
         var result = FastPathMatcher.Match(pattern, path);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"单字符通配符 - 模式: '{pattern}', 路径: '{path}', 结果: {result}");
     }
-
     #endregion
-
     #region 组合通配符测试
-
     /// <summary>
     /// 测试 - 组合通配符
     /// </summary>
@@ -272,16 +236,12 @@ public class FastPathMatcherTest : TestBase
     {
         // Act
         var result = FastPathMatcher.Match(pattern, path);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"组合通配符 - 模式: '{pattern}', 路径: '{path}', 结果: {result}");
     }
-
     #endregion
-
     #region 实际场景测试
-
     /// <summary>
     /// 测试 - Swagger 路径匹配
     /// </summary>
@@ -295,7 +255,6 @@ public class FastPathMatcherTest : TestBase
             "**/swagger/**",
             "/swagger/**"
         };
-
         var paths = new[]
         {
             "http://192.168.0.1:8100/swagger/index.html",
@@ -305,7 +264,6 @@ public class FastPathMatcherTest : TestBase
             "/swagger/DevOps/swagger.json",
             "http://api.example.com/swagger/favicon-32x32.png"
         };
-
         // Act & Assert
         foreach (var path in paths)
         {
@@ -322,7 +280,6 @@ public class FastPathMatcherTest : TestBase
             matched.ShouldBeTrue($"路径 '{path}' 应该匹配至少一个 Swagger 模式");
         }
     }
-
     /// <summary>
     /// 测试 - API 路径过滤
     /// </summary>
@@ -338,7 +295,6 @@ public class FastPathMatcherTest : TestBase
             "/health/**",
             "/swagger/**"
         };
-
         var testCases = new[]
         {
             ("/api/public/users", true),
@@ -350,7 +306,6 @@ public class FastPathMatcherTest : TestBase
             ("/swagger/index.html", true),
             ("/admin/users", false)
         };
-
         // Act & Assert
         foreach (var (path, shouldMatch) in testCases)
         {
@@ -359,7 +314,6 @@ public class FastPathMatcherTest : TestBase
             Output.WriteLine($"路径 '{path}' - 允许访问: {isAllowed}");
         }
     }
-
     /// <summary>
     /// 测试 - 文件路径匹配
     /// </summary>
@@ -374,16 +328,12 @@ public class FastPathMatcherTest : TestBase
     {
         // Act
         var result = FastPathMatcher.Match(pattern, path);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"文件路径 - 模式: '{pattern}', 路径: '{path}', 结果: {result}");
     }
-
     #endregion
-
     #region 批量匹配测试
-
     /// <summary>
     /// 测试 - MatchAny 方法
     /// </summary>
@@ -392,17 +342,14 @@ public class FastPathMatcherTest : TestBase
     {
         // Arrange
         var patterns = new[] { "/api/users/*", "/api/orders/*", "/swagger/**" };
-
         // Act & Assert
         FastPathMatcher.MatchAny(patterns, "/api/users/123").ShouldBeTrue();
         FastPathMatcher.MatchAny(patterns, "/api/orders/456").ShouldBeTrue();
         FastPathMatcher.MatchAny(patterns, "/swagger/index.html").ShouldBeTrue();
         FastPathMatcher.MatchAny(patterns, "/api/products/789").ShouldBeFalse();
         FastPathMatcher.MatchAny(patterns, null).ShouldBeFalse();
-
         Should.Throw<ArgumentNullException>(() => FastPathMatcher.MatchAny(null, "/api/users"));
     }
-
     /// <summary>
     /// 测试 - MatchAll 方法
     /// </summary>
@@ -411,17 +358,14 @@ public class FastPathMatcherTest : TestBase
     {
         // Arrange
         var patterns = new[] { "http://**", "http://localhost/swagger/**" };
-
         // Act & Assert
         FastPathMatcher.MatchAll(patterns, "http://localhost/swagger/index").ShouldBeTrue();
         FastPathMatcher.MatchAll(patterns, "http://localhost/swagger/index.html").ShouldBeTrue();
         FastPathMatcher.MatchAll(patterns, "https://localhost/swagger/index.html").ShouldBeFalse();
         FastPathMatcher.MatchAll(patterns, "http://localhost/api/users").ShouldBeFalse();
         FastPathMatcher.MatchAll(patterns, null).ShouldBeFalse();
-
         Should.Throw<ArgumentNullException>(() => FastPathMatcher.MatchAll(null, "/api/users"));
     }
-
     /// <summary>
     /// 测试 - GetMatchedPattern 方法
     /// </summary>
@@ -430,21 +374,16 @@ public class FastPathMatcherTest : TestBase
     {
         // Arrange
         var patterns = new[] { "/api/users/*", "/api/*", "/swagger/**" };
-
         // Act & Assert
         FastPathMatcher.GetMatchedPattern(patterns, "/api/users/123").ShouldBe("/api/users/*");
         FastPathMatcher.GetMatchedPattern(patterns, "/api/orders/456").ShouldBeNull();
         FastPathMatcher.GetMatchedPattern(patterns, "/swagger/index.html").ShouldBe("/swagger/**");
         FastPathMatcher.GetMatchedPattern(patterns, "/unknown/path").ShouldBeNull();
         FastPathMatcher.GetMatchedPattern(patterns, null).ShouldBeNull();
-
         Should.Throw<ArgumentNullException>(() => FastPathMatcher.GetMatchedPattern(null, "/api/users"));
     }
-
     #endregion
-
     #region 模式验证测试
-
     /// <summary>
     /// 测试 - IsValidPattern 方法
     /// </summary>
@@ -461,16 +400,12 @@ public class FastPathMatcherTest : TestBase
     {
         // Act
         var result = FastPathMatcher.IsValidPattern(pattern);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"模式 '{pattern}' 验证结果: {result}");
     }
-
     #endregion
-
     #region 边界条件和性能测试
-
     /// <summary>
     /// 测试 - 长路径处理
     /// </summary>
@@ -481,15 +416,12 @@ public class FastPathMatcherTest : TestBase
         var longSegment = new string('a', 1000);
         var longPath = $"/api/{longSegment}/users/{longSegment}/profile";
         var pattern = "/api/*/users/*/profile";
-
         // Act
         var result = FastPathMatcher.Match(pattern, longPath);
-
         // Assert
         result.ShouldBeTrue();
         Output.WriteLine($"长路径测试通过，路径长度: {longPath.Length}");
     }
-
     /// <summary>
     /// 测试 - 性能测试
     /// </summary>
@@ -500,7 +432,6 @@ public class FastPathMatcherTest : TestBase
         const int iterations = 10000;
         var pattern = "/api/**/users/*/profile";
         var path = "/api/v1/internal/users/123/profile";
-
         // Act & Assert
         Should.CompleteIn(() =>
         {
@@ -509,10 +440,8 @@ public class FastPathMatcherTest : TestBase
                 FastPathMatcher.Match(pattern, path).ShouldBeTrue();
             }
         }, TimeSpan.FromSeconds(1));
-
         Output.WriteLine($"性能测试完成: {iterations} 次匹配在 1 秒内完成");
     }
-
     /// <summary>
     /// 测试 - 深层嵌套路径
     /// </summary>
@@ -528,16 +457,13 @@ public class FastPathMatcherTest : TestBase
             "/level1/**/file.txt",
             "/level1/level2/level3/**/*.txt"
         };
-
         // Act & Assert
         foreach (var pattern in patterns)
         {
             FastPathMatcher.Match(pattern, deepPath).ShouldBeTrue($"模式 '{pattern}' 应该匹配深层路径");
         }
-
         Output.WriteLine("深层嵌套路径测试通过");
     }
-
     /// <summary>
     /// 测试 - 特殊字符处理
     /// </summary>
@@ -551,16 +477,12 @@ public class FastPathMatcherTest : TestBase
     {
         // Act
         var result = FastPathMatcher.Match(pattern, path);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"特殊字符 - 模式: '{pattern}', 路径: '{path}', 结果: {result}");
     }
-
     #endregion
-
     #region 错误处理测试
-
     /// <summary>
     /// 测试 - 异常处理
     /// </summary>
@@ -572,14 +494,10 @@ public class FastPathMatcherTest : TestBase
         Should.Throw<ArgumentNullException>(() => FastPathMatcher.MatchAny(null, "/path"));
         Should.Throw<ArgumentNullException>(() => FastPathMatcher.MatchAll(null, "/path"));
         Should.Throw<ArgumentNullException>(() => FastPathMatcher.GetMatchedPattern(null, "/path"));
-
         Output.WriteLine("异常处理测试通过");
     }
-
     #endregion
-
     #region 回归测试
-
     /// <summary>
     /// 测试 - 原有测试用例的向后兼容性
     /// </summary>
@@ -588,22 +506,18 @@ public class FastPathMatcherTest : TestBase
     {
         // Arrange
         var path = "http://localhost:5001/api/values";
-
         // Act & Assert - 原有的成功案例
         FastPathMatcher.Match("http://localhost:5001/api/values", path).ShouldBeTrue();
         FastPathMatcher.Match("*//localhost:5001/api/values", path).ShouldBeTrue();
         FastPathMatcher.Match("**/localhost:5001/api/values", path).ShouldBeTrue();
         FastPathMatcher.Match("**/localhost:5001/**", path).ShouldBeTrue();
         FastPathMatcher.Match("**localhost:5001**", path).ShouldBeTrue();
-
         // Act & Assert - 原有的失败案例
         FastPathMatcher.Match("localhost:5001/api/values", path).ShouldBeFalse();
         FastPathMatcher.Match("//localhost:5001/api/values", path).ShouldBeFalse();
         FastPathMatcher.Match("*localhost:5001/api/values", path).ShouldBeFalse();
         FastPathMatcher.Match("**/LOCALHOST:5001/**", path).ShouldBeFalse(); // 大小写敏感
-
         Output.WriteLine("向后兼容性测试通过");
     }
-
     #endregion
 }

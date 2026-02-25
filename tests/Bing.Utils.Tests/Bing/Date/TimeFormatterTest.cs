@@ -1,47 +1,40 @@
 using System.Globalization;
-
 namespace Bing.Date;
-
 /// <summary>
-/// ÈÕÆÚ/Ê±¼ä¸ñÊ½»¯¹¤¾ßÀà ²âÊÔÀà
+/// æ—¥æœŸ/æ—¶é—´æ ¼å¼åŒ–å·¥å…·ç±» æµ‹è¯•ç±»
 /// </summary>
 public class TimeFormatterTest
 {
     /// <summary>
-    /// ²âÊÔ - Format(DateTime) ·½·¨
+    /// æµ‹è¯• - Format(DateTime) æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_Format_DateTime_Default()
     {
         // Arrange
         var dateTime = new DateTime(2025, 6, 18, 17, 20, 1);
-        
         // Act
         var result = TimeFormatter.Format(dateTime);
-        
         // Assert
         Assert.Equal("2025-06-18 17:20:01", result);
     }
-    
     /// <summary>
-    /// ²âÊÔ - Format(DateTime, TimeFormatType) ·½·¨
+    /// æµ‹è¯• - Format(DateTime, TimeFormatType) æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_Format_DateTime_WithFormatType()
     {
         // Arrange
         var dateTime = new DateTime(2025, 6, 18, 17, 20, 1);
-        
         // Act & Assert
         Assert.Equal("2025-06-18", TimeFormatter.Format(dateTime, TimeFormatType.NormDate));
         Assert.Equal("17:20:01", TimeFormatter.Format(dateTime, TimeFormatType.NormTime));
-        Assert.Equal("2025Äê06ÔÂ18ÈÕ", TimeFormatter.Format(dateTime, TimeFormatType.ChineseDate));
+        Assert.Equal("2025å¹´06æœˆ18æ—¥", TimeFormatter.Format(dateTime, TimeFormatType.ChineseDate));
         Assert.Equal("20250618", TimeFormatter.Format(dateTime, TimeFormatType.PureDate));
         Assert.Equal("2025_06_18", TimeFormatter.Format(dateTime, TimeFormatType.UnderlineDate));
     }
-    
     /// <summary>
-    /// ²âÊÔ - Format(DateTime, TimeFormatType, CultureInfo) ·½·¨
+    /// æµ‹è¯• - Format(DateTime, TimeFormatType, CultureInfo) æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_Format_DateTime_WithFormatTypeAndCulture()
@@ -49,62 +42,51 @@ public class TimeFormatterTest
         // Arrange
         var dateTime = new DateTime(2025, 6, 18, 17, 20, 1);
         var culture = new CultureInfo("en-US");
-        
         // Act
         var result = TimeFormatter.Format(dateTime, TimeFormatType.NormDateTime, culture);
-        
         // Assert
         Assert.Equal("2025-06-18 17:20:01", result);
     }
-    
     /// <summary>
-    /// ²âÊÔ - Format(DateTime?) ·½·¨ - ÓĞÖµµÄÇé¿ö
+    /// æµ‹è¯• - Format(DateTime?) æ–¹æ³• - æœ‰å€¼çš„æƒ…å†µ
     /// </summary>
     [Fact]
     public void Test_Format_NullableDateTime_WithValue()
     {
         // Arrange
         DateTime? dateTime = new DateTime(2025, 6, 18, 17, 20, 1);
-        
         // Act
         var result = TimeFormatter.Format(dateTime);
-        
         // Assert
         Assert.Equal("2025-06-18 17:20:01", result);
     }
-    
     /// <summary>
-    /// ²âÊÔ - Format(DateTime?) ·½·¨ - null µÄÇé¿ö
+    /// æµ‹è¯• - Format(DateTime?) æ–¹æ³• - null çš„æƒ…å†µ
     /// </summary>
     [Fact]
     public void Test_Format_NullableDateTime_Null()
     {
         // Arrange
         DateTime? dateTime = null;
-        
         // Act
         var result = TimeFormatter.Format(dateTime);
-        
         // Assert
         Assert.Equal(string.Empty, result);
     }
-    
     /// <summary>
-    /// ²âÊÔ - Format(DateTime?, TimeFormatType) ·½·¨
+    /// æµ‹è¯• - Format(DateTime?, TimeFormatType) æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_Format_NullableDateTime_WithFormatType()
     {
         // Arrange
         DateTime? dateTime = new DateTime(2025, 6, 18, 17, 20, 1);
-        
         // Act & Assert
         Assert.Equal("2025-06-18", TimeFormatter.Format(dateTime, TimeFormatType.NormDate));
         Assert.Equal(string.Empty, TimeFormatter.Format((DateTime?)null, TimeFormatType.NormDate));
     }
-    
     /// <summary>
-    /// ²âÊÔ - Format(DateTime?, TimeFormatType, CultureInfo) ·½·¨
+    /// æµ‹è¯• - Format(DateTime?, TimeFormatType, CultureInfo) æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_Format_NullableDateTime_WithFormatTypeAndCulture()
@@ -112,52 +94,45 @@ public class TimeFormatterTest
         // Arrange
         DateTime? dateTime = new DateTime(2025, 6, 18, 17, 20, 1);
         var culture = new CultureInfo("en-US");
-        
         // Act & Assert
         Assert.Equal("2025-06-18 17:20:01", TimeFormatter.Format(dateTime, TimeFormatType.NormDateTime, culture));
         Assert.Equal(string.Empty, TimeFormatter.Format((DateTime?)null, TimeFormatType.NormDateTime, culture));
     }
-    
     /// <summary>
-    /// ²âÊÔ - Now() ·½·¨
+    /// æµ‹è¯• - Now() æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_Now()
     {
         // Act
         var result = TimeFormatter.Now();
-        
-        // ²»Ö±½Ó±È½ÏÍêÕûÖµ£¬ÒòÎª²âÊÔÔËĞĞÊ±¼ä²»È·¶¨£¬Ö»¼ì²é¸ñÊ½ÊÇ·ñ·ûºÏÔ¤ÆÚ
+        // ä¸ç›´æ¥æ¯”è¾ƒå®Œæ•´å€¼ï¼Œå› ä¸ºæµ‹è¯•è¿è¡Œæ—¶é—´ä¸ç¡®å®šï¼Œåªæ£€æŸ¥æ ¼å¼æ˜¯å¦ç¬¦åˆé¢„æœŸ
         Assert.Matches(@"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$", result);
     }
-    
     /// <summary>
-    /// ²âÊÔ - Now(TimeFormatType) ·½·¨
+    /// æµ‹è¯• - Now(TimeFormatType) æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_Now_WithFormatType()
     {
-        // Act & Assert - Ö»¼ì²é¸ñÊ½ÊÇ·ñ·ûºÏÔ¤ÆÚ
+        // Act & Assert - åªæ£€æŸ¥æ ¼å¼æ˜¯å¦ç¬¦åˆé¢„æœŸ
         Assert.Matches(@"^\d{4}-\d{2}-\d{2}$", TimeFormatter.Now(TimeFormatType.NormDate));
         Assert.Matches(@"^\d{2}:\d{2}:\d{2}$", TimeFormatter.Now(TimeFormatType.NormTime));
         Assert.Matches(@"^\d{8}$", TimeFormatter.Now(TimeFormatType.PureDate));
     }
-    
     /// <summary>
-    /// ²âÊÔ - Now(TimeFormatType, CultureInfo) ·½·¨
+    /// æµ‹è¯• - Now(TimeFormatType, CultureInfo) æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_Now_WithFormatTypeAndCulture()
     {
         // Arrange
         var culture = new CultureInfo("en-US");
-        
-        // Act & Assert - Ö»¼ì²é¸ñÊ½ÊÇ·ñ·ûºÏÔ¤ÆÚ
+        // Act & Assert - åªæ£€æŸ¥æ ¼å¼æ˜¯å¦ç¬¦åˆé¢„æœŸ
         Assert.Matches(@"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$", TimeFormatter.Now(TimeFormatType.NormDateTime, culture));
     }
-    
     /// <summary>
-    /// ²âÊÔ - Register ·½·¨
+    /// æµ‹è¯• - Register æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_Register()
@@ -166,25 +141,22 @@ public class TimeFormatterTest
         var customFormat = "yyyy/MM/dd";
         var customType = TimeFormatType.NormDate;
         var dateTime = new DateTime(2025, 6, 18);
-        
         try
         {
             // Act
             TimeFormatter.Register(customType, customFormat);
             var result = TimeFormatter.Format(dateTime, customType);
-            
             // Assert
             Assert.Equal("2025/06/18", result);
         }
         finally
         {
-            // »Ö¸´Ô­Ê¼¸ñÊ½£¬±ÜÃâÓ°ÏìÆäËû²âÊÔ
+            // æ¢å¤åŸå§‹æ ¼å¼ï¼Œé¿å…å½±å“å…¶ä»–æµ‹è¯•
             TimeFormatter.Register(customType, "yyyy-MM-dd");
         }
     }
-    
     /// <summary>
-    /// ²âÊÔ - Register ·½·¨ - ²ÎÊıÒì³£
+    /// æµ‹è¯• - Register æ–¹æ³• - å‚æ•°å¼‚å¸¸
     /// </summary>
     [Theory]
     [InlineData(null)]
@@ -195,12 +167,10 @@ public class TimeFormatterTest
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => 
             TimeFormatter.Register(TimeFormatType.Default, pattern));
-        
         Assert.Equal("pattern", exception.ParamName);
     }
-    
     /// <summary>
-    /// ²âÊÔ - GetPattern ·½·¨
+    /// æµ‹è¯• - GetPattern æ–¹æ³•
     /// </summary>
     [Fact]
     public void Test_GetPattern()
@@ -208,94 +178,79 @@ public class TimeFormatterTest
         // Act & Assert
         Assert.Equal("yyyy-MM-dd HH:mm:ss", TimeFormatter.GetPattern(TimeFormatType.Default));
         Assert.Equal("yyyy-MM-dd", TimeFormatter.GetPattern(TimeFormatType.NormDate));
-        Assert.Equal("yyyyÄêMMÔÂddÈÕ", TimeFormatter.GetPattern(TimeFormatType.ChineseDate));
+        Assert.Equal("yyyyå¹´MMæœˆddæ—¥", TimeFormatter.GetPattern(TimeFormatType.ChineseDate));
         Assert.Equal("yyyyMMdd", TimeFormatter.GetPattern(TimeFormatType.PureDate));
     }
-    
     /// <summary>
-    /// ²âÊÔ - TryParsePattern ·½·¨ - ³É¹¦Çé¿ö
+    /// æµ‹è¯• - TryParsePattern æ–¹æ³• - æˆåŠŸæƒ…å†µ
     /// </summary>
     [Fact]
     public void Test_TryParsePattern_Success()
     {
         // Arrange
         var pattern = "yyyy-MM-dd";
-        
         // Act
         var success = TimeFormatter.TryParsePattern(pattern, out var type);
-        
         // Assert
         Assert.True(success);
         Assert.Equal(TimeFormatType.NormDate, type);
     }
-    
     /// <summary>
-    /// ²âÊÔ - TryParsePattern ·½·¨ - ²»Çø·Ö´óĞ¡Ğ´
+    /// æµ‹è¯• - TryParsePattern æ–¹æ³• - ä¸åŒºåˆ†å¤§å°å†™
     /// </summary>
     [Fact]
     public void Test_TryParsePattern_CaseInsensitive()
     {
         // Arrange
-        var pattern = "YYYY-MM-DD"; // È«´óĞ´
-        
+        var pattern = "YYYY-MM-DD"; // å…¨å¤§å†™
         // Act
         var success = TimeFormatter.TryParsePattern(pattern, out var type);
-        
         // Assert
         Assert.True(success);
         Assert.Equal(TimeFormatType.NormDate, type);
     }
-    
     /// <summary>
-    /// ²âÊÔ - TryParsePattern ·½·¨ - Ê§°ÜÇé¿ö
+    /// æµ‹è¯• - TryParsePattern æ–¹æ³• - å¤±è´¥æƒ…å†µ
     /// </summary>
     [Fact]
     public void Test_TryParsePattern_Failure()
     {
         // Arrange
-        var pattern = "yyyy/MM/dd"; // ²»´æÔÚµÄ¸ñÊ½
-        
+        var pattern = "yyyy/MM/dd"; // ä¸å­˜åœ¨çš„æ ¼å¼
         // Act
         var success = TimeFormatter.TryParsePattern(pattern, out var type);
-        
         // Assert
         Assert.False(success);
         Assert.Equal(default(TimeFormatType), type);
     }
-    
     /// <summary>
-    /// ²âÊÔÌØÊâÊ±¼ä¸ñÊ½ÀàĞÍ
+    /// æµ‹è¯•ç‰¹æ®Šæ—¶é—´æ ¼å¼ç±»å‹
     /// </summary>
     [Fact]
     public void Test_SpecialFormatTypes()
     {
         // Arrange
         var dateTime = new DateTime(2025, 6, 18, 17, 20, 1, 123);
-        
-        // Act & Assert - ºÁÃë¸ñÊ½²âÊÔ
+        // Act & Assert - æ¯«ç§’æ ¼å¼æµ‹è¯•
         Assert.Equal("17:20:01.123", TimeFormatter.Format(dateTime, TimeFormatType.NormTimeMs));
         Assert.Equal("2025-06-18 17:20:01.123", TimeFormatter.Format(dateTime, TimeFormatType.NormDateTimeMs));
-        Assert.Equal("17Ê±20·Ö01Ãë.123", TimeFormatter.Format(dateTime, TimeFormatType.ChineseTimeMs));
+        Assert.Equal("17æ—¶20åˆ†01ç§’.123", TimeFormatter.Format(dateTime, TimeFormatType.ChineseTimeMs));
         Assert.Equal("172001123", TimeFormatter.Format(dateTime, TimeFormatType.PureTimeMs));
-        
-        // Ê±·Ö¸ñÊ½²âÊÔ
+        // æ—¶åˆ†æ ¼å¼æµ‹è¯•
         Assert.Equal("2025-06-18 17:20", TimeFormatter.Format(dateTime, TimeFormatType.NormDateTimeMinute));
-        Assert.Equal("2025Äê06ÔÂ18ÈÕ 17Ê±20·Ö", TimeFormatter.Format(dateTime, TimeFormatType.ChineseDateTimeMinute));
+        Assert.Equal("2025å¹´06æœˆ18æ—¥ 17æ—¶20åˆ†", TimeFormatter.Format(dateTime, TimeFormatType.ChineseDateTimeMinute));
         Assert.Equal("202506181720", TimeFormatter.Format(dateTime, TimeFormatType.PureDateTimeMinute));
-        
-        // ÄêÔÂ¸ñÊ½²âÊÔ
+        // å¹´æœˆæ ¼å¼æµ‹è¯•
         Assert.Equal("2025-06", TimeFormatter.Format(dateTime, TimeFormatType.NormMonth));
-        Assert.Equal("2025Äê06ÔÂ", TimeFormatter.Format(dateTime, TimeFormatType.ChineseMonth));
+        Assert.Equal("2025å¹´06æœˆ", TimeFormatter.Format(dateTime, TimeFormatType.ChineseMonth));
         Assert.Equal("202506", TimeFormatter.Format(dateTime, TimeFormatType.PureMonth));
-        
-        // Äê¸ñÊ½²âÊÔ
+        // å¹´æ ¼å¼æµ‹è¯•
         Assert.Equal("2025", TimeFormatter.Format(dateTime, TimeFormatType.NormYear));
-        Assert.Equal("2025Äê", TimeFormatter.Format(dateTime, TimeFormatType.ChineseYear));
+        Assert.Equal("2025å¹´", TimeFormatter.Format(dateTime, TimeFormatType.ChineseYear));
         Assert.Equal("2025", TimeFormatter.Format(dateTime, TimeFormatType.PureYear));
     }
-    
     /// <summary>
-    /// ²âÊÔ²»Í¬ÇøÓòÎÄ»¯ÏÂµÄ¸ñÊ½»¯
+    /// æµ‹è¯•ä¸åŒåŒºåŸŸæ–‡åŒ–ä¸‹çš„æ ¼å¼åŒ–
     /// </summary>
     [Fact]
     public void Test_DifferentCultures()
@@ -303,13 +258,13 @@ public class TimeFormatterTest
         // Arrange
         var dateTime = new DateTime(2025, 6, 18, 17, 20, 1);
         var usCulture = new CultureInfo("en-US");
-        var frCulture = new CultureInfo("fr-FR"); // ·¨¹ú
-        var jpCulture = new CultureInfo("ja-JP"); // ÈÕ±¾
-        
+        var frCulture = new CultureInfo("fr-FR"); // æ³•å›½
+        var jpCulture = new CultureInfo("ja-JP"); // æ—¥æœ¬
         // Act & Assert
-        // ²»Í¬ÎÄ»¯ÏÂµÄÈÕÆÚÊ±¼ä¸ñÊ½Ó¦¸Ã±£³ÖÒ»ÖÂ£¨ÒòÎªÎÒÃÇÊ¹ÓÃµÄÊÇ¹Ì¶¨¸ñÊ½×Ö·û´®£©
+        // ä¸åŒæ–‡åŒ–ä¸‹çš„æ—¥æœŸæ—¶é—´æ ¼å¼åº”è¯¥ä¿æŒä¸€è‡´ï¼ˆå› ä¸ºæˆ‘ä»¬ä½¿ç”¨çš„æ˜¯å›ºå®šæ ¼å¼å­—ç¬¦ä¸²ï¼‰
         Assert.Equal("2025-06-18 17:20:01", TimeFormatter.Format(dateTime, TimeFormatType.Default, usCulture));
         Assert.Equal("2025-06-18 17:20:01", TimeFormatter.Format(dateTime, TimeFormatType.Default, frCulture));
         Assert.Equal("2025-06-18 17:20:01", TimeFormatter.Format(dateTime, TimeFormatType.Default, jpCulture));
     }
 }
+

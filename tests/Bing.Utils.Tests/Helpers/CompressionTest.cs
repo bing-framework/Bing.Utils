@@ -1,7 +1,5 @@
-﻿using Bing.Helpers;
-
+using Bing.Helpers;
 namespace Bing.Utils.Tests.Helpers;
-
 /// <summary>
 /// 压缩操作测试
 /// </summary>
@@ -13,7 +11,6 @@ public class CompressionTest:TestBase
     public CompressionTest(ITestOutputHelper output) : base(output)
     {
     }
-
     /// <summary>
     /// 测试对字符串进行压缩
     /// </summary>

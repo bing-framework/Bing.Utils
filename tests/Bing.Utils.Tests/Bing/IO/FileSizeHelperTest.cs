@@ -1,12 +1,10 @@
-﻿namespace Bing.IO;
-
+namespace Bing.IO;
 /// <summary>
 /// 文件大小辅助工具类 测试
 /// </summary>
 public class FileSizeHelperTest
 {
     #region 最佳单位选择测试
-
     /// <summary>
     /// 测试 - GetBestUnit - 获取最佳单位
     /// </summary>
@@ -22,11 +20,9 @@ public class FileSizeHelperTest
     {
         // Act
         var result = FileSizeHelper.GetBestUnit(bytes);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetBestUnit - 边界值测试
     /// </summary>
@@ -39,11 +35,9 @@ public class FileSizeHelperTest
     {
         // Act
         var result = FileSizeHelper.GetBestUnit(bytes);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetBestUnit - 负数字节抛出异常
     /// </summary>
@@ -54,11 +48,8 @@ public class FileSizeHelperTest
         Should.Throw<ArgumentOutOfRangeException>(() => FileSizeHelper.GetBestUnit(-1))
             .ParamName.ShouldBe("bytes");
     }
-
     #endregion
-
     #region 格式化测试
-
     /// <summary>
     /// 测试 - AutoFormat - 自动格式化
     /// </summary>
@@ -73,11 +64,9 @@ public class FileSizeHelperTest
     {
         // Act
         var result = FileSizeHelper.AutoFormat(bytes, precision);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - AutoFormat - 复杂边界值
     /// </summary>
@@ -90,15 +79,11 @@ public class FileSizeHelperTest
     {
         // Act
         var result = FileSizeHelper.AutoFormat(bytes, precision);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 解析测试
-
     /// <summary>
     /// 测试 - TryParseSize - 解析文件大小字符串
     /// </summary>
@@ -117,12 +102,10 @@ public class FileSizeHelperTest
     {
         // Act
         var success = FileSizeHelper.TryParseSize(input, out var bytes);
-
         // Assert
         success.ShouldBe(expectedSuccess);
         bytes.ShouldBe(expectedBytes);
     }
-
     /// <summary>
     /// 测试 - TryParseSize - 大小写不敏感
     /// </summary>
@@ -137,12 +120,10 @@ public class FileSizeHelperTest
     {
         // Act
         var success = FileSizeHelper.TryParseSize(input, out var bytes);
-
         // Assert
         success.ShouldBe(expectedSuccess);
         bytes.ShouldBe(expectedBytes);
     }
-
     /// <summary>
     /// 测试 - TryParseSize - 无效格式
     /// </summary>
@@ -159,12 +140,10 @@ public class FileSizeHelperTest
     {
         // Act
         var success = FileSizeHelper.TryParseSize(input, out var bytes);
-
         // Assert
         success.ShouldBeFalse();
         bytes.ShouldBe(0L);
     }
-
     /// <summary>
     /// 测试 - TryParseSize - 多个空格应该能正常解析
     /// </summary>
@@ -178,12 +157,10 @@ public class FileSizeHelperTest
     {
         // Act
         var success = FileSizeHelper.TryParseSize(input, out var bytes);
-
         // Assert
         success.ShouldBe(expectedSuccess);
         bytes.ShouldBe(expectedBytes);
     }
-
     /// <summary>
     /// 测试 - TryParseSize - 负数处理
     /// </summary>
@@ -194,12 +171,10 @@ public class FileSizeHelperTest
     {
         // Act
         var success = FileSizeHelper.TryParseSize(input, out var bytes);
-
         // Assert
         success.ShouldBeFalse();
         bytes.ShouldBe(0L);
     }
-
     /// <summary>
     /// 测试 - TryParseSize - 边界数值格式
     /// </summary>
@@ -215,12 +190,10 @@ public class FileSizeHelperTest
     {
         // Act
         var success = FileSizeHelper.TryParseSize(input, out var bytes);
-
         // Assert
         success.ShouldBe(expectedSuccess);
         bytes.ShouldBe(expectedBytes);
     }
-
     /// <summary>
     /// 测试 - ParseSize - 解析有效字符串
     /// </summary>
@@ -232,11 +205,9 @@ public class FileSizeHelperTest
     {
         // Act
         var result = FileSizeHelper.ParseSize(sizeString);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - ParseSize - 无效字符串应抛出异常
     /// </summary>
@@ -251,7 +222,6 @@ public class FileSizeHelperTest
         Should.Throw<ArgumentException>(() => FileSizeHelper.ParseSize(invalidString))
             .ParamName.ShouldBe("sizeString");
     }
-
     /// <summary>
     /// 测试 - ParseSize - 异常消息包含原始字符串
     /// </summary>
@@ -260,16 +230,12 @@ public class FileSizeHelperTest
     {
         // Arrange
         const string invalidString = "invalid input";
-
         // Act & Assert
         var exception = Should.Throw<ArgumentException>(() => FileSizeHelper.ParseSize(invalidString));
         exception.Message.ShouldContain(invalidString);
     }
-
     #endregion
-
     #region 工具方法测试
-
     /// <summary>
     /// 测试 - GetAllUnitDescriptions - 返回所有单位描述
     /// </summary>
@@ -278,7 +244,6 @@ public class FileSizeHelperTest
     {
         // Act
         var descriptions = FileSizeHelper.GetAllUnitDescriptions();
-
         // Assert
         descriptions.ShouldNotBeEmpty();
         descriptions.ShouldContain("B");
@@ -289,7 +254,6 @@ public class FileSizeHelperTest
         descriptions.ShouldContain("PB");
         descriptions.Length.ShouldBe(6);
     }
-
     /// <summary>
     /// 测试 - IsValidUnitString - 验证单位字符串
     /// </summary>
@@ -306,11 +270,9 @@ public class FileSizeHelperTest
     {
         // Act
         var result = FileSizeHelper.IsValidUnitString(unitString);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - TryGetUnitFromString - 从字符串获取枚举值
     /// </summary>
@@ -326,7 +288,6 @@ public class FileSizeHelperTest
     {
         // Act
         var success = FileSizeHelper.TryGetUnitFromString(unitString, out var unit);
-
         // Assert
         success.ShouldBe(expectedSuccess);
         if (expectedSuccess)
@@ -334,7 +295,6 @@ public class FileSizeHelperTest
             unit.ShouldBe(expectedUnit);
         }
     }
-
     /// <summary>
     /// 测试 - TryGetUnitFromString - null输入处理
     /// </summary>
@@ -343,16 +303,12 @@ public class FileSizeHelperTest
     {
         // Act
         var success = FileSizeHelper.TryGetUnitFromString(null, out var unit);
-
         // Assert
         success.ShouldBeFalse();
         unit.ShouldBe(default(FileSizeUnit));
     }
-
     #endregion
-
     #region 兼容性和集成测试
-
     /// <summary>
     /// 测试 - 精度处理
     /// </summary>
@@ -365,11 +321,9 @@ public class FileSizeHelperTest
     {
         // Act
         var result = FileSizeHelper.AutoFormat(bytes, precision);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - 与FileSize类的兼容性
     /// </summary>
@@ -378,18 +332,15 @@ public class FileSizeHelperTest
     {
         // Arrange
         var fileSize = new FileSize(1536, FileSizeUnit.K); // 1.5MB
-
         // Act
         var sizeInBytes = fileSize.Size;
         var bestUnit = FileSizeHelper.GetBestUnit(sizeInBytes);
         var formatted = FileSizeHelper.AutoFormat(sizeInBytes);
-
         // Assert
         sizeInBytes.ShouldBe(1572864L); // 1536 * 1024
         bestUnit.ShouldBe(FileSizeUnit.M);
         formatted.ShouldBe("1.5 MB");
     }
-
     /// <summary>
     /// 测试 - 解析和格式化往返一致性
     /// </summary>
@@ -403,18 +354,14 @@ public class FileSizeHelperTest
         // Act
         var parsed = FileSizeHelper.TryParseSize(originalString, out var bytes);
         var formatted = FileSizeHelper.AutoFormat(bytes, 2);
-
         // Assert
         parsed.ShouldBeTrue();
         // 注意：格式化可能会标准化字符串格式，所以我们检查数值是否一致
         FileSizeHelper.TryParseSize(formatted, out var formattedBytes).ShouldBeTrue();
         formattedBytes.ShouldBe(bytes);
     }
-
     #endregion
-
     #region 性能和边界测试
-
     /// <summary>
     /// 测试 - 大数值处理
     /// </summary>
@@ -426,11 +373,9 @@ public class FileSizeHelperTest
     {
         // Act
         var bestUnit = FileSizeHelper.GetBestUnit(bytes);
-
         // Assert
         bestUnit.ShouldBe(expectedUnit);
     }
-
     /// <summary>
     /// 测试 - 零值处理的一致性
     /// </summary>
@@ -441,13 +386,11 @@ public class FileSizeHelperTest
         var bestUnit = FileSizeHelper.GetBestUnit(0);
         var formatted = FileSizeHelper.AutoFormat(0, 2);
         var converted = FileSizeUnit.K.ConvertFromBytes(0);
-
         // Assert
         bestUnit.ShouldBe(FileSizeUnit.Byte);
         formatted.ShouldBe("0 B");
         converted.ShouldBe(0.0);
     }
-
     /// <summary>
     /// 测试 - 国际化数值格式兼容性
     /// </summary>
@@ -458,7 +401,6 @@ public class FileSizeHelperTest
     {
         // Act
         var success = FileSizeHelper.TryParseSize(input, out var bytes);
-
         // Assert
         if (input.Contains('.'))
         {
@@ -471,6 +413,5 @@ public class FileSizeHelperTest
             success.ShouldBeFalse();
         }
     }
-
     #endregion
 }

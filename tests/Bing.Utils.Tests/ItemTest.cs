@@ -1,7 +1,5 @@
-﻿using Bing.Utils.Json;
-
+using Bing.Utils.Json;
 namespace Bing.Utils.Tests;
-
 public class ItemTest
 {
     /// <summary>
@@ -20,7 +18,6 @@ public class ItemTest
         Assert.Null(item.Group);
         Assert.Null(item.Disabled);
     }
-
     /// <summary>
     /// 测试 - 不包含空值
     /// </summary>

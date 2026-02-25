@@ -1,19 +1,15 @@
-﻿using Bing.IO;
+using Bing.IO;
 using Bing.Net.FTP;
-
 namespace Bing.Utils.Tests.Net.FTP;
-
 public class FtpClientTest : TestBase
 {
     /// <summary>
     /// 客户端
     /// </summary>
     private readonly IFtpClient _client;
-
     // 测试路径
     private const string TEST_FILES_PATH = "Resources/TestFiles";
     private const string ACTIVE_FILE_PATH = "Resources/ActiveTestFolder";
-
     // 测试文件
     private const string TEST_FILE_1 = "Text.txt";
     private const string TEST_FILE_2 = "测试文件1.txt";
@@ -21,9 +17,7 @@ public class FtpClientTest : TestBase
     private const string TEST_FOLDER_2 = "TestSubFolder2\\TestSubFolder3";
     private const string TEST_FOLDER_3 = "TestSubFolder4";
     private const string TEST_DOWNLOAD_FOLDER = "DownloadFolder";
-
     private readonly DirectoryInfo _activeFolder;
-
     /// <summary>
     /// 初始化一个<see cref="TestBase"/>类型的实例
     /// </summary>
@@ -33,7 +27,6 @@ public class FtpClientTest : TestBase
         DirectoryHelper.CreateIfNotExists(GetTestFilePath(ACTIVE_FILE_PATH));
         _activeFolder = new DirectoryInfo(GetTestFilePath(ACTIVE_FILE_PATH));
     }
-
     /// <summary>
     /// 测试 - 连接
     /// </summary>
@@ -44,7 +37,6 @@ public class FtpClientTest : TestBase
         Assert.True(_client.IsConnected);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 上传文件
     /// </summary>
@@ -60,7 +52,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 上传文件 - 工作目录
     /// </summary>
@@ -78,7 +69,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 上传文件流 - 工作目录
     /// </summary>
@@ -97,7 +87,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 上传字节数组 - 工作目录
     /// </summary>
@@ -117,7 +106,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 批量上传文件 - 工作目录
     /// </summary>
@@ -139,7 +127,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 上传文件夹
     /// </summary>
@@ -149,7 +136,6 @@ public class FtpClientTest : TestBase
         _client.Connect();
         _client.CreateDirectory(TEST_FOLDER_1);
         _client.SetCurrentDirectory(TEST_FOLDER_1);
-        
         var remotePath = "test";
         var result = _client.UploadDirectory(GetTestFilePath(TEST_FILES_PATH), remotePath);
         Assert.True(result);
@@ -157,7 +143,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 下载文件
     /// </summary>
@@ -177,7 +162,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 下载字节数组
     /// </summary>
@@ -199,7 +183,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 批量下载文件
     /// </summary>
@@ -214,7 +197,6 @@ public class FtpClientTest : TestBase
         var remotePath = "test";
         var result = _client.UploadFiles(paths, remotePath);
         Assert.True(result);
-
         var remotePaths = new List<string>
         {
             $"/test/{TEST_FILE_1}",
@@ -227,7 +209,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 下载文件夹
     /// </summary>
@@ -242,7 +223,6 @@ public class FtpClientTest : TestBase
         var remotePath = "test";
         var result = _client.UploadFiles(paths, remotePath);
         Assert.True(result);
-
         var localPath = Path.Combine(_activeFolder.FullName, TEST_DOWNLOAD_FOLDER);
         result = _client.DownloadDirectory(localPath, remotePath);
         Assert.True(result);
@@ -250,7 +230,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 删除文件
     /// </summary>
@@ -265,7 +244,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 重命名文件
     /// </summary>
@@ -282,7 +260,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 复制文件
     /// </summary>
@@ -301,7 +278,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 移动文件
     /// </summary>
@@ -319,7 +295,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 是否存在文件
     /// </summary>
@@ -336,7 +311,6 @@ public class FtpClientTest : TestBase
         Assert.True(result);
         _client.Dispose();
     }
-
     /// <summary>
     /// 测试 - 创建文件夹
     /// </summary>
@@ -352,7 +326,6 @@ public class FtpClientTest : TestBase
         _client.DeleteDirectory(path);
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 -删除文件夹
     /// </summary>

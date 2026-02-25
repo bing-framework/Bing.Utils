@@ -1,7 +1,5 @@
-﻿using Bing.Threading;
-
+using Bing.Threading;
 namespace Bing.Utils.Tests.Threading;
-
 /// <summary>
 /// 一次性运行器 测试
 /// </summary>
@@ -16,20 +14,15 @@ public class OneTimeRunnerTest
         // Arrange
         var oneTimeRunner = new OneTimeRunner();
         var executionCount = 0;
-
         // Act
         oneTimeRunner.Run(() => { executionCount++; });
-
         // Assert
         Assert.Equal(1, executionCount);
-
         // Act again
         oneTimeRunner.Run(() => { executionCount++; });
-
         // Assert again
         Assert.Equal(1, executionCount);
     }
-
     /// <summary>
     /// 测试 - 运行的操作在多线程环境下也只执行一次。
     /// </summary>
@@ -40,13 +33,11 @@ public class OneTimeRunnerTest
         var oneTimeRunner = new OneTimeRunner();
         var executionCount = 0;
         var threadCount = 10;
-
         // Act
         Parallel.For(0, threadCount, _ =>
         {
             oneTimeRunner.Run(() => { executionCount++; });
         });
-
         // Assert
         Assert.Equal(1, executionCount);
     }

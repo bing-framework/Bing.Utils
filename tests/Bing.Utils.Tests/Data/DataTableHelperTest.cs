@@ -1,11 +1,15 @@
-﻿using System.Data;
+using System.Data;
 using Bing.Data;
 using Bing.Tests.Samples;
-
 namespace Bing.Utils.Tests.Data;
-
+/// <summary>
+/// 测试类：覆盖 `DataTableHelper` 相关行为。
+/// </summary>
 public class DataTableHelperTest
 {
+    /// <summary>
+    /// 测试用例：验证 `Test` 在 `ToList` 场景下的行为。
+    /// </summary>
     [Fact]
     public void Test_ToList()
     {
@@ -20,7 +24,6 @@ public class DataTableHelperTest
         dt.Rows.Add(2, "Venkat", "Hyderabad", "111111111");
         dt.Rows.Add(3, "Namit", "Pune", "1222222222");
         dt.Rows.Add(4, "Abhinav", "Bhagalpur", "3333333333");
-
         var result = DataTableHelper.ToList<StudentSample>(dt);
         Assert.Equal(result[0].StudentId, dt.Rows[0]["StudentId"]);
         Assert.Equal(result[0].StudentName, dt.Rows[0]["StudentName"]);
@@ -28,3 +31,4 @@ public class DataTableHelperTest
         Assert.Equal(result[0].MobileNo, dt.Rows[0]["MobileNo"]);
     }
 }
+

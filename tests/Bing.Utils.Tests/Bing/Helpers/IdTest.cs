@@ -1,8 +1,6 @@
-﻿using Bing.IdUtils;
+using Bing.IdUtils;
 using System.Collections.Concurrent;
-
 namespace Bing.Helpers;
-
 /// <summary>
 /// Id 测试
 /// </summary>
@@ -18,7 +16,6 @@ public class IdTest
         var idSet = new HashSet<long>();
         var snowflakeIdProvider = SnowflakeGenerator.Create(1);
         Id.ConfigureSnowflakeId(() => snowflakeIdProvider);
-
         // Act
         for (var i = 0; i < 100000; i++)
         {
@@ -26,11 +23,9 @@ public class IdTest
             Assert.DoesNotContain(id, idSet);
             idSet.Add(id);
         }
-
         // Assert
         Assert.Equal(100000, idSet.Count);
     }
-
     /// <summary>
     /// 测试 ResetSnowflakeId 方法是否重置为默认的雪花ID生成函数
     /// </summary>
@@ -41,15 +36,12 @@ public class IdTest
         var defaultProvider = SnowflakeGenerator.Create(1);
         Id.ConfigureSnowflakeId(() => defaultProvider);
         var defaultId = Id.CreateSnowflakeId();
-
         // Act
         Id.ResetSnowflakeId();
         var resetId = Id.CreateSnowflakeId();
-
         // Assert
         Assert.NotEqual(defaultId, resetId);
     }
-
     /// <summary>
     /// 多线程压测，测试 CreateSnowflakeId 方法是否生成唯一的雪花ID
     /// </summary>
@@ -61,7 +53,6 @@ public class IdTest
         var snowflakeIdProvider = SnowflakeGenerator.Create(1);
         Id.ConfigureSnowflakeId(() => snowflakeIdProvider);
         var tasks = new List<Task>();
-
         // Act
         for (var i = 0; i < 10; i++)
         {
@@ -75,10 +66,9 @@ public class IdTest
                 }
             }));
         }
-
         Task.WaitAll(tasks.ToArray());
-
         // Assert
         Assert.Equal(100000, idSet.Count);
     }
 }
+

@@ -1,5 +1,4 @@
 namespace Bing.IO;
-
 /// <summary>
 /// FileHelper 写入异步方法测试
 /// </summary>
@@ -13,7 +12,6 @@ public class FileHelperWriteAsyncTest
         {
             await File.WriteAllTextAsync(path, "old");
             var result = await FileHelper.WriteAsync(new byte[] { 1, 2, 3 }, path, false);
-
             result.ShouldBeTrue();
             File.ReadAllBytes(path).ShouldBe(new byte[] { 1, 2, 3 });
         }
@@ -23,7 +21,6 @@ public class FileHelperWriteAsyncTest
                 File.Delete(path);
         }
     }
-
     [Fact]
     public async Task WriteAsync_AppendMode_ShouldAppendBytes()
     {
@@ -32,7 +29,6 @@ public class FileHelperWriteAsyncTest
         {
             await File.WriteAllBytesAsync(path, new byte[] { 1 });
             var result = await FileHelper.WriteAsync(new byte[] { 2, 3 }, path, true);
-
             result.ShouldBeTrue();
             File.ReadAllBytes(path).ShouldBe(new byte[] { 1, 2, 3 });
         }

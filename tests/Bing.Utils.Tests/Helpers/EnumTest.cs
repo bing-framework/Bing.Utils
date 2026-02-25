@@ -1,9 +1,7 @@
-﻿using Bing.Tests.Samples;
+using Bing.Tests.Samples;
 using Bing.Tests.XUnitHelpers;
 using Enum = Bing.Helpers.Enum;
-
 namespace Bing.Utils.Tests.Helpers;
-
 /// <summary>
 /// 枚举操作测试
 /// </summary>
@@ -16,7 +14,6 @@ public class EnumTest : TestBase
     public EnumTest(ITestOutputHelper output) : base(output)
     {
     }
-
     /// <summary>
     /// 测试获取枚举实例
     /// </summary>
@@ -27,7 +24,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(sample, Enum.Parse<EnumSample>(member));
     }
-
     /// <summary>
     /// 测试获取枚举实例 - 参数为空，抛出异常
     /// </summary>
@@ -41,7 +37,6 @@ public class EnumTest : TestBase
             Enum.Parse<EnumSample>(member);
         }, "member");
     }
-
     /// <summary>
     /// 测试获取枚举实例 - 可空枚举
     /// </summary>
@@ -55,7 +50,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(sample, Enum.Parse<EnumSample?>(member));
     }
-
     /// <summary>
     /// 测试通过描述获取实例
     /// </summary>
@@ -68,7 +62,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(sample, Enum.ParseByDescription<EnumSample>(desc));
     }
-
     /// <summary>
     /// 测试通过描述获取实例 - 参数为空，抛出异常
     /// </summary>
@@ -82,7 +75,6 @@ public class EnumTest : TestBase
             Enum.ParseByDescription<EnumSample>(desc);
         }, "desc");
     }
-
     /// <summary>
     /// 测试通过描述获取实例 - 可空枚举
     /// </summary>
@@ -95,7 +87,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(sample, Enum.ParseByDescription<EnumSample?>(member));
     }
-
     /// <summary>
     /// 测试获取枚举成员名
     /// </summary>
@@ -110,7 +101,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(name, Enum.GetName<EnumSample>(member));
     }
-
     /// <summary>
     /// 测试获取枚举成员名 - 验证传入的枚举参数并非枚举类型
     /// </summary>
@@ -119,7 +109,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(string.Empty, Enum.GetName(typeof(Sample), 3));
     }
-
     /// <summary>
     /// 测试获取枚举成员名 - 可空枚举
     /// </summary>
@@ -134,7 +123,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(name, Enum.GetName<EnumSample?>(member));
     }
-
     /// <summary>
     /// 测试获取枚举成员值 - 验证
     /// </summary>
@@ -145,7 +133,6 @@ public class EnumTest : TestBase
         AssertHelper.Throws<ArgumentNullException>(() => Enum.GetValue<EnumSample>(string.Empty), "member");
         AssertHelper.Throws<ArgumentNullException>(() => Enum.GetValue<Sample>(string.Empty), "member");
     }
-
     /// <summary>
     /// 测试获取枚举成员值
     /// </summary>
@@ -157,7 +144,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(value, Enum.GetValue<EnumSample>(member));
     }
-
     /// <summary>
     /// 测试获取枚举成员值 - 可空枚举
     /// </summary>
@@ -169,7 +155,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(value, Enum.GetValue<EnumSample?>(member));
     }
-
     /// <summary>
     /// 测试获取枚举描述
     ///</summary>
@@ -184,7 +169,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(description, Enum.GetDescription<EnumSample>(member));
     }
-
     /// <summary>
     /// 测试获取枚举描述 - 可空枚举
     ///</summary>
@@ -199,7 +183,6 @@ public class EnumTest : TestBase
     {
         Assert.Equal(description, Enum.GetDescription<EnumSample?>(member));
     }
-
     /// <summary>
     /// 测试获取项集合
     /// </summary>
@@ -215,7 +198,6 @@ public class EnumTest : TestBase
         Assert.Equal("E5", items[4].Text);
         Assert.Equal(5, items[4].Value);
     }
-
     /// <summary>
     /// 测试获取项集合
     /// </summary>
@@ -231,7 +213,6 @@ public class EnumTest : TestBase
         Assert.Equal("E5", items[4].Text);
         Assert.Equal(5, items[4].Value);
     }
-
     /// <summary>
     /// 测试获取项集合 - 可空枚举
     /// </summary>
@@ -247,7 +228,6 @@ public class EnumTest : TestBase
         Assert.Equal("E5", items[4].Text);
         Assert.Equal(5, items[4].Value);
     }
-
     /// <summary>
     /// 测试 - 获取项集合 - 可空枚举
     /// </summary>
@@ -263,7 +243,6 @@ public class EnumTest : TestBase
         Assert.Equal("E5", items[4].Text);
         Assert.Equal(5, items[4].Value);
     }
-
     /// <summary>
     /// 测试 - 获取项集合 - 验证枚举类型
     /// </summary>
@@ -274,7 +253,6 @@ public class EnumTest : TestBase
             Enum.GetItems<Sample>();
         }, "类型 Bing.Tests.Samples.Sample 不是枚举");
     }
-
     /// <summary>
     /// 测试 - 获取名称集合
     /// </summary>
