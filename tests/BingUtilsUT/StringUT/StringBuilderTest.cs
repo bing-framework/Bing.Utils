@@ -1,129 +1,138 @@
-﻿using Bing.Text;
+﻿using System.Collections.Generic;
+using System.Text;
+using Bing.Text;
 
 namespace BingUtilsUT.StringUT;
 
 [Trait("StringUT", "Strings.StringBuilder")]
 public class StringBuilderTest
 {
-    /// <summary>
-    /// 测试 - 反转字符串 - 自身
-    /// </summary>
-    [Fact]
-    public void Test_Reverse_Self()
+    [Theory]
+    [MemberData(nameof(GetReverseCases))]
+    public void Reverse_Self_ShouldMutateBuilder(string source, string expected)
     {
-        var builder = new StringBuilder();
-        builder.Append("A");
-        builder.Append("B");
-        builder.Append("C");
+        var builder = source == null ? null : new StringBuilder(source);
 
         Strings.Reverse(builder);
 
-        builder.ToString().ShouldBe("CBA");
+        if (builder == null)
+            builder.ShouldBeNull();
+        else
+            builder.ToString().ShouldBe(expected);
     }
 
-    /// <summary>
-    /// 测试 - 反转字符串
-    /// </summary>
-    [Fact]
-    public void Test_ReverseAndReturnNewInstance()
-    {
-        var builder = new StringBuilder();
-        builder.Append("A");
-        builder.Append("B");
-        builder.Append("C");
-
-        var sb = Strings.ReverseAndReturnNewInstance(builder);
-        sb.GetHashCode().ShouldNotBe(builder.GetHashCode());
-        sb.ToString().ShouldBe("CBA");
-    }
-
-    /// <summary>
-    /// 测试 - 反转字符串
-    /// </summary>
-    [Fact]
-    public void Test_ReverseAndToString()
-    {
-        var builder = new StringBuilder();
-        builder.Append("A");
-        builder.Append("B");
-        builder.Append("C");
-
-        var val = Strings.ReverseAndToString(builder);
-
-        builder.ToString().ShouldBe("ABC");
-        val.ShouldBe("CBA");
-    }
-
-    #region RemoveStart
-
-    /// <summary>
-    /// 测试 - 移除起始字符串
-    /// </summary>
     [Theory]
-    [InlineData(null, null, null)]
-    [InlineData(null, "a", null)]
-    public void Test_RemoveStart_StringBuilder(StringBuilder value, string removeValue, string result)
+    [MemberData(nameof(GetReverseCases))]
+    public void ReverseAndReturnNewInstance_ShouldReturnReversedWithoutMutatingOriginal(string source, string expected)
     {
-        Assert.Equal(result, Strings.RemoveStart(value, removeValue)?.ToString());
+        var builder = source == null ? null : new StringBuilder(source);
+        var original = builder?.ToString();
+
+        var result = Strings.ReverseAndReturnNewInstance(builder);
+
+        result.ShouldNotBeNull();
+        result.ToString().ShouldBe(expected);
+
+        if (builder != null)
+        {
+            builder.ToString().ShouldBe(original);
+            ReferenceEquals(result, builder).ShouldBeFalse();
+        }
     }
 
-    /// <summary>
-    /// 测试 - 移除起始字符串
-    /// </summary>
     [Theory]
-    [InlineData(null, null, "")]
-    [InlineData(null, "a", "")]
-    [InlineData("", "", "")]
-    [InlineData("a", "b", "a")]
-    [InlineData("ab", "b", "ab")]
-    [InlineData("ab", "a", "b")]
-    [InlineData("abc", "ab", "c")]
-    [InlineData("abc", "Ab", "abc")]
-    [InlineData("abc", "abc", "")]
-    [InlineData("ab", "abc", "ab")]
-    [InlineData("a.cs.cshtml", "a.cs", ".cshtml")]
-    [InlineData("\r\na", "\r\n", "a")]
-    public void Test_RemoveStart_StringBuilder_2(string value, string removeValue, string result)
+    [MemberData(nameof(GetReverseCases))]
+    public void ReverseAndToString_ShouldReturnReversedWithoutMutatingOriginal(string source, string expected)
+    {
+        var builder = source == null ? null : new StringBuilder(source);
+        var original = builder?.ToString();
+
+        var result = Strings.ReverseAndToString(builder);
+
+        result.ShouldBe(expected);
+        if (builder != null)
+            builder.ToString().ShouldBe(original);
+    }
+
+    [Fact]
+    public void RemoveStart_NullBuilder_ShouldReturnNull()
+    {
+        StringBuilder value = null;
+
+        var result = Strings.RemoveStart(value, "a");
+
+        result.ShouldBeNull();
+    }
+
+    [Theory]
+    [MemberData(nameof(GetRemoveStartCases))]
+    public void RemoveStart_BoundaryCases_ShouldReturnExpected(string value, string removeValue, string expected)
     {
         var builder = new StringBuilder(value);
-        Assert.Equal(result, Strings.RemoveStart(builder, removeValue)?.ToString());
+
+        var result = Strings.RemoveStart(builder, removeValue);
+
+        result.ShouldBeSameAs(builder);
+        result.ToString().ShouldBe(expected);
     }
 
-    #endregion
-
-    #region RemoveEnd
-
-    /// <summary>
-    /// 测试 - 移除末尾字符串
-    /// </summary>
-    [Theory]
-    [InlineData(null, null, null)]
-    [InlineData(null, "a", null)]
-    public void Test_RemoveEnd_StringBuilder(StringBuilder value, string removeValue, string result)
+    [Fact]
+    public void RemoveEnd_NullBuilder_ShouldReturnNull()
     {
-        Assert.Equal(result, Strings.RemoveEnd(value, removeValue)?.ToString());
+        StringBuilder value = null;
+
+        var result = Strings.RemoveEnd(value, "a");
+
+        result.ShouldBeNull();
     }
 
-    /// <summary>
-    /// 测试 - 移除末尾字符串
-    /// </summary>
     [Theory]
-    [InlineData(null, null, "")]
-    [InlineData(null, "a", "")]
-    [InlineData("", "", "")]
-    [InlineData("a", "b", "a")]
-    [InlineData("ab", "a", "ab")]
-    [InlineData("ab", "b", "a")]
-    [InlineData("abc", "abc", "")]
-    [InlineData("bc", "abc", "bc")]
-    [InlineData("ab", "abc", "ab")]
-    [InlineData("a.cs.cshtml", ".cshtml", "a.cs")]
-    [InlineData("a\r\n", "\r\n", "a")]
-    public void Test_RemoveEnd_StringBuilder_2(string value, string removeValue, string result)
+    [MemberData(nameof(GetRemoveEndCases))]
+    public void RemoveEnd_BoundaryCases_ShouldReturnExpected(string value, string removeValue, string expected)
     {
         var builder = new StringBuilder(value);
-        Assert.Equal(result, Strings.RemoveEnd(builder, removeValue)?.ToString());
+
+        var result = Strings.RemoveEnd(builder, removeValue);
+
+        result.ShouldBeSameAs(builder);
+        result.ToString().ShouldBe(expected);
     }
 
-    #endregion
+    public static IEnumerable<object[]> GetReverseCases()
+    {
+        yield return new object[] { null, string.Empty };
+        yield return new object[] { string.Empty, string.Empty };
+        yield return new object[] { "ABC", "CBA" };
+        yield return new object[] { "ab cd", "dc ba" };
+        yield return new object[] { "12345", "54321" };
+    }
+
+    public static IEnumerable<object[]> GetRemoveStartCases()
+    {
+        yield return new object[] { string.Empty, string.Empty, string.Empty };
+        yield return new object[] { "abc", null, "abc" };
+        yield return new object[] { "a", "b", "a" };
+        yield return new object[] { "ab", "b", "ab" };
+        yield return new object[] { "ab", "a", "b" };
+        yield return new object[] { "abc", "ab", "c" };
+        yield return new object[] { "abc", "Ab", "abc" };
+        yield return new object[] { "abc", "abc", string.Empty };
+        yield return new object[] { "ab", "abc", "ab" };
+        yield return new object[] { "a.cs.cshtml", "a.cs", ".cshtml" };
+        yield return new object[] { "\r\na", "\r\n", "a" };
+    }
+
+    public static IEnumerable<object[]> GetRemoveEndCases()
+    {
+        yield return new object[] { string.Empty, string.Empty, string.Empty };
+        yield return new object[] { "abc", null, "abc" };
+        yield return new object[] { "a", "b", "a" };
+        yield return new object[] { "ab", "a", "ab" };
+        yield return new object[] { "ab", "b", "a" };
+        yield return new object[] { "abc", "abc", string.Empty };
+        yield return new object[] { "bc", "abc", "bc" };
+        yield return new object[] { "ab", "abc", "ab" };
+        yield return new object[] { "a.cs.cshtml", ".cshtml", "a.cs" };
+        yield return new object[] { "a\r\n", "\r\n", "a" };
+    }
 }

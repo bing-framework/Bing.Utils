@@ -1,4 +1,4 @@
-using Bing.Helpers;
+﻿using Bing.Helpers;
 namespace BingUtilsUT.PathUT;
 /// <summary>
 /// 路径测试
@@ -13,7 +13,7 @@ public class PathTest
     public void Test_GetPhysicalPath_1()
     {
         var path = Common.GetPhysicalPath("a/b.txt");
-        var result = $"{System.AppContext.BaseDirectory}a/b.txt";
+        var result = $"{System.AppContext.BaseDirectory}a\\b.txt";
         Assert.Equal(result, path);
     }
     /// <summary>
@@ -23,7 +23,7 @@ public class PathTest
     public void Test_GetPhysicalPath_2()
     {
         var path = Common.GetPhysicalPath("/a/b.txt");
-        var result = $"{System.AppContext.BaseDirectory}a/b.txt";
+        var result = $"{System.AppContext.BaseDirectory}a\\b.txt";
         Assert.Equal(result, path);
     }
     /// <summary>
@@ -43,7 +43,7 @@ public class PathTest
     public void Test_GetPhysicalPath_4()
     {
         var path = Common.GetPhysicalPath("~/a/b.txt");
-        var result = $"{System.AppContext.BaseDirectory}a/b.txt";
+        var result = $"{System.AppContext.BaseDirectory}a\\b.txt";
         Assert.Equal(result, path);
     }
 }
