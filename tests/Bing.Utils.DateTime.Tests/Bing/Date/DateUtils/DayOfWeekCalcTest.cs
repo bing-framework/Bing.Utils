@@ -1,8 +1,6 @@
-﻿using NodaTime;
+using NodaTime;
 using System.Linq;
-
 namespace Bing.Date.DateUtils;
-
 /// <summary>
 /// 星期计算测试
 /// </summary>
@@ -39,7 +37,6 @@ public class DayOfWeekCalcTest
         var result = DayOfWeekCalc.AddDays(source, days);
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - DaysBetween - 计算相同星期几间隔天数为0
     /// </summary>
@@ -48,14 +45,11 @@ public class DayOfWeekCalcTest
     {
         // Arrange
         var day = DayOfWeek.Monday;
-
         // Act
         var result = DayOfWeekCalc.DaysBetween(day, day);
-
         // Assert
         result.ShouldBe(0);
     }
-
     /// <summary>
     /// 测试 - DaysBetween - 计算常规星期几间隔
     /// </summary>
@@ -67,11 +61,9 @@ public class DayOfWeekCalcTest
     {
         // Act
         var result = DayOfWeekCalc.DaysBetween(start, end);
-
         // Assert
         result.ShouldBe(expectedDays);
     }
-
     /// <summary>
     /// 测试 - DaysBetween - 计算跨周的星期几间隔
     /// </summary>
@@ -83,11 +75,9 @@ public class DayOfWeekCalcTest
     {
         // Act
         var result = DayOfWeekCalc.DaysBetween(start, end);
-
         // Assert
         result.ShouldBe(expectedDays);
     }
-
     /// <summary>
     /// 测试 - DaysBetween - 计算ISO星期几间隔
     /// </summary>
@@ -98,11 +88,9 @@ public class DayOfWeekCalcTest
     {
         // Act
         var result = DayOfWeekCalc.DaysBetween(start, end);
-
         // Assert
         result.ShouldBe(expectedDays);
     }
-
     /// <summary>
     /// 测试 - DaysBetween - 当ISO星期几为None时返回0
     /// </summary>
@@ -114,11 +102,9 @@ public class DayOfWeekCalcTest
     {
         // Act
         var result = DayOfWeekCalc.DaysBetween(start, end);
-
         // Assert
         result.ShouldBe(0);
     }
-
     /// <summary>
     /// 测试 - TryDaysBetween - 常规星期几计算成功
     /// </summary>
@@ -128,15 +114,12 @@ public class DayOfWeekCalcTest
         // Arrange
         var start = DayOfWeek.Monday;
         var end = DayOfWeek.Thursday;
-
         // Act
         bool success = DayOfWeekCalc.TryDaysBetween(start, end, out int days);
-
         // Assert
         success.ShouldBeTrue();
         days.ShouldBe(3);
     }
-
     /// <summary>
     /// 测试 - TryDaysBetween - 常规ISO星期几计算成功
     /// </summary>
@@ -146,15 +129,12 @@ public class DayOfWeekCalcTest
         // Arrange
         var start = IsoDayOfWeek.Monday;
         var end = IsoDayOfWeek.Thursday;
-
         // Act
         bool success = DayOfWeekCalc.TryDaysBetween(start, end, out int days);
-
         // Assert
         success.ShouldBeTrue();
         days.ShouldBe(3);
     }
-
     /// <summary>
     /// 测试 - TryDaysBetween - ISO星期几为None时计算失败
     /// </summary>
@@ -166,12 +146,10 @@ public class DayOfWeekCalcTest
     {
         // Act
         bool success = DayOfWeekCalc.TryDaysBetween(start, end, out int days);
-
         // Assert
         success.ShouldBeFalse();
         days.ShouldBe(0);
     }
-
     /// <summary>
     /// 测试 - AddDays - 添加正数天数
     /// </summary>
@@ -183,11 +161,9 @@ public class DayOfWeekCalcTest
     {
         // Act
         var result = DayOfWeekCalc.AddDays(start, daysToAdd);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - AddDays - 添加负数天数
     /// </summary>
@@ -199,11 +175,9 @@ public class DayOfWeekCalcTest
     {
         // Act
         var result = DayOfWeekCalc.AddDays(start, daysToAdd);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetDaysBetween - 获取相同星期几
     /// </summary>
@@ -212,15 +186,12 @@ public class DayOfWeekCalcTest
     {
         // Arrange
         var day = DayOfWeek.Monday;
-
         // Act
         var result = DayOfWeekCalc.GetDaysBetween(day, day).ToList();
-
         // Assert
         result.Count.ShouldBe(1);
         result.ShouldContain(day);
     }
-
     /// <summary>
     /// 测试 - GetDaysBetween - 获取不包含边界的星期几
     /// </summary>
@@ -230,10 +201,8 @@ public class DayOfWeekCalcTest
         // Arrange
         var start = DayOfWeek.Monday;
         var end = DayOfWeek.Friday;
-
         // Act
         var result = DayOfWeekCalc.GetDaysBetween(start, end, false).ToList();
-
         // Assert
         result.Count.ShouldBe(3);
         result.ShouldContain(DayOfWeek.Tuesday);
@@ -242,7 +211,6 @@ public class DayOfWeekCalcTest
         result.ShouldNotContain(start);
         result.ShouldNotContain(end);
     }
-
     /// <summary>
     /// 测试 - GetDaysBetween - 获取包含边界的星期几
     /// </summary>
@@ -252,10 +220,8 @@ public class DayOfWeekCalcTest
         // Arrange
         var start = DayOfWeek.Sunday;
         var end = DayOfWeek.Wednesday;
-
         // Act
         var result = DayOfWeekCalc.GetDaysBetween(start, end).ToList();
-
         // Assert
         result.Count.ShouldBe(4);
         result.ShouldContain(DayOfWeek.Sunday);

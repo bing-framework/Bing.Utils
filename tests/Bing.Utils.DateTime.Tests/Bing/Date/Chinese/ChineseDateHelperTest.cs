@@ -1,7 +1,5 @@
-﻿using System.Globalization;
-
+using System.Globalization;
 namespace Bing.Date.Chinese;
-
 /// <summary>
 /// 农历帮助类
 /// </summary>
@@ -12,7 +10,6 @@ public class ChineseDateHelperTest
     /// 中国农历日历实例
     /// </summary>
     private readonly ChineseLunisolarCalendar _calendar = new();
-
     /// <summary>
     /// 测试 - GetChineseYear - 正确转换公历年份为中文数字年
     /// </summary>
@@ -25,14 +22,11 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var date = new DateTime(year, 1, 1);
-
         // Act
         var result = ChineseDateHelper.GetChineseYear(date, traditional);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetSexagenaryYear - 正确获取干支年
     /// </summary>
@@ -45,14 +39,11 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var date = new DateTime(year, month, day);
-
         // Act
         var result = ChineseDateHelper.GetSexagenaryYear(_calendar, date, traditional);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetSexagenaryYear - 空日历参数抛出异常
     /// </summary>
@@ -61,11 +52,9 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var date = new DateTime(2023, 1, 1);
-
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => ChineseDateHelper.GetSexagenaryYear(null, date));
     }
-
     /// <summary>
     /// 测试 - GetChineseMonth - 正确获取农历月份名称
     /// </summary>
@@ -77,14 +66,11 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var date = new DateTime(year, month, day);
-
         // Act
         var result = ChineseDateHelper.GetChineseMonth(_calendar, date, traditional);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetChineseMonth - 闰月情况下正确返回月份名称
     /// </summary>
@@ -93,16 +79,13 @@ public class ChineseDateHelperTest
     {
         // Arrange - 2023年闰二月开始于公历2023年3月22日
         var date = new DateTime(2023, 3, 25);
-
         // Act
         var result = ChineseDateHelper.GetChineseMonth(_calendar, date, false);
         var traditional = ChineseDateHelper.GetChineseMonth(_calendar, date, true);
-
         // Assert
         result.ShouldBe("闰二月");
         traditional.ShouldBe("閏貳月");
     }
-
     /// <summary>
     /// 测试 - GetChineseDay - 正确获取农历日期
     /// </summary>
@@ -116,14 +99,11 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var date = new DateTime(year, month, day);
-
         // Act
         var result = ChineseDateHelper.GetChineseDay(_calendar, date, traditional);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetChineseHour - 正确获取农历时辰
     /// </summary>
@@ -145,14 +125,11 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var date = new DateTime(2023, 1, 1, hour, minute, 0);
-
         // Act
         var result = ChineseDateHelper.GetChineseHour(date, traditional);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetChineseHour - 分钟不为零时进位到下一个时辰
     /// </summary>
@@ -162,16 +139,13 @@ public class ChineseDateHelperTest
         // Arrange
         var date1 = new DateTime(2023, 1, 1, 0, 0, 0); // 子时
         var date2 = new DateTime(2023, 1, 1, 2, 1, 0); // 子时进位到丑时
-
         // Act
         var result1 = ChineseDateHelper.GetChineseHour(date1, false);
         var result2 = ChineseDateHelper.GetChineseHour(date2, false);
-
         // Assert
         result1.ShouldBe("子时");
         result2.ShouldBe("丑时");
     }
-
     /// <summary>
     /// 测试 - GetChineseDateTime - 返回完整农历日期表示
     /// </summary>
@@ -180,16 +154,13 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var date = new DateTime(2023, 1, 22, 8, 30, 0); // 农历正月初一 辰时
-
         // Act
         var result = ChineseDateHelper.GetChineseDateTime(_calendar, date, true, false);
         var resultNoHour = ChineseDateHelper.GetChineseDateTime(_calendar, date, false, false);
-
         // Assert
         result.ShouldBe("癸卯年正月初一辰时");
         resultNoHour.ShouldBe("癸卯年正月初一");
     }
-
     /// <summary>
     /// 测试 - IsLeapYear - 正确判断是否为农历闰年
     /// </summary>
@@ -201,16 +172,13 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var date = new DateTime(year, 1, 1);
-
         // Act
         var result = ChineseDateHelper.IsLeapYear(_calendar, date);
         var resultInt = ChineseDateHelper.IsLeapYear(_calendar, year);
-
         // Assert
         result.ShouldBe(expected);
         resultInt.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsLeapMonth - 正确判断是否为农历闰月
     /// </summary>
@@ -222,14 +190,11 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var date = new DateTime(year, month, day);
-
         // Act
         var result = ChineseDateHelper.IsLeapMonth(_calendar, date);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsLeapDay - 正确判断是否为农历闰日
     /// </summary>
@@ -238,7 +203,6 @@ public class ChineseDateHelperTest
     {
         // Arrange
         var regularDay = new DateTime(2023, 1, 22);
-
         // Act & Assert
         ChineseDateHelper.IsLeapDay(_calendar, regularDay).ShouldBeFalse();
     }

@@ -1,7 +1,5 @@
-﻿using System.Globalization;
-
+using System.Globalization;
 namespace Bing.Date.Chinese;
-
 /// <summary>
 /// 中国二十四节气帮助类测试
 /// </summary>
@@ -12,7 +10,6 @@ public class ChineseSolarTermHelperTest
     /// 中国农历日历实例
     /// </summary>
     private readonly ChineseLunisolarCalendar _calendar = new();
-
     /// <summary>
     /// 测试 - GetName - 获取节气的中文名称
     /// </summary>
@@ -25,11 +22,9 @@ public class ChineseSolarTermHelperTest
     {
         // Act
         var result = ChineseSolarTermHelper.GetName(term, traditional);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetEnglishName - 获取节气的英文名称
     /// </summary>
@@ -42,11 +37,9 @@ public class ChineseSolarTermHelperTest
     {
         // Act
         var result = ChineseSolarTermHelper.GetEnglishName(term);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetSolarTerm - 获取指定日期的节气
     /// </summary>
@@ -59,14 +52,11 @@ public class ChineseSolarTermHelperTest
     {
         // Arrange
         var date = new DateTime(year, month, day);
-
         // Act
         var result = ChineseSolarTermHelper.GetSolarTerm(_calendar, date, traditional);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetSolarTerm - 非节气日期返回空字符串
     /// </summary>
@@ -75,14 +65,11 @@ public class ChineseSolarTermHelperTest
     {
         // Arrange
         var date = new DateTime(2023, 2, 10); // 非节气日
-
         // Act
         var result = ChineseSolarTermHelper.GetSolarTerm(_calendar, date);
-
         // Assert
         result.ShouldBe(string.Empty);
     }
-
     /// <summary>
     /// 测试 - GetLastSolarTerm - 获取上一个节气
     /// </summary>
@@ -93,16 +80,13 @@ public class ChineseSolarTermHelperTest
     {
         // Arrange
         var date = new DateTime(year, month, day);
-
         // Act
         var result = ChineseSolarTermHelper.GetLastSolarTerm(_calendar, date, out var termDate);
-
         // Assert
         result.ShouldBe(expected);
         termDate.ShouldNotBe(default);
         termDate.ShouldBeLessThan(date);
     }
-
     /// <summary>
     /// 测试 - GetNextSolarTerm - 获取下一个节气
     /// </summary>
@@ -113,16 +97,13 @@ public class ChineseSolarTermHelperTest
     {
         // Arrange
         var date = new DateTime(year, month, day);
-
         // Act
         var result = ChineseSolarTermHelper.GetNextSolarTerm(_calendar, date, out var termDate);
-
         // Assert
         result.ShouldBe(expected);
         termDate.ShouldNotBe(default);
         termDate.ShouldBeGreaterThan(date);
     }
-
     /// <summary>
     /// 测试 - GetSolarTermEnum - 获取节气枚举
     /// </summary>
@@ -133,14 +114,11 @@ public class ChineseSolarTermHelperTest
     {
         // Arrange
         var date = new DateTime(year, month, day);
-
         // Act
         var result = ChineseSolarTermHelper.GetSolarTermEnum(_calendar, date);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetLastSolarTermEnum - 获取上一个节气枚举
     /// </summary>
@@ -149,16 +127,13 @@ public class ChineseSolarTermHelperTest
     {
         // Arrange
         var date = new DateTime(2023, 2, 10); // 立春后几天
-
         // Act
         var result = ChineseSolarTermHelper.GetLastSolarTermEnum(_calendar, date, out var termDate);
-
         // Assert
         result.ShouldBe(ChineseSolarTerms.BeginningOfSpring);
         termDate.ShouldNotBe(default);
         termDate.ShouldBeLessThan(date);
     }
-
     /// <summary>
     /// 测试 - GetNextSolarTermEnum - 获取下一个节气枚举
     /// </summary>
@@ -167,16 +142,13 @@ public class ChineseSolarTermHelperTest
     {
         // Arrange
         var date = new DateTime(2023, 3, 15); // 春分前几天
-
         // Act
         var result = ChineseSolarTermHelper.GetNextSolarTermEnum(_calendar, date, out var termDate);
-
         // Assert
         result.ShouldBe(ChineseSolarTerms.VernalEquinox);
         termDate.ShouldNotBe(default);
         termDate.ShouldBeGreaterThan(date);
     }
-
     /// <summary>
     /// 测试 - 无效日期参数 - 抛出异常
     /// </summary>
@@ -185,11 +157,9 @@ public class ChineseSolarTermHelperTest
     {
         // Arrange
         var date = new DateTime(2023, 2, 4);
-
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => ChineseSolarTermHelper.GetSolarTerm(null, date));
     }
-
     /// <summary>
     /// 测试 - 日期超出范围 - 返回空结果
     /// </summary>
@@ -200,10 +170,8 @@ public class ChineseSolarTermHelperTest
     {
         // Arrange
         var date = new DateTime(year, month, day);
-
         // Act
         var result = ChineseSolarTermHelper.GetSolarTerm(_calendar, date);
-
         // Assert
         result.ShouldBe(string.Empty);
     }

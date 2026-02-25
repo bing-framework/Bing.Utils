@@ -1,7 +1,5 @@
-﻿using Bing.Helpers;
-
+using Bing.Helpers;
 namespace Bing.Date;
-
 /// <summary>
 /// 日期时间导航测试 - 获取
 /// </summary>
@@ -29,7 +27,6 @@ public class DateTimeNavigationGetTest
         var dt = Conv.ToDate(input);
         dt.GetQuarter().ShouldBe(result);
     }
-
     /// <summary>
     /// 测试 - 获取指定日期是所在年份的第几周
     /// </summary>

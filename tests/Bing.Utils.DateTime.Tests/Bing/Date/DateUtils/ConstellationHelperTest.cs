@@ -1,5 +1,4 @@
-﻿namespace Bing.Date.DateUtils;
-
+namespace Bing.Date.DateUtils;
 /// <summary>
 /// 星座帮助类
 /// </summary>
@@ -38,14 +37,11 @@ public class ConstellationHelperTest
     {
         // Arrange
         var dt = DateTime.Parse(date);
-
         // Act
         var constellation = ConstellationHelper.Get(dt);
-
         // Assert
         Assert.Equal(expectedConstellation, constellation);
     }
-
     /// <summary>
     /// 测试 - 获取指定月份和日期的星座名称 - 返回正确的星座名称
     /// </summary>
@@ -78,11 +74,9 @@ public class ConstellationHelperTest
     {
         // Act
         var constellation = ConstellationHelper.Get(month, day);
-
         // Assert
         Assert.Equal(expectedConstellation, constellation);
     }
-
     /// <summary>
     /// 测试 - Get(DateTime) - 正确返回星座
     /// </summary>
@@ -97,14 +91,11 @@ public class ConstellationHelperTest
     {
         // Arrange
         DateTime date = DateTime.Parse(dateString);
-
         // Act
         string constellation = ConstellationHelper.Get(date);
-
         // Assert
         constellation.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Get(month, day) - 每个星座的边界值
     /// </summary>
@@ -137,11 +128,9 @@ public class ConstellationHelperTest
     {
         // Act
         string constellation = ConstellationHelper.Get(month, day);
-
         // Assert
         constellation.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Get(month, day) - 摩羯座跨年测试
     /// </summary>
@@ -154,11 +143,9 @@ public class ConstellationHelperTest
     {
         // Act
         string constellation = ConstellationHelper.Get(month, day);
-
         // Assert
         constellation.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Get(month, day) - 无效月份抛出异常
     /// </summary>
@@ -171,7 +158,6 @@ public class ConstellationHelperTest
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() => ConstellationHelper.Get(month, day));
     }
-
     /// <summary>
     /// 测试 - Get(month, day) - 无效日期抛出异常
     /// </summary>

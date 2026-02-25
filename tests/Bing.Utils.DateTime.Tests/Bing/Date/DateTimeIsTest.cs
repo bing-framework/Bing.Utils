@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Bing.Helpers;
-
 namespace Bing.Date;
-
 /// <summary>
 /// 日期时间判断测试
 /// </summary>
@@ -10,7 +8,6 @@ namespace Bing.Date;
 public class DateTimeIsTest
 {
     #region IsEarlyMorning
-
     /// <summary>
     /// 测试 - 是否清晨
     /// </summary>
@@ -27,11 +24,8 @@ public class DateTimeIsTest
         var dt = Conv.ToDate(input);
         dt.IsEarlyMorning().ShouldBe(result);
     }
-
     #endregion
-
     #region IsLeapYear
-
     /// <summary>
     /// 测试 - 是否闰年
     /// </summary>
@@ -50,11 +44,8 @@ public class DateTimeIsTest
         var dt = Conv.ToDate(input);
         dt.IsLeapYear().ShouldBe(result);
     }
-
     #endregion
-
     #region IsSameDay(是否为同一天)
-
     /// <summary>
     /// 测试 - 判断是否同一天
     /// </summary>
@@ -64,7 +55,6 @@ public class DateTimeIsTest
     {
         Assert.Equal(result, DateJudge.IsSameDay(date, compareDate));
     }
-
     public static List<object[]> IsSameDayValues =>
     [
         [DateTime.Parse("2020-01-04 05:34:55"), DateTime.Parse("2020-01-04 00:00:00"), true],
@@ -77,11 +67,8 @@ public class DateTimeIsTest
         [DateTime.Parse("1867-12-24 05:34:55"), null!, false],
         [null!, DateTime.Parse("1867-12-24 05:34:55"), false]
     ];
-
     #endregion
-
     #region IsSameWeek(是否为同一周)
-
     /// <summary>
     /// 测试 - 判断是否同一周
     /// </summary>
@@ -91,7 +78,6 @@ public class DateTimeIsTest
     {
         Assert.Equal(result, DateJudge.IsSameWeek(date, compareDate, firstDayOfWeek));
     }
-
     public static List<object[]> IsSameWeekValues =>
     [
         [DateTime.Parse("2021-09-05 05:34:55"), DateTime.Parse("2021-09-05 00:00:00"), DayOfWeek.Monday, true],
@@ -106,11 +92,8 @@ public class DateTimeIsTest
         [DateTime.Parse("1867-12-24 05:34:55"), null!, DayOfWeek.Monday, false],
         [null!, DateTime.Parse("1867-12-24 05:34:55"), DayOfWeek.Monday, false]
     ];
-
     #endregion
-
     #region IsSameMonth(是否为同一月)
-
     /// <summary>
     /// 测试 - 判断是否为同一月
     /// </summary>
@@ -120,7 +103,6 @@ public class DateTimeIsTest
     {
         Assert.Equal(result, DateJudge.IsSameMonth(date, compareDate));
     }
-
     public static List<object[]> IsSameMonthValues =>
     [
         [DateTime.Parse("2020-01-04 05:34:55"), DateTime.Parse("2020-01-05 00:00:00"), true],
@@ -131,11 +113,8 @@ public class DateTimeIsTest
         [DateTime.Parse("1867-12-24 05:34:55"), null!, false],
         [null!, DateTime.Parse("1867-12-24 05:34:55"), false]
     ];
-
     #endregion
-
     #region IsSameYear(是否为同一年)
-
     /// <summary>
     /// 测试 - 判断是否为同一年
     /// </summary>
@@ -145,7 +124,6 @@ public class DateTimeIsTest
     {
         Assert.Equal(result, DateJudge.IsSameYear(date, compareDate));
     }
-
     public static List<object[]> IsSameYearValues =>
     [
         [DateTime.Parse("2020-01-04 05:34:55"), DateTime.Parse("2020-01-05 00:00:00"), true],
@@ -155,6 +133,5 @@ public class DateTimeIsTest
         [DateTime.Parse("1867-12-24 05:34:55"), null!, false],
         [null!, DateTime.Parse("1867-12-24 05:34:55"), false]
     ];
-
     #endregion
 }
