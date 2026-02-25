@@ -1,7 +1,5 @@
-﻿using Bing.Text;
-
+using Bing.Text;
 namespace BingUtilsUT.StringUT;
-
 [Trait("StringUT", "Strings.Has")]
 public class StringHasTest
 {
@@ -15,7 +13,6 @@ public class StringHasTest
         Strings.HasNumbers("abcdefg").ShouldBeFalse();
         Strings.HasNumbers("abcdefg0").ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - 是否包含指定数量的数字
     /// </summary>

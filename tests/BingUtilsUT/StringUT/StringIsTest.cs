@@ -1,12 +1,9 @@
-﻿using Bing.Text;
-
+using Bing.Text;
 namespace BingUtilsUT.StringUT;
-
 [Trait("StringUT", "Strings.Is")]
 public class StringIsTest
 {
     #region IsUpper/IsLower 测试
-
     /// <summary>
     /// 测试 - 是否为大写
     /// </summary>
@@ -19,7 +16,6 @@ public class StringIsTest
         Strings.IsUpper("   ").ShouldBeTrue();    // 只有空白字符
         Strings.IsUpper("123").ShouldBeTrue();    // 只有数字，没有字母
         Strings.IsUpper("!@#").ShouldBeTrue();    // 只有特殊字符，没有字母
-
         // 包含字母的测试
         Strings.IsUpper("a").ShouldBeFalse();
         Strings.IsUpper("A").ShouldBeTrue();
@@ -46,7 +42,6 @@ public class StringIsTest
         Strings.IsUpper("a A").ShouldBeFalse();
         Strings.IsUpper("A a").ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试 - 是否为小写
     /// </summary>
@@ -59,7 +54,6 @@ public class StringIsTest
         Strings.IsLower("   ").ShouldBeTrue();    // 只有空白字符
         Strings.IsLower("123").ShouldBeTrue();    // 只有数字，没有字母
         Strings.IsLower("!@#").ShouldBeTrue();    // 只有特殊字符，没有字母
-
         // 包含字母的测试
         Strings.IsLower("a").ShouldBeTrue();
         Strings.IsLower("A").ShouldBeFalse();
@@ -86,11 +80,8 @@ public class StringIsTest
         Strings.IsLower("a A").ShouldBeFalse();
         Strings.IsLower("A a").ShouldBeFalse();
     }
-
     #endregion
-
     #region IsChinese 测试
-
     /// <summary>
     /// 测试 IsChinese(char value) 方法，当字符是中文时应返回 True
     /// </summary>
@@ -99,14 +90,11 @@ public class StringIsTest
     {
         // Arrange
         var character = '你';
-
         // Act
         var result = Strings.IsChinese(character);
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 IsChinese(char value) 方法，当字符不是中文时应返回 False
     /// </summary>
@@ -115,14 +103,11 @@ public class StringIsTest
     {
         // Arrange
         var character = 'A';
-
         // Act
         var result = Strings.IsChinese(character);
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 IsChinese(string text) 方法，当字符串全部由中文字符组成时应返回 True
     /// </summary>
@@ -131,14 +116,11 @@ public class StringIsTest
     {
         // Arrange
         var text = "你好世界";
-
         // Act
         var result = Strings.IsChinese(text);
-
         // Assert
         Assert.True(result);
     }
-
     /// <summary>
     /// 测试 IsChinese(string text) 方法，当字符串含有非中文字符时应返回 False
     /// </summary>
@@ -147,14 +129,11 @@ public class StringIsTest
     {
         // Arrange
         var text = "Hello";
-
         // Act
         var result = Strings.IsChinese(text);
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 IsChinese(string text) 方法，当字符串包含中英文混合时应返回 False
     /// </summary>
@@ -163,14 +142,11 @@ public class StringIsTest
     {
         // Arrange
         var text = "你好World";
-
         // Act
         var result = Strings.IsChinese(text);
-
         // Assert
         Assert.False(result);
     }
-
     /// <summary>
     /// 测试 IsChinese(string text) 方法，当字符串为空时应返回 False
     /// </summary>
@@ -179,18 +155,13 @@ public class StringIsTest
     {
         // Arrange
         var text = string.Empty;
-
         // Act
         var result = Strings.IsChinese(text);
-
         // Assert
         Assert.False(result);
     }
-
     #endregion
-
     #region IsAllUpperCase 测试
-
     /// <summary>
     /// 测试 - IsAllUpperCase - 全部大写字母返回true
     /// </summary>
@@ -203,11 +174,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAllUpperCase(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsAllUpperCase - 包含非大写字母返回false
     /// </summary>
@@ -224,15 +193,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAllUpperCase(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsAllLowerCase 测试
-
     /// <summary>
     /// 测试 - IsAllLowerCase - 全部小写字母返回true
     /// </summary>
@@ -245,11 +210,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAllLowerCase(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsAllLowerCase - 包含非小写字母返回false
     /// </summary>
@@ -266,15 +229,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAllLowerCase(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsAllLetters 测试
-
     /// <summary>
     /// 测试 - IsAllLetters - 只包含字母返回true
     /// </summary>
@@ -289,11 +248,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAllLetters(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsAllLetters - 包含非字母返回false
     /// </summary>
@@ -310,15 +267,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAllLetters(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsAllDigits 测试
-
     /// <summary>
     /// 测试 - IsAllDigits - 只包含数字返回true
     /// </summary>
@@ -332,11 +285,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAllDigits(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsAllDigits - 包含非数字返回false
     /// </summary>
@@ -354,15 +305,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAllDigits(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsAlphanumeric 测试
-
     /// <summary>
     /// 测试 - IsAlphanumeric - 只包含字母和数字返回true
     /// </summary>
@@ -379,11 +326,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAlphanumeric(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsAlphanumeric - 包含其他字符返回false
     /// </summary>
@@ -400,15 +345,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAlphanumeric(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsAsciiLetters 测试
-
     /// <summary>
     /// 测试 - IsAsciiLetters - 只包含ASCII字母返回true
     /// </summary>
@@ -423,11 +364,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAsciiLetters(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsAsciiLetters - 包含非ASCII字母返回false
     /// </summary>
@@ -444,15 +383,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAsciiLetters(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsAsciiDigits 测试
-
     /// <summary>
     /// 测试 - IsAsciiDigits - 只包含ASCII数字返回true
     /// </summary>
@@ -465,11 +400,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAsciiDigits(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsAsciiDigits - 包含非ASCII数字返回false
     /// </summary>
@@ -487,15 +420,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAsciiDigits(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsAsciiAlphanumeric 测试
-
     /// <summary>
     /// 测试 - IsAsciiAlphanumeric - 只包含ASCII字母和数字返回true
     /// </summary>
@@ -511,11 +440,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAsciiAlphanumeric(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsAsciiAlphanumeric - 包含非ASCII字符返回false
     /// </summary>
@@ -533,15 +460,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsAsciiAlphanumeric(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsValidIdentifier 测试
-
     /// <summary>
     /// 测试 - IsValidIdentifier - 有效标识符返回true
     /// </summary>
@@ -558,11 +481,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsValidIdentifier(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsValidIdentifier - 无效标识符返回false
     /// </summary>
@@ -580,15 +501,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsValidIdentifier(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsChinese 边界测试
-
     /// <summary>
     /// 测试 - IsChinese - 中文字符边界测试
     /// </summary>
@@ -606,11 +523,9 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsChinese(character);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsChinese - 字符串边界和特殊情况
     /// </summary>
@@ -629,15 +544,11 @@ public class StringIsTest
     {
         // Act
         var result = Strings.IsChinese(text);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 性能测试
-
     /// <summary>
     /// 测试 - 性能测试 - 确保方法在合理时间内执行
     /// </summary>
@@ -658,7 +569,6 @@ public class StringIsTest
             string.Empty,
             new string('A', 1000) // 长字符串
         };
-
         // Act & Assert - 应该在合理时间内完成
         Should.CompleteIn(() =>
         {
@@ -682,11 +592,8 @@ public class StringIsTest
             }
         }, TimeSpan.FromSeconds(5)); // 应该在5秒内完成
     }
-
     #endregion
-
     #region 综合场景测试
-
     /// <summary>
     /// 测试 - 综合场景 - 各种真实数据验证
     /// </summary>
@@ -698,30 +605,24 @@ public class StringIsTest
         Strings.IsValidIdentifier("_privateField").ShouldBeTrue();
         Strings.IsValidIdentifier("MAX_SIZE").ShouldBeTrue();
         Strings.IsValidIdentifier("123invalid").ShouldBeFalse();
-
         // 密码强度检查（仅字母数字）
         Strings.IsAlphanumeric("Password123").ShouldBeTrue();
         Strings.IsAlphanumeric("Password!123").ShouldBeFalse();
-
         // 产品编码验证
         Strings.IsAsciiAlphanumeric("PROD123ABC").ShouldBeTrue();
         Strings.IsAsciiAlphanumeric("PROD-123").ShouldBeFalse();
-
         // 国际化文本检查
         Strings.IsChinese("用户名").ShouldBeTrue();
         Strings.IsChinese("User用户").ShouldBeFalse();
-
         // 数据清洗检查
         Strings.IsAllDigits("1234567890").ShouldBeTrue();
         Strings.IsAllLetters("ABCDEFG").ShouldBeTrue();
-
         // 大小写检查（只检查字母）
         Strings.IsUpper("HELLO123!").ShouldBeTrue();    // 字母都是大写
         Strings.IsLower("hello123!").ShouldBeTrue();    // 字母都是小写
         Strings.IsUpper("123!@#").ShouldBeTrue();       // 没有字母字符
         Strings.IsLower("123!@#").ShouldBeTrue();       // 没有字母字符
     }
-
     /// <summary>
     /// 测试 - 异常输入处理
     /// </summary>
@@ -739,6 +640,5 @@ public class StringIsTest
             Strings.IsValidIdentifier(new string('a', 10000));
         });
     }
-
     #endregion
 }

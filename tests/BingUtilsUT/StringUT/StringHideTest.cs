@@ -1,7 +1,5 @@
-﻿using Bing.Text;
-
+using Bing.Text;
 namespace BingUtilsUT.StringUT;
-
 [Trait("StringUT", "Strings.Hide")]
 public class StringHideTest
 {
@@ -13,7 +11,6 @@ public class StringHideTest
     {
         Strings.Hide(null,0,1).ShouldBeNull();
     }
-
     /// <summary>
     /// 测试 - 脱敏 - 检查空字符串
     /// </summary>
@@ -24,7 +21,6 @@ public class StringHideTest
         Strings.Hide("",0,1).ShouldBeEmpty();
         Strings.Hide(" ",0,1).ShouldBeEmpty();
     }
-
     /// <summary>
     /// 测试 - 脱敏
     /// </summary>

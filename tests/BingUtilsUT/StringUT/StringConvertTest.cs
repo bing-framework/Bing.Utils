@@ -1,7 +1,5 @@
-﻿using Bing.Text;
-
+using Bing.Text;
 namespace BingUtilsUT.StringUT;
-
 [Trait("StringUT", "Strings.Convert")]
 public class StringConvertTest
 {
@@ -14,14 +12,11 @@ public class StringConvertTest
         // Arrange
         var input = "Hello World";
         var expected = "Ｈｅｌｌｏ　Ｗｏｒｌｄ";
-
         // Act
         var result = Strings.ToSbcCase(input);
-
         // Assert
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - 转换成全角字符串 - 排除空格
     /// </summary>
@@ -31,14 +26,11 @@ public class StringConvertTest
         // Arrange
         var input = "HelloWorld";
         var expected = "ＨｅｌｌｏＷｏｒｌｄ";
-
         // Act
         var result = Strings.ToSbcCase(input);
-
         // Assert
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - 转换成全角字符串 - 包含特殊符号
     /// </summary>
@@ -48,14 +40,11 @@ public class StringConvertTest
         // Arrange
         var input = "Hello!@#$%^&*()_+-=";
         var expected = "Ｈｅｌｌｏ！＠＃＄％＾＆＊（）＿＋－＝";
-
         // Act
         var result = Strings.ToSbcCase(input);
-
         // Assert
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - 转换成半角字符串 - 包含空格
     /// </summary>
@@ -67,7 +56,6 @@ public class StringConvertTest
         var result = Strings.ToDbcCase(input);
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - 转换成半角字符串 - 排除空格
     /// </summary>
@@ -79,7 +67,6 @@ public class StringConvertTest
         var result = Strings.ToDbcCase(input);
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - 转换成半角字符串 - 包含特殊符号
     /// </summary>

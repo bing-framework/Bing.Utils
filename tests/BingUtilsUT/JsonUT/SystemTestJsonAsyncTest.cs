@@ -1,9 +1,6 @@
-﻿using Bing.Helpers;
-
+using Bing.Helpers;
 namespace BingUtilsUT.JsonUT;
-
 #if NET6_0_OR_GREATER
-
 /// <summary>
 /// System.Text.Json测试
 /// </summary>
@@ -31,7 +28,6 @@ public class SystemTestJsonAsyncTest
         var json = await Json.ToJsonAsync(sample);
         Assert.Equal(result.ToString(), json);
     }
-
     /// <summary>
     /// 测试 - 转换为对象
     /// </summary>
@@ -42,5 +38,5 @@ public class SystemTestJsonAsyncTest
         Assert.Equal("a", sample.Name);
     }
 }
-
 #endif
+

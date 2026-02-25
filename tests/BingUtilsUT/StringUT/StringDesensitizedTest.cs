@@ -1,7 +1,5 @@
-﻿using Bing.Text;
-
+using Bing.Text;
 namespace BingUtilsUT.StringUT;
-
 [Trait("StringUT", "Strings.Desensitized")]
 public class StringDesensitizedTest
 {
@@ -13,7 +11,6 @@ public class StringDesensitizedTest
     {
         DesensitizedHelper.ChineseName("段正淳").ShouldBe("段**");
     }
-
     /// <summary>
     /// 测试 - 脱敏 -身份证
     /// </summary>
@@ -22,7 +19,6 @@ public class StringDesensitizedTest
     {
         DesensitizedHelper.IdCardNum("51343620000320711X",1,2).ShouldBe("5***************1X");
     }
-
     /// <summary>
     /// 测试 - 脱敏 - 固定电话
     /// </summary>
@@ -31,7 +27,6 @@ public class StringDesensitizedTest
     {
         DesensitizedHelper.FixedPhone("09157518479").ShouldBe("0915*****79");
     }
-
     /// <summary>
     /// 测试 - 脱敏 - 手机号码
     /// </summary>
@@ -40,7 +35,6 @@ public class StringDesensitizedTest
     {
         DesensitizedHelper.MobilePhone("13610000000").ShouldBe("136****0000");
     }
-
     /// <summary>
     /// 测试 - 脱敏 - 地址
     /// </summary>
@@ -52,7 +46,6 @@ public class StringDesensitizedTest
         DesensitizedHelper.Address("广东省广州市天河区猎德街道289号",0).ShouldBe("广东省广州市天河区猎德街道289号");
         DesensitizedHelper.Address("广东省广州市天河区猎德街道289号",-1).ShouldBe("广东省广州市天河区猎德街道289号");
     }
-
     /// <summary>
     /// 测试 - 脱敏 - 邮箱
     /// </summary>
@@ -63,7 +56,6 @@ public class StringDesensitizedTest
         DesensitizedHelper.Email("wang@gmail.com.cn").ShouldBe("w***@gmail.com.cn");
         DesensitizedHelper.Email("wang-andy@gmail.com.cn").ShouldBe("w********@gmail.com.cn");
     }
-
     /// <summary>
     /// 测试 - 脱敏 - 密码
     /// </summary>
@@ -72,7 +64,6 @@ public class StringDesensitizedTest
     {
         DesensitizedHelper.Password("1234567890").ShouldBe("**********");
     }
-
     /// <summary>
     /// 测试 - 脱敏 - 银行卡
     /// </summary>
@@ -90,7 +81,6 @@ public class StringDesensitizedTest
     {
         DesensitizedHelper.BankCard(input).ShouldBe(result);
     }
-
     /// <summary>
     /// 测试 - 脱敏 - IPv4
     /// </summary>
@@ -99,7 +89,6 @@ public class StringDesensitizedTest
     {
         DesensitizedHelper.IPv4("192.168.1.1").ShouldBe("192.*.*.*");
     }
-    
     /// <summary>
     /// 测试 - 脱敏 - IPv6
     /// </summary>

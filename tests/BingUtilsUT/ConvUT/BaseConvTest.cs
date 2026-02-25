@@ -1,7 +1,5 @@
-﻿using Bing.Conversions;
-
+using Bing.Conversions;
 namespace BingUtilsUT.ConvUT;
-
 /// <summary>
 /// BASE 转换工具测试
 /// </summary>
@@ -9,9 +7,7 @@ namespace BingUtilsUT.ConvUT;
 public class BaseConvTest
 {
     private const string TestValue = "Bing.Utils";
-
     #region Base32
-
     /// <summary>
     /// 测试 - Base32 - 字符串
     /// </summary>
@@ -20,10 +16,8 @@ public class BaseConvTest
     {
         var baseVal = BaseConv.ToBase32String(TestValue);
         var originalVal = BaseConv.FromBase32String(baseVal);
-
         originalVal.ShouldBe(TestValue);
     }
-
     /// <summary>
     /// 测试 - Base32 - 字节数组
     /// </summary>
@@ -32,17 +26,12 @@ public class BaseConvTest
     {
         var byteArray = Encoding.UTF8.GetBytes(TestValue);
         var baseVal = BaseConv.ToBase32(byteArray);
-
         var originalByteArray = BaseConv.FromBase32(baseVal);
         var originalVal = Encoding.UTF8.GetString(originalByteArray);
-
         originalVal.ShouldBe(TestValue);
     }
-
     #endregion
-
     #region Base64
-
     /// <summary>
     /// 测试 - Base64 - 字符串
     /// </summary>
@@ -51,10 +40,8 @@ public class BaseConvTest
     {
         var baseVal = BaseConv.ToBase64String(TestValue);
         var originalVal = BaseConv.FromBase64String(baseVal);
-
         originalVal.ShouldBe(TestValue);
     }
-
     /// <summary>
     /// 测试 - Base64Url
     /// </summary>
@@ -63,12 +50,9 @@ public class BaseConvTest
     {
         const string input = "SGVsbG8gV29ybGQh";
         const string expected = "Hello World!";
-
         var actual = BaseConv.FromBase64UrlString(input);
-
         actual.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Base64Url - 带 "-" 和 "_" 符号
     /// </summary>
@@ -79,7 +63,6 @@ public class BaseConvTest
     {
         BaseConv.FromBase64UrlString(input).ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Base64Url - 缺失 "=" 符号
     /// </summary>
@@ -90,7 +73,6 @@ public class BaseConvTest
     {
         BaseConv.FromBase64UrlString(input).ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - Base64 - 字节数组
     /// </summary>
@@ -99,17 +81,12 @@ public class BaseConvTest
     {
         var byteArray = Encoding.UTF8.GetBytes(TestValue);
         var baseVal = BaseConv.ToBase64(byteArray);
-
         var originalByteArray = BaseConv.FromBase64(baseVal);
         var originalVal = Encoding.UTF8.GetString(originalByteArray);
-
         originalVal.ShouldBe(TestValue);
     }
-
     #endregion
-
     #region Base91
-
     /// <summary>
     /// 测试 - Base91 - 字符串
     /// </summary>
@@ -118,10 +95,8 @@ public class BaseConvTest
     {
         var baseVal = BaseConv.ToBase91String(TestValue);
         var originalVal = BaseConv.FromBase91String(baseVal);
-
         originalVal.ShouldBe(TestValue);
     }
-
     /// <summary>
     /// 测试 - Base91 - 字节数组
     /// </summary>
@@ -130,17 +105,12 @@ public class BaseConvTest
     {
         var byteArray = Encoding.UTF8.GetBytes(TestValue);
         var baseVal = BaseConv.ToBase91(byteArray);
-
         var originalByteArray = BaseConv.FromBase91(baseVal);
         var originalVal = Encoding.UTF8.GetString(originalByteArray);
-
         originalVal.ShouldBe(TestValue);
     }
-
     #endregion
-
     #region Base256
-
     /// <summary>
     /// 测试 - Base256 - 字符串
     /// </summary>
@@ -149,10 +119,8 @@ public class BaseConvTest
     {
         var baseVal = BaseConv.ToBase256String(TestValue);
         var originalVal = BaseConv.FromBase256String(baseVal);
-
         originalVal.ShouldBe(TestValue);
     }
-
     /// <summary>
     /// 测试 - Base256 - 字节数组
     /// </summary>
@@ -161,17 +129,12 @@ public class BaseConvTest
     {
         var byteArray = Encoding.UTF8.GetBytes(TestValue);
         var baseVal = BaseConv.ToBase256(byteArray);
-
         var originalByteArray = BaseConv.FromBase256(baseVal);
         var originalVal = Encoding.UTF8.GetString(originalByteArray);
-
         originalVal.ShouldBe(TestValue);
     }
-
     #endregion
-
     #region ZBase32
-
     /// <summary>
     /// 测试 - ZBase32 - 字符串
     /// </summary>
@@ -180,10 +143,8 @@ public class BaseConvTest
     {
         var baseVal = BaseConv.ToZBase32String(TestValue);
         var originalVal = BaseConv.FromZBase32String(baseVal);
-
         originalVal.ShouldBe(TestValue);
     }
-
     /// <summary>
     /// 测试 - ZBase32 - 字节数组
     /// </summary>
@@ -192,22 +153,17 @@ public class BaseConvTest
     {
         var byteArray = Encoding.UTF8.GetBytes(TestValue);
         var baseVal = BaseConv.ToZBase32(byteArray);
-
         var originalByteArray = BaseConv.FromZBase32(baseVal);
         var originalVal = Encoding.UTF8.GetString(originalByteArray);
-
         originalVal.ShouldBe(TestValue);
     }
-
     #endregion
 }
-
 public static class Base85
 {
     #region EncodeToString
     public static string EncodeToString(byte[] binary) => Encoding.ASCII.GetString(Encode(binary));
     #endregion
-
     #region Encode
     public static byte[] Encode(byte[] binary)
     {
@@ -284,11 +240,9 @@ public static class Base85
         return result.ToArray();
     }
     #endregion
-
     #region DecodeFromString
     public static byte[] DecodeFromString(string str) => Decode(Encoding.ASCII.GetBytes(str));
     #endregion
-
     #region Decode
     public static byte[] Decode(byte[] ascii)
     {

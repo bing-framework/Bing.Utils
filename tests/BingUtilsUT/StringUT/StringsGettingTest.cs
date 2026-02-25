@@ -1,7 +1,5 @@
-﻿using Bing.Text;
-
+using Bing.Text;
 namespace BingUtilsUT.StringUT;
-
 [Trait("StringUT", "Strings.Get")]
 public class StringsGettingTest
 {
@@ -13,7 +11,6 @@ public class StringsGettingTest
     {
         Strings.GetNumbersAndLetters("abcd1234").ShouldBe("abcd1234");
     }
-
     /// <summary>
     /// 测试 - 只获取数字
     /// </summary>
@@ -22,7 +19,6 @@ public class StringsGettingTest
     {
         Strings.GetNumbers("abcd1234").ShouldBe("1234");
     }
-
     /// <summary>
     /// 测试 - 只获取字母
     /// </summary>

@@ -1,7 +1,5 @@
-﻿using Bing.Collections;
-
+using Bing.Collections;
 namespace BingUtilsUT.ConvUT;
-
 [Trait("ConvUT","Dict")]
 public class DictConvTest
 {
@@ -13,11 +11,9 @@ public class DictConvTest
     {
         var source = new Dictionary<int, int> { { 1, 1 }, { 2, 2 }, { 3, 3 } }.AsReadOnlyDictionary();
         var target = DictConv.Cast<int, int, int, dynamic>(source);
-
         target.ShouldNotBeNull();
         target.Count.ShouldBe(3);
     }
-
     /// <summary>
     /// 测试 - 将字典转换为其它【扩展方法】
     /// </summary>
@@ -26,7 +22,6 @@ public class DictConvTest
     {
         var source = new Dictionary<int, int> { { 1, 1 }, { 2, 2 }, { 3, 3 } }.AsReadOnlyDictionary();
         var target = source.Cast<int, int, int, dynamic>();
-
         target.ShouldNotBeNull();
         target.Count.ShouldBe(3);
     }

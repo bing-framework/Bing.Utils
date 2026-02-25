@@ -1,7 +1,5 @@
-﻿using Bing.Helpers;
-
+using Bing.Helpers;
 namespace BingUtilsUT.PathUT;
-
 /// <summary>
 /// 路径测试
 /// </summary>
@@ -18,7 +16,6 @@ public class PathTest
         var result = $"{System.AppContext.BaseDirectory}a/b.txt";
         Assert.Equal(result, path);
     }
-
     /// <summary>
     /// 测试 - 获取物理路径 - 以 / 开头
     /// </summary>
@@ -29,7 +26,6 @@ public class PathTest
         var result = $"{System.AppContext.BaseDirectory}a/b.txt";
         Assert.Equal(result, path);
     }
-
     /// <summary>
     /// 测试 - 获取物理路径 - 以 \ 开头
     /// </summary>
@@ -40,7 +36,6 @@ public class PathTest
         var result = $"{System.AppContext.BaseDirectory}a\\b.txt";
         Assert.Equal(result, path);
     }
-
     /// <summary>
     /// 测试 - 获取物理路径
     /// </summary>

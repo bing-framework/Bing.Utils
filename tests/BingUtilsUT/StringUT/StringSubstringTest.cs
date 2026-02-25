@@ -1,12 +1,9 @@
-﻿using Bing.Text;
-
+using Bing.Text;
 namespace BingUtilsUT.StringUT;
-
 [Trait("StringUT", "Strings.Substring")]
 public class StringSubstringTest
 {
     #region Take
-
     /// <summary>
     /// 测试 - 获取指定长度的字符串 - 当输入字符串长度大于指定长度时
     /// </summary>
@@ -19,7 +16,6 @@ public class StringSubstringTest
         var result = Strings.Take(input, length);
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - 获取指定长度的字符串 - 当输入字符串长度小于指定长度时
     /// </summary>
@@ -32,7 +28,6 @@ public class StringSubstringTest
         var result = Strings.Take(input, length);
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - 获取指定长度的字符串 - 当输入字符串为空字符串时
     /// </summary>
@@ -45,7 +40,6 @@ public class StringSubstringTest
         var result = Strings.Take(input, length);
         Assert.Equal(expected, result);
     }
-
     /// <summary>
     /// 测试 - 获取指定长度的字符串 - 当输入字符串只包含空格时
     /// </summary>
@@ -58,9 +52,7 @@ public class StringSubstringTest
         var result = Strings.Take(input, length);
         Assert.Equal(expected, result);
     } 
-
     #endregion
-
     /// <summary>
     /// 测试 - 截断字符串 - 指定范围
     /// </summary>
@@ -73,7 +65,6 @@ public class StringSubstringTest
         Strings.Substring(str, 2, -3).ShouldBe("cdergh");
         Strings.Substring(str, -5, str.Length).ShouldBe("ghigh");
     }
-
     /// <summary>
     /// 测试 - 截断字符串 - 指定长度
     /// </summary>
@@ -83,7 +74,6 @@ public class StringSubstringTest
         var str = "A5E6005700000000000000000000000000000000000000090D0100000000000001003830";
         Strings.SubstringWithLength(str, -2, 2).ShouldBe("38");
     }
-
     /// <summary>
     /// 测试 - 截取字符串 - 分隔字符串之前部分
     /// </summary>
@@ -99,12 +89,10 @@ public class StringSubstringTest
         Strings.SubstringBefore(str, "d", false).ShouldBe("abc");
         Strings.SubstringBefore(str, "", false).ShouldBe("");
         Strings.SubstringBefore(str, null, false).ShouldBe(str);
-
         // 找不到返回原字符串
         Strings.SubstringBefore(str, "k", false).ShouldBe(str);
         Strings.SubstringBefore(str, "k", true).ShouldBe(str);
     }
-
     /// <summary>
     /// 测试 - 截取字符串 - 分隔字符之前部分
     /// </summary>
@@ -118,12 +106,10 @@ public class StringSubstringTest
         Strings.SubstringBefore(str, 'b', false).ShouldBe("a");
         Strings.SubstringBefore(str, 'c', false).ShouldBe("ab");
         Strings.SubstringBefore(str, 'd', false).ShouldBe("abc");
-
         // 找不到返回原字符串
         Strings.SubstringBefore(str, 'k', false).ShouldBe(str);
         Strings.SubstringBefore(str, 'k', true).ShouldBe(str);
     }
-
     /// <summary>
     /// 测试 - 截取字符串 - 分隔字符串之后部分
     /// </summary>
@@ -140,12 +126,10 @@ public class StringSubstringTest
         Strings.SubstringAfter(str, "h", false).ShouldBe("igh");
         Strings.SubstringAfter(str, "h", true).ShouldBe("");
         Strings.SubstringAfter(str, "", true).ShouldBe("");
-
         // 找不到返回原字符串
         Strings.SubstringAfter(str, "k", false).ShouldBe("");
         Strings.SubstringAfter(str, "k", true).ShouldBe("");
     }
-
     /// <summary>
     /// 测试 - 截取字符串 - 分隔字符之后部分
     /// </summary>
@@ -160,12 +144,10 @@ public class StringSubstringTest
         Strings.SubstringAfter(str, 'd', false).ShouldBe("erghigh");
         Strings.SubstringAfter(str, 'h', false).ShouldBe("igh");
         Strings.SubstringAfter(str, 'h', true).ShouldBe("");
-
         // 找不到返回原字符串
         Strings.SubstringAfter(str, 'k', false).ShouldBe("");
         Strings.SubstringAfter(str, 'k', true).ShouldBe("");
     }
-
     /// <summary>
     /// 测试 - 截取字符串 - 指定字符串中间部分
     /// </summary>
@@ -183,7 +165,6 @@ public class StringSubstringTest
         Strings.SubstringBetween("wang", "w", "g").ShouldBe("an");
         Strings.SubstringBetween("wangwang", "w", "g").ShouldBe("an");
     }
-
     /// <summary>
     /// 测试 - 截取字符串 - 指定字符串中间部分
     /// </summary>

@@ -1,12 +1,10 @@
-﻿using System.Text.Encodings.Web;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using Bing.Helpers;
 using Bing.Serialization.SystemTextJson;
-
 namespace BingUtilsUT.JsonUT;
-
 /// <summary>
 /// System.Text.Json测试
 /// </summary>
@@ -34,7 +32,6 @@ public class SystemTestJsonTest
         var sample = JsonTestSample.Create();
         Assert.Equal(result.ToString(), Json.ToJson(sample));
     }
-
     /// <summary>
     /// 测试 - 转换成Json字符串 - 移除双引号
     /// </summary>
@@ -55,7 +52,6 @@ public class SystemTestJsonTest
         var sample = JsonTestSample.Create();
         Assert.Equal(result.ToString(), Json.ToJson(sample, removeQuotationMarks: true));
     }
-
     /// <summary>
     /// 测试 - 转换成Json字符串 - 将双引号转换成单引号
     /// </summary>
@@ -76,7 +72,6 @@ public class SystemTestJsonTest
         var sample = JsonTestSample.Create();
         Assert.Equal(result.ToString(), Json.ToJson(sample, toSingleQuotes: true));
     }
-
     /// <summary>
     /// 测试 - 转换成Json字符串 - 序列化接口
     /// </summary>
@@ -98,7 +93,6 @@ public class SystemTestJsonTest
         var sample = JsonTestSample.CreateToInterface();
         Assert.Equal(result.ToString(), Json.ToJson(sample));
     }
-
     /// <summary>
     /// 测试 - 转换为对象
     /// </summary>
@@ -108,7 +102,6 @@ public class SystemTestJsonTest
         var sample = Json.ToObject<JsonTestSample>("{\"Name\":\"a\"}");
         Assert.Equal("a", sample.Name);
     }
-
     /// <summary>
     /// 测试 - 转换成Json字符串 - 不转义中文字符
     /// </summary>
@@ -146,7 +139,6 @@ public class SystemTestJsonTest
             Converters = { new NullableDateTimeJsonConverter() }
         }));
     }
-
     /// <summary>
     /// 测试 - 转换成Json字符串 - 枚举转换器
     /// </summary>
@@ -168,7 +160,6 @@ public class SystemTestJsonTest
 #endif
                 Converters = { new EnumJsonConverterFactory() }
             });
-
         var result = Json.ToObject<JsonTestSample>(json, new JsonSerializerOptions
         {
             Converters = { new EnumJsonConverterFactory() }
@@ -176,7 +167,6 @@ public class SystemTestJsonTest
         Assert.True(result.Enum == TestEnum.Test2);
         Assert.True(result.NullableEnum == TestEnum.Test2);
     }
-
     /// <summary>
     /// 测试 - 转换成Json字符串 - long类型
     /// </summary>
@@ -190,11 +180,9 @@ public class SystemTestJsonTest
         var sample = new JsonTestSample2 { Long = 123456789123456789 };
         var json = Json.ToJson( sample );
         Assert.Equal( result.ToString(), json );
-
         var obj = Json.ToObject<JsonTestSample2>( json );
         Assert.Equal( 123456789123456789, obj.Long );
     }
-
     /// <summary>
     /// 测试 - 转换成Json字符串 - long?类型
     /// </summary>
@@ -209,7 +197,6 @@ public class SystemTestJsonTest
         var sample = new JsonTestSample2 { NullableLong = 123456789123456789 };
         var json = Json.ToJson( sample );
         Assert.Equal( result.ToString(), json );
-
         var obj = Json.ToObject<JsonTestSample2>( json );
         Assert.Equal( 123456789123456789, obj.NullableLong );
     }

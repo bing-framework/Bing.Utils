@@ -1,7 +1,5 @@
-﻿using Bing.IdUtils;
-
+using Bing.IdUtils;
 namespace BingUtilsUT.IdUtilsUT;
-
 /// <summary>
 /// 跟踪ID 测试
 /// </summary>
@@ -12,7 +10,6 @@ public class TraceIdTest
     /// 测试输出帮助类
     /// </summary>
     protected ITestOutputHelper Output { get; }
-
     /// <summary>
     /// 测试初始化
     /// </summary>
@@ -20,7 +17,6 @@ public class TraceIdTest
     {
         Output = output;
     }
-
     /// <summary>
     /// 测试 - 跟踪ID生成
     /// </summary>
@@ -29,12 +25,9 @@ public class TraceIdTest
     {
         var accessor1 = new TraceIdAccessor(null);
         var accessor2 = new TraceIdAccessor(null);
-
         var id1 = accessor1.GetTraceId();
         var id2 = accessor2.GetTraceId();
-
         id1.ShouldNotBe(id2);
-
         Output.WriteLine(id1);
         Output.WriteLine(id2);
     }

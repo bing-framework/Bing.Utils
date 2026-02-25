@@ -1,7 +1,5 @@
-﻿using Bing.Conversions;
-
+using Bing.Conversions;
 namespace BingUtilsUT.ConvUT;
-
 /// <summary>
 /// 任意[2,62]进制转换器 测试
 /// </summary>
@@ -9,7 +7,6 @@ namespace BingUtilsUT.ConvUT;
 public class AnyRadixConvertTest
 {
     #region X2X(任意进制)
-
     /// <summary>
     /// 测试 - 常用进制转换
     /// </summary>
@@ -33,7 +30,6 @@ public class AnyRadixConvertTest
         AnyRadixConvert.X2X("2E", 16, 8).ShouldBe("56");
         AnyRadixConvert.X2X("2E", 16, 10).ShouldBe("46");
     }
-
     /// <summary>
     /// 测试 - 相同进制
     /// </summary>
@@ -76,7 +72,6 @@ public class AnyRadixConvertTest
         AnyRadixConvert.X2X("101110", 35, 35).ShouldBe("101110");
         AnyRadixConvert.X2X("101110", 36, 36).ShouldBe("101110");
     }
-
     /// <summary>
     /// 测试 - 任意进制
     /// </summary>
@@ -90,12 +85,8 @@ public class AnyRadixConvertTest
     {
         AnyRadixConvert.X2X(input, fromRadix, toRadix, RadixCharsetStrategy.LowerFirst).ShouldBe(result);
     }
-
     #endregion
-
-
     #region Binary(二进制)
-
     /// <summary>
     /// 测试 - 二进制值转换为八进制值
     /// </summary>
@@ -104,7 +95,6 @@ public class AnyRadixConvertTest
     {
         AnyRadixConvert.BinToOct("101110").ShouldBe("56");
     }
-
     /// <summary>
     /// 测试 - 二进制值转换为十进制值
     /// </summary>
@@ -113,7 +103,6 @@ public class AnyRadixConvertTest
     {
         AnyRadixConvert.BinToDec("101110").ShouldBe(46);
     }
-
     /// <summary>
     /// 测试 - 二进制值转换为十六进制值
     /// </summary>
@@ -122,7 +111,6 @@ public class AnyRadixConvertTest
     {
         AnyRadixConvert.BinToHex("101110").ShouldBe("2E");
     }
-
     /// <summary>
     /// 测试 - 二进制值转换为八进制值 - 对比 - 系统转换
     /// </summary>
@@ -131,11 +119,9 @@ public class AnyRadixConvertTest
     {
         var bin = "101110";
         var decimalValue = Convert.ToInt32(bin, 2);
-
         AnyRadixConvert.BinToOct(bin).ShouldBe("56");
         Convert.ToString(decimalValue, 8).ShouldBe("56");
     }
-
     /// <summary>
     /// 测试 - 二进制值转换为十进制值 - 对比 - 系统转换
     /// </summary>
@@ -143,11 +129,9 @@ public class AnyRadixConvertTest
     public void Test_BinToDec_VS_SystemConvert()
     {
         var bin = "101110";
-
         AnyRadixConvert.BinToDec(bin).ShouldBe(46);
         Convert.ToInt32(bin, 2).ShouldBe(46);
     }
-
     /// <summary>
     /// 测试 - 二进制值转换为八进制值 - 对比 - 系统转换
     /// </summary>
@@ -156,11 +140,9 @@ public class AnyRadixConvertTest
     {
         var bin = "101110";
         var decimalValue = Convert.ToInt32(bin, 2);
-
         AnyRadixConvert.BinToHex(bin).ShouldBe("2E");
         Convert.ToString(decimalValue, 16).ToUpper().ShouldBe("2E");
     }
-
     /// <summary>
     /// 测试 - 二进制 - 高低位交换
     /// </summary>
@@ -170,11 +152,8 @@ public class AnyRadixConvertTest
         Bin.Reverse("1101110100000011010110100001110").ShouldBe("00001110101011011000000101101110");
         Bin.Reverse("01101110100000011010110100001110").ShouldBe("00001110101011011000000101101110");
     }
-
     #endregion
-
     #region Octal(八进制)
-
     /// <summary>
     /// 测试 - 八进制值转换为二进制值
     /// </summary>
@@ -183,7 +162,6 @@ public class AnyRadixConvertTest
     {
         AnyRadixConvert.OctToBin("56").ShouldBe("101110");
     }
-
     /// <summary>
     /// 测试 - 二进制值转换为十进制值
     /// </summary>
@@ -192,7 +170,6 @@ public class AnyRadixConvertTest
     {
         AnyRadixConvert.OctToDec("56").ShouldBe(46);
     }
-
     /// <summary>
     /// 测试 - 二进制值转换为十六进制值
     /// </summary>
@@ -201,7 +178,6 @@ public class AnyRadixConvertTest
     {
         AnyRadixConvert.OctToHex("56").ShouldBe("2E");
     }
-
     /// <summary>
     /// 测试 - 八进制值转换为二进制值 - 对比 - 系统转换
     /// </summary>
@@ -210,11 +186,9 @@ public class AnyRadixConvertTest
     {
         var oct = "56";
         var decimalValue = Convert.ToInt32(oct, 8);
-
         AnyRadixConvert.OctToBin(oct).ShouldBe("101110");
         Convert.ToString(decimalValue, 2).ShouldBe("101110");
     }
-
     /// <summary>
     /// 测试 - 八进制值转换为十进制值 - 对比 - 系统转换
     /// </summary>
@@ -222,11 +196,9 @@ public class AnyRadixConvertTest
     public void Test_OctToDec_VS_SystemConvert()
     {
         var oct = "56";
-
         AnyRadixConvert.OctToDec(oct).ShouldBe(46);
         Convert.ToInt32(oct, 8).ShouldBe(46);
     }
-
     /// <summary>
     /// 测试 - 八进制值转换为八进制值 - 对比 - 系统转换
     /// </summary>
@@ -235,15 +207,11 @@ public class AnyRadixConvertTest
     {
         var oct = "56";
         var decimalValue = Convert.ToInt32(oct, 8);
-
         AnyRadixConvert.OctToHex(oct).ShouldBe("2E");
         Convert.ToString(decimalValue, 16).ToUpper().ShouldBe("2E");
     }
-
     #endregion
-
     #region Decimal(十进制)
-
     /// <summary>
     /// 测试 - 十进制值转换为二进制值
     /// </summary>
@@ -253,7 +221,6 @@ public class AnyRadixConvertTest
         AnyRadixConvert.DecToBin("46").ShouldBe("101110");
         AnyRadixConvert.DecToBin(46).ShouldBe("101110");
     }
-
     /// <summary>
     /// 测试 - 十进制值转换为十六进制值
     /// </summary>
@@ -266,7 +233,6 @@ public class AnyRadixConvertTest
         AnyRadixConvert.DecToHex(65, 66).ShouldBe("4142");
         AnyRadixConvert.DecToHex(66, 65).ShouldBe("4241");
     }
-
     /// <summary>
     /// 测试 - 十进制值转换为二进制值 - 对比 - 系统转换
     /// </summary>
@@ -276,7 +242,6 @@ public class AnyRadixConvertTest
         AnyRadixConvert.DecToBin("46").ShouldBe("101110");
         Convert.ToString(46, 2).ShouldBe("101110");
     }
-
     /// <summary>
     /// 测试 - 十进制值转换为八进制值 - 对比 - 系统转换
     /// </summary>
@@ -286,7 +251,6 @@ public class AnyRadixConvertTest
         AnyRadixConvert.DecToOct("46").ShouldBe("56");
         Convert.ToString(46, 8).ShouldBe("56");
     }
-
     /// <summary>
     /// 测试 - 十进制值转换为十六进制值 - 对比 - 系统转换
     /// </summary>
@@ -296,11 +260,8 @@ public class AnyRadixConvertTest
         AnyRadixConvert.DecToHex("46").ShouldBe("2E");
         Convert.ToString(46, 16).ToUpper().ShouldBe("2E");
     }
-
     #endregion
-
     #region Hexadecimal(十六进制)
-
     /// <summary>
     /// 测试 - 十六进制值转换为二进制值
     /// </summary>
@@ -309,7 +270,6 @@ public class AnyRadixConvertTest
     {
         AnyRadixConvert.HexToBin("2E").ShouldBe("101110");
     }
-
     /// <summary>
     /// 测试 - 十六进制值转换为十进制值
     /// </summary>
@@ -318,7 +278,6 @@ public class AnyRadixConvertTest
     {
         AnyRadixConvert.HexToDec("2E").ShouldBe("46");
     }
-
     /// <summary>
     /// 测试 - 十六进制值转换为二进制值 - 对比 - 系统转换
     /// </summary>
@@ -327,11 +286,9 @@ public class AnyRadixConvertTest
     {
         var hex = "2E";
         var decimalValue = Convert.ToInt32(hex, 16);
-
         AnyRadixConvert.HexToBin(hex).ShouldBe("101110");
         Convert.ToString(decimalValue, 2).ShouldBe("101110");
     }
-
     /// <summary>
     /// 测试 - 十六进制值转换为八进制值 - 对比 - 系统转换
     /// </summary>
@@ -340,11 +297,9 @@ public class AnyRadixConvertTest
     {
         var hex = "2E";
         var decimalValue = Convert.ToInt32(hex, 16);
-
         AnyRadixConvert.HexToOct(hex).ShouldBe("56");
         Convert.ToString(decimalValue, 8).ShouldBe("56");
     }
-
     /// <summary>
     /// 测试 - 十六进制值转换为十进制值 - 对比 - 系统转换
     /// </summary>
@@ -355,7 +310,6 @@ public class AnyRadixConvertTest
         AnyRadixConvert.HexToDec(hex).ShouldBe("46");
         Convert.ToInt32(hex, 16).ShouldBe(46);
     }
-
     /// <summary>
     /// 测试 - 十六进制 - 高低位交换
     /// </summary>
@@ -365,7 +319,6 @@ public class AnyRadixConvertTest
         Hex.Reverse("E81AD0E").ShouldBe("0EAD810E");
         Hex.Reverse("6E81AD0E").ShouldBe("0EAD816E");
     }
-
     /// <summary>
     /// 测试 - 将字符串转换为十六进制数的字符串
     /// </summary>
@@ -375,7 +328,6 @@ public class AnyRadixConvertTest
         AnyRadixConvert.LettersToHex("ABC").ShouldBe("41 42 43");
         AnyRadixConvert.HexToLetters("41 42 43").ShouldBe("ABC");
     }
-
     /// <summary>
     /// 测试 - 将长十六进制字符串转换为十进制字节数组
     /// </summary>
@@ -383,17 +335,13 @@ public class AnyRadixConvertTest
     public void Test_LongHexToDecBytes()
     {
         var byteArray = AnyRadixConvert.LongHexToDecBytes("41 42 43");
-
         byteArray.Length.ShouldBe(3);
         byteArray[0].ShouldBe((byte)65);
         byteArray[1].ShouldBe((byte)66);
         byteArray[2].ShouldBe((byte)67);
-
         var longHex = AnyRadixConvert.DecBytesToLongHex(byteArray);
-
         longHex.ShouldNotBeEmpty();
         longHex.ShouldBe("41 42 43");
     }
-
     #endregion
 }
