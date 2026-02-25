@@ -1,4 +1,4 @@
-﻿using Bing.Helpers;
+using Bing.Helpers;
 using Bing.Utils.Parameters;
 
 namespace Bing.Parameters;
