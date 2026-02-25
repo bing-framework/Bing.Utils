@@ -1,10 +1,23 @@
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
+# 设置默认行为，自动规范化行结尾。
 ###############################################################################
-* text=auto
+* text=auto eol=crlf
+
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Dockerfile text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
 
 ###############################################################################
 # Set default behavior for command prompt diff.
+# 设置命令行差异的默认行为。
 #
 # This is need for earlier builds of msysgit that does not have it on by
 # default for csharp files.
@@ -14,7 +27,8 @@
 
 ###############################################################################
 # Set the merge driver for project and solution files
-#
+# 设置项目和解决方案文件的合并驱动程序
+# 
 # Merging from the command prompt will add diff markers to the files if there
 # are conflicts (Merging from VS is not affected by the settings below, in VS
 # the diff markers are never inserted). Diff markers may cause the following 
