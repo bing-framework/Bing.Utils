@@ -1,6 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using Bing.Collections;
 
-namespace Bing.Utils.Tests.Collections;
+namespace Bing.Collections;
 
 /// <summary>
 /// 测试类：`Colls` 集合工具方法与扩展方法测试

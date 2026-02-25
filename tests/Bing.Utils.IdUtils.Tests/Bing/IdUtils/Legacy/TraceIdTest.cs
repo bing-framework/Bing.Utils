@@ -1,5 +1,4 @@
-using Bing.IdUtils;
-namespace BingUtilsUT.IdUtilsUT;
+﻿namespace Bing.IdUtils.Legacy;
 /// <summary>
 /// 跟踪ID 测试
 /// </summary>

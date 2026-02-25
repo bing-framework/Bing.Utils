@@ -1,4 +1,4 @@
-namespace Bing.IdUtils;
+﻿namespace Bing.IdUtils;
 /// <summary>
 /// 测试类：覆盖 `TraceIdAccessor` 相关行为。
 /// </summary>

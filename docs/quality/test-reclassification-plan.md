@@ -127,6 +127,10 @@
   - 已删除 `tests/Bing.Utils.IdUtils.Tests/Bing/Helpers/Legacy/ObjectIdGeneratorTest.cs`
   - 已删除 `tests/Bing.Utils.IdUtils.Tests/Bing/Helpers/Legacy/TimestampIdGeneratorTest.cs`
   - 已删除 `tests/Bing.Utils.IdUtils.Tests/Bing/Helpers/Legacy/SnowflakeIdGeneratorTest.cs`（采用“删除 + 替代覆盖验证”策略）
+- `IdUtils` Mixed Split 再次复审状态更新（2026-02-25）：
+  - 已按 `multi-module-mixed-split-controller` 连续运行策略再次扫描 `tests/Bing.Utils.Tests` 中 `IdUtils` 相关混合候选
+  - 本轮未发现新增 `IdUtils` 方法级拆分候选（No-op 收尾复审批次）
+  - `Bing/Helpers/Legacy` 目录文件数为 `0`（结构校验）
 - 结论：`IdUtils` 在 `Bing.Utils.Tests` 范围内的文件级直迁已收敛；后续重点转向 `Legacy` 重复覆盖去重与跨模块混合专项。
 
 ---
@@ -285,6 +289,7 @@
 - `IdUtils / Batch-2（残余审计收尾）`：已完成（见 `11.2`；无新增直迁项）
 - `IdUtils / Batch-3（混合测试拆分）`：已完成（`Mixed-Batch-1` 完成 `UnitTest1.Test_Id` 拆分；`Mixed-Batch-2` 完成收尾复审确认无剩余 `IdUtils` 方法）
 - `IdUtils / Batch-4（Legacy 去重）`：已完成（`Batch-1/2` 已完成，`Bing/Helpers/Legacy` 生成器 Legacy 测试已清空）
+- `IdUtils / Batch-5（混合测试再次复审）`：已完成（`Mixed-Batch-3` 无新增可拆分方法；完成 No-op 收尾记录）
 
 #### P0 预期产物
 - `Bing.Utils.IdUtils.Tests` 收敛 `IdUtils` 专属测试
@@ -494,6 +499,23 @@
 - 遗留问题：
   - 若团队仍需人工压测脚本资产，需在非 CI 目录重建/迁移（本轮采用删除策略）
   - 本轮结论：`成功`（Legacy 去重 Batch-2 完成；Batch-4 收尾）
+
+### 11.7 第 7 轮（P0：IdUtils / Batch-5 / Mixed Split 再次复审）
+- 日期：`2026-02-25`
+- 范围：`Bing.Utils.Tests` 中 `IdUtils` 混合测试候选再次复审（连续运行收尾批次）
+- 执行内容：
+  - 按 `multi-module-mixed-split-controller` 连续运行策略重新扫描 `tests/Bing.Utils.Tests` 的 `IdUtils` 关键词（`GuidProvider` / `GuidStyle` / `Snowflake*` / `ObjectId` / `TimestampId` / `TraceIdAccessor` 等）
+  - 确认 `tests/Bing.Utils.Tests/UnitTest1.cs` 在 `Mixed-Batch-1/2` 后仍无 `IdUtils` 方法残留
+  - 确认 `tests/Bing.Utils.IdUtils.Tests/Bing/Helpers/Legacy` 目录文件数为 `0`
+  - 新增报告：`docs/quality/migration-reports/2026-02-25-mixed-batch-idutils-3.md`
+  - 更新迁移索引：`docs/quality/migration-reports/README.md`
+- 验证结果：
+  - 结构扫描通过：`tests/Bing.Utils.Tests` 中未命中 `IdUtils` 相关关键词（本轮复审范围）
+  - 目录清点通过：`tests/Bing.Utils.IdUtils.Tests/Bing/Helpers/Legacy` 文件数为 `0`
+  - 本轮无测试代码变更，未重复执行编译/测试；沿用 `11.6` 最近有效验证结果
+- 遗留问题：
+  - `UnitTest1.cs` 仍为历史混合测试类，但后续拆分应转入其他模块批次（非 `IdUtils`）
+  - 本轮结论：`成功`（Mixed-Batch-3 No-op 收尾复审；`IdUtils` 混合拆分专项当前范围收敛）
 
 ---
 

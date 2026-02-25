@@ -1,5 +1,4 @@
-using Bing.IdUtils;
-namespace BingUtilsUT.IdUtilsUT;
+﻿namespace Bing.IdUtils.Legacy;
 /// <summary>
 /// GUID 生成测试
 /// </summary>

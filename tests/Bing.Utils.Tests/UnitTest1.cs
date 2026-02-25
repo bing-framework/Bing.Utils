@@ -1,7 +1,6 @@
 ﻿using Bing.Collections;
 using Bing.Extensions;
 using Bing.Helpers;
-using Bing.IdUtils;
 using Bing.IO;
 using Bing.Numeric;
 using Bing.Utils.Json;
@@ -121,16 +120,6 @@ public class UnitTest1 : TestBase
         }
         Regex regex = new Regex(@"(http|https)://(?<domain>[^(:|/]*)", RegexOptions.IgnoreCase);
         return regex.Match(url, 0).Value;
-    }
-
-    [Fact]
-    public void Test_Id()
-    {
-        for (int i = 0; i < 1000; i++)
-        {
-            var id = GuidProvider.Create(GuidStyle.SequentialAsStringStyle);
-            Output.WriteLine($"{id}");
-        }
     }
 
     [Fact]
