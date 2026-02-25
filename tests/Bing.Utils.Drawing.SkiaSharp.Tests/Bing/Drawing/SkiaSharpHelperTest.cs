@@ -1,35 +1,41 @@
 using SkiaSharp;
-
 namespace Bing.Drawing;
-
+/// <summary>
+/// 测试类：覆盖 `SkiaSharpHelper` 相关行为。
+/// </summary>
 public class SkiaSharpHelperTest
 {
+    /// <summary>
+    /// 测试用例：验证 `ToBytes` 在 `And_FromBytes` 场景下，结果为 `RoundTrip`。
+    /// </summary>
     [Fact]
     public void ToBytes_And_FromBytes_RoundTrip()
     {
         using var source = CreateSampleImage();
         var bytes = SkiaSharpHelper.ToBytes(source, (SKEncodedImageFormat.Png, 100));
         bytes.Length.ShouldBeGreaterThan(0);
-
         using var restored = SkiaSharpHelper.FromBytes(bytes);
         restored.ShouldNotBeNull();
         restored!.Width.ShouldBe(2);
         restored.Height.ShouldBe(2);
     }
-
+    /// <summary>
+    /// 测试用例：验证 `ToBase64String` 在 `And_FromBase64String` 场景下，结果为 `RoundTrip`。
+    /// </summary>
     [Fact]
     public void ToBase64String_And_FromBase64String_RoundTrip()
     {
         using var source = CreateSampleImage();
         var base64 = SkiaSharpHelper.ToBase64String(source, (SKEncodedImageFormat.Png, 100));
         base64.ShouldNotBeNullOrWhiteSpace();
-
         using var restored = SkiaSharpHelper.FromBase64String(base64);
         restored.ShouldNotBeNull();
         restored!.Width.ShouldBe(2);
         restored.Height.ShouldBe(2);
     }
-
+    /// <summary>
+    /// 测试用例：验证 `ToDataUrl` 在 `ContainsDataUrlShape` 场景下的行为。
+    /// </summary>
     [Fact]
     public void ToDataUrl_ContainsDataUrlShape()
     {
@@ -38,62 +44,77 @@ public class SkiaSharpHelperTest
         dataUrl.ShouldStartWith("data:image/");
         dataUrl.ShouldContain(";base64,");
     }
-
+    /// <summary>
+    /// 测试用例：验证 `FromDataUrl` 在 `WithValidPngDataUrl` 场景下，结果为 `RoundTrip`。
+    /// </summary>
     [Fact]
     public void FromDataUrl_WithValidPngDataUrl_RoundTrip()
     {
         using var source = CreateSampleImage();
         var base64 = SkiaSharpHelper.ToBase64String(source, (SKEncodedImageFormat.Png, 100));
         var dataUrl = $"data:image/png;base64,{base64}";
-
         using var restored = SkiaSharpHelper.FromDataUrl(dataUrl);
         restored.ShouldNotBeNull();
         restored!.Width.ShouldBe(2);
         restored.Height.ShouldBe(2);
     }
-
+    /// <summary>
+    /// 测试用例：验证 `FromBytes` 在 `Null` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// </summary>
     [Fact]
     public void FromBytes_Null_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => SkiaSharpHelper.FromBytes(null!))
             .ParamName.ShouldBe("bytes");
     }
-
+    /// <summary>
+    /// 测试用例：验证 `ToBytes` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// </summary>
     [Fact]
     public void ToBytes_NullImage_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => SkiaSharpHelper.ToBytes(null!))
             .ParamName.ShouldBe("image");
     }
-
+    /// <summary>
+    /// 测试用例：验证 `ToBase64String` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// </summary>
     [Fact]
     public void ToBase64String_NullImage_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => SkiaSharpHelper.ToBase64String(null!))
             .ParamName.ShouldBe("image");
     }
-
+    /// <summary>
+    /// 测试用例：验证 `ToDataUrl` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// </summary>
     [Fact]
     public void ToDataUrl_NullImage_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => SkiaSharpHelper.ToDataUrl(null!))
             .ParamName.ShouldBe("image");
     }
-
+    /// <summary>
+    /// 测试用例：验证 `FromBase64String` 在 `InvalidValue` 场景下，结果为 `ReturnsNull`。
+    /// </summary>
     [Fact]
     public void FromBase64String_InvalidValue_ReturnsNull()
     {
         var restored = SkiaSharpHelper.FromBase64String("not-base64");
         restored.ShouldBeNull();
     }
-
+    /// <summary>
+    /// 测试用例：验证 `FromDataUrl` 在 `InvalidFormat` 场景下，结果为 `ReturnsNull`。
+    /// </summary>
     [Fact]
     public void FromDataUrl_InvalidFormat_ReturnsNull()
     {
         var restored = SkiaSharpHelper.FromDataUrl("invalid-data-url");
         restored.ShouldBeNull();
     }
-
+    /// <summary>
+    /// 测试用例：验证 `FromFile` 在 `LoadExpectedImage` 场景下的行为。
+    /// </summary>
     [Fact]
     public void FromFile_LoadExpectedImage()
     {
@@ -114,7 +135,9 @@ public class SkiaSharpHelperTest
                 File.Delete(tempPath);
         }
     }
-
+    /// <summary>
+    /// 测试用例：验证 `SetOpacity` 在 `OutOfRange` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// </summary>
     [Fact]
     public void SetOpacity_OutOfRange_ThrowsArgumentOutOfRangeException()
     {
@@ -124,29 +147,30 @@ public class SkiaSharpHelperTest
         Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.SetOpacity(source, 1.1f))
             .ParamName.ShouldBe("opacity");
     }
-
+    /// <summary>
+    /// 测试用例：验证 `SetOpacity` 在 `ValidOpacity` 场景下，结果为 `ReturnsImageWithExpectedAlpha`。
+    /// </summary>
     [Fact]
     public void SetOpacity_ValidOpacity_ReturnsImageWithExpectedAlpha()
     {
         using var source = CreateSampleImage();
         using var result = SkiaSharpHelper.SetOpacity(source, 0.5f);
-
         result.ShouldNotBeNull();
         ReferenceEquals(source, result).ShouldBeFalse();
         result.Width.ShouldBe(source.Width);
         result.Height.ShouldBe(source.Height);
-
         using var bitmap = SKBitmap.FromImage(result);
         bitmap.GetPixel(0, 0).Alpha.ShouldBe((byte)127);
     }
-
+    /// <summary>
+    /// 测试用例：验证 `SetOpacity` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// </summary>
     [Fact]
     public void SetOpacity_NullImage_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => SkiaSharpHelper.SetOpacity(null!, 0.5f))
             .ParamName.ShouldBe("image");
     }
-
     private static SKImage CreateSampleImage()
     {
         using var bitmap = new SKBitmap(2, 2, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -157,3 +181,4 @@ public class SkiaSharpHelperTest
         return SKImage.FromBitmap(bitmap);
     }
 }
+
