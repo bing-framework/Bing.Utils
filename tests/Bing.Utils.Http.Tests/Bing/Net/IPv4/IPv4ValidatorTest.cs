@@ -1,5 +1,4 @@
-﻿namespace Bing.Net.IPv4;
-
+namespace Bing.Net.IPv4;
 /// <summary>
 /// IPv4地址验证器 测试
 /// </summary>
@@ -10,9 +9,7 @@ public class IPv4ValidatorTest : TestBase
     public IPv4ValidatorTest(ITestOutputHelper output) : base(output)
     {
     }
-
     #region IsValid 测试
-
     /// <summary>
     /// 测试 - IsValid - 有效IPv4地址验证
     /// </summary>
@@ -31,11 +28,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsValid(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsValid - 无效IPv4地址验证
     /// </summary>
@@ -60,11 +55,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsValid(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsValid - 边界值验证
     /// </summary>
@@ -77,11 +70,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsValid(ip);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - IsValid - 前导零详细测试
     /// </summary>
@@ -98,15 +89,11 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsValid(ip);
-
         // Assert
         result.ShouldBe(expected, $"IP地址 '{ip}' 的验证结果应该是 {expected}");
     }
-
     #endregion
-
     #region IsLocalIp 测试
-
     /// <summary>
     /// 测试 - IsLocalIp - 回环地址验证
     /// </summary>
@@ -120,11 +107,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsLocalIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsLocalIp - 非回环地址验证
     /// </summary>
@@ -139,11 +124,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsLocalIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsLocalIp - 无效输入处理
     /// </summary>
@@ -159,15 +142,11 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsLocalIp(ip);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsInnerIp 测试
-
     /// <summary>
     /// 测试 - IsInnerIp - A类私有地址验证
     /// </summary>
@@ -180,11 +159,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInnerIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInnerIp - B类私有地址验证
     /// </summary>
@@ -197,11 +174,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInnerIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInnerIp - C类私有地址验证
     /// </summary>
@@ -214,11 +189,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInnerIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInnerIp - 链路本地地址验证
     /// </summary>
@@ -230,11 +203,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInnerIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInnerIp - 回环地址验证
     /// </summary>
@@ -246,11 +217,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInnerIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInnerIp - 公网地址验证
     /// </summary>
@@ -270,11 +239,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInnerIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInnerIp - 无效输入处理
     /// </summary>
@@ -289,15 +256,11 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInnerIp(ip);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsInRange 测试
-
     /// <summary>
     /// 测试 - IsInRange - 在范围内的地址
     /// </summary>
@@ -311,11 +274,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInRange(ip, start, end);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInRange - 不在范围内的地址
     /// </summary>
@@ -329,11 +290,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInRange(ip, start, end);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInRange - 起始和结束IP顺序颠倒
     /// </summary>
@@ -346,11 +305,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInRange(ip, start, end);
-
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - IsInRange - 颠倒范围但IP不在范围内
     /// </summary>
@@ -362,11 +319,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInRange(ip, start, end);
-
         // Assert
         result.ShouldBe(expected, $"IP {ip} 不应该在范围 {start}-{end} 内");
     }
-
     /// <summary>
     /// 测试 - IsInRange - 无效输入处理
     /// </summary>
@@ -387,15 +342,11 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInRange(ip, start, end);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     #endregion
-
     #region IsInSameSubnet 测试
-
     /// <summary>
     /// 测试 - IsInSameSubnet - 同子网地址验证
     /// </summary>
@@ -409,11 +360,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInSameSubnet(ip1, ip2, mask);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInSameSubnet - 不同子网地址验证
     /// </summary>
@@ -426,11 +375,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsInSameSubnet(ip1, ip2, mask);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInSameSubnet - null或空参数抛出异常
     /// </summary>
@@ -446,7 +393,6 @@ public class IPv4ValidatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => IPv4Validator.IsInSameSubnet(ip1, ip2, mask));
     }
-
     /// <summary>
     /// 测试 - IsInSameSubnet - 无效参数抛出异常
     /// </summary>
@@ -466,11 +412,8 @@ public class IPv4ValidatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv4Validator.IsInSameSubnet(ip1, ip2, mask))
             .Message.ShouldContain("IP地址或子网掩码格式无效");
     }
-
     #endregion
-
     #region IsPublicIp 测试
-
     /// <summary>
     /// 测试 - IsPublicIp - 公网地址验证
     /// </summary>
@@ -490,11 +433,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsPublicIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsPublicIp - 私有地址验证
     /// </summary>
@@ -508,11 +449,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsPublicIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsPublicIp - 保留地址验证
     /// </summary>
@@ -525,15 +464,11 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsPublicIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsReservedIp 测试
-
     /// <summary>
     /// 测试 - IsReservedIp - 本网络地址验证
     /// </summary>
@@ -545,11 +480,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsReservedIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsReservedIp - 组播地址验证
     /// </summary>
@@ -562,11 +495,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsReservedIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsReservedIp - 实验性地址验证
     /// </summary>
@@ -579,11 +510,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsReservedIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsReservedIp - 普通地址验证
     /// </summary>
@@ -597,15 +526,11 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsReservedIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsMulticastIp 测试
-
     /// <summary>
     /// 测试 - IsMulticastIp - 组播地址验证
     /// </summary>
@@ -620,11 +545,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsMulticastIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsMulticastIp - 非组播地址验证
     /// </summary>
@@ -638,15 +561,11 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsMulticastIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region IsLinkLocalIp 测试
-
     /// <summary>
     /// 测试 - IsLinkLocalIp - 链路本地地址验证
     /// </summary>
@@ -659,11 +578,9 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsLinkLocalIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsLinkLocalIp - 非链路本地地址验证
     /// </summary>
@@ -677,15 +594,11 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsLinkLocalIp(ip);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region 集成和边界测试
-
     /// <summary>
     /// 测试 - 集成 - 地址类型分类一致性
     /// </summary>
@@ -706,48 +619,40 @@ public class IPv4ValidatorTest : TestBase
         var isReserved = IPv4Validator.IsReservedIp(ip);
         var isMulticast = IPv4Validator.IsMulticastIp(ip);
         var isLinkLocal = IPv4Validator.IsLinkLocalIp(ip);
-
         // Assert - 基本一致性检查
         isValid.ShouldBeTrue($"IP {ip} 应该是有效的");
-
         // 公网地址不应该是内网地址
         if (isPublic)
         {
             isInner.ShouldBeFalse($"公网地址 {ip} 不应该是内网地址");
             isReserved.ShouldBeFalse($"公网地址 {ip} 不应该是保留地址");
         }
-
         // 内网地址不应该是公网地址
         if (isInner)
         {
             isPublic.ShouldBeFalse($"内网地址 {ip} 不应该是公网地址");
         }
-
         // 保留地址不应该是公网地址
         if (isReserved)
         {
             isPublic.ShouldBeFalse($"保留地址 {ip} 不应该是公网地址");
         }
-
         // 组播地址应该是保留地址
         if (isMulticast)
         {
             isReserved.ShouldBeTrue($"组播地址 {ip} 应该是保留地址");
         }
-
         // 链路本地地址应该是内网地址
         if (isLinkLocal)
         {
             isInner.ShouldBeTrue($"链路本地地址 {ip} 应该是内网地址");
         }
-
         // 回环地址应该是内网地址
         if (isLocal)
         {
             isInner.ShouldBeTrue($"回环地址 {ip} 应该是内网地址");
         }
     }
-
     /// <summary>
     /// 测试 - 性能 - 大量地址验证操作
     /// </summary>
@@ -757,7 +662,6 @@ public class IPv4ValidatorTest : TestBase
         // Arrange
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         const int iterations = 10000;
-
         // Act
         for (int i = 0; i < iterations; i++)
         {
@@ -767,13 +671,10 @@ public class IPv4ValidatorTest : TestBase
             IPv4Validator.IsPublicIp(ip);
             IPv4Validator.IsLocalIp(ip);
         }
-
         stopwatch.Stop();
-
         // Assert
         stopwatch.ElapsedMilliseconds.ShouldBeLessThan(2000, "性能测试超时");
     }
-
     /// <summary>
     /// 测试 - 边界情况 - 正则表达式与IPAddress.TryParse一致性
     /// </summary>
@@ -792,17 +693,14 @@ public class IPv4ValidatorTest : TestBase
             ("", false),                // 空字符串
             (null, false)               // null
         };
-
         foreach (var (testCase, expectedValid) in testCases)
         {
             var validatorResult = IPv4Validator.IsValid(testCase);
-
             // Assert
             validatorResult.ShouldBe(expectedValid,
                 $"验证结果不一致: {testCase}, 期望: {expectedValid}, 实际: {validatorResult}");
         }
     }
-
     /// <summary>
     /// 测试 - 边界情况 - 各种前导零格式
     /// </summary>
@@ -821,10 +719,8 @@ public class IPv4ValidatorTest : TestBase
     {
         // Act
         var result = IPv4Validator.IsValid(ip);
-
         // Assert
         result.ShouldBe(expected, $"IP地址 '{ip}' 的验证应该返回 {expected}");
     }
-
     #endregion
 }

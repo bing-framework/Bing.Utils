@@ -1,5 +1,4 @@
-﻿namespace Bing.Net.IPv4;
-
+namespace Bing.Net.IPv4;
 /// <summary>
 /// IPv4 CIDR网络计算器 测试
 /// </summary>
@@ -10,9 +9,7 @@ public class IPv4CidrCalculatorTest : TestBase
     public IPv4CidrCalculatorTest(ITestOutputHelper output) : base(output)
     {
     }
-
     #region IsInSubnet 测试
-
     /// <summary>
     /// 测试 - IsInSubnet - 正常情况下的子网判断
     /// </summary>
@@ -28,11 +25,9 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.IsInSubnet(ip, cidr);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInSubnet - 有效IP在子网内
     /// </summary>
@@ -48,11 +43,9 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.IsInSubnet(ip, cidr);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInSubnet - 有效IP不在子网内
     /// </summary>
@@ -65,11 +58,9 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.IsInSubnet(ip, cidr);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - IsInSubnet - 无效输入返回false
     /// </summary>
@@ -87,11 +78,9 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.IsInSubnet(ip, cidr);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试 - IsInSubnet - 边界情况
     /// </summary>
@@ -107,15 +96,11 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.IsInSubnet(ip, cidr);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region GenerateIpRange  测试
-
     /// <summary>
     /// 测试 - GenerateIpRange - 小型网段生成IP列表
     /// </summary>
@@ -124,10 +109,8 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Arrange
         var cidr = "192.168.1.0/30";
-
         // Act
         var result = IPv4CidrCalculator.GenerateIpRange(cidr);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(4);
@@ -136,7 +119,6 @@ public class IPv4CidrCalculatorTest : TestBase
         result[2].ShouldBe("192.168.1.2");
         result[3].ShouldBe("192.168.1.3");
     }
-
     /// <summary>
     /// 测试 - GenerateIpRange - 小网段生成正确数量
     /// </summary>
@@ -148,18 +130,15 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.GenerateIpRange(cidr);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(expectedCount);
-
         // 验证所有生成的IP都在子网内
         foreach (var ip in result)
         {
             IPv4CidrCalculator.IsInSubnet(ip, cidr).ShouldBeTrue();
         }
     }
-
     /// <summary>
     /// 测试 - GenerateIpRange - 空CIDR抛出异常
     /// </summary>
@@ -173,7 +152,6 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv4CidrCalculator.GenerateIpRange(cidr))
             .ParamName.ShouldBe("cidr");
     }
-
     /// <summary>
     /// 测试 - GenerateIpRange - 无效CIDR格式抛出异常
     /// </summary>
@@ -193,7 +171,6 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv4CidrCalculator.GenerateIpRange(cidr))
             .ParamName.ShouldBe("cidr");
     }
-
     /// <summary>
     /// 测试 - GenerateIpRange - 单主机网段
     /// </summary>
@@ -202,16 +179,13 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Arrange
         var cidr = "192.168.1.100/32";
-
         // Act
         var result = IPv4CidrCalculator.GenerateIpRange(cidr);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(1);
         result[0].ShouldBe("192.168.1.100");
     }
-
     /// <summary>
     /// 测试 - GenerateIpRange - 过大网段超过限制抛出异常
     /// </summary>
@@ -222,7 +196,6 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.Throw<ArgumentOutOfRangeException>(() => IPv4CidrCalculator.GenerateIpRange("10.0.0.0/8", 1000))
             .ParamName.ShouldBe("maxCount");
     }
-
     /// <summary>
     /// 测试 - GenerateIpRange - 超出最大数量限制抛出异常
     /// </summary>
@@ -232,12 +205,10 @@ public class IPv4CidrCalculatorTest : TestBase
         // Arrange
         var cidr = "192.168.0.0/16"; // 65536个地址
         var maxCount = 1000;
-
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() =>
             IPv4CidrCalculator.GenerateIpRange(cidr, maxCount));
     }
-
     /// <summary>
     /// 测试 - GenerateIpRange - 无效最大数量抛出异常
     /// </summary>
@@ -251,11 +222,8 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.Throw<ArgumentOutOfRangeException>(() => IPv4CidrCalculator.GenerateIpRange("192.168.1.0/30", maxCount))
             .ParamName.ShouldBe("maxCount");
     }
-
     #endregion
-
     #region SubnetMaskToCidr 测试
-
     /// <summary>
     /// 测试 - SubnetMaskToCidr - 标准子网掩码转换
     /// </summary>
@@ -276,11 +244,9 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.SubnetMaskToCidr(mask);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - SubnetMaskToCidr - 空或无效掩码抛出异常
     /// </summary>
@@ -297,11 +263,8 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv4CidrCalculator.SubnetMaskToCidr(mask))
             .ParamName.ShouldBe("subnetMask");
     }
-
     #endregion
-
     #region CidrToSubnetMask 测试
-
     /// <summary>
     /// 测试 - CidrToSubnetMask - 有效前缀转换
     /// </summary>
@@ -323,11 +286,9 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.CidrToSubnetMask(prefix);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - CidrToSubnetMask - 无效前缀抛出异常
     /// </summary>
@@ -342,7 +303,6 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.Throw<ArgumentOutOfRangeException>(() => IPv4CidrCalculator.CidrToSubnetMask(prefix))
             .ParamName.ShouldBe("prefixLength");
     }
-
     /// <summary>
     /// 测试 - CidrToSubnetMask - 往返转换一致性
     /// </summary>
@@ -355,12 +315,10 @@ public class IPv4CidrCalculatorTest : TestBase
             // Act
             var mask = IPv4CidrCalculator.CidrToSubnetMask(prefix);
             var backToPrefix = IPv4CidrCalculator.SubnetMaskToCidr(mask);
-
             // Assert
             backToPrefix.ShouldBe(prefix, $"前缀 {prefix} 的往返转换失败");
         }
     }
-
     /// <summary>
     /// 测试 - CidrToSubnetMask - 掩码的二进制连续性验证
     /// </summary>
@@ -375,11 +333,9 @@ public class IPv4CidrCalculatorTest : TestBase
         // Act
         var mask = IPv4CidrCalculator.CidrToSubnetMask(prefix);
         var maskNum = IPv4Converter.IpToUInt32(mask);
-
         // Assert - 验证掩码的二进制表示是连续的1
         var binaryMask = Convert.ToString(maskNum, 2).PadLeft(32, '0');
         Output.WriteLine($"前缀 {prefix}: 掩码 {mask}, 二进制: {binaryMask}");
-
         // 验证二进制表示：前prefix位应该是1，后面应该是0
         for (var i = 0; i < 32; i++)
         {
@@ -388,7 +344,6 @@ public class IPv4CidrCalculatorTest : TestBase
             actualBit.ShouldBe(expectedBit, $"前缀 {prefix} 在位 {i} 处的位值不正确");
         }
     }
-
     /// <summary>
     /// 测试 - CidrToSubnetMask - 实际子网计算验证
     /// </summary>
@@ -403,16 +358,12 @@ public class IPv4CidrCalculatorTest : TestBase
         var mask = IPv4CidrCalculator.CidrToSubnetMask(prefix);
         var networkAddress = IPv4Converter.GetNetworkAddress(testIp, mask);
         var broadcastAddress = IPv4Converter.GetBroadcastAddress(testIp, mask);
-
         // Assert
         networkAddress.ShouldBe(expectedNetwork);
         broadcastAddress.ShouldBe(expectedBroadcast);
     }
-
     #endregion
-
     #region GetSubnetInfo 测试
-
     /// <summary>
     /// 测试 - GetSubnetInfo - 标准网段信息获取
     /// </summary>
@@ -421,10 +372,8 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Arrange
         var cidr = "192.168.1.0/24";
-
         // Act
         var result = IPv4CidrCalculator.GetSubnetInfo(cidr);
-
         // Assert
         result.ShouldNotBeNull();
         result.NetworkAddress.ShouldBe("192.168.1.0");
@@ -436,7 +385,6 @@ public class IPv4CidrCalculatorTest : TestBase
         result.FirstUsableIp.ShouldBe("192.168.1.1");
         result.LastUsableIp.ShouldBe("192.168.1.254");
     }
-
     /// <summary>
     /// 测试 - GetSubnetInfo - 主机路由信息
     /// </summary>
@@ -445,10 +393,8 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Arrange
         var cidr = "192.168.1.100/32";
-
         // Act
         var result = IPv4CidrCalculator.GetSubnetInfo(cidr);
-
         // Assert
         result.ShouldNotBeNull();
         result.NetworkAddress.ShouldBe("192.168.1.100");
@@ -458,7 +404,6 @@ public class IPv4CidrCalculatorTest : TestBase
         result.FirstUsableIp.ShouldBe("192.168.1.100");
         result.LastUsableIp.ShouldBe("192.168.1.100");
     }
-
     /// <summary>
     /// 测试 - GetSubnetInfo - 点对点网段信息
     /// </summary>
@@ -467,10 +412,8 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Arrange
         var cidr = "192.168.1.0/30";
-
         // Act
         var result = IPv4CidrCalculator.GetSubnetInfo(cidr);
-
         // Assert
         result.ShouldNotBeNull();
         result.NetworkAddress.ShouldBe("192.168.1.0");
@@ -482,7 +425,6 @@ public class IPv4CidrCalculatorTest : TestBase
         result.FirstUsableIp.ShouldBe("192.168.1.1");
         result.LastUsableIp.ShouldBe("192.168.1.2");
     }
-
     /// <summary>
     /// 测试 - GetSubnetInfo - 无效CIDR抛出异常
     /// </summary>
@@ -499,11 +441,8 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv4CidrCalculator.GetSubnetInfo(cidr))
             .ParamName.ShouldBe("cidr");
     }
-
     #endregion
-
     #region SubdivideNetwork 测试
-
     /// <summary>
     /// 测试 - SubdivideNetwork - 标准子网划分
     /// </summary>
@@ -513,10 +452,8 @@ public class IPv4CidrCalculatorTest : TestBase
         // Arrange
         var cidr = "192.168.1.0/24";
         var newPrefix = 26;
-
         // Act
         var result = IPv4CidrCalculator.SubdivideNetwork(cidr, newPrefix);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(4);
@@ -525,7 +462,6 @@ public class IPv4CidrCalculatorTest : TestBase
         result[2].ShouldBe("192.168.1.128/26");
         result[3].ShouldBe("192.168.1.192/26");
     }
-
     /// <summary>
     /// 测试 - SubdivideNetwork - 新前缀不大于原前缀抛出异常
     /// </summary>
@@ -537,12 +473,10 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Arrange
         var cidr = "192.168.1.0/24";
-
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv4CidrCalculator.SubdivideNetwork(cidr, newPrefix))
             .ParamName.ShouldBe("newPrefixLength");
     }
-
     /// <summary>
     /// 测试 - SubdivideNetwork - 无效CIDR抛出异常
     /// </summary>
@@ -556,11 +490,8 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv4CidrCalculator.SubdivideNetwork(cidr, 26))
             .ParamName.ShouldBe("cidr");
     }
-
     #endregion
-
     #region GetNetworkIntersection 测试
-
     /// <summary>
     /// 测试 - GetNetworkIntersection - 有交集的网段
     /// </summary>
@@ -573,16 +504,13 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.GetNetworkIntersection(cidr1, cidr2);
-
         // Assert
         result.ShouldBe(expected);
-
         // 验证返回的交集确实包含在两个原网段中
         var intersection = IPv4CidrCalculator.GetSubnetInfo(result);
         IPv4CidrCalculator.IsInSubnet(intersection.NetworkAddress, cidr1).ShouldBeTrue();
         IPv4CidrCalculator.IsInSubnet(intersection.NetworkAddress, cidr2).ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - GetNetworkIntersection - 无交集的网段
     /// </summary>
@@ -593,11 +521,9 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.GetNetworkIntersection(cidr1, cidr2);
-
         // Assert
         result.ShouldBeNull();
     }
-
     /// <summary>
     /// 测试 - GetNetworkIntersection - 无效输入返回null
     /// </summary>
@@ -612,15 +538,11 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.GetNetworkIntersection(cidr1, cidr2);
-
         // Assert
         result.ShouldBeNull();
     }
-
     #endregion
-
     #region AggregateNetworks 测试
-
     /// <summary>
     /// 测试 - AggregateNetworks - 可聚合的相邻网段
     /// </summary>
@@ -629,16 +551,13 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Arrange
         var cidrs = new[] { "192.168.0.0/25", "192.168.0.128/25" };
-
         // Act
         var result = IPv4CidrCalculator.AggregateNetworks(cidrs);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(1);
         result[0].ShouldBe("192.168.0.0/24");
     }
-
     /// <summary>
     /// 测试 - AggregateNetworks - 不可聚合的网段
     /// </summary>
@@ -647,17 +566,14 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Arrange
         var cidrs = new[] { "192.168.1.0/24", "192.168.3.0/24" };
-
         // Act
         var result = IPv4CidrCalculator.AggregateNetworks(cidrs);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(2);
         result.ShouldContain("192.168.1.0/24");
         result.ShouldContain("192.168.3.0/24");
     }
-
     /// <summary>
     /// 测试 - AggregateNetworks - 空列表或单个网段
     /// </summary>
@@ -667,13 +583,11 @@ public class IPv4CidrCalculatorTest : TestBase
         // Act
         var emptyResult = IPv4CidrCalculator.AggregateNetworks(new List<string>());
         var singleResult = IPv4CidrCalculator.AggregateNetworks(new[] { "192.168.1.0/24" });
-
         // Assert
         emptyResult.ShouldBeEmpty();
         singleResult.Count.ShouldBe(1);
         singleResult[0].ShouldBe("192.168.1.0/24");
     }
-
     /// <summary>
     /// 测试 - AggregateNetworks - null输入抛出异常
     /// </summary>
@@ -684,7 +598,6 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.Throw<ArgumentNullException>(() => IPv4CidrCalculator.AggregateNetworks(null))
             .ParamName.ShouldBe("cidrs");
     }
-
     /// <summary>
     /// 测试 - AggregateNetworks - 包含无效CIDR的列表
     /// </summary>
@@ -693,19 +606,14 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Arrange
         var cidrs = new[] { "192.168.1.0/24", "invalid", "10.0.0.0/8", "" };
-
         // Act
         var result = IPv4CidrCalculator.AggregateNetworks(cidrs);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBeGreaterThan(0);
     }
-
     #endregion
-
     #region TryAggregate 测试
-
     /// <summary>
     /// 测试 - TryAggregate - 成功聚合相邻网段
     /// </summary>
@@ -716,11 +624,9 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.TryAggregate(cidr1, cidr2);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - TryAggregate - 无法聚合返回null
     /// </summary>
@@ -731,11 +637,9 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.TryAggregate(cidr1, cidr2);
-
         // Assert
         result.ShouldBeNull();
     }
-
     /// <summary>
     /// 测试 - TryAggregate - 无效输入返回null
     /// </summary>
@@ -748,15 +652,11 @@ public class IPv4CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv4CidrCalculator.TryAggregate(cidr1, cidr2);
-
         // Assert
         result.ShouldBeNull();
     }
-
     #endregion
-
     #region 边界和性能测试
-
     /// <summary>
     /// 测试 - 边界情况 - 最小和最大前缀长度
     /// </summary>
@@ -769,7 +669,6 @@ public class IPv4CidrCalculatorTest : TestBase
         Should.NotThrow(() => IPv4CidrCalculator.CidrToSubnetMask(prefix));
         Should.NotThrow(() => IPv4CidrCalculator.GetSubnetInfo($"192.168.1.0/{prefix}"));
     }
-
     /// <summary>
     /// 测试 - 性能 - 大量CIDR转换操作
     /// </summary>
@@ -779,7 +678,6 @@ public class IPv4CidrCalculatorTest : TestBase
         // Arrange
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         const int iterations = 1000;
-
         // Act
         for (int i = 0; i < iterations; i++)
         {
@@ -789,12 +687,9 @@ public class IPv4CidrCalculatorTest : TestBase
                 IPv4CidrCalculator.SubnetMaskToCidr(IPv4CidrCalculator.CidrToSubnetMask(prefix));
             }
         }
-
         stopwatch.Stop();
-
         // Assert
         stopwatch.ElapsedMilliseconds.ShouldBeLessThan(2000, "性能测试超时");
     }
-
     #endregion
 }

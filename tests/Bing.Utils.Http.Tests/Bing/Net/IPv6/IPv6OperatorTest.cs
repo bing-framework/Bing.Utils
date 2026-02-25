@@ -1,7 +1,5 @@
-﻿using System.Numerics;
-
+using System.Numerics;
 namespace Bing.Net.IPv6;
-
 /// <summary>
 /// IPv6地址操作器单元测试
 /// </summary>
@@ -12,9 +10,7 @@ public class IPv6OperatorTest : TestBase
     public IPv6OperatorTest(ITestOutputHelper output) : base(output)
     {
     }
-
     #region Sort 测试
-
     /// <summary>
     /// 测试 - Sort - 升序排列IPv6地址
     /// </summary>
@@ -31,7 +27,6 @@ public class IPv6OperatorTest : TestBase
             "::",
             "fe80::1"
         };
-
         var expected = new[]
         {
             "::",
@@ -41,24 +36,20 @@ public class IPv6OperatorTest : TestBase
             "2001:db8::3",
             "fe80::1"
         };
-
         // Act
         var result = IPv6Operator.Sort(addresses, ascending: true);
-
         // Assert
         result.Count.ShouldBe(expected.Length);
         for (int i = 0; i < expected.Length; i++)
         {
             IPv6Converter.AreEqual(result[i], expected[i]).ShouldBeTrue($"位置 {i}: 期望 '{expected[i]}', 实际 '{result[i]}'");
         }
-
         Output.WriteLine("升序排列结果:");
         foreach (var addr in result)
         {
             Output.WriteLine($"  {addr}");
         }
     }
-
     /// <summary>
     /// 测试 - Sort - 降序排列IPv6地址
     /// </summary>
@@ -74,7 +65,6 @@ public class IPv6OperatorTest : TestBase
             "::",
             "2001:db8::2"
         };
-
         var expected = new[]
         {
             "2001:db8::3",
@@ -83,24 +73,20 @@ public class IPv6OperatorTest : TestBase
             "::1",
             "::"
         };
-
         // Act
         var result = IPv6Operator.Sort(addresses, ascending: false);
-
         // Assert
         result.Count.ShouldBe(expected.Length);
         for (int i = 0; i < expected.Length; i++)
         {
             IPv6Converter.AreEqual(result[i], expected[i]).ShouldBeTrue($"位置 {i}: 期望 '{expected[i]}', 实际 '{result[i]}'");
         }
-
         Output.WriteLine("降序排列结果:");
         foreach (var addr in result)
         {
             Output.WriteLine($"  {addr}");
         }
     }
-
     /// <summary>
     /// 测试 - Sort - 包含无效地址的列表过滤
     /// </summary>
@@ -118,7 +104,6 @@ public class IPv6OperatorTest : TestBase
             "gggg::1",      // 无效字符
             "::"
         };
-
         var expectedValid = new[]
         {
             "::",
@@ -126,24 +111,20 @@ public class IPv6OperatorTest : TestBase
             "2001:db8::1",
             "2001:db8::2"
         };
-
         // Act
         var result = IPv6Operator.Sort(addresses);
-
         // Assert
         result.Count.ShouldBe(expectedValid.Length, "应该过滤掉无效地址");
         for (int i = 0; i < expectedValid.Length; i++)
         {
             IPv6Converter.AreEqual(result[i], expectedValid[i]).ShouldBeTrue();
         }
-
         Output.WriteLine("过滤并排序后的结果:");
         foreach (var addr in result)
         {
             Output.WriteLine($"  {addr}");
         }
     }
-
     /// <summary>
     /// 测试 - Sort - 空列表处理
     /// </summary>
@@ -152,15 +133,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var addresses = new string[0];
-
         // Act
         var result = IPv6Operator.Sort(addresses);
-
         // Assert
         result.ShouldBeEmpty();
         Output.WriteLine("空列表排序结果: 空列表");
     }
-
     /// <summary>
     /// 测试 - Sort - 单个地址
     /// </summary>
@@ -169,15 +147,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var addresses = new[] { "2001:db8::1" };
-
         // Act
         var result = IPv6Operator.Sort(addresses);
-
         // Assert
         result.Count.ShouldBe(1);
         IPv6Converter.AreEqual(result[0], "2001:db8::1").ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试 - Sort - 相同地址的处理
     /// </summary>
@@ -192,24 +167,18 @@ public class IPv6OperatorTest : TestBase
             "2001:db8::1",  // 重复
             "::1"           // 重复
         };
-
         // Act
         var result = IPv6Operator.Sort(addresses);
-
         // Assert
         result.Count.ShouldBe(4, "应该保留所有地址，包括重复的");
-
         Output.WriteLine("包含重复地址的排序结果:");
         foreach (var addr in result)
         {
             Output.WriteLine($"  {addr}");
         }
     }
-
     #endregion
-
     #region SortOptimized 测试
-
     /// <summary>
     /// 测试 - SortOptimized - 性能优化排序
     /// </summary>
@@ -229,26 +198,19 @@ public class IPv6OperatorTest : TestBase
             null,
             ""
         };
-
         // Act
         var result = IPv6Operator.SortOptimized(addresses);
         var standardResult = IPv6Operator.Sort(addresses);
-
         // Assert
         result.Count.ShouldBe(standardResult.Count);
         for (int i = 0; i < result.Count; i++)
         {
             IPv6Converter.AreEqual(result[i], standardResult[i]).ShouldBeTrue();
         }
-
         Output.WriteLine("优化排序测试通过，结果与标准排序一致");
     }
-
-
     #endregion
-
     #region FindClosest 测试
-
     /// <summary>
     /// 测试 - FindClosest - 查找最接近的地址
     /// </summary>
@@ -260,12 +222,10 @@ public class IPv6OperatorTest : TestBase
     {
         // Act
         var result = IPv6Operator.FindClosest(target, candidates);
-
         // Assert
         IPv6Converter.AreEqual(result, expected).ShouldBeTrue();
         Output.WriteLine($"目标 '{target}' 最接近的地址: '{result}'");
     }
-
     /// <summary>
     /// 测试 - FindClosest - 异常处理
     /// </summary>
@@ -275,20 +235,15 @@ public class IPv6OperatorTest : TestBase
         // Invalid target
         Should.Throw<ArgumentException>(() =>
             IPv6Operator.FindClosest("invalid", new[] { "2001:db8::1" }));
-
         // Empty candidates
         Should.Throw<ArgumentException>(() =>
             IPv6Operator.FindClosest("2001:db8::1", new string[0]));
-
         // No valid candidates
         Should.Throw<ArgumentException>(() =>
             IPv6Operator.FindClosest("2001:db8::1", new[] { "invalid", null, "" }));
     }
-
     #endregion
-
     #region GetIpDistance 测试
-
     /// <summary>
     /// 测试 - GetIpDistance - 计算相同地址的距离
     /// </summary>
@@ -297,15 +252,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var address = "2001:db8::1";
-
         // Act
         var distance = IPv6Operator.GetIpDistance(address, address);
-
         // Assert
         distance.ShouldBe(BigInteger.Zero);
         Output.WriteLine($"相同地址距离: {distance}");
     }
-
     /// <summary>
     /// 测试 - GetIpDistance - 计算连续地址的距离
     /// </summary>
@@ -318,15 +270,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var expected = BigInteger.Parse(expectedStr);
-
         // Act
         var distance = IPv6Operator.GetIpDistance(addr1, addr2);
-
         // Assert
         distance.ShouldBe(expected);
         Output.WriteLine($"距离计算: '{addr1}' <-> '{addr2}' = {distance}");
     }
-
     /// <summary>
     /// 测试 - GetIpDistance - 大范围地址距离
     /// </summary>
@@ -336,18 +285,14 @@ public class IPv6OperatorTest : TestBase
         // Arrange
         var addr1 = "::";
         var addr2 = "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff";
-
         // Act
         var distance = IPv6Operator.GetIpDistance(addr1, addr2);
-
         // Assert
         var maxIPv6Value = (BigInteger.One << 128) - 1;
         distance.ShouldBe(maxIPv6Value);
-
         Output.WriteLine($"最大范围距离: {distance}");
         Output.WriteLine($"预期最大值: {maxIPv6Value}");
     }
-
     /// <summary>
     /// 测试 - GetIpDistance - 地址顺序不影响距离
     /// </summary>
@@ -357,18 +302,14 @@ public class IPv6OperatorTest : TestBase
         // Arrange
         var addr1 = "2001:db8::1";
         var addr2 = "2001:db8::100";
-
         // Act
         var distance1 = IPv6Operator.GetIpDistance(addr1, addr2);
         var distance2 = IPv6Operator.GetIpDistance(addr2, addr1);
-
         // Assert
         distance1.ShouldBe(distance2, "地址顺序不应该影响距离计算");
         distance1.ShouldBeGreaterThan(0);
-
         Output.WriteLine($"双向距离计算: {distance1} == {distance2}");
     }
-
     /// <summary>
     /// 测试 - GetIpDistance - 无效地址抛出异常
     /// </summary>
@@ -383,14 +324,10 @@ public class IPv6OperatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv6Operator.GetIpDistance(addr1, addr2))
             .Message.ShouldContain("无效的IPv6地址");
-
         Output.WriteLine($"无效地址 '{addr1}', '{addr2}' 正确抛出异常");
     }
-
     #endregion
-
     #region GetNextIp 测试
-
     /// <summary>
     /// 测试 - GetNextIp - 获取下一个IPv6地址
     /// </summary>
@@ -404,12 +341,10 @@ public class IPv6OperatorTest : TestBase
     {
         // Act
         var result = IPv6Operator.GetNextIp(current);
-
         // Assert
         IPv6Converter.AreEqual(result, expected).ShouldBeTrue($"'{current}' 的下一个地址应该是 '{expected}', 实际为 '{result}'");
         Output.WriteLine($"下一个地址: '{current}' -> '{result}'");
     }
-
     /// <summary>
     /// 测试 - GetNextIp - 多步递增
     /// </summary>
@@ -421,12 +356,10 @@ public class IPv6OperatorTest : TestBase
     {
         // Act
         var result = IPv6Operator.GetNextIp(current, step);
-
         // Assert
         IPv6Converter.AreEqual(result, expected).ShouldBeTrue($"'{current}' + {step} 应该是 '{expected}', 实际为 '{result}'");
         Output.WriteLine($"多步递增: '{current}' + {step} -> '{result}'");
     }
-
     /// <summary>
     /// 测试 - GetNextIp - 零步长返回相同地址
     /// </summary>
@@ -435,15 +368,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var address = "2001:db8::1";
-
         // Act
         var result = IPv6Operator.GetNextIp(address, 0);
-
         // Assert
         IPv6Converter.AreEqual(result, address).ShouldBeTrue();
         Output.WriteLine($"零步长: '{address}' -> '{result}'");
     }
-
     /// <summary>
     /// 测试 - GetNextIp - 溢出处理
     /// </summary>
@@ -452,15 +382,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var maxAddress = "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff";
-
         // Act
         var result = IPv6Operator.GetNextIp(maxAddress);
-
         // Assert
         IPv6Converter.AreEqual(result, "::").ShouldBeTrue("最大地址的下一个应该是全零地址（溢出）");
         Output.WriteLine($"溢出测试: '{maxAddress}' -> '{result}'");
     }
-
     /// <summary>
     /// 测试 - GetNextIp - 无效参数抛出异常
     /// </summary>
@@ -475,7 +402,6 @@ public class IPv6OperatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv6Operator.GetNextIp(invalidAddress))
             .Message.ShouldContain("无效的IPv6地址");
     }
-
     /// <summary>
     /// 测试 - GetNextIp - 负步长抛出异常
     /// </summary>
@@ -484,16 +410,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var address = "2001:db8::1";
-
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv6Operator.GetNextIp(address, -1))
             .Message.ShouldContain("步长不能为负数");
     }
-
     #endregion
-
     #region GetPreviousIp 测试
-
     /// <summary>
     /// 测试 - GetPreviousIp - 获取前一个IPv6地址
     /// </summary>
@@ -507,12 +429,10 @@ public class IPv6OperatorTest : TestBase
     {
         // Act
         var result = IPv6Operator.GetPreviousIp(current);
-
         // Assert
         IPv6Converter.AreEqual(result, expected).ShouldBeTrue($"'{current}' 的前一个地址应该是 '{expected}', 实际为 '{result}'");
         Output.WriteLine($"前一个地址: '{current}' -> '{result}'");
     }
-
     /// <summary>
     /// 测试 - GetPreviousIp - 多步递减
     /// </summary>
@@ -524,12 +444,10 @@ public class IPv6OperatorTest : TestBase
     {
         // Act
         var result = IPv6Operator.GetPreviousIp(current, step);
-
         // Assert
         IPv6Converter.AreEqual(result, expected).ShouldBeTrue($"'{current}' - {step} 应该是 '{expected}', 实际为 '{result}'");
         Output.WriteLine($"多步递减: '{current}' - {step} -> '{result}'");
     }
-
     /// <summary>
     /// 测试 - GetPreviousIp - 零步长返回相同地址
     /// </summary>
@@ -538,15 +456,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var address = "2001:db8::1";
-
         // Act
         var result = IPv6Operator.GetPreviousIp(address, 0);
-
         // Assert
         IPv6Converter.AreEqual(result, address).ShouldBeTrue();
         Output.WriteLine($"零步长: '{address}' -> '{result}'");
     }
-
     /// <summary>
     /// 测试 - GetPreviousIp - 下溢处理
     /// </summary>
@@ -555,15 +470,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var minAddress = "::";
-
         // Act
         var result = IPv6Operator.GetPreviousIp(minAddress);
-
         // Assert
         IPv6Converter.AreEqual(result, "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff").ShouldBeTrue("全零地址的前一个应该是最大地址（下溢）");
         Output.WriteLine($"下溢测试: '{minAddress}' -> '{result}'");
     }
-
     /// <summary>
     /// 测试 - GetPreviousIp - 无效参数抛出异常
     /// </summary>
@@ -578,7 +490,6 @@ public class IPv6OperatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv6Operator.GetPreviousIp(invalidAddress))
             .Message.ShouldContain("无效的IPv6地址");
     }
-
     /// <summary>
     /// 测试 - GetPreviousIp - 负步长抛出异常
     /// </summary>
@@ -587,16 +498,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Arrange
         var address = "2001:db8::1";
-
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv6Operator.GetPreviousIp(address, -1))
             .Message.ShouldContain("步长不能为负数");
     }
-
     #endregion
-
     #region GetMidpoint 测试
-
     /// <summary>
     /// 测试 - GetMidpoint - 获取中点地址
     /// </summary>
@@ -607,16 +514,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Act
         var result = IPv6Operator.GetMidpoint(addr1, addr2);
-
         // Assert
         IPv6Converter.AreEqual(result, expectedMidpoint).ShouldBeTrue();
         Output.WriteLine($"中点地址: '{addr1}' 和 '{addr2}' 的中点是 '{result}'");
     }
-
     #endregion
-
     #region GetNetworkPrefix 测试
-
     /// <summary>
     /// 测试 - GetNetworkPrefix - 网络前缀计算
     /// </summary>
@@ -629,17 +532,12 @@ public class IPv6OperatorTest : TestBase
     {
         // Act
         var result = IPv6Operator.GetNetworkPrefix(address, prefixLength);
-
         // Assert
         IPv6Converter.AreEqual(result, expected).ShouldBeTrue();
         Output.WriteLine($"网络前缀: '{address}' /{prefixLength} -> '{result}'");
     }
-
-
     #endregion
-
     #region GetStatistics 测试
-
     /// <summary>
     /// 测试 - GetStatistics - 地址统计
     /// </summary>
@@ -659,10 +557,8 @@ public class IPv6OperatorTest : TestBase
         "192.168.1.1",  // Invalid (IPv4)
         "2001:db8::2"   // Documentation
     };
-
         // Act
         var stats = IPv6Operator.GetStatistics(addresses);
-
         // Assert
         stats.TotalCount.ShouldBe(9);
         stats.ValidCount.ShouldBe(5);
@@ -671,16 +567,13 @@ public class IPv6OperatorTest : TestBase
         stats.LargestAddress.ShouldNotBeNull();
         stats.AddressRange.ShouldBeGreaterThan(0);
         stats.AddressTypes.ShouldNotBeEmpty();
-
         // 验证地址类型统计
         stats.AddressTypes.ContainsKey(IPv6AddressType.Documentation).ShouldBeTrue();
         stats.AddressTypes.ContainsKey(IPv6AddressType.Loopback).ShouldBeTrue();
         stats.AddressTypes.ContainsKey(IPv6AddressType.LinkLocal).ShouldBeTrue();
         stats.AddressTypes.ContainsKey(IPv6AddressType.Multicast).ShouldBeTrue();
-
         stats.AddressTypes[IPv6AddressType.Documentation].ShouldBe(2);
         stats.AddressTypes[IPv6AddressType.Loopback].ShouldBe(1);
-
         Output.WriteLine($"统计信息: {stats}");
         Output.WriteLine("地址类型分布:");
         foreach (var kvp in stats.AddressTypes)
@@ -688,7 +581,6 @@ public class IPv6OperatorTest : TestBase
             Output.WriteLine($"  {kvp.Key}: {kvp.Value}");
         }
     }
-
     /// <summary>
     /// 测试 - GetStatistics - 空列表处理
     /// </summary>
@@ -697,7 +589,6 @@ public class IPv6OperatorTest : TestBase
     {
         // Act
         var stats = IPv6Operator.GetStatistics(new string[0]);
-
         // Assert
         stats.TotalCount.ShouldBe(0);
         stats.ValidCount.ShouldBe(0);
@@ -707,12 +598,8 @@ public class IPv6OperatorTest : TestBase
         stats.AddressRange.ShouldBe(0);
         stats.AddressTypes.ShouldBeEmpty();
     }
-
-
     #endregion
-
     #region 集成测试
-
     /// <summary>
     /// 测试 - GetNext 和 GetPrevious 的往返一致性
     /// </summary>
@@ -726,13 +613,10 @@ public class IPv6OperatorTest : TestBase
         // Act
         var nextAddress = IPv6Operator.GetNextIp(originalAddress);
         var backToOriginal = IPv6Operator.GetPreviousIp(nextAddress);
-
         // Assert
         IPv6Converter.AreEqual(backToOriginal, originalAddress).ShouldBeTrue($"往返转换应该返回原始地址");
-
         Output.WriteLine($"往返测试: '{originalAddress}' -> '{nextAddress}' -> '{backToOriginal}'");
     }
-
     /// <summary>
     /// 测试 - 距离计算与地址递增的一致性
     /// </summary>
@@ -742,17 +626,13 @@ public class IPv6OperatorTest : TestBase
         // Arrange
         var startAddress = "2001:db8::1";
         var step = 10;
-
         // Act
         var endAddress = IPv6Operator.GetNextIp(startAddress, step);
         var calculatedDistance = IPv6Operator.GetIpDistance(startAddress, endAddress);
-
         // Assert
         calculatedDistance.ShouldBe(new BigInteger(step), "计算的距离应该等于递增的步数");
-
         Output.WriteLine($"距离一致性测试: 步数={step}, 计算距离={calculatedDistance}");
     }
-
     /// <summary>
     /// 测试 - 排序结果与地址比较的一致性
     /// </summary>
@@ -766,27 +646,20 @@ public class IPv6OperatorTest : TestBase
             "2001:db8::1",
             "2001:db8::2"
         };
-
         // Act
         var sorted = IPv6Operator.Sort(addresses);
-
         // Assert
         for (int i = 0; i < sorted.Count - 1; i++)
         {
             var current = sorted[i];
             var next = sorted[i + 1];
             var distance = IPv6Operator.GetIpDistance(current, next);
-
             distance.ShouldBeGreaterThan(0, $"排序后的相邻地址应该有正距离: '{current}' vs '{next}'");
-
             Output.WriteLine($"排序一致性: '{current}' < '{next}', 距离={distance}");
         }
     }
-
     #endregion
-
     #region 性能测试
-
     /// <summary>
     /// 测试 - 排序性能测试
     /// </summary>
@@ -796,7 +669,6 @@ public class IPv6OperatorTest : TestBase
         // Arrange
         var random = new Random(42); // 固定种子以便复现
         var addresses = new List<string>();
-
         // 生成测试地址
         for (int i = 0; i < 1000; i++)
         {
@@ -804,19 +676,15 @@ public class IPv6OperatorTest : TestBase
             random.NextBytes(bytes);
             addresses.Add(IPv6Converter.FromBytes(bytes));
         }
-
         // Act
         var sw = System.Diagnostics.Stopwatch.StartNew();
         var sortedAddresses = IPv6Operator.Sort(addresses);
         sw.Stop();
-
         // Assert
         sortedAddresses.Count.ShouldBe(1000);
         sw.ElapsedMilliseconds.ShouldBeLessThan(1000, "1000个地址的排序应该在1秒内完成");
-
         Output.WriteLine($"排序性能: {addresses.Count} 个地址, 耗时 {sw.ElapsedMilliseconds}ms");
     }
-
     /// <summary>
     /// 测试 - 地址递增性能测试
     /// </summary>
@@ -826,7 +694,6 @@ public class IPv6OperatorTest : TestBase
         // Arrange
         var address = "2001:db8::1";
         const int iterations = 10000;
-
         // Act
         var sw = System.Diagnostics.Stopwatch.StartNew();
         var current = address;
@@ -835,19 +702,14 @@ public class IPv6OperatorTest : TestBase
             current = IPv6Operator.GetNextIp(current);
         }
         sw.Stop();
-
         // Assert
         sw.ElapsedMilliseconds.ShouldBeLessThan(1000, $"{iterations} 次地址递增应该在1秒内完成");
         IPv6Validator.IsValid(current).ShouldBeTrue("最终地址应该是有效的");
-
         Output.WriteLine($"递增性能: {iterations} 次递增, 耗时 {sw.ElapsedMilliseconds}ms");
         Output.WriteLine($"最终地址: {current}");
     }
-
     #endregion
-
     #region 边界情况测试
-
     /// <summary>
     /// 测试 - 极端值处理
     /// </summary>
@@ -861,25 +723,19 @@ public class IPv6OperatorTest : TestBase
             (smaller: "::1", larger: "ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe"), // 接近边界
             (smaller: "7fff:ffff:ffff:ffff:ffff:ffff:ffff:ffff", larger: "8000::") // 中点附近（修正）
         };
-
         foreach (var (smaller, larger) in testCases)
         {
             // Test distance calculation
             var distance = IPv6Operator.GetIpDistance(smaller, larger);
             distance.ShouldBeGreaterThan(0);
-
             // Test sorting - 验证较小的地址排在前面
             var sorted = IPv6Operator.Sort(new[] { larger, smaller }); // 故意颠倒输入顺序
-
             Output.WriteLine($"排序测试: 输入 [{larger}, {smaller}]");
             Output.WriteLine($"排序结果: [{sorted[0]}, {sorted[1]}]");
-
             IPv6Converter.AreEqual(sorted[0], smaller).ShouldBeTrue($"排序后第一个应该是较小的地址 '{smaller}', 实际为 '{sorted[0]}'");
             IPv6Converter.AreEqual(sorted[1], larger).ShouldBeTrue($"排序后第二个应该是较大的地址 '{larger}', 实际为 '{sorted[1]}'");
-
             Output.WriteLine($"极端值测试: '{smaller}' <-> '{larger}', 距离={distance}");
         }
     }
-
     #endregion
 }

@@ -1,5 +1,4 @@
-﻿namespace Bing.Net.IPv6;
-
+namespace Bing.Net.IPv6;
 /// <summary>
 /// IPv6地址验证器单元测试
 /// </summary>
@@ -10,9 +9,7 @@ public class IPv6ValidatorTest : TestBase
     public IPv6ValidatorTest(ITestOutputHelper output) : base(output)
     {
     }
-
     #region IsValid 测试
-
     /// <summary>
     /// 测试 - IsValid - 有效IPv6地址验证
     /// </summary>
@@ -35,12 +32,10 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsValid(ipv6);
-
         // Assert
         result.ShouldBeTrue($"'{ipv6}' 应该是有效的IPv6地址");
         Output.WriteLine($"✓ Valid IPv6: {ipv6}");
     }
-
     /// <summary>
     /// 测试 - IsValid - 无效IPv6地址验证
     /// </summary>
@@ -63,16 +58,12 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsValid(invalidIpv6);
-
         // Assert
         result.ShouldBeFalse($"'{invalidIpv6}' 应该是无效的IPv6地址");
         Output.WriteLine($"✗ Invalid IPv6: {invalidIpv6}");
     }
-
     #endregion
-
     #region IsValidRegex 测试
-
     /// <summary>
     /// 测试 - IsValidRegex - 正则表达式验证
     /// </summary>
@@ -88,12 +79,10 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsValidRegex(ipv6);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"Regex validation for '{ipv6}': {result}");
     }
-
     /// <summary>
     /// 测试 - IsValid vs IsValidRegex - 一致性比较
     /// </summary>
@@ -108,16 +97,12 @@ public class IPv6ValidatorTest : TestBase
         // Act
         var standardResult = IPv6Validator.IsValid(ipv6);
         var regexResult = IPv6Validator.IsValidRegex(ipv6);
-
         // Assert
         standardResult.ShouldBe(regexResult, $"IsValid 和 IsValidRegex 对于 '{ipv6}' 应该返回相同结果");
         Output.WriteLine($"Consistency check for '{ipv6}': Standard={standardResult}, Regex={regexResult}");
     }
-
     #endregion
-
     #region TryValidate 测试
-
     /// <summary>
     /// 测试 - TryValidate - 成功验证并获取详细信息
     /// </summary>
@@ -133,16 +118,13 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.TryValidate(ipv6, out var address, out var addressType);
-
         // Assert
         result.ShouldBeTrue($"'{ipv6}' 应该验证成功");
         address.ShouldNotBeNull();
         address.AddressFamily.ShouldBe(System.Net.Sockets.AddressFamily.InterNetworkV6);
         addressType.ShouldBe(expectedType);
-
         Output.WriteLine($"TryValidate('{ipv6}'): Type={addressType}, Address={address}");
     }
-
     /// <summary>
     /// 测试 - TryValidate - 无效地址处理
     /// </summary>
@@ -156,15 +138,12 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.TryValidate(invalidIpv6, out var address, out var addressType);
-
         // Assert
         result.ShouldBeFalse($"'{invalidIpv6}' 应该验证失败");
         address.ShouldBeNull();
         addressType.ShouldBe(IPv6AddressType.Invalid);
-
         Output.WriteLine($"TryValidate('{invalidIpv6}'): Failed as expected");
     }
-
     /// <summary>
     /// 测试 - TryValidate - IPv4地址作为无效IPv6地址处理
     /// </summary>
@@ -176,19 +155,14 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.TryValidate(ipv4, out var address, out var addressType);
-
         // Assert
         result.ShouldBeFalse($"IPv4地址 '{ipv4}' 不应该被验证为IPv6地址");
         address.ShouldBeNull("验证失败时 address 应该为 null");
         addressType.ShouldBe(IPv6AddressType.Invalid);
-
         Output.WriteLine($"TryValidate('{ipv4}'): Correctly rejected IPv4 address");
     }
-
     #endregion
-
     #region IsLocalIp 测试
-
     /// <summary>
     /// 测试 - IsLocalIp - 回环地址判断
     /// </summary>
@@ -204,16 +178,12 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsLocalIp(ip);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"IsLocalIp('{ip}'): {result}");
     }
-
     #endregion
-
     #region IsInnerIp 测试
-
     /// <summary>
     /// 测试 - IsInnerIp - 内网地址判断
     /// </summary>
@@ -235,16 +205,12 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsInnerIp(ipv6);
-
         // Assert
         result.ShouldBe(expected, $"'{ipv6}' 内网判断应该返回 {expected}");
         Output.WriteLine($"IsInnerIp('{ipv6}'): {result}");
     }
-
     #endregion
-
     #region 地址类型判断测试
-
     /// <summary>
     /// 测试 - IsGlobalUnicast - 全局单播地址判断
     /// </summary>
@@ -261,12 +227,10 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsGlobalUnicast(ipv6);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"IsGlobalUnicast('{ipv6}'): {result}");
     }
-
     /// <summary>
     /// 测试 - IsMulticast - 组播地址判断
     /// </summary>
@@ -283,12 +247,10 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsMulticast(ipv6);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"IsMulticast('{ipv6}'): {result}");
     }
-
     /// <summary>
     /// 测试 - IsLinkLocal - 链路本地地址判断
     /// </summary>
@@ -306,12 +268,10 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsLinkLocal(ipv6);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"IsLinkLocal('{ipv6}'): {result}");
     }
-
     /// <summary>
     /// 测试 - IsUniqueLocal - 唯一本地地址判断
     /// </summary>
@@ -329,12 +289,10 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsUniqueLocal(ipv6);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"IsUniqueLocal('{ipv6}'): {result}");
     }
-
     /// <summary>
     /// 测试 - IsDocumentation - 文档用途地址判断
     /// </summary>
@@ -351,16 +309,12 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsDocumentation(ipv6);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"IsDocumentation('{ipv6}'): {result}");
     }
-
     #endregion
-
     #region IsInRange 测试
-
     /// <summary>
     /// 测试 - IsInRange - 地址范围检查
     /// </summary>
@@ -376,12 +330,10 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsInRange(address, start, end);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"IsInRange('{address}', '{start}', '{end}'): {result}");
     }
-
     /// <summary>
     /// 测试 - IsInRange - 无效参数处理
     /// </summary>
@@ -397,16 +349,12 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsInRange(address, start, end);
-
         // Assert
         result.ShouldBeFalse("无效参数应该返回false");
         Output.WriteLine($"IsInRange with invalid params: {result}");
     }
-
     #endregion
-
     #region 性能测试
-
     /// <summary>
     /// 测试 - 验证方法性能比较
     /// </summary>
@@ -426,9 +374,7 @@ public class IPv6ValidatorTest : TestBase
             "invalid",
             "192.168.1.1"
         };
-
         const int iterations = 1000;
-
         // Act & Measure IsValid
         var sw1 = System.Diagnostics.Stopwatch.StartNew();
         for (int i = 0; i < iterations; i++)
@@ -439,7 +385,6 @@ public class IPv6ValidatorTest : TestBase
             }
         }
         sw1.Stop();
-
         // Act & Measure IsValidRegex
         var sw2 = System.Diagnostics.Stopwatch.StartNew();
         for (int i = 0; i < iterations; i++)
@@ -450,7 +395,6 @@ public class IPv6ValidatorTest : TestBase
             }
         }
         sw2.Stop();
-
         // Act & Measure TryValidate
         var sw3 = System.Diagnostics.Stopwatch.StartNew();
         for (int i = 0; i < iterations; i++)
@@ -461,7 +405,6 @@ public class IPv6ValidatorTest : TestBase
             }
         }
         sw3.Stop();
-
         // Assert & Report
         var totalTests = iterations * testAddresses.Length;
         Output.WriteLine($"性能测试结果 ({totalTests} 次验证):");
@@ -470,17 +413,13 @@ public class IPv6ValidatorTest : TestBase
         Output.WriteLine($"TryValidate: {sw3.ElapsedMilliseconds}ms");
         Output.WriteLine($"Regex/Standard 比率: {(double)sw2.ElapsedMilliseconds / sw1.ElapsedMilliseconds:F2}x");
         Output.WriteLine($"TryValidate/Standard 比率: {(double)sw3.ElapsedMilliseconds / sw1.ElapsedMilliseconds:F2}x");
-
         // 性能测试仅做回归预警，避免依赖不同运行时/机器下的绝对快慢关系
         sw1.ElapsedMilliseconds.ShouldBeLessThan(5000);
         sw2.ElapsedMilliseconds.ShouldBeLessThan(5000);
         sw3.ElapsedMilliseconds.ShouldBeLessThan(5000);
     }
-
     #endregion
-
     #region 边界情况测试
-
     /// <summary>
     /// 测试 - 特殊IPv6地址格式
     /// </summary>
@@ -496,12 +435,10 @@ public class IPv6ValidatorTest : TestBase
     {
         // Act
         var result = IPv6Validator.IsValid(ipv6);
-
         // Assert
         result.ShouldBeTrue($"特殊格式 '{ipv6}' 应该是有效的");
         Output.WriteLine($"Special format validation: {ipv6} -> {result}");
     }
-
     /// <summary>
     /// 测试 - 所有地址类型验证方法的一致性
     /// </summary>
@@ -522,14 +459,11 @@ public class IPv6ValidatorTest : TestBase
         var isMulticast = IPv6Validator.IsMulticast(ipv6);
         var isDocumentation = IPv6Validator.IsDocumentation(ipv6);
         var isGlobalUnicast = IPv6Validator.IsGlobalUnicast(ipv6);
-
         // Count true results
         var trueCount = new[] { isLoopback, isLinkLocal, isULA, isMulticast, isDocumentation, isGlobalUnicast }
             .Count(x => x);
-
         // Assert - 每个地址应该只属于一种主要类型
         trueCount.ShouldBeLessThanOrEqualTo(1, $"地址 '{ipv6}' 应该最多只属于一种主要类型");
-
         Output.WriteLine($"Address type analysis for '{ipv6}':");
         Output.WriteLine($"  Loopback: {isLoopback}");
         Output.WriteLine($"  LinkLocal: {isLinkLocal}");
@@ -538,11 +472,8 @@ public class IPv6ValidatorTest : TestBase
         Output.WriteLine($"  Documentation: {isDocumentation}");
         Output.WriteLine($"  GlobalUnicast: {isGlobalUnicast}");
     }
-
     #endregion
-
     #region 综合测试
-
     /// <summary>
     /// 测试 - IPv6Validator 与其他IPv6工具的集成
     /// </summary>
@@ -558,7 +489,6 @@ public class IPv6ValidatorTest : TestBase
             "fc00::1",
             "ff02::1"
         };
-
         foreach (var ipv6 in testAddresses)
         {
             // Act & Assert - 验证器认为有效的地址，其他工具也应该能处理
@@ -568,17 +498,14 @@ public class IPv6ValidatorTest : TestBase
                 Should.NotThrow(() => IPv6Converter.ToBytes(ipv6), $"转换器应该能处理 '{ipv6}'");
                 Should.NotThrow(() => IPv6Converter.Expand(ipv6), $"展开方法应该能处理 '{ipv6}'");
                 Should.NotThrow(() => IPv6Converter.Compress(ipv6), $"压缩方法应该能处理 '{ipv6}'");
-
                 // TryValidate 应该成功
                 var tryValidateResult = IPv6Validator.TryValidate(ipv6, out var address, out var addressType);
                 tryValidateResult.ShouldBeTrue($"TryValidate 应该成功处理 '{ipv6}'");
                 address.ShouldNotBeNull();
                 addressType.ShouldNotBe(IPv6AddressType.Invalid);
-
                 Output.WriteLine($"Integration test passed for '{ipv6}' (Type: {addressType})");
             }
         }
     }
-
     #endregion
 }

@@ -1,5 +1,4 @@
-﻿namespace Bing.Net.Mac;
-
+namespace Bing.Net.Mac;
 /// <summary>
 /// MAC地址帮助类单元测试
 /// </summary>
@@ -10,9 +9,7 @@ public class MacAddressHelperTest : TestBase
     public MacAddressHelperTest(ITestOutputHelper output) : base(output)
     {
     }
-
     #region Parse/FromBytes 往返测试
-
     /// <summary>
     /// 测试 - Parse 和 FromBytes - 往返转换
     /// </summary>
@@ -25,18 +22,13 @@ public class MacAddressHelperTest : TestBase
         // Act
         var bytes = MacAddressHelper.Parse(originalMac);
         var reconstructed = MacAddressHelper.FromBytes(bytes);
-
         // Assert
         bytes.Length.ShouldBe(6);
         MacAddressHelper.AreEqual(originalMac, reconstructed).ShouldBeTrue();
-
         Output.WriteLine($"往返转换: {originalMac} -> {reconstructed}");
     }
-
     #endregion
-
     #region Format 测试
-
     /// <summary>
     /// 测试 - Format - 基本格式化
     /// </summary>
@@ -50,12 +42,10 @@ public class MacAddressHelperTest : TestBase
     {
         // Act
         var result = MacAddressHelper.Format(input, separator, upperCase);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"格式化: {input} -> {result}");
     }
-
     /// <summary>
     /// 测试 - Format - 无效输入抛出异常
     /// </summary>
@@ -74,10 +64,8 @@ public class MacAddressHelperTest : TestBase
         // Act & Assert
         var exception = Should.Throw<ArgumentException>(() => MacAddressHelper.Format(invalidInput));
         exception.ParamName.ShouldBe("macAddress");
-
         Output.WriteLine($"无效输入 '{invalidInput}' 正确抛出异常: {exception.Message}");
     }
-
     /// <summary>
     /// 测试 - Format - null 输入抛出异常
     /// </summary>
@@ -89,7 +77,6 @@ public class MacAddressHelperTest : TestBase
         exception.ParamName.ShouldBe("macAddress");
         exception.Message.ShouldContain("MAC地址不能为空");
     }
-
     /// <summary>
     /// 测试 - Format - 边界情况验证
     /// </summary>
@@ -101,12 +88,10 @@ public class MacAddressHelperTest : TestBase
     {
         // Act
         var result = MacAddressHelper.Format(input, separator, upperCase);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"边界条件测试: {input} -> {result}");
     }
-
     /// <summary>
     /// 测试 - FormatBatch - 批量格式化
     /// </summary>
@@ -121,27 +106,21 @@ public class MacAddressHelperTest : TestBase
             "aa-bb-cc-dd-ee-ff",
             "AABBCCDDEEFF"
         };
-
         // Act
         var result = MacAddressHelper.FormatBatch(macAddresses, ":", true, skipInvalid: true);
-
         // Assert
         result.Count.ShouldBe(3); // 跳过无效地址
         result[0].ShouldBe("00:11:22:33:44:55");
         result[1].ShouldBe("AA:BB:CC:DD:EE:FF");
         result[2].ShouldBe("AA:BB:CC:DD:EE:FF");
-
         Output.WriteLine("批量格式化结果:");
         foreach (var mac in result)
         {
             Output.WriteLine($"  {mac}");
         }
     }
-
     #endregion
-
     #region IsValid 测试
-
     /// <summary>
     /// 测试 - IsValid - 有效MAC地址
     /// </summary>
@@ -156,12 +135,10 @@ public class MacAddressHelperTest : TestBase
     {
         // Act
         var result = MacAddressHelper.IsValid(validMac);
-
         // Assert
         result.ShouldBeTrue();
         Output.WriteLine($"有效MAC地址: {validMac}");
     }
-
     /// <summary>
     /// 测试 - IsValid - 无效MAC地址
     /// </summary>
@@ -176,16 +153,12 @@ public class MacAddressHelperTest : TestBase
     {
         // Act
         var result = MacAddressHelper.IsValid(invalidMac);
-
         // Assert
         result.ShouldBeFalse();
         Output.WriteLine($"无效MAC地址: '{invalidMac}'");
     }
-
     #endregion
-
     #region AreEqual 测试
-
     /// <summary>
     /// 测试 - AreEqual - MAC地址比较
     /// </summary>
@@ -199,16 +172,12 @@ public class MacAddressHelperTest : TestBase
     {
         // Act
         var result = MacAddressHelper.AreEqual(mac1, mac2);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"比较: '{mac1}' == '{mac2}': {result}");
     }
-
     #endregion
-
     #region GenerateEUI64 测试
-
     /// <summary>
     /// 测试 - GenerateEUI64 - 标准转换
     /// </summary>
@@ -217,10 +186,8 @@ public class MacAddressHelperTest : TestBase
     {
         // Arrange
         var macAddress = "00:11:22:33:44:55";
-
         // Act
         var result = MacAddressHelper.GenerateEUI64(macAddress);
-
         // Assert
         result.Length.ShouldBe(8);
         result[0].ShouldBe((byte)0x02); // 翻转U/L位后
@@ -231,14 +198,10 @@ public class MacAddressHelperTest : TestBase
         result[5].ShouldBe((byte)0x33);
         result[6].ShouldBe((byte)0x44);
         result[7].ShouldBe((byte)0x55);
-
         Output.WriteLine($"EUI-64: {BitConverter.ToString(result)}");
     }
-
     #endregion
-
     #region GenerateRandom 测试
-
     /// <summary>
     /// 测试 - GenerateRandom - 随机MAC地址生成
     /// </summary>
@@ -247,17 +210,13 @@ public class MacAddressHelperTest : TestBase
     {
         // Act
         var result = MacAddressHelper.GenerateRandom();
-
         // Assert
         result.ShouldNotBeNullOrEmpty();
         MacAddressHelper.IsValid(result).ShouldBeTrue();
-
         var info = MacAddressHelper.GetMacAddressInfo(result);
         info.IsUnicast.ShouldBeTrue(); // 应该是单播地址
-
         Output.WriteLine($"随机生成的MAC地址: {result}");
     }
-
     /// <summary>
     /// 测试 - GenerateRandom - 本地管理地址
     /// </summary>
@@ -266,19 +225,14 @@ public class MacAddressHelperTest : TestBase
     {
         // Act
         var result = MacAddressHelper.GenerateRandom(useLocallyAdministered: true);
-
         // Assert
         var info = MacAddressHelper.GetMacAddressInfo(result);
         info.IsLocallyAdministered.ShouldBeTrue();
         info.IsUnicast.ShouldBeTrue();
-
         Output.WriteLine($"本地管理MAC地址: {result}");
     }
-
     #endregion
-
     #region GenerateRange 测试
-
     /// <summary>
     /// 测试 - GenerateRange - MAC地址范围生成
     /// </summary>
@@ -288,10 +242,8 @@ public class MacAddressHelperTest : TestBase
         // Arrange
         var startMac = "00:11:22:33:44:55";
         var endMac = "00:11:22:33:44:59";
-
         // Act
         var result = MacAddressHelper.GenerateRange(startMac, endMac);
-
         // Assert
         result.Count.ShouldBe(5);
         result[0].ShouldBe("00:11:22:33:44:55");
@@ -299,18 +251,14 @@ public class MacAddressHelperTest : TestBase
         result[2].ShouldBe("00:11:22:33:44:57");
         result[3].ShouldBe("00:11:22:33:44:58");
         result[4].ShouldBe("00:11:22:33:44:59");
-
         Output.WriteLine($"MAC地址范围: {startMac} 到 {endMac}");
         foreach (var mac in result)
         {
             Output.WriteLine($"  {mac}");
         }
     }
-
     #endregion
-
     #region GetMacAddressInfo 测试
-
     /// <summary>
     /// 测试 - GetMacAddressInfo - 地址信息分析
     /// </summary>
@@ -319,10 +267,8 @@ public class MacAddressHelperTest : TestBase
     {
         // Arrange
         var macAddress = "02:11:22:33:44:55"; // 本地管理地址
-
         // Act
         var info = MacAddressHelper.GetMacAddressInfo(macAddress);
-
         // Assert
         info.ShouldNotBeNull();
         info.MacAddress.ShouldBe("02:11:22:33:44:55");
@@ -332,14 +278,10 @@ public class MacAddressHelperTest : TestBase
         info.IsMulticast.ShouldBeFalse();
         info.OUI.ShouldBe("02:11:22");
         info.NIC.ShouldBe("33:44:55");
-
         Output.WriteLine($"MAC地址信息: {info}");
     }
-
     #endregion
-
     #region GetAdjacentAddress 测试
-
     /// <summary>
     /// 测试 - GetAdjacentAddress - 相邻地址计算
     /// </summary>
@@ -352,16 +294,12 @@ public class MacAddressHelperTest : TestBase
     {
         // Act
         var result = MacAddressHelper.GetAdjacentAddress(baseMac, offset);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"相邻地址: {baseMac} + {offset} = {result}");
     }
-
     #endregion
-
     #region 性能测试
-
     /// <summary>
     /// 测试 - 性能测试
     /// </summary>
@@ -369,7 +307,6 @@ public class MacAddressHelperTest : TestBase
     public void Performance_LargeScale_CompletesWithinReasonableTime()
     {
         var sw = System.Diagnostics.Stopwatch.StartNew();
-
         // 生成大量随机MAC地址并验证
         for (int i = 0; i < 1000; i++)
         {
@@ -377,12 +314,9 @@ public class MacAddressHelperTest : TestBase
             MacAddressHelper.IsValid(randomMac).ShouldBeTrue();
             MacAddressHelper.GetMacAddressInfo(randomMac);
         }
-
         sw.Stop();
-
         sw.ElapsedMilliseconds.ShouldBeLessThan(1000, "1000次MAC地址操作应该在1秒内完成");
         Output.WriteLine($"性能测试: 1000次操作耗时 {sw.ElapsedMilliseconds}ms");
     }
-
     #endregion
 }

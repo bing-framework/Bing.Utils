@@ -1,5 +1,4 @@
-﻿namespace Bing.Net.IPv4;
-
+namespace Bing.Net.IPv4;
 /// <summary>
 /// IPv4地址操作器 测试
 /// </summary>
@@ -10,9 +9,7 @@ public class IPv4OperatorTest : TestBase
     public IPv4OperatorTest(ITestOutputHelper output) : base(output)
     {
     }
-
     #region SortIpAddresses 测试
-
     /// <summary>
     /// 测试 - SortIpAddresses - 升序排序
     /// </summary>
@@ -21,10 +18,8 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var ips = new[] { "192.168.1.10", "192.168.1.2", "192.168.1.100", "192.168.1.1" };
-
         // Act
         var result = IPv4Operator.SortIpAddresses(ips, true);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(4);
@@ -33,7 +28,6 @@ public class IPv4OperatorTest : TestBase
         result[2].ShouldBe("192.168.1.10");
         result[3].ShouldBe("192.168.1.100");
     }
-
     /// <summary>
     /// 测试 - SortIpAddresses - 降序排序
     /// </summary>
@@ -42,10 +36,8 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var ips = new[] { "192.168.1.1", "192.168.1.10", "192.168.1.2" };
-
         // Act
         var result = IPv4Operator.SortIpAddresses(ips, false);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(3);
@@ -53,7 +45,6 @@ public class IPv4OperatorTest : TestBase
         result[1].ShouldBe("192.168.1.2");
         result[2].ShouldBe("192.168.1.1");
     }
-
     /// <summary>
     /// 测试 - SortIpAddresses - 包含无效IP地址
     /// </summary>
@@ -62,17 +53,14 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var ips = new[] { "192.168.1.1", "invalid", "192.168.1.2", "256.1.1.1" };
-
         // Act
         var result = IPv4Operator.SortIpAddresses(ips);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(2);
         result[0].ShouldBe("192.168.1.1");
         result[1].ShouldBe("192.168.1.2");
     }
-
     /// <summary>
     /// 测试 - SortIpAddresses - null参数抛出异常
     /// </summary>
@@ -82,7 +70,6 @@ public class IPv4OperatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => IPv4Operator.SortIpAddresses(null));
     }
-
     /// <summary>
     /// 测试 - SortIpAddresses - 空列表
     /// </summary>
@@ -91,19 +78,14 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var ips = new string[0];
-
         // Act
         var result = IPv4Operator.SortIpAddresses(ips);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(0);
     }
-
     #endregion
-
     #region GetIpDistance 测试
-
     /// <summary>
     /// 测试 - GetIpDistance - 正常计算距离
     /// </summary>
@@ -116,11 +98,9 @@ public class IPv4OperatorTest : TestBase
     {
         // Act
         var result = IPv4Operator.GetIpDistance(ip1, ip2);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetIpDistance - 无效IP地址抛出异常
     /// </summary>
@@ -133,7 +113,6 @@ public class IPv4OperatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv4Operator.GetIpDistance(ip1, ip2));
     }
-
     /// <summary>
     /// 测试 - GetIpDistance - null或空参数抛出异常
     /// </summary>
@@ -148,11 +127,8 @@ public class IPv4OperatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => IPv4Operator.GetIpDistance(ip1, ip2));
     }
-
     #endregion
-
     #region GetNextIp 测试
-
     /// <summary>
     /// 测试 - GetNextIp - 正常获取下一个IP
     /// </summary>
@@ -165,11 +141,9 @@ public class IPv4OperatorTest : TestBase
     {
         // Act
         var result = IPv4Operator.GetNextIp(ip, step);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetNextIp - IP地址溢出抛出异常
     /// </summary>
@@ -181,7 +155,6 @@ public class IPv4OperatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv4Operator.GetNextIp(ip, step));
     }
-
     /// <summary>
     /// 测试 - GetNextIp - 无效IP地址抛出异常
     /// </summary>
@@ -194,11 +167,8 @@ public class IPv4OperatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv4Operator.GetNextIp(invalidIp));
     }
-
     #endregion
-
     #region GetPreviousIp 测试
-
     /// <summary>
     /// 测试 - GetPreviousIp - 正常获取前一个IP
     /// </summary>
@@ -211,11 +181,9 @@ public class IPv4OperatorTest : TestBase
     {
         // Act
         var result = IPv4Operator.GetPreviousIp(ip, step);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 测试 - GetPreviousIp - IP地址下溢抛出异常
     /// </summary>
@@ -228,7 +196,6 @@ public class IPv4OperatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv4Operator.GetPreviousIp(ip, step));
     }
-
     /// <summary>
     /// 测试 - GetPreviousIp - 无效IP地址抛出异常
     /// </summary>
@@ -240,7 +207,6 @@ public class IPv4OperatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv4Operator.GetPreviousIp(invalidIp));
     }
-
     /// <summary>
     /// 测试 - GetPreviousIp - 跨网段的正常计算
     /// </summary>
@@ -251,15 +217,11 @@ public class IPv4OperatorTest : TestBase
     {
         // Act
         var result = IPv4Operator.GetPreviousIp(ip, step);
-
         // Assert
         result.ShouldBe(expected);
     }
-
     #endregion
-
     #region ScanActiveIpsAsync 测试
-
     /// <summary>
     /// 测试 - ScanActiveIpsAsync - 正常扫描（模拟小网段）
     /// </summary>
@@ -269,15 +231,12 @@ public class IPv4OperatorTest : TestBase
         // Arrange
         var cidr = "127.0.0.0/30"; // 只包含4个地址，其中127.0.0.1可能活跃
         var timeout = TimeSpan.FromMilliseconds(500);
-
         // Act
         var result = await IPv4Operator.ScanActiveIpsAsync(cidr, timeout, 2);
-
         // Assert
         result.ShouldNotBeNull();
         // 结果可能为空或包含127.0.0.1，取决于环境
     }
-
     /// <summary>
     /// 测试 - ScanActiveIpsAsync - 无效CIDR抛出异常
     /// </summary>
@@ -291,7 +250,6 @@ public class IPv4OperatorTest : TestBase
         await Should.ThrowAsync<ArgumentException>(() =>
             IPv4Operator.ScanActiveIpsAsync(invalidCidr));
     }
-
     /// <summary>
     /// 测试 - ScanActiveIpsAsync - 无效超时时间抛出异常
     /// </summary>
@@ -301,12 +259,10 @@ public class IPv4OperatorTest : TestBase
         // Arrange
         var cidr = "127.0.0.0/30";
         var invalidTimeout = TimeSpan.FromMilliseconds(-1);
-
         // Act & Assert
         await Should.ThrowAsync<ArgumentOutOfRangeException>(() =>
             IPv4Operator.ScanActiveIpsAsync(cidr, invalidTimeout));
     }
-
     /// <summary>
     /// 测试 - ScanActiveIpsAsync - 无效并发数抛出异常
     /// </summary>
@@ -317,16 +273,12 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var cidr = "127.0.0.0/30";
-
         // Act & Assert
         await Should.ThrowAsync<ArgumentOutOfRangeException>(() =>
             IPv4Operator.ScanActiveIpsAsync(cidr, null, invalidConcurrency));
     }
-
     #endregion
-
     #region IsIpReachableAsync 测试
-
     /// <summary>
     /// 测试 - IsIpReachableAsync - 本地回环地址
     /// </summary>
@@ -335,15 +287,12 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var timeout = TimeSpan.FromSeconds(1);
-
         // Act
         var result = await IPv4Operator.IsIpReachableAsync("127.0.0.1", timeout);
-
         // Assert
         result.ShouldBeOfType<bool>();
         // 注意：在某些环境下127.0.0.1可能不响应ping，这里只验证方法不抛异常
     }
-
     /// <summary>
     /// 测试 - IsIpReachableAsync - 无效IP地址返回false
     /// </summary>
@@ -356,14 +305,11 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var timeout = TimeSpan.FromSeconds(1);
-
         // Act
         var result = await IPv4Operator.IsIpReachableAsync(invalidIp, timeout);
-
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试 - IsIpReachableAsync - 无效超时时间抛出异常
     /// </summary>
@@ -374,12 +320,10 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var timeout = TimeSpan.FromMilliseconds(timeoutMs);
-
         // Act & Assert
         await Should.ThrowAsync<ArgumentOutOfRangeException>(() =>
             IPv4Operator.IsIpReachableAsync("127.0.0.1", timeout));
     }
-
     /// <summary>
     /// 测试 - IsIpReachableAsync - 超时时间过大抛出异常
     /// </summary>
@@ -388,16 +332,12 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var timeout = TimeSpan.FromMilliseconds((long)int.MaxValue + 1);
-
         // Act & Assert
         await Should.ThrowAsync<ArgumentOutOfRangeException>(() =>
             IPv4Operator.IsIpReachableAsync("127.0.0.1", timeout));
     }
-
     #endregion
-
     #region 边界值和异常测试
-
     /// <summary>
     /// 测试 - 各方法的边界值处理
     /// </summary>
@@ -407,16 +347,13 @@ public class IPv4OperatorTest : TestBase
         // GetNextIp边界值
         var nextMin = IPv4Operator.GetNextIp("0.0.0.0", 0u);
         nextMin.ShouldBe("0.0.0.0");
-
         // GetPreviousIp边界值
         var prevMax = IPv4Operator.GetPreviousIp("255.255.255.255", 0u);
         prevMax.ShouldBe("255.255.255.255");
-
         // GetIpDistance相同IP
         var distance = IPv4Operator.GetIpDistance("192.168.1.1", "192.168.1.1");
         distance.ShouldBe(0u);
     }
-
     /// <summary>
     /// 测试 - SortIpAddresses - 重复IP地址
     /// </summary>
@@ -425,10 +362,8 @@ public class IPv4OperatorTest : TestBase
     {
         // Arrange
         var ips = new[] { "192.168.1.1", "192.168.1.2", "192.168.1.1", "192.168.1.2" };
-
         // Act
         var result = IPv4Operator.SortIpAddresses(ips);
-
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(4);
@@ -437,6 +372,5 @@ public class IPv4OperatorTest : TestBase
         result[2].ShouldBe("192.168.1.2");
         result[3].ShouldBe("192.168.1.2");
     }
-
     #endregion
 }

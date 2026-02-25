@@ -1,15 +1,18 @@
 using Bing.Net.IPv6;
 using System.Numerics;
-
 namespace Bing.Net;
-
+/// <summary>
+/// 测试类：覆盖 `IPv6AddressAnalyzerAndPool` 相关行为。
+/// </summary>
 [Trait("Bing.Net", "IPv6AddressAnalyzerAndPool")]
 public class IPv6AddressAnalyzerAndPoolTest : TestBase
 {
     public IPv6AddressAnalyzerAndPoolTest(ITestOutputHelper output) : base(output)
     {
     }
-
+    /// <summary>
+    /// 测试用例：验证 `GetAddressType` 在 `ShouldReturnExpected` 场景下的行为。
+    /// </summary>
     [Theory]
     [InlineData("::1", IPv6AddressType.Loopback)]
     [InlineData("::", IPv6AddressType.Unspecified)]
@@ -21,7 +24,9 @@ public class IPv6AddressAnalyzerAndPoolTest : TestBase
     {
         IPv6AddressAnalyzer.GetAddressType(ip).ShouldBe(expected);
     }
-
+    /// <summary>
+    /// 测试用例：验证 `IsPrivate` 在 `And_IsPublic` 场景下，结果为 `ShouldReturnExpected`。
+    /// </summary>
     [Fact]
     public void IsPrivate_And_IsPublic_ShouldReturnExpected()
     {
@@ -30,7 +35,9 @@ public class IPv6AddressAnalyzerAndPoolTest : TestBase
         IPv6AddressAnalyzer.IsPublic("2001:4860:4860::8888").ShouldBeTrue();
         IPv6AddressAnalyzer.IsPublic("::1").ShouldBeFalse();
     }
-
+    /// <summary>
+    /// 测试用例：验证 `GetAddressScope` 在 `And_MulticastScope` 场景下，结果为 `ShouldReturnExpected`。
+    /// </summary>
     [Fact]
     public void GetAddressScope_And_MulticastScope_ShouldReturnExpected()
     {
@@ -38,7 +45,9 @@ public class IPv6AddressAnalyzerAndPoolTest : TestBase
         IPv6AddressAnalyzer.GetMulticastScope("ff02::1").ShouldBe(IPv6AddressScope.Link);
         IPv6AddressAnalyzer.GetMulticastScope("2001:db8::1").ShouldBe(IPv6AddressScope.Invalid);
     }
-
+    /// <summary>
+    /// 测试用例：验证 `AnalyzeAddress` 在 `ShouldReturnConsistentResult` 场景下的行为。
+    /// </summary>
     [Fact]
     public void AnalyzeAddress_ShouldReturnConsistentResult()
     {
@@ -50,7 +59,9 @@ public class IPv6AddressAnalyzerAndPoolTest : TestBase
         result.CompressedForm.ShouldNotBeNullOrWhiteSpace();
         result.ExpandedForm.ShouldNotBeNullOrWhiteSpace();
     }
-
+    /// <summary>
+    /// 测试用例：验证 `IPv6AddressPool` 在 `GetNext_Reset_And_Exhaustion` 场景下，结果为 `ShouldWork`。
+    /// </summary>
     [Fact]
     public void IPv6AddressPool_GetNext_Reset_And_Exhaustion_ShouldWork()
     {
@@ -62,22 +73,20 @@ public class IPv6AddressAnalyzerAndPoolTest : TestBase
             PrefixLength = 64,
             CreatedAt = DateTime.UtcNow
         };
-
         pool.GetNext().ShouldBe("2001:db8::1");
         pool.RemainingCount.ShouldBe(1);
         pool.IsExhausted.ShouldBeFalse();
-
         pool.GetNext().ShouldBe("2001:db8::2");
         pool.RemainingCount.ShouldBe(0);
         pool.IsExhausted.ShouldBeTrue();
-
         Should.Throw<InvalidOperationException>(() => pool.GetNext());
-
         pool.Reset();
         pool.IsExhausted.ShouldBeFalse();
         pool.GetNext().ShouldBe("2001:db8::1");
     }
-
+    /// <summary>
+    /// 测试用例：验证 `IPv6AddressStatistics` 在 `ToString` 场景下，结果为 `ShouldContainCounts`。
+    /// </summary>
     [Fact]
     public void IPv6AddressStatistics_ToString_ShouldContainCounts()
     {
@@ -88,7 +97,6 @@ public class IPv6AddressAnalyzerAndPoolTest : TestBase
             InvalidCount = 2,
             AddressRange = new BigInteger(100)
         };
-
         var text = stats.ToString();
         text.ShouldContain("Total: 10");
         text.ShouldContain("Valid: 8");
@@ -96,3 +104,4 @@ public class IPv6AddressAnalyzerAndPoolTest : TestBase
         text.ShouldContain("Range: 100");
     }
 }
+

@@ -1,5 +1,4 @@
-﻿namespace Bing.Net.IPv6;
-
+namespace Bing.Net.IPv6;
 /// <summary>
 /// IPv6 CIDR计算器单元测试
 /// </summary>
@@ -10,9 +9,7 @@ public class IPv6CidrCalculatorTest : TestBase
     public IPv6CidrCalculatorTest(ITestOutputHelper output) : base(output)
     {
     }
-
     #region IsInIPv6Subnet 测试
-
     /// <summary>
     /// 测试 - IsInIPv6Subnet - 地址在子网内
     /// </summary>
@@ -27,12 +24,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.IsInIPv6Subnet(address, subnet);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"地址 '{address}' 在子网 '{subnet}' 中: {result}");
     }
-
     /// <summary>
     /// 测试 - IsInIPv6Subnet - 地址不在子网内
     /// </summary>
@@ -45,12 +40,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.IsInIPv6Subnet(address, subnet);
-
         // Assert
         result.ShouldBe(expected);
         Output.WriteLine($"地址 '{address}' 不在子网 '{subnet}' 中: {result}");
     }
-
     /// <summary>
     /// 测试 - IsInIPv6Subnet - 无效输入返回false
     /// </summary>
@@ -67,16 +60,12 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.IsInIPv6Subnet(address, subnet);
-
         // Assert
         result.ShouldBeFalse();
         Output.WriteLine($"无效输入 '{address}', '{subnet}' 返回 false");
     }
-
     #endregion
-
     #region GetIPv6SubnetInfo 测试
-
     /// <summary>
     /// 测试 - GetIPv6SubnetInfo - 基本子网信息
     /// </summary>
@@ -90,7 +79,6 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var info = IPv6CidrCalculator.GetIPv6SubnetInfo(cidr);
-
         // Assert
         info.ShouldNotBeNull();
         info.PrefixLength.ShouldBe(expectedPrefixLength);
@@ -99,7 +87,6 @@ public class IPv6CidrCalculatorTest : TestBase
         info.SubnetMask.ShouldNotBeNullOrEmpty();
         IPv6Validator.IsValid(info.NetworkPrefix).ShouldBeTrue();
         IPv6Validator.IsValid(info.SubnetMask).ShouldBeTrue();
-
         Output.WriteLine($"子网信息: {cidr}");
         Output.WriteLine($"  网络前缀: {info.NetworkPrefix}");
         Output.WriteLine($"  前缀长度: {info.PrefixLength}");
@@ -110,7 +97,6 @@ public class IPv6CidrCalculatorTest : TestBase
         Output.WriteLine($"  第一个地址: {info.FirstUsableAddress}");
         Output.WriteLine($"  最后一个地址: {info.LastUsableAddress}");
     }
-
     /// <summary>
     /// 测试 - GetIPv6SubnetInfo - 小子网地址计算
     /// </summary>
@@ -122,12 +108,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var info = IPv6CidrCalculator.GetIPv6SubnetInfo(cidr);
-
         // Assert
         info.TotalAddresses.ShouldNotBeNull();
         info.TotalAddresses.Value.ShouldBe(expectedTotal);
         info.AvailableAddresses.ShouldNotBeNull();
-
         if (expectedTotal > 2)
         {
             info.AvailableAddresses.Value.ShouldBe(expectedTotal - 2);
@@ -136,10 +120,8 @@ public class IPv6CidrCalculatorTest : TestBase
         {
             info.AvailableAddresses.Value.ShouldBe(expectedTotal);
         }
-
         Output.WriteLine($"小子网 {cidr}: 总地址={info.TotalAddresses}, 可用地址={info.AvailableAddresses}");
     }
-
     /// <summary>
     /// 测试 - GetIPv6SubnetInfo - 大子网处理
     /// </summary>
@@ -151,21 +133,17 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var info = IPv6CidrCalculator.GetIPv6SubnetInfo(cidr);
-
         // Assert
         info.ShouldNotBeNull();
         info.HostBits.ShouldBeGreaterThanOrEqualTo(64);
-
         // 大子网的地址数应该为null（太大无法计算）
         if (info.HostBits >= 64)
         {
             info.TotalAddresses.ShouldBeNull();
             info.AvailableAddresses.ShouldBeNull();
         }
-
         Output.WriteLine($"大子网 {cidr}: 主机位={info.HostBits}位, 地址数=无法计算");
     }
-
     /// <summary>
     /// 测试 - GetIPv6SubnetInfo - 无效输入抛出异常
     /// </summary>
@@ -188,14 +166,10 @@ public class IPv6CidrCalculatorTest : TestBase
         {
             Should.Throw<ArgumentException>(() => IPv6CidrCalculator.GetIPv6SubnetInfo(invalidCidr));
         }
-
         Output.WriteLine($"无效CIDR '{invalidCidr}' 正确抛出异常");
     }
-
     #endregion
-
     #region GenerateIPv6Range 测试
-
     /// <summary>
     /// 测试 - GenerateIPv6Range - 小子网地址生成
     /// </summary>
@@ -207,17 +181,14 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var addresses = IPv6CidrCalculator.GenerateIPv6Range(cidr, maxCount);
-
         // Assert
         addresses.Count.ShouldBe(expectedCount);
-
         // 验证所有地址都有效且在子网内
         foreach (var addr in addresses)
         {
             IPv6Validator.IsValid(addr).ShouldBeTrue();
             IPv6CidrCalculator.IsInIPv6Subnet(addr, cidr).ShouldBeTrue();
         }
-
         // 验证地址是连续的
         for (int i = 1; i < addresses.Count; i++)
         {
@@ -225,14 +196,12 @@ public class IPv6CidrCalculatorTest : TestBase
             var curr = IPv6Converter.ToBigInteger(addresses[i]);
             (curr - prev).ShouldBe(1, "地址应该是连续的");
         }
-
         Output.WriteLine($"小子网 {cidr} 生成的地址:");
         foreach (var addr in addresses)
         {
             Output.WriteLine($"  {addr}");
         }
     }
-
     /// <summary>
     /// 测试 - GenerateIPv6Range - 大子网限制处理
     /// </summary>
@@ -244,23 +213,19 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var addresses = IPv6CidrCalculator.GenerateIPv6Range(cidr, 1000);
-
         // Assert
         addresses.Count.ShouldBeLessThanOrEqualTo(2); // 只返回网络地址和可能的第一个可用地址
-
         if (addresses.Count > 0)
         {
             IPv6Validator.IsValid(addresses[0]).ShouldBeTrue();
             IPv6CidrCalculator.IsInIPv6Subnet(addresses[0], cidr).ShouldBeTrue();
         }
-
         Output.WriteLine($"大子网 {cidr} 返回的有限地址数: {addresses.Count}");
         foreach (var addr in addresses)
         {
             Output.WriteLine($"  {addr}");
         }
     }
-
     /// <summary>
     /// 测试 - GenerateIPv6Range - 最大数量限制
     /// </summary>
@@ -270,21 +235,16 @@ public class IPv6CidrCalculatorTest : TestBase
         // Arrange
         var cidr = "2001:db8::/120"; // 256个地址
         var maxCount = 10;
-
         // Act
         var addresses = IPv6CidrCalculator.GenerateIPv6Range(cidr, maxCount);
-
         // Assert
         addresses.Count.ShouldBe(maxCount);
-
         // 验证前几个地址
         addresses[0].ShouldBe("2001:db8::");
         addresses[1].ShouldBe("2001:db8::1");
         addresses[2].ShouldBe("2001:db8::2");
-
         Output.WriteLine($"限制数量测试: 请求{maxCount}个，返回{addresses.Count}个");
     }
-
     /// <summary>
     /// 测试 - GenerateIPv6Range - 空输入处理
     /// </summary>
@@ -296,16 +256,12 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var addresses = IPv6CidrCalculator.GenerateIPv6Range(invalidCidr);
-
         // Assert
         addresses.ShouldBeEmpty();
         Output.WriteLine($"无效输入 '{invalidCidr}' 返回空列表");
     }
-
     #endregion
-
     #region IPv6PrefixToSubnetMask 测试
-
     /// <summary>
     /// 测试 - IPv6PrefixToSubnetMask - 标准前缀长度
     /// </summary>
@@ -321,12 +277,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.IPv6PrefixToSubnetMask(prefixLength);
-
         // Assert
         IPv6Converter.AreEqual(result, expectedMask).ShouldBeTrue($"前缀长度 {prefixLength} 应该产生掩码 '{expectedMask}', 实际为 '{result}'");
         Output.WriteLine($"前缀 /{prefixLength} -> 掩码 {result}");
     }
-
     /// <summary>
     /// 测试 - IPv6PrefixToSubnetMask - 部分字节前缀长度
     /// </summary>
@@ -340,12 +294,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.IPv6PrefixToSubnetMask(prefixLength);
-
         // Assert
         IPv6Converter.AreEqual(result, expectedMask).ShouldBeTrue($"前缀长度 {prefixLength} 应该产生掩码 '{expectedMask}', 实际为 '{result}'");
         Output.WriteLine($"部分字节前缀 /{prefixLength} -> 掩码 {result}");
     }
-
     /// <summary>
     /// 测试 - IPv6PrefixToSubnetMask - 无效前缀长度抛出异常
     /// </summary>
@@ -358,14 +310,10 @@ public class IPv6CidrCalculatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() => IPv6CidrCalculator.IPv6PrefixToSubnetMask(invalidPrefix))
             .Message.ShouldContain("IPv6前缀长度必须在0-128之间");
-
         Output.WriteLine($"无效前缀长度 {invalidPrefix} 正确抛出异常");
     }
-
     #endregion
-
     #region IPv6SubnetMaskToPrefix 测试
-
     /// <summary>
     /// 测试 - IPv6SubnetMaskToPrefix - 标准子网掩码
     /// </summary>
@@ -381,12 +329,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.IPv6SubnetMaskToPrefix(mask);
-
         // Assert
         result.ShouldBe(expectedPrefix);
         Output.WriteLine($"掩码 {mask} -> 前缀长度 /{result}");
     }
-
     /// <summary>
     /// 测试 - IPv6SubnetMaskToPrefix - 部分字节掩码
     /// </summary>
@@ -400,12 +346,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.IPv6SubnetMaskToPrefix(mask);
-
         // Assert
         result.ShouldBe(expectedPrefix);
         Output.WriteLine($"部分字节掩码 {mask} -> 前缀长度 /{result}");
     }
-
     /// <summary>
     /// 测试 - IPv6SubnetMaskToPrefix - 无效掩码抛出异常
     /// </summary>
@@ -422,11 +366,8 @@ public class IPv6CidrCalculatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv6CidrCalculator.IPv6SubnetMaskToPrefix(invalidMask));
         Output.WriteLine($"无效掩码 '{invalidMask}' 正确抛出异常");
     }
-
     #endregion
-
     #region IsValidIPv6SubnetMask 测试
-
     /// <summary>
     /// 测试 - IsValidIPv6SubnetMask - 有效掩码
     /// </summary>
@@ -441,12 +382,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.IsValidIPv6SubnetMask(validMask);
-
         // Assert
         result.ShouldBeTrue();
         Output.WriteLine($"有效掩码: {validMask}");
     }
-
     /// <summary>
     /// 测试 - IsValidIPv6SubnetMask - 无效掩码
     /// </summary>
@@ -462,16 +401,12 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.IsValidIPv6SubnetMask(invalidMask);
-
         // Assert
         result.ShouldBeFalse();
         Output.WriteLine($"无效掩码: '{invalidMask}'");
     }
-
     #endregion
-
     #region SubdivideIPv6Network 测试
-
     /// <summary>
     /// 测试 - SubdivideIPv6Network - 基本子网划分
     /// </summary>
@@ -483,19 +418,15 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var subnets = IPv6CidrCalculator.SubdivideIPv6Network(originalCidr, newPrefix);
-
         // Assert
         subnets.Count.ShouldBe(expectedCount);
-
         foreach (var subnet in subnets)
         {
             subnet.ShouldEndWith($"/{newPrefix}");
-
             // 验证子网格式
             var parts = subnet.Split('/');
             IPv6Validator.IsValid(parts[0]).ShouldBeTrue();
         }
-
         Output.WriteLine($"子网划分: {originalCidr} -> /{newPrefix}");
         foreach (var subnet in subnets.Take(Math.Min(5, subnets.Count)))
         {
@@ -506,7 +437,6 @@ public class IPv6CidrCalculatorTest : TestBase
             Output.WriteLine($"  ... 还有 {subnets.Count - 5} 个子网");
         }
     }
-
     /// <summary>
     /// 测试 - SubdivideIPv6Network - 无效输入返回空列表
     /// </summary>
@@ -530,10 +460,8 @@ public class IPv6CidrCalculatorTest : TestBase
             var result = IPv6CidrCalculator.SubdivideIPv6Network(invalidCidr, newPrefix);
             result.ShouldBeEmpty();
         }
-
         Output.WriteLine($"无效输入 '{invalidCidr}' -> /{newPrefix}");
     }
-
     /// <summary>
     /// 测试 - SubdivideIPv6Network - 过大子网数量抛出异常
     /// </summary>
@@ -543,18 +471,13 @@ public class IPv6CidrCalculatorTest : TestBase
         // Arrange
         var cidr = "2001:db8::/48";
         var newPrefix = 64; // 这将产生 2^16 = 65536 个子网，超过10000限制
-
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv6CidrCalculator.SubdivideIPv6Network(cidr, newPrefix))
             .Message.ShouldContain("子网数量过大");
-
         Output.WriteLine($"过大子网数量测试: {cidr} -> /{newPrefix}");
     }
-
     #endregion
-
     #region GetFirstIPv6Address 和 GetLastIPv6Address 测试
-
     /// <summary>
     /// 测试 - GetFirstIPv6Address - 获取第一个地址
     /// </summary>
@@ -568,12 +491,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.GetFirstIPv6Address(network, prefixLength);
-
         // Assert
         IPv6Converter.AreEqual(result, expectedFirst).ShouldBeTrue($"网络 {network}/{prefixLength} 的第一个地址应该是 '{expectedFirst}', 实际为 '{result}'");
         Output.WriteLine($"网络 {network}/{prefixLength} 的第一个地址: {result}");
     }
-
     /// <summary>
     /// 测试 - GetLastIPv6Address - 获取最后一个地址
     /// </summary>
@@ -585,12 +506,10 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.GetLastIPv6Address(network, prefixLength);
-
         // Assert
         IPv6Converter.AreEqual(result, expectedLast).ShouldBeTrue();
         Output.WriteLine($"网络 {network}/{prefixLength} 的最后一个地址: {result}");
     }
-
     /// <summary>
     /// 测试 - GetFirstIPv6Address - 无效输入抛出异常
     /// </summary>
@@ -604,7 +523,6 @@ public class IPv6CidrCalculatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentException>(() => IPv6CidrCalculator.GetFirstIPv6Address(invalidNetwork, prefixLength));
     }
-
     /// <summary>
     /// 测试 - GetLastIPv6Address - 无效前缀长度抛出异常
     /// </summary>
@@ -616,11 +534,8 @@ public class IPv6CidrCalculatorTest : TestBase
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() => IPv6CidrCalculator.GetLastIPv6Address(network, invalidPrefix));
     }
-
     #endregion
-
     #region CompareIPv6Addresses 测试
-
     /// <summary>
     /// 测试 - CompareIPv6Addresses - 地址比较
     /// </summary>
@@ -635,14 +550,11 @@ public class IPv6CidrCalculatorTest : TestBase
     {
         // Act
         var result = IPv6CidrCalculator.CompareIPv6Addresses(addr1, addr2);
-
         // Assert
         result.ShouldBe(expected);
-
         var comparison = expected < 0 ? "<" : expected > 0 ? ">" : "=";
         Output.WriteLine($"地址比较: '{addr1}' {comparison} '{addr2}' (结果: {result})");
     }
-
     /// <summary>
     /// 测试 - CompareIPv6Addresses - 无效地址抛出异常
     /// </summary>
@@ -656,11 +568,8 @@ public class IPv6CidrCalculatorTest : TestBase
         Should.Throw<ArgumentException>(() => IPv6CidrCalculator.CompareIPv6Addresses(addr1, addr2))
             .Message.ShouldContain("无效的IPv6地址");
     }
-
     #endregion
-
     #region 集成测试
-
     /// <summary>
     /// 测试 - 前缀和掩码转换的往返一致性
     /// </summary>
@@ -682,12 +591,10 @@ public class IPv6CidrCalculatorTest : TestBase
         // Act
         var mask = IPv6CidrCalculator.IPv6PrefixToSubnetMask(originalPrefix);
         var backToPrefix = IPv6CidrCalculator.IPv6SubnetMaskToPrefix(mask);
-
         // Assert
         backToPrefix.ShouldBe(originalPrefix);
         Output.WriteLine($"往返转换: /{originalPrefix} -> {mask} -> /{backToPrefix}");
     }
-
     /// <summary>
     /// 测试 - 子网信息与地址生成的一致性
     /// </summary>
@@ -700,24 +607,20 @@ public class IPv6CidrCalculatorTest : TestBase
         // Act
         var info = IPv6CidrCalculator.GetIPv6SubnetInfo(cidr);
         var addresses = IPv6CidrCalculator.GenerateIPv6Range(cidr, 100);
-
         // Assert
         if (info.TotalAddresses.HasValue && info.TotalAddresses <= 100)
         {
             addresses.Count.ShouldBe((int)info.TotalAddresses.Value);
-
             if (addresses.Count > 0)
             {
                 IPv6Converter.AreEqual(addresses.First(), info.FirstUsableAddress).ShouldBeTrue();
                 IPv6Converter.AreEqual(addresses.Last(), info.LastUsableAddress).ShouldBeTrue();
             }
         }
-
         Output.WriteLine($"一致性测试: {cidr}");
         Output.WriteLine($"  子网信息总数: {info.TotalAddresses}");
         Output.WriteLine($"  生成地址数: {addresses.Count}");
     }
-
     /// <summary>
     /// 测试 - 子网包含关系验证
     /// </summary>
@@ -727,18 +630,14 @@ public class IPv6CidrCalculatorTest : TestBase
         // Arrange
         var parentCidr = "2001:db8::/60";
         var childPrefix = 64;
-
         // Act
         var childSubnets = IPv6CidrCalculator.SubdivideIPv6Network(parentCidr, childPrefix);
-
         // Assert
         foreach (var childCidr in childSubnets)
         {
             var childInfo = IPv6CidrCalculator.GetIPv6SubnetInfo(childCidr);
-
             // 验证子网的网络地址在父网络中
             IPv6CidrCalculator.IsInIPv6Subnet(childInfo.NetworkPrefix, parentCidr).ShouldBeTrue();
-
             // 验证子网的第一个和最后一个地址都在父网络中
             if (childInfo.FirstUsableAddress != null)
             {
@@ -749,14 +648,10 @@ public class IPv6CidrCalculatorTest : TestBase
                 IPv6CidrCalculator.IsInIPv6Subnet(childInfo.LastUsableAddress, parentCidr).ShouldBeTrue();
             }
         }
-
         Output.WriteLine($"子网包含关系验证: {parentCidr} 包含 {childSubnets.Count} 个 /{childPrefix} 子网");
     }
-
     #endregion
-
     #region 性能测试
-
     /// <summary>
     /// 测试 - 大量子网计算性能
     /// </summary>
@@ -771,10 +666,8 @@ public class IPv6CidrCalculatorTest : TestBase
             "::1/128",
             "2001:db8:1234:5678::/64"
         };
-
         // Act
         var sw = System.Diagnostics.Stopwatch.StartNew();
-
         for (int i = 0; i < 1000; i++)
         {
             foreach (var cidr in testCidrs)
@@ -783,13 +676,10 @@ public class IPv6CidrCalculatorTest : TestBase
                 var inSubnet = IPv6CidrCalculator.IsInIPv6Subnet("2001:db8::1", cidr);
             }
         }
-
         sw.Stop();
-
         // Assert
         sw.ElapsedMilliseconds.ShouldBeLessThan(1000, "1000次子网计算应该在1秒内完成");
         Output.WriteLine($"性能测试: 4000次子网操作耗时 {sw.ElapsedMilliseconds}ms");
     }
-
     #endregion
 }
