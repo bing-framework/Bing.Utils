@@ -1,60 +1,42 @@
-﻿using Bing.Collections;
+using Bing.Collections;
 
 namespace Bing.Utils.Tests.Collections;
 
-[Trait("CollUT","Colls")]
+/// <summary>
+/// 测试类：`Colls` 集合工具方法与扩展方法测试
+/// </summary>
+[Trait("CollUT", "Colls")]
 public class CollsTests
 {
     /// <summary>
-    /// 测试 - 添加列表
+    /// 测试用例：`Colls.AddRange` 静态方法应按顺序合并两个集合，且不修改输入集合
     /// </summary>
     [Fact]
-    public void Test_Colls_AddOneListIntoAnother()
+    public void AddRange_StaticMethod_TwoLists_MergesInOrderWithoutMutatingInputs()
     {
-        var list = new List<int> { 1, 2, 3, 4, 5 };
+        var source = new List<int> { 1, 2, 3, 4, 5 };
         var other = new List<int> { 6, 7, 8, 9, 10 };
 
-        var target = Colls.AddRange(list, other).ToList();
+        var result = Colls.AddRange(source, other).ToList();
 
-        list.Count.ShouldBe(5);
-        target.Count.ShouldBe(10);
-        other.Count.ShouldBe(5);
-
-        target[0].ShouldBe(1);
-        target[1].ShouldBe(2);
-        target[2].ShouldBe(3);
-        target[3].ShouldBe(4);
-        target[4].ShouldBe(5);
-        target[5].ShouldBe(6);
-        target[6].ShouldBe(7);
-        target[7].ShouldBe(8);
-        target[8].ShouldBe(9);
-        target[9].ShouldBe(10);
+        source.ShouldBe(new[] { 1, 2, 3, 4, 5 });
+        other.ShouldBe(new[] { 6, 7, 8, 9, 10 });
+        result.ShouldBe(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     }
 
     /// <summary>
-    /// 测试 - 添加列表【扩展方法】
+    /// 测试用例：`AddRange` 扩展方法在指定 `limit` 时，仅追加限定数量元素并保持顺序
     /// </summary>
     [Fact]
-    public void Test_ExtensionMethods_For_Colls_AddOneListIntoAnother()
+    public void AddRange_ExtensionMethod_WithLimit_AppendsLimitedItemsInOrder()
     {
-        var list = new List<int> { 1, 2, 3, 4, 5 };
+        var source = new List<int> { 1, 2, 3, 4, 5 };
         var other = new List<int> { 6, 7, 8, 9, 10 };
 
-        var target = Colls.AddRange(list, other).ToList();
-        list.Count.ShouldBe(5);
-        target.Count.ShouldBe(10);
-        other.Count.ShouldBe(5);
+        var result = source.AddRange(other, 3).ToList();
 
-        target[0].ShouldBe(1);
-        target[1].ShouldBe(2);
-        target[2].ShouldBe(3);
-        target[3].ShouldBe(4);
-        target[4].ShouldBe(5);
-        target[5].ShouldBe(6);
-        target[6].ShouldBe(7);
-        target[7].ShouldBe(8);
-        target[8].ShouldBe(9);
-        target[9].ShouldBe(10);
+        source.ShouldBe(new[] { 1, 2, 3, 4, 5 });
+        other.ShouldBe(new[] { 6, 7, 8, 9, 10 });
+        result.ShouldBe(new[] { 1, 2, 3, 4, 5, 6, 7, 8 });
     }
 }

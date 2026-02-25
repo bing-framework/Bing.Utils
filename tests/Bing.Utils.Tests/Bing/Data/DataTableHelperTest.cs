@@ -1,7 +1,8 @@
-using System.Data;
-using Bing.Data;
+﻿using System.Data;
 using Bing.Tests.Samples;
-namespace Bing.Utils.Tests.Data;
+
+namespace Bing.Data;
+
 /// <summary>
 /// 测试类：覆盖 `DataTableHelper` 相关行为。
 /// </summary>
@@ -31,4 +32,3 @@ public class DataTableHelperTest
         Assert.Equal(result[0].MobileNo, dt.Rows[0]["MobileNo"]);
     }
 }
-
