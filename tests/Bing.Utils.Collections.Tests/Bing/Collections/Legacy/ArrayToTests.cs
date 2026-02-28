@@ -1,6 +1,7 @@
-﻿using Bing.Collections;
+﻿using System.Collections.Generic;
+using Bing.Collections;
 
-namespace BingUtilsUT.CollUT;
+namespace Bing.Collections.Legacy;
 
 /// <summary>
 /// 数组转换测试

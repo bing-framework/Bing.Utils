@@ -67,8 +67,8 @@
 | `Bing.Utils.Reflection.Tests` | Reflection 模块 | **待确认** | 当前 `sln` 未见该项目 |
 
 ### 3.2 当前问题概览（初步）
-- [x] `Bing.Utils.Tests` 中混入模块专属测试（`Id` / `TypeVisit` / `Colls` 等）  
-  [证据] `tests/Bing.Utils.Tests/Bing/Helpers/IdTest.cs:7` `tests/Bing.Utils.Tests/Bing/Reflection/TypeVisitCreateInstancesContractTest.cs:6` `tests/Bing.Utils.Tests/Collections/CollsTests.cs:9`
+- [x] `Bing.Utils.Tests` 中混入模块专属测试（`Id` / `TypeVisit` 等）  
+  [证据] `tests/Bing.Utils.Tests/Bing/Helpers/IdTest.cs:7` `tests/Bing.Utils.Tests/Bing/Reflection/TypeVisitCreateInstancesContractTest.cs:6`
 - [x] `Bing/Text`、`Bing/Reflection` 目录内存在跨程序集同命名空间测试混装  
   [证据] `tests/Bing.Utils.Tests/Bing/Text/CaseFormatterTest.cs:6` `tests/Bing.Utils.Tests/Bing/Text/RegexJudgeTest.cs:6` `tests/Bing.Utils.Tests/Bing/Reflection/ReflectionsTest.cs:6`
 - [x] 存在共享基类/Fixture 耦合（`TestBase`、`EnvSerial`）  
@@ -164,18 +164,28 @@
 
 ### 5.3 目标：`Bing.Utils.Collections.Tests`
 
-#### 5.3.1 可直接迁移（文件级）
+#### 5.3.0 状态更新（2026-02-26，Multi-Module Batch / Batch-1~2）
+- 已完成 `tests/Bing.Utils.Tests/Collections/CollsTests.cs` -> `tests/Bing.Utils.Collections.Tests/Bing/Collections/CollsTests.cs` 的文件级迁移（此前批次）。
+- 本轮完成 `tests/BingUtilsUT/CollUT/ArrayShortcutTests.cs` -> `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayShortcutTests.cs` 的文件级迁移（保留测试方法命名与断言语义，仅做命名空间最小修复）。
+- 本轮继续完成 `tests/BingUtilsUT/CollUT/ArrayCopyTests.cs` / `ArrayEmptyTests.cs` / `ArrayToTests.cs` -> `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/*.cs` 的文件级迁移（仅命名空间最小修复；`ArrayToTests` 额外补 `using System.Collections.Generic;` 以适配目标项目全局 using 差异）。
+- `BingUtilsUT/CollUT` 目录已清空（结构校验）。
+- `tests/Bing.Utils.Tests/Collections/EnumerableExtensionsTest.cs`（`ChunkBy`）继续保留主包测试，不纳入 `Bing.Utils.Collections.Tests`。  
+  [证据] `tests/Bing.Utils.Collections.Tests/Bing/Collections/CollsTests.cs:5` `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayShortcutTests.cs:19` `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayCopyTests.cs:23` `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayEmptyTests.cs:15` `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayToTests.cs:25` `src/Bing.Utils.Collections/Bing/Collections/ArraysShortcutExtensions.cs:17` `src/Bing.Utils.Collections/Bing/Collections/Arrays.Copy.cs:22` `src/Bing.Utils.Collections/Bing/Collections/Arrays.cs:60` `src/Bing.Utils/Bing/Collections/Extensions/Enumerable/Extensions.Enumerable.cs:19`
+
+#### 5.3.1 可直接迁移（文件级，含已完成项）
 | 源文件路径 | 测试类 | 迁移依据 | 备注 |
 |---|---|---|---|
-| `tests/Bing.Utils.Tests/Collections/CollsTests.cs` | `CollsTests` | `Colls` 位于 `Bing.Utils.Collections` [证据] `tests/Bing.Utils.Tests/Collections/CollsTests.cs:9` `src/Bing.Utils.Collections/Bing/Collections/Colls.cs:64` | 高置信度 |
-| `tests/BingUtilsUT/CollUT/ArrayShortcutTests.cs` | `ArrayShortcutTests` | 调用 `ArraysShortcutExtensions`（Collections 模块） [证据] `tests/BingUtilsUT/CollUT/ArrayShortcutTests.cs:19` `src/Bing.Utils.Collections/Bing/Collections/ArraysShortcutExtensions.cs:17` | 可作为 P0/P1 试点 |
+| `tests/BingUtilsUT/CollUT/ArrayShortcutTests.cs` | `ArrayShortcutTests` | 调用 `ArraysShortcutExtensions`（Collections 模块） [证据] `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayShortcutTests.cs:19` `src/Bing.Utils.Collections/Bing/Collections/ArraysShortcutExtensions.cs:17` | 已于 `2026-02-26` 完成迁移（见 `11.8`） |
+| `tests/BingUtilsUT/CollUT/ArrayCopyTests.cs` | `ArrayCopyTests` | 调用 `Arrays.Copy` / `ArraysExtensions.Copy`（Collections 模块） [证据] `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayCopyTests.cs:23` `src/Bing.Utils.Collections/Bing/Collections/Arrays.Copy.cs:22` `src/Bing.Utils.Collections/Bing/Collections/ArraysExtensions.Copy.cs:6` | 已于 `2026-02-26` 完成迁移（见 `11.9`） |
+| `tests/BingUtilsUT/CollUT/ArrayEmptyTests.cs` | `ArrayEmptyTests` | 调用 `Arrays.Empty<T>()`（Collections 模块） [证据] `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayEmptyTests.cs:15` `src/Bing.Utils.Collections/Bing/Collections/Arrays.cs:6` | 已于 `2026-02-26` 完成迁移（见 `11.9`） |
+| `tests/BingUtilsUT/CollUT/ArrayToTests.cs` | `ArrayToTests` | 调用 `Arrays.ToArraySafety*`（Collections 模块） [证据] `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayToTests.cs:25` `src/Bing.Utils.Collections/Bing/Collections/Arrays.cs:60` `src/Bing.Utils.Collections/Bing/Collections/Arrays.cs:105` `src/Bing.Utils.Collections/Bing/Collections/Arrays.cs:179` | 已于 `2026-02-26` 完成迁移（见 `11.9`） |
 
 #### 5.3.2 混合 / 待确认
 | 源文件路径 | 测试类 | 说明 | 建议 |
 |---|---|---|---|
 | `tests/Bing.Utils.Tests/Collections/EnumerableExtensionsTest.cs` | `EnumerableExtensionsTest` | 当前测试 `ChunkBy`，实现位于主包 `Bing.Utils` 而非 Collections 子包 [证据] `src/Bing.Utils/Bing/Collections/Extensions/Enumerable/Extensions.Enumerable.cs:19` | 保留 `Bing.Utils.Tests` |
 | `tests/Bing.Utils.Tests/Bing/Collections/*.cs` | 多类 | `namespace Bing.Collections` 跨主包/子包实现并存 | 逐文件按被测 API 所在程序集判定 |
-| `tests/BingUtilsUT/CollUT/ArrayCopyTests.cs` 等 | 多类 | 需逐文件确认具体被测类型 | TODO |
+| `tests/BingUtilsUT/CollUT/*`（剩余） | 多类 | `CollUT` 当前目录已清空（截至 2026-02-26 Batch-2） | 无待处理项 |
 
 #### 5.3.3 应保留（示例）
 - `tests/Bing.Utils.Tests/Bing/Collections/EqualityHelperTest.cs`：`EqualityHelper` 位于主包 `Bing.Utils`。  
@@ -290,6 +300,8 @@
 - `IdUtils / Batch-3（混合测试拆分）`：已完成（`Mixed-Batch-1` 完成 `UnitTest1.Test_Id` 拆分；`Mixed-Batch-2` 完成收尾复审确认无剩余 `IdUtils` 方法）
 - `IdUtils / Batch-4（Legacy 去重）`：已完成（`Batch-1/2` 已完成，`Bing/Helpers/Legacy` 生成器 Legacy 测试已清空）
 - `IdUtils / Batch-5（混合测试再次复审）`：已完成（`Mixed-Batch-3` 无新增可拆分方法；完成 No-op 收尾记录）
+- `Collections / Batch-1（ArrayShortcutTests 直迁）`：已完成（`BingUtilsUT/CollUT/ArrayShortcutTests.cs` 已迁移至 `Bing.Utils.Collections.Tests/Bing/Collections/Legacy/` 并完成最小验证）
+- `Collections / Batch-2（CollUT 剩余直迁）`：已完成（`ArrayCopyTests` / `ArrayEmptyTests` / `ArrayToTests` 已迁移；`CollUT` 目录清空）
 
 #### P0 预期产物
 - `Bing.Utils.IdUtils.Tests` 收敛 `IdUtils` 专属测试
@@ -516,6 +528,48 @@
 - 遗留问题：
   - `UnitTest1.cs` 仍为历史混合测试类，但后续拆分应转入其他模块批次（非 `IdUtils`）
   - 本轮结论：`成功`（Mixed-Batch-3 No-op 收尾复审；`IdUtils` 混合拆分专项当前范围收敛）
+
+### 11.8 第 8 轮（P0：Multi-Module Batch / Batch-1：Collections）
+- 日期：`2026-02-26`
+- 范围：`Bing.Utils.Collections`（多模块批量迁移首个子批次，仅处理文件级直迁项）
+- 执行内容：
+  - 按 `multi-module-batch-controller` 连续运行策略复审本轮目标模块（`Text / Collections / DateTime / Reflection / Drawing / Drawing.ImageSharp / Drawing.SkiaSharp / Http`）的可直接迁移项、混合项与待确认项
+  - 由于目标模块数量较多且包含未创建测试项目（如 `Bing.Utils.Text.Tests` / `Bing.Utils.Reflection.Tests` / `Bing.Utils.Drawing.Tests`），自动拆分为子批次并优先执行 `Collections / Batch-1`
+  - 将 `tests/BingUtilsUT/CollUT/ArrayShortcutTests.cs` 迁移至 `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/ArrayShortcutTests.cs`
+  - 对迁移文件执行最小修复：命名空间由 `BingUtilsUT.CollUT` 调整为 `Bing.Collections.Legacy`
+  - 新增批次报告：`docs/quality/migration-reports/2026-02-26-batch-text-collections-datetime-reflection-drawing-http-b1.md`
+  - 更新迁移索引：`docs/quality/migration-reports/README.md`
+- 验证结果：
+  - `dotnet build tests/Bing.Utils.Collections.Tests/Bing.Utils.Collections.Tests.csproj -f net8.0` 通过（0 错误）
+  - `dotnet test tests/Bing.Utils.Collections.Tests/Bing.Utils.Collections.Tests.csproj -f net8.0 --filter "FullyQualifiedName~Bing.Collections.Legacy.ArrayShortcutTests"` 通过（命中 8 个用例）
+  - `dotnet build tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj -f net8.0` 通过（0 错误，存在既有 warning）
+  - 结构检查通过：源文件已移除、目标文件存在
+- 遗留问题：
+  - `BingUtilsUT/CollUT` 中其余 `ArrayCopyTests` / `ArrayEmptyTests` / `ArrayToTests` 仍需逐文件确认归属（`Collections / Batch-2`）
+  - `Text` / `Reflection` / `Drawing` 相关子批次受目标测试项目是否创建影响，需先完成项目策略确认
+  - 本轮结论：`成功`（已完整完成多模块批量迁移首个子批次：`Collections / Batch-1`）
+
+### 11.9 第 9 轮（P0：Multi-Module Batch / Batch-2：Collections）
+- 日期：`2026-02-26`
+- 范围：`Bing.Utils.Collections`（多模块批量迁移第 2 个子批次，处理 `CollUT` 剩余文件级直迁项）
+- 执行内容：
+  - 复审 `tests/BingUtilsUT/CollUT/ArrayCopyTests.cs` / `ArrayEmptyTests.cs` / `ArrayToTests.cs` 的主要断言目标
+  - 确认三者分别对应 `Arrays.Copy` / `Arrays.Empty` / `Arrays.ToArraySafety*`，均属于 `Bing.Utils.Collections`
+  - 将上述 3 个文件迁移至 `tests/Bing.Utils.Collections.Tests/Bing/Collections/Legacy/`
+  - 对迁移文件执行最小修复：
+    - 命名空间由 `BingUtilsUT.CollUT` 调整为 `Bing.Collections.Legacy`
+    - 为 `ArrayToTests.cs` 补充 `using System.Collections.Generic;`（目标项目缺少对应全局 using）
+  - 新增批次报告：`docs/quality/migration-reports/2026-02-26-batch-text-collections-datetime-reflection-drawing-http-b2.md`
+  - 更新迁移索引：`docs/quality/migration-reports/README.md`
+- 验证结果：
+  - `dotnet build tests/Bing.Utils.Collections.Tests/Bing.Utils.Collections.Tests.csproj -f net8.0` 通过（0 错误）
+  - `dotnet test tests/Bing.Utils.Collections.Tests/Bing.Utils.Collections.Tests.csproj -f net8.0 --filter "FullyQualifiedName~Bing.Collections.Legacy.ArrayCopyTests|FullyQualifiedName~Bing.Collections.Legacy.ArrayEmptyTests|FullyQualifiedName~Bing.Collections.Legacy.ArrayToTests"` 通过（命中 10 个用例）
+  - `dotnet build tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj -f net8.0` 通过（0 错误）
+  - 结构检查通过：`BingUtilsUT/CollUT` 中上述 3 个源文件已移除，目标文件存在
+- 遗留问题：
+  - `BingUtilsUT/CollUT` 目录当前已清空；Collections 方向后续重点转向 `Bing.Utils.Tests/Bing/Collections/*` 的逐文件归属复审（避免误迁主包类型）
+  - 多模块批量迁移后续子批次仍受 `Text` / `Reflection` / `Drawing` 目标测试项目创建策略约束
+  - 本轮结论：`成功`（`Collections / Batch-2` 完成；`CollUT` 历史目录已清空）
 
 ---
 

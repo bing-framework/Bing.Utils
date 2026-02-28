@@ -1,15 +1,15 @@
-ï»¿using Bing.Collections;
+using Bing.Collections;
 
-namespace BingUtilsUT.CollUT;
+namespace Bing.Collections.Legacy;
 
 /// <summary>
-/// ç©ºæ•°ç»„
+/// ¿ÕÊý×é
 /// </summary>
 [Trait("CollUT", "ArrayUT.Empty")]
 public class ArrayEmptyTests
 {
     /// <summary>
-    /// æµ‹è¯• - ç©ºæ•°ç»„
+    /// ²âÊÔ - ¿ÕÊý×é
     /// </summary>
     [Fact]
     public void Test_EmptyArray()

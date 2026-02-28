@@ -1,15 +1,15 @@
-ï»¿using Bing.Collections;
+using Bing.Collections;
 
-namespace BingUtilsUT.CollUT;
+namespace Bing.Collections.Legacy;
 
 /// <summary>
-/// æ•°ç»„æ·å¾„æ‰©å±•
+/// Êı×é½İ¾¶À©Õ¹
 /// </summary>
 [Trait("CollUT", "ArrayUT.Shortcut")]
 public class ArrayShortcutTests
 {
     /// <summary>
-    /// æµ‹è¯• - äºŒè¿›åˆ¶æŸ¥è¯¢
+    /// ²âÊÔ - ¶ş½øÖÆ²éÑ¯
     /// </summary>
     [Fact]
     public void Test_BinarySearch()
@@ -37,7 +37,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - æ¸…ç©º
+    /// ²âÊÔ - Çå¿Õ
     /// </summary>
     [Fact]
     public void Test_Clear()
@@ -79,7 +79,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - æŸ¥æ‰¾
+    /// ²âÊÔ - ²éÕÒ
     /// </summary>
     [Fact]
     public void Test_FindAll()
@@ -95,7 +95,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - è·å–æŒ‡å®šå¯¹è±¡çš„ç´¢å¼•
+    /// ²âÊÔ - »ñÈ¡Ö¸¶¨¶ÔÏóµÄË÷Òı
     /// </summary>
     [Fact]
     public void Test_IndexOf()
@@ -113,7 +113,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - è·å–æŒ‡å®šå¯¹è±¡çš„æœ€åç´¢å¼•
+    /// ²âÊÔ - »ñÈ¡Ö¸¶¨¶ÔÏóµÄ×îºóË÷Òı
     /// </summary>
     [Fact]
     public void Test_LastIndexOf()
@@ -131,7 +131,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - åè½¬
+    /// ²âÊÔ - ·´×ª
     /// </summary>
     [Fact]
     public void Test_Reverse()
@@ -152,7 +152,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - æ’åº
+    /// ²âÊÔ - ÅÅĞò
     /// </summary>
     [Fact]
     public void Test_Sort()
@@ -166,7 +166,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - å­—èŠ‚æ“ä½œ
+    /// ²âÊÔ - ×Ö½Ú²Ù×÷
     /// </summary>
     [Fact]
     public void Test_ByteOps()

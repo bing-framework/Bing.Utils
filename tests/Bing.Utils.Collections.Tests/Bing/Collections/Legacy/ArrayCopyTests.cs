@@ -1,15 +1,15 @@
-ï»¿using Bing.Collections;
+using Bing.Collections;
 
-namespace BingUtilsUT.CollUT;
+namespace Bing.Collections.Legacy;
 
 /// <summary>
-/// æ•°ç»„å…‹éš†
+/// Êı×é¿ËÂ¡
 /// </summary>
 [Trait("CollUT", "ArrayUT.Copy")]
 public class ArrayCopyTests
 {
     /// <summary>
-    /// æµ‹è¯• - å…‹éš†ä¸€ä¸ªå¤šç»´æ•°ç»„
+    /// ²âÊÔ - ¿ËÂ¡Ò»¸ö¶àÎ¬Êı×é
     /// </summary>
     [Fact]
     public void Test_Arrays_CopyOneToSevenDimensionalArray()
@@ -48,7 +48,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - å…‹éš†ä¸€ä¸ªå¤šç»´æ•°ç»„ã€æ‰©å±•æ–¹æ³•ã€‘
+    /// ²âÊÔ - ¿ËÂ¡Ò»¸ö¶àÎ¬Êı×é¡¾À©Õ¹·½·¨¡¿
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_Arrays_CopyOneToSevenDimensionalArray()
@@ -87,7 +87,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - å…‹éš†ä¸€ä¸ªå¤šç»´æ•°ç»„å¹¶æŒ‡å®šé•¿åº¦ã€æ‰©å±•æ–¹æ³•ã€‘
+    /// ²âÊÔ - ¿ËÂ¡Ò»¸ö¶àÎ¬Êı×é²¢Ö¸¶¨³¤¶È¡¾À©Õ¹·½·¨¡¿
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithIntLength()
@@ -142,7 +142,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - å…‹éš†ä¸€ä¸ªå¤šç»´æ•°ç»„æŒ‡å®šé•¿åº¦ä»¥åŠç´¢å¼•ã€æ‰©å±•æ–¹æ³•ã€‘
+    /// ²âÊÔ - ¿ËÂ¡Ò»¸ö¶àÎ¬Êı×éÖ¸¶¨³¤¶ÈÒÔ¼°Ë÷Òı¡¾À©Õ¹·½·¨¡¿
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithIntLengthAndIndex()
@@ -197,7 +197,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - å…‹éš†ä¸€ä¸ªå¤šç»´æ•°ç»„å¹¶æŒ‡å®šé•¿åº¦ã€æ‰©å±•æ–¹æ³•ã€‘
+    /// ²âÊÔ - ¿ËÂ¡Ò»¸ö¶àÎ¬Êı×é²¢Ö¸¶¨³¤¶È¡¾À©Õ¹·½·¨¡¿
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithLongLength()
@@ -252,7 +252,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - å…‹éš†ä¸€ä¸ªå¤šç»´æ•°ç»„æŒ‡å®šé•¿åº¦ä»¥åŠç´¢å¼•ã€æ‰©å±•æ–¹æ³•ã€‘
+    /// ²âÊÔ - ¿ËÂ¡Ò»¸ö¶àÎ¬Êı×éÖ¸¶¨³¤¶ÈÒÔ¼°Ë÷Òı¡¾À©Õ¹·½·¨¡¿
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithLongLengthAndIndex()
@@ -307,7 +307,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// æµ‹è¯• - å…‹éš†ä¸€ä¸ªå¤šç»´æ•°ç»„ä¿è¯å®Œå…¨æˆåŠŸã€æ‰©å±•æ–¹æ³•ã€‘
+    /// ²âÊÔ - ¿ËÂ¡Ò»¸ö¶àÎ¬Êı×é±£Ö¤ÍêÈ«³É¹¦¡¾À©Õ¹·½·¨¡¿
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithConstrained()
@@ -362,7 +362,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// æµ‹æµ‹è¯• - å—å¤åˆ¶ã€æ‰©å±•æ–¹æ³•ã€‘
+    /// ²â²âÊÔ - ¿é¸´ÖÆ¡¾À©Õ¹·½·¨¡¿
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithBlockT()
