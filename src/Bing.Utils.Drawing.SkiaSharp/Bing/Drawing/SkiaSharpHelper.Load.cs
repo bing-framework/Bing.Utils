@@ -9,7 +9,8 @@ public static partial class SkiaSharpHelper
     /// <summary>
     /// 图片DataUrl正则表达式
     /// </summary>
-    internal static readonly Regex ImageDataUrl = new(@"^data\:(?<MIME>image\/(bmp|emf|exif|gif|icon|jpeg|png|tiff|wmf))\;base64\,(?<DATA>.+)");
+    internal static readonly Regex ImageDataUrl = new(@"^data\:(?<MIME>image\/[a-z0-9.+-]+)\;base64\,(?<DATA>.+)$",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     #region FromFile(从指定文件创建图片)
 

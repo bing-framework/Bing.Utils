@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Bing.Drawing;
@@ -10,7 +11,8 @@ public static partial class ImageSharpHelper
     /// <summary>
     /// 图片DataUrl正则表达式
     /// </summary>
-    internal static readonly Regex ImageDataUrl = new(@"^data\:(?<MIME>image\/(bmp|emf|exif|gif|icon|jpeg|png|tiff|wmf))\;base64\,(?<DATA>.+)");
+    internal static readonly Regex ImageDataUrl = new(@"^data\:(?<MIME>image\/[a-z0-9.+-]+)\;base64\,(?<DATA>.+)$",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     #region FromFile(从指定文件创建图片)
 
@@ -24,7 +26,7 @@ public static partial class ImageSharpHelper
             return default;
         try
         {
-            return Image.Load(filePath);
+            return TrackFormat(Image.Load(filePath), Image.DetectFormat(filePath));
         }
         catch
         {
@@ -44,7 +46,7 @@ public static partial class ImageSharpHelper
             return default;
         try
         {
-            return Image.Load<TPixel>(filePath);
+            return TrackFormat(Image.Load<TPixel>(filePath), Image.DetectFormat(filePath));
         }
         catch
         {
@@ -67,7 +69,8 @@ public static partial class ImageSharpHelper
             throw new ArgumentNullException(nameof(stream));
         try
         {
-            return Image.Load(stream);
+            var (bytes, format) = ReadBytesAndDetectFormat(stream);
+            return TrackFormat(Image.Load(bytes), format);
         }
         catch
         {
@@ -88,7 +91,8 @@ public static partial class ImageSharpHelper
             throw new ArgumentNullException(nameof(stream));
         try
         {
-            return Image.Load<TPixel>(stream);
+            var (bytes, format) = ReadBytesAndDetectFormat(stream);
+            return TrackFormat(Image.Load<TPixel>(bytes), format);
         }
         catch
         {
@@ -112,7 +116,7 @@ public static partial class ImageSharpHelper
             throw new ArgumentNullException(nameof(bytes));
         try
         {
-            return Image.Load(bytes);
+            return TrackFormat(Image.Load(bytes), Image.DetectFormat(bytes));
         }
         catch
         {
@@ -133,7 +137,7 @@ public static partial class ImageSharpHelper
             throw new ArgumentNullException(nameof(bytes));
         try
         {
-            return Image.Load<TPixel>(bytes);
+            return TrackFormat(Image.Load<TPixel>(bytes), Image.DetectFormat(bytes));
         }
         catch
         {
@@ -155,7 +159,8 @@ public static partial class ImageSharpHelper
             return default;
         try
         {
-            return Image.Load(Convert.FromBase64String(base64String));
+            var bytes = Convert.FromBase64String(base64String);
+            return TrackFormat(Image.Load(bytes), Image.DetectFormat(bytes));
         }
         catch
         {
@@ -175,7 +180,8 @@ public static partial class ImageSharpHelper
             return default;
         try
         {
-            return Image.Load<TPixel>(Convert.FromBase64String(base64String));
+            var bytes = Convert.FromBase64String(base64String);
+            return TrackFormat(Image.Load<TPixel>(bytes), Image.DetectFormat(bytes));
         }
         catch
         {
@@ -220,4 +226,15 @@ public static partial class ImageSharpHelper
     }
 
     #endregion
+
+    /// <summary>
+    /// 读取流内容并检测图片格式
+    /// </summary>
+    private static (byte[] Bytes, IImageFormat? Format) ReadBytesAndDetectFormat(Stream stream)
+    {
+        using var ms = new MemoryStream();
+        stream.CopyTo(ms);
+        var bytes = ms.ToArray();
+        return (bytes, Image.DetectFormat(bytes));
+    }
 }

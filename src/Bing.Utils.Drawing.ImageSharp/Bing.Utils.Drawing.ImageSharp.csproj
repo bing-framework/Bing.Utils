@@ -12,6 +12,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\CaptchaCodeGenerator.cs" Link="Bing\Drawing\Internal\CaptchaCodeGenerator.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="SixLabors.ImageSharp" Version="2.1.11" />
 	</ItemGroup>
 

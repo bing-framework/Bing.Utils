@@ -8,6 +8,32 @@ namespace Bing.Drawing;
 /// </summary>
 public static partial class ImageHelper
 {
+    /// <summary>
+    /// 获取可持久化的图片格式
+    /// </summary>
+    /// <param name="imageFormat">图片格式</param>
+    private static ImageFormat NormalizeImageFormat(ImageFormat imageFormat)
+    {
+        if (imageFormat == null || imageFormat.Guid == ImageFormat.MemoryBmp.Guid)
+            return ImageFormat.Png;
+        return imageFormat;
+    }
+
+    /// <summary>
+    /// 获取图片 Mime 类型
+    /// </summary>
+    /// <param name="imageFormat">图片格式</param>
+    private static string GetMimeType(ImageFormat imageFormat)
+    {
+        var codec = GetCodecInfo(imageFormat);
+        if (!string.IsNullOrWhiteSpace(codec?.MimeType))
+            return codec.MimeType;
+
+        return imageFormat.Guid == ImageFormat.Icon.Guid
+            ? "image/x-icon"
+            : $"image/{imageFormat.ToString().ToLowerInvariant()}";
+    }
+
     #region ToBytes(将图像转换为字节数组)
 
     /// <summary>
@@ -20,7 +46,7 @@ public static partial class ImageHelper
     {
         if (image == null)
             throw new ArgumentNullException(nameof(image));
-        format ??= image.RawFormat;
+        format = NormalizeImageFormat(format ?? image.RawFormat);
         using var ms = new MemoryStream();
         image.Save(ms, format);
         return ms.ToArray();
@@ -37,7 +63,8 @@ public static partial class ImageHelper
     public static Stream ToStream(Image image)
     {
         var ms = new MemoryStream();
-        image.Save(ms, image.RawFormat);
+        image.Save(ms, NormalizeImageFormat(image.RawFormat));
+        ms.Position = 0;
         return ms;
     }
 
@@ -48,7 +75,8 @@ public static partial class ImageHelper
     public static Stream ToStream(Bitmap bitmap)
     {
         var ms = new MemoryStream();
-        bitmap.Save(ms, bitmap.RawFormat);
+        bitmap.Save(ms, NormalizeImageFormat(bitmap.RawFormat));
+        ms.Position = 0;
         return ms;
     }
 
@@ -66,7 +94,7 @@ public static partial class ImageHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat ??= image.RawFormat;
+        imageFormat = NormalizeImageFormat(imageFormat ?? image.RawFormat);
         using var ms = new MemoryStream();
         image.Save(ms, imageFormat);
         var result = Convert.ToBase64String(ms.ToArray());
@@ -83,7 +111,7 @@ public static partial class ImageHelper
     {
         if (bitmap is null)
             throw new ArgumentNullException(nameof(bitmap));
-        imageFormat ??= bitmap.RawFormat;
+        imageFormat = NormalizeImageFormat(imageFormat ?? bitmap.RawFormat);
         using var ms = new MemoryStream();
         bitmap.Save(ms, imageFormat);
         return Convert.ToBase64String(ms.ToArray());
@@ -104,11 +132,11 @@ public static partial class ImageHelper
     {
         if (bitmap is null)
             throw new ArgumentNullException(nameof(bitmap));
-        imageFormat ??= bitmap.RawFormat;
+        imageFormat = NormalizeImageFormat(imageFormat ?? bitmap.RawFormat);
         using var ms = new MemoryStream();
         bitmap.Save(ms, imageFormat);
         var result = Convert.ToBase64String(ms.ToArray());
-        return $"data:image/{imageFormat.ToString().ToLower()};base64,{result}";
+        return $"data:{GetMimeType(imageFormat)};base64,{result}";
     }
 
     /// <summary>
@@ -122,11 +150,11 @@ public static partial class ImageHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat ??= image.RawFormat;
+        imageFormat = NormalizeImageFormat(imageFormat ?? image.RawFormat);
         using var ms = new MemoryStream();
         image.Save(ms, imageFormat);
         var result = Convert.ToBase64String(ms.ToArray());
-        return $"data:image/{imageFormat.ToString().ToLower()};base64,{result}";
+        return $"data:{GetMimeType(imageFormat)};base64,{result}";
     }
 
     #endregion
