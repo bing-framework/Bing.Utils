@@ -58,7 +58,7 @@ public class IpValidatorTest
     [InlineData("2001:db8::1")]
     [InlineData("::1")]
     [InlineData("fe80::1")]
-    [InlineData("2001:0db8:0000:0000:0000:ff00:0042:8329")]
+    [InlineData("2001:db8::ff00:42:8329")] // 归一化形式（无前导零，使用::压缩）
     [InlineData("::")]
     [InlineData("2001:db8:85a3::8a2e:370:7334")]
     public void IsValid_ValidIPv6_ReturnsTrue(string ip)

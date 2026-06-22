@@ -51,8 +51,10 @@ public static class XmlExtensions
     public static XElement ToXElement(this XmlNode node)
     {
         var xmlDocument = new XDocument();
-        using var xmlWriter = xmlDocument.CreateWriter();
-        node.WriteTo(xmlWriter);
+        using (var xmlWriter = xmlDocument.CreateWriter())
+        {
+            node.WriteTo(xmlWriter);
+        }
         return xmlDocument.Root;
     }
 

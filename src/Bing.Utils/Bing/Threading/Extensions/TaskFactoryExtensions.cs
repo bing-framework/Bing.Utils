@@ -31,11 +31,14 @@ public static class TaskFactoryExtensions
 
         // 创建计时器但尚未启动它。如果我们现在开始，它可能会在ctr设置为正确注册之前出发。
         var ctr1 = ctr;
-        var timer = new Timer(self =>
+        // 注意：state 传 null，通过闭包捕获 timer 引用来 Dispose；
+        // timer 以 (-1,-1) 禁用状态创建，Change() 调用前不会触发，可安全捕获。
+        Timer timer = null!;
+        timer = new Timer(_ =>
         {
             // 清除取消令牌和计时器，并尝试转换为已完成状态
             ctr1.Dispose();
-            ((Timer)self).Dispose();
+            timer?.Dispose();
             tcs.TrySetResult(null);
         }, null, -1, -1);
 

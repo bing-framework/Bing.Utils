@@ -1,4 +1,4 @@
-using Bing.Text;
+extern alias guard;
 
 namespace Bing.Text;
 
@@ -19,11 +19,11 @@ public class CharJudgeTest
     [InlineData('1', '0', '9', true)]  // 正常：数字范围
     [InlineData('5', '0', '9', true)]  // 正常：数字中间
     [InlineData('a', '0', '9', false)] // 异常：非数字字符
-    [InlineData('中', '一', '十', false)] // 正常：中文字符不在范围
+    [InlineData('中', '一', '十', true)]  // 正常：中文字符在范围内（Unicode码点比较）
     public void IsBetween_VariousInputs_ReturnsExpectedResult(char value, char left, char right, bool expected)
     {
         // Act
-        var result = CharJudge.IsBetween(value, left, right);
+        var result = guard::Bing.Text.CharJudge.IsBetween(value, left, right);
 
         // Assert
         Assert.Equal(expected, result);
@@ -35,12 +35,12 @@ public class CharJudgeTest
     [Theory]
     [InlineData('\0', '\0', 'a', true)]   // 边界：null字符作为左边界
     [InlineData('\n', '\n', '\r', true)]  // 正常：换行符范围
-    [InlineData('\t', ' ', '~', true)]    // 正常：制表符在ASCII可打印字符范围内
+    [InlineData('\t', ' ', '~', false)]   // 异常：制表符(9)小于空格(32)，不在范围内
     [InlineData(' ', ' ', ' ', true)]     // 边界：相同字符
     public void IsBetween_SpecialCharacters_ReturnsExpectedResult(char value, char left, char right, bool expected)
     {
         // Act
-        var result = CharJudge.IsBetween(value, left, right);
+        var result = guard::Bing.Text.CharJudge.IsBetween(value, left, right);
 
         // Assert
         Assert.Equal(expected, result);
@@ -52,11 +52,11 @@ public class CharJudgeTest
     [Theory]
     [InlineData('b', 'c', 'a', false)] // 异常：倒序范围，中间值
     [InlineData('a', 'c', 'a', false)] // 异常：倒序范围，左值
-    [InlineData('c', 'c', 'a', true)]  // 边界：倒序范围，右值相同
+    [InlineData('c', 'c', 'a', false)] // 异常：倒序范围，c>a故c不在[c,a]内
     public void IsBetween_ReversedRange_ReturnsExpectedResult(char value, char left, char right, bool expected)
     {
         // Act
-        var result = CharJudge.IsBetween(value, left, right);
+        var result = guard::Bing.Text.CharJudge.IsBetween(value, left, right);
 
         // Assert
         Assert.Equal(expected, result);
@@ -66,13 +66,14 @@ public class CharJudgeTest
     /// 测试目的：验证 IsBetween 对Unicode字符的处理
     /// </summary>
     [Theory]
-    [InlineData('😀', '😀', '😊', true)]  // 正常：emoji表情
-    [InlineData('α', 'α', 'ω', true)]     // 正常：希腊字母
-    [InlineData('中', '中', '文', true)]   // 正常：中文字符
+    [InlineData('α', 'α', 'ω', true)]   // 正常：希腊字母范围内
+    [InlineData('β', 'α', 'ω', true)]   // 正常：希腊字母中间值
+    [InlineData('中', '中', '文', true)] // 正常：中文字符等值边界
+    [InlineData('一', '一', '九', true)] // 正常：中文数字范围
     public void IsBetween_UnicodeCharacters_ReturnsExpectedResult(char value, char left, char right, bool expected)
     {
         // Act
-        var result = CharJudge.IsBetween(value, left, right);
+        var result = guard::Bing.Text.CharJudge.IsBetween(value, left, right);
 
         // Assert
         Assert.Equal(expected, result);

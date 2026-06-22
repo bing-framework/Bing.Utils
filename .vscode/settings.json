@@ -170,5 +170,8 @@
             "icon": "💩"
         }
     ],
-    "GitCommitPlugin.MaxSubjectCharacters": 50
+    "GitCommitPlugin.MaxSubjectCharacters": 50,
+    "chat.tools.terminal.autoApprove": {
+        "Group-Object": true
+    }
 }

@@ -1,4 +1,5 @@
-using Bing.Validation;
+extern alias guard;
+using ValidationExceptionHelper = guard::Bing.Validation.ValidationExceptionHelper;
 
 namespace Bing.Validation;
 
@@ -89,10 +90,11 @@ public class ValidationExceptionHelperTest
             .MakeGenericMethod(exceptionType);
 
         // Act & Assert
-        var exception = Assert.Throws(exceptionType, () =>
+        // 通过反射调用时，异常会被 TargetInvocationException 包裹
+        var outer = Assert.Throws<System.Reflection.TargetInvocationException>(() =>
             method.Invoke(null, new object[] { assertion, new object[] { } }));
 
-        Assert.IsType(exceptionType, exception);
+        Assert.IsType(exceptionType, outer.InnerException);
     }
 
     /// <summary>

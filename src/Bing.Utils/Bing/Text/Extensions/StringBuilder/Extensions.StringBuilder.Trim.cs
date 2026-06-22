@@ -32,7 +32,7 @@ public static partial class StringBuilderExtensions
             throw new ArgumentNullException(nameof(sb));
         if (sb.Length == 0)
             return sb;
-        while (c.Equals(sb[0]))
+        while (sb.Length > 0 && c.Equals(sb[0]))
             sb.Remove(0, 1);
         return sb;
     }
@@ -97,7 +97,7 @@ public static partial class StringBuilderExtensions
             throw new ArgumentNullException(nameof(sb));
         if (sb.Length == 0)
             return sb;
-        while (c.Equals(sb[sb.Length - 1]))
+        while (sb.Length > 0 && c.Equals(sb[sb.Length - 1]))
             sb.Remove(sb.Length - 1, 1);
         return sb;
     }

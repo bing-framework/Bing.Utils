@@ -1,6 +1,12 @@
 using Bing.IO;
 using Bing.Net.FTP;
 namespace Bing.Utils.Tests.Net.FTP;
+/// <summary>
+/// FTP 客户端集成测试 - 需要真实 FTP 服务器 (10.186.100.90:2121)
+/// 运行：dotnet test --filter "Category=Integration"
+/// 跳过：dotnet test --filter "Category!=Integration"
+/// </summary>
+[Trait("Category", "Integration")]
 public class FtpClientTest : TestBase
 {
     /// <summary>
