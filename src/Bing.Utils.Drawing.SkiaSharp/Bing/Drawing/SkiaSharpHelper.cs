@@ -608,6 +608,20 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
+    /// 按类型获取验证码文本
+    /// </summary>
+    /// <param name="length">验证码长度</param>
+    /// <param name="captchaType">验证码类型</param>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public static string GetCaptchaCode(int length, CaptchaType captchaType)
+    {
+        if (length <= 0)
+            throw new ArgumentOutOfRangeException(nameof(length));
+
+        return CaptchaCodeGenerator.Generate(length, captchaType);
+    }
+
+    /// <summary>
     /// 创建指定长度的验证码图片
     /// </summary>
     /// <param name="length">验证码长度</param>
@@ -771,60 +785,6 @@ public static partial class SkiaSharpHelper
             throw new ArgumentNullException(nameof(matrix));
         if (matrix.GetLength(0) != 5 || matrix.GetLength(1) != 5)
             throw new ArgumentException("颜色矩阵必须为5x5", nameof(matrix));
-    }
-
-    /// <summary>
-    /// 判断是否为近似颜色
-    /// </summary>
-    private static bool IsSimilarColors(SKColor x, SKColor y, int accuracy)
-    {
-        var offsetA = x.Alpha - y.Alpha;
-        var offsetR = x.Red - y.Red;
-        var offsetG = x.Green - y.Green;
-        var offsetB = x.Blue - y.Blue;
-
-        if (Math.Abs(offsetA) > 1)
-            return false;
-
-        if (offsetB == offsetG && offsetR == offsetB)
-        {
-            if (Math.Abs(offsetR) > 1)
-                return ColorDifference(x, y) <= accuracy / 3d;
-        }
-
-        return ColorDifference(x, y) <= accuracy;
-    }
-
-    /// <summary>
-    /// 计算颜色差异
-    /// </summary>
-    private static double ColorDifference(SKColor x, SKColor y)
-    {
-        var m = (x.Red + y.Red) / 2d;
-        var r = Math.Pow(x.Red - y.Red, 2);
-        var g = Math.Pow(x.Green - y.Green, 2);
-        var b = Math.Pow(x.Blue - y.Blue, 2);
-        return Math.Sqrt((2 + m / 256d) * r + 4 * g + (2 + (255 - m) / 256d) * b);
-    }
-
-    /// <summary>
-    /// 获取灰度值
-    /// </summary>
-    private static float GetGrayScale(SKColor color)
-    {
-        return (0.30f * color.Red + 0.59f * color.Green + 0.11f * color.Blue) / 255f;
-    }
-
-    /// <summary>
-    /// 获取双色调颜色
-    /// </summary>
-    private static SKColor GetDuotoneColor(SKColor sourceColor, SKColor colorA, SKColor colorB)
-    {
-        var grayScale = GetGrayScale(sourceColor);
-        var r = ClampToByte(colorA.Red * (1 - grayScale) + colorB.Red * grayScale);
-        var g = ClampToByte(colorA.Green * (1 - grayScale) + colorB.Green * grayScale);
-        var b = ClampToByte(colorA.Blue * (1 - grayScale) + colorB.Blue * grayScale);
-        return new SKColor(r, g, b, sourceColor.Alpha);
     }
 
     /// <summary>
