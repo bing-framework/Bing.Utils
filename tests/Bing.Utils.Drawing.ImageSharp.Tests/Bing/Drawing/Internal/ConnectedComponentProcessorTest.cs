@@ -1,5 +1,3 @@
-using System.Drawing;
-
 namespace Bing.Drawing.Internal;
 
 /// <summary>
@@ -19,7 +17,8 @@ public class ConnectedComponentProcessorTest
         var components = ConnectedComponentProcessor.LabelConnectedComponents(bin, 128);
         components.Count.ShouldBe(1);
         components[0].Count.ShouldBe(1);
-        components[0][0].ShouldBe(new Point(1, 1));
+        components[0][0].X.ShouldBe(1);
+        components[0][0].Y.ShouldBe(1);
     }
 
     [Fact]

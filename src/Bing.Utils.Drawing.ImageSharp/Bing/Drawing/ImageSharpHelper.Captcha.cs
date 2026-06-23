@@ -182,30 +182,85 @@ public static partial class ImageSharpHelper
             var offsetX = cellWidth / 4 + cellWidth * i + (options.RandomPosition ? (seed % (cellWidth / 2)) - cellWidth / 4 : 0);
             var offsetY = baseline + (options.RandomPosition ? (seed % 5) - 2 : 0);
 
-            var glyph = BitmapFont.GetGlyph(c);
-            if (glyph == null)
-                continue;
-
-            var gw = glyph.GetLength(0);
-            var gh = glyph.GetLength(1);
-            var pixelSize = Math.Max(1, fontSize / 7);
-
-            for (var gx = 0; gx < gw; gx++)
+            // 先尝试 ASCII 点阵，再尝试中文点阵
+            var asciiGlyph = BitmapFont.GetGlyph(c);
+            if (asciiGlyph != null)
             {
-                for (var gy = 0; gy < gh; gy++)
-                {
-                    if (glyph[gx, gy] == 0)
-                        continue;
+                DrawGlyph(image, asciiGlyph, offsetX, offsetY, fontSize / 7, width, height, textColor);
+                continue;
+            }
 
-                    for (var px = 0; px < pixelSize; px++)
+            var chineseIndex = Internal.ChineseCaptchaGlyphSet.GetCharIndex(c);
+            if (chineseIndex >= 0)
+            {
+                var glyphData = Internal.ChineseCaptchaGlyphSet.GetGlyphData(chineseIndex);
+                if (glyphData != null)
+                    DrawChineseGlyph(image, glyphData, offsetX, offsetY, fontSize, width, height, textColor);
+                continue;
+            }
+
+            // 未知字符：显式失败而非静默跳过
+            throw new NotSupportedException($"字符 '{c}'（U+{(int)c:X4}）不在内嵌字形库中。验证码文本必须由 ASCII 数字/字母或白名单中的中文字符组成。");
+        }
+    }
+
+    /// <summary>
+    /// 绘制 ASCII 点阵字形
+    /// </summary>
+    private static void DrawGlyph(Image<Rgba32> image, byte[,] glyph, int offsetX, int offsetY, int pixelSize, int width, int height, Rgba32 textColor)
+    {
+        pixelSize = Math.Max(1, pixelSize);
+        var gw = glyph.GetLength(0);
+        var gh = glyph.GetLength(1);
+
+        for (var gx = 0; gx < gw; gx++)
+        {
+            for (var gy = 0; gy < gh; gy++)
+            {
+                if (glyph[gx, gy] == 0)
+                    continue;
+
+                for (var px = 0; px < pixelSize; px++)
+                {
+                    for (var py = 0; py < pixelSize; py++)
                     {
-                        for (var py = 0; py < pixelSize; py++)
-                        {
-                            var drawX = offsetX + gx * pixelSize + px;
-                            var drawY = offsetY + gy * pixelSize + py;
-                            if (drawX >= 0 && drawX < width && drawY >= 0 && drawY < height)
-                                image[drawX, drawY] = textColor;
-                        }
+                        var drawX = offsetX + gx * pixelSize + px;
+                        var drawY = offsetY + gy * pixelSize + py;
+                        if (drawX >= 0 && drawX < width && drawY >= 0 && drawY < height)
+                            image[drawX, drawY] = textColor;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 绘制 16x16 中文点阵字形
+    /// </summary>
+    private static void DrawChineseGlyph(Image<Rgba32> image, byte[] glyphData, int offsetX, int offsetY, int fontSize, int width, int height, Rgba32 textColor)
+    {
+        // 缩放像素大小以匹配目标字体尺寸
+        var pixelSize = Math.Max(1, fontSize / 16);
+
+        for (var row = 0; row < 16; row++)
+        {
+            var hi = glyphData[row * 2];
+            var lo = glyphData[row * 2 + 1];
+
+            for (var col = 0; col < 16; col++)
+            {
+                var bit = col < 8 ? (hi >> (7 - col)) & 1 : (lo >> (15 - col)) & 1;
+                if (bit == 0)
+                    continue;
+
+                for (var px = 0; px < pixelSize; px++)
+                {
+                    for (var py = 0; py < pixelSize; py++)
+                    {
+                        var drawX = offsetX + col * pixelSize + px;
+                        var drawY = offsetY + row * pixelSize + py;
+                        if (drawX >= 0 && drawX < width && drawY >= 0 && drawY < height)
+                            image[drawX, drawY] = textColor;
                     }
                 }
             }

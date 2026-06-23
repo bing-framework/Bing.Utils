@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Bing.Drawing;
 
@@ -50,30 +49,13 @@ internal static class CaptchaCodeGenerator
     }
 
     /// <summary>
-    /// 生成随机汉字字符串
+    /// 生成随机汉字字符串（使用受控白名单字符集）
     /// </summary>
     private static string GenerateChinese(int length)
     {
-        var result = new StringBuilder(length);
+        var chars = new char[length];
         for (var i = 0; i < length; i++)
-            result.Append(GenerateOneChineseChar());
-        return result.ToString();
-    }
-
-    /// <summary>
-    /// 生成一个随机汉字（GB2312 编码范围）
-    /// </summary>
-    private static string GenerateOneChineseChar()
-    {
-        var region = DrawingCompatibilityHelper.GetRandomInt32(3) + 11; // 11..13
-        var position = region == 13
-            ? DrawingCompatibilityHelper.GetRandomInt32(7)
-            : DrawingCompatibilityHelper.GetRandomInt32(16);
-
-        var b1 = (byte)(region * 16 + position);
-        var b2 = (byte)(DrawingCompatibilityHelper.GetRandomInt32(6) * 16 + DrawingCompatibilityHelper.GetRandomInt32(16) + 1);
-
-        var encoding = Encoding.GetEncoding("GB2312");
-        return encoding.GetString(new[] { b1, b2 });
+            chars[i] = Internal.ChineseCaptchaGlyphSet.Chars[DrawingCompatibilityHelper.GetRandomInt32(Internal.ChineseCaptchaGlyphSet.CharCount)];
+        return new string(chars);
     }
 }

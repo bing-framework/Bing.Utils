@@ -626,37 +626,47 @@ public static partial class SkiaSharpHelper
     /// </summary>
     /// <param name="length">验证码长度</param>
     /// <param name="code">生成的验证码文本</param>
+    /// <param name="captchaType">验证码类型</param>
+    /// <param name="options">验证码配置</param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static SKImage CreateCaptchaImage(int length, out string code)
+    public static SKImage CreateCaptchaImage(int length, out string code, CaptchaType captchaType = CaptchaType.NumberAndLetter, CaptchaOptions? options = null)
     {
-        code = GetCaptchaCode(length);
-        return CreateCaptchaImage(code);
+        if (length <= 0)
+            throw new ArgumentOutOfRangeException(nameof(length));
+        code = GetCaptchaCode(length, captchaType);
+        return CreateCaptchaImage(code, options);
     }
 
     /// <summary>
     /// 创建验证码图片
     /// </summary>
     /// <param name="code">验证码文本</param>
+    /// <param name="options">验证码配置</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static SKImage CreateCaptchaImage(string code)
+    public static SKImage CreateCaptchaImage(string code, CaptchaOptions? options = null)
     {
         if (string.IsNullOrWhiteSpace(code))
             throw new ArgumentNullException(nameof(code));
 
-        const int fontSize = 20;
-        const int fontWidth = 20;
-        var width = fontWidth * code.Length + fontWidth;
-        var height = fontSize + fontSize / 2;
-        var background = new SKColor(240, 240, 240, 255);
+        options = options ?? new CaptchaOptions();
+        var fontSize = options.FontSize;
+        var fontWidth = options.FontWidth;
+        var width = options.Width > 0 ? options.Width : fontWidth * code.Length + fontWidth;
+        var height = options.Height > 0 ? options.Height : fontSize + fontSize / 2;
+        var background = new SKColor(options.BackgroundR, options.BackgroundG, options.BackgroundB, options.BackgroundA);
+
+        var rng = options.RandomSeed.HasValue ? new Random(options.RandomSeed.Value) : new Random();
 
         using var output = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
         using var canvas = new SKCanvas(output);
         canvas.Clear(background);
 
-        DrawCaptchaBorder(canvas, width, height);
-        DrawCaptchaDisorderLine(canvas, code, width, height);
-        DrawCaptchaDisorderPoint(output, code, background);
-        DrawCaptchaText(canvas, code, width, height, fontSize);
+        if (options.HasBorder)
+            DrawCaptchaBorder(canvas, width, height);
+
+        DrawCaptchaDisorderLine(canvas, code, width, height, options, rng);
+        DrawCaptchaDisorderPoint(output, code, width, height, options, rng);
+        DrawCaptchaText(canvas, code, width, height, fontSize, fontWidth, options, rng);
         canvas.Flush();
 
         return TrackFormat(SKImage.FromBitmap(output), SKEncodedImageFormat.Png)!;
@@ -955,7 +965,7 @@ public static partial class SkiaSharpHelper
     /// <summary>
     /// 绘制验证码干扰线
     /// </summary>
-    private static void DrawCaptchaDisorderLine(SKCanvas canvas, string code, int width, int height)
+    private static void DrawCaptchaDisorderLine(SKCanvas canvas, string code, int width, int height, CaptchaOptions options, Random rng)
     {
         using var paint = new SKPaint
         {
@@ -964,16 +974,16 @@ public static partial class SkiaSharpHelper
             IsAntialias = true
         };
 
-        var lineCount = Math.Max(2, Math.Min(4, code.Length));
+        var lineCount = options.NoiseLineCount > 0 ? options.NoiseLineCount : Math.Max(2, Math.Min(4, code.Length));
         for (var i = 0; i < lineCount; i++)
         {
-            var seed = code[i % code.Length] + i * 31;
-            paint.Color = CreateCaptchaAccentColor(seed);
+            var seed = rng.Next();
+            paint.Color = CreateCaptchaAccentColor(seed, options.RandomColor);
 
-            var startX = (seed * 7) % width;
-            var startY = (seed * 11) % height;
-            var endX = width - 1 - ((seed * 13) % width);
-            var endY = height - 1 - ((seed * 17) % height);
+            var startX = rng.Next(0, Math.Max(1, width));
+            var startY = rng.Next(0, Math.Max(1, height));
+            var endX = rng.Next(0, Math.Max(1, width));
+            var endY = rng.Next(0, Math.Max(1, height));
             canvas.DrawLine(startX, startY, endX, endY, paint);
         }
     }
@@ -981,15 +991,17 @@ public static partial class SkiaSharpHelper
     /// <summary>
     /// 绘制验证码干扰点
     /// </summary>
-    private static void DrawCaptchaDisorderPoint(SKBitmap bitmap, string code, SKColor background)
+    private static void DrawCaptchaDisorderPoint(SKBitmap bitmap, string code, int width, int height, CaptchaOptions options, Random rng)
     {
-        var pointCount = Math.Max(6, bitmap.Width * bitmap.Height / 45);
+        var pointCount = options.NoisePointCount >= 0
+            ? options.NoisePointCount
+            : Math.Max(6, width * height / 45);
+        var background = new SKColor(options.BackgroundR, options.BackgroundG, options.BackgroundB, options.BackgroundA);
         for (var i = 0; i < pointCount; i++)
         {
-            var seed = code[i % code.Length] + i * 53;
-            var x = (seed * 19 + i * 7) % bitmap.Width;
-            var y = (seed * 23 + i * 11) % bitmap.Height;
-            var color = CreateCaptchaAccentColor(seed + background.Red + background.Green + background.Blue);
+            var x = rng.Next(0, Math.Max(1, width));
+            var y = rng.Next(0, Math.Max(1, height));
+            var color = CreateCaptchaAccentColor(rng.Next(), options.RandomColor);
             bitmap.SetPixel(x, y, color);
         }
     }
@@ -997,11 +1009,19 @@ public static partial class SkiaSharpHelper
     /// <summary>
     /// 绘制验证码文本
     /// </summary>
-    private static void DrawCaptchaText(SKCanvas canvas, string code, int width, int height, float fontSize)
+    private static void DrawCaptchaText(SKCanvas canvas, string code, int width, int height, int fontSize, int fontWidth, CaptchaOptions options, Random rng)
     {
+        var textColor = options.RandomColor
+            ? new SKColor(24, 24, 24, 255)
+            : new SKColor(
+                (byte)(255 - options.BackgroundR),
+                (byte)(255 - options.BackgroundG),
+                (byte)(255 - options.BackgroundB),
+                255);
+
         using var paint = new SKPaint
         {
-            Color = new SKColor(24, 24, 24, 255),
+            Color = textColor,
             IsAntialias = true,
             TextSize = fontSize,
             Typeface = SKTypeface.Default,
@@ -1011,16 +1031,16 @@ public static partial class SkiaSharpHelper
         var metrics = paint.FontMetrics;
         var baseline = (height - metrics.Bottom - metrics.Top) / 2f;
         var cellWidth = width / (float)(code.Length + 1);
+        var maxRotation = options.MaxRotationDegrees;
 
         for (var i = 0; i < code.Length; i++)
         {
-            var seed = code[i] + i * 17;
-            var x = cellWidth * (i + 0.55f);
-            var y = baseline + seed % 5 - 2;
-            var angle = seed % 21 - 10;
+            var offsetX = cellWidth * (i + 0.55f) + (options.RandomPosition ? rng.Next(-fontWidth / 4, fontWidth / 4) : 0);
+            var offsetY = baseline + (options.RandomPosition ? rng.Next(-2, 3) : 0);
+            var angle = options.RandomRotation ? rng.Next(-maxRotation, maxRotation + 1) : 0;
 
             canvas.Save();
-            canvas.Translate(x, y);
+            canvas.Translate(offsetX, offsetY);
             canvas.RotateDegrees(angle);
             canvas.DrawText(code[i].ToString(), 0, 0, paint);
             canvas.Restore();
@@ -1030,8 +1050,11 @@ public static partial class SkiaSharpHelper
     /// <summary>
     /// 创建验证码强调色
     /// </summary>
-    private static SKColor CreateCaptchaAccentColor(int seed)
+    private static SKColor CreateCaptchaAccentColor(int seed, bool randomColor)
     {
+        if (!randomColor)
+            return new SKColor(0, 0, 0, 255);
+
         var normalized = Math.Abs(seed);
         return new SKColor(
             (byte)(20 + normalized % 120),

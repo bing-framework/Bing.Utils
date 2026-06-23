@@ -15,10 +15,12 @@
 	<ItemGroup>
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\DrawingCompatibilityHelper.cs" Link="Bing\Drawing\Internal\DrawingCompatibilityHelper.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\CaptchaCodeGenerator.cs" Link="Bing\Drawing\Internal\CaptchaCodeGenerator.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\ChineseCaptchaGlyphSet.cs" Link="Bing\Drawing\Internal\ChineseCaptchaGlyphSet.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\GrayImageBuffer.cs" Link="Bing\Drawing\Internal\GrayImageBuffer.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\BinaryImageProcessor.cs" Link="Bing\Drawing\Internal\BinaryImageProcessor.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\NoiseReductionProcessor.cs" Link="Bing\Drawing\Internal\NoiseReductionProcessor.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\ConnectedComponentProcessor.cs" Link="Bing\Drawing\Internal\ConnectedComponentProcessor.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\MatrixPoint.cs" Link="Bing\Drawing\Internal\MatrixPoint.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\ProjectionProcessor.cs" Link="Bing\Drawing\Internal\ProjectionProcessor.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\IcoContainerWriter.cs" Link="Bing\Drawing\Internal\IcoContainerWriter.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\TwistGeometryProcessor.cs" Link="Bing\Drawing\Internal\TwistGeometryProcessor.cs" />
@@ -28,6 +30,15 @@
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\ColorMatrices.cs" Link="Bing\Drawing\ColorMatrices.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\CaptchaType.cs" Link="Bing\Drawing\CaptchaType.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\CaptchaOptions.cs" Link="Bing\Drawing\CaptchaOptions.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\RgbColor.cs" Link="Bing\Drawing\RgbColor.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\HslColor.cs" Link="Bing\Drawing\HslColor.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\ColorConversion.cs" Link="Bing\Drawing\ColorConversion.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\BinaryMatrixHelper.cs" Link="Bing\Drawing\BinaryMatrixHelper.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\ImageMetadataOptions.cs" Link="Bing\Drawing\ImageMetadataOptions.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\EncodedImageSanitizer.cs" Link="Bing\Drawing\Internal\EncodedImageSanitizer.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\JpegMetadataSanitizer.cs" Link="Bing\Drawing\Internal\JpegMetadataSanitizer.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\PngMetadataSanitizer.cs" Link="Bing\Drawing\Internal\PngMetadataSanitizer.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Conversions\ColorConv.cs" Link="Bing\Conversions\ColorConv.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

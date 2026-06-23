@@ -1,5 +1,3 @@
-using System.Drawing;
-
 namespace Bing.Drawing.Internal;
 
 /// <summary>
@@ -13,11 +11,11 @@ internal static class ConnectedComponentProcessor
     /// <param name="binBytes">二值化数组</param>
     /// <param name="foregroundThreshold">前景阈值（小于该值视为前景）</param>
     /// <returns>组件 ID 到像素列表的映射</returns>
-    internal static Dictionary<int, List<Point>> LabelConnectedComponents(byte[,] binBytes, byte foregroundThreshold)
+    internal static Dictionary<int, List<MatrixPoint>> LabelConnectedComponents(byte[,] binBytes, byte foregroundThreshold)
     {
         int width = binBytes.GetLength(0), height = binBytes.GetLength(1);
         var visited = new bool[width, height];
-        var components = new Dictionary<int, List<Point>>();
+        var components = new Dictionary<int, List<MatrixPoint>>();
         var componentId = 0;
 
         for (var x = 0; x < width; x++)
@@ -44,11 +42,11 @@ internal static class ConnectedComponentProcessor
     /// <summary>
     /// 4 邻域泛洪填充，返回填充的像素列表
     /// </summary>
-    internal static List<Point> FloodFill4(byte[,] binBytes, bool[,] visited, int startX, int startY, int width, int height, byte foregroundThreshold)
+    internal static List<MatrixPoint> FloodFill4(byte[,] binBytes, bool[,] visited, int startX, int startY, int width, int height, byte foregroundThreshold)
     {
-        var points = new List<Point>();
-        var stack = new Stack<Point>();
-        stack.Push(new Point(startX, startY));
+        var points = new List<MatrixPoint>();
+        var stack = new Stack<MatrixPoint>();
+        stack.Push(new MatrixPoint(startX, startY));
 
         while (stack.Count > 0)
         {
@@ -66,10 +64,10 @@ internal static class ConnectedComponentProcessor
             visited[p.X, p.Y] = true;
             points.Add(p);
 
-            stack.Push(new Point(p.X - 1, p.Y));
-            stack.Push(new Point(p.X + 1, p.Y));
-            stack.Push(new Point(p.X, p.Y - 1));
-            stack.Push(new Point(p.X, p.Y + 1));
+            stack.Push(new MatrixPoint(p.X - 1, p.Y));
+            stack.Push(new MatrixPoint(p.X + 1, p.Y));
+            stack.Push(new MatrixPoint(p.X, p.Y - 1));
+            stack.Push(new MatrixPoint(p.X, p.Y + 1));
         }
 
         return points;
@@ -83,19 +81,19 @@ internal static class ConnectedComponentProcessor
     /// <param name="startY">起始 y</param>
     /// <param name="replacementGray">替换灰度值</param>
     /// <returns>填充的像素列表</returns>
-    internal static List<Point> FloodFillReplace(byte[,] binBytes, int startX, int startY, byte replacementGray)
+    internal static List<MatrixPoint> FloodFillReplace(byte[,] binBytes, int startX, int startY, byte replacementGray)
     {
         int width = binBytes.GetLength(0), height = binBytes.GetLength(1);
         if (startX < 0 || startX >= width || startY < 0 || startY >= height)
-            return new List<Point>();
+            return new List<MatrixPoint>();
 
         var targetGray = binBytes[startX, startY];
         if (targetGray == replacementGray)
-            return new List<Point>();
+            return new List<MatrixPoint>();
 
-        var points = new List<Point>();
-        var stack = new Stack<Point>();
-        stack.Push(new Point(startX, startY));
+        var points = new List<MatrixPoint>();
+        var stack = new Stack<MatrixPoint>();
+        stack.Push(new MatrixPoint(startX, startY));
 
         while (stack.Count > 0)
         {
@@ -108,10 +106,10 @@ internal static class ConnectedComponentProcessor
             binBytes[p.X, p.Y] = replacementGray;
             points.Add(p);
 
-            stack.Push(new Point(p.X - 1, p.Y));
-            stack.Push(new Point(p.X + 1, p.Y));
-            stack.Push(new Point(p.X, p.Y - 1));
-            stack.Push(new Point(p.X, p.Y + 1));
+            stack.Push(new MatrixPoint(p.X - 1, p.Y));
+            stack.Push(new MatrixPoint(p.X + 1, p.Y));
+            stack.Push(new MatrixPoint(p.X, p.Y - 1));
+            stack.Push(new MatrixPoint(p.X, p.Y + 1));
         }
 
         return points;
@@ -120,7 +118,7 @@ internal static class ConnectedComponentProcessor
     /// <summary>
     /// 从连通域结果中获取所有组件的像素总数
     /// </summary>
-    internal static int GetTotalComponentPixels(Dictionary<int, List<Point>> components)
+    internal static int GetTotalComponentPixels(Dictionary<int, List<MatrixPoint>> components)
     {
         var total = 0;
         foreach (var kvp in components)
