@@ -23,7 +23,7 @@ public static class SKEncodedImageFormatExtensions
             SKEncodedImageFormat.Wbmp => "image/vnd.wap.wbmp",
             SKEncodedImageFormat.Bmp => "image/bmp",
             SKEncodedImageFormat.Gif => "image/gif",
-            SKEncodedImageFormat.Ico => "image/icon",
+            SKEncodedImageFormat.Ico => "image/x-icon",
             SKEncodedImageFormat.Avif => "image/avif",
             _ => "application/octet-stream"
         };

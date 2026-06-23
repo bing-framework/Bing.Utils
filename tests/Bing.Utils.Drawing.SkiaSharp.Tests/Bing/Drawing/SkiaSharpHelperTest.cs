@@ -45,6 +45,35 @@ public class SkiaSharpHelperTest
         dataUrl.ShouldStartWith("data:image/");
         dataUrl.ShouldContain(";base64,");
     }
+
+    /// <summary>
+    /// 测试用例：验证内存中新建图片的默认输出格式为 PNG。
+    /// </summary>
+    [Fact]
+    public void ToDataUrl_DefaultFormat_ForInMemoryImage_UsesPng()
+    {
+        using var source = CreateSampleImage();
+
+        var dataUrl = SkiaSharpHelper.ToDataUrl(source);
+
+        dataUrl.ShouldStartWith("data:image/png;base64,");
+    }
+
+    /// <summary>
+    /// 测试用例：验证已加载 JPEG 图片在派生新图像后默认输出仍保持 JPEG。
+    /// </summary>
+    [Fact]
+    public void ToDataUrl_DefaultFormat_ForDerivedImage_PreservesTrackedJpeg()
+    {
+        using var source = CreateNoiseImage(32, 16);
+        var bytes = SkiaSharpHelper.ToBytes(source, SKEncodedImageFormat.Jpeg, 90);
+        using var restored = SkiaSharpHelper.FromBytes(bytes);
+        using var resized = SkiaSharpHelper.Resize(restored!, 16, 8);
+
+        var dataUrl = SkiaSharpHelper.ToDataUrl(resized);
+
+        dataUrl.ShouldStartWith("data:image/jpeg;base64,");
+    }
     /// <summary>
     /// 测试用例：验证 `FromDataUrl` 在 `WithValidPngDataUrl` 场景下，结果为 `RoundTrip`。
     /// </summary>
@@ -136,6 +165,28 @@ public class SkiaSharpHelperTest
                 File.Delete(tempPath);
         }
     }
+
+    /// <summary>
+    /// 测试用例：验证 `FromStream` 会从当前位置读取并保持调用方流可用。
+    /// </summary>
+    [Fact]
+    public void FromStream_WithOffsetPayload_LoadsExpectedImageAndKeepsStreamOpen()
+    {
+        using var source = CreateSampleImage();
+        var bytes = SkiaSharpHelper.ToBytes(source, (SKEncodedImageFormat.Png, 100));
+        var payload = new byte[3 + bytes.Length];
+        Array.Copy(bytes, 0, payload, 3, bytes.Length);
+        using var stream = new MemoryStream(payload);
+        stream.Position = 3;
+
+        using var restored = SkiaSharpHelper.FromStream(stream);
+
+        restored.ShouldNotBeNull();
+        restored!.Width.ShouldBe(2);
+        restored.Height.ShouldBe(2);
+        stream.CanRead.ShouldBeTrue();
+        stream.Position.ShouldBe(stream.Length);
+    }
     /// <summary>
     /// 测试用例：验证 `SetOpacity` 在 `OutOfRange` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
     /// </summary>
@@ -161,7 +212,21 @@ public class SkiaSharpHelperTest
         result.Width.ShouldBe(source.Width);
         result.Height.ShouldBe(source.Height);
         using var bitmap = SKBitmap.FromImage(result);
-        bitmap.GetPixel(0, 0).Alpha.ShouldBe((byte)127);
+        bitmap.GetPixel(0, 0).Alpha.ShouldBe((byte)128);
+    }
+
+    /// <summary>
+    /// 测试用例：验证透明度会按原始 Alpha 比例缩放。
+    /// </summary>
+    [Fact]
+    public void SetOpacity_PartiallyTransparentPixel_MultipliesExistingAlpha()
+    {
+        using var source = CreateSolidImage(1, 1, new SKColor(255, 0, 0, 128));
+
+        using var result = SkiaSharpHelper.SetOpacity(source, 0.5f);
+        using var bitmap = SKBitmap.FromImage(result);
+
+        bitmap.GetPixel(0, 0).Alpha.ShouldBe((byte)64);
     }
     /// <summary>
     /// 测试用例：验证 `SetOpacity` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
@@ -286,6 +351,77 @@ public class SkiaSharpHelperTest
         var lowQuality = SkiaSharpHelper.ToBytes(source, SKEncodedImageFormat.Jpeg, 25);
 
         lowQuality.Length.ShouldBeLessThan(highQuality.Length);
+    }
+
+    /// <summary>
+    /// 测试用例：验证元组质量参数越界时抛出异常。
+    /// </summary>
+    [Fact]
+    public void ToBytes_TupleQualityOutOfRange_ThrowsArgumentOutOfRangeException()
+    {
+        using var source = CreateSampleImage();
+
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToBytes(source, (SKEncodedImageFormat.Jpeg, -1)))
+            .ParamName.ShouldBe("quality");
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToBytes(source, (SKEncodedImageFormat.Jpeg, 0)))
+            .ParamName.ShouldBe("quality");
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToBytes(source, (SKEncodedImageFormat.Jpeg, 101)))
+            .ParamName.ShouldBe("quality");
+    }
+
+    /// <summary>
+    /// 测试用例：验证显式质量重载遵循统一范围校验。
+    /// </summary>
+    [Fact]
+    public void ToBytes_DirectQualityOutOfRange_ThrowsArgumentOutOfRangeException()
+    {
+        using var source = CreateSampleImage();
+
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToBytes(source, SKEncodedImageFormat.Jpeg, 0))
+            .ParamName.ShouldBe("quality");
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToBytes(source, SKEncodedImageFormat.Jpeg, 101))
+            .ParamName.ShouldBe("quality");
+    }
+
+    /// <summary>
+    /// 测试用例：验证元组质量参数越界时 Base64 API 抛出异常。
+    /// </summary>
+    [Fact]
+    public void ToBase64String_TupleQualityOutOfRange_ThrowsArgumentOutOfRangeException()
+    {
+        using var source = CreateSampleImage();
+
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToBase64String(source, (SKEncodedImageFormat.Jpeg, -1)))
+            .ParamName.ShouldBe("quality");
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToBase64String(source, (SKEncodedImageFormat.Jpeg, 0)))
+            .ParamName.ShouldBe("quality");
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToBase64String(source, (SKEncodedImageFormat.Jpeg, 101)))
+            .ParamName.ShouldBe("quality");
+    }
+
+    /// <summary>
+    /// 测试用例：验证元组质量参数越界时 DataUrl API 抛出异常。
+    /// </summary>
+    [Fact]
+    public void ToDataUrl_TupleQualityOutOfRange_ThrowsArgumentOutOfRangeException()
+    {
+        using var source = CreateSampleImage();
+
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToDataUrl(source, (SKEncodedImageFormat.Jpeg, -1)))
+            .ParamName.ShouldBe("quality");
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToDataUrl(source, (SKEncodedImageFormat.Jpeg, 0)))
+            .ParamName.ShouldBe("quality");
+        Should.Throw<ArgumentOutOfRangeException>(() => SkiaSharpHelper.ToDataUrl(source, (SKEncodedImageFormat.Jpeg, 101)))
+            .ParamName.ShouldBe("quality");
+    }
+
+    /// <summary>
+    /// 测试用例：验证 ICO MIME 类型使用标准 x-icon 前缀。
+    /// </summary>
+    [Fact]
+    public void GetMimeType_IcoFormat_ReturnsXIconMime()
+    {
+        SKEncodedImageFormat.Ico.GetMimeType().ShouldBe("image/x-icon");
     }
 
     /// <summary>
@@ -616,6 +752,21 @@ public class SkiaSharpHelperTest
         ReferenceEquals(source, result).ShouldBeFalse();
         resultBitmap.GetPixel(1, 1).ShouldBe(new SKColor(255, 255, 255, 255));
         resultBitmap.GetPixel(2, 2).ShouldBe(new SKColor(255, 255, 255, 255));
+    }
+
+    /// <summary>
+    /// 测试用例：验证半透明水印叠加时保留原始 Alpha 比例。
+    /// </summary>
+    [Fact]
+    public void AddImageWatermark_PartiallyTransparentWatermark_PreservesAlphaComposition()
+    {
+        using var source = CreateSolidImage(1, 1, new SKColor(0, 0, 0, 0));
+        using var watermark = CreateSolidImage(1, 1, new SKColor(255, 0, 0, 128));
+
+        using var result = SkiaSharpHelper.AddImageWatermark(source, watermark, new SKRectI(0, 0, 1, 1), 0.5f);
+        using var resultBitmap = SKBitmap.FromImage(result);
+
+        resultBitmap.GetPixel(0, 0).Alpha.ShouldBe((byte)64);
     }
 
     /// <summary>

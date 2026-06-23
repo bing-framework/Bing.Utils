@@ -1,4 +1,5 @@
 ﻿using SkiaSharp;
+using System.Runtime.CompilerServices;
 
 namespace Bing.Drawing;
 
@@ -7,6 +8,18 @@ namespace Bing.Drawing;
 /// </summary>
 public static partial class SkiaSharpHelper
 {
+    private static readonly ConditionalWeakTable<SKImage, EncodedImageFormatHolder> ImageFormats = new();
+
+    private sealed class EncodedImageFormatHolder
+    {
+        public EncodedImageFormatHolder(SKEncodedImageFormat format)
+        {
+            Format = format;
+        }
+
+        public SKEncodedImageFormat Format { get; }
+    }
+
     #region GetImageExtension(获取图片扩展名)
 
     /// <summary>
@@ -100,10 +113,10 @@ public static partial class SkiaSharpHelper
             for (var y = 0; y < image.Height; y++)
             {
                 var color = bitmap.GetPixel(x, y);
-                output.SetPixel(x, y, color.WithAlpha((byte)(0xFF * opacity)));
+                output.SetPixel(x, y, color.WithAlpha(ClampToByte(color.Alpha * opacity)));
             }
         }
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     #endregion
@@ -139,7 +152,7 @@ public static partial class SkiaSharpHelper
         using var paint = new SKPaint { FilterQuality = SKFilterQuality.High, IsAntialias = true };
         canvas.Clear(SKColors.Transparent);
         canvas.DrawBitmap(bitmap, new SKRect(0, 0, size.Width, size.Height), paint);
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     #endregion
@@ -166,7 +179,7 @@ public static partial class SkiaSharpHelper
         using var paint = new SKPaint { FilterQuality = SKFilterQuality.High, IsAntialias = true };
         canvas.Clear(SKColors.Transparent);
         canvas.DrawBitmap(bitmap, cropRectangle, new SKRect(0, 0, cropRectangle.Width, cropRectangle.Height), paint);
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     #endregion
@@ -205,7 +218,7 @@ public static partial class SkiaSharpHelper
         canvas.Translate(-bitmap.Width / 2f, -bitmap.Height / 2f);
         canvas.DrawBitmap(bitmap, 0, 0, paint);
 
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     #endregion
@@ -230,7 +243,7 @@ public static partial class SkiaSharpHelper
         canvas.Translate(bitmap.Width, 0);
         canvas.Scale(-1, 1);
         canvas.DrawBitmap(bitmap, 0, 0, paint);
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     #endregion
@@ -255,7 +268,7 @@ public static partial class SkiaSharpHelper
         canvas.Translate(0, bitmap.Height);
         canvas.Scale(1, -1);
         canvas.DrawBitmap(bitmap, 0, 0, paint);
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     #endregion
@@ -418,8 +431,8 @@ public static partial class SkiaSharpHelper
             throw new ArgumentOutOfRangeException(nameof(radius), "柔化半径必须大于或等于0");
 
         using var bitmap = SKBitmap.FromImage(image);
-        var output = ApplySoftEdgeEffect(bitmap, radius);
-        return SKImage.FromBitmap(output);
+        using var output = ApplySoftEdgeEffect(bitmap, radius);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     #endregion
@@ -435,7 +448,7 @@ public static partial class SkiaSharpHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        return ApplyConvolutionEffect(image, [1, 2, 1, 2, 4, 2, 1, 2, 1], 16f);
+        return ApplyConvolutionEffect(image, new float[] { 1, 2, 1, 2, 4, 2, 1, 2, 1 }, 16f);
     }
 
     #endregion
@@ -451,7 +464,7 @@ public static partial class SkiaSharpHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        return ApplyConvolutionEffect(image, [0, -1, 0, -1, 5, -1, 0, -1, 0], 1f);
+        return ApplyConvolutionEffect(image, new float[] { 0, -1, 0, -1, 5, -1, 0, -1, 0 }, 1f);
     }
 
     #endregion
@@ -467,7 +480,7 @@ public static partial class SkiaSharpHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        return ApplyConvolutionEffect(image, [-1, -1, 0, -1, 0, 1, 0, 1, 1], 1f, 128f);
+        return ApplyConvolutionEffect(image, new float[] { -1, -1, 0, -1, 0, 1, 0, 1, 1 }, 1f, 128f);
     }
 
     #endregion
@@ -524,7 +537,7 @@ public static partial class SkiaSharpHelper
 
         canvas.DrawImage(overlay, new SKRect(normalized.Left, normalized.Top, normalized.Right, normalized.Bottom), paint);
         canvas.Flush();
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     #endregion
@@ -574,7 +587,7 @@ public static partial class SkiaSharpHelper
 
         canvas.DrawText(text, x, y, paint);
         canvas.Flush();
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     #endregion
@@ -632,7 +645,7 @@ public static partial class SkiaSharpHelper
         DrawCaptchaText(canvas, code, width, height, fontSize);
         canvas.Flush();
 
-        return SKImage.FromBitmap(output);
+        return TrackFormat(SKImage.FromBitmap(output), SKEncodedImageFormat.Png)!;
     }
 
     #endregion
@@ -643,13 +656,17 @@ public static partial class SkiaSharpHelper
     private static SKImage CloneImage(SKImage image)
     {
         using var bitmap = SKBitmap.FromImage(image);
-        return SKImage.FromBitmap(bitmap);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(bitmap));
     }
     /// <summary>
     /// 获取编码格式
     /// </summary>
     private static SKEncodedImageFormat GetEncodedImageFormat(SKImage image)
     {
+        var trackedFormat = GetTrackedFormat(image);
+        if (trackedFormat.HasValue)
+            return trackedFormat.Value;
+
         using var data = image.EncodedData ?? image.Encode(SKEncodedImageFormat.Png, 100);
         using var codec = SKCodec.Create(data);
         return codec?.EncodedFormat ?? SKEncodedImageFormat.Png;
@@ -689,10 +706,10 @@ public static partial class SkiaSharpHelper
         if (rectangle.Height <= 0)
             throw new ArgumentOutOfRangeException(nameof(rectangle), "裁剪区域高度必须大于0");
 
-        var left = Math.Clamp(rectangle.Left, 0, imageWidth);
-        var top = Math.Clamp(rectangle.Top, 0, imageHeight);
-        var right = Math.Clamp(rectangle.Right, 0, imageWidth);
-        var bottom = Math.Clamp(rectangle.Bottom, 0, imageHeight);
+        var left = DrawingCompatibilityHelper.Clamp(rectangle.Left, 0, imageWidth);
+        var top = DrawingCompatibilityHelper.Clamp(rectangle.Top, 0, imageHeight);
+        var right = DrawingCompatibilityHelper.Clamp(rectangle.Right, 0, imageWidth);
+        var bottom = DrawingCompatibilityHelper.Clamp(rectangle.Bottom, 0, imageHeight);
 
         if (right <= left || bottom <= top)
             throw new ArgumentOutOfRangeException(nameof(rectangle), "裁剪区域超出图片边界");
@@ -724,7 +741,7 @@ public static partial class SkiaSharpHelper
                 output.SetPixel(x, y, transform(bitmap.GetPixel(x, y)));
         }
 
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     /// <summary>
@@ -1035,7 +1052,7 @@ public static partial class SkiaSharpHelper
             }
         }
 
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     /// <summary>
@@ -1160,8 +1177,8 @@ public static partial class SkiaSharpHelper
                 {
                     for (var kx = -1; kx <= 1; kx++)
                     {
-                        var sampleX = Math.Clamp(x + kx, 0, source.Width - 1);
-                        var sampleY = Math.Clamp(y + ky, 0, source.Height - 1);
+                        var sampleX = DrawingCompatibilityHelper.Clamp(x + kx, 0, source.Width - 1);
+                        var sampleY = DrawingCompatibilityHelper.Clamp(y + ky, 0, source.Height - 1);
                         var sample = source.GetPixel(sampleX, sampleY);
                         var weight = kernel[index++];
                         totalR += sample.Red * weight;
@@ -1179,7 +1196,7 @@ public static partial class SkiaSharpHelper
             }
         }
 
-        return SKImage.FromBitmap(output);
+        return CopyTrackedFormat(image, SKImage.FromBitmap(output));
     }
 
     /// <summary>
@@ -1187,6 +1204,35 @@ public static partial class SkiaSharpHelper
     /// </summary>
     private static byte ClampToByte(float value)
     {
-        return (byte)Math.Clamp((int)Math.Round(value, MidpointRounding.AwayFromZero), 0, 255);
+        return DrawingCompatibilityHelper.ClampToByte(value);
+    }
+
+    /// <summary>
+    /// 记录图片格式
+    /// </summary>
+    private static SKImage? TrackFormat(SKImage? image, SKEncodedImageFormat? imageFormat)
+    {
+        if (image is null || imageFormat is null)
+            return image;
+
+        ImageFormats.Remove(image);
+        ImageFormats.Add(image, new EncodedImageFormatHolder(imageFormat.Value));
+        return image;
+    }
+
+    /// <summary>
+    /// 复制图片格式信息
+    /// </summary>
+    private static SKImage CopyTrackedFormat(SKImage source, SKImage target)
+    {
+        return TrackFormat(target, GetTrackedFormat(source) ?? GetEncodedImageFormat(source))!;
+    }
+
+    /// <summary>
+    /// 获取已跟踪图片格式
+    /// </summary>
+    private static SKEncodedImageFormat? GetTrackedFormat(SKImage image)
+    {
+        return ImageFormats.TryGetValue(image, out var holder) ? holder.Format : null;
     }
 }

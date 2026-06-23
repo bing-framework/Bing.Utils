@@ -25,7 +25,7 @@ public static partial class SkiaSharpHelper
         try
         {
             var bytes = File.ReadAllBytes(filePath);
-            return SKImage.FromEncodedData(bytes);
+            return TrackFormat(SKImage.FromEncodedData(bytes), DetectEncodedImageFormat(bytes));
         }
         catch
         {
@@ -48,7 +48,8 @@ public static partial class SkiaSharpHelper
             throw new ArgumentNullException(nameof(stream));
         try
         {
-            return SKImage.FromEncodedData(stream);
+            var bytes = ReadBytes(stream);
+            return TrackFormat(SKImage.FromEncodedData(bytes), DetectEncodedImageFormat(bytes));
         }
         catch
         {
@@ -71,7 +72,7 @@ public static partial class SkiaSharpHelper
             throw new ArgumentNullException(nameof(bytes));
         try
         {
-            return SKImage.FromEncodedData(bytes);
+            return TrackFormat(SKImage.FromEncodedData(bytes), DetectEncodedImageFormat(bytes));
         }
         catch
         {
@@ -93,7 +94,8 @@ public static partial class SkiaSharpHelper
             return default;
         try
         {
-            return SKImage.FromEncodedData(Convert.FromBase64String(base64String));
+            var bytes = Convert.FromBase64String(base64String);
+            return TrackFormat(SKImage.FromEncodedData(bytes), DetectEncodedImageFormat(bytes));
         }
         catch
         {
@@ -121,4 +123,24 @@ public static partial class SkiaSharpHelper
     }
 
     #endregion
+
+    /// <summary>
+    /// 读取流字节内容
+    /// </summary>
+    private static byte[] ReadBytes(Stream stream)
+    {
+        using var ms = new MemoryStream();
+        stream.CopyTo(ms);
+        return ms.ToArray();
+    }
+
+    /// <summary>
+    /// 检测图片编码格式
+    /// </summary>
+    private static SKEncodedImageFormat DetectEncodedImageFormat(byte[] bytes)
+    {
+        using var data = SKData.CreateCopy(bytes);
+        using var codec = SKCodec.Create(data);
+        return codec?.EncodedFormat ?? SKEncodedImageFormat.Png;
+    }
 }

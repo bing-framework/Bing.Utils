@@ -17,7 +17,7 @@ internal static class CaptchaCodeGenerator
     {
         var chars = new char[length];
         for (var i = 0; i < length; i++)
-            chars[i] = Seed[RandomNumberGenerator.GetInt32(Seed.Length)];
+            chars[i] = Seed[DrawingCompatibilityHelper.GetRandomInt32(Seed.Length)];
 
         return new string(chars);
     }

@@ -3,6 +3,7 @@
 		<RootNamespace />
 		<TargetFrameworks>net8.0;net7.0;net6.0;net5.0;netcoreapp3.1;</TargetFrameworks>
 		<Version>1.0.0.0</Version>
+		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 
 	<Import Project="..\..\common.tests.props" />

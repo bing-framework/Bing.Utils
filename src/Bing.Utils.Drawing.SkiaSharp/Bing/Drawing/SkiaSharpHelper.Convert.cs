@@ -6,13 +6,31 @@ namespace Bing.Drawing;
 public static partial class SkiaSharpHelper
 {
     /// <summary>
+    /// 规范化图片格式参数
+    /// </summary>
+    private static (SKEncodedImageFormat Format, int Quality) NormalizeImageFormat(SKImage image, (SKEncodedImageFormat Format, int Quality)? imageFormat)
+    {
+        var format = imageFormat ?? (GetEncodedImageFormat(image), 100);
+        return (format.Format, ValidateQuality(format.Quality));
+    }
+
+    /// <summary>
+    /// 编码图片数据
+    /// </summary>
+    private static SKData Encode(SKImage image, (SKEncodedImageFormat Format, int Quality)? imageFormat = default)
+    {
+        var format = NormalizeImageFormat(image, imageFormat);
+        return image.Encode(format.Format, format.Quality);
+    }
+
+    /// <summary>
     /// 验证质量参数
     /// </summary>
     /// <param name="quality">质量</param>
     private static int ValidateQuality(int quality)
     {
-        if (quality < 0 || quality > 100)
-            throw new ArgumentOutOfRangeException(nameof(quality), "质量参数必须为0-100之间的整数");
+        if (quality < 1 || quality > 100)
+            throw new ArgumentOutOfRangeException(nameof(quality), "质量参数必须为1-100之间的整数");
         return quality;
     }
 
@@ -28,8 +46,8 @@ public static partial class SkiaSharpHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        var format = imageFormat ?? (SKEncodedImageFormat.Png, 100);
-        return image.Encode(format.Format, format.Quality).ToArray();
+        using var data = Encode(image, imageFormat);
+        return data.ToArray();
     }
 
     /// <summary>
@@ -62,9 +80,7 @@ public static partial class SkiaSharpHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        var format = imageFormat ?? (SKEncodedImageFormat.Png, 100);
-        var bytes = image.Encode(format.Format, format.Quality).ToArray();
-        return Convert.ToBase64String(bytes);
+        return Convert.ToBase64String(ToBytes(image, imageFormat));
     }
 
     /// <summary>
@@ -97,7 +113,7 @@ public static partial class SkiaSharpHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        var format = imageFormat ?? (SKEncodedImageFormat.Png, 100);
+        var format = NormalizeImageFormat(image, imageFormat);
         return $"data:{format.Format.GetMimeType()};base64,{ToBase64String(image, format)}";
     }
 

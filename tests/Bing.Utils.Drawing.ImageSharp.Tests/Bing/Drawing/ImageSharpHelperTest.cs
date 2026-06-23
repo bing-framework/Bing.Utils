@@ -73,6 +73,35 @@ public class ImageSharpHelperTest
         restored!.Width.ShouldBe(2);
         restored.Height.ShouldBe(2);
     }
+
+    /// <summary>
+    /// 测试用例：验证内存中新建图片的默认输出格式为 PNG。
+    /// </summary>
+    [Fact]
+    public void ToDataUrl_DefaultFormat_ForInMemoryImage_UsesPng()
+    {
+        using var source = CreateSampleImage();
+
+        var dataUrl = ImageSharpHelper.ToDataUrl(source);
+
+        dataUrl.ShouldStartWith("data:image/png;base64,");
+    }
+
+    /// <summary>
+    /// 测试用例：验证已加载 JPEG 图片在派生新图像后默认输出仍保持 JPEG。
+    /// </summary>
+    [Fact]
+    public void ToDataUrl_DefaultFormat_ForDerivedImage_PreservesTrackedJpeg()
+    {
+        using var source = CreateNoiseImage(32, 16);
+        var bytes = ImageSharpHelper.ToBytes(source, JpegFormat.Instance, 90);
+        using var restored = ImageSharpHelper.FromBytes(bytes);
+        using var resized = ImageSharpHelper.Resize(restored!, 16, 8);
+
+        var dataUrl = ImageSharpHelper.ToDataUrl(resized);
+
+        dataUrl.ShouldStartWith("data:image/jpeg;base64,");
+    }
     /// <summary>
     /// 测试用例：验证 `FromBytes` 在 `Null` 场景下，结果为 `ThrowsArgumentNullException`。
     /// </summary>
@@ -154,6 +183,50 @@ public class ImageSharpHelperTest
                 File.Delete(tempPath);
         }
     }
+
+    /// <summary>
+    /// 测试用例：验证 `FromStream` 会从当前位置读取并保持调用方流可用。
+    /// </summary>
+    [Fact]
+    public void FromStream_WithOffsetPayload_LoadsExpectedImageAndKeepsStreamOpen()
+    {
+        using var source = CreateSampleImage();
+        var bytes = ImageSharpHelper.ToBytes(source, PngFormat.Instance);
+        var payload = new byte[3 + bytes.Length];
+        Array.Copy(bytes, 0, payload, 3, bytes.Length);
+        using var stream = new MemoryStream(payload);
+        stream.Position = 3;
+
+        using var restored = ImageSharpHelper.FromStream(stream);
+
+        restored.ShouldNotBeNull();
+        restored!.Width.ShouldBe(2);
+        restored.Height.ShouldBe(2);
+        stream.CanRead.ShouldBeTrue();
+        stream.Position.ShouldBe(stream.Length);
+    }
+
+    /// <summary>
+    /// 测试用例：验证泛型 `FromStream` 会从当前位置读取并保持调用方流可用。
+    /// </summary>
+    [Fact]
+    public void FromStreamGeneric_WithOffsetPayload_LoadsExpectedImageAndKeepsStreamOpen()
+    {
+        using var source = CreateSampleImage();
+        var bytes = ImageSharpHelper.ToBytes(source, PngFormat.Instance);
+        var payload = new byte[5 + bytes.Length];
+        Array.Copy(bytes, 0, payload, 5, bytes.Length);
+        using var stream = new MemoryStream(payload);
+        stream.Position = 5;
+
+        using var restored = ImageSharpHelper.FromStream<Rgba32>(stream);
+
+        restored.ShouldNotBeNull();
+        restored!.Width.ShouldBe(2);
+        restored.Height.ShouldBe(2);
+        stream.CanRead.ShouldBeTrue();
+        stream.Position.ShouldBe(stream.Length);
+    }
     /// <summary>
     /// 测试用例：验证 `SetOpacity` 在 `OutOfRange` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
     /// </summary>
@@ -180,6 +253,20 @@ public class ImageSharpHelperTest
         result.Height.ShouldBe(source.Height);
         using var resultRgba = result.CloneAs<Rgba32>();
         resultRgba[0, 0].A.ShouldBeLessThan((byte)255);
+    }
+
+    /// <summary>
+    /// 测试用例：验证透明度会按原始 Alpha 比例缩放。
+    /// </summary>
+    [Fact]
+    public void SetOpacity_PartiallyTransparentPixel_MultipliesExistingAlpha()
+    {
+        using var source = CreateSolidImage(1, 1, new Rgba32(255, 0, 0, 128));
+
+        using var result = ImageSharpHelper.SetOpacity(source, 0.5f);
+        using var resultRgba = result.CloneAs<Rgba32>();
+
+        resultRgba[0, 0].A.ShouldBe((byte)64);
     }
     /// <summary>
     /// 测试用例：验证 `SetOpacity` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
@@ -303,6 +390,34 @@ public class ImageSharpHelperTest
         var lowQuality = ImageSharpHelper.ToBytes(source, JpegFormat.Instance, 25);
 
         lowQuality.Length.ShouldBeLessThan(highQuality.Length);
+    }
+
+    /// <summary>
+    /// 测试用例：验证非法 JPEG 质量参数会抛出异常。
+    /// </summary>
+    [Fact]
+    public void ToBytes_InvalidJpegQuality_ThrowsArgumentOutOfRangeException()
+    {
+        using var source = CreateSampleImage();
+
+        Should.Throw<ArgumentOutOfRangeException>(() => ImageSharpHelper.ToBytes(source, JpegFormat.Instance, 0))
+            .ParamName.ShouldBe("quality");
+        Should.Throw<ArgumentOutOfRangeException>(() => ImageSharpHelper.ToBytes(source, JpegFormat.Instance, 101))
+            .ParamName.ShouldBe("quality");
+    }
+
+    /// <summary>
+    /// 测试用例：验证非 JPEG 显式质量参数也遵循统一范围校验。
+    /// </summary>
+    [Fact]
+    public void ToBytes_InvalidPngQuality_ThrowsArgumentOutOfRangeException()
+    {
+        using var source = CreateSampleImage();
+
+        Should.Throw<ArgumentOutOfRangeException>(() => ImageSharpHelper.ToBytes(source, PngFormat.Instance, 0))
+            .ParamName.ShouldBe("quality");
+        Should.Throw<ArgumentOutOfRangeException>(() => ImageSharpHelper.ToBytes(source, PngFormat.Instance, 101))
+            .ParamName.ShouldBe("quality");
     }
 
     /// <summary>

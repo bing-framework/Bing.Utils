@@ -15,7 +15,7 @@ public static partial class ImageSharpHelper
     /// 获取默认图片格式
     /// </summary>
     /// <param name="imageFormat">图片格式</param>
-    private static IImageFormat NormalizeImageFormat(IImageFormat? imageFormat) => imageFormat ?? JpegFormat.Instance;
+    private static IImageFormat NormalizeImageFormat(IImageFormat? imageFormat) => imageFormat ?? PngFormat.Instance;
 
     /// <summary>
     /// 验证质量参数
@@ -37,9 +37,12 @@ public static partial class ImageSharpHelper
     /// <param name="quality">质量</param>
     private static void Save(Image image, Stream stream, IImageFormat imageFormat, int? quality = default)
     {
+        if (quality.HasValue)
+            ValidateQuality(quality.Value);
+
         if (quality.HasValue && imageFormat.Name.Equals(JpegFormat.Instance.Name, StringComparison.OrdinalIgnoreCase))
         {
-            image.Save(stream, new JpegEncoder { Quality = ValidateQuality(quality.Value) });
+            image.Save(stream, new JpegEncoder { Quality = quality.Value });
             return;
         }
 
@@ -82,7 +85,7 @@ public static partial class ImageSharpHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat = NormalizeImageFormat(imageFormat);
+        imageFormat = NormalizeImageFormat(imageFormat ?? GetTrackedFormat(image));
         using var ms = new MemoryStream();
         Save(image, ms, imageFormat);
         return ms.ToArray();
@@ -121,7 +124,7 @@ public static partial class ImageSharpHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat = NormalizeImageFormat(imageFormat);
+        imageFormat = NormalizeImageFormat(imageFormat ?? GetTrackedFormat(image));
         using var ms = new MemoryStream();
         Save(image, ms, imageFormat);
         return Convert.ToBase64String(ms.ToArray());
@@ -161,7 +164,7 @@ public static partial class ImageSharpHelper
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat = NormalizeImageFormat(imageFormat);
+        imageFormat = NormalizeImageFormat(imageFormat ?? GetTrackedFormat(image));
         return $"data:{imageFormat.DefaultMimeType};base64,{ToBase64String(image, imageFormat)}";
     }
 

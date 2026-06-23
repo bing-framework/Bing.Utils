@@ -14,9 +14,14 @@ public static partial class ImageSharpHelper
 {
     private static readonly ConditionalWeakTable<Image, ImageFormatHolder> ImageFormats = new();
 
-    private sealed class ImageFormatHolder(IImageFormat format)
+    private sealed class ImageFormatHolder
     {
-        public IImageFormat Format { get; } = format;
+        public ImageFormatHolder(IImageFormat format)
+        {
+            Format = format;
+        }
+
+        public IImageFormat Format { get; }
     }
 
     #region GetCaptchaCode(获取验证码文本)
@@ -446,7 +451,7 @@ public static partial class ImageSharpHelper
         if (image is null)
             throw new ArgumentNullException(nameof(image));
 
-        var output = ApplyConvolutionEffect(image, [1, 2, 1, 2, 4, 2, 1, 2, 1], 16f);
+        var output = ApplyConvolutionEffect(image, new float[] { 1, 2, 1, 2, 4, 2, 1, 2, 1 }, 16f);
         return CopyTrackedFormat(image, output);
     }
 
@@ -464,7 +469,7 @@ public static partial class ImageSharpHelper
         if (image is null)
             throw new ArgumentNullException(nameof(image));
 
-        var output = ApplyConvolutionEffect(image, [0, -1, 0, -1, 5, -1, 0, -1, 0], 1f);
+        var output = ApplyConvolutionEffect(image, new float[] { 0, -1, 0, -1, 5, -1, 0, -1, 0 }, 1f);
         return CopyTrackedFormat(image, output);
     }
 
@@ -482,7 +487,7 @@ public static partial class ImageSharpHelper
         if (image is null)
             throw new ArgumentNullException(nameof(image));
 
-        var output = ApplyConvolutionEffect(image, [-1, -1, 0, -1, 0, 1, 0, 1, 1], 1f, 128f);
+        var output = ApplyConvolutionEffect(image, new float[] { -1, -1, 0, -1, 0, 1, 0, 1, 1 }, 1f, 128f);
         return CopyTrackedFormat(image, output);
     }
 
@@ -574,10 +579,10 @@ public static partial class ImageSharpHelper
         if (rectangle.Height <= 0)
             throw new ArgumentOutOfRangeException(nameof(rectangle), "裁剪区域高度必须大于0");
 
-        var left = Math.Clamp(rectangle.Left, 0, imageWidth);
-        var top = Math.Clamp(rectangle.Top, 0, imageHeight);
-        var right = Math.Clamp(rectangle.Right, 0, imageWidth);
-        var bottom = Math.Clamp(rectangle.Bottom, 0, imageHeight);
+        var left = DrawingCompatibilityHelper.Clamp(rectangle.Left, 0, imageWidth);
+        var top = DrawingCompatibilityHelper.Clamp(rectangle.Top, 0, imageHeight);
+        var right = DrawingCompatibilityHelper.Clamp(rectangle.Right, 0, imageWidth);
+        var bottom = DrawingCompatibilityHelper.Clamp(rectangle.Bottom, 0, imageHeight);
 
         if (right <= left || bottom <= top)
             throw new ArgumentOutOfRangeException(nameof(rectangle), "裁剪区域超出图片边界");
@@ -923,8 +928,8 @@ public static partial class ImageSharpHelper
                 {
                     for (var kx = -1; kx <= 1; kx++)
                     {
-                        var sampleX = Math.Clamp(x + kx, 0, source.Width - 1);
-                        var sampleY = Math.Clamp(y + ky, 0, source.Height - 1);
+                        var sampleX = DrawingCompatibilityHelper.Clamp(x + kx, 0, source.Width - 1);
+                        var sampleY = DrawingCompatibilityHelper.Clamp(y + ky, 0, source.Height - 1);
                         var sample = source[sampleX, sampleY];
                         var weight = kernel[index++];
                         totalR += sample.R * weight;
@@ -949,7 +954,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static byte ClampToByte(float value)
     {
-        return (byte)Math.Clamp((int)Math.Round(value, MidpointRounding.AwayFromZero), 0, 255);
+        return DrawingCompatibilityHelper.ClampToByte(value);
     }
 
     /// <summary>

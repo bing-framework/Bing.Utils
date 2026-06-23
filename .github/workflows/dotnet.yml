@@ -28,6 +28,10 @@ jobs:
       run: dotnet tool install --global FlubuCore.Tool --version 8.0.0
     - name: Build
       run: flubu Build
+    - name: Verify Drawing netstandard2.0
+      run: |
+        dotnet build ./src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj -f netstandard2.0 --no-restore
+        dotnet build ./src/Bing.Utils.Drawing.SkiaSharp/Bing.Utils.Drawing.SkiaSharp.csproj -f netstandard2.0 --no-restore
     - name: Test
       run: flubu test
     - name: pack
