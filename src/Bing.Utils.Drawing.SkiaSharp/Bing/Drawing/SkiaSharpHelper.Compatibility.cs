@@ -106,6 +106,52 @@ public static partial class SkiaSharpHelper
         }
     }
 
+    /// <summary>
+    /// 从字节数组生成缩略图
+    /// </summary>
+    /// <param name="imgBytes">源文件字节数组</param>
+    /// <param name="width">缩略图宽度</param>
+    /// <param name="height">缩略图高度</param>
+    /// <param name="mode">缩略图方式</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static SKImage MakeThumbnail(byte[] imgBytes, int width, int height, ThumbnailMode mode)
+    {
+        if (imgBytes is null)
+            throw new ArgumentNullException(nameof(imgBytes));
+
+        using var source = FromBytes(imgBytes);
+        if (source is null)
+            throw new ArgumentException("无法从字节数组加载图像");
+
+        return MakeThumbnail(source, width, height, mode);
+    }
+
+    /// <summary>
+    /// 从文件路径生成缩略图并保存到指定路径
+    /// </summary>
+    /// <param name="sourceImagePath">源文件路径</param>
+    /// <param name="thumbnailPath">缩略图保存路径</param>
+    /// <param name="width">缩略图宽度</param>
+    /// <param name="height">缩略图高度</param>
+    /// <param name="mode">缩略图方式</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void MakeThumbnail(string sourceImagePath, string thumbnailPath, int width, int height, ThumbnailMode mode)
+    {
+        if (string.IsNullOrWhiteSpace(sourceImagePath))
+            throw new ArgumentNullException(nameof(sourceImagePath));
+        if (string.IsNullOrWhiteSpace(thumbnailPath))
+            throw new ArgumentNullException(nameof(thumbnailPath));
+
+        var bytes = File.ReadAllBytes(sourceImagePath);
+        using var source = FromBytes(bytes);
+        if (source is null)
+            throw new ArgumentException("无法从文件加载图像");
+
+        using var result = MakeThumbnail(source, width, height, mode);
+        var resultBytes = ToBytes(result);
+        File.WriteAllBytes(thumbnailPath, resultBytes);
+    }
+
     #endregion
 
     #region ScaleImage(缩放图像)

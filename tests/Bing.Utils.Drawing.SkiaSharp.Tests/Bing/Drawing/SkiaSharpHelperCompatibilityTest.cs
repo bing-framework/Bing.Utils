@@ -80,7 +80,7 @@ public class SkiaSharpHelperCompatibilityTest
     [Fact]
     public void MakeThumbnail_NullSource_ThrowsArgumentNullException()
     {
-        Should.Throw<ArgumentNullException>(() => SkiaSharpHelper.MakeThumbnail(null!, 4, 4, ThumbnailMode.FixedBoth));
+        Should.Throw<ArgumentNullException>(() => SkiaSharpHelper.MakeThumbnail((SKImage)null!, 4, 4, ThumbnailMode.FixedBoth));
     }
 
     #endregion

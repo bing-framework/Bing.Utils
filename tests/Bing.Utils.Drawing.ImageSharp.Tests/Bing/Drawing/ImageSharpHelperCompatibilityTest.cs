@@ -82,7 +82,7 @@ public class ImageSharpHelperCompatibilityTest
     [Fact]
     public void MakeThumbnail_NullSource_ThrowsArgumentNullException()
     {
-        Should.Throw<ArgumentNullException>(() => ImageSharpHelper.MakeThumbnail(null!, 4, 4, ThumbnailMode.FixedBoth));
+        Should.Throw<ArgumentNullException>(() => ImageSharpHelper.MakeThumbnail((Image)null!, 4, 4, ThumbnailMode.FixedBoth));
     }
 
     #endregion
