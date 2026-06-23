@@ -1,43 +1,53 @@
 ﻿# Bing.Utils.Drawing
 ## 1. 包职责（Scope）
 - 解决的问题
-- 基于 `System.Drawing` 提供验证码生成与图像处理辅助。[证据] `src/Bing.Utils.Drawing/Bing.Utils.Drawing.csproj:5` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:11`
+- 基于 `System.Drawing` 提供验证码生成与图像处理辅助（旧版 GDI+ 实现）。
+- 同时提供 `Bing.Utils.Drawing.Shared` 源码共享层，包含跨平台纯算法和公共类型，不依赖任何图像引擎。
 - 不解决的问题（Out of Scope）
-- 不提供前端渲染组件或跨平台图像引擎抽象层（ImageSharp/SkiaSharp 由独立子包承担）。[证据] `Bing.Utils.sln:79` [证据] `Bing.Utils.sln:81`
+- 不提供前端渲染组件。
+- ImageSharp / SkiaSharp 跨平台实现由独立子包承担。
 
-## 2. 核心类型与扩展方法
-- 类型/方法签名摘要
-- `CaptchaBuilder.GetCode(int length, CaptchaType)`、`CreateImage(string code)`、`CreateImage(int length, out string code, CaptchaType)`。[证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:118` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:216` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:456`
-- 输入输出约定
-- 通过属性驱动生成策略（字体、颜色、干扰线/点、随机倾斜等）。[证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:35` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:85`
-- 边界行为（null、空集合、非法参数）
-- `length <= 0` 抛 `ArgumentOutOfRangeException`。[证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:120` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:121`
-- `code` 为空白抛 `ArgumentNullException`。[证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:218` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:219`
+## 2. 核心类型
 
-## 3. 使用示例（最小可运行）
-- 示例1：基础用法
-```csharp
-var builder = new CaptchaBuilder();
-var code = builder.GetCode(10, CaptchaType.NumberAndLetter);
-```
-[证据] `tests/Bing.Utils.Tests/Drawing/CaptchaBuilderTest.cs:11` [证据] `tests/Bing.Utils.Tests/Drawing/CaptchaBuilderTest.cs:18`
-- 示例2：进阶用法
-```csharp
-builder.RandomPointPercent = 5;
-builder.Height = 50;
-builder.RandomColor = true;
-using var image = builder.CreateImage(4, out var code, CaptchaType.ChineseChar);
-```
-[证据] `tests/Bing.Utils.Tests/Drawing/CaptchaBuilderTest.cs:40` [证据] `tests/Bing.Utils.Tests/Drawing/CaptchaBuilderTest.cs:43`
-- 示例3：常见错误与修正
-```csharp
-Assert.Throws<ArgumentOutOfRangeException>(() => builder.GetCode(0));
-Assert.Throws<ArgumentNullException>(() => builder.CreateImage(" "));
-// 修正：保证 length > 0 且 code 非空白
-```
-[证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:120` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:218`
+### 2.1 旧版（System.Drawing 依赖）
+- `CaptchaBuilder`：验证码生成器（属性驱动配置，支持中文系统字体）
+- `ImageHelper`：图像操作（MakeThumbnail、DeleteCoordinate、BrightnessHandle、LeftRightTurn 等）
+- `ColorConv`：颜色转换（RGB/HSB/Hex）
 
-## 4. 性能与线程安全说明
+### 2.2 Shared 公共类型（无图像引擎依赖）
+- `RgbColor`：RGB 颜色值类型（R/G/B/A，0-255）
+- `HslColor`：HSL 颜色值类型（H: 0-360, S/L: 0-1）
+- `ColorConversion`：核心颜色转换（RgbToHsl、HslToRgb、SRgbToLinearRgb、LinearRgbToSRgb、ToHex、TryParseHex）
+- `ColorConv`：兼容层（旧 `RgbToHsb`/`HsbToRgb` 委托到 HSL 核心，保持旧命名）
+- `BinaryMatrixHelper`：二维矩阵公共兼容层（ClearBorder、AddBorder、Clone、DrawTo、FloodFill、ToCodeString、FromFlatArray、ToFlatArray）
+- `CaptchaOptions`：验证码配置（含 Width/Height/FontSize/FontWidth/HasBorder/NoiseLineCount/NoisePointCount/RandomPosition/RandomColor/RandomItalic/RandomRotation/MaxRotationDegrees/RandomSeed/BackgroundA/R/G/B）
+- `CaptchaType`：验证码类型枚举（Number/NumberAndLetter/ChineseChar）
+- `ThumbnailMode`：缩略图模式枚举（Cut/FixedW/FixedH/FixedBoth）
+- `ColorMatrices`：共享颜色矩阵工厂（Brightness/Contrast/Saturation/GrayScale Filter）
+- `ImageMetadataOptions`：元数据清理选项（RemoveGps/RemoveEntireExif/PreserveIccProfile/UnsupportedFormatBehavior）
+
+### 2.3 Shared Internal 纯算法
+- `DrawingCompatibilityHelper`：netstandard2.0 兼容辅助
+- `GrayImageBuffer`：灰度缓冲区工具
+- `BinaryImageProcessor`：二值化图像处理
+- `NoiseReductionProcessor`：噪声消除
+- `ConnectedComponentProcessor`：连通域处理
+- `ProjectionProcessor`：投影/切分/调试字符串
+- `CaptchaCodeGenerator`：验证码文本生成（支持中文白名单字符集）
+- `ChineseCaptchaGlyphSet`：中文 16x16 点阵字形库
+- `ImageGeometryHelper`：图像几何/颜色数学
+- `IcoContainerWriter`：ICO 容器写入
+- `TwistGeometryProcessor`：扭曲效果
+- `ErosionEffectHelper`：冲蚀效果
+- `JpegMetadataSanitizer`：JPEG EXIF GPS 清除
+- `PngMetadataSanitizer`：PNG eXIf GPS 清除
+- `EncodedImageSanitizer`：格式检测与调度
+
+## 3. 注意事项
+- 旧版 `ColorConv.RgbToHsb` 实际语义是 HSL（GDI+ 行为），新版 `ColorConversion` 正确命名为 `RgbToHsl`。
+- 旧版 `DeleteCoordinate(Image)` 基于已解码对象，跨平台新版使用编码字节级清理。
+- Shared 层禁止依赖 `System.Drawing`、`SixLabors.ImageSharp`、`SkiaSharp`。
+- `ConnectedComponentProcessor` 已使用 `MatrixPoint` 替代 `System.Drawing.Point`。
 - 是否分配敏感
 - 生成图片时会创建 `Bitmap`、`Graphics` 与多种绘图对象，属于分配敏感路径。[证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:224` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:225` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:359`
 - 是否线程安全

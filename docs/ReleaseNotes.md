@@ -1,5 +1,44 @@
 # Bing.Utils 发行说明
 
+## Drawing 跨平台实现（最新）
+
+### 🚀新功能
+- 🆕 `Bing.Utils.Drawing.Shared` 公共类型
+    - ✨ 新增 `RgbColor` / `HslColor` 颜色值类型
+    - ✨ 新增 `ColorConversion` 核心颜色转换（HSL/Hex/sRGB）
+    - ✨ 新增 `ColorConv` 兼容层（旧 HSB 命名委托到 HSL 核心）
+    - ✨ 新增 `BinaryMatrixHelper` 二维矩阵公共兼容层
+    - ✨ 新增 `ImageMetadataOptions` 元数据清理选项
+    - ✨ 新增 `CaptchaOptions` 扩展（Width/Height/RandomSeed/RandomRotation 等）
+    - ✨ 新增中文验证码内嵌点阵字形库（不依赖系统字体）
+    - ✨ 修复 `ConnectedComponentProcessor` 移除 `System.Drawing.Point` 依赖
+- 🆕 `Bing.Utils.Drawing.ImageSharp`
+    - ✨ 新增 `DeleteCoordinate` GPS 元数据清理（JPEG/PNG）
+    - ✨ 新增 `MakeThumbnail(byte[])` / `MakeThumbnail(filePath)` 便利重载
+    - ✨ 新增颜色转换适配（`ToRgbColor` / `ToHsl` / `ToHex` / `FromHex`）
+    - ✨ 中文验证码支持内嵌 16x16 点阵渲染，遇未知字符抛 `NotSupportedException`
+- 🆕 `Bing.Utils.Drawing.SkiaSharp`
+    - ✨ 新增 `DeleteCoordinate` GPS 元数据清理（JPEG/PNG）
+    - ✨ 新增 `MakeThumbnail(byte[])` / `MakeThumbnail(filePath)` 便利重载
+    - ✨ 新增颜色转换适配（`ToRgbColor` / `ToHsl` / `ToHex` / `FromHex`）
+    - ✨ 验证码全量接入 `CaptchaOptions`（含 RandomSeed、RandomRotation、自定义宽高等）
+
+### 🔨修复 & 改进
+- 🛠 Shared 层移除所有 `System.Drawing` 实际代码引用
+- 🛠 修复 `SKEncodedImageFormatExtensions` ICO MIME 映射为 `image/x-icon`
+- 🛠 ImageSharp / SkiaSharp csproj 固定 `LangVersion=10.0` 降低编译器漂移风险
+- 🛠 根目录新增 `global.json` 固定 .NET 8.0 SDK 基线
+
+### 📊 测试基线
+- ImageSharp 测试：238 条通过
+- SkiaSharp 测试：140 条通过
+- 两端 netstandard2.0 编译：0 错误 0 警告
+
+### ⚠️ 行为变更
+- 旧 `ColorConv.RgbToHsb` / `HsbToRgb` 实际语义为 HSL，新版 `ColorConversion` 正确命名为 `RgbToHsl` / `HslToRgb`。旧 `ColorConv` 兼容层保留但委托到 HSL 核心。
+- ImageSharp 中文验证码不再静默跳过未知字符，改为抛 `NotSupportedException`。
+- `DeleteCoordinate` 新 API 基于编码字节级清理，不再依赖 `System.Drawing.Image` 对象。
+
 ## [1.5.0](https://www.nuget.org/packages/Bing.Utils/1.5.0)
 
 ### 🚀新功能
