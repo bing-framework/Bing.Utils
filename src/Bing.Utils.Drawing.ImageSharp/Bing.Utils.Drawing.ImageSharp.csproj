@@ -23,6 +23,7 @@
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\IcoContainerWriter.cs" Link="Bing\Drawing\Internal\IcoContainerWriter.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\TwistGeometryProcessor.cs" Link="Bing\Drawing\Internal\TwistGeometryProcessor.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\ErosionEffectHelper.cs" Link="Bing\Drawing\Internal\ErosionEffectHelper.cs" />
+	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\Internal\ImageGeometryHelper.cs" Link="Bing\Drawing\Internal\ImageGeometryHelper.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\ThumbnailMode.cs" Link="Bing\Drawing\ThumbnailMode.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\ColorMatrices.cs" Link="Bing\Drawing\ColorMatrices.cs" />
 	  <Compile Include="..\Bing.Utils.Drawing.Shared\Bing\Drawing\CaptchaType.cs" Link="Bing\Drawing\CaptchaType.cs" />

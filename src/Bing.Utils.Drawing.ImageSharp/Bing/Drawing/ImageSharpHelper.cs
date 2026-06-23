@@ -551,22 +551,9 @@ public static partial class ImageSharpHelper
     private static Size CalculateResizeSize(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight,
         bool keepAspectRatio, bool allowEnlarge)
     {
-        if (!keepAspectRatio)
-        {
-            return new Size(
-                allowEnlarge ? targetWidth : Math.Min(targetWidth, sourceWidth),
-                allowEnlarge ? targetHeight : Math.Min(targetHeight, sourceHeight));
-        }
-
-        var scaleX = targetWidth / (double)sourceWidth;
-        var scaleY = targetHeight / (double)sourceHeight;
-        var scale = Math.Min(scaleX, scaleY);
-        if (!allowEnlarge)
-            scale = Math.Min(scale, 1d);
-
-        var width = Math.Max(1, (int)Math.Round(sourceWidth * scale, MidpointRounding.AwayFromZero));
-        var height = Math.Max(1, (int)Math.Round(sourceHeight * scale, MidpointRounding.AwayFromZero));
-        return new Size(width, height);
+        var (w, h) = Internal.ImageGeometryHelper.CalculateResizeSize(
+            sourceWidth, sourceHeight, targetWidth, targetHeight, keepAspectRatio, allowEnlarge);
+        return new Size(w, h);
     }
 
     /// <summary>
@@ -574,20 +561,9 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static Rectangle NormalizeCropRectangle(Rectangle rectangle, int imageWidth, int imageHeight)
     {
-        if (rectangle.Width <= 0)
-            throw new ArgumentOutOfRangeException(nameof(rectangle), "裁剪区域宽度必须大于0");
-        if (rectangle.Height <= 0)
-            throw new ArgumentOutOfRangeException(nameof(rectangle), "裁剪区域高度必须大于0");
-
-        var left = DrawingCompatibilityHelper.Clamp(rectangle.Left, 0, imageWidth);
-        var top = DrawingCompatibilityHelper.Clamp(rectangle.Top, 0, imageHeight);
-        var right = DrawingCompatibilityHelper.Clamp(rectangle.Right, 0, imageWidth);
-        var bottom = DrawingCompatibilityHelper.Clamp(rectangle.Bottom, 0, imageHeight);
-
-        if (right <= left || bottom <= top)
-            throw new ArgumentOutOfRangeException(nameof(rectangle), "裁剪区域超出图片边界");
-
-        return new Rectangle(left, top, right - left, bottom - top);
+        var (left, top, width, height) = Internal.ImageGeometryHelper.NormalizeCropRectangle(
+            rectangle.Left, rectangle.Top, rectangle.Width, rectangle.Height, imageWidth, imageHeight);
+        return new Rectangle(left, top, width, height);
     }
 
     /// <summary>
@@ -595,10 +571,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static float NormalizeAngle(int angle)
     {
-        var normalized = angle % 360;
-        if (normalized < 0)
-            normalized += 360;
-        return normalized;
+        return Internal.ImageGeometryHelper.NormalizeAngle(angle);
     }
 
     /// <summary>
@@ -606,8 +579,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static void ValidateThreshold(float threshold)
     {
-        if (threshold < 0 || threshold > 1)
-            throw new ArgumentOutOfRangeException(nameof(threshold), "阈值必须为0-1之间的浮点数");
+        Internal.ImageGeometryHelper.ValidateThreshold(threshold);
     }
 
     /// <summary>
@@ -615,8 +587,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static void ValidateAmount(float amount, string paramName)
     {
-        if (amount < 0)
-            throw new ArgumentOutOfRangeException(paramName, "参数必须大于或等于0");
+        Internal.ImageGeometryHelper.ValidateAmount(amount, paramName);
     }
 
     /// <summary>
@@ -624,10 +595,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static void ValidateColorMatrix(float[,] matrix)
     {
-        if (matrix is null)
-            throw new ArgumentNullException(nameof(matrix));
-        if (matrix.GetLength(0) != 5 || matrix.GetLength(1) != 5)
-            throw new ArgumentException("颜色矩阵必须为5x5", nameof(matrix));
+        Internal.ImageGeometryHelper.ValidateColorMatrix(matrix);
     }
 
     /// <summary>
@@ -635,21 +603,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static bool IsSimilarColors(Rgba32 x, Rgba32 y, int accuracy)
     {
-        var offsetA = x.A - y.A;
-        var offsetR = x.R - y.R;
-        var offsetG = x.G - y.G;
-        var offsetB = x.B - y.B;
-
-        if (Math.Abs(offsetA) > 1)
-            return false;
-
-        if (offsetB == offsetG && offsetR == offsetB)
-        {
-            if (Math.Abs(offsetR) > 1)
-                return ColorDifference(x, y) <= accuracy / 3d;
-        }
-
-        return ColorDifference(x, y) <= accuracy;
+        return Internal.ImageGeometryHelper.IsSimilarColors(x.A, x.R, x.G, x.B, y.A, y.R, y.G, y.B, accuracy);
     }
 
     /// <summary>
@@ -657,11 +611,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static double ColorDifference(Rgba32 x, Rgba32 y)
     {
-        var m = (x.R + y.R) / 2d;
-        var r = Math.Pow(x.R - y.R, 2);
-        var g = Math.Pow(x.G - y.G, 2);
-        var b = Math.Pow(x.B - y.B, 2);
-        return Math.Sqrt((2 + m / 256d) * r + 4 * g + (2 + (255 - m) / 256d) * b);
+        return Internal.ImageGeometryHelper.ColorDifference(x.R, x.G, x.B, y.R, y.G, y.B);
     }
 
     /// <summary>
@@ -669,7 +619,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static float GetGrayScale(Rgba32 color)
     {
-        return (0.30f * color.R + 0.59f * color.G + 0.11f * color.B) / 255f;
+        return Internal.ImageGeometryHelper.GetGrayScale(color.R, color.G, color.B);
     }
 
     /// <summary>
@@ -689,21 +639,8 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static Rgba32 ApplyColorMatrix(Rgba32 color, float[,] matrix)
     {
-        var r = color.R / 255f;
-        var g = color.G / 255f;
-        var b = color.B / 255f;
-        var a = color.A / 255f;
-
-        var resultR = r * matrix[0, 0] + g * matrix[1, 0] + b * matrix[2, 0] + a * matrix[3, 0] + matrix[4, 0];
-        var resultG = r * matrix[0, 1] + g * matrix[1, 1] + b * matrix[2, 1] + a * matrix[3, 1] + matrix[4, 1];
-        var resultB = r * matrix[0, 2] + g * matrix[1, 2] + b * matrix[2, 2] + a * matrix[3, 2] + matrix[4, 2];
-        var resultA = r * matrix[0, 3] + g * matrix[1, 3] + b * matrix[2, 3] + a * matrix[3, 3] + matrix[4, 3];
-
-        return new Rgba32(
-            ClampToByte(resultR * 255f),
-            ClampToByte(resultG * 255f),
-            ClampToByte(resultB * 255f),
-            ClampToByte(resultA * 255f));
+        var (r, g, b, a) = Internal.ImageGeometryHelper.ApplyColorMatrix(color.R, color.G, color.B, color.A, matrix);
+        return new Rgba32(r, g, b, a);
     }
 
     /// <summary>
@@ -711,14 +648,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static float[,] CreateBrightnessMatrix(float amount)
     {
-        return new[,]
-        {
-            { amount, 0, 0, 0, 0 },
-            { 0, amount, 0, 0, 0 },
-            { 0, 0, amount, 0, 0 },
-            { 0, 0, 0, 1, 0 },
-            { 0, 0, 0, 0, 1 }
-        };
+        return ColorMatrices.CreateBrightnessFilter(amount);
     }
 
     /// <summary>
@@ -726,15 +656,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static float[,] CreateContrastMatrix(float amount)
     {
-        var contrast = (-.5F * amount) + .5F;
-        return new[,]
-        {
-            { amount, 0, 0, 0, 0 },
-            { 0, amount, 0, 0, 0 },
-            { 0, 0, amount, 0, 0 },
-            { 0, 0, 0, 1, 0 },
-            { contrast, contrast, contrast, 0, 1 }
-        };
+        return ColorMatrices.CreateContrastFilter(amount);
     }
 
     /// <summary>
@@ -742,26 +664,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     private static float[,] CreateSaturationMatrix(float amount)
     {
-        var matrix00 = .213F + (.787F * amount);
-        var matrix10 = .715F - (.715F * amount);
-        var matrix20 = 1F - (matrix00 + matrix10);
-
-        var matrix01 = .213F - (.213F * amount);
-        var matrix11 = .715F + (.285F * amount);
-        var matrix21 = 1F - (matrix01 + matrix11);
-
-        var matrix02 = .213F - (.213F * amount);
-        var matrix12 = .715F - (.715F * amount);
-        var matrix22 = 1F - (matrix02 + matrix12);
-
-        return new[,]
-        {
-            { matrix00, matrix01, matrix02, 0, 0 },
-            { matrix10, matrix11, matrix12, 0, 0 },
-            { matrix20, matrix21, matrix22, 0, 0 },
-            { 0, 0, 0, 1, 0 },
-            { 0, 0, 0, 0, 1 }
-        };
+        return ColorMatrices.CreateSaturationFilter(amount);
     }
 
     /// <summary>
