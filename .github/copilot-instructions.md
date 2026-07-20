@@ -1,48 +1,170 @@
 # Copilot Instructions for Bing.Utils
 
-你正在协助维护 `Bing.Utils`（.NET 工具类库，多 NuGet 子包）。
+> 适用范围：本仓库
+> - `src`：框架源码  
+> - `tests`：测试项目（已按模块拆分，含 Unit + Integration + Shared Test Infrastructure）
 
-## 1) 目标
-- 输出生产可用、可测试、可维护的 C# 代码与文档。
-- 优先遵循现有项目结构：`src/`、`tests/`、`benchmarks/`、`docs/`。
-- 避免引入不必要的第三方依赖，尤其在核心工具包中。
+本指引用于约束 GitHub Copilot / Copilot Chat / Codex 在本仓库生成代码与测试的方式，使输出 **可合并、可维护、可测试、与现有结构一致**。
 
-## 2) 分层与依赖规则
-- 抽象/契约层不依赖具体实现。
-- Core 不反向依赖 Integrations。
-- 测试项目仅用于验证，不被生产代码引用。
-- 可选能力（如图像引擎）放在独立包，不污染核心包依赖树。
+---
 
-## 3) 命名规范
-- 项目名：`Bing.Utils.{Capability}`
-- 接口：`I*`
-- 扩展类：`*Extensions`
-- 异步方法：`*Async`
-- 测试类：`{TypeName}Tests`
-- 测试方法：`Method_State_Expected`
+## 1. 现有测试结构（必须遵守）
 
-## 4) 代码风格
-- 开启并保持 Nullable 友好。
-- 公共 API 必须有 XML 注释（`<summary>`、`<param>`、`<returns>`、`<exception>`）。
-- 优先 `TryXxx` 模式替代异常控制流（高频路径）。
-- 所有输入参数做 guard clause。
-- 关注跨平台行为（路径、编码、时区）。
+### 1.1 目录真实结构（以当前仓库为准）
+- 单元测试（Unit Tests）：`tests/<Module>.Tests`
+  - 示例：`Bing.Utils.Tests`、`Bing.Utils.DateTime.Tests`、`Bing.Utils.Http.Tests`
+- 集成测试（Integration Tests）：`tests/<Module>.Tests.Integration`
+  - 示例：`Bing.Utils.Http.Tests.Integration`、`Bing.Utils.DependencyInjection.Tests.Integration`
+- 共享测试基建（Test Infrastructure / Shared）
+  - `Bing.Utils.Test.Shared`
+  - `Bing.Utils.TestShare`
+- 其它：存在 `Bing.Tests.Samples`（聚合/兼容/历史用途），生成内容时需避免与现有职责冲突。
 
-## 5) 测试要求
-- 每个新增公共方法必须有对应测试。
-- 至少覆盖：正常路径、边界值、异常路径。
-- 性能敏感代码补 benchmark（如已有基准工程则追加用例）。
+> 规则：新增测试项目必须优先沿用上述命名与分层，不要引入新的目录体系。
 
-## 6) 文档要求
-- 变更时同步更新 `docs/`。
-- API 变更必须写明兼容性影响（Breaking / Non-breaking）。
-- 示例代码可直接复制运行。
+### 1.2 Unit vs Integration 的边界（强制）
+- **Unit Test（默认）**
+  - 只测纯逻辑与边界行为
+  - 不依赖网络、真实 DB、真实缓存、真实文件系统
+  - 必须确定性、可重复运行、速度快
+- **Integration Test（仅在必须时）**
+  - 仅用于验证：真实数据库/缓存/DI 组合/ASP.NET Core 管道/中间件链路
+  - 必须具备可重复运行能力：可本地跑、可 CI 跑
+  - 若依赖外部服务（MySql/PostgreSql/Redis），需提供可控的启动方式（优先容器化/测试环境变量配置），不得硬编码连接信息
 
-## 7) 提交建议
-- 提交信息建议：`feat:` / `fix:` / `refactor:` / `docs:` / `test:` / `perf:`。
-- 单次 PR 聚焦一个主题，避免“超大混合提交”。
+---
 
-## 8) 禁止事项
-- 不要编造不存在的项目/类型/依赖。
-- 不要跨层直接访问不应依赖的实现。
-- 不要在核心包引入重量级外部库（除非明确要求）。
+## 2. 生成代码的通用原则
+
+### 2.1 不引入破坏性变更
+- 不随意修改 public API（类名、方法签名、异常类型、默认行为）。
+- 如必须调整 API：
+  - 同步：单元测试/集成测试（按影响范围）
+  - 更新文档或注释（如该模块已有说明/README/使用示例）
+
+### 2.2 模块依赖方向必须合理
+- `Bing.Utils` 不允许依赖其它上层实现。
+- 上层模块可依赖基础模块，但不能反向引用。
+- 跨模块能力（异常、多租户、审计、事件总线、缓存等）通过抽象/接口/扩展点协作，避免硬耦合。
+
+### 2.3 优先做“最小变更”
+- 避免引入无意义格式化/大规模重命名导致 diff 失真。
+- 改动必须聚焦目标，保持可 review。
+
+---
+
+## 3. 测试规范（你这个仓库的强约束）
+
+### 3.1 测试项目引用规则
+当为某个 `src/<Module>` 增加或完善测试时：
+
+- Unit Test 项目：`tests/<Module>.Tests`
+  - 必须 `ProjectReference` 指向被测 `src/<Module>/<Module>.csproj`
+  - 必须引用共享测试基建：优先使用仓库现有的 `Bing.Utils.Test.Shared` / `Bing.Utils.TestShare*`（不要新造轮子）
+
+- Integration Test 项目：`tests/<Module>.Tests.Integration`
+  - 除上述规则外，还需要明确：
+    - 测试运行前置条件（DB/Redis 等）
+    - 如何在 CI 运行（环境变量/容器/跳过策略）
+
+> 禁止：为了让测试“看起来能跑”，在 Integration 里写 sleep、随机等待、依赖公网。
+
+### 3.2 命名规范
+- 测试方法名：**英文**，建议：`Method_State_Expected()`
+- 测试注释：**中文**，每个测试必须写“测试目的”
+- 结构：AAA（Arrange / Act / Assert）
+
+示例：
+```csharp
+/// <summary>
+/// 测试目的：当租户标识缺失时，解析器应返回 null，避免抛异常影响上游管道。
+/// </summary>
+[Fact]
+public void Resolve_WhenTenantIdMissing_ShouldReturnNull()
+{
+    // Arrange
+    ...
+
+    // Act
+    ...
+
+    // Assert
+    ...
+}
+```
+
+### 3.3 Mock 边界（重点）
+- 只 Mock 外部依赖：时间、Guid、随机数、IO、HTTP、数据库、缓存、日志等。
+- 不 Mock 被测模块内部实现细节（避免“验证调用次数”替代“验证行为结果”）。
+- 日志测试：通常只验证“不抛异常/路径正确/包含关键字段（若有结构化事件）”，不要断言完整文本。
+
+---
+
+## 4. 针对你当前模块的“优先补测策略”
+
+### P0（必须先补齐）
+- `Bing.Utils.Tests`
+  - 基础工具类、Guard/参数校验、扩展方法、序列化/转换、线程安全与边界
+- `Bing.Utils.Collections.Tests`
+  - 集合工具类、LINQ 扩展、边界与性能
+- `Bing.Utils.DateTime.Tests`
+  - 日期时间工具类、边界与时区处理
+- `Bing.Utils.Drawing.Tests` / `Bing.Utils.Drawing.ImageSharp.Tests` / `Bing.Utils.Drawing.SkiaSharp.Tests`
+  - 图像处理工具类、边界与性能
+- `Bing.Utils.Http.Tests`
+  - HTTP 工具类、边界与性能
+- `Bing.Utils.Json.Tests`
+  - JSON 序列化/反序列化、边界与性能
+- `Bing.Utils.Text.Tests`
+  - 字符串/文本工具类、边界与性能
+- `Bing.Utils.Xml.Tests`
+  - XML 序列化/反序列化、边界与性能
+- `Bing.Utils.DependencyInjection.Tests`
+  - DI 扩展方法、边界与性能
+- `Bing.Utils.IdUtils.Tests`
+  - 唯一标识生成工具类、边界与性能
+- `Bing.Utils.Reflection.Tests`
+  - 反射工具类、边界与性能
+---
+
+## 5. Copilot 输出要求（强制工作流）
+
+当你让 Copilot “完善某模块/补单测/修 bug”时，必须按以下步骤输出：
+
+1) **变更计划**
+   - 修改/新增文件路径列表
+   - 影响的模块与依赖
+   - 是否需要 Integration Test（为什么）
+2) **用例矩阵**
+   - Given/When/Then（至少：正常 + 边界 + 负例）
+   - Mock 边界说明
+3) **落地代码**
+   - 可编译通过、可运行的测试代码
+   - 如新增项目：给出 `.csproj` 关键引用片段
+
+> 禁止：直接生成大量代码却不说明测试意图与用例覆盖范围。
+
+---
+
+## 6. CI/可执行性约束（提交验收）
+
+每次 PR 必须满足：
+1. `dotnet build` 通过
+2. `dotnet test` 通过（Unit Tests 必须全绿）
+3. 新增/修改行为必须包含对应测试
+4. Integration Tests 如需跳过必须有明确条件（例如 `RUN_INTEGRATION_TESTS=true`），并在说明中写清楚
+
+---
+
+## 7. 常用 Prompt 模板（按你仓库结构）
+
+### 7.1 针对某模块补齐 Unit Tests（默认）
+“请为 `src/<Module>` 补齐 P0 单元测试，写到 `tests/<Module>.Tests`。先列 public API，再给用例矩阵（Given/When/Then），再输出可运行的 xUnit 测试代码，并复用 `Bing.Utils.Test.Shared / Bing.Utils.TestShare*` 的现有能力，不要新造测试基建。”
+
+### 7.2 针对某数据库实现补齐 Integration Tests
+“请为 `src/Bing.Dapper.<Db>` 补齐集成测试，写到 `tests/Bing.Dapper.<Db>.Tests.Integration`。说明依赖（DB/连接配置/容器化建议），并提供可重复运行的初始化与清理策略，避免 sleep 与非确定性。”
+
+### 7.3 仅做问题审计（不改代码）
+“只扫描 `src` + `tests`，列出：测试覆盖缺口、P0 风险、依赖方向问题、API 不一致点，并给出可执行 PR 列表（每个 PR 的文件路径与验收标准）。”
+
+---
