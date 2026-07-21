@@ -193,4 +193,20 @@ public class NameValueCollectionExtensionsTests
         var qs = nvc.ToQueryString();
         qs.ShouldNotEndWith("&");
     }
+
+    /// <summary>
+    /// 测试目的：名称值集合入口应使用共享的百分号编码实现。
+    /// </summary>
+    [Fact]
+    public void ToQueryString_SpecialCharacters_UsesPercentEncoding()
+    {
+        // Arrange
+        var nvc = new NameValueCollection { { "a b", "x&y" } };
+
+        // Act
+        var result = nvc.ToQueryString();
+
+        // Assert
+        result.ShouldBe("a%20b=x%26y");
+    }
 }

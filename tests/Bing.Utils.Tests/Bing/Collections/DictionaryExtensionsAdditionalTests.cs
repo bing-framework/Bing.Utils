@@ -181,6 +181,26 @@ public class DictionaryExtensionsAdditionalTests
     public void ToQueryString_EmptyList_ReturnsEmpty() =>
         new List<KeyValuePair<string, string>>().ToQueryString().ShouldBe("");
 
+    /// <summary>
+    /// 测试目的：集合查询字符串入口应编码空格与特殊字符并保留空键。
+    /// </summary>
+    [Fact]
+    public void ToQueryString_KvpEnumerableWithSpecialValues_UsesEncodedSharedImplementation()
+    {
+        // Arrange
+        var pairs = new[]
+        {
+            new KeyValuePair<string, string>(string.Empty, "a b"),
+            new KeyValuePair<string, string>("x&y", "z=")
+        };
+
+        // Act
+        var result = pairs.ToQueryString();
+
+        // Assert
+        result.ShouldBe("=a%20b&x%26y=z%3D");
+    }
+
     // ─────────────────────────────────────────────────────────────────
     // ToDataTable (from IDictionary<string, object>)
     // ─────────────────────────────────────────────────────────────────

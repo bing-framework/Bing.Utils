@@ -62,15 +62,20 @@ public static class DictionaryExtensions
     /// <typeparam name="TKey">键类型</typeparam>
     /// <typeparam name="TValue">值类型</typeparam>
     /// <param name="dictionary">字典</param>
+    /// <returns>RFC 3986 编码的查询字符串。</returns>
+    /// <remarks>
+    /// 键和值均进行 UTF-8 百分号编码，值为 <c>null</c> 的项会被忽略。
+    /// </remarks>
     public static string ToQueryString<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
     {
-        if (dictionary == null || !dictionary.Any())
+        if (dictionary == null)
             return string.Empty;
-        var sb = new StringBuilder();
-        foreach (var item in dictionary)
-            sb.Append($"{item.Key.ToString()}={item.Value.ToString()}&");
-        sb.TrimEnd("&");
-        return sb.ToString();
+        return QueryStringExtensions.ToQueryString(dictionary.Select(item =>
+        {
+            if (item.Key == null)
+                throw new ArgumentException("查询字符串键不能为 null。", nameof(dictionary));
+            return new KeyValuePair<string, object>(item.Key.ToString(), item.Value);
+        }));
     }
 
     #endregion

@@ -77,8 +77,7 @@ public class DictionaryExtensionsTests
             ["b"] = "2"
         };
         var result = dict.ToQueryString();
-        result.ShouldContain("a=1");
-        result.ShouldContain("b=2");
+        result.ShouldBe("a=1&b=2");
     }
 
     [Fact]
@@ -93,6 +92,26 @@ public class DictionaryExtensionsTests
     {
         IDictionary<string, string> dict = null!;
         dict.ToQueryString().ShouldBe(string.Empty);
+    }
+
+    /// <summary>
+    /// 测试目的：既有字典入口应对键和值进行百分号编码并忽略空值。
+    /// </summary>
+    [Fact]
+    public void ToQueryString_SpecialCharactersAndNullValue_UsesEncodedSharedImplementation()
+    {
+        // Arrange
+        IDictionary<string, string> dict = new Dictionary<string, string>
+        {
+            ["a b"] = "x&y",
+            ["ignored"] = null
+        };
+
+        // Act
+        var result = dict.ToQueryString();
+
+        // Assert
+        result.ShouldBe("a%20b=x%26y");
     }
 
     // ─────────────────────────────────────────────────────────────────

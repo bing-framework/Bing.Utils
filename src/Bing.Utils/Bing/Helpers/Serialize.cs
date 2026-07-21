@@ -2,6 +2,7 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using System.Xml.Serialization;
+using Bing.Extensions;
 
 namespace Bing.Helpers;
 
@@ -245,14 +246,14 @@ public static partial class Serialize
         var bytes = encoding.GetBytes(xml);
 
         using var ms = new MemoryStream(bytes);
-        var serializer = new XmlSerializer(typeof(T));
-        return (T)serializer.Deserialize(ms);
+        return ms.DeserializeXml<T>();
     }
 
     /// <summary>
     /// 将对象序列化为XML并写入文件。
     /// </summary>
     /// <param name="fileName">文件路径</param>
+    /// <param name="encoding">文件不含 BOM 或 XML 编码声明时使用的回退编码，默认为 UTF-8。</param>
     /// <param name="data">要序列化的数据</param>
     /// <param name="encoding">编码格式，默认为UTF-8</param>
     /// <exception cref="ArgumentException">当文件名为null或空时抛出</exception>
@@ -292,16 +293,17 @@ public static partial class Serialize
     /// <returns>反序列化后的对象</returns>
     /// <exception cref="ArgumentException">当文件名为null或空时抛出</exception>
     /// <exception cref="FileNotFoundException">当文件不存在时抛出</exception>
-    public static T FromXmlFile<T>(string fileName)
+    public static T FromXmlFile<T>(string fileName, Encoding encoding = null)
     {
         if (string.IsNullOrWhiteSpace(fileName))
             throw new ArgumentException("文件名不能为null或空", nameof(fileName));
         if (!File.Exists(fileName))
             throw new FileNotFoundException($"文件不存在: {fileName}");
 
-        using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-        var serializer = new XmlSerializer(typeof(T));
-        return (T)serializer.Deserialize(fs);
+        encoding ??= Encoding.UTF8;
+        using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var reader = new StreamReader(fs, encoding, detectEncodingFromByteOrderMarks: true);
+        return reader.DeserializeXml<T>();
     }
 
     #endregion

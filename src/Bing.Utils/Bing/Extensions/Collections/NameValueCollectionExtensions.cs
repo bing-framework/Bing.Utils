@@ -15,15 +15,16 @@ public static class NameValueCollectionExtensions
     /// 将键值对集合转换成查询字符串
     /// </summary>
     /// <param name="collection">键值对集合</param>
+    /// <returns>RFC 3986 编码的查询字符串。</returns>
+    /// <remarks>
+    /// 键和值均进行 UTF-8 百分号编码，值为 <c>null</c> 的项会被忽略。
+    /// </remarks>
     public static string ToQueryString(this NameValueCollection collection)
     {
-        if (collection == null || !collection.HasKeys())
+        if (collection == null)
             return string.Empty;
-        var sb = new StringBuilder();
-        foreach (string key in collection.Keys)
-            sb.Append($"{key}={collection[key]}&");
-        sb.TrimEnd("&");
-        return sb.ToString();
+        return QueryStringExtensions.ToQueryString(collection.AllKeys.Select(key =>
+            new KeyValuePair<string, object>(key, collection[key])));
     }
 
     #endregion

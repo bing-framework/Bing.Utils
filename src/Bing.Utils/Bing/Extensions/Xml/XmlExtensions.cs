@@ -8,7 +8,7 @@ namespace Bing.Extensions;
 /// <summary>
 /// Xml 扩展
 /// </summary>
-public static class XmlExtensions
+public static partial class XmlExtensions
 {
     #region FromXml(将XML转换为Object)
 
@@ -19,9 +19,10 @@ public static class XmlExtensions
     /// <param name="xml">XML字符串</param>
     public static T FromXml<T>(this string xml) where T : new()
     {
+        if (xml == null)
+            throw new ArgumentNullException(nameof(xml));
         using var sr = new StringReader(xml);
-        var xmlSerializer = new XmlSerializer(typeof(T));
-        return (T)xmlSerializer.Deserialize(sr);
+        return sr.DeserializeXml<T>();
     }
 
     #endregion
@@ -35,9 +36,11 @@ public static class XmlExtensions
     /// <param name="xmlDocument">Xml文档</param>
     public static T Deserialize<T>(this XDocument xmlDocument)
     {
+        if (xmlDocument == null)
+            throw new ArgumentNullException(nameof(xmlDocument));
         var xmlSerializer = new XmlSerializer(typeof(T));
         using var reader = xmlDocument.CreateReader();
-        return (T) xmlSerializer.Deserialize(reader);
+        return Deserialize<T>(xmlSerializer, reader);
     }
 
     #endregion

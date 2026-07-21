@@ -1,6 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Data;
-using System.Web;
+using Bing.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Collections;
@@ -137,21 +137,15 @@ public static partial class DictionaryExtensions
     /// 转换为查询字符串
     /// </summary>
     /// <param name="this">键值对集合</param>
+    /// <returns>RFC 3986 编码的查询字符串。</returns>
+    /// <remarks>
+    /// 键和值均进行 UTF-8 百分号编码，空键会按空字符串编码，值为 <c>null</c> 的项会被忽略。
+    /// </remarks>
     public static string ToQueryString(this IEnumerable<KeyValuePair<string, string>> @this)
     {
         if (@this == null)
             return string.Empty;
-        var sb = new StringBuilder(1024);
-        foreach (var item in @this)
-        {
-            if (string.IsNullOrWhiteSpace(item.Key))
-                continue;
-            sb.Append("&");
-            sb.Append(HttpUtility.UrlEncode(item.Key));
-            sb.Append("=");
-            if (item.Value != null)
-                sb.Append(HttpUtility.UrlEncode(item.Value));
-        }
-        return sb.Length > 1 ? sb.ToString(1, sb.Length - 1) : "";
+        return QueryStringExtensions.ToQueryString(@this.Select(item =>
+            new KeyValuePair<string, object>(item.Key, item.Value)));
     }
 }
