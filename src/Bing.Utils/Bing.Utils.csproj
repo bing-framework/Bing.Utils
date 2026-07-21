@@ -4,12 +4,6 @@
 		<PackageId>Bing.Utils</PackageId>
 		<Description>Bing.Utils是Bing应用框架的核心帮助类库。</Description>
 	</PropertyGroup>
-
-	<PropertyGroup>
-		<!--解决 BinaryFormatter 兼容问题-->
-		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
-	</PropertyGroup>
-
 	<Import Project="..\..\common.props" />
 
 	<ItemGroup>

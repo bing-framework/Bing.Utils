@@ -75,6 +75,28 @@ Assert.Throws<ArgumentException>(() => ok.MustTrue());
 
 ## 8. 版本与兼容性注意事项
 - 主库统一多目标框架：`net8.0;net7.0;net6.0;netstandard2.0`。[证据] `common.props:3`
-- 启用了 `EnableUnsafeBinaryFormatterSerialization` 兼容历史场景，升级时需评估序列化安全风险。[证据] `src/Bing.Utils/Bing.Utils.csproj:10`
-- 测试在 `net8.0` 下显式开启了相同兼容开关，避免行为差异。[证据] `tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj:25`
+- 主库不启用 `EnableUnsafeBinaryFormatterSerialization`，也不添加 BinaryFormatter 兼容包；最终应用自行决定是否为受控历史迁移承担兼容性配置。
+- `net8.0` 测试项目仅为执行历史兼容回归测试而显式启用该开关。[证据] `tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj:25`
+
+### 对象与字节转换选择
+
+| 场景 | 推荐 API | 约束 |
+| --- | --- | --- |
+| 普通 .NET 对象图二进制转换 | `Serialize.ToDataContractBytes` / `Serialize.FromDataContractBytes` | 多态类型必须通过 `knownTypes` 显式注册；读取受固定对象图和 XML 配额限制。 |
+| 跨平台缓存、消息传递、可调试存储 | `Json.ToBytes` / `Json.ToObject` | 采用 JSON 字节，不新增另一套 JSON API。 |
+| 不包含托管引用的结构体内存布局转换 | `Serialize.StructToBytes` / `Serialize.BytesToStruct` | 仅适用于内存布局互转，不承诺跨平台或跨目标框架持久化兼容。 |
+| 受控历史数据迁移 | `Serialize.ToLegacyBinary` / `Serialize.FromLegacyBinary` | 仅限历史迁移，已过时，禁止作为新数据默认格式。 |
+
+### Legacy BinaryFormatter 迁移
+
+`BinaryFormatter` 不安全。不得用于网络输入、用户上传文件、不可信消息队列，也不得作为未知格式的自动探测或回退方案；Binder 或类型白名单不能彻底修复其安全问题。
+
+```csharp
+var oldValue = Serialize.FromLegacyBinary<LegacyOrder>(legacyBytes);
+var newBytes = Serialize.ToDataContractBytes(oldValue);
+```
+
+- 旧数据只读取一次，转换后立即写入新格式；不要再写入新的 BinaryFormatter 数据。
+- 迁移完成后删除或明确标记历史数据，避免新代码继续依赖该格式。
+- .NET 6、7、8 的最终应用如确需迁移，应自行评估并配置 `EnableUnsafeBinaryFormatterSerialization`；.NET 9 及以后不得依赖内置实现，是否引入兼容包由最终应用负责。
 

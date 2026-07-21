@@ -20,7 +20,7 @@
     <ProjectReference Include="..\Bing.Tests.Samples\Bing.Tests.Samples.csproj" />
   </ItemGroup>
 
-	<!--NET8.0+ 必须设置该属性，否则会报错-->
+	<!--仅用于运行历史 BinaryFormatter 兼容测试；主库与正常应用不应默认启用。-->
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
 	</PropertyGroup>
