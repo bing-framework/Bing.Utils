@@ -8,7 +8,7 @@ namespace Bing.Helpers;
 /// <summary>
 /// 映射器帮助类
 /// </summary>
-public static class MapperHelper
+public static partial class MapperHelper
 {
     /// <summary>
     /// Struct 映射委托缓存
@@ -719,7 +719,7 @@ public static class MapperHelper
     /// <returns>是否为索引器属性</returns>
     private static bool IsIndexerProperty(PropertyInfo propertyInfo)
     {
-        return propertyInfo.Name == "Item" && propertyInfo.GetIndexParameters().Length > 0;
+        return propertyInfo.GetIndexParameters().Length > 0;
     }
 
     /// <summary>
@@ -746,10 +746,10 @@ public static class MapperHelper
     private static TDestination MapReference<TSource, TDestination>(TSource source) where TDestination : new()
     {
         var destinationProperties = TypeReflections.TypeCacheManager.GetTypeProperties(typeof(TDestination))
-            .Where(p => !p.IsStatic())
+            .Where(p => !p.IsStatic() && !IsIndexerProperty(p))
             .ToArray();
         var sourceProperties = TypeReflections.TypeCacheManager.GetTypeProperties(typeof(TSource))
-            .Where(x => !x.IsStatic() && destinationProperties.Any(_ => _.Name.EqualsIgnoreCase(x.Name)))
+            .Where(x => !x.IsStatic() && !IsIndexerProperty(x) && destinationProperties.Any(_ => _.Name.EqualsIgnoreCase(x.Name)))
             .ToArray();
 
         var result = new TDestination();
@@ -797,10 +797,10 @@ public static class MapperHelper
     private static TDestination MapReferenceWith<TSource, TDestination>(TSource source, string[] propertiesToMap) where TDestination : new()
     {
         var destinationProperties = TypeReflections.TypeCacheManager.GetTypeProperties(typeof(TDestination))
-            .Where(x => !x.IsStatic() && propertiesToMap.Any(_ => string.Equals(_, x.Name, StringComparison.OrdinalIgnoreCase)))
+            .Where(x => !x.IsStatic() && !IsIndexerProperty(x) && propertiesToMap.Any(_ => string.Equals(_, x.Name, StringComparison.OrdinalIgnoreCase)))
             .ToArray();
         var sourceProperties = TypeReflections.TypeCacheManager.GetTypeProperties(typeof(TSource))
-            .Where(x => !x.IsStatic() && propertiesToMap.Any(_ => _.EqualsIgnoreCase(x.Name)))
+            .Where(x => !x.IsStatic() && !IsIndexerProperty(x) && propertiesToMap.Any(_ => _.EqualsIgnoreCase(x.Name)))
             .ToArray();
 
         var result = new TDestination();
@@ -848,11 +848,11 @@ public static class MapperHelper
     private static TDestination MapReferenceWithout<TSource, TDestination>(TSource source, string[] propertiesNoMap) where TDestination : new()
     {
         var destinationProperties = TypeReflections.TypeCacheManager.GetTypeProperties(typeof(TDestination))
-            .Where(x => !x.IsStatic() && !propertiesNoMap.Any(_ => string.Equals(_, x.Name, StringComparison.OrdinalIgnoreCase)))
+            .Where(x => !x.IsStatic() && !IsIndexerProperty(x) && !propertiesNoMap.Any(_ => string.Equals(_, x.Name, StringComparison.OrdinalIgnoreCase)))
             .ToArray();
 
         var sourceProperties = TypeReflections.TypeCacheManager.GetTypeProperties(typeof(TSource))
-            .Where(x => !x.IsStatic() && destinationProperties.Any(_ => _.Name.EqualsIgnoreCase(x.Name)))
+            .Where(x => !x.IsStatic() && !IsIndexerProperty(x) && destinationProperties.Any(_ => _.Name.EqualsIgnoreCase(x.Name)))
             .ToArray();
 
         var result = new TDestination();
