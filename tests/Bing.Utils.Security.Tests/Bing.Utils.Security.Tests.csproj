@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<RootNamespace />
+		<TargetFrameworks>net8.0;net7.0;net6.0;</TargetFrameworks>
+		<Version>1.0.0.0</Version>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.tests.props" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Bing.Utils.Security\Bing.Utils.Security.csproj" />
+	</ItemGroup>
+</Project>
