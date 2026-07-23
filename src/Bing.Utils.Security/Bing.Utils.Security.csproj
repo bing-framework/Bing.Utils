@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.Security</AssemblyName>
+		<PackageId>Bing.Utils.Security</PackageId>
+		<Description>Bing.Utils.Security 是 Bing.Utils 的安全与加密操作类库，提供哈希、HMAC、认证加密、密码哈希及 RSA 操作。</Description>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.props" />
+</Project>
