@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bing.Utils.Security.Gm</AssemblyName>
+		<PackageId>Bing.Utils.Security.Gm</PackageId>
+		<Description>Bing.Utils.Security.Gm 是 Bing.Utils.Security 的国密算法扩展。</Description>
+	</PropertyGroup>
+
+	<Import Project="..\..\common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
+		<ProjectReference Include="..\Bing.Utils.Security\Bing.Utils.Security.csproj" />
+	</ItemGroup>
+</Project>

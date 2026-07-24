@@ -18,6 +18,12 @@ Bing.Utils 是一个基于`.net core`平台下的工具库，旨在提升小型�
 |Bing.Utils.Drawing.ImageSharp|[![Bing.Utils.Drawing.ImageSharp](https://img.shields.io/nuget/v/Bing.Utils.Drawing.ImageSharp.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing.ImageSharp/)|[![Bing.Utils.Drawing.ImageSharp](https://img.shields.io/nuget/dt/Bing.Utils.Drawing.ImageSharp.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing.ImageSharp/)|
 |Bing.Utils.Drawing.SkiaSharp|[![Bing.Utils.Drawing.SkiaSharp](https://img.shields.io/nuget/v/Bing.Utils.Drawing.SkiaSharp.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing.SkiaSharp/)|[![Bing.Utils.Drawing.SkiaSharp](https://img.shields.io/nuget/dt/Bing.Utils.Drawing.SkiaSharp.svg)](https://www.nuget.org/packages/Bing.Utils.Drawing.SkiaSharp/)|
 |Bing.Utils.Http|[![Bing.Utils.Http](https://img.shields.io/nuget/v/Bing.Utils.Http.svg)](https://www.nuget.org/packages/Bing.Utils.Http/)|[![Bing.Utils.Http](https://img.shields.io/nuget/dt/Bing.Utils.Http.svg)](https://www.nuget.org/packages/Bing.Utils.Http/)|
+|Bing.Utils.Security|安全与密码学基础能力|详见 [安全与密码学文档](docs/security.md)|
+|Bing.Utils.Security.Gm|SM2、SM3、SM4 国密扩展|详见 [安全与密码学文档](docs/security.md)|
+
+## 安全与密码学
+
+安全与国密包的算法范围、依赖边界和使用限制见 [docs/security.md](docs/security.md)。
 
 ## 开发环境与依赖
 
