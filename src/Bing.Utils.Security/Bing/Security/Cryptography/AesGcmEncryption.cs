@@ -66,7 +66,7 @@ public static class AesGcmEncryption
         try
         {
             using var aes = CreateAesGcm(keyBytes);
-            aes.Decrypt(payload.Nonce, payload.Ciphertext, payload.Tag, plaintext, associatedData);
+            aes.Decrypt(payload.Nonce.Span, payload.Ciphertext.Span, payload.Tag.Span, plaintext, associatedData);
             return plaintext;
         }
         catch

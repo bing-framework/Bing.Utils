@@ -60,6 +60,34 @@ public class GmCryptographyTests
     }
 
     /// <summary>
+    /// 测试目的：BSM1 负载必须可往返解析，且导出数组被修改不得影响负载自身。
+    /// </summary>
+    [Fact]
+    public void Sm4GcmPayload_WhenEncodedAndExported_ShouldRemainVersionedAndImmutable()
+    {
+        // Arrange
+        var key = new byte[Sm4GcmEncryption.KeySize];
+        var plaintext = System.Text.Encoding.UTF8.GetBytes("SM4 BSM1 payload");
+        var payload = Sm4GcmEncryption.Encrypt(plaintext, key);
+        var encoded = payload.Encode();
+        var exportedCiphertext = payload.Ciphertext;
+        exportedCiphertext[0] ^= 1;
+
+        // Act
+        var parsed = Sm4GcmPayload.Parse(encoded);
+        var truncated = Sm4GcmPayload.TryParse(encoded[..^1], out var invalidPayload);
+        var decrypted = Sm4GcmEncryption.Decrypt(payload, key);
+
+        // Assert
+        encoded.ShouldStartWith("QlNNMQ");
+        Sm4GcmEncryption.Decrypt(parsed, key).ShouldBe(plaintext);
+        decrypted.ShouldBe(plaintext);
+        payload.Ciphertext.ShouldNotBe(exportedCiphertext);
+        truncated.ShouldBeFalse();
+        invalidPayload.ShouldBeNull();
+    }
+
+    /// <summary>
     /// 测试目的：SM2 PEM 密钥应支持 C1C3C2 加密和使用默认或自定义用户标识的 SM2withSM3 签名。
     /// </summary>
     [Fact]

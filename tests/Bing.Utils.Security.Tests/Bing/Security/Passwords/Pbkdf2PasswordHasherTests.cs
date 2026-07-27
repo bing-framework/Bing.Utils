@@ -68,4 +68,42 @@ public class Pbkdf2PasswordHasherTests
         first.ShouldBe(second);
         weakSalt.ShouldThrow<ArgumentException>();
     }
+
+    /// <summary>
+    /// 测试目的：验证路径必须拒绝超长记录和超出成本上限的记录，且不得执行派生操作。
+    /// </summary>
+    [Fact]
+    public void Verify_WhenRecordExceedsResourceLimits_ShouldReturnFailed()
+    {
+        // Arrange
+        var hasher = new Pbkdf2PasswordHasher();
+        var oversizedRecord = new string('a', Pbkdf2PasswordHasherOptions.MaximumEncodedHashLength + 1);
+        var expensiveRecord = "BSP1$PBKDF2-SHA256$1000001$AAAAAAAAAAAAAAAAAAAAAA$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+        // Act
+        var oversizedResult = hasher.Verify("password", oversizedRecord);
+        var expensiveResult = hasher.Verify("password", expensiveRecord);
+
+        // Assert
+        oversizedResult.ShouldBe(PasswordVerificationResult.Failed);
+        expensiveResult.ShouldBe(PasswordVerificationResult.Failed);
+    }
+
+    /// <summary>
+    /// 测试目的：创建哈希器和直接派生密钥时必须拒绝超过已声明上限的参数。
+    /// </summary>
+    [Fact]
+    public void CreateOrDerive_WhenParametersExceedLimits_ShouldThrowArgumentOutOfRangeException()
+    {
+        // Arrange
+        var oversizedOptions = new Pbkdf2PasswordHasherOptions { IterationCount = Pbkdf2PasswordHasherOptions.MaximumIterationCount + 1 };
+        var oversizedOutput = new Action(() => Pbkdf2KeyDerivation.DeriveKey("password", new byte[16], Pbkdf2PasswordHasherOptions.MaximumHashSize + 1, 100000));
+
+        // Act
+        var createAction = new Action(() => new Pbkdf2PasswordHasher(oversizedOptions));
+
+        // Assert
+        createAction.ShouldThrow<ArgumentOutOfRangeException>();
+        oversizedOutput.ShouldThrow<ArgumentOutOfRangeException>();
+    }
 }

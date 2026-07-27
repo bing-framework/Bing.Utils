@@ -13,6 +13,65 @@ namespace Bing.Utils.Security.Tests.Bing.Security.Canonicalization;
 public class CanonicalRequestTests
 {
     /// <summary>
+    /// 测试目的：默认 RFC 3986 编码必须避免参数值中的分隔符与独立参数产生相同待签名文本。
+    /// </summary>
+    [Fact]
+    public void Serialize_WhenValueContainsSeparators_ShouldNotCollideWithSeparateParameters()
+    {
+        // Arrange
+        var embedded = new[] { new CanonicalParameter("a", "1&b=2") };
+        var separate = new[] { new CanonicalParameter("a", "1"), new CanonicalParameter("b", "2") };
+
+        // Act
+        var embeddedResult = CanonicalParameterSerializer.Serialize(embedded);
+        var separateResult = CanonicalParameterSerializer.Serialize(separate);
+
+        // Assert
+        embeddedResult.ShouldBe("a=1%26b%3D2");
+        separateResult.ShouldBe("a=1&b=2");
+        embeddedResult.ShouldNotBe(separateResult);
+    }
+
+    /// <summary>
+    /// 测试目的：关闭 URL 编码时，含分隔符的值、空分隔符或相同分隔符必须被拒绝。
+    /// </summary>
+    [Fact]
+    public void Serialize_WhenRawSeparatorsAreAmbiguous_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var parameter = new[] { new CanonicalParameter("a", "1&b=2") };
+        var rawOptions = new CanonicalParameterOptions { UrlEncodeKeys = false, UrlEncodeValues = false };
+        var emptySeparatorOptions = new CanonicalParameterOptions { PairSeparator = string.Empty };
+        var sameSeparatorOptions = new CanonicalParameterOptions { PairSeparator = "&", KeyValueSeparator = "&" };
+
+        // Act
+        var rawAction = new Action(() => CanonicalParameterSerializer.Serialize(parameter, rawOptions));
+        var emptyAction = new Action(() => CanonicalParameterSerializer.Serialize(parameter, emptySeparatorOptions));
+        var sameAction = new Action(() => CanonicalParameterSerializer.Serialize(parameter, sameSeparatorOptions));
+
+        // Assert
+        rawAction.ShouldThrow<ArgumentException>();
+        emptyAction.ShouldThrow<ArgumentException>();
+        sameAction.ShouldThrow<ArgumentException>();
+    }
+
+    /// <summary>
+    /// 测试目的：未指定 Kind 的 DateTime 不得依赖服务器本地时区参与签名。
+    /// </summary>
+    [Fact]
+    public void Serialize_WhenDateTimeKindIsUnspecified_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var parameters = new[] { new CanonicalParameter("time", new DateTime(2026, 7, 27, 12, 0, 0, DateTimeKind.Unspecified)) };
+
+        // Act
+        var action = new Action(() => CanonicalParameterSerializer.Serialize(parameters));
+
+        // Assert
+        action.ShouldThrow<ArgumentException>();
+    }
+
+    /// <summary>
     /// 测试目的：规范化应采用 Ordinal 排序、固定文化格式、显式数组规则并区分 null 与空字符串。
     /// </summary>
     [Fact]

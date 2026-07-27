@@ -52,7 +52,7 @@ public class AesGcmEncryptionTests
         var second = AesGcmEncryption.Encrypt(plaintext, key);
 
         // Assert
-        first.Nonce.SequenceEqual(second.Nonce).ShouldBeFalse();
+        first.Nonce.Span.SequenceEqual(second.Nonce.Span).ShouldBeFalse();
         first.Encode().ShouldNotBe(second.Encode());
     }
 
@@ -66,9 +66,15 @@ public class AesGcmEncryptionTests
         var key = AesGcmEncryption.GenerateKey();
         var associatedData = System.Text.Encoding.UTF8.GetBytes("request-id");
         var payload = AesGcmEncryption.Encrypt(System.Text.Encoding.UTF8.GetBytes("机密数据"), key, associatedData);
-        var changedCiphertext = new AesGcmPayload(payload.Nonce, new byte[] { (byte)(payload.Ciphertext[0] ^ 1) }.Concat(payload.Ciphertext.AsSpan(1).ToArray()).ToArray(), payload.Tag);
-        var changedNonce = new AesGcmPayload(new byte[] { (byte)(payload.Nonce[0] ^ 1) }.Concat(payload.Nonce.AsSpan(1).ToArray()).ToArray(), payload.Ciphertext, payload.Tag);
-        var changedTag = new AesGcmPayload(payload.Nonce, payload.Ciphertext, new byte[] { (byte)(payload.Tag[0] ^ 1) }.Concat(payload.Tag.AsSpan(1).ToArray()).ToArray());
+        var changedCiphertextBytes = payload.Ciphertext.ToArray();
+        changedCiphertextBytes[0] ^= 1;
+        var changedNonceBytes = payload.Nonce.ToArray();
+        changedNonceBytes[0] ^= 1;
+        var changedTagBytes = payload.Tag.ToArray();
+        changedTagBytes[0] ^= 1;
+        var changedCiphertext = new AesGcmPayload(payload.Nonce.ToArray(), changedCiphertextBytes, payload.Tag.ToArray());
+        var changedNonce = new AesGcmPayload(changedNonceBytes, payload.Ciphertext.ToArray(), payload.Tag.ToArray());
+        var changedTag = new AesGcmPayload(payload.Nonce.ToArray(), payload.Ciphertext.ToArray(), changedTagBytes);
 
         // Act
         var ciphertextAction = () => AesGcmEncryption.Decrypt(changedCiphertext, key, associatedData);
@@ -105,5 +111,26 @@ public class AesGcmEncryptionTests
         AesGcmEncryption.Decrypt(parsed, key).ShouldBe(System.Text.Encoding.UTF8.GetBytes("版本化载荷"));
         success.ShouldBeFalse();
         invalidPayload.ShouldBeNull();
+    }
+
+    /// <summary>
+    /// 测试目的：公开读取到的负载字节副本被修改时，不得影响原始负载的认证结果。
+    /// </summary>
+    [Fact]
+    public void AesGcmPayload_WhenExportedBytesAreModified_ShouldRetainOwnedData()
+    {
+        // Arrange
+        var key = AesGcmEncryption.GenerateKey();
+        var plaintext = System.Text.Encoding.UTF8.GetBytes("不可变载荷");
+        var payload = AesGcmEncryption.Encrypt(plaintext, key);
+        var exportedCiphertext = payload.Ciphertext.ToArray();
+        exportedCiphertext[0] ^= 1;
+
+        // Act
+        var decrypted = AesGcmEncryption.Decrypt(payload, key);
+
+        // Assert
+        decrypted.ShouldBe(plaintext);
+        payload.Ciphertext.Span.SequenceEqual(exportedCiphertext).ShouldBeFalse();
     }
 }

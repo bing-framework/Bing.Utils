@@ -9,6 +9,26 @@ namespace Bing.Security.Cryptography;
 public sealed class AesGcmPayload
 {
     /// <summary>
+    /// 文本负载允许的最大密文字节长度。
+    /// </summary>
+    public const int MaximumCiphertextSize = 16 * 1024 * 1024;
+
+    /// <summary>
+    /// 由负载独占所有权的 Nonce 字节。
+    /// </summary>
+    private readonly byte[] _nonce;
+
+    /// <summary>
+    /// 由负载独占所有权的密文字节。
+    /// </summary>
+    private readonly byte[] _ciphertext;
+
+    /// <summary>
+    /// 由负载独占所有权的认证标签字节。
+    /// </summary>
+    private readonly byte[] _tag;
+
+    /// <summary>
     /// 当前 AES-GCM 载荷格式版本。
     /// </summary>
     public const byte CurrentVersion = 1;
@@ -31,17 +51,17 @@ public sealed class AesGcmPayload
     /// <summary>
     /// 每次加密唯一的随机 Nonce。
     /// </summary>
-    public byte[] Nonce { get; }
+    public ReadOnlyMemory<byte> Nonce => _nonce;
 
     /// <summary>
     /// 已认证的密文字节。
     /// </summary>
-    public byte[] Ciphertext { get; }
+    public ReadOnlyMemory<byte> Ciphertext => _ciphertext;
 
     /// <summary>
     /// GCM 认证标签。
     /// </summary>
-    public byte[] Tag { get; }
+    public ReadOnlyMemory<byte> Tag => _tag;
 
     /// <summary>
     /// 使用当前格式版本初始化认证加密载荷。
@@ -69,13 +89,15 @@ public sealed class AesGcmPayload
             throw new ArgumentException("AES-GCM Nonce 必须为 12 字节。", nameof(nonce));
         if (ciphertext == null)
             throw new ArgumentNullException(nameof(ciphertext));
+        if (ciphertext.Length > MaximumCiphertextSize)
+            throw new ArgumentOutOfRangeException(nameof(ciphertext), "AES-GCM 密文长度不能超过 16 MiB。");
         if (tag == null || tag.Length != TagSize)
             throw new ArgumentException("AES-GCM 认证标签必须为 16 字节。", nameof(tag));
 
         Version = version;
-        Nonce = nonce.ToArray();
-        Ciphertext = ciphertext.ToArray();
-        Tag = tag.ToArray();
+        _nonce = nonce.ToArray();
+        _ciphertext = ciphertext.ToArray();
+        _tag = tag.ToArray();
     }
 
     /// <summary>
@@ -86,18 +108,18 @@ public sealed class AesGcmPayload
     {
         checked
         {
-            var result = new byte[11 + Nonce.Length + Tag.Length + Ciphertext.Length];
+            var result = new byte[11 + _nonce.Length + _tag.Length + _ciphertext.Length];
             result[0] = (byte)'B';
             result[1] = (byte)'S';
             result[2] = (byte)'P';
             result[3] = (byte)'1';
             result[4] = Version;
-            result[5] = (byte)Nonce.Length;
-            result[6] = (byte)Tag.Length;
-            WriteUInt32(result.AsSpan(7, 4), (uint)Ciphertext.Length);
-            Nonce.CopyTo(result, 11);
-            Ciphertext.CopyTo(result, 11 + Nonce.Length);
-            Tag.CopyTo(result, 11 + Nonce.Length + Ciphertext.Length);
+            result[5] = (byte)_nonce.Length;
+            result[6] = (byte)_tag.Length;
+            WriteUInt32(result.AsSpan(7, 4), (uint)_ciphertext.Length);
+            _nonce.CopyTo(result, 11);
+            _ciphertext.CopyTo(result, 11 + _nonce.Length);
+            _tag.CopyTo(result, 11 + _nonce.Length + _ciphertext.Length);
             try
             {
                 return Base64UrlEncoding.Encode(result);
@@ -134,9 +156,14 @@ public sealed class AesGcmPayload
     public static bool TryParse(string value, out AesGcmPayload payload)
     {
         payload = null;
+        if (value == null || value.Length > GetMaximumEncodedLength())
+            return false;
         if (!Base64UrlEncoding.TryDecode(value, out var bytes))
             return false;
 
+        byte[] nonce = null;
+        byte[] ciphertext = null;
+        byte[] tag = null;
         try
         {
             if (bytes.Length < 11 || bytes[0] != 'B' || bytes[1] != 'S' || bytes[2] != 'P' || bytes[3] != '1' || bytes[4] != CurrentVersion)
@@ -145,16 +172,16 @@ public sealed class AesGcmPayload
             var nonceLength = bytes[5];
             var tagLength = bytes[6];
             var ciphertextLength = ReadUInt32(bytes.AsSpan(7, 4));
-            if (nonceLength != NonceSize || tagLength != TagSize || ciphertextLength > int.MaxValue)
+            if (nonceLength != NonceSize || tagLength != TagSize || ciphertextLength > MaximumCiphertextSize)
                 return false;
 
             var expectedLength = 11L + nonceLength + tagLength + ciphertextLength;
             if (bytes.Length != expectedLength)
                 return false;
 
-            var nonce = bytes.AsSpan(11, nonceLength).ToArray();
-            var ciphertext = bytes.AsSpan(11 + nonceLength, (int)ciphertextLength).ToArray();
-            var tag = bytes.AsSpan(11 + nonceLength + (int)ciphertextLength, tagLength).ToArray();
+            nonce = bytes.AsSpan(11, nonceLength).ToArray();
+            ciphertext = bytes.AsSpan(11 + nonceLength, (int)ciphertextLength).ToArray();
+            tag = bytes.AsSpan(11 + nonceLength + (int)ciphertextLength, tagLength).ToArray();
             payload = new AesGcmPayload(CurrentVersion, nonce, ciphertext, tag);
             return true;
         }
@@ -164,8 +191,24 @@ public sealed class AesGcmPayload
         }
         finally
         {
+            if (nonce != null)
+                CryptographicOperationsCompat.ZeroMemory(nonce);
+            if (ciphertext != null)
+                CryptographicOperationsCompat.ZeroMemory(ciphertext);
+            if (tag != null)
+                CryptographicOperationsCompat.ZeroMemory(tag);
             CryptographicOperationsCompat.ZeroMemory(bytes);
         }
+    }
+
+    /// <summary>
+    /// 获取最大二进制载荷对应的无填充 Base64Url 字符数。
+    /// </summary>
+    /// <returns>最大允许的文本长度。</returns>
+    private static int GetMaximumEncodedLength()
+    {
+        var binaryLength = 11L + NonceSize + TagSize + MaximumCiphertextSize;
+        return checked((int)((binaryLength * 4 + 2) / 3));
     }
 
     /// <summary>

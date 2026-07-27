@@ -52,7 +52,7 @@ public class HybridEncryptionTests
         var changedKeyPayload = new HybridEncryptedPayload(changedKey, payload.EncryptedData);
         var changedCiphertext = payload.EncryptedData.Ciphertext.ToArray();
         changedCiphertext[0] ^= 1;
-        var changedDataPayload = new HybridEncryptedPayload(payload.EncryptedKey, new AesGcmPayload(payload.EncryptedData.Nonce, changedCiphertext, payload.EncryptedData.Tag));
+        var changedDataPayload = new HybridEncryptedPayload(payload.EncryptedKey.ToArray(), new AesGcmPayload(payload.EncryptedData.Nonce.ToArray(), changedCiphertext, payload.EncryptedData.Tag.ToArray()));
 
         // Act
         var associatedDataAction = () => HybridEncryption.Decrypt(payload, pair.PrivateKeyPem, new byte[] { 3, 2, 1 });

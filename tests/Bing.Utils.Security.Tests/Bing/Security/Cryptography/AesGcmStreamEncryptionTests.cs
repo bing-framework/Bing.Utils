@@ -43,6 +43,75 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
+    /// 测试目的：新写入流必须使用 BSS2，且默认解密入口不得无声读取存在 Nonce 风险的 BSS1 流。
+    /// </summary>
+    [Fact]
+    public async Task DecryptAsync_WhenStreamUsesLegacyBss1_ShouldRequireExplicitMigrationApi()
+    {
+        // Arrange
+        var key = SecurityRandom.GetBytes(32);
+        var ciphertext = await EncryptAsync(new byte[] { 1, 2, 3 }, key);
+        var legacy = (byte[])ciphertext.Clone();
+        legacy[3] = (byte)'1';
+        legacy[4] = 1;
+        using var source = new MemoryStream(legacy);
+        using var destination = new MemoryStream();
+
+        // Act
+        var action = new Func<Task>(() => AesGcmStreamEncryption.DecryptAsync(source, destination, key));
+
+        // Assert
+        await Should.ThrowAsync<NotSupportedException>(action);
+        ciphertext[0].ShouldBe((byte)'B');
+        ciphertext[1].ShouldBe((byte)'S');
+        ciphertext[2].ShouldBe((byte)'S');
+        ciphertext[3].ShouldBe((byte)'2');
+    }
+
+    /// <summary>
+    /// 测试目的：使用同一主密钥加密多个文件时，BSS2 必须生成不同的文件盐和 Nonce 前缀。
+    /// </summary>
+    [Fact]
+    public async Task EncryptAsync_WhenMasterKeyIsReused_ShouldUseDistinctFileSaltAndNoncePrefix()
+    {
+        // Arrange
+        var key = SecurityRandom.GetBytes(32);
+
+        // Act
+        var first = await EncryptAsync(new byte[] { 1 }, key);
+        var second = await EncryptAsync(new byte[] { 1 }, key);
+
+        // Assert
+        first.AsSpan(0, 4).SequenceEqual(new byte[] { (byte)'B', (byte)'S', (byte)'S', (byte)'2' }).ShouldBeTrue();
+        first.AsSpan(12, 32).SequenceEqual(second.AsSpan(12, 32)).ShouldBeFalse();
+        first.AsSpan(44, 8).SequenceEqual(second.AsSpan(44, 8)).ShouldBeFalse();
+    }
+
+    /// <summary>
+    /// 测试目的：BSS2 读写不得假定单次 ReadAsync 可以填满请求缓冲区。
+    /// </summary>
+    [Theory]
+    [InlineData(1)]
+    [InlineData(7)]
+    public async Task EncryptAndDecryptAsync_WhenStreamsReturnShortReads_ShouldRoundTrip(int maximumReadLength)
+    {
+        // Arrange
+        var key = SecurityRandom.GetBytes(32);
+        var input = SecurityRandom.GetBytes(9000);
+        using var plaintext = new NonSeekableReadStream(input, maximumReadLength);
+        using var ciphertext = new MemoryStream();
+        using var decrypted = new MemoryStream();
+
+        // Act
+        await AesGcmStreamEncryption.EncryptAsync(plaintext, ciphertext, key, new AesGcmStreamOptions { BlockSize = 4096 });
+        using var encryptedInput = new NonSeekableReadStream(ciphertext.ToArray(), maximumReadLength);
+        await AesGcmStreamEncryption.DecryptAsync(encryptedInput, decrypted, key);
+
+        // Assert
+        decrypted.ToArray().ShouldBe(input);
+    }
+
+    /// <summary>
     /// 测试目的：密文、终止标签和完整数据块遭到篡改、截断或删除时必须拒绝解密。
     /// </summary>
     [Fact]
@@ -52,13 +121,14 @@ public class AesGcmStreamEncryptionTests
         var key = SecurityRandom.GetBytes(32);
         var source = SecurityRandom.GetBytes(9000);
         var ciphertext = await EncryptAsync(source, key);
+        const int headerLength = 52;
+        const int firstRecordLength = 1 + 8 + 4096 + 16;
         var tampered = (byte[])ciphertext.Clone();
-        tampered[36] ^= 1;
+        tampered[headerLength + 1 + 8] ^= 1;
         var truncated = ciphertext[..^1];
-        var firstRecordLength = 1 + 12 + 4096 + 16;
         var deletedBlock = new byte[ciphertext.Length - firstRecordLength];
-        Buffer.BlockCopy(ciphertext, 0, deletedBlock, 0, 23 + firstRecordLength);
-        Buffer.BlockCopy(ciphertext, 23 + (firstRecordLength * 2), deletedBlock, 23 + firstRecordLength, ciphertext.Length - (23 + (firstRecordLength * 2)));
+        Buffer.BlockCopy(ciphertext, 0, deletedBlock, 0, headerLength);
+        Buffer.BlockCopy(ciphertext, headerLength + firstRecordLength, deletedBlock, headerLength, ciphertext.Length - (headerLength + firstRecordLength));
 
         // Act
         var tamperedAction = new Func<Task>(() => DecryptAsync(tampered, key));
@@ -67,7 +137,7 @@ public class AesGcmStreamEncryptionTests
 
         // Assert
         await Should.ThrowAsync<CryptographicException>(tamperedAction);
-        await Should.ThrowAsync<CryptographicException>(truncatedAction);
+        await Should.ThrowAsync<InvalidDataException>(truncatedAction);
         await Should.ThrowAsync<CryptographicException>(deletedAction);
     }
 
@@ -135,10 +205,21 @@ public class AesGcmStreamEncryptionTests
         private readonly MemoryStream _stream;
 
         /// <summary>
+        /// 单次读取允许返回的最大字节数。
+        /// </summary>
+        private readonly int _maximumReadLength;
+
+        /// <summary>
         /// 初始化不支持定位的只读内存流。
         /// </summary>
         /// <param name="data">只读数据。</param>
-        public NonSeekableReadStream(byte[] data) => _stream = new MemoryStream(data, writable: false);
+        public NonSeekableReadStream(byte[] data, int maximumReadLength = int.MaxValue)
+        {
+            if (maximumReadLength <= 0)
+                throw new ArgumentOutOfRangeException(nameof(maximumReadLength));
+            _stream = new MemoryStream(data, writable: false);
+            _maximumReadLength = maximumReadLength;
+        }
 
         /// <inheritdoc />
         public override bool CanRead => true;
@@ -165,10 +246,10 @@ public class AesGcmStreamEncryptionTests
         }
 
         /// <inheritdoc />
-        public override int Read(byte[] buffer, int offset, int count) => _stream.Read(buffer, offset, count);
+        public override int Read(byte[] buffer, int offset, int count) => _stream.Read(buffer, offset, Math.Min(count, _maximumReadLength));
 
         /// <inheritdoc />
-        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => _stream.ReadAsync(buffer, offset, count, cancellationToken);
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => _stream.ReadAsync(buffer, offset, Math.Min(count, _maximumReadLength), cancellationToken);
 
         /// <inheritdoc />
         public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();

@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using Bing.Security.Randomness;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -31,13 +32,27 @@ public static class Sm4GcmEncryption
         var nonce = SecurityRandom.GetBytes(Sm4GcmPayload.NonceSize);
         var cipher = CreateCipher(true, key, nonce, associatedData);
         var output = new byte[cipher.GetOutputSize(plaintext.Length)];
-        var length = cipher.ProcessBytes(plaintext, 0, plaintext.Length, output, 0);
-        length += cipher.DoFinal(output, length);
-        var ciphertext = new byte[length - Sm4GcmPayload.TagSize];
-        var tag = new byte[Sm4GcmPayload.TagSize];
-        Buffer.BlockCopy(output, 0, ciphertext, 0, ciphertext.Length);
-        Buffer.BlockCopy(output, ciphertext.Length, tag, 0, tag.Length);
-        return new Sm4GcmPayload(nonce, ciphertext, tag);
+        byte[] ciphertext = null;
+        byte[] tag = null;
+        try
+        {
+            var length = cipher.ProcessBytes(plaintext, 0, plaintext.Length, output, 0);
+            length += cipher.DoFinal(output, length);
+            ciphertext = new byte[length - Sm4GcmPayload.TagSize];
+            tag = new byte[Sm4GcmPayload.TagSize];
+            Buffer.BlockCopy(output, 0, ciphertext, 0, ciphertext.Length);
+            Buffer.BlockCopy(output, ciphertext.Length, tag, 0, tag.Length);
+            return new Sm4GcmPayload(nonce, ciphertext, tag);
+        }
+        finally
+        {
+            GmCryptographicOperationsCompat.ZeroMemory(nonce);
+            GmCryptographicOperationsCompat.ZeroMemory(output);
+            if (ciphertext != null)
+                GmCryptographicOperationsCompat.ZeroMemory(ciphertext);
+            if (tag != null)
+                GmCryptographicOperationsCompat.ZeroMemory(tag);
+        }
     }
 
     /// <summary>
@@ -53,17 +68,29 @@ public static class Sm4GcmEncryption
         if (payload == null)
             throw new ArgumentNullException(nameof(payload));
         ValidateKey(key);
+        byte[] encrypted = null;
+        byte[] output = null;
+        byte[] payloadCiphertext = null;
+        byte[] payloadTag = null;
+        byte[] payloadNonce = null;
         try
         {
-            var encrypted = new byte[payload.Ciphertext.Length + payload.Tag.Length];
-            Buffer.BlockCopy(payload.Ciphertext, 0, encrypted, 0, payload.Ciphertext.Length);
-            Buffer.BlockCopy(payload.Tag, 0, encrypted, payload.Ciphertext.Length, payload.Tag.Length);
-            var cipher = CreateCipher(false, key, payload.Nonce, associatedData);
-            var output = new byte[cipher.GetOutputSize(encrypted.Length)];
+            payloadCiphertext = payload.Ciphertext;
+            payloadTag = payload.Tag;
+            payloadNonce = payload.Nonce;
+            encrypted = new byte[payloadCiphertext.Length + payloadTag.Length];
+            Buffer.BlockCopy(payloadCiphertext, 0, encrypted, 0, payloadCiphertext.Length);
+            Buffer.BlockCopy(payloadTag, 0, encrypted, payloadCiphertext.Length, payloadTag.Length);
+            var cipher = CreateCipher(false, key, payloadNonce, associatedData);
+            output = new byte[cipher.GetOutputSize(encrypted.Length)];
             var length = cipher.ProcessBytes(encrypted, 0, encrypted.Length, output, 0);
             length += cipher.DoFinal(output, length);
             if (length == output.Length)
-                return output;
+            {
+                var fullOutput = output;
+                output = null;
+                return fullOutput;
+            }
             var result = new byte[length];
             Buffer.BlockCopy(output, 0, result, 0, length);
             return result;
@@ -71,6 +98,19 @@ public static class Sm4GcmEncryption
         catch (Org.BouncyCastle.Crypto.InvalidCipherTextException exception)
         {
             throw new System.Security.Cryptography.CryptographicException("SM4-GCM 认证失败。", exception);
+        }
+        finally
+        {
+            if (encrypted != null)
+                GmCryptographicOperationsCompat.ZeroMemory(encrypted);
+            if (output != null)
+                GmCryptographicOperationsCompat.ZeroMemory(output);
+            if (payloadCiphertext != null)
+                GmCryptographicOperationsCompat.ZeroMemory(payloadCiphertext);
+            if (payloadTag != null)
+                GmCryptographicOperationsCompat.ZeroMemory(payloadTag);
+            if (payloadNonce != null)
+                GmCryptographicOperationsCompat.ZeroMemory(payloadNonce);
         }
     }
 

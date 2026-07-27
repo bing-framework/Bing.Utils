@@ -22,7 +22,12 @@ public sealed class HybridEncryptedPayload
     /// <summary>
     /// 使用 RSA-OAEP-SHA256 加密的临时 AES 密钥。
     /// </summary>
-    public byte[] EncryptedKey { get; }
+    public ReadOnlyMemory<byte> EncryptedKey => _encryptedKey;
+
+    /// <summary>
+    /// 由负载独占所有权的 RSA 加密临时 AES 密钥。
+    /// </summary>
+    private readonly byte[] _encryptedKey;
 
     /// <summary>
     /// 使用 AES-GCM 加密的数据载荷。
@@ -56,7 +61,7 @@ public sealed class HybridEncryptedPayload
             throw new ArgumentNullException(nameof(encryptedData));
 
         Version = version;
-        EncryptedKey = encryptedKey.ToArray();
+        _encryptedKey = encryptedKey.ToArray();
         EncryptedData = encryptedData;
     }
 
@@ -72,16 +77,16 @@ public sealed class HybridEncryptedPayload
         {
             checked
             {
-                var result = new byte[11 + EncryptedKey.Length + encryptedDataBytes.Length];
+                var result = new byte[11 + _encryptedKey.Length + encryptedDataBytes.Length];
                 result[0] = (byte)'B';
                 result[1] = (byte)'S';
                 result[2] = (byte)'H';
                 result[3] = (byte)'1';
                 result[4] = Version;
-                WriteUInt16(result.AsSpan(5, 2), (ushort)EncryptedKey.Length);
+                WriteUInt16(result.AsSpan(5, 2), (ushort)_encryptedKey.Length);
                 WriteUInt32(result.AsSpan(7, 4), (uint)encryptedDataBytes.Length);
-                EncryptedKey.CopyTo(result, 11);
-                encryptedDataBytes.CopyTo(result, 11 + EncryptedKey.Length);
+                _encryptedKey.CopyTo(result, 11);
+                encryptedDataBytes.CopyTo(result, 11 + _encryptedKey.Length);
                 try
                 {
                     return Base64UrlEncoding.Encode(result);

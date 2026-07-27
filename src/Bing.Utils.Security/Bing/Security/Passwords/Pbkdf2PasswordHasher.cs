@@ -68,8 +68,10 @@ public sealed class Pbkdf2PasswordHasher
     {
         if (password == null || string.IsNullOrWhiteSpace(encodedHash))
             return PasswordVerificationResult.Failed;
+        if (encodedHash.Length > Pbkdf2PasswordHasherOptions.MaximumEncodedHashLength)
+            return PasswordVerificationResult.Failed;
         var parts = encodedHash.Split('$');
-        if (parts.Length != 5 || parts[0] != FormatVersion || parts[1] != Algorithm || !int.TryParse(parts[2], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var iterations) || iterations < 100000 || !Base64UrlEncoding.TryDecode(parts[3], out var salt) || !Base64UrlEncoding.TryDecode(parts[4], out var expected) || salt.Length < 16 || expected.Length < 32)
+        if (parts.Length != 5 || parts[0] != FormatVersion || parts[1] != Algorithm || !int.TryParse(parts[2], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var iterations) || iterations < 100000 || iterations > Pbkdf2PasswordHasherOptions.MaximumIterationCount || !Base64UrlEncoding.TryDecode(parts[3], out var salt) || !Base64UrlEncoding.TryDecode(parts[4], out var expected) || salt.Length < 16 || salt.Length > Pbkdf2PasswordHasherOptions.MaximumSaltSize || expected.Length < 32 || expected.Length > Pbkdf2PasswordHasherOptions.MaximumHashSize)
             return PasswordVerificationResult.Failed;
 
         try
@@ -108,10 +110,16 @@ public sealed class Pbkdf2PasswordHasher
     {
         if (options.IterationCount < 100000)
             throw new ArgumentOutOfRangeException(nameof(options), "PBKDF2 迭代次数必须不小于 100000。");
+        if (options.IterationCount > Pbkdf2PasswordHasherOptions.MaximumIterationCount)
+            throw new ArgumentOutOfRangeException(nameof(options), "PBKDF2 迭代次数不能超过 1000000。");
         if (options.SaltSize < 16)
             throw new ArgumentOutOfRangeException(nameof(options), "密码盐长度必须不小于 16 字节。");
+        if (options.SaltSize > Pbkdf2PasswordHasherOptions.MaximumSaltSize)
+            throw new ArgumentOutOfRangeException(nameof(options), "密码盐长度不能超过 64 字节。");
         if (options.HashSize < 32)
             throw new ArgumentOutOfRangeException(nameof(options), "密码哈希长度必须不小于 32 字节。");
+        if (options.HashSize > Pbkdf2PasswordHasherOptions.MaximumHashSize)
+            throw new ArgumentOutOfRangeException(nameof(options), "密码哈希长度不能超过 64 字节。");
     }
 }
 #endif

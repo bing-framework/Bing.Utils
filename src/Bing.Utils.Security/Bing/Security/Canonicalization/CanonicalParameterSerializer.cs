@@ -51,9 +51,11 @@ public static class CanonicalParameterSerializer
             if (pairIndex > 0)
                 builder.Append(options.PairSeparator);
             var pair = pairs[pairIndex];
+            ValidateRawComponent(pair.Key, options, true);
             builder.Append(options.UrlEncodeKeys ? Uri.EscapeDataString(pair.Key) : pair.Key);
             if (!pair.HasValue)
                 continue;
+            ValidateRawComponent(pair.Value, options, false);
             builder.Append(options.KeyValueSeparator);
             builder.Append(options.UrlEncodeValues ? Uri.EscapeDataString(pair.Value) : pair.Value);
         }
@@ -95,10 +97,16 @@ public static class CanonicalParameterSerializer
         {
             string text => text,
             bool boolean => boolean ? "true" : "false",
-            DateTime dateTime => dateTime.ToUniversalTime().ToString(options.DateTimeFormat, CultureInfo.InvariantCulture),
+            DateTime dateTime => FormatDateTime(dateTime, options),
             DateTimeOffset dateTimeOffset => dateTimeOffset.ToUniversalTime().ToString(options.DateTimeFormat, CultureInfo.InvariantCulture),
             byte[] bytes => Convert.ToBase64String(bytes),
-            sbyte or byte or short or ushort or int or uint or long or ulong or float or double or decimal or char or Guid or TimeSpan or Enum => FormatInvariant(value),
+            float single => FormatFloatingPoint(single),
+            double doubleValue => FormatFloatingPoint(doubleValue),
+            decimal decimalValue => decimalValue.ToString("G29", CultureInfo.InvariantCulture),
+            Guid guid => guid.ToString("D"),
+            TimeSpan timeSpan => timeSpan.ToString("c", CultureInfo.InvariantCulture),
+            Enum enumeration => FormatEnum(enumeration),
+            sbyte or byte or short or ushort or int or uint or long or ulong or char => FormatInvariant(value),
             _ => throw new ArgumentException("参数值类型必须是显式支持的标量、字节数组或数组类型。", nameof(value))
         };
     }
@@ -116,18 +124,85 @@ public static class CanonicalParameterSerializer
     }
 
     /// <summary>
+    /// 将 DateTime 转换为确定性 UTC 往返格式，拒绝未指定时区。
+    /// </summary>
+    /// <param name="value">要规范化的日期时间。</param>
+    /// <param name="options">规范化选项。</param>
+    /// <returns>UTC 往返格式时间文本。</returns>
+    /// <exception cref="ArgumentException">日期时间 Kind 未指定时抛出。</exception>
+    private static string FormatDateTime(DateTime value, CanonicalParameterOptions options)
+    {
+        if (value.Kind == DateTimeKind.Unspecified)
+            throw new ArgumentException("DateTime 必须指定 Utc 或 Local Kind；请优先使用 DateTimeOffset。", nameof(value));
+        return value.ToUniversalTime().ToString(options.DateTimeFormat, CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// 将单精度浮点数转换为可往返的确定性文本。
+    /// </summary>
+    /// <param name="value">单精度浮点数。</param>
+    /// <returns>可往返格式文本。</returns>
+    /// <exception cref="ArgumentException">值为 NaN 或无穷大时抛出。</exception>
+    private static string FormatFloatingPoint(float value)
+    {
+        if (float.IsNaN(value) || float.IsInfinity(value))
+            throw new ArgumentException("参数浮点值不能为 NaN 或无穷大。", nameof(value));
+        return value.ToString("R", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// 将双精度浮点数转换为可往返的确定性文本。
+    /// </summary>
+    /// <param name="value">双精度浮点数。</param>
+    /// <returns>可往返格式文本。</returns>
+    /// <exception cref="ArgumentException">值为 NaN 或无穷大时抛出。</exception>
+    private static string FormatFloatingPoint(double value)
+    {
+        if (double.IsNaN(value) || double.IsInfinity(value))
+            throw new ArgumentException("参数浮点值不能为 NaN 或无穷大。", nameof(value));
+        return value.ToString("R", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// 将枚举值规范化为名称；未定义的数值使用无符号十进制数。
+    /// </summary>
+    /// <param name="value">枚举值。</param>
+    /// <returns>确定性枚举文本。</returns>
+    private static string FormatEnum(Enum value)
+    {
+        return Enum.GetName(value.GetType(), value) ?? value.ToString("D");
+    }
+
+    /// <summary>
     /// 验证规范化选项。
     /// </summary>
     /// <param name="options">规范化选项。</param>
     /// <exception cref="ArgumentException">分隔符或日期格式无效时抛出。</exception>
     private static void ValidateOptions(CanonicalParameterOptions options)
     {
-        if (options.PairSeparator == null)
-            throw new ArgumentException("参数对分隔符不能为 null。", nameof(options));
-        if (options.KeyValueSeparator == null)
-            throw new ArgumentException("键值分隔符不能为 null。", nameof(options));
-        if (string.IsNullOrEmpty(options.DateTimeFormat))
-            throw new ArgumentException("日期时间格式不能为空。", nameof(options));
+        if (string.IsNullOrEmpty(options.PairSeparator))
+            throw new ArgumentException("参数对分隔符不能为空。", nameof(options));
+        if (string.IsNullOrEmpty(options.KeyValueSeparator))
+            throw new ArgumentException("键值分隔符不能为空。", nameof(options));
+        if (options.PairSeparator == options.KeyValueSeparator || options.PairSeparator.IndexOf(options.KeyValueSeparator, StringComparison.Ordinal) >= 0 || options.KeyValueSeparator.IndexOf(options.PairSeparator, StringComparison.Ordinal) >= 0)
+            throw new ArgumentException("参数对分隔符和键值分隔符不能相同或互为包含关系。", nameof(options));
+        if (options.DateTimeFormat != "O")
+            throw new ArgumentException("确定性参数规范化仅支持 O 日期时间格式。", nameof(options));
+    }
+
+    /// <summary>
+    /// 在关闭 URL 编码时拒绝会与协议分隔符冲突的原始文本。
+    /// </summary>
+    /// <param name="value">原始键或值文本。</param>
+    /// <param name="options">规范化选项。</param>
+    /// <param name="isKey">为 <c>true</c> 时验证参数键。</param>
+    /// <exception cref="ArgumentException">未编码文本包含协议分隔符时抛出。</exception>
+    private static void ValidateRawComponent(string value, CanonicalParameterOptions options, bool isKey)
+    {
+        if ((isKey && options.UrlEncodeKeys) || (!isKey && options.UrlEncodeValues))
+            return;
+        if (value.IndexOf(options.PairSeparator, StringComparison.Ordinal) >= 0 || value.IndexOf(options.KeyValueSeparator, StringComparison.Ordinal) >= 0)
+            throw new ArgumentException("关闭 URL 编码时，参数键和值不能包含协议分隔符。", isKey ? "key" : "value");
     }
 
     /// <summary>

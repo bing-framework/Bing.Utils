@@ -52,7 +52,7 @@ public static class HybridEncryption
         if (payload == null)
             throw new ArgumentNullException(nameof(payload));
 
-        var key = RsaEncryption.Decrypt(payload.EncryptedKey, privateKeyPem);
+        var key = RsaEncryption.Decrypt(payload.EncryptedKey.Span, privateKeyPem);
         try
         {
             if (key.Length != 32)

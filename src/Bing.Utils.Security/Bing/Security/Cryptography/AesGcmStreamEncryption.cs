@@ -83,6 +83,37 @@ public static class AesGcmStreamEncryption
     }
 
     /// <summary>
+    /// 使用显式 BSS1 迁移路径验证旧版认证密文文件，并在验证成功后替换目标文件。
+    /// </summary>
+    /// <param name="sourcePath">BSS1 认证密文源文件路径。</param>
+    /// <param name="destinationPath">已认证明文文件路径。</param>
+    /// <param name="key">32 字节 AES-256 密钥。</param>
+    /// <param name="cancellationToken">取消异步操作的令牌。</param>
+    /// <returns>表示异步旧格式迁移解密操作的任务。</returns>
+    /// <remarks>该方法仅用于迁移 BSS1 历史密文。新写入和默认解密均使用 BSS2。</remarks>
+    public static async Task DecryptV1FileAsync(string sourcePath, string destinationPath, ReadOnlyMemory<byte> key, CancellationToken cancellationToken = default)
+    {
+        ValidateFilePaths(sourcePath, destinationPath);
+        var destinationDirectory = Path.GetDirectoryName(Path.GetFullPath(destinationPath));
+        var temporaryPath = Path.Combine(destinationDirectory, "." + Path.GetRandomFileName());
+        try
+        {
+            using (var source = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
+            using (var temporary = new FileStream(temporaryPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
+            {
+                await DecryptV1Async(source, temporary, key, cancellationToken).ConfigureAwait(false);
+            }
+
+            File.Move(temporaryPath, destinationPath, true);
+        }
+        finally
+        {
+            if (File.Exists(temporaryPath))
+                File.Delete(temporaryPath);
+        }
+    }
+
+    /// <summary>
     /// 使用 AES-256-GCM 将输入流写入分块认证密文流；不会关闭调用方提供的流。
     /// </summary>
     /// <param name="plaintext">要加密的输入流。</param>
@@ -103,38 +134,7 @@ public static class AesGcmStreamEncryption
         options ??= new AesGcmStreamOptions();
         ValidateBlockSize(options.BlockSize);
 
-        var keyBytes = key.ToArray();
-        var baseNonce = SecurityRandom.GetBytes(AesGcmPayload.NonceSize);
-        var header = CreateHeader(options.BlockSize, baseNonce);
-        var headerHash = ComputeHash(header);
-        var buffer = new byte[options.BlockSize];
-        try
-        {
-            await ciphertext.WriteAsync(header, 0, header.Length, cancellationToken).ConfigureAwait(false);
-            ulong blockIndex = 0;
-            ulong totalLength = 0;
-            while (true)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var count = await plaintext.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
-                if (count == 0)
-                    break;
-
-                checked { totalLength += (uint)count; }
-                await WriteDataRecordAsync(ciphertext, keyBytes, baseNonce, headerHash, blockIndex, buffer.AsMemory(0, count), cancellationToken).ConfigureAwait(false);
-                checked { blockIndex++; }
-            }
-
-            await WriteFinalRecordAsync(ciphertext, keyBytes, baseNonce, headerHash, blockIndex, totalLength, cancellationToken).ConfigureAwait(false);
-        }
-        finally
-        {
-            CryptographicOperationsCompat.ZeroMemory(keyBytes);
-            CryptographicOperationsCompat.ZeroMemory(baseNonce);
-            CryptographicOperationsCompat.ZeroMemory(header);
-            CryptographicOperationsCompat.ZeroMemory(headerHash);
-            CryptographicOperationsCompat.ZeroMemory(buffer);
-        }
+        await AesGcmStreamV2.EncryptAsync(plaintext, ciphertext, key, options.BlockSize, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -146,9 +146,44 @@ public static class AesGcmStreamEncryption
     /// <param name="cancellationToken">取消异步操作的令牌。</param>
     /// <returns>表示异步解密操作的任务。</returns>
     /// <exception cref="ArgumentNullException">任一流为 <c>null</c> 时抛出。</exception>
-    /// <exception cref="ArgumentException"><paramref name="key"/> 不是 32 字节或格式头无效时抛出。</exception>
-    /// <exception cref="CryptographicException">块、顺序、认证终止记录、密钥或流完整性无效时抛出。</exception>
+    /// <exception cref="ArgumentException"><paramref name="key"/> 不是 32 字节时抛出。</exception>
+    /// <exception cref="NotSupportedException">输入流为 BSS1 或使用不受支持的 BSS2 版本、算法或 KDF 时抛出。</exception>
+    /// <exception cref="InvalidDataException">输入流截断、格式无效或包含尾随数据时抛出。</exception>
+    /// <exception cref="CryptographicException">认证标签、块顺序、块长度或密钥无效时抛出。</exception>
     public static async Task DecryptAsync(Stream ciphertext, Stream plaintext, ReadOnlyMemory<byte> key, CancellationToken cancellationToken = default)
+    {
+        if (ciphertext == null)
+            throw new ArgumentNullException(nameof(ciphertext));
+        if (plaintext == null)
+            throw new ArgumentNullException(nameof(plaintext));
+        ValidateKey(key.Span);
+
+        var magic = new byte[4];
+        try
+        {
+            await ReadExactlyAsync(ciphertext, magic, cancellationToken).ConfigureAwait(false);
+            if (magic[0] == 'B' && magic[1] == 'S' && magic[2] == 'S' && magic[3] == '1')
+                throw new NotSupportedException("BSS1 认证流仅可通过 DecryptV1Async 进行显式迁移读取。 ");
+            if (magic[0] != 'B' || magic[1] != 'S' || magic[2] != 'S' || magic[3] != '2')
+                throw new InvalidDataException("认证流不是受支持的 BSS2 格式。 ");
+            await AesGcmStreamV2.DecryptAsync(ciphertext, plaintext, key, magic, cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            CryptographicOperationsCompat.ZeroMemory(magic);
+        }
+    }
+
+    /// <summary>
+    /// 使用显式 BSS1 迁移路径验证旧版认证密文流并写出已认证明文块。
+    /// </summary>
+    /// <param name="ciphertext">BSS1 认证密文输入流。</param>
+    /// <param name="plaintext">已认证明文输出流。</param>
+    /// <param name="key">32 字节 AES-256 密钥。</param>
+    /// <param name="cancellationToken">取消异步操作的令牌。</param>
+    /// <returns>表示异步旧格式迁移解密操作的任务。</returns>
+    /// <remarks>该方法保留 BSS1 历史读取能力。新应用应仅使用 BSS2 的 <see cref="DecryptAsync(Stream, Stream, ReadOnlyMemory{byte}, CancellationToken)"/>。</remarks>
+    public static async Task DecryptV1Async(Stream ciphertext, Stream plaintext, ReadOnlyMemory<byte> key, CancellationToken cancellationToken = default)
     {
         if (ciphertext == null)
             throw new ArgumentNullException(nameof(ciphertext));
