@@ -1,9 +1,8 @@
 using Bing.Security.Encoding;
-using Bing.Security.Keys;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Keys;
+namespace Bing.Security.Keys;
 
 /// <summary>
 /// 验证 HKDF-SHA256 密钥派生行为。

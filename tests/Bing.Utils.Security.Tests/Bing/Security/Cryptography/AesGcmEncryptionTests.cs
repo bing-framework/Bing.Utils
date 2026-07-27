@@ -1,13 +1,10 @@
 using System;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using Bing.Security.Cryptography;
 using Bing.Security.Keys;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Cryptography;
+namespace Bing.Security.Cryptography;
 
 /// <summary>
 /// 验证 AES-GCM 认证加密、关联数据和版本化载荷行为。

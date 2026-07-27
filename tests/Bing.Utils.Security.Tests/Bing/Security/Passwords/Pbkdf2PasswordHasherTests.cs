@@ -1,9 +1,8 @@
 using System;
-using Bing.Security.Passwords;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Passwords;
+namespace Bing.Security.Passwords;
 
 /// <summary>
 /// 验证版本化 PBKDF2-HMAC-SHA256 密码哈希行为。

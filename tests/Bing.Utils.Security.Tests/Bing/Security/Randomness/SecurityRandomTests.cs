@@ -1,10 +1,9 @@
 using System;
 using Bing.Security.Encoding;
-using Bing.Security.Randomness;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Randomness;
+namespace Bing.Security.Randomness;
 
 /// <summary>
 /// 验证密码学安全随机数接口的长度和格式行为。

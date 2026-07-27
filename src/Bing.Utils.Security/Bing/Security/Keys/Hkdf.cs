@@ -49,7 +49,7 @@ public static class Hkdf
                         previous.CopyTo(blockInput, 0);
                     if (context.Length > 0)
                         context.CopyTo(blockInput, previous.Length);
-                    blockInput[^1] = (byte)counter;
+                    blockInput[blockInput.Length - 1] = (byte)counter;
 
                     using var expand = new HMACSHA256(pseudorandomKey);
                     var current = expand.ComputeHash(blockInput);

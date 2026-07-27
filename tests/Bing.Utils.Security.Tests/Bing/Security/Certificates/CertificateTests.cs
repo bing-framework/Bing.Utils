@@ -1,11 +1,10 @@
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using Bing.Security.Certificates;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Certificates;
+namespace Bing.Security.Certificates;
 
 /// <summary>
 /// 验证 X.509 证书加载、密钥读取和 SHA-256 指纹操作。

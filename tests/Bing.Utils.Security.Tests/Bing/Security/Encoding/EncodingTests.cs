@@ -1,10 +1,8 @@
 using System;
-using System.Text;
-using Bing.Security.Encoding;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Encoding;
+namespace Bing.Security.Encoding;
 
 /// <summary>
 /// 验证安全编码类型的格式约束和往返行为。

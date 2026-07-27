@@ -1,8 +1,7 @@
-using Bing.Security;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security;
+namespace Bing.Security;
 
 /// <summary>
 /// 验证固定时间比较的结果语义。

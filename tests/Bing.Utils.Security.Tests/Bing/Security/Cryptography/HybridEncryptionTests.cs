@@ -1,12 +1,10 @@
 using System;
-using System.Linq;
 using System.Security.Cryptography;
-using Bing.Security.Cryptography;
 using Bing.Security.Keys;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Cryptography;
+namespace Bing.Security.Cryptography;
 
 /// <summary>
 /// 验证 RSA 与 AES-GCM 混合加密及版本化载荷行为。

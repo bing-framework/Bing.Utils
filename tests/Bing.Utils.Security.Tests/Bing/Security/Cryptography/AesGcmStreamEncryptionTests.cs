@@ -3,12 +3,11 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using Bing.Security.Cryptography;
 using Bing.Security.Randomness;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Cryptography;
+namespace Bing.Security.Cryptography;
 
 /// <summary>
 /// 验证 AES-GCM 分块认证流加密格式。

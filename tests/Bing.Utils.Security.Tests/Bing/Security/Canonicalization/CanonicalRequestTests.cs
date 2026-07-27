@@ -1,11 +1,10 @@
 using System;
 using System.Globalization;
-using Bing.Security.Canonicalization;
 using Bing.Security.Keys;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Canonicalization;
+namespace Bing.Security.Canonicalization;
 
 /// <summary>
 /// 验证确定性参数规范化和请求签名行为。

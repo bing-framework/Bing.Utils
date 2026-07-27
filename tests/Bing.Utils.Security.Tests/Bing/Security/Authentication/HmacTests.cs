@@ -1,10 +1,8 @@
 using System;
-using System.Text;
-using Bing.Security.Authentication;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Authentication;
+namespace Bing.Security.Authentication;
 
 /// <summary>
 /// 验证 HMAC SHA-2 的 RFC 4231 测试向量和验证行为。

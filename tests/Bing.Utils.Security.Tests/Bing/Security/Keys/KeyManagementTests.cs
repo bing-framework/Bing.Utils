@@ -1,10 +1,8 @@
 using System;
-using System.Security.Cryptography;
-using Bing.Security.Keys;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Keys;
+namespace Bing.Security.Keys;
 
 /// <summary>
 /// 验证强类型密钥生成、PEM 导入和公钥指纹行为。

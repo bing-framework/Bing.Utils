@@ -1,12 +1,10 @@
 using System;
 using System.Security.Cryptography;
-using System.Text;
-using Bing.Security.Cryptography;
 using Bing.Security.Keys;
 using Shouldly;
 using Xunit;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Cryptography;
+namespace Bing.Security.Cryptography;
 
 /// <summary>
 /// 验证 RSA-OAEP-SHA256 加密、解密和长度边界。

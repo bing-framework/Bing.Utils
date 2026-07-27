@@ -1,14 +1,12 @@
 using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
-using Bing.Security.Hashing;
 using Shouldly;
 using Xunit;
 using HashingOperations = global::Bing.Security.Hashing.Hashing;
 using HexEncodingOperations = global::Bing.Security.Encoding.HexEncoding;
 
-namespace Bing.Utils.Security.Tests.Bing.Security.Hashing;
+namespace Bing.Security.Hashing;
 
 /// <summary>
 /// 验证 SHA-2 摘要的标准向量和流操作。
