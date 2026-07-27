@@ -41,6 +41,8 @@
 - `BSH1`：RSA-OAEP-SHA256 包装的 AES-GCM 混合负载。它保持现有公开文本格式；调用方应限制外部输入大小。
 - `BSM1`：SM4-GCM 文本负载，字段结构与 `BSP1` 一致，包含版本、Nonce、密文和标签，解析限制密文为 16 MiB。
 
+SM2 密钥仅接受 `sm2p256v1`。公钥必须是单个 SubjectPublicKeyInfo `PUBLIC KEY` PEM，私钥必须是单个 PKCS#8 `PRIVATE KEY` PEM；曲线点与私钥标量会在使用前验证。SM2 加密固定为 C1C3C2，签名固定为 SM2withSM3 DER，未传入用户标识时使用 GM/T 默认 `1234567812345678`。
+
 `TryParse` 对格式、版本、长度和尾随数据返回 `false`；`Parse` 将同类输入报告为 `FormatException`。认证失败保持为 `CryptographicException`，输入流截断和非法结构保持为 `InvalidDataException`。
 
 ## 与 Hutool Crypto 的定位差异

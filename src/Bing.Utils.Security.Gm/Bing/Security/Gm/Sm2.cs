@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Text;
 using Org.BouncyCastle.Asn1.GM;
+using Org.BouncyCastle.Asn1.Pkcs;
+using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Generators;
@@ -9,7 +11,10 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities.IO.Pem;
+using Org.BouncyCastle.X509;
 
 namespace Bing.Security.Gm;
 
@@ -24,6 +29,11 @@ public static class Sm2
     private static readonly byte[] DefaultUserIdBytes = System.Text.Encoding.ASCII.GetBytes("1234567812345678");
 
     /// <summary>
+    /// sm2p256v1 命名曲线域参数。
+    /// </summary>
+    private static readonly ECDomainParameters Sm2Domain = CreateSm2Domain();
+
+    /// <summary>
     /// 获取 GM/T 0003 定义的默认 SM2 用户标识副本。
     /// </summary>
     public static byte[] DefaultUserId => (byte[])DefaultUserIdBytes.Clone();
@@ -34,10 +44,8 @@ public static class Sm2
     /// <returns>含 PKCS#8 私钥和 SubjectPublicKeyInfo 公钥 PEM 的密钥对。</returns>
     public static Sm2KeyPair GenerateKeyPair()
     {
-        var parameters = GMNamedCurves.GetByName("sm2p256v1");
-        var domain = new ECDomainParameters(parameters.Curve, parameters.G, parameters.N, parameters.H, parameters.GetSeed());
         var generator = new ECKeyPairGenerator();
-        generator.Init(new ECKeyGenerationParameters(domain, new SecureRandom()));
+        generator.Init(new ECKeyGenerationParameters(Sm2Domain, new SecureRandom()));
         var pair = generator.GenerateKeyPair();
         return new Sm2KeyPair(WritePem(pair.Public), WritePem(pair.Private));
     }
@@ -132,9 +140,12 @@ public static class Sm2
     /// <returns>仅限内部使用的 SM2 公钥参数。</returns>
     private static ECPublicKeyParameters ReadPublicKey(string pem)
     {
-        var key = ReadPemKey(pem);
+        var key = ReadPemKey(pem, "PUBLIC KEY");
         if (key is ECPublicKeyParameters publicKey)
+        {
+            ValidatePublicKey(publicKey, nameof(pem));
             return publicKey;
+        }
         throw new ArgumentException("PEM 文本不包含 SM2 公钥。", nameof(pem));
     }
 
@@ -145,9 +156,12 @@ public static class Sm2
     /// <returns>仅限内部使用的 SM2 私钥参数。</returns>
     private static ECPrivateKeyParameters ReadPrivateKey(string pem)
     {
-        var key = ReadPemKey(pem);
+        var key = ReadPemKey(pem, "PRIVATE KEY");
         if (key is ECPrivateKeyParameters privateKey)
+        {
+            ValidatePrivateKey(privateKey, nameof(pem));
             return privateKey;
+        }
         throw new ArgumentException("PEM 文本不包含 SM2 私钥。", nameof(pem));
     }
 
@@ -155,17 +169,21 @@ public static class Sm2
     /// 使用 BouncyCastle PEM 阅读器解析密钥，隔离第三方类型。
     /// </summary>
     /// <param name="pem">PEM 文本。</param>
+    /// <param name="expectedType">要求的唯一 PEM 对象标签。</param>
     /// <returns>密钥参数。</returns>
-    private static AsymmetricKeyParameter ReadPemKey(string pem)
+    private static AsymmetricKeyParameter ReadPemKey(string pem, string expectedType)
     {
         if (string.IsNullOrWhiteSpace(pem))
             throw new ArgumentException("PEM 文本不能为空。", nameof(pem));
-        var reader = new PemReader(new StringReader(pem));
+        var normalized = pem.Trim();
+        if (!normalized.StartsWith("-----BEGIN " + expectedType + "-----", StringComparison.Ordinal) || !normalized.EndsWith("-----END " + expectedType + "-----", StringComparison.Ordinal) || CountOccurrences(normalized, "-----BEGIN ") != 1 || CountOccurrences(normalized, "-----END ") != 1)
+            throw new ArgumentException("PEM 文本必须且只能包含一个 " + expectedType + " 对象。", nameof(pem));
+        var reader = new Org.BouncyCastle.OpenSsl.PemReader(new StringReader(pem));
         var value = reader.ReadObject();
+        if (reader.ReadObject() != null)
+            throw new ArgumentException("PEM 文本只能包含一个密钥对象。", nameof(pem));
         if (value is AsymmetricKeyParameter key)
             return key;
-        if (value is AsymmetricCipherKeyPair pair)
-            return pair.Private;
         throw new ArgumentException("PEM 文本不包含可用密钥。", nameof(pem));
     }
 
@@ -177,10 +195,77 @@ public static class Sm2
     private static string WritePem(AsymmetricKeyParameter key)
     {
         using var writer = new StringWriter();
-        var pemWriter = new PemWriter(writer);
-        pemWriter.WriteObject(key);
+        var pemWriter = new Org.BouncyCastle.OpenSsl.PemWriter(writer);
+        if (key is ECPublicKeyParameters)
+            pemWriter.WriteObject(new PemObject("PUBLIC KEY", SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(key).GetEncoded()));
+        else if (key is ECPrivateKeyParameters)
+            pemWriter.WriteObject(new PemObject("PRIVATE KEY", PrivateKeyInfoFactory.CreatePrivateKeyInfo(key).GetEncoded()));
+        else
+            throw new ArgumentException("仅支持导出 SM2 EC 密钥。", nameof(key));
         pemWriter.Writer.Flush();
         return writer.ToString();
+    }
+
+    /// <summary>
+    /// 创建具有 SM2 命名曲线标识的域参数。
+    /// </summary>
+    /// <returns>sm2p256v1 域参数。</returns>
+    private static ECDomainParameters CreateSm2Domain()
+    {
+        var parameters = GMNamedCurves.GetByName("sm2p256v1");
+        if (parameters == null)
+            throw new InvalidOperationException("当前密码学提供程序不支持 sm2p256v1 曲线。 ");
+        return new ECNamedDomainParameters(GMObjectIdentifiers.sm2p256v1, parameters.Curve, parameters.G, parameters.N, parameters.H, parameters.GetSeed());
+    }
+
+    /// <summary>
+    /// 验证公钥属于 sm2p256v1 且椭圆曲线点有效。
+    /// </summary>
+    /// <param name="key">待验证公钥。</param>
+    /// <param name="parameterName">调用方参数名。</param>
+    private static void ValidatePublicKey(ECPublicKeyParameters key, string parameterName)
+    {
+        if (!IsSm2Domain(key.Parameters) || key.Q == null || key.Q.IsInfinity || !key.Q.IsValid())
+            throw new ArgumentException("PEM 公钥必须是 sm2p256v1 曲线上的有效点。", parameterName);
+    }
+
+    /// <summary>
+    /// 验证私钥属于 sm2p256v1 且标量位于合法范围。
+    /// </summary>
+    /// <param name="key">待验证私钥。</param>
+    /// <param name="parameterName">调用方参数名。</param>
+    private static void ValidatePrivateKey(ECPrivateKeyParameters key, string parameterName)
+    {
+        if (!IsSm2Domain(key.Parameters) || key.D.SignValue <= 0 || key.D.CompareTo(Sm2Domain.N) >= 0)
+            throw new ArgumentException("PEM 私钥必须是 sm2p256v1 曲线的合法私钥标量。", parameterName);
+    }
+
+    /// <summary>
+    /// 检查域参数是否与固定 sm2p256v1 域相同。
+    /// </summary>
+    /// <param name="parameters">待检查域参数。</param>
+    /// <returns>参数匹配时返回 <c>true</c>。</returns>
+    private static bool IsSm2Domain(ECDomainParameters parameters)
+    {
+        return parameters != null && parameters.Curve.Equals(Sm2Domain.Curve) && parameters.G.Equals(Sm2Domain.G) && parameters.N.Equals(Sm2Domain.N) && parameters.H.Equals(Sm2Domain.H);
+    }
+
+    /// <summary>
+    /// 统计文本中指定片段出现的次数。
+    /// </summary>
+    /// <param name="value">待搜索文本。</param>
+    /// <param name="token">统计片段。</param>
+    /// <returns>片段出现次数。</returns>
+    private static int CountOccurrences(string value, string token)
+    {
+        var count = 0;
+        var offset = 0;
+        while ((offset = value.IndexOf(token, offset, StringComparison.Ordinal)) >= 0)
+        {
+            count++;
+            offset += token.Length;
+        }
+        return count;
     }
 
     /// <summary>

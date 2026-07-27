@@ -111,4 +111,24 @@ public class GmCryptographyTests
         Sm2.Verify(data, customSignature, pair.PublicKeyPem).ShouldBeFalse();
         Sm2.Verify(System.Text.Encoding.UTF8.GetBytes("changed"), defaultSignature, pair.PublicKeyPem).ShouldBeFalse();
     }
+
+    /// <summary>
+    /// 测试目的：SM2 PEM 必须使用标准 PKCS#8 与 SPKI 标签，且导入时只能包含一个对应对象。
+    /// </summary>
+    [Fact]
+    public void Sm2_WhenPemContainsUnexpectedOrMultipleObjects_ShouldRejectIt()
+    {
+        // Arrange
+        var pair = Sm2.GenerateKeyPair();
+        var data = new byte[] { 1, 2, 3 };
+        var multiplePublicKeys = pair.PublicKeyPem + Environment.NewLine + pair.PublicKeyPem;
+
+        // Act
+        var encryptAction = new Action(() => Sm2.Encrypt(data, multiplePublicKeys));
+
+        // Assert
+        pair.PublicKeyPem.ShouldStartWith("-----BEGIN PUBLIC KEY-----");
+        pair.PrivateKeyPem.ShouldStartWith("-----BEGIN PRIVATE KEY-----");
+        encryptAction.ShouldThrow<ArgumentException>();
+    }
 }
