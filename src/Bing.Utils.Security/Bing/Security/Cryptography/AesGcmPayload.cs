@@ -1,4 +1,5 @@
 #if !NETSTANDARD2_0
+using System.Buffers.Binary;
 using Bing.Security.Encoding;
 
 namespace Bing.Security.Cryptography;
@@ -44,6 +45,11 @@ public sealed class AesGcmPayload
     public const int TagSize = 16;
 
     /// <summary>
+    /// 内部二进制载荷固定头长度。
+    /// </summary>
+    internal const int BinaryHeaderLength = 7;
+
+    /// <summary>
     /// 载荷格式版本。
     /// </summary>
     public byte Version { get; }
@@ -82,6 +88,26 @@ public sealed class AesGcmPayload
     /// <param name="tag">16 字节认证标签。</param>
     /// <exception cref="ArgumentException">字段长度不符合格式约束时抛出。</exception>
     public AesGcmPayload(byte version, byte[] nonce, byte[] ciphertext, byte[] tag)
+        : this(version, nonce, ciphertext, tag, false)
+    {
+    }
+
+    /// <summary>
+    /// 创建接管输入数组所有权的内部载荷。
+    /// </summary>
+    /// <param name="nonce">12 字节随机 Nonce。</param>
+    /// <param name="ciphertext">密文字节。</param>
+    /// <param name="tag">16 字节认证标签。</param>
+    /// <returns>独占输入数组的 AES-GCM 载荷。</returns>
+    internal static AesGcmPayload CreateOwned(byte[] nonce, byte[] ciphertext, byte[] tag)
+    {
+        return new AesGcmPayload(CurrentVersion, nonce, ciphertext, tag, true);
+    }
+
+    /// <summary>
+    /// 使用指定所有权模式初始化认证加密载荷。
+    /// </summary>
+    private AesGcmPayload(byte version, byte[] nonce, byte[] ciphertext, byte[] tag, bool takeOwnership)
     {
         if (version != CurrentVersion)
             throw new ArgumentException("不支持的 AES-GCM 载荷版本。", nameof(version));
@@ -95,9 +121,9 @@ public sealed class AesGcmPayload
             throw new ArgumentException("AES-GCM 认证标签必须为 16 字节。", nameof(tag));
 
         Version = version;
-        _nonce = nonce.ToArray();
-        _ciphertext = ciphertext.ToArray();
-        _tag = tag.ToArray();
+        _nonce = takeOwnership ? nonce : nonce.ToArray();
+        _ciphertext = takeOwnership ? ciphertext : ciphertext.ToArray();
+        _tag = takeOwnership ? tag : tag.ToArray();
     }
 
     /// <summary>
@@ -129,6 +155,77 @@ public sealed class AesGcmPayload
                 CryptographicOperationsCompat.ZeroMemory(result);
             }
         }
+    }
+
+    /// <summary>
+    /// 将载荷编码为内部二进制格式。
+    /// </summary>
+    /// <returns>包含版本、字段长度和密文的二进制载荷。</returns>
+    internal byte[] EncodeBinary()
+    {
+        var result = new byte[GetBinaryLength(_ciphertext.Length)];
+        result[0] = Version;
+        result[1] = (byte)_nonce.Length;
+        result[2] = (byte)_tag.Length;
+        BinaryPrimitives.WriteUInt32BigEndian(result.AsSpan(3, 4), (uint)_ciphertext.Length);
+        _nonce.CopyTo(result, BinaryHeaderLength);
+        _ciphertext.CopyTo(result, BinaryHeaderLength + _nonce.Length);
+        _tag.CopyTo(result, BinaryHeaderLength + _nonce.Length + _ciphertext.Length);
+        return result;
+    }
+
+    /// <summary>
+    /// 尝试解析内部二进制格式并接管新建字段数组的所有权。
+    /// </summary>
+    /// <param name="value">二进制载荷。</param>
+    /// <param name="payload">解析成功时返回载荷。</param>
+    /// <returns>格式有效时返回 <c>true</c>。</returns>
+    internal static bool TryParseBinary(ReadOnlySpan<byte> value, out AesGcmPayload payload)
+    {
+        payload = null;
+        if (value.Length < BinaryHeaderLength || value[0] != CurrentVersion || value[1] != NonceSize || value[2] != TagSize)
+            return false;
+
+        var ciphertextLength = BinaryPrimitives.ReadUInt32BigEndian(value.Slice(3, 4));
+        if (ciphertextLength > MaximumCiphertextSize || value.Length != GetBinaryLength((int)ciphertextLength))
+            return false;
+
+        var nonce = value.Slice(BinaryHeaderLength, NonceSize).ToArray();
+        var ciphertext = value.Slice(BinaryHeaderLength + NonceSize, (int)ciphertextLength).ToArray();
+        var tag = value.Slice(BinaryHeaderLength + NonceSize + (int)ciphertextLength, TagSize).ToArray();
+        try
+        {
+            payload = CreateOwned(nonce, ciphertext, tag);
+            nonce = null;
+            ciphertext = null;
+            tag = null;
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+        finally
+        {
+            if (nonce != null)
+                CryptographicOperationsCompat.ZeroMemory(nonce);
+            if (ciphertext != null)
+                CryptographicOperationsCompat.ZeroMemory(ciphertext);
+            if (tag != null)
+                CryptographicOperationsCompat.ZeroMemory(tag);
+        }
+    }
+
+    /// <summary>
+    /// 获取给定密文长度对应的内部二进制载荷长度。
+    /// </summary>
+    /// <param name="ciphertextLength">密文字节长度。</param>
+    /// <returns>二进制载荷长度。</returns>
+    internal static int GetBinaryLength(int ciphertextLength)
+    {
+        if (ciphertextLength < 0 || ciphertextLength > MaximumCiphertextSize)
+            throw new ArgumentOutOfRangeException(nameof(ciphertextLength));
+        return checked(BinaryHeaderLength + NonceSize + ciphertextLength + TagSize);
     }
 
     /// <summary>

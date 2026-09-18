@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using Bing.Extensions;
 using Bing.Helpers.Internal;
 
@@ -43,6 +43,7 @@ public static partial class Encrypt
     /// Md5加密，返回16位结果
     /// </summary>
     /// <param name="value">值</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string Md5By16(string value) => Md5By16(value, Encoding.UTF8);
 
     /// <summary>
@@ -50,12 +51,14 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">值</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string Md5By16(string value, Encoding encoding) => Md5(value, encoding, 4, 8);
 
     /// <summary>
     /// Md5加密，返回32位结果
     /// </summary>
     /// <param name="value">值</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string Md5By32(string value) => Md5By32(value, Encoding.UTF8);
 
     /// <summary>
@@ -63,6 +66,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">值</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string Md5By32(string value, Encoding encoding) => Md5(value, encoding, null, null);
 
     /// <summary>
@@ -100,12 +104,14 @@ public static partial class Encrypt
     /// <summary>
     /// DES密钥，24位字符串
     /// </summary>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string DesKey { get; set; } = "#s^un2ye21fcv%|f0XpR,+vh";
 
     /// <summary>
     /// DES加密
     /// </summary>
     /// <param name="value">待加密的值</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string DesEncrypt(object value) => DesEncrypt(value, DesKey);
 
     /// <summary>
@@ -113,6 +119,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">待加密的值</param>
     /// <param name="key">密钥，24位</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string DesEncrypt(object value, string key) => DesEncrypt(value, key, Encoding.UTF8);
 
     /// <summary>
@@ -121,6 +128,7 @@ public static partial class Encrypt
     /// <param name="value">待加密的值</param>
     /// <param name="key">密钥，24位</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string DesEncrypt(object value, string key, Encoding encoding)
     {
         var text = value.SafeString();
@@ -166,6 +174,7 @@ public static partial class Encrypt
     /// DES解密
     /// </summary>
     /// <param name="value">待解密的值</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string DesDecrypt(object value) => DesDecrypt(value, DesKey);
 
     /// <summary>
@@ -173,6 +182,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">待解密的值</param>
     /// <param name="key">密钥，24位</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string DesDecrypt(object value, string key) => DesDecrypt(value, key, Encoding.UTF8);
 
     /// <summary>
@@ -181,6 +191,7 @@ public static partial class Encrypt
     /// <param name="value">待解密的值</param>
     /// <param name="key">密钥，24位</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string DesDecrypt(object value, string key, Encoding encoding)
     {
         var text = value.SafeString();
@@ -235,12 +246,14 @@ public static partial class Encrypt
     /// <summary>
     /// AES密钥
     /// </summary>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string AesKey { get; set; } = "QaP1AF8utIarcBqdhYTZpVGbiNQ9M6IL";
 
     /// <summary>
     /// AES加密
     /// </summary>
     /// <param name="value">待加密的值</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string AesEncrypt(string value) => AesEncrypt(value, AesKey);
 
     /// <summary>
@@ -248,6 +261,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">待加密的值</param>
     /// <param name="key">密钥</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string AesEncrypt(string value, string key) => AesEncrypt(value, key, Encoding.UTF8);
 
     /// <summary>
@@ -256,6 +270,7 @@ public static partial class Encrypt
     /// <param name="value">待加密的值</param>
     /// <param name="key">密钥</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string AesEncrypt(string value, string key, Encoding encoding)
     {
         if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(key))
@@ -282,6 +297,7 @@ public static partial class Encrypt
     /// AES解密
     /// </summary>
     /// <param name="value">待解密的值</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string AesDecrypt(string value) => AesDecrypt(value, AesKey);
 
     /// <summary>
@@ -289,6 +305,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">待解密的值</param>
     /// <param name="key">密钥</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string AesDecrypt(string value, string key) => AesDecrypt(value, key, Encoding.UTF8);
 
     /// <summary>
@@ -297,6 +314,7 @@ public static partial class Encrypt
     /// <param name="value">待解密的值</param>
     /// <param name="key">密钥</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string AesDecrypt(string value, string key, Encoding encoding)
     {
         if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(key))
@@ -315,6 +333,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">待签名的值</param>
     /// <param name="key">私钥</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string RsaSign(string value, string key) => RsaSign(value, key, Encoding.UTF8);
 
     /// <summary>
@@ -323,6 +342,7 @@ public static partial class Encrypt
     /// <param name="value">待签名的值</param>
     /// <param name="key">私钥</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string RsaSign(string value, string key, Encoding encoding) => RsaSign(value, key, encoding, RSAType.RSA);
 
     /// <summary>
@@ -330,6 +350,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">待签名的值</param>
     /// <param name="key">私钥</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string Rsa2Sign(string value, string key) => Rsa2Sign(value, key, Encoding.UTF8);
 
     /// <summary>
@@ -338,6 +359,7 @@ public static partial class Encrypt
     /// <param name="value">待签名的值</param>
     /// <param name="key">私钥</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string Rsa2Sign(string value, string key, Encoding encoding) => RsaSign(value, key, encoding, RSAType.RSA2);
 
     /// <summary>
@@ -351,7 +373,7 @@ public static partial class Encrypt
     {
         if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(key))
             return string.Empty;
-        var rsa = new RsaHelper(type, encoding, key);
+        using var rsa = new RsaHelper(type, encoding, key);
         return rsa.Sign(value);
     }
 
@@ -361,6 +383,7 @@ public static partial class Encrypt
     /// <param name="value">待验签的值</param>
     /// <param name="publicKey">公钥</param>
     /// <param name="sign">签名</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static bool RsaVerify(string value, string publicKey, string sign) => RsaVerify(value, publicKey, sign, Encoding.UTF8);
 
     /// <summary>
@@ -370,6 +393,7 @@ public static partial class Encrypt
     /// <param name="publicKey">公钥</param>
     /// <param name="sign">签名</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static bool RsaVerify(string value, string publicKey, string sign, Encoding encoding) => RsaVerify(value, publicKey, sign, encoding, RSAType.RSA);
 
     /// <summary>
@@ -378,6 +402,7 @@ public static partial class Encrypt
     /// <param name="value">待验签的值</param>
     /// <param name="publicKey">公钥</param>
     /// <param name="sign">签名</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static bool Rsa2Verify(string value, string publicKey, string sign) => Rsa2Verify(value, publicKey, sign, Encoding.UTF8);
 
     /// <summary>
@@ -387,6 +412,7 @@ public static partial class Encrypt
     /// <param name="publicKey">公钥</param>
     /// <param name="sign">签名</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static bool Rsa2Verify(string value, string publicKey, string sign, Encoding encoding) => RsaVerify(value, publicKey, sign, encoding, RSAType.RSA2);
 
     /// <summary>
@@ -401,7 +427,7 @@ public static partial class Encrypt
     {
         if (string.IsNullOrWhiteSpace(value))
             return false;
-        var rsa = new RsaHelper(type, encoding, publicKey: publicKey);
+        using var rsa = new RsaHelper(type, encoding, publicKey: publicKey);
         return rsa.Verify(value, sign);
     }
 
@@ -414,6 +440,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">值</param>
     /// <param name="key">密钥</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string HmacMd5(string value, string key) => HmacMd5(value, key, Encoding.UTF8);
 
     /// <summary>
@@ -422,11 +449,12 @@ public static partial class Encrypt
     /// <param name="value">值</param>
     /// <param name="key">密钥</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string HmacMd5(string value, string key, Encoding encoding)
     {
         if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(key))
             return string.Empty;
-        var md5 = new HMACMD5(encoding.GetBytes(key));
+        using var md5 = new HMACMD5(encoding.GetBytes(key));
         var hash = md5.ComputeHash(encoding.GetBytes(value));
         return string.Join("", hash.ToList().Select(x => x.ToString("x2")).ToArray());
     }
@@ -440,6 +468,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">值</param>
     /// <param name="key">密钥</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string HmacSha1(string value, string key) => HmacSha1(value, key, Encoding.UTF8);
 
     /// <summary>
@@ -448,11 +477,12 @@ public static partial class Encrypt
     /// <param name="value">值</param>
     /// <param name="key">密钥</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string HmacSha1(string value, string key, Encoding encoding)
     {
         if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(key))
             return string.Empty;
-        var sha1 = new HMACSHA1(encoding.GetBytes(key));
+        using var sha1 = new HMACSHA1(encoding.GetBytes(key));
         var hash = sha1.ComputeHash(encoding.GetBytes(value));
         return string.Join("", hash.ToList().Select(x => x.ToString("x2")).ToArray());
     }
@@ -478,7 +508,7 @@ public static partial class Encrypt
     {
         if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(key))
             return string.Empty;
-        var sha256 = new HMACSHA256(encoding.GetBytes(key));
+        using var sha256 = new HMACSHA256(encoding.GetBytes(key));
         var hash = sha256.ComputeHash(encoding.GetBytes(value));
         return string.Join("", hash.ToList().Select(x => x.ToString("x2")).ToArray());
     }
@@ -504,7 +534,7 @@ public static partial class Encrypt
     {
         if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(key))
             return string.Empty;
-        var sha384 = new HMACSHA384(encoding.GetBytes(key));
+        using var sha384 = new HMACSHA384(encoding.GetBytes(key));
         var hash = sha384.ComputeHash(encoding.GetBytes(value));
         return string.Join("", hash.ToList().Select(x => x.ToString("x2")).ToArray());
     }
@@ -530,7 +560,7 @@ public static partial class Encrypt
     {
         if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(key))
             return string.Empty;
-        var sha512 = new HMACSHA512(encoding.GetBytes(key));
+        using var sha512 = new HMACSHA512(encoding.GetBytes(key));
         var hash = sha512.ComputeHash(encoding.GetBytes(value));
         return string.Join("", hash.ToList().Select(x => x.ToString("x2")).ToArray());
     }
@@ -543,6 +573,7 @@ public static partial class Encrypt
     /// SHA1加密
     /// </summary>
     /// <param name="value">值</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string Sha1(string value) => Sha1(value, Encoding.UTF8);
 
     /// <summary>
@@ -550,6 +581,7 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="value">值</param>
     /// <param name="encoding">字符编码</param>
+    [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string Sha1(string value, Encoding encoding)
     {
         if (string.IsNullOrWhiteSpace(value))

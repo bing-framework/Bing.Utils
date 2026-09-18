@@ -32,26 +32,19 @@ public class CanonicalRequestTests
     }
 
     /// <summary>
-    /// 测试目的：关闭 URL 编码时，含分隔符的值、空分隔符或相同分隔符必须被拒绝。
+    /// 测试目的：规范化协议必须固定使用 RFC 3986 编码，含分隔符的键和值不得产生歧义。
     /// </summary>
     [Fact]
-    public void Serialize_WhenRawSeparatorsAreAmbiguous_ShouldThrowArgumentException()
+    public void Serialize_WhenKeysOrValuesContainSeparators_ShouldEncodeThem()
     {
         // Arrange
-        var parameter = new[] { new CanonicalParameter("a", "1&b=2") };
-        var rawOptions = new CanonicalParameterOptions { UrlEncodeKeys = false, UrlEncodeValues = false };
-        var emptySeparatorOptions = new CanonicalParameterOptions { PairSeparator = string.Empty };
-        var sameSeparatorOptions = new CanonicalParameterOptions { PairSeparator = "&", KeyValueSeparator = "&" };
+        var parameter = new[] { new CanonicalParameter("a&b", "1&b=2") };
 
         // Act
-        var rawAction = new Action(() => CanonicalParameterSerializer.Serialize(parameter, rawOptions));
-        var emptyAction = new Action(() => CanonicalParameterSerializer.Serialize(parameter, emptySeparatorOptions));
-        var sameAction = new Action(() => CanonicalParameterSerializer.Serialize(parameter, sameSeparatorOptions));
+        var result = CanonicalParameterSerializer.Serialize(parameter);
 
         // Assert
-        rawAction.ShouldThrow<ArgumentException>();
-        emptyAction.ShouldThrow<ArgumentException>();
-        sameAction.ShouldThrow<ArgumentException>();
+        result.ShouldBe("a%26b=1%26b%3D2");
     }
 
     /// <summary>
@@ -87,14 +80,13 @@ public class CanonicalRequestTests
             new CanonicalParameter("flag", true),
             new CanonicalParameter("items", new[] { "中文", "second" })
         };
-        var options = new CanonicalParameterOptions { IgnoreNullValues = false, UrlEncodeValues = true };
         var originalCulture = CultureInfo.CurrentCulture;
         var originalUiCulture = CultureInfo.CurrentUICulture;
 
         // Act
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
         CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("fr-FR");
-        var result = CanonicalParameterSerializer.Serialize(parameters, options);
+        var result = CanonicalParameterSerializer.Serialize(parameters);
         CultureInfo.CurrentCulture = originalCulture;
         CultureInfo.CurrentUICulture = originalUiCulture;
 

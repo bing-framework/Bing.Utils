@@ -1,4 +1,4 @@
-﻿using Bing.Extensions;
+using Bing.Extensions;
 using Bing.Helpers;
 using Bing.Utils.Parameters;
 
@@ -7,6 +7,7 @@ namespace Bing.Utils.Signatures;
 /// <summary>
 /// 签名管理器
 /// </summary>
+[Obsolete("旧签名协议使用 RSA PKCS#1 v1.5；新代码请使用 Bing.Security.Canonicalization.VersionedRequestSigner 的 BRS1 入口。")]
 public class SignManager : ISignManager
 {
     /// <summary>

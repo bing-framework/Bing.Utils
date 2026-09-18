@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace />
+    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <Import Project="..\..\common.tests.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bing.Utils.Net\Bing.Utils.Net.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Bing.Utils.Tests\Resources\TestFiles\**">
+      <Link>Resources\TestFiles\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

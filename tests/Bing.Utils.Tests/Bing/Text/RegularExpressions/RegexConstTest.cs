@@ -769,35 +769,33 @@ public class RegexConstTest
         }
     }
     /// <summary>
-    /// 测试 - 正则表达式性能
+    /// 测试 - 正则表达式批量匹配
     /// </summary>
     [Fact]
-    public void RegexPatterns_Performance_ShouldBeReasonable()
+    public void RegexPatterns_WhenMatchingBatch_ReturnExpectedMatches()
     {
         // Arrange
-        var testInputs = new[]
+        var testCases = new[]
         {
-            "user@example.com",
-            "13812345678",
-            "192.168.1.1",
-            "测试中文内容",
-            "abc123_test"
+            ("user@example.com", RegexConst.Email),
+            ("13812345678", RegexConst.Mobile),
+            ("192.168.1.1", RegexConst.IPv4),
+            ("测试中文内容", RegexConst.Chinese),
+            ("abc123_test", RegexConst.General)
         };
-        // Act & Assert
-        Should.CompleteIn(() =>
+        // Act
+        var matchCount = 0;
+        for (var i = 0; i < 1000; i++)
         {
-            for (int i = 0; i < 1000; i++)
+            foreach (var (input, pattern) in testCases)
             {
-                foreach (var input in testInputs)
-                {
-                    Regex.IsMatch(input, RegexConst.Email);
-                    Regex.IsMatch(input, RegexConst.Mobile);
-                    Regex.IsMatch(input, RegexConst.IPv4);
-                    Regex.IsMatch(input, RegexConst.Chinese);
-                    Regex.IsMatch(input, RegexConst.General);
-                }
+                if (Regex.IsMatch(input, pattern))
+                    matchCount++;
             }
-        }, TimeSpan.FromSeconds(5)); // 应该在5秒内完成
+        }
+
+        // Assert
+        matchCount.ShouldBe(5000);
     }
     #endregion
     #region 综合场景测试

@@ -51,17 +51,17 @@ public sealed class Sm4GcmPayload
     /// <summary>
     /// 每次加密唯一的 12 字节 Nonce。
     /// </summary>
-    public byte[] Nonce => (byte[])_nonce.Clone();
+    public ReadOnlyMemory<byte> Nonce => _nonce;
 
     /// <summary>
     /// 加密后的密文字节。
     /// </summary>
-    public byte[] Ciphertext => (byte[])_ciphertext.Clone();
+    public ReadOnlyMemory<byte> Ciphertext => _ciphertext;
 
     /// <summary>
     /// 16 字节 GCM 认证标签。
     /// </summary>
-    public byte[] Tag => (byte[])_tag.Clone();
+    public ReadOnlyMemory<byte> Tag => _tag;
 
     /// <summary>
     /// 使用已认证的 SM4-GCM 字段初始化载荷。

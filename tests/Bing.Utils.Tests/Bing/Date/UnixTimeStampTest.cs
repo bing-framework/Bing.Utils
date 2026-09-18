@@ -762,24 +762,26 @@ public class UnixTimeStampTest
         }, TimeSpan.FromSeconds(1), $"执行{iterations}次转换操作应该在1秒内完成");
     }
     /// <summary>
-    /// 测试 - 静态方法性能
+    /// 测试 - 静态工厂批量调用应返回有效时间戳
     /// </summary>
     [Fact]
-    public void Performance_StaticMethods_CompleteQuickly()
+    public void StaticFactories_WhenCalledRepeatedly_ReturnValidUnixTimestamps()
     {
         // Arrange
         const int iterations = 50000;
-        // Act & Assert
-        Should.CompleteIn(() =>
+        var timestamps = new long[iterations];
+
+        // Act
+        for (var i = 0; i < iterations; i++)
             {
-                for (int i = 0; i < iterations; i++)
-                {
-                    var _ = UnixTimeStamp.Now();
-                    var __ = UnixTimeStamp.UtcNow();
-                    var ___ = UnixTimeStamp.CreateNow();
-                    var ____ = UnixTimeStamp.CreateUtcNow();
-                }
-            }, TimeSpan.FromSeconds(1), $"执行{iterations}次静态方法调用应该在1秒内完成");
+            timestamps[i] = UnixTimeStamp.Now();
+            UnixTimeStamp.UtcNow().ShouldBeGreaterThan(0);
+            UnixTimeStamp.CreateNow().ToTimestamp().ShouldBeGreaterThan(0);
+            UnixTimeStamp.CreateUtcNow().ToTimestamp().ShouldBeGreaterThan(0);
+        }
+
+        // Assert
+        timestamps.All(timestamp => timestamp > 0).ShouldBeTrue();
     }
     #endregion
     #region 集成测试

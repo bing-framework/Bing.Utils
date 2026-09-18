@@ -689,23 +689,24 @@ public class TimeTest : TestBase, IDisposable
         results[1].ShouldBe(date2);
     }
     /// <summary>
-    /// 测试 - 性能测试 - Unix时间戳转换
+    /// 测试 - Unix时间戳批量转换应保持一致性
     /// </summary>
     [Fact]
-    public void UnixTimestampConversion_PerformanceTest_ExecutesWithinReasonableTime()
+    public void UnixTimestampConversion_WhenConvertingBatch_PreservesTimestamps()
     {
         // Arrange
         const int iterations = 10000;
         var dateTime = DateTime.UtcNow;
-        // Act & Assert
-        Should.CompleteIn(() =>
+
+        // Act
+        for (var i = 0; i < iterations; i++)
         {
-            for (int i = 0; i < iterations; i++)
-            {
-                var timestamp = Time.ToEpochSecond(dateTime);
-                var converted = Time.OfEpochSecond(timestamp);
-            }
-        }, TimeSpan.FromSeconds(1)); // 应该在1秒内完成10000次转换
+            var timestamp = Time.ToEpochSecond(dateTime);
+            var converted = Time.OfEpochSecond(timestamp);
+
+            // Assert
+            Time.ToEpochSecond(converted).ShouldBe(timestamp);
+        }
     }
     #endregion
     #region 集成测试

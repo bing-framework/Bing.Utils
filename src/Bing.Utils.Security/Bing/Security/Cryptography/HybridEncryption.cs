@@ -18,7 +18,7 @@ public static class HybridEncryption
     /// <returns>版本化混合加密载荷。</returns>
     public static HybridEncryptedPayload Encrypt(ReadOnlySpan<byte> plaintext, string publicKeyPem, ReadOnlySpan<byte> associatedData = default)
     {
-        var key = AesGcmEncryption.GenerateKey(AesKeySize.Size256);
+        var key = AesKeyGenerator.Generate(AesKeySize.Size256);
         try
         {
             var encryptedData = AesGcmEncryption.Encrypt(plaintext, key, associatedData);

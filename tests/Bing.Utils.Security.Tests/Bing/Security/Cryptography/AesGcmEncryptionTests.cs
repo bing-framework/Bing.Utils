@@ -21,7 +21,7 @@ public class AesGcmEncryptionTests
     public void EncryptDecrypt_WhenKeySizeIsSupported_ShouldRoundTrip(AesKeySize keySize)
     {
         // Arrange
-        var key = AesGcmEncryption.GenerateKey(keySize);
+        var key = AesKeyGenerator.Generate(keySize);
         var plaintext = new byte[] { 0, 1, 2, 255 };
 
         // Act
@@ -41,7 +41,7 @@ public class AesGcmEncryptionTests
     public void Encrypt_WhenCalledMultipleTimes_ShouldUseDifferentNonces()
     {
         // Arrange
-        var key = AesGcmEncryption.GenerateKey();
+        var key = AesKeyGenerator.Generate();
         var plaintext = System.Text.Encoding.UTF8.GetBytes("相同明文");
 
         // Act
@@ -60,7 +60,7 @@ public class AesGcmEncryptionTests
     public void Decrypt_WhenAuthenticatedInputChanges_ShouldThrowCryptographicException()
     {
         // Arrange
-        var key = AesGcmEncryption.GenerateKey();
+        var key = AesKeyGenerator.Generate();
         var associatedData = System.Text.Encoding.UTF8.GetBytes("request-id");
         var payload = AesGcmEncryption.Encrypt(System.Text.Encoding.UTF8.GetBytes("机密数据"), key, associatedData);
         var changedCiphertextBytes = payload.Ciphertext.ToArray();
@@ -78,7 +78,7 @@ public class AesGcmEncryptionTests
         var nonceAction = () => AesGcmEncryption.Decrypt(changedNonce, key, associatedData);
         var tagAction = () => AesGcmEncryption.Decrypt(changedTag, key, associatedData);
         var associatedDataAction = () => AesGcmEncryption.Decrypt(payload, key, System.Text.Encoding.UTF8.GetBytes("other"));
-        var keyAction = () => AesGcmEncryption.Decrypt(payload, AesGcmEncryption.GenerateKey(), associatedData);
+        var keyAction = () => AesGcmEncryption.Decrypt(payload, AesKeyGenerator.Generate(), associatedData);
 
         // Assert
         ciphertextAction.ShouldThrow<CryptographicException>();
@@ -95,7 +95,7 @@ public class AesGcmEncryptionTests
     public void AesGcmPayload_WhenEncodedAndParsed_ShouldValidateFormat()
     {
         // Arrange
-        var key = AesGcmEncryption.GenerateKey();
+        var key = AesKeyGenerator.Generate();
         var payload = AesGcmEncryption.Encrypt(System.Text.Encoding.UTF8.GetBytes("版本化载荷"), key);
 
         // Act
@@ -117,7 +117,7 @@ public class AesGcmEncryptionTests
     public void AesGcmPayload_WhenExportedBytesAreModified_ShouldRetainOwnedData()
     {
         // Arrange
-        var key = AesGcmEncryption.GenerateKey();
+        var key = AesKeyGenerator.Generate();
         var plaintext = System.Text.Encoding.UTF8.GetBytes("不可变载荷");
         var payload = AesGcmEncryption.Encrypt(plaintext, key);
         var exportedCiphertext = payload.Ciphertext.ToArray();

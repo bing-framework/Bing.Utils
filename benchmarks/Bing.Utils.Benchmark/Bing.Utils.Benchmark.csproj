@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bing.Utils\Bing.Utils.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Security\Bing.Utils.Security.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Security.Gm\Bing.Utils.Security.Gm.csproj" />
   </ItemGroup>
 
 </Project>

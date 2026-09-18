@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <RootNamespace />
+    <IsTestProject>false</IsTestProject>
   </PropertyGroup>
-
-	<Import Project="..\..\common.tests.props" />
 
   <ItemGroup>
     <PackageReference Include="AspectCore.Abstractions" Version="2.2.0" />
+    <PackageReference Include="xunit" Version="2.7.0" />
   </ItemGroup>
 
   <ItemGroup>

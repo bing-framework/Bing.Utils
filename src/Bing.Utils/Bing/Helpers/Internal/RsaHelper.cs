@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 
 namespace Bing.Helpers.Internal;
 
@@ -11,7 +11,7 @@ namespace Bing.Helpers.Internal;
 /// 时间：2017年10月30日15:50:14
 /// QQ:501232752
 /// </summary>
-internal class RsaHelper
+internal sealed class RsaHelper : IDisposable
 {
     /// <summary>
     /// 私钥RSA提供程序
@@ -317,6 +317,13 @@ internal class RsaHelper
     }
 
     #endregion
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _privateKeyRsaProvider?.Dispose();
+        _publicKeyRsaProvider?.Dispose();
+    }
 }
 
 /// <summary>

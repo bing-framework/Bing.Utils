@@ -3,6 +3,7 @@ namespace Bing.Text.RegularExpressions;
 /// <summary>
 /// 正则表达式池 单元测试
 /// </summary>
+[Collection("RegexPool")]
 public class RegexPoolTest : IDisposable
 {
     #region 初始化
@@ -1746,4 +1747,12 @@ public class RegexPoolTest : IDisposable
         result.ShouldContain("/"); // 分数格式
     }
     #endregion
+}
+
+/// <summary>
+/// RegexPool 共享静态缓存测试集合
+/// </summary>
+[CollectionDefinition("RegexPool", DisableParallelization = true)]
+public class RegexPoolTestCollection
+{
 }

@@ -222,7 +222,7 @@ namespace BuildScript
             return context.CreateTarget("unit.test")
                 .SetDescription("Runs unit tests.")
                 .DependsOn(dependTargets)
-                .ForEach(UnitTestProjectFiles, (project, target) =>
+                .ForEach(UnitTestProjectFiles.Where(project => IntegrationTestProjectFiles.Exists(integration => integration.FileName == project.FileName) == false), (project, target) =>
                 {
                     target.AddCoreTask(x => x.Test().Project(project).NoBuild());
                 });

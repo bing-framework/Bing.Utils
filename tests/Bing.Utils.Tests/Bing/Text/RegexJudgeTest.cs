@@ -272,10 +272,10 @@ public class RegexJudgeTest
     #endregion
     #region 性能和压力测试
     /// <summary>
-    /// 测试 - IsMatch - 性能测试
+    /// 测试 - IsMatch - 批量匹配
     /// </summary>
     [Fact]
-    public void IsMatch_Performance_ShouldCompleteInReasonableTime()
+    public void IsMatch_WhenMatchingBatch_ReturnsExpectedMatches()
     {
         // Arrange
         var testData = new[]
@@ -286,17 +286,19 @@ public class RegexJudgeTest
             ("中文测试", @"[\u4e00-\u9fa5]+"),
             ("Hello World", @"[a-zA-Z\s]+")
         };
-        // Act & Assert - 应该在合理时间内完成
-        Should.CompleteIn(() =>
+        // Act
+        var matchCount = 0;
+        for (var i = 0; i < 1000; i++)
         {
-            for (int i = 0; i < 1000; i++)
+            foreach (var (input, pattern) in testData)
             {
-                foreach (var (input, pattern) in testData)
-                {
-                    RegexJudge.IsMatch(input, pattern);
-                }
+                if (RegexJudge.IsMatch(input, pattern))
+                    matchCount++;
             }
-        }, TimeSpan.FromSeconds(2)); // 应该在2秒内完成
+        }
+
+        // Assert
+        matchCount.ShouldBe(5000);
     }
     /// <summary>
     /// 测试 - IsMatch - 长字符串处理

@@ -22,7 +22,7 @@ public sealed class EcdsaKeyPair
     /// <param name="publicKeyPem">SubjectPublicKeyInfo 公钥 PEM。</param>
     /// <param name="privateKeyPem">PKCS#8 私钥 PEM。</param>
     /// <exception cref="ArgumentException">任一 PEM 文本为空时抛出。</exception>
-    public EcdsaKeyPair(string publicKeyPem, string privateKeyPem)
+    internal EcdsaKeyPair(string publicKeyPem, string privateKeyPem)
     {
         if (string.IsNullOrWhiteSpace(publicKeyPem))
             throw new ArgumentException("ECDSA 公钥 PEM 不能为空。", nameof(publicKeyPem));

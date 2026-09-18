@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Extensions;
@@ -88,6 +88,7 @@ public static class StreamExtensions
     /// 获取流的MD5值
     /// </summary>
     /// <param name="stream">流</param>
+    [Obsolete("MD5 仅用于兼容非安全校验；安全完整性校验请使用 Bing.Security.Hashing.Hashing 的 SHA-2 API。")]
     public static string GetMd5(this Stream stream)
     {
         using (var md5 = MD5.Create())

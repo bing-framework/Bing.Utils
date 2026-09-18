@@ -24,11 +24,6 @@
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
 	</PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Net\FTP\" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<Content Include="Resources\**">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

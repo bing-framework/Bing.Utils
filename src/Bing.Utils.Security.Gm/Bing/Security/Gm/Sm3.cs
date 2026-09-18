@@ -1,60 +1,86 @@
 using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Bing.Security.Encoding;
 using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Macs;
-using Org.BouncyCastle.Crypto.Parameters;
 
 namespace Bing.Security.Gm;
 
-/// <summary>
-/// 提供 SM3 摘要和 HMAC-SM3 消息认证码计算。
-/// </summary>
+/// <summary>提供 SM3 摘要计算。</summary>
 public static class Sm3
 {
-    /// <summary>
-    /// SM3 摘要长度，单位为字节。
-    /// </summary>
+    /// <summary>SM3 摘要长度，单位为字节。</summary>
     public const int DigestSize = 32;
 
-    /// <summary>
-    /// 计算数据的 SM3 摘要。
-    /// </summary>
-    /// <param name="data">要计算摘要的数据。</param>
-    /// <returns>32 字节 SM3 摘要。</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="data"/> 为 <c>null</c> 时抛出。</exception>
+    /// <summary>计算字节数组的 SM3 摘要。</summary>
     public static byte[] Compute(byte[] data)
     {
         if (data == null)
             throw new ArgumentNullException(nameof(data));
-
         var digest = new SM3Digest();
         digest.BlockUpdate(data, 0, data.Length);
-        var result = new byte[DigestSize];
-        digest.DoFinal(result, 0);
-        return result;
+        return Finish(digest);
     }
 
-    /// <summary>
-    /// 使用 HMAC-SM3 计算数据的认证码。
-    /// </summary>
-    /// <param name="key">认证密钥，不能为空。</param>
-    /// <param name="data">要认证的数据。</param>
-    /// <returns>32 字节 HMAC-SM3 认证码。</returns>
-    /// <exception cref="ArgumentNullException">任一参数为 <c>null</c> 时抛出。</exception>
-    /// <exception cref="ArgumentException"><paramref name="key"/> 为空时抛出。</exception>
-    public static byte[] ComputeHmac(byte[] key, byte[] data)
+    /// <summary>计算流的 SM3 摘要，不关闭输入流。</summary>
+    public static byte[] Compute(Stream stream)
     {
-        if (key == null)
-            throw new ArgumentNullException(nameof(key));
-        if (data == null)
-            throw new ArgumentNullException(nameof(data));
-        if (key.Length == 0)
-            throw new ArgumentException("HMAC-SM3 密钥不能为空。", nameof(key));
+        if (stream == null)
+            throw new ArgumentNullException(nameof(stream));
+        var digest = new SM3Digest();
+        var buffer = new byte[81920];
+        try
+        {
+            int count;
+            while ((count = stream.Read(buffer, 0, buffer.Length)) != 0)
+                digest.BlockUpdate(buffer, 0, count);
+            return Finish(digest);
+        }
+        finally { GmCryptographicOperationsCompat.ZeroMemory(buffer); }
+    }
 
-        var hmac = new HMac(new SM3Digest());
-        hmac.Init(new KeyParameter(key));
-        hmac.BlockUpdate(data, 0, data.Length);
-        var result = new byte[hmac.GetMacSize()];
-        hmac.DoFinal(result, 0);
+    /// <summary>异步计算流的 SM3 摘要，不关闭输入流。</summary>
+    public static async Task<byte[]> ComputeAsync(Stream stream, CancellationToken cancellationToken = default)
+    {
+        if (stream == null)
+            throw new ArgumentNullException(nameof(stream));
+        var digest = new SM3Digest();
+        var buffer = new byte[81920];
+        try
+        {
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var count = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (count == 0)
+                    return Finish(digest);
+                digest.BlockUpdate(buffer, 0, count);
+            }
+        }
+        finally { GmCryptographicOperationsCompat.ZeroMemory(buffer); }
+    }
+
+    /// <summary>计算小写十六进制 SM3 摘要。</summary>
+    public static string ComputeHex(byte[] data) => HexEncoding.Encode(Compute(data));
+
+    /// <summary>计算 Base64 SM3 摘要。</summary>
+    public static string ComputeBase64(byte[] data) => Convert.ToBase64String(Compute(data));
+
+    /// <summary>异步计算文件的小写十六进制 SM3 摘要。</summary>
+    public static async Task<string> ComputeFileHexAsync(string path, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            throw new ArgumentException("文件路径不能为空。", nameof(path));
+        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 81920, FileOptions.Asynchronous | FileOptions.SequentialScan);
+        return HexEncoding.Encode(await ComputeAsync(stream, cancellationToken).ConfigureAwait(false));
+    }
+
+    private static byte[] Finish(SM3Digest digest)
+    {
+        var result = new byte[DigestSize];
+        digest.DoFinal(result, 0);
         return result;
     }
 }

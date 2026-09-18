@@ -49,13 +49,7 @@ public static class PemKeySerializer
         var rsa = RSA.Create();
         try
         {
-            if (privateKey)
-                rsa.ImportFromPem(pem);
-            else
-                rsa.ImportFromPem(pem);
-            var parameters = rsa.ExportParameters(privateKey);
-            if (parameters.Modulus == null || (privateKey && parameters.D == null))
-                throw new ArgumentException("PEM 不包含所需的 RSA 密钥用途。", nameof(pem));
+            rsa.ImportFromPem(pem);
             return rsa;
         }
         catch (Exception exception) when (exception is CryptographicException || exception is ArgumentException)
@@ -79,9 +73,6 @@ public static class PemKeySerializer
         try
         {
             ecdsa.ImportFromPem(pem);
-            var parameters = ecdsa.ExportParameters(privateKey);
-            if (parameters.Q.X == null || (privateKey && parameters.D == null))
-                throw new ArgumentException("PEM 不包含所需的 ECDSA 密钥用途。", nameof(pem));
             return ecdsa;
         }
         catch (Exception exception) when (exception is CryptographicException || exception is ArgumentException)
@@ -101,9 +92,13 @@ public static class PemKeySerializer
     {
         if (string.IsNullOrWhiteSpace(pem))
             throw new ArgumentException("PEM 文本不能为空。", nameof(pem));
-        if (pem.IndexOf("-----BEGIN " + expectedLabel + "-----", StringComparison.Ordinal) < 0 ||
-            pem.IndexOf("-----END " + expectedLabel + "-----", StringComparison.Ordinal) < 0)
-            throw new ArgumentException("PEM 标签与请求的密钥用途不匹配。", nameof(pem));
+        // 只允许单个、用途匹配的 PEM 块，避免从混合文本导入其他用途的密钥。
+        var text = pem.AsSpan().Trim();
+        if (!PemEncoding.TryFind(text, out var fields) ||
+            !text[fields.Label].SequenceEqual(expectedLabel.AsSpan()) ||
+            fields.Location.Start.GetOffset(text.Length) != 0 ||
+            fields.Location.End.GetOffset(text.Length) != text.Length)
+            throw new ArgumentException("PEM 必须包含单个用途匹配的密钥块。", nameof(pem));
     }
 }
 #endif

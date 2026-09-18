@@ -23,7 +23,7 @@ public sealed class Sm2KeyPair
     /// <param name="publicKeyPem">SubjectPublicKeyInfo PEM 公钥。</param>
     /// <param name="privateKeyPem">PKCS#8 PEM 私钥。</param>
     /// <exception cref="ArgumentException">任一 PEM 文本为空时抛出。</exception>
-    public Sm2KeyPair(string publicKeyPem, string privateKeyPem)
+    internal Sm2KeyPair(string publicKeyPem, string privateKeyPem)
     {
         if (string.IsNullOrWhiteSpace(publicKeyPem))
             throw new ArgumentException("SM2 公钥 PEM 不能为空。", nameof(publicKeyPem));

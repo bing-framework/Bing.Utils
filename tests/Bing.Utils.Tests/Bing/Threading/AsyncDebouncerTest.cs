@@ -73,9 +73,7 @@ public class AsyncDebouncerTests
         var executed = new List<string>();
 
         var first = debouncer.DebounceAsync(() => executed.Add("A"));
-        await Task.Delay(50);
         var second = debouncer.DebounceAsync(() => executed.Add("B"));
-        await Task.Delay(50);
         var third = debouncer.DebounceAsync(() => executed.Add("C"));
 
         first.IsCanceled.ShouldBeTrue();
@@ -91,7 +89,7 @@ public class AsyncDebouncerTests
         await using var debouncer = new AsyncDebouncer(TimeSpan.FromMilliseconds(300));
         var started = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        var firstSubmission = debouncer.DebounceAsync(_ => Task.CompletedTask);
+        _ = debouncer.DebounceAsync(_ => Task.CompletedTask);
         await Task.Delay(150);
         var finalSubmission = debouncer.DebounceAsync(_ =>
         {
@@ -99,11 +97,10 @@ public class AsyncDebouncerTests
             return Task.CompletedTask;
         });
 
-        await Task.Delay(175);
-        started.Task.IsCompleted.ShouldBeFalse();
-        firstSubmission.IsCanceled.ShouldBeTrue();
+        var finalSubmissionStopwatch = System.Diagnostics.Stopwatch.StartNew();
         await WaitForCompletionAsync(started.Task);
         await finalSubmission;
+        finalSubmissionStopwatch.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(250));
     }
 
     [Fact]

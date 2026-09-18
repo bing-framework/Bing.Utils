@@ -40,13 +40,37 @@ public class HmacTests
         var mac = Hmac.ComputeHex("消息", key);
 
         // Act
-        var changedData = Hmac.Verify(System.Text.Encoding.UTF8.GetBytes("消息!"), mac, key);
-        var changedKey = Hmac.Verify(System.Text.Encoding.UTF8.GetBytes("消息"), mac, System.Text.Encoding.UTF8.GetBytes("different-key"));
+        var changedData = Hmac.VerifyHex(System.Text.Encoding.UTF8.GetBytes("消息!"), mac, key);
+        var changedKey = Hmac.VerifyHex(System.Text.Encoding.UTF8.GetBytes("消息"), mac, System.Text.Encoding.UTF8.GetBytes("different-key"));
         var action = () => Hmac.Compute(System.Text.Encoding.UTF8.GetBytes("消息"), Array.Empty<byte>());
 
         // Assert
         changedData.ShouldBeFalse();
         changedKey.ShouldBeFalse();
         action.ShouldThrow<ArgumentException>();
+    }
+
+    /// <summary>
+    /// 测试目的：文本验签入口必须显式声明编码，且格式解码前仍验证算法和密钥边界。
+    /// </summary>
+    [Fact]
+    public void VerifyHexAndBase64Url_WhenMacEncodingIsExplicit_ShouldVerifyOrReject()
+    {
+        // Arrange
+        var data = System.Text.Encoding.UTF8.GetBytes("message");
+        var key = System.Text.Encoding.UTF8.GetBytes("high-entropy-test-key");
+        var mac = Hmac.Compute(data, key);
+        var hex = Bing.Security.Encoding.HexEncoding.Encode(mac);
+        var base64Url = Bing.Security.Encoding.Base64UrlEncoding.Encode(mac);
+
+        // Act
+        var hexVerified = Hmac.VerifyHex(data, hex, key);
+        var base64UrlVerified = Hmac.VerifyBase64Url(data, base64Url, key);
+        var malformedAction = new Action(() => Hmac.VerifyHex(data, "!", Array.Empty<byte>(), (HmacAlgorithmType)999));
+
+        // Assert
+        hexVerified.ShouldBeTrue();
+        base64UrlVerified.ShouldBeTrue();
+        malformedAction.ShouldThrow<ArgumentOutOfRangeException>();
     }
 }

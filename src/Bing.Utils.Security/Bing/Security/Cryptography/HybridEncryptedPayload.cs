@@ -1,5 +1,5 @@
 #if NET6_0_OR_GREATER
-using System.Text;
+using System.Buffers.Binary;
 using Bing.Security.Encoding;
 
 namespace Bing.Security.Cryptography;
@@ -9,6 +9,16 @@ namespace Bing.Security.Cryptography;
 /// </summary>
 public sealed class HybridEncryptedPayload
 {
+    /// <summary>
+    /// RSA 包装密钥允许的最大字节长度。
+    /// </summary>
+    public const int MaximumEncryptedKeySize = 16384;
+
+    /// <summary>
+    /// 混合二进制载荷固定头长度。
+    /// </summary>
+    private const int HeaderLength = 11;
+
     /// <summary>
     /// 当前混合加密载荷格式版本。
     /// </summary>
@@ -55,8 +65,8 @@ public sealed class HybridEncryptedPayload
     {
         if (version != CurrentVersion)
             throw new ArgumentException("不支持的混合加密载荷版本。", nameof(version));
-        if (encryptedKey == null || encryptedKey.Length == 0 || encryptedKey.Length > ushort.MaxValue)
-            throw new ArgumentException("RSA 加密密钥不能为空且长度不能超过 65535 字节。", nameof(encryptedKey));
+        if (encryptedKey == null || encryptedKey.Length == 0 || encryptedKey.Length > MaximumEncryptedKeySize)
+            throw new ArgumentException("RSA 加密密钥不能为空且长度不能超过 16384 字节。", nameof(encryptedKey));
         if (encryptedData == null)
             throw new ArgumentNullException(nameof(encryptedData));
 
@@ -71,22 +81,21 @@ public sealed class HybridEncryptedPayload
     /// <returns>包含魔数、版本和字段长度的 Base64Url 载荷。</returns>
     public string Encode()
     {
-        var encryptedDataText = EncryptedData.Encode();
-        var encryptedDataBytes = System.Text.Encoding.ASCII.GetBytes(encryptedDataText);
+        var encryptedDataBytes = EncryptedData.EncodeBinary();
         try
         {
             checked
             {
-                var result = new byte[11 + _encryptedKey.Length + encryptedDataBytes.Length];
+            var result = new byte[HeaderLength + _encryptedKey.Length + encryptedDataBytes.Length];
                 result[0] = (byte)'B';
                 result[1] = (byte)'S';
                 result[2] = (byte)'H';
                 result[3] = (byte)'1';
                 result[4] = Version;
-                WriteUInt16(result.AsSpan(5, 2), (ushort)_encryptedKey.Length);
-                WriteUInt32(result.AsSpan(7, 4), (uint)encryptedDataBytes.Length);
-                _encryptedKey.CopyTo(result, 11);
-                encryptedDataBytes.CopyTo(result, 11 + _encryptedKey.Length);
+                BinaryPrimitives.WriteUInt16BigEndian(result.AsSpan(5, 2), (ushort)_encryptedKey.Length);
+                BinaryPrimitives.WriteUInt32BigEndian(result.AsSpan(7, 4), (uint)encryptedDataBytes.Length);
+                _encryptedKey.CopyTo(result, HeaderLength);
+                encryptedDataBytes.CopyTo(result, HeaderLength + _encryptedKey.Length);
                 try
                 {
                     return Base64UrlEncoding.Encode(result);
@@ -128,27 +137,28 @@ public sealed class HybridEncryptedPayload
     public static bool TryParse(string value, out HybridEncryptedPayload payload)
     {
         payload = null;
+        if (value == null || value.Length > GetMaximumEncodedLength())
+            return false;
         if (!Base64UrlEncoding.TryDecode(value, out var bytes))
             return false;
 
         byte[] encryptedKey = null;
         try
         {
-            if (bytes.Length < 12 || bytes[0] != 'B' || bytes[1] != 'S' || bytes[2] != 'H' || bytes[3] != '1' || bytes[4] != CurrentVersion)
+            if (bytes.Length < HeaderLength || bytes[0] != 'B' || bytes[1] != 'S' || bytes[2] != 'H' || bytes[3] != '1' || bytes[4] != CurrentVersion)
                 return false;
 
-            var encryptedKeyLength = ReadUInt16(bytes.AsSpan(5, 2));
-            var encryptedDataLength = ReadUInt32(bytes.AsSpan(7, 4));
-            if (encryptedKeyLength == 0 || encryptedDataLength == 0 || encryptedDataLength > int.MaxValue)
+            var encryptedKeyLength = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(5, 2));
+            var encryptedDataLength = BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(7, 4));
+            if (encryptedKeyLength == 0 || encryptedKeyLength > MaximumEncryptedKeySize || encryptedDataLength < AesGcmPayload.GetBinaryLength(0) || encryptedDataLength > AesGcmPayload.GetBinaryLength(AesGcmPayload.MaximumCiphertextSize))
                 return false;
 
-            var expectedLength = 11L + encryptedKeyLength + encryptedDataLength;
+            var expectedLength = (long)HeaderLength + encryptedKeyLength + encryptedDataLength;
             if (bytes.Length != expectedLength)
                 return false;
 
-            encryptedKey = bytes.AsSpan(11, encryptedKeyLength).ToArray();
-            var encryptedDataText = System.Text.Encoding.ASCII.GetString(bytes, 11 + encryptedKeyLength, (int)encryptedDataLength);
-            if (!AesGcmPayload.TryParse(encryptedDataText, out var encryptedData))
+            encryptedKey = bytes.AsSpan(HeaderLength, encryptedKeyLength).ToArray();
+            if (!AesGcmPayload.TryParseBinary(bytes.AsSpan(HeaderLength + encryptedKeyLength, (int)encryptedDataLength), out var encryptedData))
                 return false;
 
             payload = new HybridEncryptedPayload(CurrentVersion, encryptedKey, encryptedData);
@@ -167,47 +177,13 @@ public sealed class HybridEncryptedPayload
     }
 
     /// <summary>
-    /// 以大端序写入无符号 16 位整数。
+    /// 获取允许的最大无填充 Base64Url 文本长度。
     /// </summary>
-    /// <param name="destination">两字节目标缓冲区。</param>
-    /// <param name="value">要写入的数值。</param>
-    private static void WriteUInt16(Span<byte> destination, ushort value)
+    /// <returns>最大文本长度。</returns>
+    private static int GetMaximumEncodedLength()
     {
-        destination[0] = (byte)(value >> 8);
-        destination[1] = (byte)value;
-    }
-
-    /// <summary>
-    /// 以大端序写入无符号 32 位整数。
-    /// </summary>
-    /// <param name="destination">四字节目标缓冲区。</param>
-    /// <param name="value">要写入的数值。</param>
-    private static void WriteUInt32(Span<byte> destination, uint value)
-    {
-        destination[0] = (byte)(value >> 24);
-        destination[1] = (byte)(value >> 16);
-        destination[2] = (byte)(value >> 8);
-        destination[3] = (byte)value;
-    }
-
-    /// <summary>
-    /// 以大端序读取无符号 16 位整数。
-    /// </summary>
-    /// <param name="source">两字节源缓冲区。</param>
-    /// <returns>读取到的数值。</returns>
-    private static ushort ReadUInt16(ReadOnlySpan<byte> source)
-    {
-        return (ushort)((source[0] << 8) | source[1]);
-    }
-
-    /// <summary>
-    /// 以大端序读取无符号 32 位整数。
-    /// </summary>
-    /// <param name="source">四字节源缓冲区。</param>
-    /// <returns>读取到的数值。</returns>
-    private static uint ReadUInt32(ReadOnlySpan<byte> source)
-    {
-        return ((uint)source[0] << 24) | ((uint)source[1] << 16) | ((uint)source[2] << 8) | source[3];
+        var binaryLength = (long)HeaderLength + MaximumEncryptedKeySize + AesGcmPayload.GetBinaryLength(AesGcmPayload.MaximumCiphertextSize);
+        return checked((int)((binaryLength * 4 + 2) / 3));
     }
 }
 #endif

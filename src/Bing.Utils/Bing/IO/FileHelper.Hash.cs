@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 
 namespace Bing.IO;
 
@@ -13,6 +13,7 @@ public static partial class FileHelper
     /// 获取文件的MD5值
     /// </summary>
     /// <param name="file">文件</param>
+    [Obsolete("MD5/SHA-1 仅用于兼容非安全校验；安全完整性校验请使用 Bing.Security.Hashing.Hashing 的 SHA-2 API。")]
     public static string GetMd5(string file) => HashFile(file, nameof(MD5));
 
     /// <summary>
@@ -51,8 +52,7 @@ public static partial class FileHelper
             nameof(SHA512) => SHA512.Create(),
             _ => MD5.Create()
         };
-        var bs = new BufferedStream(stream, 1048576);
-        return algorithm.ComputeHash(bs);
+        return algorithm.ComputeHash(stream);
     }
 
     /// <summary>
@@ -69,6 +69,7 @@ public static partial class FileHelper
     /// 获取文件的SHA1值
     /// </summary>
     /// <param name="file">文件</param>
+    [Obsolete("MD5/SHA-1 仅用于兼容非安全校验；安全完整性校验请使用 Bing.Security.Hashing.Hashing 的 SHA-2 API。")]
     public static string GetSha1(string file) => HashFile(file, nameof(SHA1));
 
     #endregion

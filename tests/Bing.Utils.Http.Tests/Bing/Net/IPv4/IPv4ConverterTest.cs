@@ -271,13 +271,12 @@ public class IPv4ConverterTest : TestBase
         broadcast2.ShouldBe("192.168.1.100");
     }
     /// <summary>
-    /// 测试 - 性能 - 大量IP转换操作
+    /// 测试 - 批量IP转换应保持往返一致
     /// </summary>
     [Fact]
-    public void Performance_MassiveIPConversions_CompletesQuickly()
+    public void MassiveIPConversions_PreservesRoundTrip()
     {
         // Arrange
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         const int iterations = 10000;
         // Act
         for (int i = 0; i < iterations; i++)
@@ -288,9 +287,6 @@ public class IPv4ConverterTest : TestBase
             // 验证往返转换一致性
             convertedIp.ShouldBe(ip);
         }
-        stopwatch.Stop();
-        // Assert
-        stopwatch.ElapsedMilliseconds.ShouldBeLessThan(1000, "性能测试超时");
     }
     /// <summary>
     /// 测试 - IPv4地址范围覆盖

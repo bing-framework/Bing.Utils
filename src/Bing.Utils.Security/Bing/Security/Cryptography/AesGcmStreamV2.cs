@@ -14,61 +14,6 @@ namespace Bing.Security.Cryptography;
 internal static class AesGcmStreamV2
 {
     /// <summary>
-    /// BSS2 格式版本。
-    /// </summary>
-    private const byte Version = 2;
-
-    /// <summary>
-    /// AES-256-GCM 算法标识。
-    /// </summary>
-    private const byte AlgorithmAes256Gcm = 1;
-
-    /// <summary>
-    /// HKDF-SHA256 密钥派生标识。
-    /// </summary>
-    private const byte KdfHkdfSha256 = 1;
-
-    /// <summary>
-    /// 数据块记录类型。
-    /// </summary>
-    private const byte DataRecordType = 1;
-
-    /// <summary>
-    /// 认证终止记录类型。
-    /// </summary>
-    private const byte FinalRecordType = 2;
-
-    /// <summary>
-    /// BSS2 固定头长度。
-    /// </summary>
-    private const int HeaderLength = 52;
-
-    /// <summary>
-    /// 文件随机盐长度，单位为字节。
-    /// </summary>
-    private const int FileSaltLength = 32;
-
-    /// <summary>
-    /// 文件随机 Nonce 前缀长度，单位为字节。
-    /// </summary>
-    private const int NoncePrefixLength = 8;
-
-    /// <summary>
-    /// 数据记录头长度，包含 32 位块序号和明文长度。
-    /// </summary>
-    private const int DataRecordHeaderLength = 8;
-
-    /// <summary>
-    /// 认证终止记录数据长度，包含块数量和明文总长度。
-    /// </summary>
-    private const int FinalRecordDataLength = 12;
-
-    /// <summary>
-    /// 块认证数据的固定长度，不含终止记录数据。
-    /// </summary>
-    private const int AuthenticationDataLength = 43;
-
-    /// <summary>
     /// 每文件 HKDF 派生所使用的固定用途上下文。
     /// </summary>
     private static readonly byte[] KeyDerivationInfo = System.Text.Encoding.ASCII.GetBytes("Bing.Utils.Security/AesGcmStream/v2");
@@ -84,17 +29,17 @@ internal static class AesGcmStreamV2
     /// <returns>表示异步加密操作的任务。</returns>
     internal static async Task EncryptAsync(Stream plaintext, Stream ciphertext, ReadOnlyMemory<byte> masterKey, int blockSize, CancellationToken cancellationToken)
     {
-        var fileSalt = SecurityRandom.GetBytes(FileSaltLength);
-        var noncePrefix = SecurityRandom.GetBytes(NoncePrefixLength);
+        var fileSalt = SecurityRandom.GetBytes(Bss2Constants.FileSaltLength);
+        var noncePrefix = SecurityRandom.GetBytes(Bss2Constants.NoncePrefixLength);
         var header = CreateHeader(blockSize, fileSalt, noncePrefix);
         var headerDigest = ComputeHeaderDigest(header);
         var fileKey = Hkdf.DeriveKeySha256(masterKey.Span, fileSalt, KeyDerivationInfo, 32);
         var plaintextBuffer = ArrayPool<byte>.Shared.Rent(blockSize);
         var ciphertextBuffer = ArrayPool<byte>.Shared.Rent(blockSize);
         var nonce = new byte[AesGcmPayload.NonceSize];
-        var authenticationData = new byte[AuthenticationDataLength + FinalRecordDataLength];
+        var authenticationData = new byte[Bss2Constants.AuthenticationDataLength + Bss2Constants.FinalRecordDataLength];
         var tag = new byte[AesGcmPayload.TagSize];
-        var recordHeader = new byte[DataRecordHeaderLength];
+        var recordHeader = new byte[Bss2Constants.DataRecordHeaderLength];
         var recordType = new byte[1];
         try
         {
@@ -107,31 +52,31 @@ internal static class AesGcmStreamV2
                 var length = await ReadChunkAsync(plaintext, plaintextBuffer, blockSize, cancellationToken).ConfigureAwait(false);
                 if (length == 0)
                     break;
+                if (index == uint.MaxValue)
+                    throw new InvalidOperationException("BSS2 认证流已达到最大数据块数量，无法继续加密。 ");
 
-                CreateNonce(noncePrefix, index, nonce);
-                var aadLength = WriteAuthenticationData(authenticationData, headerDigest, DataRecordType, index, (uint)length, false, ReadOnlySpan<byte>.Empty);
+                Bss2NonceSequence.Write(noncePrefix, index, nonce);
+                var aadLength = Bss2AssociatedData.Write(authenticationData, headerDigest, Bss2Constants.DataRecordType, index, (uint)length, false, ReadOnlySpan<byte>.Empty);
                 aes.Encrypt(nonce, plaintextBuffer.AsSpan(0, length), ciphertextBuffer.AsSpan(0, length), tag, authenticationData.AsSpan(0, aadLength));
                 BinaryPrimitives.WriteUInt32BigEndian(recordHeader.AsSpan(0, 4), index);
                 BinaryPrimitives.WriteUInt32BigEndian(recordHeader.AsSpan(4, 4), (uint)length);
-                await WriteByteAsync(ciphertext, DataRecordType, recordType, cancellationToken).ConfigureAwait(false);
+                await WriteByteAsync(ciphertext, Bss2Constants.DataRecordType, recordType, cancellationToken).ConfigureAwait(false);
                 await ciphertext.WriteAsync(recordHeader, 0, recordHeader.Length, cancellationToken).ConfigureAwait(false);
                 await ciphertext.WriteAsync(ciphertextBuffer, 0, length, cancellationToken).ConfigureAwait(false);
                 await ciphertext.WriteAsync(tag, 0, tag.Length, cancellationToken).ConfigureAwait(false);
                 checked { totalLength += (uint)length; }
-                if (index == uint.MaxValue - 1)
-                    throw new InvalidOperationException("BSS2 认证流已达到最大数据块数量，无法继续加密。 ");
                 index++;
             }
 
-            var finalData = new byte[FinalRecordDataLength];
+            var finalData = new byte[Bss2Constants.FinalRecordDataLength];
             try
             {
                 BinaryPrimitives.WriteUInt32BigEndian(finalData.AsSpan(0, 4), index);
                 BinaryPrimitives.WriteUInt64BigEndian(finalData.AsSpan(4, 8), totalLength);
-                CreateNonce(noncePrefix, uint.MaxValue, nonce);
-                var aadLength = WriteAuthenticationData(authenticationData, headerDigest, FinalRecordType, uint.MaxValue, 0, true, finalData);
+                Bss2NonceSequence.Write(noncePrefix, uint.MaxValue, nonce);
+                var aadLength = Bss2AssociatedData.Write(authenticationData, headerDigest, Bss2Constants.FinalRecordType, uint.MaxValue, 0, true, finalData);
                 aes.Encrypt(nonce, ReadOnlySpan<byte>.Empty, Span<byte>.Empty, tag, authenticationData.AsSpan(0, aadLength));
-                await WriteByteAsync(ciphertext, FinalRecordType, recordType, cancellationToken).ConfigureAwait(false);
+                await WriteByteAsync(ciphertext, Bss2Constants.FinalRecordType, recordType, cancellationToken).ConfigureAwait(false);
                 await ciphertext.WriteAsync(finalData, 0, finalData.Length, cancellationToken).ConfigureAwait(false);
                 await ciphertext.WriteAsync(tag, 0, tag.Length, cancellationToken).ConfigureAwait(false);
             }
@@ -170,7 +115,7 @@ internal static class AesGcmStreamV2
     /// <returns>表示异步解密操作的任务。</returns>
     internal static async Task DecryptAsync(Stream ciphertext, Stream plaintext, ReadOnlyMemory<byte> masterKey, byte[] magic, CancellationToken cancellationToken)
     {
-        var header = new byte[HeaderLength];
+        var header = new byte[Bss2Constants.HeaderLength];
         Buffer.BlockCopy(magic, 0, header, 0, magic.Length);
         byte[] fileSalt = null;
         byte[] noncePrefix = null;
@@ -180,16 +125,16 @@ internal static class AesGcmStreamV2
         byte[] plaintextBuffer = null;
         try
         {
-            await ReadExactlyAsync(ciphertext, header, magic.Length, HeaderLength - magic.Length, cancellationToken).ConfigureAwait(false);
+            await ReadExactlyAsync(ciphertext, header, magic.Length, Bss2Constants.HeaderLength - magic.Length, cancellationToken).ConfigureAwait(false);
             var blockSize = ParseHeader(header, out fileSalt, out noncePrefix);
             headerDigest = ComputeHeaderDigest(header);
             fileKey = Hkdf.DeriveKeySha256(masterKey.Span, fileSalt, KeyDerivationInfo, 32);
             ciphertextBuffer = ArrayPool<byte>.Shared.Rent(blockSize);
             plaintextBuffer = ArrayPool<byte>.Shared.Rent(blockSize);
             var nonce = new byte[AesGcmPayload.NonceSize];
-            var authenticationData = new byte[AuthenticationDataLength + FinalRecordDataLength];
+            var authenticationData = new byte[Bss2Constants.AuthenticationDataLength + Bss2Constants.FinalRecordDataLength];
             var tag = new byte[AesGcmPayload.TagSize];
-            var recordHeader = new byte[DataRecordHeaderLength];
+            var recordHeader = new byte[Bss2Constants.DataRecordHeaderLength];
             var recordTypeBuffer = new byte[1];
             try
             {
@@ -199,7 +144,7 @@ internal static class AesGcmStreamV2
                 while (true)
                 {
                     var recordType = await ReadByteAsync(ciphertext, recordTypeBuffer, cancellationToken).ConfigureAwait(false);
-                    if (recordType == DataRecordType)
+                    if (recordType == Bss2Constants.DataRecordType)
                     {
                         await ReadExactlyAsync(ciphertext, recordHeader, 0, recordHeader.Length, cancellationToken).ConfigureAwait(false);
                         var index = BinaryPrimitives.ReadUInt32BigEndian(recordHeader.AsSpan(0, 4));
@@ -208,8 +153,8 @@ internal static class AesGcmStreamV2
                             throw new CryptographicException("BSS2 数据块的序号或长度无效。 ");
                         await ReadExactlyAsync(ciphertext, ciphertextBuffer, 0, (int)length, cancellationToken).ConfigureAwait(false);
                         await ReadExactlyAsync(ciphertext, tag, 0, tag.Length, cancellationToken).ConfigureAwait(false);
-                        CreateNonce(noncePrefix, index, nonce);
-                        var aadLength = WriteAuthenticationData(authenticationData, headerDigest, DataRecordType, index, length, false, ReadOnlySpan<byte>.Empty);
+                        Bss2NonceSequence.Write(noncePrefix, index, nonce);
+                        var aadLength = Bss2AssociatedData.Write(authenticationData, headerDigest, Bss2Constants.DataRecordType, index, length, false, ReadOnlySpan<byte>.Empty);
                         try
                         {
                             aes.Decrypt(nonce, ciphertextBuffer.AsSpan(0, (int)length), tag, plaintextBuffer.AsSpan(0, (int)length), authenticationData.AsSpan(0, aadLength));
@@ -221,16 +166,14 @@ internal static class AesGcmStreamV2
                         }
 
                         checked { totalLength += length; }
-                        if (expectedIndex == uint.MaxValue - 1)
-                            throw new CryptographicException("BSS2 数据块数量超过格式上限。 ");
                         expectedIndex++;
                         continue;
                     }
 
-                    if (recordType != FinalRecordType)
+                    if (recordType != Bss2Constants.FinalRecordType)
                         throw new InvalidDataException("BSS2 认证流包含未知记录类型。 ");
 
-                    var finalData = new byte[FinalRecordDataLength];
+                    var finalData = new byte[Bss2Constants.FinalRecordDataLength];
                     try
                     {
                         await ReadExactlyAsync(ciphertext, finalData, 0, finalData.Length, cancellationToken).ConfigureAwait(false);
@@ -239,8 +182,8 @@ internal static class AesGcmStreamV2
                         var finalLength = BinaryPrimitives.ReadUInt64BigEndian(finalData.AsSpan(4, 8));
                         if (finalCount != expectedIndex || finalLength != totalLength)
                             throw new CryptographicException("BSS2 认证终止记录中的长度或块数量无效。 ");
-                        CreateNonce(noncePrefix, uint.MaxValue, nonce);
-                        var aadLength = WriteAuthenticationData(authenticationData, headerDigest, FinalRecordType, uint.MaxValue, 0, true, finalData);
+                        Bss2NonceSequence.Write(noncePrefix, uint.MaxValue, nonce);
+                        var aadLength = Bss2AssociatedData.Write(authenticationData, headerDigest, Bss2Constants.FinalRecordType, uint.MaxValue, 0, true, finalData);
                         aes.Decrypt(nonce, ReadOnlySpan<byte>.Empty, tag, Span<byte>.Empty, authenticationData.AsSpan(0, aadLength));
                     }
                     finally
@@ -295,18 +238,18 @@ internal static class AesGcmStreamV2
     /// <returns>BSS2 固定头。</returns>
     private static byte[] CreateHeader(int blockSize, byte[] fileSalt, byte[] noncePrefix)
     {
-        var header = new byte[HeaderLength];
+        var header = new byte[Bss2Constants.HeaderLength];
         header[0] = (byte)'B';
         header[1] = (byte)'S';
         header[2] = (byte)'S';
         header[3] = (byte)'2';
-        header[4] = Version;
-        header[5] = AlgorithmAes256Gcm;
-        header[6] = KdfHkdfSha256;
+        header[4] = Bss2Constants.Version;
+        header[5] = Bss2Constants.AlgorithmAes256Gcm;
+        header[6] = Bss2Constants.KdfHkdfSha256;
         header[7] = 0;
         BinaryPrimitives.WriteUInt32BigEndian(header.AsSpan(8, 4), (uint)blockSize);
         fileSalt.CopyTo(header, 12);
-        noncePrefix.CopyTo(header, 12 + FileSaltLength);
+        noncePrefix.CopyTo(header, 12 + Bss2Constants.FileSaltLength);
         return header;
     }
 
@@ -325,15 +268,15 @@ internal static class AesGcmStreamV2
         noncePrefix = null;
         if (header[0] != 'B' || header[1] != 'S' || header[2] != 'S' || header[3] != '2')
             throw new InvalidDataException("认证流不是 BSS2 格式。 ");
-        if (header[4] != Version || header[5] != AlgorithmAes256Gcm || header[6] != KdfHkdfSha256)
+        if (header[4] != Bss2Constants.Version || header[5] != Bss2Constants.AlgorithmAes256Gcm || header[6] != Bss2Constants.KdfHkdfSha256)
             throw new NotSupportedException("BSS2 认证流使用了不受支持的版本、算法或密钥派生函数。 ");
         if (header[7] != 0)
             throw new InvalidDataException("BSS2 认证流保留字段无效。 ");
         var blockSize = BinaryPrimitives.ReadUInt32BigEndian(header.AsSpan(8, 4));
         if (blockSize < 4096 || blockSize > 1048576)
             throw new InvalidDataException("BSS2 认证流块大小无效。 ");
-        fileSalt = header.AsSpan(12, FileSaltLength).ToArray();
-        noncePrefix = header.AsSpan(12 + FileSaltLength, NoncePrefixLength).ToArray();
+        fileSalt = header.AsSpan(12, Bss2Constants.FileSaltLength).ToArray();
+        noncePrefix = header.AsSpan(12 + Bss2Constants.FileSaltLength, Bss2Constants.NoncePrefixLength).ToArray();
         return (int)blockSize;
     }
 
@@ -350,41 +293,6 @@ internal static class AesGcmStreamV2
         using var hash = SHA256.Create();
         return hash.ComputeHash(header);
 #endif
-    }
-
-    /// <summary>
-    /// 使用文件前缀和块索引构建 12 字节唯一 Nonce。
-    /// </summary>
-    /// <param name="noncePrefix">8 字节文件随机前缀。</param>
-    /// <param name="index">32 位块索引。</param>
-    /// <param name="destination">12 字节 Nonce 缓冲区。</param>
-    private static void CreateNonce(byte[] noncePrefix, uint index, byte[] destination)
-    {
-        noncePrefix.CopyTo(destination, 0);
-        BinaryPrimitives.WriteUInt32BigEndian(destination.AsSpan(NoncePrefixLength, 4), index);
-    }
-
-    /// <summary>
-    /// 写入块认证数据。
-    /// </summary>
-    /// <param name="destination">认证数据缓冲区。</param>
-    /// <param name="headerDigest">固定头摘要。</param>
-    /// <param name="recordType">记录类型。</param>
-    /// <param name="index">块索引。</param>
-    /// <param name="length">明文长度。</param>
-    /// <param name="isFinal">是否为终止记录。</param>
-    /// <param name="extra">终止记录绑定数据。</param>
-    /// <returns>实际认证数据长度。</returns>
-    private static int WriteAuthenticationData(byte[] destination, byte[] headerDigest, byte recordType, uint index, uint length, bool isFinal, ReadOnlySpan<byte> extra)
-    {
-        headerDigest.CopyTo(destination, 0);
-        destination[32] = Version;
-        destination[33] = recordType;
-        BinaryPrimitives.WriteUInt32BigEndian(destination.AsSpan(34, 4), index);
-        BinaryPrimitives.WriteUInt32BigEndian(destination.AsSpan(38, 4), length);
-        destination[42] = isFinal ? (byte)1 : (byte)0;
-        extra.CopyTo(destination.AsSpan(AuthenticationDataLength));
-        return AuthenticationDataLength + extra.Length;
     }
 
     /// <summary>

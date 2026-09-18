@@ -25,6 +25,13 @@ Bing.Utils 是一个基于`.net core`平台下的工具库，旨在提升小型�
 
 安全与国密包的算法范围、依赖边界和使用限制见 [docs/security.md](docs/security.md)。
 
+```powershell
+dotnet add package Bing.Utils.Security
+dotnet add package Bing.Utils.Security.Gm
+```
+
+两个包支持 `netstandard2.0`、`net6.0`、`net7.0` 和 `net8.0`；国密扩展依赖 BouncyCastle，但公共 API 不暴露其类型。
+
 ## 开发环境与依赖
 
 在项目开发和部署过程中，我们使用了以下工具和组件：

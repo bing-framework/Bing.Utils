@@ -82,4 +82,21 @@ public class HybridEncryptionTests
         success.ShouldBeFalse();
         payload.ShouldBeNull();
     }
+
+    /// <summary>
+    /// 测试目的：混合载荷必须在 Base64Url 解码前拒绝超过协议上限的输入。
+    /// </summary>
+    [Fact]
+    public void HybridEncryptedPayload_WhenEncodedInputExceedsLimit_ShouldReturnFalse()
+    {
+        // Arrange
+        var oversized = new string('A', 23 * 1024 * 1024);
+
+        // Act
+        var success = HybridEncryptedPayload.TryParse(oversized, out var payload);
+
+        // Assert
+        success.ShouldBeFalse();
+        payload.ShouldBeNull();
+    }
 }

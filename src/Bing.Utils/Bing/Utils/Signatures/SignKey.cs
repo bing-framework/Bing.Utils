@@ -1,8 +1,9 @@
-﻿namespace Bing.Utils.Signatures;
+namespace Bing.Utils.Signatures;
 
 /// <summary>
 /// 签名密钥
 /// </summary>
+[Obsolete("此类型长期保存私钥字符串；新代码请在调用 Bing.Security.Canonicalization.CanonicalRequestSigner 时按需提供密钥。")]
 public class SignKey : ISignKey
 {
     /// <summary>

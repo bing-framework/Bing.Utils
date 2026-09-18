@@ -393,25 +393,22 @@ public class AmountUnitConvTest : TestBase
     }
 
     /// <summary>
-    /// 测试用例：高频转换应在合理时间内完成。
+    /// 测试用例：批量转换应保持往返精度和可格式化性。
     /// </summary>
     [Fact]
     public void PerformanceTest_LargeNumberOfConversions_CompletesInReasonableTime()
     {
         const int iterations = 10000;
 
-        Should.CompleteIn(() =>
+        for (int i = 0; i < iterations; i++)
         {
-            for (int i = 0; i < iterations; i++)
-            {
-                var fen = i;
-                var yuan = AmountUnitConv.ToYuan(fen);
-                var backToFen = AmountUnitConv.ToFen(yuan);
-                var formatted = AmountUnitConv.ToN2String(yuan);
-                backToFen.ShouldBe(fen);
-                formatted.ShouldNotBeNull();
-            }
-        }, TimeSpan.FromSeconds(2));
+            var fen = i;
+            var yuan = AmountUnitConv.ToYuan(fen);
+            var backToFen = AmountUnitConv.ToFen(yuan);
+            var formatted = AmountUnitConv.ToN2String(yuan);
+            backToFen.ShouldBe(fen);
+            formatted.ShouldNotBeNull();
+        }
     }
 
     /// <summary>

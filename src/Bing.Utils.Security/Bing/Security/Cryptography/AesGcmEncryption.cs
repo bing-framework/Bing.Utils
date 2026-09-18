@@ -1,6 +1,5 @@
 #if !NETSTANDARD2_0
 using System.Security.Cryptography;
-using Bing.Security.Keys;
 using Bing.Security.Randomness;
 
 namespace Bing.Security.Cryptography;
@@ -10,13 +9,6 @@ namespace Bing.Security.Cryptography;
 /// </summary>
 public static class AesGcmEncryption
 {
-    /// <summary>
-    /// 生成随机 AES 加密密钥。
-    /// </summary>
-    /// <param name="keySize">AES 密钥位长度，默认使用 256 位。</param>
-    /// <returns>随机 AES 密钥字节。</returns>
-    public static byte[] GenerateKey(AesKeySize keySize = AesKeySize.Size256) => AesKeyGenerator.Generate(keySize);
-
     /// <summary>
     /// 使用自动生成的唯一随机 Nonce 执行 AES-GCM 认证加密。
     /// </summary>
@@ -35,14 +27,21 @@ public static class AesGcmEncryption
         {
             using var aes = CreateAesGcm(keyBytes);
             aes.Encrypt(nonce, plaintext, ciphertext, tag, associatedData);
-            return new AesGcmPayload(nonce, ciphertext, tag);
+            var payload = AesGcmPayload.CreateOwned(nonce, ciphertext, tag);
+            nonce = null;
+            ciphertext = null;
+            tag = null;
+            return payload;
         }
         finally
         {
             CryptographicOperationsCompat.ZeroMemory(keyBytes);
-            CryptographicOperationsCompat.ZeroMemory(nonce);
-            CryptographicOperationsCompat.ZeroMemory(ciphertext);
-            CryptographicOperationsCompat.ZeroMemory(tag);
+            if (nonce != null)
+                CryptographicOperationsCompat.ZeroMemory(nonce);
+            if (ciphertext != null)
+                CryptographicOperationsCompat.ZeroMemory(ciphertext);
+            if (tag != null)
+                CryptographicOperationsCompat.ZeroMemory(tag);
         }
     }
 

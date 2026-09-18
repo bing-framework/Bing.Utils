@@ -25,8 +25,18 @@ public static class Hmac
         var keyBytes = GetKeyBytes(key);
         try
         {
+#if NET6_0_OR_GREATER
+            return algorithm switch
+            {
+                HmacAlgorithmType.Sha256 => HMACSHA256.HashData(keyBytes, value),
+                HmacAlgorithmType.Sha384 => HMACSHA384.HashData(keyBytes, value),
+                HmacAlgorithmType.Sha512 => HMACSHA512.HashData(keyBytes, value),
+                _ => throw new ArgumentOutOfRangeException(nameof(algorithm), algorithm, "不支持的 HMAC 算法。")
+            };
+#else
             using var hmac = CreateAlgorithm(keyBytes, algorithm);
             return hmac.ComputeHash(value.ToArray());
+#endif
         }
         finally
         {
@@ -61,6 +71,27 @@ public static class Hmac
     }
 
     /// <summary>
+    /// 使用固定时间比较验证原始 HMAC 字节。
+    /// </summary>
+    /// <param name="value">原始数据。</param>
+    /// <param name="expectedMac">预期 HMAC 字节。</param>
+    /// <param name="key">高熵随机密钥，不能为空。</param>
+    /// <param name="algorithm">HMAC 算法，默认使用 HMAC-SHA256。</param>
+    /// <returns>HMAC 匹配时返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+    public static bool Verify(ReadOnlySpan<byte> value, ReadOnlySpan<byte> expectedMac, ReadOnlySpan<byte> key, HmacAlgorithmType algorithm = HmacAlgorithmType.Sha256)
+    {
+        var actual = Compute(value, key, algorithm);
+        try
+        {
+            return SecureComparison.FixedTimeEquals(actual, expectedMac);
+        }
+        finally
+        {
+            CryptographicOperationsCompat.ZeroMemory(actual);
+        }
+    }
+
+    /// <summary>
     /// 使用固定时间比较验证十六进制 HMAC。
     /// </summary>
     /// <param name="value">原始数据。</param>
@@ -68,19 +99,42 @@ public static class Hmac
     /// <param name="key">高熵随机密钥，不能为空。</param>
     /// <param name="algorithm">HMAC 算法，默认使用 HMAC-SHA256。</param>
     /// <returns>HMAC 匹配时返回 <c>true</c>；格式非法或不匹配时返回 <c>false</c>。</returns>
-    public static bool Verify(ReadOnlySpan<byte> value, string expectedMac, ReadOnlySpan<byte> key, HmacAlgorithmType algorithm = HmacAlgorithmType.Sha256)
+    public static bool VerifyHex(ReadOnlySpan<byte> value, string expectedMac, ReadOnlySpan<byte> key, HmacAlgorithmType algorithm = HmacAlgorithmType.Sha256)
     {
+        ValidateAlgorithm(algorithm);
+        ValidateKey(key);
         if (!HexEncoding.TryDecode(expectedMac, out var expected))
             return false;
-
-        var actual = Compute(value, key, algorithm);
         try
         {
-            return SecureComparison.FixedTimeEquals(actual, expected);
+            return Verify(value, expected, key, algorithm);
         }
         finally
         {
-            CryptographicOperationsCompat.ZeroMemory(actual);
+            CryptographicOperationsCompat.ZeroMemory(expected);
+        }
+    }
+
+    /// <summary>
+    /// 使用固定时间比较验证无填充 Base64Url HMAC。
+    /// </summary>
+    /// <param name="value">原始数据。</param>
+    /// <param name="expectedMac">预期无填充 Base64Url HMAC。</param>
+    /// <param name="key">高熵随机密钥，不能为空。</param>
+    /// <param name="algorithm">HMAC 算法，默认使用 HMAC-SHA256。</param>
+    /// <returns>HMAC 匹配时返回 <c>true</c>；格式非法或不匹配时返回 <c>false</c>。</returns>
+    public static bool VerifyBase64Url(ReadOnlySpan<byte> value, string expectedMac, ReadOnlySpan<byte> key, HmacAlgorithmType algorithm = HmacAlgorithmType.Sha256)
+    {
+        ValidateAlgorithm(algorithm);
+        ValidateKey(key);
+        if (!Base64UrlEncoding.TryDecode(expectedMac, out var expected))
+            return false;
+        try
+        {
+            return Verify(value, expected, key, algorithm);
+        }
+        finally
+        {
             CryptographicOperationsCompat.ZeroMemory(expected);
         }
     }
@@ -154,6 +208,16 @@ public static class Hmac
     }
 
     /// <summary>
+    /// 验证 HMAC 算法标识。
+    /// </summary>
+    /// <param name="algorithm">HMAC 算法类型。</param>
+    private static void ValidateAlgorithm(HmacAlgorithmType algorithm)
+    {
+        if (algorithm != HmacAlgorithmType.Sha256 && algorithm != HmacAlgorithmType.Sha384 && algorithm != HmacAlgorithmType.Sha512)
+            throw new ArgumentOutOfRangeException(nameof(algorithm), algorithm, "不支持的 HMAC 算法。");
+    }
+
+    /// <summary>
     /// 复制并验证 HMAC 密钥。
     /// </summary>
     /// <param name="key">调用方提供的密钥。</param>
@@ -161,8 +225,17 @@ public static class Hmac
     /// <exception cref="ArgumentException"><paramref name="key"/> 为空时抛出。</exception>
     private static byte[] GetKeyBytes(ReadOnlySpan<byte> key)
     {
+        ValidateKey(key);
+        return key.ToArray();
+    }
+
+    /// <summary>
+    /// 验证 HMAC 密钥。
+    /// </summary>
+    /// <param name="key">调用方提供的密钥。</param>
+    private static void ValidateKey(ReadOnlySpan<byte> key)
+    {
         if (key.IsEmpty)
             throw new ArgumentException("HMAC 密钥不能为空，应使用高熵随机密钥。", nameof(key));
-        return key.ToArray();
     }
 }

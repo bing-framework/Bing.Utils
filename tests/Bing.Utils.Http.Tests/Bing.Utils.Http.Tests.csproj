@@ -10,4 +10,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Bing.Utils.Http\Bing.Utils.Http.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="Bing\Net\NetworkInformation\NetworkInterfaceManagerTest.cs" />
+	</ItemGroup>
 </Project>

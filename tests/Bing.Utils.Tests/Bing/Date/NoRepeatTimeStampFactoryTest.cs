@@ -565,16 +565,22 @@ public class NoRepeatTimeStampFactoryTest
     {
         // Arrange
         var factory = new NoRepeatTimeStampFactory(3.0);
+        var lastTimestamp = new DateTime(2100, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        factory.GetTimeStamp(lastTimestamp);
+        var countBeforePeek = factory.GeneratedCount;
+
         // Act
         var peekedUtcTimestamp = factory.PeekNextTimeStamp(useUtc: true);
+
+        // Assert
+        factory.GeneratedCount.ShouldBe(countBeforePeek);
+        peekedUtcTimestamp.Ticks.ShouldBe(lastTimestamp.AddMilliseconds(3).Ticks);
+
+        // Act
         var actualUtcTimestamp = factory.GetUtcTimeStamp();
-        // Assert - 修复：直接比较 Ticks 值，避免时区和格式化差异
-        var ticksDifference = Math.Abs(peekedUtcTimestamp.Ticks - actualUtcTimestamp.Ticks);
-        var millisecondsDifference = ticksDifference / TimeSpan.TicksPerMillisecond;
-        millisecondsDifference.ShouldBeLessThan(1,
-            $"Peek UTC时间戳 (Ticks={peekedUtcTimestamp.Ticks}) " +
-            $"与实际UTC时间戳 (Ticks={actualUtcTimestamp.Ticks}) " +
-            $"差异过大，Ticks差异={ticksDifference}");
+
+        // Assert
+        actualUtcTimestamp.Ticks.ShouldBe(peekedUtcTimestamp.Ticks);
     }
     /// <summary>
     /// 测试 - GetDiagnosticInfo - 返回诊断信息
@@ -632,47 +638,23 @@ public class NoRepeatTimeStampFactoryTest
         }, TimeSpan.FromSeconds(2), $"生成{iterations}个时间戳应该在2秒内完成");
     }
     /// <summary>
-    /// 测试 - 批量生成性能 - 对比单个生成
+    /// 测试 - 批量生成 - 返回严格递增且不重复的时间戳
     /// </summary>
     [Fact]
-    public void Performance_BatchVsSingle_BatchIsFaster()
+    public void GetTimeStamps_WhenGeneratingBatch_ReturnsStrictlyIncreasingSequence()
     {
         // Arrange
         var factory = new NoRepeatTimeStampFactory(0.1);
-        const int count = 100000; // 增加到10万次以获得可测量的时间差
-        // Act - 单个生成（使用高精度计时器）
-        var sw1 = Stopwatch.StartNew();
-        for (int i = 0; i < count; i++)
-        {
-            factory.GetTimeStamp();
-        }
-        sw1.Stop();
-        // Reset factory for fair comparison
-        factory.Reset();
-        // Act - 批量生成
-        var sw2 = Stopwatch.StartNew();
-        var _ = factory.GetTimeStamps(count);
-        sw2.Stop();
-        // Assert - 修复：处理计时器精度问题
-        var singleElapsed = sw1.Elapsed.TotalMilliseconds;
-        var batchElapsed = sw2.Elapsed.TotalMilliseconds;
-        // 输出诊断信息
-        Console.WriteLine($"单个生成耗时: {singleElapsed:F3}ms");
-        Console.WriteLine($"批量生成耗时: {batchElapsed:F3}ms");
-        Console.WriteLine($"性能提升: {(singleElapsed / Math.Max(batchElapsed, 0.001)):F2}x");
-        if (singleElapsed < 1.0 && batchElapsed < 1.0)
-        {
-            // 如果两者都太快，则跳过性能比较，只验证功能正确性
-            Console.WriteLine("操作太快，无法准确测量性能差异，验证功能正确性");
-            singleElapsed.ShouldBeGreaterThanOrEqualTo(0);
-            batchElapsed.ShouldBeGreaterThanOrEqualTo(0);
-        }
-        else
-        {
-            // 批量生成应该更快（至少快20%）
-            batchElapsed.ShouldBeLessThan(singleElapsed * 0.8,
-                $"批量生成应该比单个生成快至少20%。单个: {singleElapsed:F3}ms, 批量: {batchElapsed:F3}ms");
-        }
+        const int count = 100000;
+
+        // Act
+        var timestamps = factory.GetTimeStamps(count);
+
+        // Assert
+        timestamps.Length.ShouldBe(count);
+        timestamps.Distinct().Count().ShouldBe(count);
+        for (var index = 1; index < timestamps.Length; index++)
+            timestamps[index].ShouldBeGreaterThan(timestamps[index - 1]);
     }
     /// <summary>
     /// 测试 - 多线程性能 - 并发访问

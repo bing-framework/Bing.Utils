@@ -13,17 +13,14 @@ public static class CanonicalParameterSerializer
     /// 序列化参数集合。
     /// </summary>
     /// <param name="parameters">显式参数集合，可包含重复键和数组值。</param>
-    /// <param name="options">规范化选项，未指定时使用默认规则。</param>
     /// <returns>由确定性规则生成的规范化参数文本。</returns>
     /// <exception cref="ArgumentNullException"><paramref name="parameters"/> 为 <c>null</c> 时抛出。</exception>
     /// <exception cref="ArgumentException">参数、选项或参数值不符合规则时抛出。</exception>
-    public static string Serialize(IEnumerable<CanonicalParameter> parameters, CanonicalParameterOptions options = null)
+    public static string Serialize(IEnumerable<CanonicalParameter> parameters)
     {
         if (parameters == null)
             throw new ArgumentNullException(nameof(parameters));
 
-        options ??= new CanonicalParameterOptions();
-        ValidateOptions(options);
         var pairs = new List<CanonicalPair>();
         var index = 0;
         foreach (var parameter in parameters)
@@ -32,32 +29,27 @@ public static class CanonicalParameterSerializer
                 throw new ArgumentException("参数集合不能包含 null 项。", nameof(parameters));
             foreach (var value in ExpandValues(parameter.Values))
             {
-                if (value == null && options.IgnoreNullValues)
-                    continue;
-                pairs.Add(new CanonicalPair(parameter.Key, FormatValue(value, options), value != null, index++));
+                pairs.Add(new CanonicalPair(parameter.Key, FormatValue(value), value != null, index++));
             }
         }
 
-        if (options.SortOrdinal)
-            pairs.Sort(static (left, right) =>
-            {
-                var result = string.Compare(left.Key, right.Key, StringComparison.Ordinal);
-                return result != 0 ? result : left.Index.CompareTo(right.Index);
-            });
+        pairs.Sort(static (left, right) =>
+        {
+            var result = string.Compare(left.Key, right.Key, StringComparison.Ordinal);
+            return result != 0 ? result : left.Index.CompareTo(right.Index);
+        });
 
         var builder = new StringBuilder();
         for (var pairIndex = 0; pairIndex < pairs.Count; pairIndex++)
         {
             if (pairIndex > 0)
-                builder.Append(options.PairSeparator);
+                builder.Append('&');
             var pair = pairs[pairIndex];
-            ValidateRawComponent(pair.Key, options, true);
-            builder.Append(options.UrlEncodeKeys ? Uri.EscapeDataString(pair.Key) : pair.Key);
+            builder.Append(Uri.EscapeDataString(pair.Key));
             if (!pair.HasValue)
                 continue;
-            ValidateRawComponent(pair.Value, options, false);
-            builder.Append(options.KeyValueSeparator);
-            builder.Append(options.UrlEncodeValues ? Uri.EscapeDataString(pair.Value) : pair.Value);
+            builder.Append('=');
+            builder.Append(Uri.EscapeDataString(pair.Value));
         }
         return builder.ToString();
     }
@@ -86,10 +78,9 @@ public static class CanonicalParameterSerializer
     /// 将允许的显式参数类型转换为文化无关文本。
     /// </summary>
     /// <param name="value">参数值。</param>
-    /// <param name="options">规范化选项。</param>
     /// <returns>规范化文本；<c>null</c> 值返回空字符串。</returns>
     /// <exception cref="ArgumentException">值类型不在受支持的确定性类型集合中时抛出。</exception>
-    private static string FormatValue(object value, CanonicalParameterOptions options)
+    private static string FormatValue(object value)
     {
         if (value == null)
             return string.Empty;
@@ -97,8 +88,8 @@ public static class CanonicalParameterSerializer
         {
             string text => text,
             bool boolean => boolean ? "true" : "false",
-            DateTime dateTime => FormatDateTime(dateTime, options),
-            DateTimeOffset dateTimeOffset => dateTimeOffset.ToUniversalTime().ToString(options.DateTimeFormat, CultureInfo.InvariantCulture),
+            DateTime dateTime => FormatDateTime(dateTime),
+            DateTimeOffset dateTimeOffset => dateTimeOffset.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
             byte[] bytes => Convert.ToBase64String(bytes),
             float single => FormatFloatingPoint(single),
             double doubleValue => FormatFloatingPoint(doubleValue),
@@ -127,14 +118,13 @@ public static class CanonicalParameterSerializer
     /// 将 DateTime 转换为确定性 UTC 往返格式，拒绝未指定时区。
     /// </summary>
     /// <param name="value">要规范化的日期时间。</param>
-    /// <param name="options">规范化选项。</param>
     /// <returns>UTC 往返格式时间文本。</returns>
     /// <exception cref="ArgumentException">日期时间 Kind 未指定时抛出。</exception>
-    private static string FormatDateTime(DateTime value, CanonicalParameterOptions options)
+    private static string FormatDateTime(DateTime value)
     {
         if (value.Kind == DateTimeKind.Unspecified)
             throw new ArgumentException("DateTime 必须指定 Utc 或 Local Kind；请优先使用 DateTimeOffset。", nameof(value));
-        return value.ToUniversalTime().ToString(options.DateTimeFormat, CultureInfo.InvariantCulture);
+        return value.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -171,38 +161,6 @@ public static class CanonicalParameterSerializer
     private static string FormatEnum(Enum value)
     {
         return Enum.GetName(value.GetType(), value) ?? value.ToString("D");
-    }
-
-    /// <summary>
-    /// 验证规范化选项。
-    /// </summary>
-    /// <param name="options">规范化选项。</param>
-    /// <exception cref="ArgumentException">分隔符或日期格式无效时抛出。</exception>
-    private static void ValidateOptions(CanonicalParameterOptions options)
-    {
-        if (string.IsNullOrEmpty(options.PairSeparator))
-            throw new ArgumentException("参数对分隔符不能为空。", nameof(options));
-        if (string.IsNullOrEmpty(options.KeyValueSeparator))
-            throw new ArgumentException("键值分隔符不能为空。", nameof(options));
-        if (options.PairSeparator == options.KeyValueSeparator || options.PairSeparator.IndexOf(options.KeyValueSeparator, StringComparison.Ordinal) >= 0 || options.KeyValueSeparator.IndexOf(options.PairSeparator, StringComparison.Ordinal) >= 0)
-            throw new ArgumentException("参数对分隔符和键值分隔符不能相同或互为包含关系。", nameof(options));
-        if (options.DateTimeFormat != "O")
-            throw new ArgumentException("确定性参数规范化仅支持 O 日期时间格式。", nameof(options));
-    }
-
-    /// <summary>
-    /// 在关闭 URL 编码时拒绝会与协议分隔符冲突的原始文本。
-    /// </summary>
-    /// <param name="value">原始键或值文本。</param>
-    /// <param name="options">规范化选项。</param>
-    /// <param name="isKey">为 <c>true</c> 时验证参数键。</param>
-    /// <exception cref="ArgumentException">未编码文本包含协议分隔符时抛出。</exception>
-    private static void ValidateRawComponent(string value, CanonicalParameterOptions options, bool isKey)
-    {
-        if ((isKey && options.UrlEncodeKeys) || (!isKey && options.UrlEncodeValues))
-            return;
-        if (value.IndexOf(options.PairSeparator, StringComparison.Ordinal) >= 0 || value.IndexOf(options.KeyValueSeparator, StringComparison.Ordinal) >= 0)
-            throw new ArgumentException("关闭 URL 编码时，参数键和值不能包含协议分隔符。", isKey ? "key" : "value");
     }
 
     /// <summary>

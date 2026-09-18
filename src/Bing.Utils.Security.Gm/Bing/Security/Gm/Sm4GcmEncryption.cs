@@ -70,18 +70,16 @@ public static class Sm4GcmEncryption
         ValidateKey(key);
         byte[] encrypted = null;
         byte[] output = null;
-        byte[] payloadCiphertext = null;
-        byte[] payloadTag = null;
-        byte[] payloadNonce = null;
+        byte[] nonce = null;
         try
         {
-            payloadCiphertext = payload.Ciphertext;
-            payloadTag = payload.Tag;
-            payloadNonce = payload.Nonce;
+            var payloadCiphertext = payload.Ciphertext;
+            var payloadTag = payload.Tag;
             encrypted = new byte[payloadCiphertext.Length + payloadTag.Length];
-            Buffer.BlockCopy(payloadCiphertext, 0, encrypted, 0, payloadCiphertext.Length);
-            Buffer.BlockCopy(payloadTag, 0, encrypted, payloadCiphertext.Length, payloadTag.Length);
-            var cipher = CreateCipher(false, key, payloadNonce, associatedData);
+            payloadCiphertext.CopyTo(encrypted.AsMemory(0, payloadCiphertext.Length));
+            payloadTag.CopyTo(encrypted.AsMemory(payloadCiphertext.Length, payloadTag.Length));
+            nonce = payload.Nonce.ToArray();
+            var cipher = CreateCipher(false, key, nonce, associatedData);
             output = new byte[cipher.GetOutputSize(encrypted.Length)];
             var length = cipher.ProcessBytes(encrypted, 0, encrypted.Length, output, 0);
             length += cipher.DoFinal(output, length);
@@ -105,12 +103,8 @@ public static class Sm4GcmEncryption
                 GmCryptographicOperationsCompat.ZeroMemory(encrypted);
             if (output != null)
                 GmCryptographicOperationsCompat.ZeroMemory(output);
-            if (payloadCiphertext != null)
-                GmCryptographicOperationsCompat.ZeroMemory(payloadCiphertext);
-            if (payloadTag != null)
-                GmCryptographicOperationsCompat.ZeroMemory(payloadTag);
-            if (payloadNonce != null)
-                GmCryptographicOperationsCompat.ZeroMemory(payloadNonce);
+            if (nonce != null)
+                GmCryptographicOperationsCompat.ZeroMemory(nonce);
         }
     }
 

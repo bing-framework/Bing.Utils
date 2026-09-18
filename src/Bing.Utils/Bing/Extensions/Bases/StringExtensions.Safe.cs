@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 // ReSharper disable once CheckNamespace
@@ -105,6 +105,7 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="value">值，需要加密的字符串</param>
     /// <param name="pwd">密匙，使用密匙来加密字符串</param>
+    [Obsolete("此 3DES API 仅用于兼容旧数据，请迁移到 Bing.Security.Cryptography.AesGcmEncryption。")]
     public static byte[] EncryptToBytes(this string value, string pwd)
     {
         var asciiEncoder = new ASCIIEncoding();
@@ -121,7 +122,7 @@ public static partial class StringExtensions
     private static byte[] CryptBytes(string pwd, byte[] bytes, bool encrypt)
     {
         //第三方加密服务商
-        var desProvider = new TripleDESCryptoServiceProvider();
+        using var desProvider = new TripleDESCryptoServiceProvider();
         //找到此提供程序的有效密钥大小
         int keySizeBits = 0;
         for (int i = 1024; i >= 1; i--)
@@ -143,13 +144,13 @@ public static partial class StringExtensions
         };
         MakeKeyAndIv(pwd, salt, keySizeBits, blockSizeBits, ref key, ref iv);
         //进行加密或解密
-        var cryptoTransform = encrypt
+        using var cryptoTransform = encrypt
             ? desProvider.CreateEncryptor(key, iv)
             : desProvider.CreateDecryptor(key, iv);
         //创建输出流
-        var outStream = new MemoryStream();
+        using var outStream = new MemoryStream();
         //附加一个加密流输出流
-        var cryptoStream = new CryptoStream(outStream, cryptoTransform, CryptoStreamMode.Write);
+        using var cryptoStream = new CryptoStream(outStream, cryptoTransform, CryptoStreamMode.Write);
         //写字节到加密流中
         cryptoStream.Write(bytes, 0, bytes.Length);
         try
@@ -187,7 +188,7 @@ public static partial class StringExtensions
     private static void MakeKeyAndIv(string pwd, byte[] salt, int keySizeBits, int blockSizeBits, ref byte[] key,
         ref byte[] iv)
     {
-        var deriveBytes = new Rfc2898DeriveBytes(pwd, salt, 1234);
+        using var deriveBytes = new Rfc2898DeriveBytes(pwd, salt, 1234);
         key = deriveBytes.GetBytes(keySizeBits / 8);
         iv = deriveBytes.GetBytes(blockSizeBits / 8);
     }
@@ -201,6 +202,7 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="value">值，要解密的字节数组</param>
     /// <param name="pwd">密匙，使用密匙来解密字符串</param>
+    [Obsolete("此 3DES API 仅用于兼容旧数据，请迁移到 Bing.Security.Cryptography.AesGcmEncryption。")]
     public static string DecryptFromBytes(this byte[] value, string pwd)
     {
         byte[] bytes = CryptBytes(pwd, value, false);
@@ -217,6 +219,7 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="value">值，需要加密的字符串</param>
     /// <param name="pwd">密匙，使用密匙来加密字符串</param>
+    [Obsolete("此 3DES API 仅用于兼容旧数据，请迁移到 Bing.Security.Cryptography.AesGcmEncryption。")]
     public static string EncryptToString(this string value, string pwd) => value.EncryptToBytes(pwd).ToString();
 
     #endregion
@@ -228,6 +231,7 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="value">值，要解密的字符串</param>
     /// <param name="pwd">密匙，使用密匙来解密字符串</param>
+    [Obsolete("此 3DES API 仅用于兼容旧数据，请迁移到 Bing.Security.Cryptography.AesGcmEncryption。")]
     public static string DecryptFromString(this string value, string pwd)
     {
         var asciiEncoder = new ASCIIEncoding();

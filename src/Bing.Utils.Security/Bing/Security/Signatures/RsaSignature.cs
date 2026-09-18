@@ -36,7 +36,14 @@ public static class RsaSignature
     {
         using var rsa = PemKeySerializer.ImportRsaPublicKey(publicKeyPem);
         RsaEncryption.EnsureSecureKeySize(rsa);
-        return rsa.VerifyData(data.ToArray(), signature.ToArray(), HashAlgorithmName.SHA256, RSASignaturePadding.Pss);
+        try
+        {
+            return rsa.VerifyData(data.ToArray(), signature.ToArray(), HashAlgorithmName.SHA256, RSASignaturePadding.Pss);
+        }
+        catch (CryptographicException)
+        {
+            return false;
+        }
     }
 }
 #endif

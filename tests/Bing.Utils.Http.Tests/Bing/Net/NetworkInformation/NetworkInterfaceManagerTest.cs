@@ -290,9 +290,12 @@ public class NetworkInterfaceManagerTest : TestBase
     [Fact]
     public void GetPrimaryIpAddress_IPv6Fallback_WorksCorrectly()
     {
-        // 获取所有可用的IPv4和IPv6地址
-        var allIPv4 = NetworkInterfaceManager.GetAllIPv4Addresses();
-        var allIPv6 = NetworkInterfaceManager.GetAllIPv6Addresses();
+        // 主要地址只从具有网关的接口中选择，因此断言必须使用相同的筛选范围。
+        var activeInterfaces = NetworkInterfaceManager.GetActiveNetworkInterfaces();
+        var allIPv4 = activeInterfaces.SelectMany(item => item.IPv4Addresses).ToList();
+        var allIPv6 = activeInterfaces.SelectMany(item => item.IPv6Addresses)
+            .Where(ip => !ip.StartsWith("fe80:", StringComparison.OrdinalIgnoreCase) && !ip.StartsWith("::1", StringComparison.OrdinalIgnoreCase))
+            .ToList();
         // Act
         var ipv4Primary = NetworkInterfaceManager.GetPrimaryIpAddress(preferIPv4: true);
         var ipv6Primary = NetworkInterfaceManager.GetPrimaryIpAddress(preferIPv4: false);

@@ -11,9 +11,9 @@ public class TaskExtensionsTest
     public void Test_WaitResult_TaskCompletesWithinTimeout_DoesNotThrowException()
     {
         // Arrange
-        var task = Task.Delay(500); // 设置一个足够大的超时时间，确保任务能够在超时之前完成。
+        var task = Task.CompletedTask;
         // Act and Assert
-        task.WaitResult(1000); // 在超时时间内完成，不应该引发异常。
+        task.WaitResult(1000);
     }
     /// <summary>
     /// 测试 - 当任务未能在超时时间内完成时，WaitResult 方法是否引发 <see cref="TimeoutException"/> 异常。
