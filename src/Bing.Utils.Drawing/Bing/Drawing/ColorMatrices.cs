@@ -2,7 +2,7 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
-namespace Bing.Drawing;
+namespace Bing.Drawing.Gdi;
 
 /// <summary>
 /// 颜色转换矩阵
@@ -28,12 +28,13 @@ public static class ColorMatrices
 
     /// <summary>
     /// 使用给定的数量创建亮度过滤器矩阵。
-    /// <para>
-    /// 使用算法<see href="https://cs.chromium.org/chromium/src/cc/paint/render_surface_filters.cc"/>
-    /// </para>
     /// </summary>
     /// <param name="amount">转化比例，必须大于或等于 0。</param>
+    /// <returns>创建的亮度过滤器矩阵。</returns>
     /// <remarks>
+    /// 使用 Chromium 的颜色过滤算法。
+    /// <see href="https://cs.chromium.org/chromium/src/cc/paint/render_surface_filters.cc" />
+    ///
     /// 值为 0 将创建一个完全黑色的图像。值为 1 时输入保持不变。
     /// 其他值是效果的线性乘数。允许超过 1 的值，从而提供更明亮的结果。
     /// </remarks>
@@ -52,11 +53,13 @@ public static class ColorMatrices
 
     /// <summary>
     /// 使用给定的数量创建灰度滤波器矩阵。
-    /// <para>
-    /// 使用算法<see href="https://en.wikipedia.org/wiki/Luma_%28video%29#Rec._601_luma_versus_Rec._709_luma_coefficients"/>
-    /// </para>
     /// </summary>
     /// <param name="amount">转化比例，必须大于等于 0 且小于等于 1。</param>
+    /// <returns>创建的灰度过滤器矩阵。</returns>
+    /// <remarks>
+    /// 使用 Rec. 601 与 Rec. 709 的亮度系数。
+    /// <see href="https://en.wikipedia.org/wiki/Luma_%28video%29#Rec._601_luma_versus_Rec._709_luma_coefficients" />
+    /// </remarks>
     public static ColorMatrix CreateGrayScaleFilter(float amount)
     {
         if (amount < 0 || amount > 1)
@@ -83,12 +86,13 @@ public static class ColorMatrices
 
     /// <summary>
     /// 使用给定的数量创建对比度过滤器矩阵。
-    /// <para>
-    /// 使用算法<see href="https://cs.chromium.org/chromium/src/cc/paint/render_surface_filters.cc"/>
-    /// </para>
     /// </summary>
     /// <param name="amount">转化比例，必须大于或等于 0。</param>
+    /// <returns>创建的对比度过滤器矩阵。</returns>
     /// <remarks>
+    /// 使用 Chromium 的颜色过滤算法。
+    /// <see href="https://cs.chromium.org/chromium/src/cc/paint/render_surface_filters.cc" />
+    ///
     /// 值为 0 将创建一个完全灰色的图像。值为 1 时输入保持不变。
     /// 其他值是效果的线性乘数。允许超过 1 的值，从而提供具有更高对比度的结果。
     /// </remarks>
@@ -113,12 +117,13 @@ public static class ColorMatrices
 
     /// <summary>
     /// 使用给定的数量创建饱和度过滤器矩阵。
-    /// <para>
-    /// 使用算法<see href="https://cs.chromium.org/chromium/src/cc/paint/render_surface_filters.cc"/>
-    /// </para>
     /// </summary>
     /// <param name="amount">转化比例，必须大于或等于 0。</param>
+    /// <returns>创建的饱和度过滤器矩阵。</returns>
     /// <remarks>
+    /// 使用 Chromium 的颜色过滤算法。
+    /// <see href="https://cs.chromium.org/chromium/src/cc/paint/render_surface_filters.cc" />
+    ///
     /// 0 值是完全不饱和的。值为 1 时输入保持不变。
     /// 其他值是效果的线性乘数。允许超过 1 的值，提供超饱和结果。
     /// </remarks>

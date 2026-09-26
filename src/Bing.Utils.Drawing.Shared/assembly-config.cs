@@ -1,0 +1,7 @@
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing.ImageSharp")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing.SkiaSharp")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing.ImageSharp.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing.SkiaSharp.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing.Tests.Integration")]

@@ -1,0 +1,12 @@
+using System.Runtime.CompilerServices;
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.ThumbnailMode))]
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.CaptchaType))]
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.CaptchaOptions))]
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.RgbColor))]
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.HslColor))]
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.ColorConversion))]
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.BinaryMatrixHelper))]
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.ImageMetadataOptions))]
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.UnsupportedFormatBehavior))]
+[assembly: TypeForwardedTo(typeof(Bing.Drawing.ColorMatrices))]
+[assembly: TypeForwardedTo(typeof(Bing.Conversions.ColorConv))]

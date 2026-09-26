@@ -12,14 +12,19 @@ public static partial class ImageHelper
     #region MakeThumbnail(生成缩略图)
 
     /// <summary>
-    /// 生成缩略图
+    /// 生成缩略图。
     /// </summary>
     /// <param name="sourceImage">源图</param>
     /// <param name="width">缩略图宽度</param>
     /// <param name="height">缩略图高度</param>
     /// <param name="mode">缩略图方式</param>
+    /// <returns>生成的缩略图。</returns>
+    /// <exception cref="ArgumentNullException">源图为空。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">宽度、高度或缩略图模式无效。</exception>
     public static Image MakeThumbnail(Image sourceImage, int width, int height, ThumbnailMode mode)
     {
+        if (sourceImage == null) throw new ArgumentNullException(nameof(sourceImage));
+        if (width <= 0 || height <= 0 || !Enum.IsDefined(typeof(ThumbnailMode), mode)) throw new ArgumentOutOfRangeException(nameof(width));
         var towidth = width;
         var toheight = height;
 
@@ -34,25 +39,25 @@ public static partial class ImageHelper
                 break;
 
             case ThumbnailMode.FixedW:
-                toheight = oh * width / ow;
+                toheight = checked((int)((long)oh * width / ow));
                 break;
 
             case ThumbnailMode.FixedH:
-                towidth = ow * height / oh;
+                towidth = checked((int)((long)ow * height / oh));
                 break;
 
             case ThumbnailMode.Cut:
                 if (ow / (double)oh > towidth / (double)toheight)
                 {
                     oh = sourceImage.Height;
-                    ow = sourceImage.Height * towidth / toheight;
+                    ow = checked((int)((long)sourceImage.Height * towidth / toheight));
                     y = 0;
                     x = (sourceImage.Width - ow) / 2;
                 }
                 else
                 {
                     ow = sourceImage.Width;
-                    oh = sourceImage.Width * height / towidth;
+                    oh = checked((int)((long)sourceImage.Width * height / towidth));
                     x = 0;
                     y = (sourceImage.Height - oh) / 2;
                 }
@@ -75,9 +80,10 @@ public static partial class ImageHelper
                 GraphicsUnit.Pixel);
             return bitmap;
         }
-        catch (Exception e)
+        catch
         {
-            throw e;
+            bitmap.Dispose();
+            throw;
         }
         finally
         {
@@ -86,12 +92,15 @@ public static partial class ImageHelper
     }
 
     /// <summary>
-    /// 生成缩略图
+    /// 生成缩略图。
     /// </summary>
     /// <param name="imgBytes">源文件字节数组</param>
     /// <param name="width">缩略图宽度</param>
     /// <param name="height">缩略图高度</param>
     /// <param name="mode">缩略图方式</param>
+    /// <returns>生成的缩略图。</returns>
+    /// <exception cref="ArgumentNullException">字节数组为空。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">宽度、高度或缩略图模式无效。</exception>
     public static Image MakeThumbnail(byte[] imgBytes, int width, int height, ThumbnailMode mode)
     {
         using (var sourceImage = FromBytes(imgBytes))
@@ -101,8 +110,9 @@ public static partial class ImageHelper
     }
 
     /// <summary>
-    /// 生成缩略图
+    /// 生成缩略图。
     /// </summary>
+    /// <remarks>从源文件生成缩略图，并将结果写入指定目标路径。</remarks>
     /// <param name="sourceImagePath">文件路径</param>
     /// <param name="thumbnailPath">缩略图文件生成路径</param>
     /// <param name="width">缩略图宽度</param>
@@ -111,11 +121,11 @@ public static partial class ImageHelper
     public static void MakeThumbnail(string sourceImagePath, string thumbnailPath, int width, int height,
         ThumbnailMode mode)
     {
-        using (var sourceImage = Image.FromFile(sourceImagePath))
+        using (var sourceImage = FromFile(sourceImagePath))
         {
             using (var resultImage = MakeThumbnail(sourceImage, width, height, mode))
             {
-                resultImage.Save(thumbnailPath, ImageFormat.Jpeg);
+                Internal.ImageFileWriter.Write(thumbnailPath, ToBytes(resultImage));
             }
         }
     }
@@ -130,15 +140,16 @@ public static partial class ImageHelper
     /// <param name="image">图像</param>
     /// <param name="width">宽度</param>
     /// <param name="height">高度</param>
+    /// <returns>按比例缩放后的图像；输入无效时返回 <see langword="null" />。</returns>
     public static Image ScaleImage(Image image, int width, int height)
     {
         if (image == null || width <= 0 || height <= 0)
             return null;
-        var newWidth = image.Width * height / image.Height;
-        var newHeight = image.Height * width / image.Width;
+        var newWidth = checked((int)((long)image.Width * height / image.Height));
+        var newHeight = checked((int)((long)image.Height * width / image.Width));
 
         var bmp = new Bitmap(width, height);
-        var g = Graphics.FromImage(bmp);
+        using var g = Graphics.FromImage(bmp);
         g.InterpolationMode = InterpolationMode.HighQualityBilinear;
         // 调试时，取消以下代码注释
         //g.FillRectangle(Brushes.Aqua, 0, 0, bmp.Width - 1, bmp.Height - 1);
@@ -244,40 +255,32 @@ public static partial class ImageHelper
     #region DeleteCoordinate(删除图片中的经纬度信息)
 
     /// <summary>
-    /// 删除图片中的经纬度信息，覆盖原图像
+    /// 删除图像中的 GPS 经纬度信息。
     /// </summary>
     /// <param name="filePath">文件路径</param>
+    /// <remarks>
+    /// 方法原子覆盖原文件。
+    /// </remarks>
     public static void DeleteCoordinate(string filePath)
     {
-        using (var ms = new MemoryStream(File.ReadAllBytes(filePath)))
-        {
-            using (var image = Image.FromStream(ms))
-            {
-                DeleteCoordinate(image);
-                image.Save(filePath);
-            }
-        }
+        Internal.ImageFileWriter.Write(filePath, Internal.EncodedImageSanitizer.Sanitize(File.ReadAllBytes(filePath), new ImageMetadataOptions()));
     }
 
     /// <summary>
-    /// 删除图片中的经纬度信息，并另存为
+    /// 删除图像中的 GPS 经纬度信息。
     /// </summary>
     /// <param name="filePath">文件路径</param>
     /// <param name="savePath">保存文件路径</param>
+    /// <remarks>
+    /// 方法从源文件读取，并将结果原子写入目标文件。
+    /// </remarks>
     public static void DeleteCoordinate(string filePath, string savePath)
     {
-        using (var ms = new MemoryStream(File.ReadAllBytes(filePath)))
-        {
-            using (var image = Image.FromStream(ms))
-            {
-                DeleteCoordinate(image);
-                image.Save(savePath);
-            }
-        }
+        Internal.ImageFileWriter.Write(savePath, Internal.EncodedImageSanitizer.Sanitize(File.ReadAllBytes(filePath), new ImageMetadataOptions()));
     }
 
     /// <summary>
-    /// 删除图片中的经纬度信息
+    /// 删除图像中的 GPS 经纬度信息。
     /// </summary>
     /// <param name="image">图片</param>
     public static void DeleteCoordinate(Image image)
@@ -313,7 +316,7 @@ public static partial class ImageHelper
     /// <param name="width">宽度</param>
     /// <param name="height">高度</param>
     /// <param name="val">增加或减少的光暗值</param>
-    /// <returns></returns>
+    /// <returns>调整亮度后的位图。</returns>
     public static Bitmap BrightnessHandle(Bitmap bitmap, int width, int height, int val)
     {
         Bitmap bm = new Bitmap(width, height);
@@ -340,9 +343,14 @@ public static partial class ImageHelper
     /// 滤色处理
     /// </summary>
     /// <param name="bitmap">图片</param>
-    /// <returns></returns>
+    /// <returns>滤色处理后的位图。</returns>
     public static Bitmap FilterColor(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         var width = bitmap.Width;
         var height = bitmap.Height;
         for (var x = 0; x < width; x++)
@@ -354,6 +362,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -364,9 +375,14 @@ public static partial class ImageHelper
     /// 左右翻转
     /// </summary>
     /// <param name="bitmap">图片</param>
-    /// <returns></returns>
+    /// <returns>左右翻转后的位图。</returns>
     public static Bitmap LeftRightTurn(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         var width = bitmap.Width;
         var height = bitmap.Height;
         for (var y = height - 1; y >= 0; y--)
@@ -378,6 +394,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -388,9 +407,14 @@ public static partial class ImageHelper
     /// 上下翻转
     /// </summary>
     /// <param name="bitmap">图片</param>
-    /// <returns></returns>
+    /// <returns>上下翻转后的位图。</returns>
     public static Bitmap TopBottomTurn(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         var width = bitmap.Width;
         var height = bitmap.Height;
         for (var x = 0; x < width; x++)
@@ -402,6 +426,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -412,9 +439,14 @@ public static partial class ImageHelper
     /// 转换为黑白图片
     /// </summary>
     /// <param name="bitmap">图片</param>
-    /// <returns></returns>
+    /// <returns>黑白处理后的位图。</returns>
     public static Bitmap ToBlackWhiteImage(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         var width = bitmap.Width;
         var height = bitmap.Height;
         for (var x = 0; x < width; x++)
@@ -427,6 +459,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -440,7 +475,7 @@ public static partial class ImageHelper
     /// <param name="isTwist">是否扭曲，true:扭曲,false:不扭曲</param>
     /// <param name="shapeMultValue">波形的幅度倍数，越大扭曲的程度越高，默认为3</param>
     /// <param name="shapePhase">波形的起始相位，取值区间[0-2*PI]</param>
-    /// <returns></returns>
+    /// <returns>扭曲处理后的位图。</returns>
     public static Bitmap TwistImage(Bitmap bitmap, bool isTwist, double shapeMultValue, double shapePhase)
     {
         Bitmap destBitmap = new Bitmap(bitmap.Width, bitmap.Height);
@@ -482,7 +517,7 @@ public static partial class ImageHelper
     /// </summary>
     /// <param name="bitmap">图片</param>
     /// <param name="angle">旋转的角度，正值为逆时针方向</param>
-    /// <returns></returns>
+    /// <returns>旋转后的位图。</returns>
     public static Bitmap Rotate(Bitmap bitmap, int angle)
     {
         angle = angle % 360;
@@ -526,8 +561,14 @@ public static partial class ImageHelper
     /// 图片灰度化
     /// </summary>
     /// <param name="bitmap">图片</param>
+    /// <returns>灰度处理后的位图。</returns>
     public static Bitmap Gray(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         for (var i = 0; i < bitmap.Width; i++)
         {
             for (var j = 0; j < bitmap.Height; j++)
@@ -550,6 +591,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -560,9 +604,14 @@ public static partial class ImageHelper
     /// 底片效果
     /// </summary>
     /// <param name="bitmap">图片</param>
-    /// <returns></returns>
+    /// <returns>底片处理后的位图。</returns>
     public static Bitmap Plate(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         var width = bitmap.Width;
         var height = bitmap.Height;
         for (var j = 0; j < height; j++)
@@ -577,6 +626,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -587,9 +639,14 @@ public static partial class ImageHelper
     /// 浮雕效果
     /// </summary>
     /// <param name="bitmap">图片</param>
-    /// <returns></returns>
+    /// <returns>浮雕处理后的位图。</returns>
     public static Bitmap Emboss(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         var width = bitmap.Width;
         var height = bitmap.Height;
         for (var j = 0; j < height; j++)
@@ -611,6 +668,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -621,9 +681,14 @@ public static partial class ImageHelper
     /// 柔化效果
     /// </summary>
     /// <param name="bitmap">图片</param>
-    /// <returns></returns>
+    /// <returns>柔化处理后的位图。</returns>
     public static Bitmap Soften(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         int width = bitmap.Width;
         int height = bitmap.Height;
         //高斯模板
@@ -659,6 +724,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -669,9 +737,14 @@ public static partial class ImageHelper
     /// 锐化效果
     /// </summary>
     /// <param name="bitmap">图片</param>
-    /// <returns></returns>
+    /// <returns>锐化处理后的位图。</returns>
     public static Bitmap Sharpen(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         int width = bitmap.Width;
         int height = bitmap.Height;
         // 拉普拉斯模板
@@ -707,6 +780,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -717,9 +793,14 @@ public static partial class ImageHelper
     /// 雾化效果
     /// </summary>
     /// <param name="bitmap">图片</param>
-    /// <returns></returns>
+    /// <returns>雾化处理后的位图。</returns>
     public static Bitmap Atomizing(Bitmap bitmap)
     {
+        if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+        // 编辑副本，避免原生旧接口意外修改调用方图像。
+        bitmap = (Bitmap)bitmap.Clone();
+        try
+        {
         int width = bitmap.Width;
         int height = bitmap.Height;
         for (int j = 0; j < height; j++)
@@ -744,6 +825,9 @@ public static partial class ImageHelper
             }
         }
         return bitmap;
+
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     #endregion
@@ -755,8 +839,9 @@ public static partial class ImageHelper
     /// </summary>
     /// <param name="image">图片</param>
     /// <param name="opacity">透明度</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <returns>应用透明度后的图像。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">透明度不在 0 到 1 之间。</exception>
     public static Image SetOpacity(Image image, float opacity)
     {
         if (image is null)

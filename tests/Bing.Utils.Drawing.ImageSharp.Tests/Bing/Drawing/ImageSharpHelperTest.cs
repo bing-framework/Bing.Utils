@@ -5,7 +5,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using System.Text.RegularExpressions;
 namespace Bing.Drawing;
 /// <summary>
-/// 测试类：覆盖 `ImageSharpHelper` 相关行为。
+/// 验证 <see cref="ImageSharpHelper" /> 相关图像处理行为。
 /// </summary>
 public class ImageSharpHelperTest
 {
@@ -32,7 +32,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ToBytes` 在 `And_FromBytes` 场景下，结果为 `RoundTrip`。
+    /// 验证图像编码为字节后可还原原图尺寸。
     /// </summary>
     [Fact]
     public void ToBytes_And_FromBytes_RoundTrip()
@@ -46,7 +46,7 @@ public class ImageSharpHelperTest
         restored.Height.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `ToBase64String` 在 `And_FromBase64String` 场景下，结果为 `RoundTrip`。
+    /// 验证图像编码为 Base64 后可还原原图尺寸。
     /// </summary>
     [Fact]
     public void ToBase64String_And_FromBase64String_RoundTrip()
@@ -60,7 +60,7 @@ public class ImageSharpHelperTest
         restored.Height.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `ToDataUrl` 在 `And_FromDataUrl` 场景下，结果为 `RoundTrip`。
+    /// 验证图像编码为 Data URL 后可还原原图尺寸。
     /// </summary>
     [Fact]
     public void ToDataUrl_And_FromDataUrl_RoundTrip()
@@ -88,10 +88,10 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证已加载 JPEG 图片在派生新图像后默认输出仍保持 JPEG。
+    /// 测试用例：验证已加载 JPEG 图片在派生新图像后默认输出统一为 PNG。
     /// </summary>
     [Fact]
-    public void ToDataUrl_DefaultFormat_ForDerivedImage_PreservesTrackedJpeg()
+    public void ToDataUrl_DefaultFormat_ForDerivedImage_UsesPng()
     {
         using var source = CreateNoiseImage(32, 16);
         var bytes = ImageSharpHelper.ToBytes(source, JpegFormat.Instance, 90);
@@ -100,10 +100,28 @@ public class ImageSharpHelperTest
 
         var dataUrl = ImageSharpHelper.ToDataUrl(resized);
 
-        dataUrl.ShouldStartWith("data:image/jpeg;base64,");
+        dataUrl.ShouldStartWith("data:image/png;base64,");
+    }
+
+    /// <summary>
+    /// 验证无显式格式时跟踪 JPEG 图像转换为 PNG 字节。
+    /// </summary>
+    [Fact]
+    public void ToBytes_DefaultFormat_ForTrackedJpeg_UsesPng()
+    {
+        using var source = CreateNoiseImage(16, 8);
+        var jpeg = ImageSharpHelper.ToBytes(source, JpegFormat.Instance, 90);
+        using var restored = ImageSharpHelper.FromBytes(jpeg);
+
+        var output = ImageSharpHelper.ToBytes(restored!);
+
+        output[0].ShouldBe((byte)0x89);
+        output[1].ShouldBe((byte)0x50);
+        output[2].ShouldBe((byte)0x4E);
+        output[3].ShouldBe((byte)0x47);
     }
     /// <summary>
-    /// 测试用例：验证 `FromBytes` 在 `Null` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证输入字节为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void FromBytes_Null_ThrowsArgumentNullException()
@@ -112,7 +130,7 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("bytes");
     }
     /// <summary>
-    /// 测试用例：验证 `ToBytes` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void ToBytes_NullImage_ThrowsArgumentNullException()
@@ -121,7 +139,7 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("image");
     }
     /// <summary>
-    /// 测试用例：验证 `ToBase64String` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void ToBase64String_NullImage_ThrowsArgumentNullException()
@@ -130,7 +148,7 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("image");
     }
     /// <summary>
-    /// 测试用例：验证 `ToDataUrl` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void ToDataUrl_NullImage_ThrowsArgumentNullException()
@@ -139,25 +157,35 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("image");
     }
     /// <summary>
-    /// 测试用例：验证 `FromBase64String` 在 `InvalidValue` 场景下，结果为 `ReturnsNull`。
+    /// 验证无效 Base64 字符串抛出格式异常。
     /// </summary>
     [Fact]
-    public void FromBase64String_InvalidValue_ReturnsNull()
+    public void FromBase64String_InvalidValue_Throws()
     {
-        var restored = ImageSharpHelper.FromBase64String("not-base64");
-        restored.ShouldBeNull();
+        Should.Throw<FormatException>(() => ImageSharpHelper.FromBase64String("not-base64"));
     }
     /// <summary>
-    /// 测试用例：验证 `FromDataUrl` 在 `InvalidFormat` 场景下，结果为 `ReturnsNull`。
+    /// 验证无效 Data URL 字符串抛出格式异常。
     /// </summary>
     [Fact]
-    public void FromDataUrl_InvalidFormat_ReturnsNull()
+    public void FromDataUrl_InvalidFormat_Throws()
     {
-        var restored = ImageSharpHelper.FromDataUrl("invalid-data-url");
-        restored.ShouldBeNull();
+        Should.Throw<FormatException>(() => ImageSharpHelper.FromDataUrl("invalid-data-url"));
+    }
+
+    /// <summary>
+    /// 验证尝试加载无效字节时返回 false 和空图像且不抛出异常。
+    /// </summary>
+    [Fact]
+    public void TryLoad_InvalidBytes_ReturnsFalseWithoutThrowing()
+    {
+        var loaded = ImageSharpHelper.TryLoad(new byte[] { 1, 2, 3 }, out var image);
+
+        loaded.ShouldBeFalse();
+        image.ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `FromFile` 在 `And_FromFileGeneric` 场景下，结果为 `LoadExpectedImage`。
+    /// 验证从文件路径加载图像并保留原始尺寸。
     /// </summary>
     [Fact]
     public void FromFile_And_FromFileGeneric_LoadExpectedImage()
@@ -228,7 +256,7 @@ public class ImageSharpHelperTest
         stream.Position.ShouldBe(stream.Length);
     }
     /// <summary>
-    /// 测试用例：验证 `SetOpacity` 在 `OutOfRange` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证不透明度超出范围时抛出参数范围异常。
     /// </summary>
     [Fact]
     public void SetOpacity_OutOfRange_ThrowsArgumentOutOfRangeException()
@@ -240,7 +268,7 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("opacity");
     }
     /// <summary>
-    /// 测试用例：验证 `SetOpacity` 在 `ValidOpacity` 场景下，结果为 `ReturnsNewImageWithLowerAlpha`。
+    /// 验证有效不透明度会生成 Alpha 降低的新图像。
     /// </summary>
     [Fact]
     public void SetOpacity_ValidOpacity_ReturnsNewImageWithLowerAlpha()
@@ -269,7 +297,7 @@ public class ImageSharpHelperTest
         resultRgba[0, 0].A.ShouldBe((byte)64);
     }
     /// <summary>
-    /// 测试用例：验证 `SetOpacity` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void SetOpacity_NullImage_ThrowsArgumentNullException()
@@ -768,6 +796,10 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("image");
     }
 
+    /// <summary>
+    /// 创建包含固定颜色像素的示例图像。
+    /// </summary>
+    /// <returns>包含固定颜色像素的示例图像。</returns>
     private static Image<Rgba32> CreateSampleImage()
     {
         var image = new Image<Rgba32>(2, 2);
@@ -778,6 +810,12 @@ public class ImageSharpHelperTest
         return image;
     }
 
+    /// <summary>
+    /// 创建用于图像处理测试的图案图像。
+    /// </summary>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <returns>填充确定性图案的图像。</returns>
     private static Image<Rgba32> CreatePatternImage(int width, int height)
     {
         var image = new Image<Rgba32>(width, height);
@@ -791,6 +829,12 @@ public class ImageSharpHelperTest
         return image;
     }
 
+    /// <summary>
+    /// 创建用于质量比较的确定性噪声图像。
+    /// </summary>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <returns>填充确定性噪声的图像。</returns>
     private static Image<Rgba32> CreateNoiseImage(int width, int height)
     {
         var image = new Image<Rgba32>(width, height);
@@ -805,6 +849,13 @@ public class ImageSharpHelperTest
         return image;
     }
 
+    /// <summary>
+    /// 创建指定颜色和尺寸的纯色图像。
+    /// </summary>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <param name="color">填充颜色。</param>
+    /// <returns>指定颜色和尺寸的图像。</returns>
     private static Image<Rgba32> CreateSolidImage(int width, int height, Rgba32 color)
     {
         var image = new Image<Rgba32>(width, height);

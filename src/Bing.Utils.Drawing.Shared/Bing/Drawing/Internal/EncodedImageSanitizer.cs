@@ -1,18 +1,23 @@
 namespace Bing.Drawing.Internal;
 
 /// <summary>
-/// 编码图像格式检测与元数据清理调度
+/// 调度编码图像格式检测和元数据清理。
 /// </summary>
 internal static class EncodedImageSanitizer
 {
     /// <summary>
-    /// 对编码图像数据执行元数据清理
+    /// 按选项清理编码图像的元数据。
     /// </summary>
-    /// <param name="data">编码图像数据</param>
-    /// <param name="options">清理选项</param>
-    /// <returns>清理后的数据</returns>
+    /// <param name="data">编码图像数据。</param>
+    /// <param name="options">元数据清理选项。</param>
+    /// <returns>清理后的图像数据；无需清理时返回原数组。</returns>
     internal static byte[] Sanitize(byte[] data, ImageMetadataOptions options)
     {
+        if (data is null)
+            throw new ArgumentNullException(nameof(data));
+        if (options is null)
+            throw new ArgumentNullException(nameof(options));
+
         var format = DetectFormat(data);
         switch (format)
         {
@@ -28,11 +33,16 @@ internal static class EncodedImageSanitizer
     }
 
     /// <summary>
-    /// 检测编码图像格式
+    /// 根据文件签名检测编码图像格式。
     /// </summary>
+    /// <param name="data">编码图像数据。</param>
+    /// <returns>检测到的图像格式。</returns>
     internal static ImageFormat DetectFormat(byte[] data)
     {
-        if (data.Length >= 3 && data[0] == 0xFF && data[1] == 0xD8 && data[2] == 0xFF)
+        if (data is null)
+            throw new ArgumentNullException(nameof(data));
+
+        if (data.Length >= 2 && data[0] == 0xFF && data[1] == 0xD8)
             return ImageFormat.Jpeg;
 
         if (data.Length >= 8 &&
@@ -44,12 +54,23 @@ internal static class EncodedImageSanitizer
     }
 
     /// <summary>
-    /// 已知图像格式枚举
+    /// 表示解析器支持识别的图像格式。
     /// </summary>
     internal enum ImageFormat
     {
+        /// <summary>
+        /// 未识别的格式。
+        /// </summary>
         Unknown,
+
+        /// <summary>
+        /// JPEG 格式。
+        /// </summary>
         Jpeg,
+
+        /// <summary>
+        /// PNG 格式。
+        /// </summary>
         Png
     }
 }

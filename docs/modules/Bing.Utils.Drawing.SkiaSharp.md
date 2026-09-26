@@ -1,4 +1,7 @@
-﻿# Bing.Utils.Drawing.SkiaSharp
+# Bing.Utils.Drawing.SkiaSharp
+
+统一入口、行为变更和迁移清单见 [统一图像处理](image-processing.md)。Shared 现为独立程序集；默认输出 PNG，加载失败抛异常，探测失败使用 TryLoad。
+
 ## 1. 包职责（Scope）
 - 解决的问题
 - 提供基于 `SkiaSharp` 的图像处理辅助能力，包括：加载/保存/转换、缩放/裁剪/旋转/翻转、灰度/黑白/滤色/底片、颜色矩阵、亮度/对比度/饱和度、文字水印、验证码渲染（全量 `CaptchaOptions` 支持）、OCR 预处理、GPS 元数据清理、颜色空间转换、ICO、扭曲/冲蚀。

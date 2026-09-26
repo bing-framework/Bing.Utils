@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Bing.Conversions;
+namespace Bing.Drawing.Gdi;
 
 /// <summary>
 /// 颜色转换
@@ -9,9 +9,10 @@ namespace Bing.Conversions;
 public static class ColorConv
 {
     /// <summary>
-    /// RGB转HSB
+    /// 将 RGB 颜色转换为 HSB 分量。
     /// </summary>
-    /// <param name="color">颜色</param>
+    /// <param name="color">颜色。</param>
+    /// <returns>按色相、饱和度和亮度排列的 HSB 分量。</returns>
     public static float[] RgbToHsb(Color color)
     {
         // 获取色相
@@ -24,11 +25,12 @@ public static class ColorConv
     }
 
     /// <summary>
-    /// HSV(HSB)转RGB
+    /// 将 HSB 分量转换为 RGB 颜色。
     /// </summary>
-    /// <param name="hue">色相</param>
-    /// <param name="saturation">改变图像饱和度。范围：0-1</param>
-    /// <param name="value">改变图像对比度。范围：0-1</param>
+    /// <param name="hue">色相，单位为度。</param>
+    /// <param name="saturation">饱和度，范围为 0 到 1。</param>
+    /// <param name="value">亮度，范围为 0 到 1。</param>
+    /// <returns>转换后的 RGB 颜色。</returns>
     public static Color HsbToRgb(double hue, double saturation, double value)
     {
         if (saturation == 0)
@@ -50,9 +52,10 @@ public static class ColorConv
     /// <summary>
     /// 获取单通道颜色
     /// </summary>
-    /// <param name="min">最小值</param>
-    /// <param name="max">最大值</param>
-    /// <param name="hue">色相</param>
+    /// <param name="min">最小值。</param>
+    /// <param name="max">最大值。</param>
+    /// <param name="hue">色相。</param>
+    /// <returns>转换后的颜色通道值。</returns>
     private static int GetSingleChannelColor(double min, double max, double hue)
     {
         double singleColor;
@@ -71,9 +74,10 @@ public static class ColorConv
     }
 
     /// <summary>
-    /// 将SRgb颜色转换为线性RGB颜色
+    /// 将 sRGB 单通道值转换为线性 RGB 值。
     /// </summary>
-    /// <param name="sRgb">(单通道)颜色值。范围：0-1</param>
+    /// <param name="sRgb">单通道颜色值，范围为 0 到 1。</param>
+    /// <returns>转换后的线性 RGB 值。</returns>
     /// <remarks>https://en.wikipedia.org/wiki/SRGB#The_forward_transformation_.28CIE_xyY_or_CIE_XYZ_to_sRGB.29</remarks>
     public static double SRgbToLinearRgb(double sRgb)
     {
@@ -83,9 +87,10 @@ public static class ColorConv
     }
 
     /// <summary>
-    /// 将线性RGB颜色转换为SRgb颜色
+    /// 将线性 RGB 单通道值转换为 sRGB 值。
     /// </summary>
-    /// <param name="linearRgb">(单通道)颜色值。范围：0-1</param>
+    /// <param name="linearRgb">单通道颜色值，范围为 0 到 1。</param>
+    /// <returns>转换后的 sRGB 值。</returns>
     public static double LinearRgbToSRgb(double linearRgb)
     {
         if (linearRgb < 0.0031308)
@@ -95,22 +100,25 @@ public static class ColorConv
     }
 
     /// <summary>
-    /// 转换为16进制颜色
+    /// 将颜色转换为十六进制字符串。
     /// </summary>
-    /// <param name="color">颜色</param>
+    /// <param name="color">颜色。</param>
+    /// <returns>格式为 `#RRGGBB` 的颜色字符串。</returns>
     public static string ToHex(Color color) => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
 
     /// <summary>
-    /// 转换为RGB颜色
+    /// 将颜色转换为 RGB 字符串。
     /// </summary>
-    /// <param name="color">颜色</param>
+    /// <param name="color">颜色。</param>
+    /// <returns>格式为 `RGB(R,G,B)` 的颜色字符串。</returns>
     public static string ToRgb(Color color) => $"RGB({color.R},{color.G},{color.B})";
 
     /// <summary>
-    /// 将RGB颜色转换为16进制颜色
+    /// 将 RGB 分量转换为十六进制字符串。
     /// </summary>
-    /// <param name="r">红色</param>
-    /// <param name="g">绿色</param>
-    /// <param name="b">蓝色</param>
+    /// <param name="r">红色分量。</param>
+    /// <param name="g">绿色分量。</param>
+    /// <param name="b">蓝色分量。</param>
+    /// <returns>格式为 `#RRGGBB` 的颜色字符串。</returns>
     public static string RgbToHex(int r, int g, int b) => ToHex(Color.FromArgb(r, g, b));
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<AssemblyName>Bing.Utils.Drawing</AssemblyName>
 		<PackageId>Bing.Utils.Drawing</PackageId>
@@ -19,4 +19,8 @@
 		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../Bing.Utils.Drawing.Shared/Bing.Utils.Drawing.Shared.csproj" />
+    <Compile Remove="Bing/Drawing/ThumbnailMode.cs" /><Compile Remove="Bing/Drawing/CaptchaType.cs" />
+  </ItemGroup>
 </Project>

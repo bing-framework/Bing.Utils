@@ -2,12 +2,12 @@ using SkiaSharp;
 using System.Text.RegularExpressions;
 namespace Bing.Drawing;
 /// <summary>
-/// 测试类：覆盖 `SkiaSharpHelper` 相关行为。
+/// 验证 <see cref="SkiaSharpHelper" /> 相关图像处理行为。
 /// </summary>
 public class SkiaSharpHelperTest
 {
     /// <summary>
-    /// 测试用例：验证 `ToBytes` 在 `And_FromBytes` 场景下，结果为 `RoundTrip`。
+    /// 验证图像编码为字节后可还原原图尺寸。
     /// </summary>
     [Fact]
     public void ToBytes_And_FromBytes_RoundTrip()
@@ -21,7 +21,7 @@ public class SkiaSharpHelperTest
         restored.Height.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `ToBase64String` 在 `And_FromBase64String` 场景下，结果为 `RoundTrip`。
+    /// 验证图像编码为 Base64 后可还原原图尺寸。
     /// </summary>
     [Fact]
     public void ToBase64String_And_FromBase64String_RoundTrip()
@@ -35,7 +35,7 @@ public class SkiaSharpHelperTest
         restored.Height.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `ToDataUrl` 在 `ContainsDataUrlShape` 场景下的行为。
+    /// 验证图像 Data URL 包含 MIME 类型和 Base64 数据。
     /// </summary>
     [Fact]
     public void ToDataUrl_ContainsDataUrlShape()
@@ -60,10 +60,10 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证已加载 JPEG 图片在派生新图像后默认输出仍保持 JPEG。
+    /// 测试用例：验证已加载 JPEG 图片在派生新图像后默认输出统一为 PNG。
     /// </summary>
     [Fact]
-    public void ToDataUrl_DefaultFormat_ForDerivedImage_PreservesTrackedJpeg()
+    public void ToDataUrl_DefaultFormat_ForDerivedImage_UsesPng()
     {
         using var source = CreateNoiseImage(32, 16);
         var bytes = SkiaSharpHelper.ToBytes(source, SKEncodedImageFormat.Jpeg, 90);
@@ -72,10 +72,10 @@ public class SkiaSharpHelperTest
 
         var dataUrl = SkiaSharpHelper.ToDataUrl(resized);
 
-        dataUrl.ShouldStartWith("data:image/jpeg;base64,");
+        dataUrl.ShouldStartWith("data:image/png;base64,");
     }
     /// <summary>
-    /// 测试用例：验证 `FromDataUrl` 在 `WithValidPngDataUrl` 场景下，结果为 `RoundTrip`。
+    /// 验证有效 PNG Data URL 可还原原图尺寸。
     /// </summary>
     [Fact]
     public void FromDataUrl_WithValidPngDataUrl_RoundTrip()
@@ -89,7 +89,7 @@ public class SkiaSharpHelperTest
         restored.Height.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `FromBytes` 在 `Null` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证输入字节为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void FromBytes_Null_ThrowsArgumentNullException()
@@ -98,7 +98,7 @@ public class SkiaSharpHelperTest
             .ParamName.ShouldBe("bytes");
     }
     /// <summary>
-    /// 测试用例：验证 `ToBytes` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void ToBytes_NullImage_ThrowsArgumentNullException()
@@ -107,7 +107,7 @@ public class SkiaSharpHelperTest
             .ParamName.ShouldBe("image");
     }
     /// <summary>
-    /// 测试用例：验证 `ToBase64String` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void ToBase64String_NullImage_ThrowsArgumentNullException()
@@ -116,7 +116,7 @@ public class SkiaSharpHelperTest
             .ParamName.ShouldBe("image");
     }
     /// <summary>
-    /// 测试用例：验证 `ToDataUrl` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void ToDataUrl_NullImage_ThrowsArgumentNullException()
@@ -125,25 +125,53 @@ public class SkiaSharpHelperTest
             .ParamName.ShouldBe("image");
     }
     /// <summary>
-    /// 测试用例：验证 `FromBase64String` 在 `InvalidValue` 场景下，结果为 `ReturnsNull`。
+    /// 验证无效 Base64 字符串抛出格式异常。
     /// </summary>
     [Fact]
-    public void FromBase64String_InvalidValue_ReturnsNull()
+    public void FromBase64String_InvalidValue_ThrowsFormatException()
     {
-        var restored = SkiaSharpHelper.FromBase64String("not-base64");
-        restored.ShouldBeNull();
+        Should.Throw<FormatException>(() => SkiaSharpHelper.FromBase64String("not-base64"));
     }
     /// <summary>
-    /// 测试用例：验证 `FromDataUrl` 在 `InvalidFormat` 场景下，结果为 `ReturnsNull`。
+    /// 验证无效 Data URL 字符串抛出格式异常。
     /// </summary>
     [Fact]
-    public void FromDataUrl_InvalidFormat_ReturnsNull()
+    public void FromDataUrl_InvalidFormat_ThrowsFormatException()
     {
-        var restored = SkiaSharpHelper.FromDataUrl("invalid-data-url");
-        restored.ShouldBeNull();
+        Should.Throw<FormatException>(() => SkiaSharpHelper.FromDataUrl("invalid-data-url"));
+    }
+
+    /// <summary>
+    /// 测试用例：验证尝试加载无效图像时返回 false 且不抛出内容异常。
+    /// </summary>
+    [Fact]
+    public void TryLoad_InvalidBytes_ReturnsFalseWithoutThrowing()
+    {
+        var loaded = SkiaSharpHelper.TryLoad(new byte[] { 1, 2, 3 }, out var image);
+
+        loaded.ShouldBeFalse();
+        image.ShouldBeNull();
+    }
+
+    /// <summary>
+    /// 测试用例：验证无显式格式时 ToBytes 始终输出 PNG。
+    /// </summary>
+    [Fact]
+    public void ToBytes_DefaultFormat_UsesPng()
+    {
+        using var source = CreateSampleImage();
+        var jpeg = SkiaSharpHelper.ToBytes(source, SKEncodedImageFormat.Jpeg, 90);
+        using var restored = SkiaSharpHelper.FromBytes(jpeg);
+
+        var output = SkiaSharpHelper.ToBytes(restored!);
+        using var data = SKData.CreateCopy(output);
+        using var codec = SKCodec.Create(data);
+
+        codec.ShouldNotBeNull();
+        codec!.EncodedFormat.ShouldBe(SKEncodedImageFormat.Png);
     }
     /// <summary>
-    /// 测试用例：验证 `FromFile` 在 `LoadExpectedImage` 场景下的行为。
+    /// 验证从文件路径加载图像并保留原始尺寸。
     /// </summary>
     [Fact]
     public void FromFile_LoadExpectedImage()
@@ -188,7 +216,7 @@ public class SkiaSharpHelperTest
         stream.Position.ShouldBe(stream.Length);
     }
     /// <summary>
-    /// 测试用例：验证 `SetOpacity` 在 `OutOfRange` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证不透明度超出范围时抛出参数范围异常。
     /// </summary>
     [Fact]
     public void SetOpacity_OutOfRange_ThrowsArgumentOutOfRangeException()
@@ -200,7 +228,7 @@ public class SkiaSharpHelperTest
             .ParamName.ShouldBe("opacity");
     }
     /// <summary>
-    /// 测试用例：验证 `SetOpacity` 在 `ValidOpacity` 场景下，结果为 `ReturnsImageWithExpectedAlpha`。
+    /// 验证有效不透明度会生成 Alpha 降低的新图像。
     /// </summary>
     [Fact]
     public void SetOpacity_ValidOpacity_ReturnsImageWithExpectedAlpha()
@@ -229,7 +257,7 @@ public class SkiaSharpHelperTest
         bitmap.GetPixel(0, 0).Alpha.ShouldBe((byte)64);
     }
     /// <summary>
-    /// 测试用例：验证 `SetOpacity` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像为空时抛出参数为空异常。
     /// </summary>
     [Fact]
     public void SetOpacity_NullImage_ThrowsArgumentNullException()
@@ -893,6 +921,9 @@ public class SkiaSharpHelperTest
     /// <summary>
     /// 测试用例：验证验证码图片会按文本长度生成预期尺寸并包含非背景像素。
     /// </summary>
+    /// <param name="code">验证码文本。</param>
+    /// <param name="expectedWidth">期望图像宽度。</param>
+    /// <param name="expectedHeight">期望图像高度。</param>
     [Theory]
     [InlineData("A", 40, 30)]
     [InlineData("AB12", 100, 30)]
@@ -910,6 +941,7 @@ public class SkiaSharpHelperTest
     /// <summary>
     /// 测试用例：验证验证码图片 API 在空白文本下抛出异常。
     /// </summary>
+    /// <param name="code">待验证的验证码文本。</param>
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
@@ -933,6 +965,10 @@ public class SkiaSharpHelperTest
             .ParamName.ShouldBe("image");
     }
 
+    /// <summary>
+    /// 创建包含固定颜色像素的示例图像。
+    /// </summary>
+    /// <returns>包含固定颜色像素的示例图像。</returns>
     private static SKImage CreateSampleImage()
     {
         using var bitmap = new SKBitmap(2, 2, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -943,6 +979,12 @@ public class SkiaSharpHelperTest
         return SKImage.FromBitmap(bitmap);
     }
 
+    /// <summary>
+    /// 创建用于图像处理测试的图案图像。
+    /// </summary>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <returns>填充确定性图案的图像。</returns>
     private static SKImage CreatePatternImage(int width, int height)
     {
         using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -956,6 +998,12 @@ public class SkiaSharpHelperTest
         return SKImage.FromBitmap(bitmap);
     }
 
+    /// <summary>
+    /// 创建用于质量比较的确定性噪声图像。
+    /// </summary>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <returns>填充确定性噪声的图像。</returns>
     private static SKImage CreateNoiseImage(int width, int height)
     {
         using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -970,6 +1018,13 @@ public class SkiaSharpHelperTest
         return SKImage.FromBitmap(bitmap);
     }
 
+    /// <summary>
+    /// 创建指定颜色和尺寸的纯色图像。
+    /// </summary>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <param name="color">填充颜色。</param>
+    /// <returns>指定颜色和尺寸的图像。</returns>
     private static SKImage CreateSolidImage(int width, int height, SKColor color)
     {
         using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -982,6 +1037,16 @@ public class SkiaSharpHelperTest
         return SKImage.FromBitmap(bitmap);
     }
 
+    /// <summary>
+    /// 检查指定区域是否包含非背景色像素。
+    /// </summary>
+    /// <param name="bitmap">要检查的位图。</param>
+    /// <param name="background">背景颜色。</param>
+    /// <param name="startX">检查区域起始横坐标。</param>
+    /// <param name="startY">检查区域起始纵坐标。</param>
+    /// <param name="endX">检查区域结束横坐标；为空时使用位图宽度。</param>
+    /// <param name="endY">检查区域结束纵坐标；为空时使用位图高度。</param>
+    /// <returns>区域包含非背景色像素时返回 true，否则返回 false。</returns>
     private static bool ContainsNonBackgroundPixel(SKBitmap bitmap, SKColor background, int startX = 0, int startY = 0, int? endX = null, int? endY = null)
     {
         var actualEndX = Math.Min(endX ?? bitmap.Width, bitmap.Width);

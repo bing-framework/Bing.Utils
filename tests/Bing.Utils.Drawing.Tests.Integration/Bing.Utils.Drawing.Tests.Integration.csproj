@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFrameworks>net8.0;net7.0;net6.0;net5.0;netcoreapp3.1</TargetFrameworks><RootNamespace /><LangVersion>10.0</LangVersion></PropertyGroup>
+  <Import Project="../../common.tests.props" />
+  <ItemGroup>
+    <ProjectReference Include="../../src/Bing.Utils.Drawing/Bing.Utils.Drawing.csproj" />
+    <ProjectReference Include="../../src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj" />
+    <ProjectReference Include="../../src/Bing.Utils.Drawing.SkiaSharp/Bing.Utils.Drawing.SkiaSharp.csproj" />
+  </ItemGroup>
+</Project>

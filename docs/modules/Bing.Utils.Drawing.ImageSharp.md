@@ -1,10 +1,13 @@
-﻿# Bing.Utils.Drawing.ImageSharp
+# Bing.Utils.Drawing.ImageSharp
+
+统一入口、行为变更和迁移清单见 [统一图像处理](image-processing.md)。Shared 现为独立程序集；默认输出 PNG，加载失败抛异常，探测失败使用 TryLoad。
+
 ## 1. 包职责（Scope）
 - 解决的问题
 - 提供基于 `SixLabors.ImageSharp` 的图像处理辅助能力，包括：加载/保存/转换、缩放/裁剪/旋转/翻转、灰度/黑白/滤色/底片、颜色矩阵、亮度/对比度/饱和度、水印、ICO、扭曲/冲蚀等高级效果、OCR 预处理、验证码渲染、GPS 元数据清理、颜色空间转换。
 - 不解决的问题（Out of Scope）
 - 不提供 System.Drawing 兼容层（由 `Bing.Utils.Drawing` 提供）。
-- 不提供 TTF/OTF 字体光栅化（当前依赖集无字体渲染包）。中文验证码使用内嵌点阵。
+- 统一文字水印/标注支持调用方字体文件；中文验证码仍使用原有点阵实现。
 
 ## 2. 核心类型与扩展方法
 

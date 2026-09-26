@@ -1,8 +1,11 @@
-﻿# Bing.Utils.Drawing
+# Bing.Utils.Drawing
+
+统一入口、行为变更和迁移清单见 [统一图像处理](image-processing.md)。Shared 现为独立程序集；默认输出 PNG，加载失败抛异常，探测失败使用 TryLoad。
+
 ## 1. 包职责（Scope）
 - 解决的问题
 - 基于 `System.Drawing` 提供验证码生成与图像处理辅助（旧版 GDI+ 实现）。
-- 同时提供 `Bing.Utils.Drawing.Shared` 源码共享层，包含跨平台纯算法和公共类型，不依赖任何图像引擎。
+- 同时提供 `Bing.Utils.Drawing.Shared` 独立程序集，包含跨平台纯算法和公共类型，不依赖任何图像引擎。
 - 不解决的问题（Out of Scope）
 - 不提供前端渲染组件。
 - ImageSharp / SkiaSharp 跨平台实现由独立子包承担。
