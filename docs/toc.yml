@@ -8,3 +8,5 @@
   href: ReleaseNotes.md
 - name: Github
   href: https://github.com/bing-framework/Bing.Utils
+- name: Emoji
+  href: modules/Bing.Utils.Extra.md

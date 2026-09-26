@@ -1,4 +1,5 @@
 ﻿# 模块文档索引
+- [Bing.Utils.Extra](./Bing.Utils.Extra.md)：Emoji 完整序列识别、提取、替换、别名转换与元数据查询。
 - [Bing.Utils](./Bing.Utils.md)：核心基础能力与通用扩展入口（IO、异常、基础类型扩展）。
 - [Bing.Utils.Collections](./Bing.Utils.Collections.md)：集合/数组安全转换与字典工具。
 - [Bing.Utils.DateTime](./Bing.Utils.DateTime.md)：日期时间扩展、时间跨度与 NodaTime 适配。
