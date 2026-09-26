@@ -1,7 +1,7 @@
 using Bing.Conversions;
 namespace BingUtilsUT.ConvUT;
 /// <summary>
-/// 任意[2,62]进制转换器 测试
+/// 验证任意 2 到 62 进制转换行为。
 /// </summary>
 [Trait("ConvUT", "AnyRadixConvert")]
 public class AnyRadixConvertTest
@@ -60,7 +60,8 @@ public class AnyRadixConvertTest
         AnyRadixConvert.X2X("101110", 23, 23).ShouldBe("101110");
         AnyRadixConvert.X2X("101110", 24, 24).ShouldBe("101110");
         AnyRadixConvert.X2X("101110", 25, 25).ShouldBe("101110");
-        AnyRadixConvert.X2X("101110", 26, 26).ShouldBe("101110");
+        // 26 进制的 AvoidConfusion 字符集仅包含小写字母，同进制也校验输入。
+        AnyRadixConvert.X2X("babb", 26, 26).ShouldBe("babb");
         AnyRadixConvert.X2X("101110", 27, 27).ShouldBe("101110");
         AnyRadixConvert.X2X("101110", 28, 28).ShouldBe("101110");
         AnyRadixConvert.X2X("101110", 29, 29).ShouldBe("101110");
@@ -75,6 +76,10 @@ public class AnyRadixConvertTest
     /// <summary>
     /// 测试 - 任意进制
     /// </summary>
+    /// <param name="fromRadix">源进制。</param>
+    /// <param name="toRadix">目标进制。</param>
+    /// <param name="input">待转换的字符串。</param>
+    /// <param name="result">期望的转换结果。</param>
     [Theory]
     [InlineData(10, 32, "32", "10")]
     [InlineData(10, 33, "32", "w")]
@@ -112,7 +117,7 @@ public class AnyRadixConvertTest
         AnyRadixConvert.BinToHex("101110").ShouldBe("2E");
     }
     /// <summary>
-    /// 测试 - 二进制值转换为八进制值 - 对比 - 系统转换
+    /// 测试 - 二进制值转换为十六进制值 - 对比 - 系统转换
     /// </summary>
     [Fact]
     public void Test_BinToOct_VS_SystemConvert()
@@ -163,7 +168,7 @@ public class AnyRadixConvertTest
         AnyRadixConvert.OctToBin("56").ShouldBe("101110");
     }
     /// <summary>
-    /// 测试 - 二进制值转换为十进制值
+    /// 测试 - 八进制值转换为十进制值
     /// </summary>
     [Fact]
     public void Test_OctToDec()
@@ -171,7 +176,7 @@ public class AnyRadixConvertTest
         AnyRadixConvert.OctToDec("56").ShouldBe(46);
     }
     /// <summary>
-    /// 测试 - 二进制值转换为十六进制值
+    /// 测试 - 八进制值转换为十六进制值
     /// </summary>
     [Fact]
     public void Test_OctToHex()
@@ -200,7 +205,7 @@ public class AnyRadixConvertTest
         Convert.ToInt32(oct, 8).ShouldBe(46);
     }
     /// <summary>
-    /// 测试 - 八进制值转换为八进制值 - 对比 - 系统转换
+    /// 测试 - 八进制值转换为十六进制值 - 对比 - 系统转换
     /// </summary>
     [Fact]
     public void Test_OctToHex_VS_SystemConvert()

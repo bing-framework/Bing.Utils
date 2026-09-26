@@ -1,25 +1,23 @@
 ﻿namespace Bing.Text.Internals;
 
 /// <summary>
-/// 表示 Base32 编码实现的类。
+/// Base32 编码与解码器。
 /// </summary>
 internal class Base32 : BaseXCore
 {
     /// <summary>
-    /// 默认的 Base32 字符集。
+    /// Base32 默认编码字符集。
     /// </summary>
     /// <remarks>
-    /// 这个字母表包含了 26 个大写英文字母和数字 2 到 7，总共 32 个字符。
-    /// Base32 编码通常使用这个字母表来表示二进制数据。
+    /// 由大写英文字母 A 到 Z 和数字 2 到 7 组成。
     /// </remarks>
     public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
     /// <summary>
-    /// 定义 Base32 编码中使用的默认特殊字符。
+    /// 用于补齐 Base32 编码块的默认填充字符。
     /// </summary>
     /// <remarks>
-    /// 特殊字符 '=' 用于 Base32 编码的填充。当编码的数据不足以填满最后一个 5 位的编码单元时，
-    /// 使用 '=' 字符来填充，以确保编码的字符串长度是 8 的倍数。
+    /// 使用等号将编码文本补齐为 8 个字符的整数倍。
     /// </remarks>
     public const char DefaultSpecial = '=';
 
@@ -27,7 +25,7 @@ internal class Base32 : BaseXCore
     public override bool HasSpecial => true;
 
     /// <summary>
-    /// 初始化一个 <see cref="Base32"/> 类型的实例。
+    /// 初始化 <see cref="Base32" /> 类的新实例。
     /// </summary>
     /// <param name="alphabet">用于 Base32 编码的字符集。如果未提供，则使用默认的字符集。</param>
     /// <param name="special">用于 Base32 编码的特殊填充字符。如果未提供，则使用默认的 '=' 字符。</param>
@@ -122,12 +120,18 @@ internal class Base32 : BaseXCore
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// null 或空字符串返回空数组；非空输入须由完整的 8 字符编码块组成，填充数量合法且末尾未使用位为零。
+    /// </remarks>
+    /// <exception cref="FormatException">非空输入的长度、字符、填充或末尾未使用位不合法。</exception>
     public override byte[] Decode(string data)
     {
         unchecked
         {
             if (string.IsNullOrEmpty(data))
                 return Array.Empty<byte>();
+
+            ValidateEncodedData(data);
 
             int additionalBytes = 0, diff, tempLen;
 
@@ -218,5 +222,34 @@ internal class Base32 : BaseXCore
 
             return result;
         }
+    }
+
+    /// <summary>
+    /// 验证 Base32 编码格式。
+    /// </summary>
+    /// <param name="data">待验证的非空编码文本。</param>
+    /// <remarks>
+    /// 在分配结果和索引字符集前验证编码块长度、字符、填充及末尾未使用位。
+    /// </remarks>
+    /// <exception cref="FormatException">编码长度、字符、填充数量或末尾未使用位不合法。</exception>
+    private void ValidateEncodedData(string data)
+    {
+        if (data.Length % 8 != 0)
+            throw new FormatException("Base32 编码长度必须是 8 的倍数。");
+        var contentLength = data.Length;
+        while (contentLength > 0 && data[contentLength - 1] == Special)
+            contentLength--;
+        var padding = data.Length - contentLength;
+        var unusedBits = padding switch { 0 => 0, 1 => 3, 3 => 1, 4 => 4, 6 => 2, _ => -1 };
+        if (contentLength == 0 || unusedBits < 0)
+            throw new FormatException("Base32 填充数量无效。");
+        for (var i = 0; i < contentLength; i++)
+        {
+            var character = data[i];
+            if (character >= InvAlphabet.Length || InvAlphabet[character] < 0)
+                throw new FormatException("Base32 包含非法字符或中间填充。");
+        }
+        if ((InvAlphabet[data[contentLength - 1]] & ((1 << unusedBits) - 1)) != 0)
+            throw new FormatException("Base32 末尾未使用位必须为零。");
     }
 };

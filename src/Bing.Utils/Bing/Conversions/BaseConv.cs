@@ -8,27 +8,27 @@ namespace Bing.Conversions;
 public static class BaseConv
 {
     /// <summary>
-    /// 默认的空白 <see cref="Base32"/> 实例。
+    /// 供字节编码和解码复用的默认 <see cref="Base32"/> 实例。
     /// </summary>
     private static readonly Base32 _defaultBlankBase32 = new();
 
     /// <summary>
-    /// 默认的空白 <see cref="ZBase32"/> 实例。
+    /// 供字节编码和解码复用的默认 <see cref="ZBase32"/> 实例。
     /// </summary>
     private static readonly ZBase32 _defaultBlankZBase32 = new();
 
     /// <summary>
-    /// 默认的空白 <see cref="Base64"/> 实例。
+    /// 供字节编码和解码复用的默认 <see cref="Base64"/> 实例。
     /// </summary>
     private static readonly Base64 _defaultBlankBase64 = new();
 
     /// <summary>
-    /// 默认的空白 <see cref="Base91"/> 实例。
+    /// 供字节编码和解码复用的默认 <see cref="Base91"/> 实例。
     /// </summary>
     private static readonly Base91 _defaultBlankBase91 = new();
 
     /// <summary>
-    /// 默认的空白 <see cref="Base256"/> 实例。
+    /// 供字节编码和解码复用的默认 <see cref="Base256"/> 实例。
     /// </summary>
     private static readonly Base256 _defaultBlankBase256 = new();
 
@@ -47,11 +47,12 @@ public static class BaseConv
     /// </summary>
     /// <param name="data">要转换的 <see cref="Base32"/> 编码字符串。</param>
     /// <returns>转换得到的字节数组。</returns>
+    /// <exception cref="FormatException">非空输入的字符、长度、填充或末尾未使用位不符合 Base32 格式。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte[] FromBase32(string data) => _defaultBlankBase32.Decode(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="Base32"/> 编码的字符串。
+    /// 将字符串转换为 <see cref="Base32"/> 编码的字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -66,9 +67,10 @@ public static class BaseConv
     /// <summary>
     /// 将 <see cref="Base32"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="Base32"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="Base32"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
+    /// <exception cref="FormatException">移除换行后的编码不符合 Base32 格式。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string FromBase32String(string data, Encoding encoding = null)
     {
@@ -97,7 +99,7 @@ public static class BaseConv
     public static byte[] FromZBase32(string data) => _defaultBlankZBase32.Decode(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="ZBase32"/> 编码的字符串。
+    /// 将字符串转换为 <see cref="ZBase32"/> 编码的字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -112,7 +114,7 @@ public static class BaseConv
     /// <summary>
     /// 将 <see cref="ZBase32"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="ZBase32"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="ZBase32"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -143,7 +145,7 @@ public static class BaseConv
     public static byte[] FromBase64(string data) => _defaultBlankBase64.Decode(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="Base64"/> 编码的字符串。
+    /// 将字符串转换为 <see cref="Base64"/> 编码的字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -158,7 +160,7 @@ public static class BaseConv
     /// <summary>
     /// 将 <see cref="Base64"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="Base64"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="Base64"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -173,17 +175,13 @@ public static class BaseConv
     #region Base64Url
 
     /// <summary>
-    /// 将字符串转换为 <see cref="Base64"/> URL安全格式。
+    /// 将字符串编码为 Base64 URL 安全文本。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
-    /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
+    /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>转换后的Base64 URL安全字符串。</returns>
     /// <remarks>
-    /// 此方法首先将字符串数据编码为字节数组，然后将该字节数组转换为标准的Base64字符串。
-    /// 转换过程中，将Base64字符串中的某些字符替换为URL安全的字符：
-    /// - '+' 替换为 '-'
-    /// - '/' 替换为 '_'
-    /// 此外，从结果字符串中移除了所有的'='填充字符，以使字符串更适合URL使用。
+    /// 将标准 Base64 中的加号和斜杠替换为连字符和下划线，并移除末尾填充等号。
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ToBase64UrlString(string data, Encoding encoding = null)
@@ -199,11 +197,7 @@ public static class BaseConv
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     /// <remarks>
-    /// 此方法首先将Base64 URL安全格式字符串中的URL安全字符：
-    /// - '-' 替换为 '+'
-    /// - '_' 替换为 '/'
-    /// 然后，根据需要添加'='填充字符，以确保字符串的长度是4的倍数，满足标准Base64编码的要求。
-    /// 之后，使用指定的编码（或默认的UTF-8编码）将经过处理的Base64字符串解码回原始字符串数据。
+    /// 还原标准 Base64 字符并补齐填充，再按指定编码解码；默认使用 UTF-8。
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string FromBase64UrlString(string data, Encoding encoding = null)
@@ -235,7 +229,7 @@ public static class BaseConv
     public static byte[] FromBase91(string data) => _defaultBlankBase91.Decode(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="Base91"/> 编码的字符串。
+    /// 将字符串转换为 <see cref="Base91"/> 编码的字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -250,7 +244,7 @@ public static class BaseConv
     /// <summary>
     /// 将 <see cref="Base91"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="Base91"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="Base91"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -281,7 +275,7 @@ public static class BaseConv
     public static byte[] FromBase256(string data) => _defaultBlankBase256.Decode(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="Base256"/> 编码的字符串。
+    /// 将字符串转换为 <see cref="Base256"/> 编码的字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -296,7 +290,7 @@ public static class BaseConv
     /// <summary>
     /// 将 <see cref="Base256"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="Base256"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="Base256"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -317,7 +311,7 @@ public static class BaseConvExtensions
     #region Base32
 
     /// <summary>
-    /// 将字节数组转换为 <see cref="Base32"/> 编码的字符串。
+    /// 将数据编码为 Base32 字符串。
     /// </summary>
     /// <param name="data">要转换的字节数组。</param>
     /// <returns>转换后的 <see cref="Base32"/> 编码字符串。</returns>
@@ -325,7 +319,7 @@ public static class BaseConvExtensions
     public static string CastToBase32String(this byte[] data) => BaseConv.ToBase32(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="Base32"/> 编码的字符串。
+    /// 将数据编码为 Base32 字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -336,7 +330,7 @@ public static class BaseConvExtensions
     /// <summary>
     /// 将 <see cref="Base32"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="Base32"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="Base32"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -347,7 +341,7 @@ public static class BaseConvExtensions
     #region ZBase32
 
     /// <summary>
-    /// 将字节数组转换为 <see cref="ZBase32"/> 编码的字符串。
+    /// 将数据编码为 ZBase32 字符串。
     /// </summary>
     /// <param name="data">要转换的字节数组。</param>
     /// <returns>转换后的 <see cref="ZBase32"/> 编码字符串。</returns>
@@ -355,7 +349,7 @@ public static class BaseConvExtensions
     public static string CastToZBase32String(this byte[] data) => BaseConv.ToZBase32(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="ZBase32"/> 编码的字符串。
+    /// 将数据编码为 ZBase32 字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -366,7 +360,7 @@ public static class BaseConvExtensions
     /// <summary>
     /// 将 <see cref="ZBase32"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="ZBase32"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="ZBase32"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -377,7 +371,7 @@ public static class BaseConvExtensions
     #region Base64
 
     /// <summary>
-    /// 将字节数组转换为 <see cref="Base64"/> 编码的字符串。
+    /// 将数据编码为 Base64 字符串。
     /// </summary>
     /// <param name="data">要转换的字节数组。</param>
     /// <returns>转换后的 <see cref="Base64"/> 编码字符串。</returns>
@@ -385,7 +379,7 @@ public static class BaseConvExtensions
     public static string CastToBase64String(this byte[] data) => BaseConv.ToBase64(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="Base64"/> 编码的字符串。
+    /// 将数据编码为 Base64 字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -396,7 +390,7 @@ public static class BaseConvExtensions
     /// <summary>
     /// 将 <see cref="Base64"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="Base64"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="Base64"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -407,17 +401,13 @@ public static class BaseConvExtensions
     #region Base64Url
 
     /// <summary>
-    /// 将字符串转换为 <see cref="Base64"/> URL安全格式。
+    /// 将字符串编码为 Base64 URL 安全文本。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
-    /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
+    /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>转换后的Base64 URL安全字符串。</returns>
     /// <remarks>
-    /// 此方法首先将字符串数据编码为字节数组，然后将该字节数组转换为标准的Base64字符串。
-    /// 转换过程中，将Base64字符串中的某些字符替换为URL安全的字符：
-    /// - '+' 替换为 '-'
-    /// - '/' 替换为 '_'
-    /// 此外，从结果字符串中移除了所有的'='填充字符，以使字符串更适合URL使用。
+    /// 将标准 Base64 中的加号和斜杠替换为连字符和下划线，并移除末尾填充等号。
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string CastToBase64UrlString(this string data, Encoding encoding = null) => BaseConv.ToBase64UrlString(data, encoding);
@@ -429,11 +419,7 @@ public static class BaseConvExtensions
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     /// <remarks>
-    /// 此方法首先将Base64 URL安全格式字符串中的URL安全字符：
-    /// - '-' 替换为 '+'
-    /// - '_' 替换为 '/'
-    /// 然后，根据需要添加'='填充字符，以确保字符串的长度是4的倍数，满足标准Base64编码的要求。
-    /// 之后，使用指定的编码（或默认的UTF-8编码）将经过处理的Base64字符串解码回原始字符串数据。
+    /// 还原标准 Base64 字符并补齐填充，再按指定编码解码；默认使用 UTF-8。
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string CastFromBase64UrlString(this string data, Encoding encoding = null) => BaseConv.FromBase64UrlString(data, encoding);
@@ -443,7 +429,7 @@ public static class BaseConvExtensions
     #region Base91
 
     /// <summary>
-    /// 将字节数组转换为 <see cref="Base91"/> 编码的字符串。
+    /// 将数据编码为 Base91 字符串。
     /// </summary>
     /// <param name="data">要转换的字节数组。</param>
     /// <returns>转换后的 <see cref="Base91"/> 编码字符串。</returns>
@@ -451,7 +437,7 @@ public static class BaseConvExtensions
     public static string CastToBase91String(this byte[] data) => BaseConv.ToBase91(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="Base91"/> 编码的字符串。
+    /// 将数据编码为 Base91 字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -462,7 +448,7 @@ public static class BaseConvExtensions
     /// <summary>
     /// 将 <see cref="Base91"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="Base91"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="Base91"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -473,7 +459,7 @@ public static class BaseConvExtensions
     #region Base256
 
     /// <summary>
-    /// 将字节数组转换为 <see cref="Base256"/> 编码的字符串。
+    /// 将数据编码为 Base256 字符串。
     /// </summary>
     /// <param name="data">要转换的字节数组。</param>
     /// <returns>转换后的 <see cref="Base256"/> 编码字符串。</returns>
@@ -481,7 +467,7 @@ public static class BaseConvExtensions
     public static string CastToBase256String(this byte[] data) => BaseConv.ToBase256(data);
 
     /// <summary>
-    /// 将字节串转换为 <see cref="Base256"/> 编码的字符串。
+    /// 将数据编码为 Base256 字符串。
     /// </summary>
     /// <param name="data">要转换的原始字符串。</param>
     /// <param name="encoding">用于字符串编码的编码方式（如果为 null，则使用默认编码）。</param>
@@ -492,7 +478,7 @@ public static class BaseConvExtensions
     /// <summary>
     /// 将 <see cref="Base256"/> 编码的字符串转换为原始字符串。
     /// </summary>
-    /// <param name="data">要解码的  <see cref="Base256"/> 编码字符串。</param>
+    /// <param name="data">要解码的 <see cref="Base256"/> 编码字符串。</param>
     /// <param name="encoding">用于字符串解码的编码方式（如果为 null，则使用默认编码）。</param>
     /// <returns>解码后的原始字符串。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

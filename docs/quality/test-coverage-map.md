@@ -1,5 +1,8 @@
 # 测试覆盖与质量画像
 
+> 图像模块现状更新：Drawing、ImageSharp、SkiaSharp 均已有专属单元测试；另有 Drawing.Tests.Integration 跨后端集成项目。下文旧审计中的“无图像测试/待创建”属于历史状态，不再作为当前行动项。最新证据见 [图像执行记录](image-processing-execution.md)。
+
+
 ## 1. 测试资产总览
 
 - 解决方案存在逻辑分组 `02-tests`（solution folder），其下测试项目物理路径集中在 `tests/*`，包含分包测试与聚合测试两类。[证据] `Bing.Utils.sln:28` [证据] `Bing.Utils.sln:30` [证据] `Bing.Utils.sln:73` [证据] `Bing.Utils.sln:83` [证据] `Bing.Utils.sln:99`
