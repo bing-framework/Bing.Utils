@@ -53,7 +53,7 @@
 | `IHttpRequest<TResult>.Content(...)` | 添加请求内容参数（表单/JSON/XML 的数据来源） | `key/value` / `IDictionary` / `object` | `IHttpRequest<TResult>` |  | 
 | `IHttpRequest<TResult>.JsonContent(...)` / `XmlContent(...)` | 设置内容类型并写入内容 | `object`/`string` | `IHttpRequest<TResult>` |  | 
 | `IHttpRequest<TResult>.FileContent(...)` | 设置 multipart/form-data 并添加文件（路径或 Stream） | `filePath/name` 或 `stream/fileName/name` | `IHttpRequest<TResult>` |  | 
-| `IHttpRequest<TResult>.Timeout(...)` | 设置 HttpClient 超时 | `int`（秒）/`TimeSpan` | `IHttpRequest<TResult>` |  | 
+| `IHttpRequest<TResult>.Timeout(...)` | 设置单次请求超时（不修改共享客户端） | `int`（秒）/`TimeSpan` | `IHttpRequest<TResult>` |  |
 | `IHttpRequest<TResult>.Certificate(...)` / `IgnoreSsl()` | 客户端证书与忽略 SSL 验证 | `path/password` | `IHttpRequest<TResult>` |  | 
 | `IHttpRequest<TResult>.OnSendBefore/OnSendAfter/OnConvert/OnSuccess/OnFail/OnComplete` | 生命周期回调（发送前/后、转换、成功/失败/完成） | delegates | `IHttpRequest<TResult>` |  | 
 | `IHttpRequest<TResult>.GetResultAsync()` | 发送请求并获取结果（字符串或 JSON 反序列化） | `CancellationToken` | `Task<TResult>` |  | 
@@ -249,8 +249,8 @@
             - 证据：src/Bing.Utils.Http/Bing/Helpers/Web.cs | Url（#if NETSTANDARD2_1）
         - `SessionExtensions.Get<T>` 在 NETSTANDARD2_1 下返回 default（等价不可用）。
             - 证据：src/Bing.Utils.Http/Bing/Http/Extensions/Extensions.Session.cs | Get<T>（#if NETSTANDARD2_1）
-    - 若使用 `Certificate(...)`/`IgnoreSsl()`：依赖底层 `HttpClientHandler` 可被 `IHttpClientFactory` 的 handlerFactory 获取并修改；若工厂实现不支持 `IHttpMessageHandlerFactory`，相关初始化可能无法生效（待确认运行时行为）。
-        - 证据：src/Bing.Utils.Http/Bing/Http/Clients/HttpRequest.cs | CreateHttpClientHandler/InitHttpClientHandler/InitCertificate/IgnoreSsl
+    - 若使用 `Certificate(...)`/`IgnoreSsl()` 或显式 `UseCookies(...)`：必须先使用 `UseBingRequestIsolation(...)` 注册，未接入时发送前抛出 `NotSupportedException`。不得修改工厂池中的共享处理器。
+        - 证据：src/Bing.Utils.Http/Bing/Http/Clients/HttpRequest.cs | SendAsync; Clients/Internal/RequestIsolationHandler.cs | CreateTransport
 
 ## 10. 使用示例
 ```csharp
@@ -316,3 +316,61 @@ var result = await client
 - tests/Bing.Utils.Http.Tests.Integration/Http/HttpClientServiceTest.*.cs | Get/Post/Put/Delete 集成用例
 - tests/Bing.Utils.Http.Tests/Bing/Helpers/*.cs | Web/Cookie/UserAgent 单测
 - tests/Bing.Utils.Http.Tests/Bing/Net/**/*.cs | IpAddressProvider/IPv4/IPv6/NetworkInformation 单测
+
+
+## 请求级安全隔离与可靠性契约
+
+### 注册与迁移
+
+保留 `IgnoreSsl()`、`Certificate(path, password)`、`UseCookies(bool)` 链式 API，通过一次注册启用隔离：
+
+```csharp
+using Bing.Http.Clients;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net;
+using System.Net.Http;
+
+services.AddHttpClient("partner", client =>
+{
+    client.BaseAddress = new Uri("https://partner.example/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+})
+.UseBingRequestIsolation(_ => new HttpClientHandler
+{
+    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+});
+
+// 也可使用无参数 UseBingRequestIsolation()，采用默认 HttpClientHandler。
+// 已注册的外层 DelegatingHandler（例如日志、重试）继续执行。
+var service = new HttpClientService(httpClientFactory);
+var result = await service.Get("orders")
+    .HttpClientName("partner")
+    .UseCookies(false)
+    .Timeout(TimeSpan.FromSeconds(5))
+    .GetResultAsync(cancellationToken);
+```
+
+`UseBingRequestIsolation` 替代原有主处理器注册，必须只注册一次，并作为最终的主处理器配置。把原 `ConfigurePrimaryHttpMessageHandler` 中的代理、解压、证书验证等设置迁移到此工厂；每次必须返回新的 `HttpClientHandler`，不能返回 null 或复用实例。工厂的服务提供者属于处理器作用域，工厂可能并发调用。模块拥有并释放这些处理器；调用方工厂自行提供的证书仍由调用方管理。
+
+接入后的命名客户端通过 Bing `HttpRequest` 发送；直接调用该 `HttpClient.SendAsync` 缺少执行上下文，会抛出 `InvalidOperationException`。`SetHttpClient` 可以注入由上述注册创建的客户端，其所有权仍属于调用方。未接入隔离的客户端仍支持普通请求，并沿用其原有传输配置；显式请求级 TLS、客户端证书或自动 Cookie 设置会在发送前报错，不再静默失效。
+
+### 隔离边界与重试
+
+- 自动 Cookie 默认开启，只在一次执行及其重定向、重试内共享，不跨执行保留。显式 `Cookie(...)` 仍作为请求头发送，与自动 Cookie 开关独立。
+- TLS 忽略验证、请求级客户端证书和 Cookie 容器不会修改其他请求的处理器。`IgnoreSsl()` 只适用于调用方明确接受不验证服务器证书的本次执行。
+- 开启自动 Cookie 或覆盖 TLS/证书时，处理器及连接属于本次执行；这是会话隔离的成本。显式 `UseCookies(false)` 且未覆盖 TLS/证书时才共享无 Cookie 传输处理器，不按任意配置建立无限缓存。
+- 需要跨请求登录会话时，使用调用方管理、每个会话独占的普通客户端，并在其处理器上预先配置 Cookie，不使用请求级隔离 API。
+- 自定义重试若克隆 `HttpRequestMessage`，必须复制全部 `Properties`（或现代框架的 `Options`）及正常请求数据，才能保留同一次执行的隔离上下文；丢失元数据时在底层发送前报错。此模块自身不增加重试。
+- 现代非 Windows 目标使用 `EphemeralKeySet` 加载请求证书；Windows Schannel 及 netstandard2.0 使用兼容的 `DefaultKeySet`，不指定持久保存私钥，随证书对象释放。参见 [微软 SslStream 排错说明](https://learn.microsoft.com/en-us/dotnet/core/extensions/sslstream-troubleshooting)。
+
+### 生命周期、超时与文件
+
+基地址优先级为绝对请求 URL、请求级 `BaseAddress`、客户端原有基地址。单次 `Timeout` 通过关联取消令牌实现，不修改共享客户端；实际期限取请求超时、客户端超时与外部取消的共同约束。请求级无限超时不会取消客户端已有的时间上限。
+
+请求和响应由模块释放。回调执行时响应有效，回调返回后不能继续持有它读取内容。响应采用完整缓冲，缓冲结束后释放本次传输资源；不提供流式下载。工厂创建的客户端由模块释放，注入客户端不释放。请求构建器本身是可变对象，不支持同一实例的并发配置与执行；不同请求可以共享同一客户端。
+
+上传缺失文件抛出 `FileNotFoundException`；空白或 null 路径抛出 `ArgumentException`，null 流抛出 `ArgumentNullException`。上传流在构建请求时必须可读，不可读或已关闭的流抛出 `InvalidOperationException`，不会静默发送不完整表单；有效的空流仍可上传。上传流沿用消费并释放的约定；重试发送的是已构建内容，不重新读取已关闭的输入流。
+
+`GetResultAsync`/`GetStreamAsync` 保留非成功状态调用 `OnFail` 并返回 null 的行为；`OnSendAfter` 保留接管响应处理的行为。`WriteAsync` 对非成功状态或发送前拒绝抛出 `HttpRequestException`，取消抛出取消异常，均不打开目标文件。成功下载先写同目录临时文件，关闭后以移动或替换提交；写入或替换失败传播异常、清理临时文件并保留原目标。目标文件系统需要支持同目录移动/替换，不使用先删除目标的回退。
+
+JSON 类型识别精确匹配 `application/json`、`text/json`（允许参数和大小写），并保留历史 Accept 回退；不能将该便利判断用作认证或 CSRF 防护依据。

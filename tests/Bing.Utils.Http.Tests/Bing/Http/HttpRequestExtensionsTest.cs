@@ -10,8 +10,10 @@ namespace Bing.Http;
 public class HttpRequestExtensionsTest
 {
     /// <summary>
-    /// 测试辅助方法：创建 `HttpRequest`，并允许通过回调配置请求上下文
+    /// 创建测试请求。
     /// </summary>
+    /// <param name="setup">可选的请求配置委托。</param>
+    /// <returns>基于新 HTTP 上下文创建的请求。</returns>
     private static HttpRequest CreateRequest(Action<HttpRequest> setup = null)
     {
         var context = new DefaultHttpContext();
@@ -21,7 +23,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`GetAbsoluteUri` 应拼接 Scheme/Host/PathBase/Path/Query 为完整地址
+    /// 验证绝对地址包含完整请求路径和查询参数。
     /// </summary>
     [Fact]
     public void GetAbsoluteUri_ShouldReturnExpectedUri()
@@ -39,7 +41,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Query<T>` 在查询字符串包含目标键且可转换时，应返回转换后的值
+    /// 验证查询参数可转换为目标类型。
     /// </summary>
     [Fact]
     public void Query_ShouldReturnConvertedValue()
@@ -50,7 +52,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Query<T>` 在查询字符串缺少目标键时，应返回默认值
+    /// 验证查询参数缺失时返回默认值。
     /// </summary>
     [Fact]
     public void Query_ShouldReturnDefault_WhenKeyNotExists()
@@ -61,7 +63,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Query<T>` 在值无法转换时，应抛出 `FormatException`
+    /// 验证查询参数格式错误时抛出格式异常。
     /// </summary>
     [Fact]
     public void Query_ShouldThrowFormatException_WhenValueInvalid()
@@ -72,7 +74,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Form<T>` 在表单包含目标键且可转换时，应返回转换后的值
+    /// 验证表单参数可转换为目标类型。
     /// </summary>
     [Fact]
     public void Form_ShouldReturnConvertedValue()
@@ -90,7 +92,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Form<T>` 在表单缺少目标键时，应返回默认值
+    /// 验证表单参数缺失时返回默认值。
     /// </summary>
     [Fact]
     public void Form_ShouldReturnDefault_WhenKeyNotExists()
@@ -108,7 +110,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Form<T>` 在表单值无法转换时，应抛出 `FormatException`
+    /// 验证表单参数格式错误时抛出格式异常。
     /// </summary>
     [Fact]
     public void Form_ShouldThrowFormatException_WhenValueInvalid()
@@ -126,7 +128,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Params` 同时存在 Query/Form 时，应优先返回 Query 值
+    /// 验证请求参数优先采用查询值。
     /// </summary>
     [Fact]
     public void Params_ShouldPreferQueryValue()
@@ -145,7 +147,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Params` 在 Query 缺失时，应回退读取 Form 值
+    /// 验证查询参数缺失时采用表单值。
     /// </summary>
     [Fact]
     public void Params_ShouldReturnFormValue_WhenQueryMissing()
@@ -163,7 +165,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Params` 在 Query/Form 都不存在目标键时，应返回 `null`
+    /// 验证请求参数不存在时返回 null。
     /// </summary>
     [Fact]
     public void Params_ShouldReturnNull_WhenNotFound()
@@ -174,7 +176,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsAjaxRequest` 在存在 `X-Requested-With=XMLHttpRequest` 头时应返回 `true`
+    /// 验证 AJAX 请求头可被识别。
     /// </summary>
     [Fact]
     public void IsAjaxRequest_ShouldReturnTrue_WhenHeaderExists()
@@ -185,7 +187,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsAjaxRequest` 在 `ContentType` 为 JSON 时应返回 `true`
+    /// 验证 JSON 内容类型符合 AJAX 判定条件。
     /// </summary>
     [Fact]
     public void IsAjaxRequest_ShouldReturnTrue_WhenContentTypeIsJson()
@@ -196,7 +198,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsAjaxRequest` 在请求对象为 `null` 时应抛出 `ArgumentNullException(request)`
+    /// 验证 AJAX 判定拒绝 null 请求。
     /// </summary>
     [Fact]
     public void IsAjaxRequest_ShouldThrowArgumentNullException_WhenRequestIsNull()
@@ -208,7 +210,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsJsonContentType` 在 `Content-Type` 头包含 JSON 时应返回 `true`
+    /// 验证 Content-Type 中的 JSON 类型可被识别。
     /// </summary>
     [Fact]
     public void IsJsonContentType_ShouldReturnTrue_WhenContentTypeHeaderIsJson()
@@ -219,7 +221,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsJsonContentType` 在 `Accept` 头包含 JSON 时应返回 `true`
+    /// 验证 Accept 中的 JSON 类型可被识别。
     /// </summary>
     [Fact]
     public void IsJsonContentType_ShouldReturnTrue_WhenAcceptHeaderIsJson()
@@ -230,7 +232,48 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsJsonContentType` 在 JSON 相关请求头都缺失时应返回 `false`
+    /// 验证 JSON 媒体类型按完整名称匹配。
+    /// </summary>
+    /// <param name="contentType">Content-Type 头值。</param>
+    /// <param name="accept">Accept 头值。</param>
+    /// <param name="expected">预期是否识别为 JSON。</param>
+    [Theory]
+    [InlineData("APPLICATION/JSON; charset=utf-8", null, true)]
+    [InlineData("text/json", null, true)]
+    [InlineData("application/jsonp", null, false)]
+    [InlineData("application/problem+json", null, false)]
+    [InlineData("text/plain", "text/html, application/json; q=0.9", true)]
+    [InlineData(null, "text/html, TEXT/JSON", true)]
+    [InlineData(null, "application/jsonp", false)]
+    [InlineData(null, "application/json, invalid", false)]
+    public void IsJsonContentType_ShouldParseMediaTypesExactly(string contentType, string accept,
+        bool expected)
+    {
+        var request = CreateRequest(r =>
+        {
+            if (contentType != null)
+                r.Headers["Content-Type"] = contentType;
+            if (accept != null)
+                r.Headers["Accept"] = accept;
+        });
+
+        request.IsJsonContentType().ShouldBe(expected);
+    }
+
+    /// <summary>
+    /// 验证多个 Accept 头值中的 JSON 类型可被识别。
+    /// </summary>
+    [Fact]
+    public void IsJsonContentType_ShouldReturnTrue_WhenAcceptHasMultipleHeaderValues()
+    {
+        var request = CreateRequest(r =>
+            r.Headers["Accept"] = new StringValues(new[] { "text/html", "text/json; q=0.8" }));
+
+        request.IsJsonContentType().ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// 验证未声明 JSON 类型时返回 false。
     /// </summary>
     [Fact]
     public void IsJsonContentType_ShouldReturnFalse_WhenJsonHeadersMissing()
@@ -241,7 +284,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsJsonContentType` 在请求对象为 `null` 时应抛出 `ArgumentNullException(request)`
+    /// 验证 JSON 类型判定拒绝 null 请求。
     /// </summary>
     [Fact]
     public void IsJsonContentType_ShouldThrowArgumentNullException_WhenRequestIsNull()
@@ -253,7 +296,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`UserAgent` 应返回 `User-Agent` 请求头值
+    /// 验证用户代理标识取自请求头。
     /// </summary>
     [Fact]
     public void UserAgent_ShouldReturnHeaderValue()
@@ -264,7 +307,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsMobileBrowser` 在移动端 User-Agent 下应返回 `true`
+    /// 验证移动浏览器的用户代理标识可被识别。
     /// </summary>
     [Fact]
     public void IsMobileBrowser_ShouldReturnTrue_WhenUserAgentIsMobile()
@@ -277,7 +320,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsMobileBrowser` 在桌面端 User-Agent 下应返回 `false`
+    /// 验证桌面浏览器不被识别为移动浏览器。
     /// </summary>
     [Fact]
     public void IsMobileBrowser_ShouldReturnFalse_WhenUserAgentIsDesktop()
@@ -290,7 +333,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsMobileBrowser` 在 User-Agent 长度小于 4 时应抛出 `ArgumentOutOfRangeException`
+    /// 验证过短用户代理标识触发范围异常。
     /// </summary>
     [Fact]
     public void IsMobileBrowser_ShouldThrowArgumentOutOfRangeException_WhenUserAgentLengthLessThan4()
