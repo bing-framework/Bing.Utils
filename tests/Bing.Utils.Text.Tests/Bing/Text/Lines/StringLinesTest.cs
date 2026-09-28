@@ -73,6 +73,28 @@ public class StringLinesTest
     }
 
     /// <summary>
+    /// 测试目的：SplitByLines 应支持混合使用 CRLF、LF 和 CR 换行符。
+    /// </summary>
+    [Fact]
+    public void SplitByLines_WithMixedLineEndings_ReturnsEachLine()
+    {
+        var result = StringLines.SplitByLines("line1\r\nline2\nline3\rline4").ToList();
+
+        result.ShouldBe(new[] { "line1", "line2", "line3", "line4" });
+    }
+
+    /// <summary>
+    /// 测试目的：SplitByLines 遇到 LF 后的内容时不应跳过首字符。
+    /// </summary>
+    [Fact]
+    public void SplitByLines_WithLf_DoesNotSkipCharacterAfterLineBreak()
+    {
+        var result = StringLines.SplitByLines("line1\nline2").ToList();
+
+        result.ShouldBe(new[] { "line1", "line2" });
+    }
+
+    /// <summary>
     /// 测试目的：扩展方法 SplitByLines() 应与静态方法结果一致
     /// </summary>
     [Fact]
@@ -131,13 +153,36 @@ public class StringLinesTest
         result.ShouldBe(new[] { 1, 2, 3 });
     }
 
+    /// <summary>
+    /// 测试目的：SplitInLinesTyped 应识别混合的 CRLF、LF 和 CR 换行符。
+    /// </summary>
+    [Fact]
+    public void SplitInLinesTyped_WithMixedLineEndings_ConvertsEachLine()
+    {
+        var result = StringLines.SplitInLinesTyped<int>("1\r\n2\n3\r4");
+
+        result.ShouldBe(new[] { 1, 2, 3, 4 });
+    }
+
+    /// <summary>
+    /// 测试目的：SplitInLinesWithoutEmpty 应在混合换行文本中移除空行并保留其他内容。
+    /// </summary>
+    [Fact]
+    public void SplitInLinesWithoutEmpty_WithMixedLineEndings_RemovesEmptyLines()
+    {
+        var result = StringLines.SplitInLinesWithoutEmpty("A\r\n\nB\rC\n");
+
+        result.ShouldBe(new[] { "A", "B", "C" });
+    }
+
     #endregion
 
     #region CountByLines
 
     /// <summary>
-    /// 测试目的：CountByLines 应返回文本中实际的行数
+    /// 验证文本行数统计。
     /// </summary>
+    /// <param name="lineCount">预期行数。</param>
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
@@ -170,6 +215,22 @@ public class StringLinesTest
 
         // Assert
         extensionResult.ShouldBe(staticResult);
+    }
+
+    /// <summary>
+    /// 验证行数统计与逐行分割一致。
+    /// </summary>
+    /// <param name="text">包含混合换行符的文本。</param>
+    [Theory]
+    [InlineData("line1\r\nline2\nline3\rline4")]
+    [InlineData("line1\nline2")]
+    [InlineData("line1\r\n")]
+    [InlineData("\r\n")]
+    public void CountByLines_MatchesSplitByLines(string text)
+    {
+        var splitLines = StringLines.SplitByLines(text).ToList();
+
+        StringLines.CountByLines(text).ShouldBe(splitLines.Count);
     }
 
     #endregion

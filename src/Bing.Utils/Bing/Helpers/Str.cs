@@ -3,19 +3,25 @@
 namespace Bing.Helpers;
 
 /// <summary>
-/// 字符串操作 - 工具
+/// 提供字符串处理工具。
 /// </summary>
 public partial class Str
 {
+    /// <summary>
+    /// 拼音区码计算使用的固定 GBK 编码。
+    /// </summary>
+    private static readonly Encoding PinyinEncoding = CodePagesEncodingProvider.Instance.GetEncoding(936);
+
     #region Join(将集合连接为带分隔符的字符串)
 
     /// <summary>
-    /// 将集合连接为带分隔符的字符串
+    /// 将集合连接为字符串。
     /// </summary>
-    /// <typeparam name="T">集合元素类型</typeparam>
-    /// <param name="list">集合</param>
-    /// <param name="quotes">引号，默认不带引号，范例：单引号"'"</param>
-    /// <param name="separator">分隔符，默认使用逗号分隔</param>
+    /// <typeparam name="T">集合元素类型。</typeparam>
+    /// <param name="list">集合。</param>
+    /// <param name="quotes">元素两侧的引号。</param>
+    /// <param name="separator">元素分隔符。</param>
+    /// <returns>连接后的字符串；集合为 null 时返回空字符串。</returns>
     public static string Join<T>(IEnumerable<T> list, string quotes = "", string separator = ",")
     {
         if (list == null)
@@ -33,9 +39,10 @@ public partial class Str
     #region ToUnicode(字符串转Unicode)
 
     /// <summary>
-    /// 字符串转Unicode
+    /// 将字符串转换为 Unicode 转义序列。
     /// </summary>
-    /// <param name="value">值</param>
+    /// <param name="value">待转换字符串。</param>
+    /// <returns>UTF-16 代码单元组成的 Unicode 转义序列。</returns>
     public static string ToUnicode(string value)
     {
         var bytes = Encoding.Unicode.GetBytes(value);
@@ -51,9 +58,10 @@ public partial class Str
     #region ToUnicodeByCn(中文字符串转Unicode)
 
     /// <summary>
-    /// 中文字符串转Unicode
+    /// 将中文字符转换为 Unicode 转义序列。
     /// </summary>
-    /// <param name="value">值</param>
+    /// <param name="value">待转换字符串。</param>
+    /// <returns>转换后的字符串；非中文字符保持原样。</returns>
     public static string ToUnicodeByCn(string value)
     {
         var sb = new StringBuilder();
@@ -76,9 +84,10 @@ public partial class Str
     #region PinYin(获取汉字的拼音简码)
 
     /// <summary>
-    /// 获取汉字的拼音简码，即首字母缩写。范例：中国，返回zg
+    /// 获取汉字的拼音首字母。
     /// </summary>
-    /// <param name="chineseText">汉字文本。范例： 中国</param>
+    /// <param name="chineseText">要转换的文本。</param>
+    /// <returns>小写拼音首字母；无法转换的字符保持原样。</returns>
     public static string PinYin(string chineseText)
     {
         if (string.IsNullOrWhiteSpace(chineseText))
@@ -90,25 +99,28 @@ public partial class Str
     }
 
     /// <summary>
-    /// 解析单个汉字的拼音简码
+    /// 解析单个字符的拼音首字母。
     /// </summary>
-    /// <param name="text">汉字</param>
+    /// <param name="text">要解析的字符。</param>
+    /// <returns>拼音首字母；无法转换时返回原字符。</returns>
     private static string ResolvePinYin(char text)
     {
-        byte[] charBytes = Encoding.Default.GetBytes(text.ToString());
-        if (charBytes[0] < 127)
+        var charBytes = PinyinEncoding.GetBytes(text.ToString());
+        if (charBytes.Length < 2 || charBytes[0] < 127)
             return text.ToString();
         var unicode = (ushort)(charBytes[0] * 256 + charBytes[1]);
-        string pinYin = ResolveByCode(unicode);
+        var pinYin = ResolveByCode(unicode);
         if (!string.IsNullOrWhiteSpace(pinYin))
             return pinYin;
-        return ResolveByConst(text.ToString());
+        pinYin = ResolveByConst(text.ToString());
+        return string.IsNullOrEmpty(pinYin) ? text.ToString() : pinYin;
     }
 
     /// <summary>
-    /// 使用字符编码方式获取拼音简码
+    /// 按 GBK 区码获取拼音首字母。
     /// </summary>
-    /// <param name="unicode">字符编码</param>
+    /// <param name="unicode">GBK 双字节编码。</param>
+    /// <returns>拼音首字母；未命中区码时返回空字符串。</returns>
     private static string ResolveByCode(ushort unicode)
     {
         if (unicode >= '\uB0A1' && unicode <= '\uB0C4')
@@ -161,9 +173,10 @@ public partial class Str
     }
 
     /// <summary>
-    /// 通过拼音简码常量获取
+    /// 通过内置字符表获取拼音首字母。
     /// </summary>
-    /// <param name="text">文本</param>
+    /// <param name="text">要查询的单个字符。</param>
+    /// <returns>拼音首字母；未收录时返回空字符串。</returns>
     private static string ResolveByConst(string text)
     {
         int index = Const.ChinesePinYin.IndexOf(text, StringComparison.Ordinal);
@@ -177,79 +190,82 @@ public partial class Str
     #region FullPinYin(获取汉字的全拼)
 
     /// <summary>
-    /// 将汉字转换成拼音(全拼)
+    /// 将汉字转换为不带声调的全拼。
     /// </summary>
-    /// <param name="text">汉字字符串</param>
+    /// <param name="text">要转换的文本。</param>
+    /// <returns>首字母大写的连续拼音；非中文及无法转换的字符保持原样。</returns>
     public static string FullPinYin(string text)
     {
-        // 匹配中文字符
-        Regex regex = new Regex("^[\u4e00-\u9fa5]$");
-        byte[] array = new byte[2];
-        string pyString = "";
-        int chrAsc = 0;
-        int i1 = 0;
-        int i2 = 0;
-        char[] nowChar = text.ToCharArray();
-        for (int j = 0; j < nowChar.Length; j++)
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+
+        var result = new StringBuilder(text.Length);
+        foreach (var value in text)
+            result.Append(ResolveFullPinYin(value));
+        return result.ToString();
+    }
+
+    /// <summary>
+    /// 解析单个字符的不带声调全拼。
+    /// </summary>
+    /// <param name="value">要解析的字符。</param>
+    /// <returns>首字母大写的拼音；非中文及无法转换的字符保持原样。</returns>
+    private static string ResolveFullPinYin(char value)
+    {
+        if (value < '\u4e00' || value > '\u9fa5')
+            return value.ToString();
+
+        var bytes = PinyinEncoding.GetBytes(value.ToString());
+        if (bytes.Length < 2)
+            return value.ToString();
+
+        var code = bytes[0] * 256 + bytes[1] - 65536;
+        var specialPinyin = ResolveSpecialFullPinYin(code);
+        if (specialPinyin != null)
+            return specialPinyin;
+
+        for (var index = Const.SpellCode.Length - 1; index >= 0; index--)
         {
-            // 中文字符
-            if (regex.IsMatch(nowChar[j].ToString()))
-            {
-                array = Encoding.Default.GetBytes(nowChar[j].ToString());
-                i1 = (short)(array[0]);
-                i2 = (short)(array[1]);
-                chrAsc = i1 * 256 + i2 - 65536;
-                if (chrAsc > 0 && chrAsc < 160)
-                {
-                    pyString += nowChar[j];
-                }
-                else
-                {
-                    // 修正部分文字
-                    switch (chrAsc)
-                    {
-                        case -9254:
-                            pyString += "Zhen"; break;
-                        case -8985:
-                            pyString += "Qian"; break;
-                        case -5463:
-                            pyString += "Jia"; break;
-                        case -8274:
-                            pyString += "Ge"; break;
-                        case -5448:
-                            pyString += "Ga"; break;
-                        case -5447:
-                            pyString += "La"; break;
-                        case -4649:
-                            pyString += "Chen"; break;
-                        case -5436:
-                            pyString += "Mao"; break;
-                        case -5213:
-                            pyString += "Mao"; break;
-                        case -3597:
-                            pyString += "Die"; break;
-                        case -5659:
-                            pyString += "Tian"; break;
-                        default:
-                            for (int i = (Const.SpellCode.Length - 1); i >= 0; i--)
-                            {
-                                if (Const.SpellCode[i] <= chrAsc)
-                                {
-                                    //判断汉字的拼音区编码是否在指定范围内
-                                    pyString += Const.SpellLetter[j];//如果不超出范围则获取对应的拼音
-                                    break;
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
-            else // 非中文字符
-            {
-                pyString += nowChar[j].ToString();
-            }
+            if (Const.SpellCode[index] <= code)
+                return Const.SpellLetter[index];
         }
-        return pyString;
+
+        return value.ToString();
+    }
+
+    /// <summary>
+    /// 解析区码表中的特殊拼音映射。
+    /// </summary>
+    /// <param name="code">GBK 区码。</param>
+    /// <returns>特殊拼音；没有特殊映射时返回 null。</returns>
+    private static string ResolveSpecialFullPinYin(int code)
+    {
+        switch (code)
+        {
+            case -9254:
+                return "Zhen";
+            case -8985:
+                return "Qian";
+            case -5463:
+                return "Jia";
+            case -8274:
+                return "Ge";
+            case -5448:
+                return "Ga";
+            case -5447:
+                return "La";
+            case -4649:
+                return "Chen";
+            case -5436:
+            case -5213:
+                return "Mao";
+            case -3597:
+                return "Die";
+            case -5659:
+                return "Tian";
+            default:
+                return null;
+        }
     }
 
     #endregion
@@ -257,9 +273,10 @@ public partial class Str
     #region FirstLower(首字母小写)
 
     /// <summary>
-    /// 首字母小写
+    /// 将首字母转为小写。
     /// </summary>
-    /// <param name="value">值</param>
+    /// <param name="value">待转换字符串。</param>
+    /// <returns>转换后的字符串；空白输入返回空字符串。</returns>
     public static string FirstLower(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -272,9 +289,10 @@ public partial class Str
     #region FirstUpper(首字母大写)
 
     /// <summary>
-    /// 首字母大写
+    /// 将首字母转为大写。
     /// </summary>
-    /// <param name="value">值</param>
+    /// <param name="value">待转换字符串。</param>
+    /// <returns>转换后的字符串；空白输入返回空字符串。</returns>
     public static string FirstUpper(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -287,7 +305,7 @@ public partial class Str
     #region Empty(空字符串)
 
     /// <summary>
-    /// 空字符串
+    /// 空字符串。
     /// </summary>
     public static string Empty => string.Empty;
 
@@ -296,9 +314,10 @@ public partial class Str
     #region Distinct(去除重复)
 
     /// <summary>
-    /// 去除重复字符串
+    /// 移除重复字符。
     /// </summary>
-    /// <param name="value">值，范例1："5555"，返回"5"，范例2："4545"，返回"45"</param>
+    /// <param name="value">待处理字符串。</param>
+    /// <returns>保留字符首次出现顺序的字符串。</returns>
     public static string Distinct(string value)
     {
         var array = value.ToCharArray();
@@ -310,12 +329,13 @@ public partial class Str
     #region Truncate(截断字符串)
 
     /// <summary>
-    /// 截断字符串
+    /// 截断字符串。
     /// </summary>
-    /// <param name="text">文本</param>
-    /// <param name="length">返回长度</param>
-    /// <param name="endChatCount">添加结束符号的个数，默认0，不添加</param>
-    /// <param name="endChar">结束符号，默认为省略号</param>
+    /// <param name="text">待截断文本。</param>
+    /// <param name="length">保留的字符串长度。</param>
+    /// <param name="endChatCount">追加的结束符号个数。</param>
+    /// <param name="endChar">结束符号。</param>
+    /// <returns>截断并追加结束符号后的文本；空白输入返回空字符串。</returns>
     public static string Truncate(string text, int length, int endChatCount = 0, string endChar = ".")
     {
         if (string.IsNullOrWhiteSpace(text))
@@ -326,10 +346,11 @@ public partial class Str
     }
 
     /// <summary>
-    /// 获取结束字符串
+    /// 生成结束字符串。
     /// </summary>
-    /// <param name="endCharCount">添加结束符号的个数</param>
-    /// <param name="endChar">结束符号</param>
+    /// <param name="endCharCount">结束符号个数。</param>
+    /// <param name="endChar">结束符号。</param>
+    /// <returns>重复指定次数的结束符号。</returns>
     private static string GetEndString(int endCharCount, string endChar)
     {
         var sb = new StringBuilder();
@@ -343,9 +364,10 @@ public partial class Str
     #region GetLastProperty(获取最后一个属性)
 
     /// <summary>
-    /// 获取最后一个属性
+    /// 获取属性路径的末级名称。
     /// </summary>
-    /// <param name="propertyName">属性名，范例，A.B.C,返回"C"</param>
+    /// <param name="propertyName">以点分隔的属性路径。</param>
+    /// <returns>末级属性名称；空白输入返回空字符串。</returns>
     public static string GetLastProperty(string propertyName)
     {
         if (string.IsNullOrWhiteSpace(propertyName))
@@ -359,9 +381,10 @@ public partial class Str
     #region GetHideMobile(获取隐藏中间几位后的手机号码)
 
     /// <summary>
-    /// 获取隐藏中间几位后的手机号码
+    /// 遮蔽手机号码中间部分。
     /// </summary>
-    /// <param name="value">手机号码</param>
+    /// <param name="value">手机号码。</param>
+    /// <returns>保留首尾各三位的遮蔽结果；空白输入返回空字符串。</returns>
     public static string GetHideMobile(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -374,9 +397,11 @@ public partial class Str
     #region GetStringLength(获取字符串的字节数)
 
     /// <summary>
-    /// 获取字符串的字节数
+    /// 按旧规则估算文本长度。
     /// </summary>
-    /// <param name="value">值</param>
+    /// <param name="value">待计算文本。</param>
+    /// <returns>估算长度；空白输入返回 0。</returns>
+    /// <remarks>按 ASCII 编码计算，每个问号字节额外计一次，包括原文中的问号。</remarks>
     public static int GetStringLength(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -399,8 +424,9 @@ public partial class Str
     #region GenerateNonceStr(生成随机字符串)
 
     /// <summary>
-    /// 生成随机字符串
+    /// 生成随机字符串。
     /// </summary>
+    /// <returns>不含连字符的 GUID 字符串。</returns>
     public static string GenerateNonceStr() => Guid.NewGuid().ToString("N");
 
     #endregion
@@ -408,10 +434,11 @@ public partial class Str
     #region SplitWordGroup(分隔词组)
 
     /// <summary>
-    /// 分隔词组
+    /// 按单词边界分隔并转为小写。
     /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="separator">分隔符。默认使用"-"分隔</param>
+    /// <param name="value">待分隔文本。</param>
+    /// <param name="separator">单词分隔符。</param>
+    /// <returns>分隔后的字符串；空白输入返回空字符串。</returns>
     public static string SplitWordGroup(string value, char separator = '-')
     {
         var pattern = @"([A-Z])(?=[a-z])|(?<=[a-z])([A-Z]|[0-9]+)";

@@ -1,12 +1,12 @@
 ﻿namespace Bing.Helpers;
 
 /// <summary>
-/// 字符串操作测试
+/// 字符串处理测试。
 /// </summary>
 public partial class StrTest 
 {
     /// <summary>
-    /// 测试将集合连接为带分隔符的字符串
+    /// 验证集合字符串连接。
     /// </summary>
     [Fact]
     public void Test_Join()
@@ -29,8 +29,12 @@ public partial class StrTest
     }
 
     /// <summary>
-    /// 测试获取拼音简码
+    /// 验证拼音首字母转换。
     /// </summary>
+    /// <param name="input">待转换文本。</param>
+    /// <param name="result">预期转换结果。</param>
+    /// <param name="input">待转换文本。</param>
+    /// <param name="result">预期转换结果。</param>
     [Theory]
     [InlineData(null, "")]
     [InlineData("", "")]
@@ -44,17 +48,30 @@ public partial class StrTest
     }
 
     /// <summary>
-    /// 测试获取汉字的全拼
+    /// 验证汉字全拼转换。
     /// </summary>
-    [Fact]
-    public void Test_FullPinYin()
+    /// <param name="input">待转换文本。</param>
+    /// <param name="result">预期转换结果。</param>
+    /// <param name="input">待转换文本。</param>
+    /// <param name="result">预期转换结果。</param>
+    [Theory]
+    [InlineData(null, "")]
+    [InlineData("", "")]
+    [InlineData("中国", "ZhongGuo")]
+    [InlineData("隔壁老王", "GeBiLaoWang")]
+    [InlineData("A1中国!", "A1ZhongGuo!")]
+    public void Test_FullPinYin(string input, string result)
     {
-        Output.WriteLine(Str.FullPinYin("隔壁老王"));
+        Assert.Equal(result, Str.FullPinYin(input));
     }
 
     /// <summary>
-    /// 首字母小写
+    /// 验证首字母小写转换。
     /// </summary>
+    /// <param name="value">待转换文本。</param>
+    /// <param name="result">预期转换结果。</param>
+    /// <param name="value">待转换文本。</param>
+    /// <param name="result">预期转换结果。</param>
     [Theory]
     [InlineData(null, "")]
     [InlineData("", "")]
@@ -70,8 +87,12 @@ public partial class StrTest
     }
 
     /// <summary>
-    /// 首字母大写
+    /// 验证首字母大写转换。
     /// </summary>
+    /// <param name="value">待转换文本。</param>
+    /// <param name="result">预期转换结果。</param>
+    /// <param name="value">待转换文本。</param>
+    /// <param name="result">预期转换结果。</param>
     [Theory]
     [InlineData(null, "")]
     [InlineData("", "")]
@@ -87,8 +108,12 @@ public partial class StrTest
     }
 
     /// <summary>
-    /// 分隔词组
+    /// 验证词组分隔。
     /// </summary>
+    /// <param name="value">待分隔文本。</param>
+    /// <param name="result">预期分隔结果。</param>
+    /// <param name="value">待分隔文本。</param>
+    /// <param name="result">预期分隔结果。</param>
     [Theory]
     [InlineData(null, "")]
     [InlineData("", "")]
