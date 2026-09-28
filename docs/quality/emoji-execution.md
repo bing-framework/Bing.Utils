@@ -1,80 +1,74 @@
-# Emoji 首版实施与验证记录
+# Emoji 默认数据精简与离线导入验证记录
 
-- Task：Bing.Utils.Extra Emoji；Round：1；日期：2026-09-27。
-- Provider/model：Codex / GPT-6；独立测试子任务由 Luna implementer 完成，主代理集成、加强断言并验证。
-- Candidate：基于 `f7ef727` 的本任务未提交工作区变更；无版本修改、提交或发布。
-- Implementation：5/5（数据、识别内核、公开接口、测试与文档、收口验证）。
-- Required local gates：7/7；Implementation status：PASS；阶段状态：实现及计划内本地验证完成。
+- Task：Emoji 默认数据精简与离线本地化导入；Round：72；日期：2026-09-28。
+- Candidate：基于 3db1b87c 的未提交工作区；未调整版本、提交或发布。
+- 当前状态：Implementation 5/5 PASS；本轮本地验证门禁 5/5 PASS。历史 61 语言默认支持说明已被本轮计划替代。
 
 ## 变更影响分析
 
 | 项目 | 范围 |
 | --- | --- |
-| ChangedFiles | Extra Emoji 源码、原始数据及生成器、专属测试、包许可配置、文档及导航 |
+| ChangedFiles | 数据生成器、内置本地化、目录离线导入、元数据说明、Extra 测试和相关文档 |
 | ChangedProjects | Bing.Utils.Extra、Bing.Utils.Extra.Tests |
-| ChangedPublicContracts | 新增 EmojiUtil、EmojiInfo、EmojiMatch，无已有 API 改动 |
-| ChangedRuntimePaths | Extra 内置数据惰性初始化、序列匹配、别名转换 |
-| ChangedProviders | 无 |
-| ChangedTFMs | 无；保留 netstandard2.0、net6.0、net7.0、net8.0 及原测试目标 |
-| ChangedBuildPackaging | 新增生成 C# 源码及包内两份许可、数据来源说明；无新增包依赖 |
+| ChangedPublicContracts | 新增 WithLocalizations(Stream)、目录 GetLocales/TryGetLocalization 及目录肤色操作；默认本地化收缩为 zh/zh-Hant |
+| ChangedRuntimePaths | 内置数据初始化缩减；新增调用方流读取、JSON 校验、目录快照合并及实例肤色索引调用 |
+| ChangedProviders | 保留 Unicode 18.0、gemoji 4.1.0、CLDR 48.2 简繁中文；外部 JSON 由调用方提供 |
+| ChangedTFMs | 不变：netstandard2.0、net6.0、net7.0、net8.0 |
+| ChangedBuildPackaging | 同一包保留四个目标框架；不添加运行时第三方依赖 |
 | ChangedBenchmarkHarness | 无 |
 | ChangedDocsOnly | 否 |
-| AffectedDependents | Extra 专属测试与包消费者；核心库没有反向依赖 |
-| RiskLevel | MEDIUM：新增公开文本解析能力与数据表 |
+| AffectedDependents | Extra 消费者、SkiaSharp 适配包 |
+| RiskLevel | MEDIUM：默认查询数据范围收缩；新增公开流导入契约 |
 
-## 验证证据
+## 数据与包体证据
 
-| Gate | 结果 |
-| --- | --- |
-| 1. 数据可重复生成 | `python -X utf8 build/generate-emoji-data.py --check` 通过；3,963 规范表情、5,235 序列、1,913 别名 |
-| 2. 四框架 Release 构建 | netstandard2.0 / net6.0 / net7.0 / net8.0 全通过，0 警告、0 错误 |
-| 3. net8.0 模块完整测试 | 23 通过、0 失败、0 跳过 |
-| 4. net7.0 模块完整测试 | 23 通过、0 失败、0 跳过 |
-| 5. net6.0 模块完整测试 | 23 通过、0 失败、0 跳过 |
-| 6. 独立进程首次并发调用 | 单独筛选 FirstUse_ConcurrentCalls，1 通过；64 个任务验证一致性，未宣称 64 路实际并行 |
-| 7. 打包与消费者 | nupkg / snupkg 生成；检查四框架 DLL、两份许可及来源说明；从 nupkg 提取 netstandard2.0 DLL 后由 net8.0 消费者验证计数和别名转换通过 |
+基线为修改前现有 Release 包，单独保存于忽略目录 output/emoji-localization-baseline，不覆盖基线。
+数据由 61 个 locale / 240,196 条翻译，缩减为 zh、zh-Hant / 7,888 条翻译。
+保留 3,963 个规范表情、5,235 个序列和 1,913 个别名；删除 118 份非默认语言 XML 快照。
+英文仍通过 Unicode 名称和 gemoji 别名/标签提供；默认不引入 en locale。
 
-L0：构建、生成结果、UTF-8/差异检查及文档配置静态检查通过。
-L1：首次并发测试通过。L2：三个可用运行时上的模块完整测试通过。
-L3：包内容与 netstandard2.0 消费者验证通过。
-L4/L5：按批准计划未运行全解决方案测试或重型性能测试。
+当前 NuGet 包从 29,235,764 字节降至 1,310,461 字节，减少 27,925,303 字节（95.52%）。上轮未增加目录肤色公开入口的包为 1,308,502 字节。
 
-测试逐条验证官方三类 qualification 的识别、Count=1、匹配原文长度和移除；逐项验证 gemoji 别名对应正确表情和首选别名输出。
-独立手写场景覆盖旗帜、肤色、家庭/职业 ZWJ、键帽、标签旗帜、UTF-16 位置、未知别名、大小写、文本样式、独立组件、孤立代理项、只读集合和回调行为。
+| 程序集 | 基线字节 | 最终字节 |
+| --- | ---: | ---: |
+| net6.0 | 15,980,544 | 1,016,320 |
+| net7.0 | 15,980,544 | 1,016,320 |
+| net8.0 | 15,980,032 | 1,015,808 |
+| netstandard2.0 | 15,980,544 | 1,015,808 |
 
-### 实际使用的命令
+当前包位于 output/release/Bing.Utils.Extra.1.5.0.nupkg；output/emoji-localization-consumer/final-sizes.json 保存的是上轮包体记录，不能作为本轮数值。
+四个目标框架、许可证均齐全；包依赖与基线相同。
+新接口使用框架内置 DataContractJsonSerializer，
+导入前校验 JSON 类型，读取异常与格式异常分开处理；导入结果仅影响新目录。
 
-默认还原遇到 NuGet HTTPS 的 NU1301 / TLS 凭证错误。使用本机已有固定版本缓存完成离线还原，未更改仓库 NuGet 源或依赖版本。
-本次离线还原禁用联网漏洞查询；此结果不代表完成在线漏洞审计。
+## 验证记录
 
-```powershell
-dotnet restore src/Bing.Utils.Extra/Bing.Utils.Extra.csproj --source C:\Users\jianx\.nuget\packages --packages C:\Users\jianx\.nuget\packages -p:NuGetAudit=false
-dotnet restore tests/Bing.Utils.Extra.Tests/Bing.Utils.Extra.Tests.csproj --source C:\Users\jianx\.nuget\packages --packages C:\Users\jianx\.nuget\packages -p:NuGetAudit=false
-dotnet build src/Bing.Utils.Extra/Bing.Utils.Extra.csproj -c Release --no-restore
-dotnet test tests/Bing.Utils.Extra.Tests/Bing.Utils.Extra.Tests.csproj -c Release -f net8.0 --no-restore --filter FullyQualifiedName~FirstUse_ConcurrentCalls
-dotnet test tests/Bing.Utils.Extra.Tests/Bing.Utils.Extra.Tests.csproj -c Release -f net8.0 --no-restore
-dotnet test tests/Bing.Utils.Extra.Tests/Bing.Utils.Extra.Tests.csproj -c Release -f net7.0 --no-restore
-dotnet test tests/Bing.Utils.Extra.Tests/Bing.Utils.Extra.Tests.csproj -c Release -f net6.0 --no-restore
-dotnet pack src/Bing.Utils.Extra/Bing.Utils.Extra.csproj -c Release --no-build --no-restore -o output/emoji-packages
-python -X utf8 build/generate-emoji-data.py --check
-git diff --check
-```
-
-包路径：`output/emoji-packages/Bing.Utils.Extra.1.5.0.nupkg`；消费者临时项目位于忽略目录 `output/release/emoji-consumer`。
-打包只提示缺少包自述文件（非失败项）；已通过模块文档提供说明，未扩展包元数据范围。
+- L0：生成器 --check 通过；Extra 四个目标框架 Release 构建通过，0 警告、0 错误。
+- L1：目录本地化定向用例 62 项通过。
+- L2：当前 Extra net8.0、net7.0、net6.0 各 104 项通过。
+- L3：当前 Extra 四个目标框架构建通过，0 警告、0 错误；NuGet 包构建通过。使用隔离缓存从当前包离线还原，消费者已验证本地化导入、非法 JSON 拒绝及目录肤色接口。SkiaSharp 适配构建沿用上轮未变源码的证据。
+- 差异检查：生成器 --check、UTF-8 检查和 git diff --check 通过；无版本变更或发布。
+- L4/L5：未运行无关全解决方案或重型性能测试。
+- 构建期间遇到既有输出文件写入权限问题，按权限流程重试后成功；消费者使用本地包源和已有缓存离线还原。
+- 打包仍有既有“缺少包自述文件”提示，不影响生成。
 
 ## 当前 TODO / Finding 分类
 
-- Completed：批准的首版接口、数据、测试、文档与包验证全部完成。
+- Completed：默认数据精简、独立目录导入、目录肤色操作、重复 JSON 字段与肤色交叉回归、中文注释、文档与打包验证。
 - Open Actionable：无。
-- Blocked Approval：无。
-- Blocked External：无计划内必需门禁阻塞；最初联网还原问题已通过本地缓存绕过。
-- Not Applicable：新功能没有同语义历史性能基线；未设置性能门槛。
-- Accepted Limitations：本机缺少 .NET 5 / Core 3.1，对应运行时测试未验证；未构建 DocFX 站点；字形显示由字体决定；未知组合允许已知子序列匹配；没有别名的表情保留原文。
-- Verified Boundaries：无资源/容量边界实验。
-- Deferred：HTML 实体、中文检索、标签查询、肤色变体管理、旧 API 迁移。
-- Reused Evidence：测试加强后生产源码与包配置未变化，复用四框架构建、打包和消费者结果；只补文档时不重跑代码测试。
-- No-Progress Check：CHANGED；不存在自动 Review/Fix 循环。
-- Next Action：STOP；当前阶段没有剩余可执行项。
+- Blocked Approval：本轮无。
+- Blocked External：本轮无。
+- Not Applicable：性能 Benchmark 和其他语言包制作。
+- Accepted Limitations：缺少 .NET 5 / Core 3.1 运行时，旧目标保留但运行未验证；本机没有 DocFX 工具，文档构建未执行；离线导入读取整个输入，未设容量门槛；外部数据来源和许可由调用方管理。
+- Verified Boundaries：仅报告实测包体，不声明性能或容量上限。
+- Deferred：旧 Emoji API 迁移仍为独立后续议题；其他语言包不在本轮范围，不再自动逐个扩充内置语言。
+- Reused Evidence：未修改匹配器算法、HTML 实体算法及 SkiaSharp 渲染实现。
+- No-Progress Check：CHANGED。
+- Next Action：STOP，本轮计划完成。
+- Goal Status：COMPLETED。
 
-未执行独立代码审查阶段；本记录包含主代理最终差异检查及本地验证结果，不代替外部 CI 或发布验证。
+## 执行说明
+
+回归修复：框架读取器会忽略根对象后的内容，现显式校验文档边界；超大格式版本号的溢出异常统一转换为 InvalidDataException。对应回归均通过。严格 UTF-8、BOM、转义文本、原目录隔离、兼容序列、重复记录、空数组、不可定位流、读取异常、只读数据及并发查询均有手写测试。
+
+本次由主代理完成目录肤色接口和回归，luna_worker 独立检查 DocFX 工具可用性；未执行独立第三方代码审查。测试按 .agents/skills/test-project-boundary/refs/test-project-boundary.md 归属 Extra 专属项目，无跨项目迁移。

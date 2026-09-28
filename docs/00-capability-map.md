@@ -15,15 +15,16 @@
 | `Bing.Utils.Drawing` | 基于 `System.Drawing` 的图像处理与验证码 | 不做前端渲染组件 | `CaptchaBuilder`（`src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:11`），`ImageHelper`（`src/Bing.Utils.Drawing/Bing/Drawing/ImageHelper.cs:10`） | 依赖 `Bing.Utils`（`src/Bing.Utils.Drawing/Bing.Utils.Drawing.csproj:15`），外部 `System.Drawing.Common`（`src/Bing.Utils.Drawing/Bing.Utils.Drawing.csproj:19`） |
 | `Bing.Utils.Drawing.ImageSharp` | 基于 ImageSharp 的图像操作封装 | 不依赖 `Bing.Utils` 核心包（当前无项目引用） | `ImageSharpHelper`（`src/Bing.Utils.Drawing.ImageSharp/Bing/Drawing/ImageSharpHelper.cs:10`） | 外部 `SixLabors.ImageSharp`（`src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj:15`） |
 | `Bing.Utils.Drawing.SkiaSharp` | 基于 SkiaSharp 的图像格式/处理扩展 | 不与 `System.Drawing` API 绑定 | `SKEncodedImageFormatExtensions`（`src/Bing.Utils.Drawing.SkiaSharp/Bing/Drawing/Extensions/SKEncodedImageFormatExtensions.cs:10`） | 外部 `SkiaSharp`（`src/Bing.Utils.Drawing.SkiaSharp/Bing.Utils.Drawing.SkiaSharp.csproj:15`） |
+| `Bing.Utils.Extra.Drawing.SkiaSharp` | 基于调用方字体的 Emoji 字形渲染适配 | 不内置字体资源，不承诺跨平台彩色字形一致性 | `EmojiRenderer`、`EmojiRenderOptions`（`src/Bing.Utils.Extra.Drawing.SkiaSharp/Bing/Extra/Emoji/Drawing/EmojiRenderer.cs`） | 依赖 `Bing.Utils.Extra` 与外部 `SkiaSharp 2.88.9` |
 | `Bing.Utils.Http` | HTTP 上下文、请求响应、下载、参数与IPv6工具 | 不实现完整 HTTP 客户端 SDK（更偏 Web 运行时辅助） | `Web`（`src/Bing.Utils.Http/Bing/Helpers/Web.cs:17`），`HttpRequestExtensions`（`src/Bing.Utils.Http/Bing/Http/Extensions/Extensions.HttpRequest.cs:12`） | 依赖 `Bing.Utils`（`src/Bing.Utils.Http/references.props:4`）；按 TFM 引用 ASP.NET Core（`src/Bing.Utils.Http/dependency.props:15` 到 `src/Bing.Utils.Http/dependency.props:33`） |
 | `Bing.Utils.IdUtils` | 多种 ID 生成（Snowflake/ObjectId/Guid风格） | 不做分布式协调服务（仅算法与本地生成） | `SnowflakeGenerator`（`src/Bing.Utils.IdUtils/Bing/IdUtils/SnowflakeGenerator.cs:8`），`ObjectId`（`src/Bing.Utils.IdUtils/Bing/IdUtils/ObjectId.cs:18`） | 依赖 `Bing.Utils`（`src/Bing.Utils.IdUtils/Bing.Utils.IdUtils.csproj:11`） |
 | `Bing.Utils.Reflection` | 反射访问、类型访问器、动态类型辅助 | 不做 DI 容器本体 | `TypeMetaVisitExtensions`（`src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.cs:38`） | 依赖 `Bing.Utils`（`src/Bing.Utils.Reflection/dependency.props:3`） |
-| `Bing.Utils.Text` | 字符串分割/拼接/截断等文本处理 | 不做全文检索引擎 | `Splitter`（`src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:8`） | 依赖 `Bing.Utils`（`src/Bing.Utils.Text/Bing.Utils.Text.csproj:11`） |
+| `Bing.Utils.Text` | 字符串处理、多关键词匹配、拼音、简繁及台湾/香港地区转换、外置词典和可选 HMM 中文分词 | 不做全文检索引擎、jieba 全模式或未收录词组自动读音推断 | `Splitter`、`KeywordMatcher`、`PinyinUtil`、`PinyinCatalog`、`ChineseConverter`、`ChineseConversionCatalog`、`ChineseRegionalConversionCatalog`、`ChineseSegmenter` | 依赖 `Bing.Utils`；Text 包只提供 netstandard2.0 程序集，地区及分词数据在 Git 资源目录独立取得 |
 | `Bing.Utils.Net` | FTP 能力封装 | 不覆盖完整网络协议栈 | `FtpClient`（`src/Bing.Utils.Net/Bing/Net/FTP/FtpClient.cs:10`） | 依赖 `Bing.Utils`（`src/Bing.Utils.Net/references.props:4`），外部 `FluentFTP`（`src/Bing.Utils.Net/dependency.props:3`） |
 | `Bing.Utils.Comments` | 读取 C# XML 注释、枚举注释映射 | 不提供源码解析器（Roslyn） | `CsCommentReader`（`src/Bing.Utils.Comments/Bing/Comments/CsCommentReader.cs:11`） | 当前无项目引用（`src/Bing.Utils.Comments/project.dependency.props:1`） |
 | `Bing.Utils.Guard` | 参数守护/验证辅助（当前更偏雏形） | 待确认：完整守护 API 仍不完整 | `CharGuard`（空壳，`src/Bing.Utils.Guard/Bing/Text/CharGuard.cs:23`），`ValidationExceptionHelper`（`src/Bing.Utils.Guard/Bing/Validation/ValidationExceptionHelper.cs:11`） | 依赖 `Bing.Utils`（`src/Bing.Utils.Guard/project.dependency.props:3`） |
 | `Bing.Utils.DependencyInjection` | 名义上是 DI 扩展包 | 待确认：当前仅项目壳，无实现代码 | 仅声明文件夹（`src/Bing.Utils.DependencyInjection/Bing.Utils.DependencyInjection.csproj:8`） | 当前未声明项目引用（`src/Bing.Utils.DependencyInjection/Bing.Utils.DependencyInjection.csproj:1` 到 `src/Bing.Utils.DependencyInjection/Bing.Utils.DependencyInjection.csproj:12`） |
-| `Bing.Utils.Extra` | 扩展能力占位包 | 待确认：当前仅项目壳，无实现代码 | 仅声明文件夹（`src/Bing.Utils.Extra/Bing.Utils.Extra.csproj:7`） | 当前未声明项目引用（`src/Bing.Utils.Extra/Bing.Utils.Extra.csproj:1` 到 `src/Bing.Utils.Extra/Bing.Utils.Extra.csproj:10`） |
+| `Bing.Utils.Extra` | Emoji 序列识别、替换、HTML 数字实体互转、白名单目录、肤色操作；默认英文及简繁中文元数据查询，支持独立目录离线 JSON 本地化导入 | 不负责字体渲染、自动下载翻译、自定义表情注册或未定义的肤色组合生成 | `EmojiUtil`、`EmojiCatalog`、`EmojiInfo`、`EmojiMatch`、`EmojiLocalization` | 无运行时第三方依赖；内置 Unicode 18.0、gemoji 4.1.0 与 CLDR 48.2 简繁中文快照 |
 
 ## 3. 公共设计约定
 - 约定1：大量使用“扩展方法 + 静态工具类”。证据：`BooleanExtensions`（`src/Bing.Utils/Bing/Extensions.Boolean.cs:8`）、`DateTimeSpanExtensions`（`src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:8`）、`HttpResponseMessageExtensions`（`src/Bing.Utils.Http/Bing/Http/Extensions/HttpResponseMessageExtensions.cs:9`）、`SKEncodedImageFormatExtensions`（`src/Bing.Utils.Drawing.SkiaSharp/Bing/Drawing/Extensions/SKEncodedImageFormatExtensions.cs:10`）。
@@ -46,7 +47,7 @@
 `src/Bing.Utils.Net/references.props:4`
 `src/Bing.Utils.Guard/project.dependency.props:3`
 - 相对独立包：
-`Bing.Utils.Drawing.ImageSharp` 与 `Bing.Utils.Drawing.SkiaSharp` 仅依赖第三方图像库，不依赖 `Bing.Utils`。证据：`src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj:15`，`src/Bing.Utils.Drawing.SkiaSharp/Bing.Utils.Drawing.SkiaSharp.csproj:15`，且其 `csproj` 无 `ProjectReference`。
+`Bing.Utils.Drawing.ImageSharp` 与 `Bing.Utils.Drawing.SkiaSharp` 仅依赖第三方图像库，不依赖 `Bing.Utils`；Emoji 渲染适配单独依赖 `Bing.Utils.Extra`。证据：`src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj:15`，`src/Bing.Utils.Drawing.SkiaSharp/Bing.Utils.Drawing.SkiaSharp.csproj:15`，`src/Bing.Utils.Extra.Drawing.SkiaSharp/Bing.Utils.Extra.Drawing.SkiaSharp.csproj`。
 - 循环依赖倾向判断：
 当前源码层未见 A->B->A 的项目级闭环，依赖形态接近“单核心星型”。证据：全仓 `src` 下 `ProjectReference` 仅指向 `Bing.Utils`（`src/Bing.Utils.Collections/references.props:4`, `src/Bing.Utils.Http/references.props:4`, `src/Bing.Utils.Reflection/dependency.props:3`, `src/Bing.Utils.Net/references.props:4`, `src/Bing.Utils.IdUtils/Bing.Utils.IdUtils.csproj:11`, `src/Bing.Utils.DateTime/Bing.Utils.DateTime.csproj:11`, `src/Bing.Utils.Drawing/Bing.Utils.Drawing.csproj:15`, `src/Bing.Utils.Text/Bing.Utils.Text.csproj:11`, `src/Bing.Utils.Guard/project.dependency.props:3`）。
 - 测试对源码映射：
@@ -74,7 +75,7 @@
 
 ## 6. 风险与待确认项
 - 待确认：仓库文档存在编码可读性问题，`README.md` 中文出现乱码，可能影响新贡献者理解设计目标。证据：`README.md:5`, `README.md:22`, `README.md:45`。
-- 待确认：`Bing.Utils.DependencyInjection` 与 `Bing.Utils.Extra` 当前看起来仅项目骨架（仅 `Folder Include`，未发现源码类型），是否计划后续实现需产品/维护者确认。证据：`src/Bing.Utils.DependencyInjection/Bing.Utils.DependencyInjection.csproj:8`, `src/Bing.Utils.Extra/Bing.Utils.Extra.csproj:7`。
+- 待确认：`Bing.Utils.DependencyInjection` 当前看起来仍是项目骨架（仅 `Folder Include`，未发现源码类型），是否计划后续实现需产品/维护者确认。证据：`src/Bing.Utils.DependencyInjection/Bing.Utils.DependencyInjection.csproj:8`。
 - 待确认：`Bing.Utils.Guard` 公开入口 `CharGuard` 为空类型，可能处于迁移中。证据：`src/Bing.Utils.Guard/Bing/Text/CharGuard.cs:23`。
 - 风险：`System.Drawing` 在 Linux/Docker 需要额外系统依赖，跨平台部署可能踩坑。证据：`src/Bing.Utils.Drawing/README.md:1` 到 `src/Bing.Utils.Drawing/README.md:6`，`src/Bing.Utils.Drawing/Bing.Utils.Drawing.csproj:19`。
 - 风险：仓库含 `Bing - Backup.Utils.Guard.csproj` 备份工程文件，可能造成维护歧义。证据：`src/Bing.Utils.Guard/Bing - Backup.Utils.Guard.csproj:1`。

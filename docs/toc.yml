@@ -10,3 +10,5 @@
   href: https://github.com/bing-framework/Bing.Utils
 - name: Emoji
   href: modules/Bing.Utils.Extra.md
+- name: 文本处理
+  href: modules/Bing.Utils.Text.md

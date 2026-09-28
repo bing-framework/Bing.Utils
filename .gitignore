@@ -348,3 +348,4 @@ MigrationBackup/
 
 /src/**/Bing.Utils*.xml
 tmp_bing_utils_tests_index.csv
+output/
