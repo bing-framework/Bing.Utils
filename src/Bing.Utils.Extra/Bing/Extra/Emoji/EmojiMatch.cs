@@ -29,7 +29,7 @@ public sealed class EmojiMatch
     public EmojiInfo Emoji { get; }
 
     /// <summary>
-    /// 初始化 <see cref="EmojiMatch" /> 类的新实例。
+    /// 初始化一个 <see cref="EmojiMatch" /> 类型的实例。
     /// </summary>
     /// <param name="value">匹配的原文片段。</param>
     /// <param name="index">原文中从零开始的 UTF-16 索引。</param>

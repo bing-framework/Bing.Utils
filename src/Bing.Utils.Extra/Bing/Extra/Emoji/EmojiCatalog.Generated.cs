@@ -2,7 +2,7 @@
 // Unicode Emoji 18.0; gemoji v4.1.0. See asset/emoji/README.md.
 namespace Bing.Extra.Emoji;
 
-internal sealed partial class EmojiCatalog
+public sealed partial class EmojiCatalog
 {
     private void LoadGeneratedData()
     {

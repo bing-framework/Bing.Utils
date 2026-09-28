@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Bing.Utils.Extra.Drawing.SkiaSharp</AssemblyName>
+    <PackageId>Bing.Utils.Extra.Drawing.SkiaSharp</PackageId>
+    <Description>Bing.Utils.Extra 的 SkiaSharp Emoji 图像渲染适配。</Description>
+  </PropertyGroup>
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bing.Utils.Extra\Bing.Utils.Extra.csproj" />
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+  </ItemGroup>
+</Project>

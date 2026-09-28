@@ -58,6 +58,12 @@
 - `DeleteCoordinate(string sourcePath, string destPath, ImageMetadataOptions?)`
 - 支持 JPEG APP1 和 PNG eXIf 容器级 GPS IFD 清除
 
+### 2.10 Emoji 渲染
+- `Bing.Utils.Extra.Drawing.SkiaSharp.EmojiRenderer.Render`：将 `Bing.Utils.Extra` 目录中的完整 Emoji 序列按字体测量并生成 `SKImage`
+- `EmojiRenderOptions`：配置字体路径或字体名称、字号、内边距、背景色和非彩色字形颜色
+- 显式字体会校验完整序列的字形覆盖；未指定字体时使用 SkiaSharp 默认字体
+- 复杂 ZWJ、肤色和旗帜序列的彩色效果取决于字体和 SkiaSharp 后端，不内置字体资源
+
 ## 3. 使用示例（最小可运行）
 
 ```csharp
@@ -83,6 +89,15 @@ var hsl = SkiaSharpHelper.ToHsl(new SKColor(255, 0, 0));
 
 // GPS 元数据清理
 var cleaned = SkiaSharpHelper.DeleteCoordinate(jpegBytes);
+
+// Emoji 渲染（需要引用 Bing.Utils.Extra.Drawing.SkiaSharp）
+using Bing.Extra.Emoji.Drawing;
+using var emojiImage = EmojiRenderer.Render("👍🏽", new EmojiRenderOptions
+{
+    FontPath = "NotoColorEmoji.ttf",
+    FontSize = 96,
+    Padding = 8
+});
 ```
 
 ## 4. 性能与线程安全说明
@@ -100,10 +115,11 @@ var cleaned = SkiaSharpHelper.DeleteCoordinate(jpegBytes);
 - 依赖 `SkiaSharp 2.88.9`
 - 共享 `Bing.Utils.Drawing.Shared` 中的纯算法和公共类型（通过 csproj Compile Include 链接）
 - 不依赖 `System.Drawing`、`SixLabors.ImageSharp`
+- Emoji 渲染由独立的 `Bing.Utils.Extra.Drawing.SkiaSharp` 适配包提供，避免把 SkiaSharp 依赖引入 `Bing.Utils.Extra`
 
 ## 7. 测试映射
 - 测试项目：`tests/Bing.Utils.Drawing.SkiaSharp.Tests`
-- 当前测试基线：140 条，覆盖验证码、缩略图、加载/转换、几何变换、OCR 预处理、高级效果、元数据清理、颜色转换适配
+- 当前测试基线：140 条，覆盖验证码、缩略图、加载/转换、几何变换、OCR 预处理、高级效果、元数据清理、颜色转换适配；Emoji 适配包另有独立测试项目
 
 ## 8. 版本与兼容性注意事项
 - 跟随公共多目标框架策略（net8.0/net7.0/net6.0/netstandard2.0）

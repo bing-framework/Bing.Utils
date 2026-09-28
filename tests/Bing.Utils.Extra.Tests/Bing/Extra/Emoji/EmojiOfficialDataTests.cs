@@ -182,7 +182,7 @@ public sealed class EmojiOfficialDataTests
     private sealed class EmojiTestEntry
     {
         /// <summary>
-        /// 初始化 <see cref="EmojiTestEntry" /> 类的新实例。
+        /// 初始化一个 <see cref="EmojiTestEntry" /> 类型的实例。
         /// </summary>
         /// <param name="value">Emoji 字符序列。</param>
         /// <param name="status">Emoji 的 qualification 状态。</param>
@@ -209,7 +209,7 @@ public sealed class EmojiOfficialDataTests
     private sealed class GemojiEntry
     {
         /// <summary>
-        /// 初始化 <see cref="GemojiEntry" /> 类的新实例。
+        /// 初始化一个 <see cref="GemojiEntry" /> 类型的实例。
         /// </summary>
         /// <param name="emoji">条目的 Emoji 字符序列。</param>
         /// <param name="aliases">条目对应的不带冒号别名列表。</param>
