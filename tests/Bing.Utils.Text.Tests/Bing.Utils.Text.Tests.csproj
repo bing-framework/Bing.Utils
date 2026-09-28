@@ -10,5 +10,17 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Bing.Utils.Text\Bing.Utils.Text.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\asset\segmentation\dict.txt" Link="segmentation-dict.txt" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\..\asset\segmentation\hmm-model.gz" Link="hmm-model.gz" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\..\asset\pinyin\data\characters.gz" Link="pinyin-characters.gz" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\..\asset\pinyin\data\phrases.gz" Link="pinyin-phrases.gz" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\..\asset\opencc\data\s2t.gz" Link="opencc-s2t.gz" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\..\asset\opencc\data\t2s.gz" Link="opencc-t2s.gz" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\..\asset\opencc\data\tw-forward.gz" Link="opencc-tw-forward.gz" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\..\asset\opencc\data\tw-reverse.gz" Link="opencc-tw-reverse.gz" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\..\asset\opencc\data\hk-forward.gz" Link="opencc-hk-forward.gz" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\..\asset\opencc\data\hk-reverse.gz" Link="opencc-hk-reverse.gz" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
 </Project>
