@@ -1,4 +1,4 @@
-﻿namespace Bing.Conversions.Internals;
+namespace Bing.Conversions.Internals;
 
 /// <summary>
 /// 进制转换帮助类

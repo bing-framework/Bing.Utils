@@ -2,7 +2,9 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Bing.Conversions;
 using Bing.Extensions;
+using Bing.Helpers.Internals;
 
 namespace Bing.Helpers;
 
@@ -69,6 +71,15 @@ public static class Conv
     {
         if (input is sbyte direct)
             return direct;
+        if (input is int integer)
+            return integer is >= sbyte.MinValue and <= sbyte.MaxValue ? (sbyte)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= sbyte.MinValue and <= sbyte.MaxValue ? (sbyte)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= sbyte.MinValue and <= sbyte.MaxValue ? (sbyte)value : null;
+        }
         var text = input.SafeString();
         var success = sbyte.TryParse(text, out var result);
         if (success)
@@ -138,6 +149,15 @@ public static class Conv
     {
         if (input is byte direct)
             return direct;
+        if (input is int integer)
+            return integer is >= byte.MinValue and <= byte.MaxValue ? (byte)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= byte.MinValue and <= byte.MaxValue ? (byte)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= byte.MinValue and <= byte.MaxValue ? (byte)value : null;
+        }
         var text = input.SafeString();
         var success = byte.TryParse(text, out var result);
         if (success)
@@ -276,6 +296,15 @@ public static class Conv
     {
         if (input is short direct)
             return direct;
+        if (input is int integer)
+            return integer is >= short.MinValue and <= short.MaxValue ? (short)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= short.MinValue and <= short.MaxValue ? (short)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= short.MinValue and <= short.MaxValue ? (short)value : null;
+        }
         var text = input.SafeString();
         var success = short.TryParse(text, out var result);
         if (success)
@@ -346,6 +375,15 @@ public static class Conv
     {
         if (input is int direct)
             return direct;
+        if (input is long integer)
+            return integer is >= int.MinValue and <= int.MaxValue ? (int)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= int.MinValue and <= int.MaxValue ? (int)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= int.MinValue and <= int.MaxValue ? (int)value : null;
+        }
         var text = input.SafeString();
         var success = int.TryParse(text, out var result);
         if (success)
@@ -416,6 +454,15 @@ public static class Conv
     {
         if (input is uint direct)
             return direct;
+        if (input is int integer)
+            return integer >= 0 ? (uint)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= uint.MinValue and <= uint.MaxValue ? (uint)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= uint.MinValue and <= uint.MaxValue ? (uint)value : null;
+        }
         var text = input.SafeString();
         var success = uint.TryParse(text, out var result);
         if (success)
@@ -486,6 +533,15 @@ public static class Conv
     {
         if (input is long direct)
             return direct;
+        if (input is int integer)
+            return integer;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= long.MinValue and <= long.MaxValue ? (long)integral : null;
+        if (input is decimal fractional)
+        {
+            var value = Math.Round(fractional, 0, MidpointRounding.AwayFromZero);
+            return value is >= long.MinValue and <= long.MaxValue ? (long)value : null;
+        }
         var text = input.SafeString();
         var success = long.TryParse(text, out var result);
         if (success)
@@ -556,6 +612,15 @@ public static class Conv
     {
         if (input is ulong direct)
             return direct;
+        if (input is int integer)
+            return integer >= 0 ? (ulong)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= ulong.MinValue and <= ulong.MaxValue ? (ulong)integral : null;
+        if (input is decimal fractional)
+        {
+            var value = Math.Round(fractional, 0, MidpointRounding.AwayFromZero);
+            return value is >= ulong.MinValue and <= ulong.MaxValue ? (ulong)value : null;
+        }
         var text = input.SafeString();
         var success = ulong.TryParse(text, out var result);
         if (success)
@@ -1348,7 +1413,21 @@ public static class Conv
     /// <remarks>
     /// 仅使用内置规则；空白字符串视为失败，成功得到默认值仍返回 <see langword="true"/>。
     /// </remarks>
-    public static bool TryTo<T>(object input, out T result) => TryToCore(input, out result);
+    public static bool TryTo<T>(object input, out T result)
+    {
+        if (input is string text && ConvTypeInfo<T>.UnderlyingType == typeof(long))
+        {
+            if (long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number))
+            {
+                result = ConvTypeInfo<T>.IsNullableValueType
+                    ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
+                return true;
+            }
+            result = default;
+            return false;
+        }
+        return TryToCore(input, out result);
+    }
 
     /// <summary>
     /// 将输入转换为指定类型。
@@ -1385,6 +1464,78 @@ public static class Conv
             return false;
         var success = converter.TryConvert(input, out result, out var matched);
         return matched ? success : TryToCore(input, out result);
+    }
+
+    /// <summary>
+    /// 将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <returns>转换结果；失败时返回目标类型的默认值。</returns>
+    public static TTarget To<TSource, TTarget>(TSource input) =>
+        TryTo<TSource, TTarget>(input, out var result) ? result : default;
+
+    /// <summary>
+    /// 尝试将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>转换成功返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    /// <remarks>
+    /// 空输入和 <see cref="DBNull"/> 视为失败；成功得到目标类型默认值时仍返回 <see langword="true"/>。
+    /// </remarks>
+    public static bool TryTo<TSource, TTarget>(TSource input, out TTarget result) =>
+        TryToCoreTyped(input, out result);
+
+    /// <summary>
+    /// 将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="converter">优先使用的自定义转换器。</param>
+    /// <returns>转换结果；失败时返回目标类型的默认值。</returns>
+    /// <exception cref="ArgumentNullException">转换器为 <see langword="null"/>。</exception>
+    /// <remarks>
+    /// 精确命中的自定义转换失败后不回退内置规则；未命中时使用内置规则。
+    /// </remarks>
+    public static TTarget To<TSource, TTarget>(TSource input, ConvConverter converter) =>
+        TryTo<TSource, TTarget>(input, converter, out var result) ? result : default;
+
+    /// <summary>
+    /// 尝试将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="converter">优先使用的自定义转换器。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>转换成功返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    /// <exception cref="ArgumentNullException">转换器为 <see langword="null"/>。</exception>
+    /// <remarks>
+    /// 精确命中的自定义转换失败后不回退内置规则；未命中时使用内置规则。
+    /// </remarks>
+    public static bool TryTo<TSource, TTarget>(TSource input, ConvConverter converter, out TTarget result)
+    {
+        if (converter == null)
+            throw new ArgumentNullException(nameof(converter));
+        result = default;
+        if (input == null || input is DBNull)
+            return false;
+
+        // 密封类型和值类型的运行时类型已知；可空值类型装箱后需按底层类型匹配。
+        var exactSource = !ConvTypeInfo<TSource>.IsNullableValueType &&
+                          (typeof(TSource).IsSealed || typeof(TSource).IsValueType);
+        bool success;
+        bool matched;
+        if (exactSource)
+            success = converter.TryConvert<TSource, TTarget>(input, out result, out matched);
+        else
+            success = converter.TryConvert<TTarget>((object)input, out result, out matched);
+        return matched ? success : TryToCoreTyped(input, out result);
     }
 
     #endregion
@@ -1778,6 +1929,30 @@ public static class Conv
     }
 
     /// <summary>
+    /// 读取内置整数类型的精确值。
+    /// </summary>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="result">输入对应的十进制整数。</param>
+    /// <returns>输入为内置整数类型时返回 <see langword="true"/>。</returns>
+    private static bool TryGetIntegralValue(object input, out decimal result)
+    {
+        switch (input)
+        {
+            case sbyte value: result = value; return true;
+            case byte value: result = value; return true;
+            case short value: result = value; return true;
+            case ushort value: result = value; return true;
+            case int value: result = value; return true;
+            case uint value: result = value; return true;
+            case long value: result = value; return true;
+            case ulong value: result = value; return true;
+            default:
+                result = default;
+                return false;
+        }
+    }
+
+    /// <summary>
     /// 将输入舍入为十进制整数值。
     /// </summary>
     /// <param name="input">待转换值；十进制值直接参与舍入。</param>
@@ -1821,6 +1996,14 @@ public static class Conv
         result = default;
         if (input == null || input is DBNull)
             return false;
+        if (input is string longText && ConvTypeInfo<T>.UnderlyingType == typeof(long))
+        {
+            if (!long.TryParse(longText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number))
+                return false;
+            result = ConvTypeInfo<T>.IsNullableValueType
+                ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
+            return true;
+        }
         if (input is string source && string.IsNullOrWhiteSpace(source))
             return false;
         if (input is T same && input is not JsonElement)
@@ -1829,10 +2012,54 @@ public static class Conv
             return true;
         }
 
-        var type = Common.GetType<T>();
+        var type = ConvTypeInfo<T>.UnderlyingType;
         try
         {
-            if (type == typeof(string) || type == typeof(Guid))
+            if (input is string scalarText)
+            {
+                if (type == typeof(double))
+                {
+                    if (!double.TryParse(scalarText, NumberStyles.Float | NumberStyles.AllowThousands,
+                            CultureInfo.InvariantCulture, out var number))
+                        return false;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
+                    return true;
+                }
+                if (type == typeof(decimal))
+                {
+                    if (!decimal.TryParse(scalarText, NumberStyles.Number, CultureInfo.InvariantCulture, out var number))
+                        return false;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
+                    return true;
+                }
+                if (type == typeof(bool))
+                {
+                    if (!bool.TryParse(scalarText, out var value))
+                        return false;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(value) : (T)(object)value;
+                    return true;
+                }
+                if (type == typeof(DateTime))
+                {
+                    if (!DateTime.TryParse(scalarText, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                        return false;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(date) : (T)(object)date;
+                    return true;
+                }
+            }
+            if (type == typeof(Guid))
+            {
+                if (!Guid.TryParse(input.ToString(), out var guid))
+                    return false;
+                result = ConvTypeInfo<T>.IsNullableValueType
+                    ? ConvTypeInfo<T>.FromNullable(guid) : (T)(object)guid;
+                return true;
+            }
+            if (type == typeof(string))
             {
                 result = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(input.ToString());
                 return result != null;
@@ -1846,8 +2073,21 @@ public static class Conv
             {
                 if (!int.TryParse(numericText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number))
                     return false;
-                result = (T)(object)number;
+                result = ConvTypeInfo<T>.IsNullableValueType
+                    ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
                 return true;
+            }
+            if (type == typeof(int))
+            {
+                if (input is long integer)
+                {
+                    if (integer < int.MinValue || integer > int.MaxValue)
+                        return false;
+                    var value = (int)integer;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(value) : (T)(object)value;
+                    return true;
+                }
             }
             if (input is IConvertible)
             {
@@ -1876,6 +2116,48 @@ public static class Conv
     }
 
     /// <summary>
+    /// 尝试转换保留源类型的输入。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>转换成功返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    private static bool TryToCoreTyped<TSource, TTarget>(TSource input, out TTarget result)
+    {
+        result = default;
+        if (input == null || input is DBNull)
+            return false;
+        if (typeof(TSource) == typeof(TTarget) && typeof(TSource).IsValueType &&
+            !ConvTypeInfo<TSource>.IsNullableValueType && input is not JsonElement)
+        {
+            result = (TTarget)(object)input;
+            return true;
+        }
+        if (input is JsonElement element && typeof(TTarget) != typeof(string) &&
+            typeof(TTarget) != typeof(Guid) && !ConvTypeInfo<TTarget>.UnderlyingType.IsEnum)
+        {
+            try
+            {
+                if (element.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+                    return false;
+#if NETSTANDARD2_0
+                result = Json.ToObject<TTarget>(element.GetRawText(), ConversionJsonOptions);
+#else
+                result = element.Deserialize<TTarget>(ConversionJsonOptions);
+#endif
+                return result != null;
+            }
+            catch
+            {
+                result = default;
+                return false;
+            }
+        }
+        return TryToCore((object)input, out result);
+    }
+
+    /// <summary>
     /// 将逗号分隔的文本转换为列表。
     /// </summary>
     /// <typeparam name="T">列表元素类型。</typeparam>
@@ -1893,9 +2175,32 @@ public static class Conv
                 continue;
             if (index > start)
             {
-                var item = input.Substring(start, index - start);
-                if (!string.IsNullOrWhiteSpace(item))
-                    result.Add(To<T>(item));
+#if !NETSTANDARD2_0
+                if (typeof(T) == typeof(int))
+                {
+                    var hasContent = false;
+                    for (var offset = start; offset < index; offset++)
+                    {
+                        if (!char.IsWhiteSpace(input[offset]))
+                        {
+                            hasContent = true;
+                            break;
+                        }
+                    }
+                    if (hasContent)
+                    {
+                        var item = input.AsSpan(start, index - start);
+                        result.Add(int.TryParse(item, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
+                            ? (T)(object)value : default);
+                    }
+                }
+                else
+#endif
+                {
+                    var item = input.Substring(start, index - start);
+                    if (!string.IsNullOrWhiteSpace(item))
+                        result.Add(To<T>(item));
+                }
             }
             start = index + 1;
         }

@@ -1,6 +1,6 @@
-using Bing.Helpers.Internal;
+using Bing.Conversions.Internals;
 
-namespace Bing.Helpers;
+namespace Bing.Conversions;
 
 /// <summary>
 /// 构建按源类型和目标类型精确匹配的转换器。
@@ -13,7 +13,7 @@ public sealed class ConvConverterBuilder
     /// <summary>
     /// 保存构建期间注册的转换条目。
     /// </summary>
-    private readonly Dictionary<(Type Source, Type Target), IConvConverterEntry> _entries = new();
+    private readonly Dictionary<(Type Source, Type Target), IConverterEntry> _entries = new();
 
     /// <summary>
     /// 注册一个转换函数。
@@ -30,7 +30,7 @@ public sealed class ConvConverterBuilder
             throw new ArgumentNullException(nameof(converter));
         if (_entries.ContainsKey((typeof(TSource), typeof(TTarget))))
             throw new InvalidOperationException("该类型对已注册转换函数。");
-        _entries.Add((typeof(TSource), typeof(TTarget)), new ConvConverterEntry<TSource, TTarget>(converter));
+        _entries.Add((typeof(TSource), typeof(TTarget)), new ConverterEntry<TSource, TTarget>(converter));
         return this;
     }
 
@@ -38,5 +38,5 @@ public sealed class ConvConverterBuilder
     /// 创建独立的转换器快照。
     /// </summary>
     /// <returns>可供多个线程并发读取的转换器。</returns>
-    public ConvConverter Build() => new(new Dictionary<(Type Source, Type Target), IConvConverterEntry>(_entries));
+    public ConvConverter Build() => new(new Dictionary<(Type Source, Type Target), IConverterEntry>(_entries));
 }

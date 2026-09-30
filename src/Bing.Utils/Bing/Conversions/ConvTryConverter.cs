@@ -1,4 +1,4 @@
-namespace Bing.Helpers;
+namespace Bing.Conversions;
 
 /// <summary>
 /// 尝试将指定源类型转换为目标类型。

@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using Bing.Conversions;
 
 namespace Bing.Helpers;
 
