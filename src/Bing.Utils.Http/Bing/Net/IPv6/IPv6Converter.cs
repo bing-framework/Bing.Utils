@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Text;
@@ -197,7 +197,7 @@ public static class IPv6Converter
     {
         // 创建 IPv6 最大值: 2^128 - 1
         var maxValueBytes = new byte[17]; // 16字节全为0xFF，加一个0字节防止符号位
-        for (var i = 0; i < 16; i++) 
+        for (var i = 0; i < 16; i++)
             maxValueBytes[i] = 0xFF;
         maxValueBytes[16] = 0;
         var maxValue = new BigInteger(maxValueBytes);
@@ -208,10 +208,10 @@ public static class IPv6Converter
         var bytes = value.ToByteArray();
 
         // 移除符号位字节（如果存在）
-        if (bytes.Length > 16 && bytes[bytes.Length - 1] == 0) 
+        if (bytes.Length > 16 && bytes[bytes.Length - 1] == 0)
             bytes = bytes.Take(bytes.Length - 1).ToArray();
         // 确保字节数组长度不超过16
-        if (bytes.Length > 16) 
+        if (bytes.Length > 16)
             bytes = bytes.Take(16).ToArray();
 
         // 创建16字节的IPv6地址数组（大端序）

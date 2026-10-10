@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
 using Bing.Helpers;
@@ -139,7 +139,7 @@ public class CaptchaBuilder
     private static string GetRandomNumbers(int length)
     {
         var result = new StringBuilder();
-        for (var i = 0; i < length; i++) 
+        for (var i = 0; i < length; i++)
             result.Append(Encrypt.Random.Next(0, 9));
         return result.ToString();
     }
@@ -168,7 +168,7 @@ public class CaptchaBuilder
     {
         var result = new StringBuilder();
         // 每循环一次产生一个含两个元素的十六进制字节数组，并放入bytes数组中
-        for (var i = 0; i < length; i++) 
+        for (var i = 0; i < length; i++)
             result.Append(GenerateChinese());
         return result.ToString();
     }
@@ -459,7 +459,7 @@ public class CaptchaBuilder
             throw new ArgumentOutOfRangeException(nameof(length));
         length = length < 1 ? 1 : length;
         code = GetCode(length, captchaType);
-        if (code.Length > length) 
+        if (code.Length > length)
             code = code.Substring(0, length);
         return CreateImage(code);
     }

@@ -1,4 +1,4 @@
-﻿using Bing.Numeric;
+using Bing.Numeric;
 
 namespace Bing.IdUtils.CombImplements.Strategies;
 
@@ -42,7 +42,7 @@ internal class SqlDateTimeStrategy : ICombDateTimeStrategy
         var days = (ushort)(timestamp - MinDateTimeValue).TotalDays;
         var tickBytes = BitConverter.GetBytes(ticks);
         var dayBytes = BitConverter.GetBytes(days);
-            
+
         if (BitConverter.IsLittleEndian)
         {
             Array.Reverse(dayBytes);

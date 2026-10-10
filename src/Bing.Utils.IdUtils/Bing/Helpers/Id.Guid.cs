@@ -1,4 +1,4 @@
-﻿using Bing.Extensions;
+using Bing.Extensions;
 
 namespace Bing.Helpers;
 
@@ -32,7 +32,7 @@ public static partial class Id
     {
         if (provider == null)
             throw new ArgumentNullException(nameof(provider));
-        lock (_guidLock) 
+        lock (_guidLock)
             _guidGenerateFunc = provider;
     }
 
@@ -45,7 +45,7 @@ public static partial class Id
     /// </remarks>
     public static void ResetGuid()
     {
-        lock (_guidLock) 
+        lock (_guidLock)
             _guidGenerateFunc = _defaultGuidGenerateFunc;
     }
 

@@ -1,4 +1,4 @@
-﻿namespace Bing;
+namespace Bing;
 
 /// <summary>
 /// 随机数(<see cref="Random"/>) 扩展
@@ -100,7 +100,7 @@ public static class RandomExtensions
     /// <param name="max">最大值</param>
     public static long NextLong(this Random random, long min, long max)
     {
-        var longRand = BitConverter.ToInt64(random.NextBytes(8),0);
+        var longRand = BitConverter.ToInt64(random.NextBytes(8), 0);
         return Math.Abs(longRand % (max - min)) + min;
     }
 

@@ -1,4 +1,4 @@
-﻿using Bing.Reflection;
+using Bing.Reflection;
 
 // ReSharper disable once CheckNamespace
 namespace Bing;
@@ -62,7 +62,7 @@ public static class TypeExtensions
     /// <param name="stoppingType">停止添加的类型。</param>
     /// <param name="includeObject">是否包含 <see cref="object"/> 类型（默认为 true）。</param>
     /// <returns>包含类型及其基类型的数组。</returns>
-    public static Type[] GetBaseClasses(this Type type, Type stoppingType, bool includeObject = true)=>Reflections.GetBaseClasses(type, stoppingType, includeObject);
+    public static Type[] GetBaseClasses(this Type type, Type stoppingType, bool includeObject = true) => Reflections.GetBaseClasses(type, stoppingType, includeObject);
 
     #endregion
 }

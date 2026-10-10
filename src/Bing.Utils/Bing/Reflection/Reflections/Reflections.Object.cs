@@ -1,4 +1,4 @@
-﻿using Bing.Helpers;
+using Bing.Helpers;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
@@ -160,7 +160,7 @@ public static partial class Reflections
     /// <typeparam name="T">类型</typeparam>
     /// <returns>包含指定类型所有公共属性的PropertyInfo数组。如果指定的类型没有公共属性，则返回空数组。</returns>
     public static PropertyInfo[] GetProperties<T>() => GetProperties(typeof(T));
-    
+
     /// <summary>
     /// 获取指定类型的所有公共属性信息。
     /// </summary>

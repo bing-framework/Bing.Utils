@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.Contracts;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 
 namespace Bing.Numeric;
@@ -204,7 +204,7 @@ public static partial class NumberExtensions
     /// <param name="a">比较的值</param>
     /// <param name="b">比较的值</param>
     /// <param name="tolerance">公差</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNearEqual(this decimal a, decimal b, decimal tolerance) => Numbers.IsNearEqual(a, b, tolerance);
 
     /// <summary>
@@ -213,7 +213,7 @@ public static partial class NumberExtensions
     /// <param name="a">比较的值</param>
     /// <param name="b">比较的值</param>
     /// <param name="minDecimalPlaces">最小小数位数</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsRelativeNearEqual(this double a, double b, uint minDecimalPlaces) => Numbers.IsRelativeNearEqual(a, b, minDecimalPlaces);
 
     /// <summary>
@@ -222,7 +222,7 @@ public static partial class NumberExtensions
     /// <param name="a">比较的值</param>
     /// <param name="b">比较的值</param>
     /// <param name="stringValidate">是否验证字符串</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsPreciseEqual(this double a, double b, bool stringValidate = false) => Numbers.IsPreciseEqual(a, b, stringValidate);
 
     /// <summary>
@@ -231,7 +231,7 @@ public static partial class NumberExtensions
     /// <param name="a">比较的值</param>
     /// <param name="b">比较的值</param>
     /// <param name="stringValidate">是否验证字符串</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsPreciseEqual(this double? a, double? b, bool stringValidate = false) => Numbers.IsPreciseEqual(a, b, stringValidate);
 
     /// <summary>
@@ -240,7 +240,7 @@ public static partial class NumberExtensions
     /// <param name="a">比较的值</param>
     /// <param name="b">比较的值</param>
     /// <param name="stringValidate">是否验证字符串</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsPreciseEqual(this float a, float b, bool stringValidate = false) => Numbers.IsPreciseEqual(a, b, stringValidate);
 
     /// <summary>
@@ -249,7 +249,7 @@ public static partial class NumberExtensions
     /// <param name="a">比较的值</param>
     /// <param name="b">比较的值</param>
     /// <param name="stringValidate">是否验证字符串</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsPreciseEqual(this float? a, float? b, bool stringValidate = false) => Numbers.IsPreciseEqual(a, b, stringValidate);
 
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using Bing.Extensions;
 
 // ReSharper disable once CheckNamespace
@@ -83,7 +83,7 @@ public static partial class BingCollectionExtensions
         observableCollection.CheckNotNull(nameof(observableCollection));
 
         observableCollection.Clear();
-        foreach (var item in collection) 
+        foreach (var item in collection)
             observableCollection.Add(item);
         return observableCollection;
     }

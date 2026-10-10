@@ -1,4 +1,4 @@
-﻿using System.Xml;
+using System.Xml;
 
 namespace Bing.Comments;
 
@@ -55,13 +55,13 @@ public sealed class CsComments
     internal CsComments(XmlNode node)
     {
         var summary = node["summary"] ?? node["value"];
-        if (summary != null) 
+        if (summary != null)
             Summary = summary.InnerText.Trim();
         var remarks = node["remarks"];
-        if (remarks != null) 
+        if (remarks != null)
             Remarks = remarks.InnerText.Trim();
         var returns = node["returns"];
-        if (returns != null) 
+        if (returns != null)
             Returns = returns.InnerText.Trim();
         var param = node.SelectNodes("param");
         Param = new CsCommentsParamCollection();

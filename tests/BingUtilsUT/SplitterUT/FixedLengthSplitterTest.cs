@@ -1,4 +1,4 @@
-﻿using Bing.Text.Splitters;
+using Bing.Text.Splitters;
 
 namespace BingUtilsUT.SplitterUT;
 
@@ -99,7 +99,7 @@ public class FixedLengthSplitterTest
         @baseList[7].ShouldBe("vwx");
         @baseList[8].ShouldBe(" yz");
 
-        var enumerable = Splitter.FixedLength(3).TrimResults(s=>s.TrimStart()).Split(OriginalStrings.IncludeWhiteSpaceString);
+        var enumerable = Splitter.FixedLength(3).TrimResults(s => s.TrimStart()).Split(OriginalStrings.IncludeWhiteSpaceString);
         enumerable.Count().ShouldBe(9);
 
         var list = enumerable.ToList();
@@ -190,7 +190,7 @@ public class FixedLengthSplitterTest
         @baseList[7].ShouldBe("vwx");
         @baseList[8].ShouldBe(" yz");
 
-        var list = Splitter.FixedLength(3).TrimResults(s=>s.TrimStart()).SplitToList(OriginalStrings.IncludeWhiteSpaceString);
+        var list = Splitter.FixedLength(3).TrimResults(s => s.TrimStart()).SplitToList(OriginalStrings.IncludeWhiteSpaceString);
         list.Count().ShouldBe(9);
 
         list[0].ShouldBe("abc");

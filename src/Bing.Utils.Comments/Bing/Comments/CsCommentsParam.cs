@@ -1,4 +1,4 @@
-﻿using System.Xml;
+using System.Xml;
 
 namespace Bing.Comments;
 
@@ -34,7 +34,7 @@ public sealed class CsCommentsParam
     internal CsCommentsParam(XmlNode node)
     {
         var attr = node.Attributes["name"];
-        if (attr != null) 
+        if (attr != null)
             Name = attr.InnerText.Trim();
         Text = node.InnerText;
     }

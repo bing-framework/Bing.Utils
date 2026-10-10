@@ -1,4 +1,4 @@
-﻿namespace Bing.Conversions;
+namespace Bing.Conversions;
 
 /// <summary>
 /// ASCII 转换帮助类
@@ -10,7 +10,7 @@ internal static class AsciiConvHelper
     /// </summary>
     /// <param name="char">字符</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static byte CharToAscii(char @char) => (byte) @char;
+    public static byte CharToAscii(char @char) => (byte)@char;
 
     /// <summary>
     /// 字符串转ASCII
@@ -24,7 +24,7 @@ internal static class AsciiConvHelper
     /// </summary>
     /// <param name="byte">ASCII字节</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static char AsciiToChar(byte @byte) => (char) @byte;
+    public static char AsciiToChar(byte @byte) => (char)@byte;
 
     /// <summary>
     /// ASCII转字符串

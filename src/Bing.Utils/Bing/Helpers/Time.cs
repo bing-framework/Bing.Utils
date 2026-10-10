@@ -1,4 +1,4 @@
-﻿using Bing.Date;
+using Bing.Date;
 using Bing.Extensions;
 
 namespace Bing.Helpers;
@@ -414,7 +414,7 @@ public static partial class Time
     /// long timestamp = Time.ToEpochSecond(dateTime);
     /// </code>
     /// </example>
-    public static long ToEpochSecond(DateTime datetime)=> (datetime.ToUniversalTime().Ticks - TimeOptions.UnixEpochTicks) / TimeOptions.TicksPerSec;
+    public static long ToEpochSecond(DateTime datetime) => (datetime.ToUniversalTime().Ticks - TimeOptions.UnixEpochTicks) / TimeOptions.TicksPerSec;
 
     /// <summary>
     /// 将日期时间转换为Unix时间戳（毫秒）
@@ -432,5 +432,5 @@ public static partial class Time
     /// long timestamp = Time.ToEpochMilli(dateTime);
     /// </code>
     /// </example>
-    public static long ToEpochMilli(DateTime datetime)=> (datetime.ToUniversalTime().Ticks - TimeOptions.UnixEpochTicks) / TimeOptions.TicksPreMillisecond;
+    public static long ToEpochMilli(DateTime datetime) => (datetime.ToUniversalTime().Ticks - TimeOptions.UnixEpochTicks) / TimeOptions.TicksPreMillisecond;
 }

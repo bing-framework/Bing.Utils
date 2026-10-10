@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using AspectCore.Extensions.Reflection;
 using Bing.Dynamic;
 
@@ -9,7 +9,7 @@ namespace Bing.Reflection;
 /// </summary>
 public static partial class TypeVisit
 {
-	#region Create Instance
+    #region Create Instance
 
     /// <summary>
     /// 根据指定类型和构造函数参数创建类型的实例。
@@ -122,8 +122,8 @@ public static partial class TypeVisit
         var properties = values.ToDictionary(_ => _.Key, _ => _.Value.GetType());
         var dynamicType = TypeFactory.CreateType(properties);
         var @object = (DynamicBase)Activator.CreateInstance(dynamicType);
-        foreach (var item in values) 
-            @object.SetPropertyValue(item.Key,item.Value);
+        foreach (var item in values)
+            @object.SetPropertyValue(item.Key, item.Value);
         return @object;
     }
 #endif

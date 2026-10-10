@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Bing.Helpers;
 
 namespace Bing.IO;
@@ -36,7 +36,7 @@ public static partial class FileHelper
     {
         var dict = Const.FileExtensionDict;
         ext = ext.ToLower();
-        if (!ext.StartsWith(".")) 
+        if (!ext.StartsWith("."))
             ext = "." + ext;
         dict.TryGetValue(ext, out var contentType);
         return contentType;
@@ -191,7 +191,7 @@ public static partial class FileHelper
         // UTF-32
         if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xFE && bom[3] == 0xFF)
             return Encoding.UTF32;
-        if(IsUTF8Bytes(bom))
+        if (IsUTF8Bytes(bom))
             return Encoding.UTF8;
         return Encoding.Default;
     }

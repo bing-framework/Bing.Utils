@@ -1,4 +1,5 @@
-﻿namespace Bing.Maths;
+namespace Bing.Maths;
+
 public class CoordinateConvTest
 {
     /// <summary>

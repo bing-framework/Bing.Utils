@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Bing.Extensions;
 using Bing.Reflection;
 
@@ -526,7 +526,7 @@ public static partial class Lambdas
     /// </summary>
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="expression">属性表达式</param>
-    public static TAttribute GetAttribute<TAttribute>(Expression expression) 
+    public static TAttribute GetAttribute<TAttribute>(Expression expression)
         where TAttribute : Attribute
     {
         var memberInfo = GetMember(expression);
@@ -540,7 +540,7 @@ public static partial class Lambdas
     /// <typeparam name="TProperty">属性类型</typeparam>
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="propertyExpression">属性表达式</param>
-    public static TAttribute GetAttribute<TEntity, TProperty, TAttribute>(Expression<Func<TEntity, TProperty>> propertyExpression) 
+    public static TAttribute GetAttribute<TEntity, TProperty, TAttribute>(Expression<Func<TEntity, TProperty>> propertyExpression)
         where TAttribute : Attribute =>
         GetAttribute<TAttribute>(propertyExpression);
 

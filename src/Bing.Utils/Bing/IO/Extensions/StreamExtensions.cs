@@ -1,4 +1,4 @@
-﻿using StreamReader = System.IO.StreamReader;
+using StreamReader = System.IO.StreamReader;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.IO;
@@ -422,7 +422,7 @@ public static class StreamExtensions
             throw new InvalidOperationException("流不支持读取操作");
         stream.Seek(0, SeekOrigin.Begin);
         using var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-        using (var bs = new BufferedStream(stream, bufferSize)) 
+        using (var bs = new BufferedStream(stream, bufferSize))
             bs.CopyTo(fs);
         stream.Seek(0, SeekOrigin.Begin);
     }

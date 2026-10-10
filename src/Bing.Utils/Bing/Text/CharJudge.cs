@@ -1,4 +1,4 @@
-﻿namespace Bing.Text;
+namespace Bing.Text;
 
 /// <summary>
 /// 字符检查器
@@ -64,7 +64,7 @@ public static class CharJudge
                (codePoint >= 0x2764 && codePoint <= 0x2764) ||    // Heavy Black Heart (❤)
                (codePoint >= 0x2728 && codePoint <= 0x2728) ||    // Sparkles (✨)
                (codePoint >= 0x2708 && codePoint <= 0x2708) ||    // Airplane (✈)
-               // 高代理字符范围 - 用于多字节emoji
+                                                                  // 高代理字符范围 - 用于多字节emoji
                (codePoint >= 0xD83C && codePoint <= 0xD83F);      // High surrogate range for emoji
     }
 }

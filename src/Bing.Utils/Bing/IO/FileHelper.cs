@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using Bing.Collections;
@@ -247,20 +247,20 @@ public static partial class FileHelper
     {
         if (stream == null)
             return string.Empty;
-        if (encoding == null) 
+        if (encoding == null)
             encoding = Encoding.UTF8;
         if (stream.CanRead == false)
             return string.Empty;
 
         using var memoryStream = new MemoryStream();
         using var reader = new StreamReader(memoryStream, encoding);
-        if (stream.CanSeek) 
+        if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
         stream.CopyTo(memoryStream);
-        if (memoryStream.CanSeek) 
+        if (memoryStream.CanSeek)
             memoryStream.Seek(0, SeekOrigin.Begin);
         var result = await reader.ReadToEndAsync();
-        if (stream.CanSeek) 
+        if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
         return result;
     }
@@ -298,7 +298,7 @@ public static partial class FileHelper
                     ws.Flush();
                 }
             }
-            if (delete) 
+            if (delete)
                 Delete(file);
         }
     }

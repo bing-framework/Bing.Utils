@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.Legacy;
+namespace Bing.IdUtils.Legacy;
 /// <summary>
 /// GUID 生成测试
 /// </summary>
@@ -46,7 +46,7 @@ public class GuidTest
         Test_ShouldNotBeEmpty(GuidProvider.Create(GuidStyle.SequentialAsStringStyle));
         Test_ShouldNotBeEmpty(GuidProvider.Create(GuidStyle.SequentialAsBinaryStyle));
         Test_ShouldNotBeEmpty(GuidProvider.Create(GuidStyle.SequentialAsEndStyle));
-        Test_ShouldNotBeEmpty(GuidProvider.Create(GuidStyle.EquifaxStyle)); 
+        Test_ShouldNotBeEmpty(GuidProvider.Create(GuidStyle.EquifaxStyle));
     }
     /// <summary>
     /// 测试 - 创建GUID - 不重复模式

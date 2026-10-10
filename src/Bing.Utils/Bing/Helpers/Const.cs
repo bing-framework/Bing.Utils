@@ -1,4 +1,4 @@
-﻿namespace Bing.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// 常量
@@ -495,7 +495,7 @@ public sealed class Const
     /// <summary>
     /// 日期时间格式 <c>[yyyy-MM-dd HH:mm:ss.fff]</c>
     /// </summary>
-    public const string DateTimeMsFormat="yyyy-MM-dd HH:mm:ss.fff";
+    public const string DateTimeMsFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
     #endregion
 

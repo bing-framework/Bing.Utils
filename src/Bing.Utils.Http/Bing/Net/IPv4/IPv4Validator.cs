@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
@@ -147,7 +147,7 @@ public static class IPv4Validator
             var ip = IPv4Converter.IpToUInt32(ipAddress);
             var start = IPv4Converter.IpToUInt32(startIp);
             var end = IPv4Converter.IpToUInt32(endIp);
-            
+
             // 确保起始IP小于等于结束IP
             if (start > end)
                 (start, end) = (end, start);

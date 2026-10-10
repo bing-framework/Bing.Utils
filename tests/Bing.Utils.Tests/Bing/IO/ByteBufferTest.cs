@@ -1,4 +1,5 @@
-﻿namespace Bing.IO;
+namespace Bing.IO;
+
 public class ByteBufferTest
 {
     /// <summary>

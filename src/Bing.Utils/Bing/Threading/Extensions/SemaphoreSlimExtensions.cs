@@ -1,4 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
+// ReSharper disable once CheckNamespace
 namespace Bing.Threading;
 
 /// <summary>
@@ -34,7 +34,7 @@ public static class SemaphoreSlimExtensions
     /// <param name="millisecondsTimeout">超时时间。单位：毫秒数</param>
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphoreSlim, int millisecondsTimeout)
     {
-        if(await semaphoreSlim.WaitAsync(millisecondsTimeout))
+        if (await semaphoreSlim.WaitAsync(millisecondsTimeout))
             return GetDispose(semaphoreSlim);
         throw new TimeoutException();
     }
@@ -47,7 +47,7 @@ public static class SemaphoreSlimExtensions
     /// <param name="cancellationToken">取消令牌</param>
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphoreSlim, int millisecondsTimeout, CancellationToken cancellationToken)
     {
-        if(await semaphoreSlim.WaitAsync(millisecondsTimeout, cancellationToken))
+        if (await semaphoreSlim.WaitAsync(millisecondsTimeout, cancellationToken))
             return GetDispose(semaphoreSlim);
         throw new TimeoutException();
     }
@@ -59,7 +59,7 @@ public static class SemaphoreSlimExtensions
     /// <param name="timeout">超时时间</param>
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphoreSlim, TimeSpan timeout)
     {
-        if(await semaphoreSlim.WaitAsync(timeout))
+        if (await semaphoreSlim.WaitAsync(timeout))
             return GetDispose(semaphoreSlim);
         throw new TimeoutException();
     }
@@ -72,7 +72,7 @@ public static class SemaphoreSlimExtensions
     /// <param name="cancellationToken">取消令牌</param>
     public static async Task<IDisposable> LockAsync(this SemaphoreSlim semaphoreSlim, TimeSpan timeout, CancellationToken cancellationToken)
     {
-        if(await semaphoreSlim.WaitAsync(timeout, cancellationToken))
+        if (await semaphoreSlim.WaitAsync(timeout, cancellationToken))
             return GetDispose(semaphoreSlim);
         throw new TimeoutException();
     }

@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Text;
 using FluentFTP;
 
@@ -142,7 +142,7 @@ public class FtpClient : IFtpClient
     {
         try
         {
-            _client.Rename(path,dest);
+            _client.Rename(path, dest);
             return _client.FileExists(dest);
         }
         catch (FluentFTP.FtpException e)
@@ -187,7 +187,7 @@ public class FtpClient : IFtpClient
         bool result = false;
         try
         {
-            if (_client.FileExists(file)) 
+            if (_client.FileExists(file))
                 result = _client.MoveFile(file, destinationFile, FtpRemoteExists.Overwrite);
             return result;
         }

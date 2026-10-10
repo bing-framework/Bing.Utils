@@ -1,4 +1,4 @@
-﻿namespace BingUtilsUT.Samples;
+namespace BingUtilsUT.Samples;
 
 [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
 public class ModelOneAttribute : Attribute { }
@@ -8,7 +8,7 @@ public class ModelTwoAttribute : Attribute { }
 
 [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
 public class ModelThreeAttribute : Attribute { }
-    
+
 [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
 public class ModelFourAttribute : Attribute { }
 
@@ -17,8 +17,8 @@ public class ModelFourAttribute : Attribute { }
 [ModelThree]
 public class NormalWithAttrClass
 {
-    [ModelOne] [ModelTwo] public string Nice { get; set; }
-        
+    [ModelOne][ModelTwo] public string Nice { get; set; }
+
     public int Index { get; set; }
 
     [ModelOne]
@@ -36,7 +36,7 @@ public class NormalWithAttrClass
     [ModelTwo]
     public NormalWithAttrClass() { }
 
-    public NormalWithAttrClass([ModelTwo] [ModelThree] string value)
+    public NormalWithAttrClass([ModelTwo][ModelThree] string value)
     {
         Nice = value;
     }

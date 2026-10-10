@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace BuildScript
 {
@@ -11,7 +11,7 @@ namespace BuildScript
         /// <returns>自2020年1月1日以来的总秒数的字符串表示</returns>
         public string CreateStamp()
         {
-            var seconds=(long)(DateTime.UtcNow - new DateTime(2020, 1, 1)).TotalSeconds;
+            var seconds = (long)(DateTime.UtcNow - new DateTime(2020, 1, 1)).TotalSeconds;
             return seconds.ToString();
         }
     }

@@ -1,4 +1,4 @@
-﻿using Bing.Dynamic;
+using Bing.Dynamic;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
@@ -17,7 +17,7 @@ internal static partial class TypeFactory
         var properties = values.ToDictionary(_ => _.Key, _ => _.Value.GetType());
         var type = CreateType(properties);
         var @object = (DynamicBase)Activator.CreateInstance(type);
-        foreach (var item in values) 
+        foreach (var item in values)
             @object?.SetPropertyValue(item.Key, item.Value);
         return @object;
     }

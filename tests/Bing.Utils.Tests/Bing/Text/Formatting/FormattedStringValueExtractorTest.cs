@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Formatting;
+namespace Bing.Text.Formatting;
 /// <summary>
 /// 格式化字符串提取器测试
 /// </summary>
@@ -117,8 +117,8 @@ public class FormattedStringValueExtractorTest
     public void Test_Matched_10()
     {
         Test_Matched_Internal(
-            "Hello,Bing,World", 
-            "Hello,{a},{b}", 
+            "Hello,Bing,World",
+            "Hello,{a},{b}",
             new NameValue("a", "Bing"),
             new NameValue("b", "World"));
     }
@@ -129,8 +129,8 @@ public class FormattedStringValueExtractorTest
     public void Test_Matched_11()
     {
         Test_Matched_Internal(
-            "Hello,Bing,World", 
-            "{a},{b},World", 
+            "Hello,Bing,World",
+            "{a},{b},World",
             new NameValue("a", "Hello"),
             new NameValue("b", "Bing"));
     }
@@ -141,8 +141,8 @@ public class FormattedStringValueExtractorTest
     public void Test_Matched_12()
     {
         Test_Matched_Internal(
-            "Hello,Bing,Hello,Test,Hello,World", 
-            "Hello,{a},Hello,{b},Hello,World", 
+            "Hello,Bing,Hello,Test,Hello,World",
+            "Hello,{a},Hello,{b},Hello,World",
             new NameValue("a", "Bing"),
             new NameValue("b", "Test"));
     }
@@ -152,7 +152,7 @@ public class FormattedStringValueExtractorTest
     [Fact]
     public void Test_Matched_13()
     {
-        Test_Matched_Internal("acababcabcd", "a{b}c{d}", 
+        Test_Matched_Internal("acababcabcd", "a{b}c{d}",
             new NameValue("b", "cabab"),
             new NameValue("d", "abcd"));
     }
@@ -163,8 +163,8 @@ public class FormattedStringValueExtractorTest
     public void Test_Matched_14()
     {
         Test_Matched_Internal(
-            "Hello,Bing,World", 
-            "Hello,{a},{b},World", 
+            "Hello,Bing,World",
+            "Hello,{a},{b},World",
             new NameValue("a", "Bing"));
     }
     /// <summary>

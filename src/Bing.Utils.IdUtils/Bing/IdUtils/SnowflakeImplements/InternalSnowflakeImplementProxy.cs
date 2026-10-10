@@ -1,4 +1,4 @@
-﻿using Bing.IdUtils.SnowflakeImplements.Providers;
+using Bing.IdUtils.SnowflakeImplements.Providers;
 
 namespace Bing.IdUtils.SnowflakeImplements;
 
@@ -11,7 +11,7 @@ internal static class InternalSnowflakeImplementProxy
     /// 基于 Twitter 算法
     /// </summary>
     /// <remarks>默认机器ID：1</remarks>
-    public static ISnowflakeProvider Twitter = new TwitterSnowflakeProvider(1,1);
+    public static ISnowflakeProvider Twitter = new TwitterSnowflakeProvider(1, 1);
 
     /// <summary>
     /// 基于 Seata 算法

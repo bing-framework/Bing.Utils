@@ -1,4 +1,4 @@
-﻿using System.Text.Encodings.Web;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
@@ -258,7 +258,7 @@ public static class Json
         options = GetToObjectOptions(options);
         return JsonSerializer.Deserialize<T>(json, options);
     }
-    
+
 #endif
 
     #endregion
@@ -266,7 +266,7 @@ public static class Json
     #region ToObjectAsync(将Json字符串转换为对象)
 
 #if NETCOREAPP3_1_OR_GREATER
-    
+
     /// <summary>
     /// 将Json字符串转换为对象
     /// </summary>
@@ -311,7 +311,7 @@ public static class Json
     {
         if (json == null)
             return default;
-        await using var stream = new MemoryStream( json );
+        await using var stream = new MemoryStream(json);
         return await ToObjectAsync<T>(stream, options, cancellationToken);
     }
 
@@ -339,7 +339,7 @@ public static class Json
     /// <param name="options">Json序列化配置</param>
     private static JsonSerializerOptions GetToBytesOptions(JsonSerializerOptions options)
     {
-        if(options !=null)
+        if (options != null)
             return options;
         return new JsonSerializerOptions
         {

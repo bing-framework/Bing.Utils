@@ -1,4 +1,4 @@
-﻿using System.IO.Compression;
+using System.IO.Compression;
 
 namespace Bing.Helpers;
 
@@ -188,7 +188,7 @@ public static partial class Compression
     #endregion
 
     #region Compress(对字符串进行压缩)
-    
+
     /// <summary>
     /// 对字符串进行压缩并转换为 Base64 字符串
     /// </summary>
@@ -498,10 +498,10 @@ public static partial class Compression
         {
             // 确保目标目录存在
             var targetDir = Path.GetDirectoryName(zipFile);
-            if (!string.IsNullOrEmpty(targetDir) && !Directory.Exists(targetDir)) 
+            if (!string.IsNullOrEmpty(targetDir) && !Directory.Exists(targetDir))
                 Directory.CreateDirectory(targetDir);
             // 如果目标文件已存在，先删除
-            if (File.Exists(zipFile)) 
+            if (File.Exists(zipFile))
                 File.Delete(zipFile);
             ZipFile.CreateFromDirectory(sourceDir, zipFile, CompressionLevel.Optimal, false);
         }
@@ -542,10 +542,10 @@ public static partial class Compression
         {
             // 确保目标目录存在
             var targetDir = Path.GetDirectoryName(zipFile);
-            if (!string.IsNullOrEmpty(targetDir) && !Directory.Exists(targetDir)) 
+            if (!string.IsNullOrEmpty(targetDir) && !Directory.Exists(targetDir))
                 Directory.CreateDirectory(targetDir);
             // 如果目标文件已存在，先删除
-            if (File.Exists(zipFile)) 
+            if (File.Exists(zipFile))
                 File.Delete(zipFile);
             ZipFile.CreateFromDirectory(sourceDir, zipFile, compressionLevel, includeBaseDirectory);
         }
@@ -593,7 +593,7 @@ public static partial class Compression
         try
         {
             // 确保目标目录存在
-            if (!Directory.Exists(targetDir)) 
+            if (!Directory.Exists(targetDir))
                 Directory.CreateDirectory(targetDir);
 #if NET5_0_OR_GREATER
             ZipFile.ExtractToDirectory(zipFile, targetDir, true); // 允许覆盖
@@ -637,7 +637,7 @@ public static partial class Compression
         try
         {
             // 确保目标目录存在
-            if (!Directory.Exists(targetDir)) 
+            if (!Directory.Exists(targetDir))
                 Directory.CreateDirectory(targetDir);
 
 #if NET5_0_OR_GREATER

@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Expressions;
@@ -100,7 +100,7 @@ public static partial class LambdaExtensions
     /// <param name="left">左操作数</param>
     /// <param name="condition">给定条件</param>
     /// <param name="right">右操作数</param>
-    public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> left, bool condition, Expression<Func<T, bool>> right) => 
+    public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> left, bool condition, Expression<Func<T, bool>> right) =>
         condition ? left.And(right) : left;
 
     /// <summary>
@@ -110,7 +110,7 @@ public static partial class LambdaExtensions
     /// <param name="left">左操作数</param>
     /// <param name="condition">给定条件</param>
     /// <param name="right">右操作数</param>
-    public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> left, Func<bool> condition, Expression<Func<T, bool>> right) => 
+    public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> left, Func<bool> condition, Expression<Func<T, bool>> right) =>
         condition() ? left.And(right) : left;
 
     #endregion
@@ -173,7 +173,7 @@ public static partial class LambdaExtensions
     /// <param name="left">左操作数</param>
     /// <param name="condition">给定条件</param>
     /// <param name="right">右操作数</param>
-    public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> left, bool condition, Expression<Func<T, bool>> right) => 
+    public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> left, bool condition, Expression<Func<T, bool>> right) =>
         condition ? left.Or(right) : left;
 
     /// <summary>
@@ -183,7 +183,7 @@ public static partial class LambdaExtensions
     /// <param name="left">左操作数</param>
     /// <param name="condition">给定条件</param>
     /// <param name="right">右操作数</param>
-    public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> left, Func<bool> condition, Expression<Func<T, bool>> right) => 
+    public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> left, Func<bool> condition, Expression<Func<T, bool>> right) =>
         condition() ? left.Or(right) : left;
 
     #endregion

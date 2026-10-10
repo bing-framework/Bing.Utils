@@ -1,4 +1,4 @@
-﻿namespace Bing.Date;
+namespace Bing.Date;
 
 /// <summary>
 /// 不重复时间戳工厂
@@ -214,7 +214,7 @@ public class NoRepeatTimeStampFactory
     {
         var timestamps = GetTimeStamps(count, useUtc);
         var result = new TimeStamp[count];
-        for (var i = 0; i < count; i++) 
+        for (var i = 0; i < count; i++)
             result[i] = new TimeStamp(timestamps[i]);
         return result;
     }
@@ -231,7 +231,7 @@ public class NoRepeatTimeStampFactory
     /// </remarks>
     public void Reset()
     {
-        lock (_lockObj) 
+        lock (_lockObj)
             _lastTimestampTicks = DateTime.MinValue.Ticks;
     }
 

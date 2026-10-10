@@ -1,4 +1,4 @@
-﻿
+
 // ReSharper disable once CheckNamespace
 namespace Bing.Collections;
 
@@ -43,5 +43,5 @@ public static partial class BingEnumerableExtensions
             yield return chunk;
         }
     }
-    
+
 }

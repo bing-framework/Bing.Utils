@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
@@ -69,7 +69,7 @@ public static partial class PropertyInfoExtensions
                     ? Expression.Unbox(instance, propertyInfo.DeclaringType)
                     : Expression.Convert(instance, propertyInfo.DeclaringType), getMethod);
             var castToObjectResult = Expression.Convert(getterCall, typeof(object));
-            return (Func<object, object>) Expression.Lambda(castToObjectResult, instance).Compile();
+            return (Func<object, object>)Expression.Lambda(castToObjectResult, instance).Compile();
         });
     }
 

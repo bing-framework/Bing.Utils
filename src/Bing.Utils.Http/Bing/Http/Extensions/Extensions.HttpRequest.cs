@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.RegularExpressions;
 using Bing.Extensions;
 using Microsoft.AspNetCore.Http;

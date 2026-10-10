@@ -94,12 +94,14 @@ public class BingExtensionsValidateAndNumericTests
     [Fact] public void IsEmpty_Enumerable_Empty_ReturnsTrue() => new List<int>().IsEmpty().ShouldBeTrue();
     [Fact] public void IsEmpty_Enumerable_HasItems_ReturnsFalse() => new[] { 1, 2 }.IsEmpty().ShouldBeFalse();
 
-    [Fact] public void IsEmpty_GenericDict_Null_ReturnsTrue()
+    [Fact]
+    public void IsEmpty_GenericDict_Null_ReturnsTrue()
     {
         IDictionary<string, int>? d = null;
         BingExtensions.IsEmpty<string, int>(d).ShouldBeTrue();
     }
-    [Fact] public void IsEmpty_GenericDict_Empty_ReturnsTrue()
+    [Fact]
+    public void IsEmpty_GenericDict_Empty_ReturnsTrue()
     {
         var d = new Dictionary<string, int>();
         BingExtensions.IsEmpty<string, int>(d).ShouldBeTrue();
@@ -206,7 +208,8 @@ public class BingExtensionsValidateAndNumericTests
     [Fact] public void IsIn_Byte_OutOfRange_ReturnsFalse() => ((byte)15).IsIn(1, 10).ShouldBeFalse();
     [Fact] public void IsIn_Int_InRange_ReturnsTrue() => 5.IsIn(1, 10).ShouldBeTrue();
     [Fact] public void IsIn_Int_AtBoundary_ReturnsTrue() => 10.IsIn(1, 10).ShouldBeTrue();
-    [Fact] public void IsIn_Int_MinGtMax_ThrowsArgumentOutOfRangeException()
+    [Fact]
+    public void IsIn_Int_MinGtMax_ThrowsArgumentOutOfRangeException()
         => Should.Throw<ArgumentOutOfRangeException>(() => 5.IsIn(10, 1));
     [Fact] public void IsIn_Long_InRange_ReturnsTrue() => 5L.IsIn(1L, 10L).ShouldBeTrue();
     [Fact] public void IsIn_Double_InRange_ReturnsTrue() => 1.5d.IsIn(1d, 2d).ShouldBeTrue();

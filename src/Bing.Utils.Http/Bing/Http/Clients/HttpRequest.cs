@@ -1152,8 +1152,7 @@ public class HttpRequest<TResult> : IHttpRequest<TResult> where TResult : class
     {
         var result = ConvertTo(content, message.GetContentType());
         SuccessAction?.Invoke(result);
-        if (SuccessFunc != null)
-            await SuccessFunc(result);
+        if (SuccessFunc != null) await SuccessFunc(result);
         return result;
     }
 

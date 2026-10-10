@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace Bing.Helpers;
 
@@ -372,7 +372,7 @@ public static class Culture
             if (sourceCultureName.StartsWith("zh", StringComparison.OrdinalIgnoreCase) &&
                 targetCultureName.StartsWith("zh", StringComparison.OrdinalIgnoreCase))
                 return IsChineseCultureCompatible(sourceCultureName, targetCultureName);
-            
+
             // 检查一般的语言-地区兼容性
             return IsGeneralCultureCompatible(sourceCultureName, targetCultureName);
         }

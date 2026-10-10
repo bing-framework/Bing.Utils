@@ -1,4 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
+// ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
 
 /// <summary>
@@ -72,8 +72,8 @@ public static partial class TypeReflections
         if (parentType == null)
             throw new ArgumentNullException(nameof(parentType));
 
-        return sourceType.IsClass 
-               && AbstractPredicate() 
+        return sourceType.IsClass
+               && AbstractPredicate()
                && IsTypeBasedOn(sourceType, parentType);
 
         bool AbstractPredicate()
@@ -163,7 +163,7 @@ public static partial class TypeReflections
             }
         }
 
-        while (sourceType!=null&&sourceType!=typeof(object))
+        while (sourceType != null && sourceType != typeof(object))
         {
             if (_checkRawGenericType(sourceType))
             {
@@ -207,7 +207,7 @@ public static partial class TypeReflections
     /// <typeparam name="TGenericParent">父泛型类型</typeparam>
     /// <param name="genericArguments">泛型参数</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsImplementationOfGenericType<TSource, TGenericParent>(out Type[] genericArguments) => 
+    public static bool IsImplementationOfGenericType<TSource, TGenericParent>(out Type[] genericArguments) =>
         IsImplementationOfGenericType(typeof(TSource), typeof(TGenericParent), out genericArguments);
 
     #endregion

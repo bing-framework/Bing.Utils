@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Bing.Utils.Json;
 
 // ReSharper disable once CheckNamespace
@@ -138,13 +138,13 @@ public static class EnumerableExtensions
         var type = typeof(T);
         var properties = type.GetProperties();
         var dataTable = string.IsNullOrEmpty(tableName) ? new DataTable() : new DataTable(tableName);
-        foreach (var property in properties) 
+        foreach (var property in properties)
             dataTable.Columns.Add(new DataColumn(property.Name));
 
         var array = enumerable.ToArray();
         for (var i = 0; i < array.Length; i++)
         {
-            foreach (var property in properties) 
+            foreach (var property in properties)
                 dataTable.Rows[i][property.Name] = property.GetValue(array[i]);
         }
 

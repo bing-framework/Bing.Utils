@@ -1,4 +1,4 @@
-﻿using Bing.Extensions;
+using Bing.Extensions;
 
 namespace Bing.IdUtils;
 
@@ -26,7 +26,7 @@ public class TimestampId
     /// <returns></returns>
     public static TimestampId GetInstance(DateTime? initialDateTime = null)
     {
-        if (initialDateTime.IsNull()) 
+        if (initialDateTime.IsNull())
             Interlocked.CompareExchange(ref _timestampId, new TimestampId(initialDateTime), null);
         return _timestampId;
     }

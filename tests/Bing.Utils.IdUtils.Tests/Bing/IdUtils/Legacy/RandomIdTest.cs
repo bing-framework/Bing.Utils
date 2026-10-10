@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.Legacy;
+namespace Bing.IdUtils.Legacy;
 /// <summary>
 /// 随机ID 测试
 /// </summary>
@@ -22,7 +22,7 @@ public class RandomIdTest
     [Fact]
     public void Test_RandomId()
     {
-        var id1 = RandomIdGenerator.Create(16); 
+        var id1 = RandomIdGenerator.Create(16);
         var id2 = RandomIdGenerator.Create(16);
         id1.ShouldNotBeNullOrEmpty();
         id2.ShouldNotBeNullOrEmpty();
@@ -65,8 +65,8 @@ public class RandomIdTest
     {
         var nonceStr1 = RandomNonceStrGenerator.Create(16);
         var nonceStr2 = RandomNonceStrGenerator.Create(16);
-        var nonceStr3 = RandomNonceStrGenerator.Create(16,true);
-        var nonceStr4 = RandomNonceStrGenerator.Create(16,true);
+        var nonceStr3 = RandomNonceStrGenerator.Create(16, true);
+        var nonceStr4 = RandomNonceStrGenerator.Create(16, true);
         nonceStr1.ShouldNotBeNullOrEmpty();
         nonceStr2.ShouldNotBeNullOrEmpty();
         nonceStr3.ShouldNotBeNullOrEmpty();

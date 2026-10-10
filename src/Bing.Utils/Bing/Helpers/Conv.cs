@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -996,7 +996,7 @@ public static partial class Conv
         // 直接处理 bool 类型
         if (input is bool b)
             return b;
-        
+
         // 处理数值类型
         if (input is byte or sbyte or short or ushort or int or uint or long or ulong or float or double or decimal)
         {

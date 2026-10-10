@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.Contracts;
+using System.Diagnostics.Contracts;
 
 namespace Bing.Text;
 
@@ -71,7 +71,7 @@ public static partial class Strings
             return null;
         if (value.Length == 0)
             return value;
-        if(string.IsNullOrEmpty(start))
+        if (string.IsNullOrEmpty(start))
             return value;
         if (start.Length > value.Length)
             return value;
@@ -137,12 +137,12 @@ public static partial class StringsExtensions
         {
             if (string.IsNullOrEmpty(separator))
             {
-                foreach (var value in values) 
+                foreach (var value in values)
                     target.Append(value);
             }
             else
             {
-                foreach (var value in values) 
+                foreach (var value in values)
                     target.AppendWithSeparator(separator, value);
             }
         }
@@ -164,7 +164,7 @@ public static partial class StringsExtensions
         Contract.EndContractBlock();
         if (values != null)
         {
-            foreach (var value in values) 
+            foreach (var value in values)
                 target.AppendWithSeparator(in separator, value);
         }
         return target;
@@ -464,7 +464,7 @@ public static partial class StringsExtensions
     public static StringBuilder ToStringBuilder<T>(this IEnumerable<T> source)
     {
         var sb = new StringBuilder();
-        foreach (var s in source) 
+        foreach (var s in source)
             sb.Append(s);
         return sb;
     }

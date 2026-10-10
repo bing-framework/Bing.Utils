@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Bing.Utils.Json;
 using Microsoft.AspNetCore.Http;
 

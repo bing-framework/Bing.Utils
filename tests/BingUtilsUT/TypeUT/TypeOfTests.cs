@@ -1,4 +1,4 @@
-﻿using Bing.Reflection;
+using Bing.Reflection;
 
 namespace BingUtilsUT.TypeUT;
 
@@ -74,7 +74,7 @@ public class TypeOfTests
         object f = null;
 
         // null 将会被过滤
-        var types = Types.Of(new object[] {a, b, c, d, e, f}).ToList();
+        var types = Types.Of(new object[] { a, b, c, d, e, f }).ToList();
 
         types.Count.ShouldBe(5);
         types[0].ShouldBe(typeof(int));
@@ -84,7 +84,7 @@ public class TypeOfTests
         types[4].ShouldBe(typeof(ArgumentNullException));
         //types[5].ShouldBeNull();
 
-        types = Types.Of(new object[] {a, b, c, d, e, f}, TypeOfOptions.Underlying).ToList();
+        types = Types.Of(new object[] { a, b, c, d, e, f }, TypeOfOptions.Underlying).ToList();
 
         types.Count.ShouldBe(5);
         types[0].ShouldBe(typeof(int));
@@ -112,7 +112,7 @@ public class TypeOfTests
         Int64Enum? i = Int64Enum.C;
 
         // null 将会被过滤
-        var types = Types.Of(new object[] {a, b, c, d, e, f, g, h, i}).ToList();
+        var types = Types.Of(new object[] { a, b, c, d, e, f, g, h, i }).ToList();
 
         types.Count.ShouldBe(7);
         types[0].ShouldBe(typeof(int));
@@ -125,7 +125,7 @@ public class TypeOfTests
         //types[7].ShouldBeNull();
         types[6].ShouldBe(typeof(Int64Enum));
 
-        types = Types.Of(new object[] {a, b, c, d, e, f, g, h, i}, TypeOfOptions.Underlying).ToList();
+        types = Types.Of(new object[] { a, b, c, d, e, f, g, h, i }, TypeOfOptions.Underlying).ToList();
 
         types.Count.ShouldBe(7);
         types[0].ShouldBe(typeof(int));
@@ -352,8 +352,8 @@ public class TypeOfTests
         var ts14 = Types.Of<int, int?, long?, Int16Enum, StringSplitOptions, string, Type, Int64Enum?, DateTime, char?, IEnumerable, int, Guid?, long>(TypeOfOptions.Underlying).ToList();
         var ts15 = Types.Of<int, int?, long?, Int16Enum, StringSplitOptions, string, Type, Int64Enum?, DateTime, char?, IEnumerable, int, Guid?, long, char[]>(TypeOfOptions.Underlying).ToList();
         var ts16 = Types.Of<int, int?, long?, Int16Enum, StringSplitOptions, string, Type, Int64Enum?, DateTime, char?, IEnumerable, int, Guid?, long, char[], object>(TypeOfOptions.Underlying).ToList();
-            
-            
+
+
         ts01.ShouldBe(typeof(int));
 
         ts02.Count.ShouldBe(2);

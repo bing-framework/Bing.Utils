@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace Bing.Helpers;
 
@@ -244,7 +244,7 @@ public static partial class AmountUnitConv
             return 0;
 
         long sum = 0;
-        foreach (var amount in fenAmounts) 
+        foreach (var amount in fenAmounts)
             sum += amount;
         return sum;
     }
@@ -270,7 +270,7 @@ public static partial class AmountUnitConv
             return 0;
 
         long totalFen = 0;
-        foreach (var amount in yuanAmounts) 
+        foreach (var amount in yuanAmounts)
             totalFen += ToFenLong(amount);
         return ToYuan(totalFen);
     }

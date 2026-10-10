@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using Bing.Helpers;
 
 namespace Bing.OS;
@@ -12,7 +12,7 @@ public static class Platform
     /// <summary>
     /// 获取平台操作系统
     /// </summary>
-    [Obsolete("请使用 Env.PlatformName 属性获得更完整的平台信息")] 
+    [Obsolete("请使用 Env.PlatformName 属性获得更完整的平台信息")]
     public static string GetOSPlatform() =>
         Env.PlatformName switch
         {

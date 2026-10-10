@@ -1,4 +1,4 @@
-﻿namespace Bing.Collections;
+namespace Bing.Collections;
 
 /// <summary>
 /// 只读集合工具
@@ -61,7 +61,7 @@ public static partial class ReadOnlyColls
     /// <param name="value">值</param>
     /// <param name="comparer">比较器</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int BinarySearch<T>(IReadOnlyList<T> source, T value, IComparer<T> comparer) => 
+    public static int BinarySearch<T>(IReadOnlyList<T> source, T value, IComparer<T> comparer) =>
         BinarySearch(source, 0, source.Count, t => t, value, comparer);
 
     /// <summary>

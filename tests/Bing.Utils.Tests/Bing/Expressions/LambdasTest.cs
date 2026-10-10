@@ -1,4 +1,4 @@
-﻿using Bing.Extensions;
+using Bing.Extensions;
 using Bing.Helpers;
 using Bing.Tests.Samples;
 
@@ -22,7 +22,7 @@ public class LambdasTest : TestBase
         Expression<Func<Sample, string>> expression = t => t.StringValue;
         Assert.Equal("StringValue", Lambdas.GetMember(expression).Name);
         Expression<Func<Sample, string>> expression2 = t => t.Test2.StringValue;
-        Assert.Equal("StringValue",((PropertyInfo)Lambdas.GetMember(expression2)).Name);
+        Assert.Equal("StringValue", ((PropertyInfo)Lambdas.GetMember(expression2)).Name);
     }
     #endregion
     #region GetName(获取成员名称)

@@ -1,5 +1,6 @@
 using Bing.Text;
 namespace BingUtilsUT.CharUT;
+
 [Trait("CharUT", "Char.Is")]
 public class CharIsTest
 {

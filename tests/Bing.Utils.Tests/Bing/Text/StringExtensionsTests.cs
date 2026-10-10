@@ -36,16 +36,21 @@ public class StringExtensionsTests
     // Extensions.String.Equals
     // ─────────────────────────────────────────────────────────────────
 
-    [Fact] public void EqualsAnyOf_Matching_ReturnsTrue()
+    [Fact]
+    public void EqualsAnyOf_Matching_ReturnsTrue()
         => "hello".EqualsAnyOf(StringComparison.OrdinalIgnoreCase, "Hello", "World").ShouldBeTrue();
-    [Fact] public void EqualsAnyOf_NotMatching_ReturnsFalse()
+    [Fact]
+    public void EqualsAnyOf_NotMatching_ReturnsFalse()
         => "foo".EqualsAnyOf(StringComparison.Ordinal, "bar", "baz").ShouldBeFalse();
-    [Fact] public void EqualsAnyOf_EmptyArray_ReturnsFalse()
+    [Fact]
+    public void EqualsAnyOf_EmptyArray_ReturnsFalse()
         => "hello".EqualsAnyOf(StringComparison.Ordinal).ShouldBeFalse();
 
-    [Fact] public void EqualsAnyOfIgnoreCase_Matching_ReturnsTrue()
+    [Fact]
+    public void EqualsAnyOfIgnoreCase_Matching_ReturnsTrue()
         => "Hello".EqualsAnyOfIgnoreCase("hello", "world").ShouldBeTrue();
-    [Fact] public void EqualsAnyOfIgnoreCase_NotMatching_ReturnsFalse()
+    [Fact]
+    public void EqualsAnyOfIgnoreCase_NotMatching_ReturnsFalse()
         => "Hello".EqualsAnyOfIgnoreCase("foo", "bar").ShouldBeFalse();
 
     [Fact] public void EqualsIgnoreCase_SameCase_ReturnsTrue() => "hello".EqualsIgnoreCase("hello").ShouldBeTrue();
@@ -58,11 +63,14 @@ public class StringExtensionsTests
 
     [Fact] public void EqualsTo_IgnoreCaseByDefault_ReturnsTrue() => "Hello".EqualsTo("hello").ShouldBeTrue();
 
-    [Fact] public void EqualsWithOptions_TrimAndIgnoreCase_ReturnsTrue()
+    [Fact]
+    public void EqualsWithOptions_TrimAndIgnoreCase_ReturnsTrue()
         => "  Hello  ".EqualsWithOptions("hello", trim: true).ShouldBeTrue();
-    [Fact] public void EqualsWithOptions_CaseSensitive_ReturnsFalse()
+    [Fact]
+    public void EqualsWithOptions_CaseSensitive_ReturnsFalse()
         => "Hello".EqualsWithOptions("hello", StringComparison.Ordinal).ShouldBeFalse();
-    [Fact] public void EqualsWithOptions_HandleNull_BothNull_ReturnsTrue()
+    [Fact]
+    public void EqualsWithOptions_HandleNull_BothNull_ReturnsTrue()
         => ((string)null).EqualsWithOptions(null, handleNull: true).ShouldBeTrue();
 
     // ─────────────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -148,9 +148,9 @@ namespace BuildScript
         /// </summary>
         private void AddIgnorePackProjects(ITaskContext context)
         {
-            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir,"*/*.Extra.csproj"));
-            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir,"*/*.Guard.csproj"));
-            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir,"*/*.Comments.csproj"));
+            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.Extra.csproj"));
+            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.Guard.csproj"));
+            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.Comments.csproj"));
             IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.DependencyInjection.csproj"));
             IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.Net.csproj"));
         }

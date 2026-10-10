@@ -1,11 +1,11 @@
-﻿namespace Bing.IO.Buffers;
+namespace Bing.IO.Buffers;
 
 /// <summary>
 /// 字节写入器
 /// </summary>
 public class BinaryDigitWriter
 {
-	#region Span
+    #region Span
 
     /// <summary>
     /// 将 <see cref="short"/> 值写入指定的字节数组

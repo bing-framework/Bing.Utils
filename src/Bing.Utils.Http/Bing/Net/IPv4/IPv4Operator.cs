@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Net.NetworkInformation;
 
 namespace Bing.Net.IPv4;
@@ -93,7 +93,7 @@ public static class IPv4Operator
             throw new ArgumentException("无效的IPv4地址", nameof(ipAddress));
         try
         {
-            var ipNum = IPv4Converter.IpToUInt32(ipAddress); 
+            var ipNum = IPv4Converter.IpToUInt32(ipAddress);
             checked
             {
                 var nextIpNum = ipNum + step;
@@ -209,7 +209,7 @@ public static class IPv4Operator
             var reply = await ping.SendPingAsync(ipAddress, (int)timeout.TotalMilliseconds);
             return reply.Status == IPStatus.Success;
         }
-        catch(Exception)
+        catch (Exception)
         {
             return false;
         }

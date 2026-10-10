@@ -1,4 +1,4 @@
-﻿namespace Bing.Text;
+namespace Bing.Text;
 
 /// <summary>
 /// 字符串工具
@@ -239,6 +239,6 @@ public static partial class Strings
     /// <param name="beforeAndAfter">截取开始和结束的字符串标识</param>
     /// <param name="comparison">字符串比较规则，允许忽略大小写等比较选项，默认为不区分大小写。</param>
     /// <returns>如果找到了界定字符串，并且它们之间有内容，则返回这部分内容；否则返回空字符串。</returns>
-    public static string SubstringBetween(string text, string beforeAndAfter, StringComparison comparison = StringComparison.OrdinalIgnoreCase) => 
+    public static string SubstringBetween(string text, string beforeAndAfter, StringComparison comparison = StringComparison.OrdinalIgnoreCase) =>
         SubstringBetween(text, beforeAndAfter, beforeAndAfter, comparison);
 }

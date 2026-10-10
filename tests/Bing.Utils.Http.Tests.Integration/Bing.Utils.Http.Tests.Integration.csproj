@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="..\..\common.tests.props" />
 	<PropertyGroup>
 		<TargetFrameworks>net7.0;net6.0;net5.0;netcoreapp3.1;</TargetFrameworks>

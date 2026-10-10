@@ -1,4 +1,4 @@
-﻿
+
 // ReSharper disable once CheckNamespace
 namespace Bing.Text;
 
@@ -14,7 +14,7 @@ public static partial class StringExtensions
     /// <param name="values">填充对象</param>
     public static string Fill(this string text, params object[] values)
     {
-        var s=text.Replace("\\n",Environment.NewLine)
+        var s = text.Replace("\\n", Environment.NewLine)
             .Replace("<br>", Environment.NewLine)
             .Replace("<BR>", Environment.NewLine);
         return string.Format(s, values);

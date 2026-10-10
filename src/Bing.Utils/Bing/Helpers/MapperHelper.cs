@@ -70,7 +70,7 @@ public static partial class MapperHelper
     {
         if (source is null)
             throw new ArgumentNullException(nameof(source));
-        
+
         propertiesNoMap ??= [];
 
         // 检查是否为值类型到值类型的映射

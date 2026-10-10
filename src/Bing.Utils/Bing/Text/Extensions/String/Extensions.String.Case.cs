@@ -1,4 +1,4 @@
-﻿
+
 // ReSharper disable once CheckNamespace
 namespace Bing.Text;
 
@@ -17,7 +17,7 @@ public static partial class StringExtensions
         var result = new List<string>();
         foreach (var word in words)
         {
-            if(word.Length==0||AllCapitals(word))
+            if (word.Length == 0 || AllCapitals(word))
                 result.Add(word);
             else if (word.Length == 1)
                 result.Add(word.ToUpper());

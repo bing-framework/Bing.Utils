@@ -1,4 +1,4 @@
-﻿using System.IO.Compression;
+using System.IO.Compression;
 
 namespace Bing.IO;
 
@@ -48,7 +48,7 @@ public static class ZipHelper
             throw new FileNotFoundException($"压缩文件路径不存在: {zipPath}");
 
         DirectoryInfo directoryInfo = new(folderPath);
-        if(!directoryInfo.Exists)
+        if (!directoryInfo.Exists)
             directoryInfo.Create();
 #if NETSTANDARD
         ZipFile.ExtractToDirectory(zipPath, folderPath);

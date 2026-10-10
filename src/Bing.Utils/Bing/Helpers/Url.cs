@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Bing.Helpers;
@@ -80,7 +80,7 @@ public static partial class Url
             return url;
         var result = url;
         var validParams = parameters.Where(p => !string.IsNullOrWhiteSpace(p)).ToArray();
-        foreach (var param in validParams) 
+        foreach (var param in validParams)
             result = $"{GetUrlWithSeparator(result)}{param}";
         return result;
     }
@@ -283,7 +283,7 @@ public static partial class Url
         {
             throw new ArgumentException($"不支持的字符编码: {encoding}", nameof(encoding), ex);
         }
-        
+
     }
 
     /// <summary>

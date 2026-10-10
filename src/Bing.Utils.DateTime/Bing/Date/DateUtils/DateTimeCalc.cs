@@ -1,4 +1,4 @@
-﻿using Bing.Conversions;
+using Bing.Conversions;
 using NodaTime;
 
 namespace Bing.Date.DateUtils;
@@ -53,7 +53,7 @@ internal static class DateTimeCalcHelper
             throw new ArgumentOutOfRangeException(nameof(month), "月份必须在1到12之间");
         if (offsetMonths == 0)
             return (year, month);
-        
+
         var totalMonths = year * 12 + (month - 1) + offsetMonths;
         var newYear = totalMonths / 12;
         var newMonth = totalMonths % 12 + 1;
@@ -221,8 +221,8 @@ public static class DateTimeCalc
     public static DateTime OffsetByWeekBefore(DateTime dt, DayOfWeek dayOfWeek)
     {
         var daysSubtract = (int)dayOfWeek - (int)dt.DayOfWeek;
-        return (int)dayOfWeek < (int)dt.DayOfWeek 
-            ? dt.AddDays(daysSubtract) 
+        return (int)dayOfWeek < (int)dt.DayOfWeek
+            ? dt.AddDays(daysSubtract)
             : dt.AddDays(daysSubtract - 7);
     }
 
@@ -237,8 +237,8 @@ public static class DateTimeCalc
         var daysNeeded = (int)dayOfWeek - (int)dt.DayOfWeek;
         if (dayOfWeek == dt.DayOfWeek)
             return dt.AddDays(7);
-        return (int)dayOfWeek >= (int)dt.DayOfWeek 
-            ? dt.AddDays(daysNeeded) 
+        return (int)dayOfWeek >= (int)dt.DayOfWeek
+            ? dt.AddDays(daysNeeded)
             : dt.AddDays(daysNeeded + 7);
     }
 
@@ -377,5 +377,5 @@ public static class DateTimeCalc
     public static DateTime OffsetByDuration(DateTime dt, Duration duration) => dt + duration.ToTimeSpan();
 
     #endregion
-    
+
 }

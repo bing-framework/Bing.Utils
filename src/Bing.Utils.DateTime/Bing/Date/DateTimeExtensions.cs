@@ -1004,33 +1004,33 @@ public static partial class DateTimeExtensions
         switch (rt)
         {
             case RoundTo.Second:
-            {
-                rounded = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Kind);
-                if (dt.Millisecond >= 500)
-                    rounded = rounded.AddSeconds(1);
-                break;
-            }
+                {
+                    rounded = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Kind);
+                    if (dt.Millisecond >= 500)
+                        rounded = rounded.AddSeconds(1);
+                    break;
+                }
             case RoundTo.Minute:
-            {
-                rounded = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, dt.Kind);
-                if (dt.Second >= 30)
-                    rounded = rounded.AddMinutes(1);
-                break;
-            }
+                {
+                    rounded = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, dt.Kind);
+                    if (dt.Second >= 30)
+                        rounded = rounded.AddMinutes(1);
+                    break;
+                }
             case RoundTo.Hour:
-            {
-                rounded = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0, dt.Kind);
-                if (dt.Minute >= 30)
-                    rounded = rounded.AddHours(1);
-                break;
-            }
+                {
+                    rounded = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0, dt.Kind);
+                    if (dt.Minute >= 30)
+                        rounded = rounded.AddHours(1);
+                    break;
+                }
             case RoundTo.Day:
-            {
-                rounded = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, dt.Kind);
-                if (dt.Hour >= 12)
-                    rounded = rounded.AddDays(1);
-                break;
-            }
+                {
+                    rounded = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, dt.Kind);
+                    if (dt.Hour >= 12)
+                        rounded = rounded.AddDays(1);
+                    break;
+                }
             default:
                 throw new ArgumentOutOfRangeException(nameof(rt));
         }

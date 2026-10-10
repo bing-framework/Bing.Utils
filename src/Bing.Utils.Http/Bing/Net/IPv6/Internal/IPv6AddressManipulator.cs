@@ -1,4 +1,4 @@
-﻿namespace Bing.Net.IPv6.Internal;
+namespace Bing.Net.IPv6.Internal;
 
 /// <summary>
 /// IPv6地址操作器
@@ -165,7 +165,7 @@ internal static class IPv6AddressManipulator
         ValidateAddressBytes(addressBytes);
         if (step < 0)
             throw new ArgumentException("步长不能为负数", nameof(step));
-        for (int i = 0; i < step; i++) 
+        for (int i = 0; i < step; i++)
             Increment(addressBytes);
     }
 
@@ -190,7 +190,7 @@ internal static class IPv6AddressManipulator
 
         if (step < 0)
             throw new ArgumentException("步长不能为负数", nameof(step));
-        for (int i = 0; i < step; i++) 
+        for (int i = 0; i < step; i++)
             Decrement(addressBytes);
     }
 

@@ -1,4 +1,4 @@
-﻿using System.Runtime.ExceptionServices;
+using System.Runtime.ExceptionServices;
 
 namespace Bing.Exceptions;
 
@@ -48,7 +48,7 @@ public static class ExceptionHelper
     public static Exception Unwrap(Exception exception)
     {
         if (exception is null)
-            throw new ArgumentNullException(nameof(exception));   
+            throw new ArgumentNullException(nameof(exception));
         while (exception.InnerException != null)
             exception = exception.InnerException;
         return exception;

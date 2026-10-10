@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
 namespace Bing.Text.RegularExpressions;
@@ -124,7 +124,7 @@ public static class RegexPool
                 .Select(kvp => kvp.Key)
                 .ToList();
 
-            foreach (var key in oldestItems) 
+            foreach (var key in oldestItems)
                 Cache.TryRemove(key, out _);
         }
         catch
@@ -385,13 +385,13 @@ public static class RegexPool
         }
         foreach (var resultPattern in resultPatterns)
         {
-            if (string.IsNullOrEmpty(resultPattern)) 
+            if (string.IsNullOrEmpty(resultPattern))
                 continue;
 
             // 避免重复键，如果键已存在则添加序号后缀
             var key = resultPattern;
             var counter = 1;
-            while (result.ContainsKey(key)) 
+            while (result.ContainsKey(key))
                 key = $"{resultPattern}_{counter++}";
 
             try

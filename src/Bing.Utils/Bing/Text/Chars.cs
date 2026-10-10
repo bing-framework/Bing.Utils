@@ -1,4 +1,4 @@
-﻿namespace Bing.Text;
+namespace Bing.Text;
 
 /// <summary>
 /// 字符工具
@@ -22,7 +22,7 @@ public static class Chars
 
         var result = Enumerable.Range(first, last - first + 1).Select(charCode => (char)charCode);
 
-        if (reverseRequired) 
+        if (reverseRequired)
             result = result.Reverse();
         return result;
     }

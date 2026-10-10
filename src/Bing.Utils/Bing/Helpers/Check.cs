@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Bing.Reflection;
 using Bing.Text;
 using Bing.Utils.Properties;
@@ -24,7 +24,7 @@ public static class Check
     /// <param name="assertion">要验证的断言条件</param>
     /// <param name="message">异常消息</param>
     /// <exception cref="ArgumentNullException">当消息为空时抛出</exception>
-    private static void Require<TException>(bool assertion, string message) 
+    private static void Require<TException>(bool assertion, string message)
         where TException : Exception
     {
         if (assertion)

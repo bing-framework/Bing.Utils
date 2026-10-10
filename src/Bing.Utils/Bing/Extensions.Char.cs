@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Bing.Text;
 
 namespace Bing;
@@ -244,7 +244,7 @@ public static class CharExtensions
         var first = reverseRequired ? toCharacter : @this;
         var last = reverseRequired ? @this : toCharacter;
         var result = Enumerable.Range(first, last - first + 1).Select(charCode => (char)charCode);
-        if (reverseRequired) 
+        if (reverseRequired)
             result = result.Reverse();
         return result;
     }

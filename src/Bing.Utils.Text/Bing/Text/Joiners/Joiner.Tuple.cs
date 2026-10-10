@@ -1,4 +1,4 @@
-﻿using Bing.Collections;
+using Bing.Collections;
 
 namespace Bing.Text.Joiners;
 
@@ -41,7 +41,7 @@ public partial class Joiner : ITupleJoiner
     /// <param name="tupleValueFunc">元祖值函数</param>
     ITupleJoiner ITupleJoiner.UseForNull<T1, T2>(Func<T1, T2, T1> tupleKeyFunc, Func<T1, T2, T2> tupleValueFunc)
     {
-        Options.SetTupleReplace(tupleKeyFunc,tupleValueFunc);
+        Options.SetTupleReplace(tupleKeyFunc, tupleValueFunc);
         return this;
     }
 

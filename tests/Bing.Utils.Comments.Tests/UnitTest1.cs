@@ -20,7 +20,7 @@ namespace Bing.Utils.Comments.Tests
             var method = typeof(CsCommentReader).GetMethod("Create", new[] { typeof(MemberInfo) });
             var comment = CsCommentReader.Create(method);
             Output.WriteLine($"summary:{comment.Summary}");
-            foreach (var param in comment.Param) 
+            foreach (var param in comment.Param)
                 Output.WriteLine($"param:{param}");
         }
     }

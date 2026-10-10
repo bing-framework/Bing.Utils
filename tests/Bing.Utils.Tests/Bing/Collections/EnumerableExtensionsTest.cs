@@ -1,4 +1,4 @@
-﻿using Bing.Collections;
+using Bing.Collections;
 
 namespace Bing.Collections;
 
@@ -6,7 +6,7 @@ namespace Bing.Collections;
 /// 可枚举类型(<see cref="IEnumerable{T}"/>) 扩展 - ChunkBy 方法测试
 /// </summary>
 [Trait("CollUT", "Colls")]
-public class EnumerableExtensionsTest: TestBase
+public class EnumerableExtensionsTest : TestBase
 {
     /// <inheritdoc />
     public EnumerableExtensionsTest(ITestOutputHelper output) : base(output)

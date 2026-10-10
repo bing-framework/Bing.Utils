@@ -156,19 +156,21 @@ public class XmlTest : TestBase
     /// 测试 - 加载Xml文件到XDocument
     /// </summary>
     [Fact]
-    public async Task Test_LoadFileToDocumentAsync() {
-        var file = Common.GetPhysicalPath( "./Samples/version.xml" );
-        var document = await Xml.LoadFileToDocumentAsync( file );
-        Assert.Equal( "123", document?.Root?.Value );
+    public async Task Test_LoadFileToDocumentAsync()
+    {
+        var file = Common.GetPhysicalPath("./Samples/version.xml");
+        var document = await Xml.LoadFileToDocumentAsync(file);
+        Assert.Equal("123", document?.Root?.Value);
     }
     /// <summary>
     /// 测试 - 加载Xml文件到XElement列表
     /// </summary>
     [Fact]
-    public async Task Test_LoadFileToElementsAsync() {
-        var file = Common.GetPhysicalPath( "./Samples/version.xml" );
-        var elements = await Xml.LoadFileToElementsAsync( file );
-        var element = elements.FirstOrDefault( t => t?.Name == "VersionMinor" );
-        Assert.Equal( "2", element?.Value );
+    public async Task Test_LoadFileToElementsAsync()
+    {
+        var file = Common.GetPhysicalPath("./Samples/version.xml");
+        var elements = await Xml.LoadFileToElementsAsync(file);
+        var element = elements.FirstOrDefault(t => t?.Name == "VersionMinor");
+        Assert.Equal("2", element?.Value);
     }
 }

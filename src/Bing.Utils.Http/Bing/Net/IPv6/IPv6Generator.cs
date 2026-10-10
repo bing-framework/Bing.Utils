@@ -103,7 +103,7 @@ public static class IPv6Generator
             }
 
             // 填充剩余字节
-            if (bytesToCopy < 16) 
+            if (bytesToCopy < 16)
                 FillRandomBytes(addressBytes, bytesToCopy, 16 - bytesToCopy);
         }
         else
@@ -137,7 +137,7 @@ public static class IPv6Generator
         {
             var address = GenerateRandom(prefix, prefixLength);
 
-            if (!ensureUnique || generated.Add(address)) 
+            if (!ensureUnique || generated.Add(address))
                 result.Add(address);
 
             // 防止无限循环（当前缀范围太小时）

@@ -1,4 +1,4 @@
-﻿namespace Bing.Reflection;
+namespace Bing.Reflection;
 
 /// <summary>
 /// 类型集合值
@@ -19,7 +19,7 @@ public class TypesVal
         _types = new Type[size];
         Count = size;
     }
-        
+
     /// <summary>
     /// 计算类型集合值中的类型总数
     /// </summary>

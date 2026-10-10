@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace Bing.Date;
 
@@ -298,7 +298,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// </returns>
     public int CompareTo(TimeStamp other)
     {
-        if (other == null) 
+        if (other == null)
             return 1;
         return m_timestamp.CompareTo(other.m_timestamp);
     }
@@ -310,7 +310,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// <returns>如果时间戳相等则返回true，否则返回false</returns>
     public bool Equals(TimeStamp other)
     {
-        if (other == null) 
+        if (other == null)
             return false;
         return m_timestamp == other.m_timestamp;
     }
@@ -337,9 +337,9 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// </summary>
     public static bool operator ==(TimeStamp left, TimeStamp right)
     {
-        if (ReferenceEquals(left, right)) 
+        if (ReferenceEquals(left, right))
             return true;
-        if (left is null || right is null) 
+        if (left is null || right is null)
             return false;
         return left.Equals(right);
     }
@@ -354,7 +354,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// </summary>
     public static bool operator <(TimeStamp left, TimeStamp right)
     {
-        if (left is null) 
+        if (left is null)
             return right is not null;
         return left.CompareTo(right) < 0;
     }
@@ -380,7 +380,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// </summary>
     public static bool operator >=(TimeStamp left, TimeStamp right)
     {
-        if (left is null) 
+        if (left is null)
             return right is null;
         return left.CompareTo(right) >= 0;
     }
@@ -390,7 +390,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// </summary>
     public static TimeStamp operator +(TimeStamp timeStamp, TimeSpan timeSpan)
     {
-        if (timeStamp == null) 
+        if (timeStamp == null)
             throw new ArgumentNullException(nameof(timeStamp));
         return timeStamp.Add(timeSpan);
     }
@@ -400,7 +400,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// </summary>
     public static TimeStamp operator -(TimeStamp timeStamp, TimeSpan timeSpan)
     {
-        if (timeStamp == null) 
+        if (timeStamp == null)
             throw new ArgumentNullException(nameof(timeStamp));
         return timeStamp.Subtract(timeSpan);
     }
@@ -410,9 +410,9 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// </summary>
     public static TimeSpan operator -(TimeStamp left, TimeStamp right)
     {
-        if (left == null) 
+        if (left == null)
             throw new ArgumentNullException(nameof(left));
-        if (right == null) 
+        if (right == null)
             throw new ArgumentNullException(nameof(right));
         return TimeSpan.FromTicks(left.GetDifference(right));
     }

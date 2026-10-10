@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using Bing.Extensions;
 
 namespace Bing.Http.Clients;

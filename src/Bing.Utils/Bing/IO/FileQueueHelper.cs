@@ -1,4 +1,4 @@
-﻿using Bing.Utils.Json;
+using Bing.Utils.Json;
 
 namespace Bing.IO;
 
@@ -16,7 +16,7 @@ public class FileQueueHelper
     public static void AddFileToEnqueue(string queueDir, string fileName, string fileContent)
     {
         var saveDir = GetSaveDir(queueDir);
-        if (!Directory.Exists(saveDir)) 
+        if (!Directory.Exists(saveDir))
             Directory.CreateDirectory(saveDir);
         var savePath = Path.Combine(saveDir, fileName);
         var tempFilePath = $"{savePath}.bak";
@@ -34,7 +34,7 @@ public class FileQueueHelper
     /// <param name="queuePath">队列路径</param>
     private static string GetSaveDir(string queuePath)
     {
-        if (!Directory.Exists(queuePath)) 
+        if (!Directory.Exists(queuePath))
             Directory.CreateDirectory(queuePath);
         return Path.Combine(queuePath, DateTime.Now.ToString("yyyyMMddHHmm"));
     }
@@ -125,10 +125,10 @@ public class FileQueueHelper
         {
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             string content;
-            using (var sr = new StreamReader(fs)) 
+            using (var sr = new StreamReader(fs))
                 content = sr.ReadToEnd();
 
-            if (!string.IsNullOrWhiteSpace(content)) 
+            if (!string.IsNullOrWhiteSpace(content))
                 t = JsonHelper.ToObject<T>(content);
             fs.Close();
         }

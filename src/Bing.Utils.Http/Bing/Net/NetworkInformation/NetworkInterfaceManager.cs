@@ -1,4 +1,4 @@
-﻿using System.Net.NetworkInformation;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 namespace Bing.Net.NetworkInformation;
@@ -315,9 +315,9 @@ public static class NetworkInterfaceManager
             .Distinct()
             .ToList();
 
-        if (excludeLoopback) 
+        if (excludeLoopback)
             addresses = addresses.Where(ip => !ip.Equals("::1", StringComparison.OrdinalIgnoreCase)).ToList();
-        if (excludeLinkLocal) 
+        if (excludeLinkLocal)
             addresses = addresses.Where(ip => !ip.StartsWith("fe80:", StringComparison.OrdinalIgnoreCase)).ToList();
         return addresses;
     }

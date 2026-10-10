@@ -370,8 +370,8 @@ public class ImageSharpHelperCompatibilityTest
         var image = new Image<Rgba32>(width, height);
         var fillColor = fill ?? Color.FromRgb(128, 128, 128);
         for (var x = 0; x < width; x++)
-        for (var y = 0; y < height; y++)
-            image[x, y] = fillColor.ToPixel<Rgba32>();
+            for (var y = 0; y < height; y++)
+                image[x, y] = fillColor.ToPixel<Rgba32>();
         return image;
     }
 

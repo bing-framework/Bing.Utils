@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace Bing.Date;
 
@@ -75,7 +75,7 @@ public static class DateTimeOutputExtensions
     /// 将时间点转换为时间
     /// </summary>
     /// <param name="dateTimeUtc">DateTimeOffset</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime ToLocalDateTime(this DateTimeOffset dateTimeUtc) => dateTimeUtc.ToLocalDateTime(null);
 
     /// <summary>
@@ -83,6 +83,6 @@ public static class DateTimeOutputExtensions
     /// </summary>
     /// <param name="dateTimeUtc">DateTimeOffset</param>
     /// <param name="localTimeZone">时区</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime ToLocalDateTime(this DateTimeOffset dateTimeUtc, TimeZoneInfo localTimeZone) => TimeZoneInfo.ConvertTime(dateTimeUtc, localTimeZone ?? TimeZoneInfo.Local).DateTime;
 }

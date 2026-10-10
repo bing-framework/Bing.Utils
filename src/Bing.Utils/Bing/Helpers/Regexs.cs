@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using Bing.Text.RegularExpressions;
 
 namespace Bing.Helpers;
@@ -175,7 +175,7 @@ public static partial class Regexs
     /// <param name="options">正则表达式编译选项</param>
     /// <returns>匹配的值，如果未匹配或输入为空则返回空字符串</returns>
     /// <exception cref="ArgumentNullException">当模式为 null 时抛出</exception>
-    public static string GetValue(string input, string pattern, string resultPattern = "", RegexOptions options = RegexOptions.IgnoreCase) => 
+    public static string GetValue(string input, string pattern, string resultPattern = "", RegexOptions options = RegexOptions.IgnoreCase) =>
         RegexPool.GetValue(input, pattern, resultPattern, options, useCache: true);
 
     #endregion

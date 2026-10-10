@@ -1,4 +1,4 @@
-﻿namespace Bing.Date;
+namespace Bing.Date;
 
 /// <summary>
 /// Bing 时间点(<see cref="DateTimeOffset"/>) 扩展
@@ -133,33 +133,33 @@ public static partial class DateTimeOffsetExtensions
         switch (roundTo)
         {
             case RoundTo.Second:
-            {
-                rounded = new DateTimeOffset(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, dto.Second, dto.Offset);
-                if (dto.Millisecond >= 500)
-                    rounded = rounded.AddSeconds(1);
-                break;
-            }
+                {
+                    rounded = new DateTimeOffset(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, dto.Second, dto.Offset);
+                    if (dto.Millisecond >= 500)
+                        rounded = rounded.AddSeconds(1);
+                    break;
+                }
             case RoundTo.Minute:
-            {
-                rounded = new DateTimeOffset(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, 0, dto.Offset);
-                if (dto.Second >= 30)
-                    rounded = rounded.AddMinutes(1);
-                break;
-            }
+                {
+                    rounded = new DateTimeOffset(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, 0, dto.Offset);
+                    if (dto.Second >= 30)
+                        rounded = rounded.AddMinutes(1);
+                    break;
+                }
             case RoundTo.Hour:
-            {
-                rounded = new DateTimeOffset(dto.Year, dto.Month, dto.Day, dto.Hour, 0, 0, dto.Offset);
-                if (dto.Minute >= 30)
-                    rounded = rounded.AddHours(1);
-                break;
-            }
+                {
+                    rounded = new DateTimeOffset(dto.Year, dto.Month, dto.Day, dto.Hour, 0, 0, dto.Offset);
+                    if (dto.Minute >= 30)
+                        rounded = rounded.AddHours(1);
+                    break;
+                }
             case RoundTo.Day:
-            {
-                rounded = new DateTimeOffset(dto.Year, dto.Month, dto.Day, 0, 0, 0, dto.Offset);
-                if (dto.Hour >= 12)
-                    rounded = rounded.AddDays(1);
-                break;
-            }
+                {
+                    rounded = new DateTimeOffset(dto.Year, dto.Month, dto.Day, 0, 0, 0, dto.Offset);
+                    if (dto.Hour >= 12)
+                        rounded = rounded.AddDays(1);
+                    break;
+                }
             default:
                 throw new ArgumentOutOfRangeException(nameof(roundTo));
         }

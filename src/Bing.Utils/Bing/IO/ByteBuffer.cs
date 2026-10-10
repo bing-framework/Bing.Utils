@@ -1,4 +1,4 @@
-﻿namespace Bing.IO;
+namespace Bing.IO;
 
 /**
  * Reference to 
@@ -287,10 +287,10 @@ public class ByteBuffer
     {
         if (buffer == null)
             return;
-        if(buffer.ReadableBytes<=0)
+        if (buffer.ReadableBytes <= 0)
             return;
         var bytes = buffer.ToArray();
-        if(isLittleEndian)
+        if (isLittleEndian)
             Array.Reverse(bytes);
         WriteBytes(bytes);
     }

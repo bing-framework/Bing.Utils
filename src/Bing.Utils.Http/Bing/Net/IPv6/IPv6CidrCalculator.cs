@@ -1,4 +1,4 @@
-﻿using Bing.Net.IPv6.Internal;
+using Bing.Net.IPv6.Internal;
 
 namespace Bing.Net.IPv6;
 
@@ -334,16 +334,16 @@ public static class IPv6CidrCalculator
         try
         {
             var subnetInfo = GetIPv6SubnetInfo(ipv6Cidr);
-            
+
             // 计算子网数量的位数差
             var prefixDiff = newPrefixLength - originalPrefix;
-            
+
             // 检查是否会产生过多子网
             if (prefixDiff > 13) // 2^13 = 8192 < 10000 < 2^14 = 16384
                 throw new ArgumentException($"子网数量过大：2^{prefixDiff} = {(long)Math.Pow(2, prefixDiff)}，超过最大限制10000");
-            
+
             var subnetCount = (ulong)(1UL << prefixDiff);
-            
+
             // 双重检查，确保不会超过限制
             if (subnetCount > 10000)
                 throw new ArgumentException($"子网数量过大：{subnetCount}，超过最大限制10000");

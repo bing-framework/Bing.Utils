@@ -1,4 +1,4 @@
-﻿namespace Bing.Http.Clients;
+namespace Bing.Http.Clients;
 
 /// <summary>
 /// 文件数据

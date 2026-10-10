@@ -1,4 +1,4 @@
-﻿using Bing.Text.Splitters;
+using Bing.Text.Splitters;
 
 namespace BingUtilsUT.SplitterUT;
 
@@ -144,7 +144,7 @@ public class SplitterTest
         @baseList[3].ShouldBe("d");
         @baseList[4].ShouldBe("e");
 
-        var enumerable = Splitter.On(",").TrimResults(s=>s.TrimStart()).Split(OriginalStrings.IncludeWhiteSpaceString);
+        var enumerable = Splitter.On(",").TrimResults(s => s.TrimStart()).Split(OriginalStrings.IncludeWhiteSpaceString);
         enumerable.Count().ShouldBe(5);
 
         var list = enumerable.ToList();
@@ -269,7 +269,7 @@ public class SplitterTest
         @baseList[3].ShouldBe("d");
         @baseList[4].ShouldBe("e");
 
-        var list = Splitter.On(",").TrimResults(s=>s.TrimStart()).SplitToList(OriginalStrings.IncludeWhiteSpaceString);
+        var list = Splitter.On(",").TrimResults(s => s.TrimStart()).SplitToList(OriginalStrings.IncludeWhiteSpaceString);
         list.Count().ShouldBe(5);
 
         list[0].ShouldBe("a");

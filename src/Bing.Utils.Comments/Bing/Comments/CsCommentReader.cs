@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
@@ -236,7 +236,7 @@ public static class CsCommentReader
     private static string GetParameterName(Type[] types)
     {
         var list = new List<string>(types.Length);
-        foreach (var type in types) 
+        foreach (var type in types)
             list.Add(GetParameterName(type));
         return "{" + string.Join(",", list.ToArray()) + "}";
     }
@@ -273,7 +273,7 @@ public static class CsCommentReader
     /// <param name="name">名称</param>
     private static string GetXPath(string prefix, Type type, string name)
     {
-        if (type.IsGenericType && type.IsGenericTypeDefinition == false) 
+        if (type.IsGenericType && type.IsGenericTypeDefinition == false)
             type = type.GetGenericTypeDefinition();
         return $"{prefix}:{type.FullName.Replace("+", ".")}.{name}";
     }

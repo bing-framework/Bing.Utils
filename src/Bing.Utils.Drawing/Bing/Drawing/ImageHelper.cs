@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
@@ -780,7 +780,7 @@ public static partial class ImageHelper
             for (var y = 0; y < image.Height; y++)
             {
                 var color = bitmap.GetPixel(x, y);
-                output.SetPixel(x,y, Color.FromArgb((int)(0xFF * opacity), color.R, color.G, color.B));
+                output.SetPixel(x, y, Color.FromArgb((int)(0xFF * opacity), color.R, color.G, color.B));
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Reflection;
 using Bing.Extensions;
 
@@ -22,7 +22,7 @@ public static partial class AssemblyVisit
     public static string GetProductVersion(Assembly assembly)
     {
         var version = V(assembly).ProductVersion;
-        if (version?.Contains("+") == true) 
+        if (version?.Contains("+") == true)
             version = version.ReplaceWith(@"\+(\w+)?", "");
         return version;
     }

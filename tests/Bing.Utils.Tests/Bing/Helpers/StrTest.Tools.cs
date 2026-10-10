@@ -1,9 +1,9 @@
-﻿namespace Bing.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// 字符串操作测试
 /// </summary>
-public partial class StrTest 
+public partial class StrTest
 {
     /// <summary>
     /// 测试将集合连接为带分隔符的字符串

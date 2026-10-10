@@ -1,4 +1,4 @@
-﻿namespace Bing.Exceptions;
+namespace Bing.Exceptions;
 
 /// <summary>
 /// 尝试
@@ -428,7 +428,7 @@ public abstract class Try<T>
     /// 将异常转换为指定类型异常
     /// </summary>
     /// <typeparam name="TException">异常类型</typeparam>
-    public TException ExceptionAs<TException>() 
+    public TException ExceptionAs<TException>()
         where TException : Exception
     {
         Exception ex = Exception;

@@ -1,4 +1,4 @@
-﻿
+
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Exceptions;
@@ -18,9 +18,9 @@ public static class TryExtensions
     /// <exception cref="ArgumentNullException"></exception>
     public static Try<TResult> Select<TSource, TResult>(this Try<TSource> source, Func<TSource, TResult> selector)
     {
-        if(source is null)
+        if (source is null)
             throw new ArgumentNullException(nameof(source));
-        if(selector is null)
+        if (selector is null)
             throw new ArgumentNullException(nameof(selector));
         return source.Bind(val => Try.LiftValue(selector(val)));
     }
@@ -56,7 +56,7 @@ public static class TryExtensions
     {
         if (source is null)
             throw new ArgumentNullException(nameof(source));
-        if(convert is null)
+        if (convert is null)
             throw new ArgumentNullException(nameof(convert));
         if (selector is null)
             throw new ArgumentNullException(nameof(selector));

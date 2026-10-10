@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Data;
 using Bing.Collections;
 
@@ -46,12 +46,12 @@ public static class DataTableHelper
         if (list.Count == 0)
         {
             // 添加表头列，列名为属性名
-            foreach (var property in typeof(T).GetProperties()) 
+            foreach (var property in typeof(T).GetProperties())
                 result.Columns.Add(property.Name, property.PropertyType);
             return result;
         }
 
-        var properties=list[0].GetType().GetProperties();
+        var properties = list[0].GetType().GetProperties();
         result.Columns.AddRange(properties.Select(p =>
         {
             if (p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
@@ -72,7 +72,7 @@ public static class DataTableHelper
         if (nameList.Count <= 0)
             return null;
         var table = new DataTable();
-        foreach (var columnName in nameList) 
+        foreach (var columnName in nameList)
             table.Columns.Add(columnName, typeof(string));
         return table;
     }
@@ -90,7 +90,7 @@ public static class DataTableHelper
         var nameArray = nameString.Split(',', ';');
         foreach (var item in nameArray)
         {
-            if(string.IsNullOrWhiteSpace(item))
+            if (string.IsNullOrWhiteSpace(item))
                 continue;
             var subItems = item.Split('|');
             if (subItems.Length == 2)

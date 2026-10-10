@@ -1,4 +1,4 @@
-﻿using Bing.Helpers;
+using Bing.Helpers;
 using Bing.Http;
 using Bing.Http.Clients;
 using Bing.Serialization.SystemTextJson;
@@ -55,10 +55,11 @@ public class Startup
     {
         services.AddControllers();
         RegisterHttpContextAccessor(services);
-        services.Configure( ( Microsoft.AspNetCore.Mvc.JsonOptions options ) => {
-            options.JsonSerializerOptions.Converters.Add( new DateTimeJsonConverter() );
-            options.JsonSerializerOptions.Converters.Add( new NullableDateTimeJsonConverter() );
-        } );
+        services.Configure((Microsoft.AspNetCore.Mvc.JsonOptions options) =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+            options.JsonSerializerOptions.Converters.Add(new NullableDateTimeJsonConverter());
+        });
         services.AddTransient<IHttpClient>(t =>
         {
             var client = new HttpClientService();
@@ -70,9 +71,10 @@ public class Startup
     /// <summary>
     /// 注册Http上下文访问器
     /// </summary>
-    private void RegisterHttpContextAccessor( IServiceCollection services ) {
+    private void RegisterHttpContextAccessor(IServiceCollection services)
+    {
         var httpContextAccessor = new HttpContextAccessor();
-        services.TryAddSingleton<IHttpContextAccessor>( httpContextAccessor );
+        services.TryAddSingleton<IHttpContextAccessor>(httpContextAccessor);
         Web.HttpContextAccessor = httpContextAccessor;
     }
 

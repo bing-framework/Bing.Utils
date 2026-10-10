@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Drawing.Imaging;
 using Bing.Collections;
 
@@ -678,9 +678,9 @@ public static class BitmapExtensions
         var code = string.Empty;
         for (var y = 0; y < height; y++)
         {
-            for (var x = 0; x < width; x++) 
+            for (var x = 0; x < width; x++)
                 code += binBytes[x, y] < gray ? 1 : 0;
-            if (breakLine) 
+            if (breakLine)
                 code += "\r\n";
         }
         return code;

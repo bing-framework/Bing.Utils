@@ -1,4 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
+// ReSharper disable once CheckNamespace
 namespace Bing.IO;
 
 /// <summary>
@@ -16,7 +16,7 @@ public static class FileStreamExtensions
     {
         var list = new List<string>();
         var reader = new StreamReader(stream, encoding);
-        while (reader.ReadLine() is {} str) 
+        while (reader.ReadLine() is { } str)
             list.Add(str);
         if (closeAfter)
         {

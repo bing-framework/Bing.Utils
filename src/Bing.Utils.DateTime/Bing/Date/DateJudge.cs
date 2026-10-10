@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace Bing.Date;
 
@@ -120,7 +120,7 @@ public static class DateJudge
     {
         if (date is null || compareDate is null)
             return false;
-        return IsSameYear(date, compareDate) 
+        return IsSameYear(date, compareDate)
                && date.Value.GetWeekOfYear(CalendarWeekRule.FirstDay, firstDayOfWeek) == compareDate.Value.GetWeekOfYear(CalendarWeekRule.FirstDay, firstDayOfWeek);
     }
 

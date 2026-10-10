@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -179,7 +179,7 @@ public static partial class TypeVisit
             throw new ArgumentNullException(nameof(properties));
         if (expressions is null)
             throw new ArgumentNullException(nameof(expressions));
-            
+
         ISet<PropertyInfo> excluded = new HashSet<PropertyInfo>(GetProperties(expressions));
 
         return properties.Where(p => !excluded.Contains(p));

@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Bing.Net.Mac;
@@ -30,7 +30,7 @@ public static class MacAddressHelper
         var cleanMac = macAddress.Replace(":", "").Replace("-", "").Replace(".", "");
         var macBytes = new byte[6];
 
-        for (var i = 0; i < 6; i++) 
+        for (var i = 0; i < 6; i++)
             macBytes[i] = Convert.ToByte(cleanMac.Substring(i * 2, 2), 16);
         return macBytes;
     }
@@ -246,7 +246,7 @@ public static class MacAddressHelper
             throw new ArgumentException("无效的MAC地址格式");
 
         var macBytes = new byte[6];
-        for (var i = 0; i < 6; i++) 
+        for (var i = 0; i < 6; i++)
             macBytes[i] = Convert.ToByte(cleanMac.Substring(i * 2, 2), 16);
 
         var eui64 = new byte[8];
@@ -341,7 +341,7 @@ public static class MacAddressHelper
         for (var current = startValue; current <= endValue && result.Count < maxCount; current++)
         {
             var currentBytes = new byte[6];
-            for (var i = 0; i < 6; i++) 
+            for (var i = 0; i < 6; i++)
                 currentBytes[5 - i] = (byte)((current >> (i * 8)) & 0xFF);
 
             result.Add(FromBytes(currentBytes, separator, upperCase));
@@ -421,7 +421,7 @@ public static class MacAddressHelper
 
         // 转换回字节数组
         var resultBytes = new byte[6];
-        for (var i = 0; i < 6; i++) 
+        for (var i = 0; i < 6; i++)
             resultBytes[5 - i] = (byte)((macValue >> (i * 8)) & 0xFF);
 
         return FromBytes(resultBytes, separator, upperCase);

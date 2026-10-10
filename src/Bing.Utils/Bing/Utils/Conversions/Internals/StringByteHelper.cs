@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 namespace Bing.Utils.Conversions.Internals;
 
@@ -77,9 +77,9 @@ internal static class StringByteHelper
     /// <param name="style">数值格式</param>
     /// <param name="formatProvider">格式化提供程序</param>
     public static byte To(
-        string str, 
+        string str,
         IEnumerable<IConversionImpl<string, byte>> impls,
-        NumberStyles style = NumberStyles.Integer, 
+        NumberStyles style = NumberStyles.Integer,
         IFormatProvider formatProvider = null)
     {
         if (formatProvider is null)

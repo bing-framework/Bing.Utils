@@ -1,4 +1,4 @@
-﻿using Bing.Extensions;
+using Bing.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Collections;
@@ -154,7 +154,7 @@ public static partial class BingListExtensions
         for (var i = 0; i < source.Count; i++)
         {
             var item = source[i];
-            if (selector(item)) 
+            if (selector(item))
                 source[i] = itemFactory(item);
         }
     }
@@ -248,9 +248,9 @@ public static partial class BingListExtensions
     /// <exception cref="ArgumentOutOfRangeException">当 chunkSize 小于等于 0 时抛出</exception>
     public static IEnumerable<List<T>> ChunkByView<T>(this List<T> source, int chunkSize)
     {
-        if (source == null) 
+        if (source == null)
             throw new ArgumentNullException(nameof(source));
-        if (chunkSize <= 0) 
+        if (chunkSize <= 0)
             throw new ArgumentOutOfRangeException(nameof(chunkSize));
 
         for (var i = 0; i < source.Count; i += chunkSize)

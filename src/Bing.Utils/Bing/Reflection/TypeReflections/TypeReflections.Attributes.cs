@@ -1,4 +1,4 @@
-﻿using AspectCore.Extensions.Reflection;
+using AspectCore.Extensions.Reflection;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
@@ -131,7 +131,7 @@ public static partial class TypeReflections
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="member">成员元数据</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsAttributeDefined<TAttribute>(MemberInfo member) where TAttribute : Attribute => 
+    public static bool IsAttributeDefined<TAttribute>(MemberInfo member) where TAttribute : Attribute =>
         IsAttributeDefinedImpl(TypeReflectorHelper.GetReflector(member), typeof(TAttribute));
 
     /// <summary>
@@ -155,7 +155,7 @@ public static partial class TypeReflections
     /// <typeparam name="TAttribute">特性类型</typeparam>
     /// <param name="parameter">参数元数据</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsAttributeDefined<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute => 
+    public static bool IsAttributeDefined<TAttribute>(ParameterInfo parameter) where TAttribute : Attribute =>
         IsAttributeDefinedImpl(TypeReflectorHelper.GetReflector(parameter), typeof(TAttribute));
 
     /// <summary>
@@ -766,7 +766,7 @@ public static partial class TypeReflections
         if (length == 0)
             return Enumerable.Empty<Attribute>();
         var attributeArray = new Attribute[length];
-        for (var i = 0; i < length; i++) 
+        for (var i = 0; i < length; i++)
             attributeArray[i] = attributeReflectors[i].Invoke();
         return attributeArray;
     }

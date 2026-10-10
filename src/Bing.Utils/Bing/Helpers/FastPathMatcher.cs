@@ -1,4 +1,4 @@
-﻿namespace Bing.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// 快速路径匹配器，用于高效匹配路径模式
@@ -245,7 +245,7 @@ public static class FastPathMatcher
             }
 
             // 单字符通配符或精确匹配
-            if ((patternChar == QuestionWildcard && pathChar != NullChar && pathChar != PathSeparator) 
+            if ((patternChar == QuestionWildcard && pathChar != NullChar && pathChar != PathSeparator)
                 || patternChar == pathChar)
             {
                 pathIndex++;

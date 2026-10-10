@@ -1,4 +1,4 @@
-﻿using Bing.Date;
+using Bing.Date;
 
 namespace Bing.IdUtils;
 
@@ -164,7 +164,7 @@ public sealed class ModelIdAccessor
     {
         if (newIndex < 0)
             throw new ArgumentOutOfRangeException(nameof(newIndex), newIndex, "索引值不能为负数");
-        lock (_indexLock) 
+        lock (_indexLock)
             _currentIndex = newIndex;
     }
 

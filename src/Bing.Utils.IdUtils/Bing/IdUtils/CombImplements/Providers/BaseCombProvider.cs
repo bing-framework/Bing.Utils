@@ -1,4 +1,4 @@
-﻿using Bing.IdUtils.CombImplements.Strategies;
+using Bing.IdUtils.CombImplements.Strategies;
 using Bing.IdUtils.GuidImplements;
 
 namespace Bing.IdUtils.CombImplements.Providers;
@@ -30,7 +30,7 @@ internal abstract class BaseCombProvider : ICombProvider
     /// <param name="customTimeStampProvider">自定义时间戳提供程序</param>
     /// <param name="customGuidProvider">自定义Guid提供程序</param>
     protected BaseCombProvider(ICombDateTimeStrategy strategy,
-        InternalTimeStampProvider customTimeStampProvider = null, 
+        InternalTimeStampProvider customTimeStampProvider = null,
         InternalGuidProvider customGuidProvider = null)
     {
         if (strategy.NumDateBytes != 4 && strategy.NumDateBytes != 6)

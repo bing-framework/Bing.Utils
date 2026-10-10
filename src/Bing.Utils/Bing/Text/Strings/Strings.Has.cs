@@ -1,4 +1,4 @@
-﻿namespace Bing.Text;
+namespace Bing.Text;
 
 /// <summary>
 /// 字符串工具
@@ -72,7 +72,7 @@ public static partial class StringsExtensions
     /// <param name="text">文本</param>
     /// <param name="minCount">最小数量</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool HasNumbersAtLeast(this string text, int minCount)=> Strings.HasNumbersAtLeast(text, minCount);
+    public static bool HasNumbersAtLeast(this string text, int minCount) => Strings.HasNumbersAtLeast(text, minCount);
 
     #endregion
 
@@ -83,7 +83,7 @@ public static partial class StringsExtensions
     /// </summary>
     /// <param name="text">文本</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool HasLetters(this string text)  => Strings.HasLetters(text);
+    public static bool HasLetters(this string text) => Strings.HasLetters(text);
 
     /// <summary>
     /// 至少包含指定数量的字母。

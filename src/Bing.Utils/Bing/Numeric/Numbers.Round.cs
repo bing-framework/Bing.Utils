@@ -1,4 +1,4 @@
-﻿namespace Bing.Numeric;
+namespace Bing.Numeric;
 
 /// <summary>
 /// 数值操作
@@ -49,7 +49,7 @@ public static partial class NumberExtensions
     /// </summary>
     /// <param name="value">值</param>
     /// <remarks>该方法截断保留2位小数并且不进行四舍五入操作</remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static decimal RoundTruncate(this decimal value) => Numbers.RoundTruncate(value);
 
     /// <summary>
@@ -58,6 +58,6 @@ public static partial class NumberExtensions
     /// <param name="value">值</param>
     /// <param name="digits">小数位数</param>
     /// <remarks>该方法截断保留N位小数并且不进行四舍五入操作</remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static decimal RoundTruncate(this decimal value, int digits) => Numbers.RoundTruncate(value, digits);
 }

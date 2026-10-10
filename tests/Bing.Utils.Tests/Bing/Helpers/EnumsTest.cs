@@ -241,7 +241,8 @@ public class EnumsTest
     [Fact]
     public void Test_GetItems_Validate()
     {
-        AssertHelper.Throws<InvalidOperationException>(() => {
+        AssertHelper.Throws<InvalidOperationException>(() =>
+        {
             Enums.GetItems<Sample>();
         }, "类型 Bing.Tests.Samples.Sample 不是枚举");
     }

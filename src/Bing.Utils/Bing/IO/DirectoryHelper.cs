@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Bing.Extensions;
 using Bing.Helpers;
 using Bing.OS;
@@ -243,7 +243,7 @@ public static class DirectoryHelper
     {
         var filePaths = GetFiles(directoryPath, pattern, includeChildPath);
         var names = new string[filePaths.Length];
-        for (var i = 0; i < filePaths.Length; i++) 
+        for (var i = 0; i < filePaths.Length; i++)
             names[i] = Path.GetFileName(filePaths[i]);
         return names;
     }
@@ -652,7 +652,7 @@ public static class DirectoryHelper
     /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
     public static void SetAttributes(string directory, FileAttributes attribute, bool isSet)
     {
-        if(string.IsNullOrWhiteSpace(directory))
+        if (string.IsNullOrWhiteSpace(directory))
             throw new ArgumentNullException(nameof(directory));
         var di = new DirectoryInfo(directory);
         if (!di.Exists)

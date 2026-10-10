@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using Bing.Extensions;
 using Bing.Reflection;
 
@@ -148,7 +148,7 @@ public static class Enums
     {
         var enumValues = GetValues<TEnum>();
         var result = new int[enumValues.Length];
-        for (var i = 0; i < enumValues.Length; i++) 
+        for (var i = 0; i < enumValues.Length; i++)
             result[i] = Unsafe.As<TEnum, int>(ref enumValues[i]);
         return result;
     }
@@ -166,7 +166,7 @@ public static class Enums
     {
         var enumValues = GetValues<TEnum>();
         var result = new string[enumValues.Length];
-        for (var i = 0; i < enumValues.Length; i++) 
+        for (var i = 0; i < enumValues.Length; i++)
             result[i] = enumValues[i].ToString();
         return result;
     }
@@ -257,7 +257,7 @@ public static class Enums
         return result;
     }
 
-#endregion
+    #endregion
 
     #region HasValue(是否包含指定值)
 

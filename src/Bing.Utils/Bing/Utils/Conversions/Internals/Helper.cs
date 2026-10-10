@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Conversions.Internals;
+namespace Bing.Utils.Conversions.Internals;
 
 /// <summary>
 /// 内部操作辅助类
@@ -17,9 +17,9 @@ internal static class Helper
     /// <param name="act">转换操作</param>
     // ReSharper disable once InconsistentNaming
     public static bool IsXXX<TFrom, TTo>(
-        TFrom @from, 
+        TFrom @from,
         Func<TFrom, bool> fromTry,
-        Func<TFrom, Action<TTo>, bool> firstTry, 
+        Func<TFrom, Action<TTo>, bool> firstTry,
         IEnumerable<IConversionTry<TFrom, TTo>> tries,
         Action<TTo> act = null)
     {
