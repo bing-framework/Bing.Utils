@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Splitters;
+namespace Bing.Text.Splitters;
 
 /// <summary>
 /// 映射分割器

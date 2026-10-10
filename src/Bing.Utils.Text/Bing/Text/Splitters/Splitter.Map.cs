@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Splitters;
+namespace Bing.Text.Splitters;
 
 /// <summary>
 /// 字符串分割器
@@ -6,7 +6,7 @@
 public partial class Splitter : IMapSplitter
 {
     #region TrimResults(裁剪结果)
-    
+
     /// <summary>
     /// 裁剪结果
     /// </summary>

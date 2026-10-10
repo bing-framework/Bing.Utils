@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace Bing.Text.Splitters;
 
@@ -135,7 +135,7 @@ public partial class Splitter : ISplitter
     #endregion
 
     #region Limit(限制)
-    
+
     /// <summary>
     /// 限制
     /// </summary>
@@ -279,7 +279,7 @@ public partial class Splitter : ISplitter
     #endregion
 
     #region FixedLength
-    
+
     /// <summary>
     /// 固定长度
     /// </summary>

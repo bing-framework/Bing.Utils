@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Splitters;
+namespace Bing.Text.Splitters;
 
 /// <summary>
 /// 固定长度的分割器
