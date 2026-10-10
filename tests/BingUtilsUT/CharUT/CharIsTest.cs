@@ -344,7 +344,7 @@ public class CharIsTest
         // 一个字符不应该既是空白符又是emoji（根据当前实现）
         if (isBlank && isEmoji)
         {
-            Assert.True(false, $"Character '{input}' (U+{(int)input:X4}) cannot be both blank and emoji");
+            Assert.Fail($"Character '{input}' (U+{(int)input:X4}) cannot be both blank and emoji");
         }
     }
     /// <summary>

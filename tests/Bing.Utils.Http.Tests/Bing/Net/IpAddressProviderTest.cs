@@ -316,7 +316,7 @@ public class IpAddressProviderTest : TestBase
                 ipv6Count++;
                 if (!includeIPv6)
                 {
-                    Assert.True(false, $"不应包含IPv6地址，但发现: {ip}");
+                    Assert.Fail($"不应包含IPv6地址，但发现: {ip}");
                 }
             }
             if (IpValidator.IsLocalIp(ip))
@@ -324,7 +324,7 @@ public class IpAddressProviderTest : TestBase
                 loopbackCount++;
                 if (!includeLoopback)
                 {
-                    Assert.True(false, $"不应包含回环地址，但发现: {ip}");
+                    Assert.Fail($"不应包含回环地址，但发现: {ip}");
                 }
             }
         }

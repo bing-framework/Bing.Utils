@@ -313,11 +313,8 @@ public class CommonTest : TestBase
     /// 测试 - JoinPath - 基本路径连接
     /// </summary>
     [Theory]
-    [InlineData(new[] { "folder", "file.txt" }, "folder/file.txt")]
-    [InlineData(new[] { "api", "v1", "users" }, "api/v1/users")]
-    [InlineData(new[] { "http://example.com", "api", "data" }, "http://example.com/api/data")]
-    [InlineData(new[] { "", "test", "path" }, "/test/path")]
-    public void JoinPath_BasicFunctionality_ReturnsCorrectPath(string[] pathParts, string expectedPattern)
+    [MemberData(nameof(GetJoinPathBasicFunctionalityCases))]
+    public void JoinPath_BasicFunctionality_ReturnsCorrectPath(string[] pathParts)
     {
         // Act
         var result = Common.JoinPath(pathParts);
@@ -329,6 +326,14 @@ public class CommonTest : TestBase
             result.ShouldContain(part);
         }
         Output.WriteLine($"路径连接: [{string.Join(", ", pathParts)}] -> '{result}'");
+    }
+
+    public static IEnumerable<object[]> GetJoinPathBasicFunctionalityCases()
+    {
+        yield return new object[] { new[] { "folder", "file.txt" } };
+        yield return new object[] { new[] { "api", "v1", "users" } };
+        yield return new object[] { new[] { "http://example.com", "api", "data" } };
+        yield return new object[] { new[] { "", "test", "path" } };
     }
     /// <summary>
     /// 测试 - JoinPath - 单个路径
