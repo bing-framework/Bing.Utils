@@ -53,11 +53,11 @@ public class ColorEffectTest
         using var bitmap = CreateBitmap(2, 2, Color.Red);
         _effect.ReplaceColor(bitmap, Color.Red, Color.Blue);
         for (var x = 0; x < 2; x++)
-        for (var y = 0; y < 2; y++)
-        {
-            var px = bitmap.GetPixel(x, y);
-            px.B.ShouldBe((byte)255);
-        }
+            for (var y = 0; y < 2; y++)
+            {
+                var px = bitmap.GetPixel(x, y);
+                px.B.ShouldBe((byte)255);
+            }
     }
 
     #endregion
@@ -189,8 +189,8 @@ public class ColorEffectTest
     {
         var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
         for (var x = 0; x < width; x++)
-        for (var y = 0; y < height; y++)
-            bitmap.SetPixel(x, y, fill);
+            for (var y = 0; y < height; y++)
+                bitmap.SetPixel(x, y, fill);
         return bitmap;
     }
 

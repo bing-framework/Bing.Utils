@@ -86,7 +86,7 @@ public sealed class HybridEncryptedPayload
         {
             checked
             {
-            var result = new byte[HeaderLength + _encryptedKey.Length + encryptedDataBytes.Length];
+                var result = new byte[HeaderLength + _encryptedKey.Length + encryptedDataBytes.Length];
                 result[0] = (byte)'B';
                 result[1] = (byte)'S';
                 result[2] = (byte)'H';

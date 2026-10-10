@@ -81,8 +81,8 @@ public class BinaryMatrixHelperTest
     {
         var matrix = new byte[4, 4];
         for (var x = 0; x < 4; x++)
-        for (var y = 0; y < 4; y++)
-            matrix[x, y] = 0;
+            for (var y = 0; y < 4; y++)
+                matrix[x, y] = 0;
 
         var result = BinaryMatrixHelper.ClearBorder(matrix, 1);
 

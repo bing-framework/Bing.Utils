@@ -1,6 +1,7 @@
 using Bing.Collections;
 namespace BingUtilsUT.ConvUT;
-[Trait("ConvUT","Dict")]
+
+[Trait("ConvUT", "Dict")]
 public class DictConvTest
 {
     /// <summary>

@@ -1,5 +1,6 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
+
 [Trait("StringUT", "Strings.Substring")]
 public class StringSubstringTest
 {
@@ -51,7 +52,7 @@ public class StringSubstringTest
         var expected = "";
         var result = Strings.Take(input, length);
         Assert.Equal(expected, result);
-    } 
+    }
     #endregion
     /// <summary>
     /// 测试 - 截断字符串 - 指定范围
@@ -172,10 +173,10 @@ public class StringSubstringTest
     public void Test_SubstringBetween_2()
     {
         Strings.SubstringBetween(null, ",").ShouldBe(string.Empty);
-        Strings.SubstringBetween("","").ShouldBe(string.Empty);
-        Strings.SubstringBetween("","tag").ShouldBe(string.Empty);
-        Strings.SubstringBetween("tagabctag",null).ShouldBe(string.Empty);
-        Strings.SubstringBetween("tagabctag","").ShouldBe(string.Empty);
-        Strings.SubstringBetween("tagabctag","tag").ShouldBe("abc");
+        Strings.SubstringBetween("", "").ShouldBe(string.Empty);
+        Strings.SubstringBetween("", "tag").ShouldBe(string.Empty);
+        Strings.SubstringBetween("tagabctag", null).ShouldBe(string.Empty);
+        Strings.SubstringBetween("tagabctag", "").ShouldBe(string.Empty);
+        Strings.SubstringBetween("tagabctag", "tag").ShouldBe("abc");
     }
 }

@@ -4,7 +4,7 @@ namespace Bing.Helpers;
 /// CookieHelper 测试
 /// </summary>
 [Trait("Bing.Helpers", "Cookie")]
-public class CookieHelperTest: TestBase
+public class CookieHelperTest : TestBase
 {
     private readonly Mock<HttpContext> _mockHttpContext;
     private readonly Mock<HttpRequest> _mockRequest;

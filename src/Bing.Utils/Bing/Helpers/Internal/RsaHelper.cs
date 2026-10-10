@@ -277,17 +277,17 @@ internal sealed class RsaHelper : IDisposable
         if (bt == 0x81)
             count = binr.ReadByte();
         else
-        if (bt == 0x82)
-        {
-            var highbyte = binr.ReadByte();
-            var lowbyte = binr.ReadByte();
-            byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
-            count = BitConverter.ToInt32(modint, 0);
-        }
-        else
-        {
-            count = bt;
-        }
+            if (bt == 0x82)
+            {
+                var highbyte = binr.ReadByte();
+                var lowbyte = binr.ReadByte();
+                byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
+                count = BitConverter.ToInt32(modint, 0);
+            }
+            else
+            {
+                count = bt;
+            }
 
         while (binr.ReadByte() == 0x00)
         {

@@ -165,7 +165,7 @@ public class TimeFormatterTest
     public void Test_Register_WithInvalidPattern_ThrowsArgumentException(string pattern)
     {
         // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Assert.Throws<ArgumentException>(() =>
             TimeFormatter.Register(TimeFormatType.Default, pattern));
         Assert.Equal("pattern", exception.ParamName);
     }

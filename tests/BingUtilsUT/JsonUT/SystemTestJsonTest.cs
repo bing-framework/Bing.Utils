@@ -174,14 +174,14 @@ public class SystemTestJsonTest
     public void Test_ToJson_Long()
     {
         var result = new StringBuilder();
-        result.Append( "{" );
-        result.Append( "\"Long\":\"123456789123456789\"" );
-        result.Append( "}" );
+        result.Append("{");
+        result.Append("\"Long\":\"123456789123456789\"");
+        result.Append("}");
         var sample = new JsonTestSample2 { Long = 123456789123456789 };
-        var json = Json.ToJson( sample );
-        Assert.Equal( result.ToString(), json );
-        var obj = Json.ToObject<JsonTestSample2>( json );
-        Assert.Equal( 123456789123456789, obj.Long );
+        var json = Json.ToJson(sample);
+        Assert.Equal(result.ToString(), json);
+        var obj = Json.ToObject<JsonTestSample2>(json);
+        Assert.Equal(123456789123456789, obj.Long);
     }
     /// <summary>
     /// 测试 - 转换成Json字符串 - long?类型
@@ -190,14 +190,14 @@ public class SystemTestJsonTest
     public void Test_ToJson_NullableLong()
     {
         var result = new StringBuilder();
-        result.Append( "{" );
-        result.Append( "\"Long\":\"0\"," );
-        result.Append( "\"NullableLong\":\"123456789123456789\"" );
-        result.Append( "}" );
+        result.Append("{");
+        result.Append("\"Long\":\"0\",");
+        result.Append("\"NullableLong\":\"123456789123456789\"");
+        result.Append("}");
         var sample = new JsonTestSample2 { NullableLong = 123456789123456789 };
-        var json = Json.ToJson( sample );
-        Assert.Equal( result.ToString(), json );
-        var obj = Json.ToObject<JsonTestSample2>( json );
-        Assert.Equal( 123456789123456789, obj.NullableLong );
+        var json = Json.ToJson(sample);
+        Assert.Equal(result.ToString(), json);
+        var obj = Json.ToObject<JsonTestSample2>(json);
+        Assert.Equal(123456789123456789, obj.NullableLong);
     }
 }

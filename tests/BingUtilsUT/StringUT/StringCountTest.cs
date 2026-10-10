@@ -1,5 +1,6 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
+
 [Trait("StringUT", "Strings.Count")]
 public class StringCountTest
 {
@@ -54,18 +55,18 @@ public class StringCountTest
     public void Test_CountOccurrences()
     {
         var text = "AABBCCDDAABBCCDD";
-        Strings.CountOccurrences(text,"AA").ShouldBe(2);
-        Strings.CountOccurrences(text,"aa").ShouldBe(0);
-        Strings.CountOccurrences(text,'A').ShouldBe(4);
-        Strings.CountOccurrences(text,'a').ShouldBe(0);
-        Strings.CountOccurrences(text,"AA", IgnoreCase.False).ShouldBe(2);
-        Strings.CountOccurrences(text,"aa", IgnoreCase.False).ShouldBe(0);
-        Strings.CountOccurrences(text,'A', IgnoreCase.False).ShouldBe(4);
-        Strings.CountOccurrences(text,'a', IgnoreCase.False).ShouldBe(0);
-        Strings.CountOccurrences(text,"AA", IgnoreCase.True).ShouldBe(2);
-        Strings.CountOccurrences(text,"aa", IgnoreCase.True).ShouldBe(2);
-        Strings.CountOccurrences(text,'A', IgnoreCase.True).ShouldBe(4);
-        Strings.CountOccurrences(text,'a', IgnoreCase.True).ShouldBe(4);
+        Strings.CountOccurrences(text, "AA").ShouldBe(2);
+        Strings.CountOccurrences(text, "aa").ShouldBe(0);
+        Strings.CountOccurrences(text, 'A').ShouldBe(4);
+        Strings.CountOccurrences(text, 'a').ShouldBe(0);
+        Strings.CountOccurrences(text, "AA", IgnoreCase.False).ShouldBe(2);
+        Strings.CountOccurrences(text, "aa", IgnoreCase.False).ShouldBe(0);
+        Strings.CountOccurrences(text, 'A', IgnoreCase.False).ShouldBe(4);
+        Strings.CountOccurrences(text, 'a', IgnoreCase.False).ShouldBe(0);
+        Strings.CountOccurrences(text, "AA", IgnoreCase.True).ShouldBe(2);
+        Strings.CountOccurrences(text, "aa", IgnoreCase.True).ShouldBe(2);
+        Strings.CountOccurrences(text, 'A', IgnoreCase.True).ShouldBe(4);
+        Strings.CountOccurrences(text, 'a', IgnoreCase.True).ShouldBe(4);
     }
     /// <summary>
     /// 测试 - 计算给定字符串中有多少个指定的字符 - 忽略大小写
@@ -74,10 +75,10 @@ public class StringCountTest
     public void Test_CountOccurrences_IgnoreCase()
     {
         var text = "AABBCCDDAABBCCDD";
-        Strings.CountOccurrencesIgnoreCase(text,"AA").ShouldBe(2);
-        Strings.CountOccurrencesIgnoreCase(text,"aa").ShouldBe(2);
-        Strings.CountOccurrencesIgnoreCase(text,'A').ShouldBe(4);
-        Strings.CountOccurrencesIgnoreCase(text,'a').ShouldBe(4);
+        Strings.CountOccurrencesIgnoreCase(text, "AA").ShouldBe(2);
+        Strings.CountOccurrencesIgnoreCase(text, "aa").ShouldBe(2);
+        Strings.CountOccurrencesIgnoreCase(text, 'A').ShouldBe(4);
+        Strings.CountOccurrencesIgnoreCase(text, 'a').ShouldBe(4);
     }
     /// <summary>
     /// 测试 - 计算给定字符串中有多少个指定的子字符串

@@ -47,8 +47,8 @@ public static partial class ImageSharpHelper
 
         // 填充背景
         for (var x = 0; x < width; x++)
-        for (var y = 0; y < height; y++)
-            output[x, y] = background;
+            for (var y = 0; y < height; y++)
+                output[x, y] = background;
 
         // 绘制边框
         if (options.HasBorder)
@@ -337,8 +337,8 @@ public static partial class ImageSharpHelper
         {
             var result = new byte[5, 7];
             for (var y = 0; y < 7; y++)
-            for (var x = 0; x < 5; x++)
-                result[x, y] = (byte)(rows[y][x] == '1' ? 1 : 0);
+                for (var x = 0; x < 5; x++)
+                    result[x, y] = (byte)(rows[y][x] == '1' ? 1 : 0);
             return result;
         }
     }

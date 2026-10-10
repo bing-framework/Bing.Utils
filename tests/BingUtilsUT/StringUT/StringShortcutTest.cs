@@ -1,5 +1,6 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
+
 [Trait("StringUT", "Strings.Shortcut")]
 public class StringShortcutTest
 {
@@ -49,8 +50,8 @@ public class StringShortcutTest
         text.EndsWith('E').ShouldBeTrue();
         text.EndsWith().ShouldBeTrue();
         text.EndsWith("").ShouldBeTrue();
-        text.EndsWith((List<string>) null).ShouldBeTrue();
-        text.EndsWith((string[]) null).ShouldBeTrue();
+        text.EndsWith((List<string>)null).ShouldBeTrue();
+        text.EndsWith((string[])null).ShouldBeTrue();
         text.EndsWith(new string[0]).ShouldBeTrue();
         text.EndsWith(new List<string>()).ShouldBeTrue();
         text.EndsWith("", "", "").ShouldBeTrue();
@@ -62,12 +63,12 @@ public class StringShortcutTest
         text.EndsWith("DE").ShouldBeTrue();
         text.EndsWith("C", "DE").ShouldBeTrue();
         text.EndsWith("C", "DE", "D").ShouldBeTrue();
-        text.EndsWith(new List<string> {"E"}).ShouldBeTrue();
-        text.EndsWith(new List<string> {"C", "E"}).ShouldBeTrue();
-        text.EndsWith(new List<string> {"C", "E", "D"}).ShouldBeTrue();
-        text.EndsWith(new List<string> {"DE"}).ShouldBeTrue();
-        text.EndsWith(new List<string> {"C", "DE"}).ShouldBeTrue();
-        text.EndsWith(new List<string> {"C", "DE", "D"}).ShouldBeTrue();
+        text.EndsWith(new List<string> { "E" }).ShouldBeTrue();
+        text.EndsWith(new List<string> { "C", "E" }).ShouldBeTrue();
+        text.EndsWith(new List<string> { "C", "E", "D" }).ShouldBeTrue();
+        text.EndsWith(new List<string> { "DE" }).ShouldBeTrue();
+        text.EndsWith(new List<string> { "C", "DE" }).ShouldBeTrue();
+        text.EndsWith(new List<string> { "C", "DE", "D" }).ShouldBeTrue();
     }
     /// <summary>
     /// 测试 - 尾部匹配 - 忽略大小写
@@ -86,8 +87,8 @@ public class StringShortcutTest
         text.EndsWithIgnoreCase("DE").ShouldBeTrue();
         text.EndsWithIgnoreCase("De").ShouldBeTrue();
         text.EndsWithIgnoreCase("").ShouldBeTrue();
-        text.EndsWithIgnoreCase((List<string>) null).ShouldBeTrue();
-        text.EndsWithIgnoreCase((string[]) null).ShouldBeTrue();
+        text.EndsWithIgnoreCase((List<string>)null).ShouldBeTrue();
+        text.EndsWithIgnoreCase((string[])null).ShouldBeTrue();
         text.EndsWithIgnoreCase(new string[0]).ShouldBeTrue();
         text.EndsWithIgnoreCase(new List<string>()).ShouldBeTrue();
         text.EndsWithIgnoreCase("", "", "").ShouldBeTrue();
@@ -113,24 +114,24 @@ public class StringShortcutTest
         text.EndsWithIgnoreCase("de").ShouldBeTrue();
         text.EndsWithIgnoreCase("c", "de").ShouldBeTrue();
         text.EndsWithIgnoreCase("c", "de", "d").ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"E"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"C", "E"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"C", "E", "D"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"e"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"c", "e"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"c", "e", "d"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"DE"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"C", "DE"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"C", "DE", "D"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"De"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"c", "De"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"c", "De", "d"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"dE"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"c", "dE"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"c", "dE", "d"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"de"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"c", "de"}).ShouldBeTrue();
-        text.EndsWithIgnoreCase(new List<string> {"c", "de", "d"}).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "E" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "C", "E" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "C", "E", "D" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "e" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "c", "e" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "c", "e", "d" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "DE" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "C", "DE" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "C", "DE", "D" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "De" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "c", "De" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "c", "De", "d" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "dE" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "c", "dE" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "c", "dE", "d" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "de" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "c", "de" }).ShouldBeTrue();
+        text.EndsWithIgnoreCase(new List<string> { "c", "de", "d" }).ShouldBeTrue();
     }
     /// <summary>
     /// 测试 - 头部匹配
@@ -142,8 +143,8 @@ public class StringShortcutTest
         text.StartsWith('A').ShouldBeTrue();
         text.StartsWith().ShouldBeTrue();
         text.StartsWith("").ShouldBeTrue();
-        text.StartsWith((List<string>) null).ShouldBeTrue();
-        text.StartsWith((string[]) null).ShouldBeTrue();
+        text.StartsWith((List<string>)null).ShouldBeTrue();
+        text.StartsWith((string[])null).ShouldBeTrue();
         text.StartsWith(new string[0]).ShouldBeTrue();
         text.StartsWith(new List<string>()).ShouldBeTrue();
         text.StartsWith("", "", "").ShouldBeTrue();
@@ -155,12 +156,12 @@ public class StringShortcutTest
         text.StartsWith("AB").ShouldBeTrue();
         text.StartsWith("C", "AB").ShouldBeTrue();
         text.StartsWith("C", "AB", "D").ShouldBeTrue();
-        text.StartsWith(new List<string> {"A"}).ShouldBeTrue();
-        text.StartsWith(new List<string> {"C", "A"}).ShouldBeTrue();
-        text.StartsWith(new List<string> {"C", "A", "B"}).ShouldBeTrue();
-        text.StartsWith(new List<string> {"AB"}).ShouldBeTrue();
-        text.StartsWith(new List<string> {"C", "AB"}).ShouldBeTrue();
-        text.StartsWith(new List<string> {"C", "AB", "D"}).ShouldBeTrue();
+        text.StartsWith(new List<string> { "A" }).ShouldBeTrue();
+        text.StartsWith(new List<string> { "C", "A" }).ShouldBeTrue();
+        text.StartsWith(new List<string> { "C", "A", "B" }).ShouldBeTrue();
+        text.StartsWith(new List<string> { "AB" }).ShouldBeTrue();
+        text.StartsWith(new List<string> { "C", "AB" }).ShouldBeTrue();
+        text.StartsWith(new List<string> { "C", "AB", "D" }).ShouldBeTrue();
     }
     /// <summary>
     /// 测试 - 头部匹配 - 忽略大小写
@@ -179,8 +180,8 @@ public class StringShortcutTest
         text.StartsWithIgnoreCase("AB").ShouldBeTrue();
         text.StartsWithIgnoreCase("Ab").ShouldBeTrue();
         text.StartsWithIgnoreCase("").ShouldBeTrue();
-        text.StartsWithIgnoreCase((List<string>) null).ShouldBeTrue();
-        text.StartsWithIgnoreCase((string[]) null).ShouldBeTrue();
+        text.StartsWithIgnoreCase((List<string>)null).ShouldBeTrue();
+        text.StartsWithIgnoreCase((string[])null).ShouldBeTrue();
         text.StartsWithIgnoreCase(new string[0]).ShouldBeTrue();
         text.StartsWithIgnoreCase(new List<string>()).ShouldBeTrue();
         text.StartsWithIgnoreCase("", "", "").ShouldBeTrue();
@@ -206,24 +207,24 @@ public class StringShortcutTest
         text.StartsWithIgnoreCase("ab").ShouldBeTrue();
         text.StartsWithIgnoreCase("c", "ab").ShouldBeTrue();
         text.StartsWithIgnoreCase("c", "ab", "b").ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"A"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"C", "A"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"C", "A", "B"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"a"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"c", "a"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"c", "a", "b"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"AB"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"C", "AB"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"C", "AB", "B"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"Ab"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"c", "Ab"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"c", "Ab", "b"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"aB"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"c", "aB"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"c", "aB", "b"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"ab"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"c", "ab"}).ShouldBeTrue();
-        text.StartsWithIgnoreCase(new List<string> {"c", "ab", "b"}).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "A" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "C", "A" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "C", "A", "B" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "a" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "c", "a" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "c", "a", "b" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "AB" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "C", "AB" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "C", "AB", "B" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "Ab" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "c", "Ab" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "c", "Ab", "b" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "aB" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "c", "aB" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "c", "aB", "b" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "ab" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "c", "ab" }).ShouldBeTrue();
+        text.StartsWithIgnoreCase(new List<string> { "c", "ab", "b" }).ShouldBeTrue();
     }
     /// <summary>
     /// 测试 - 空字符串、null、空白字符
@@ -255,10 +256,10 @@ public class StringShortcutTest
     public void Test_IndexOfWholePhrase()
     {
         "AA BB CC DD DD EE DD".IndexOfWholePhrase("DD").ShouldBe(9);
-        "AA BB CC DD DD EE DD".IndexOfWholePhrase("DD",6).ShouldBe(9);
-        "AA BB CC DD DD EE DD".IndexOfWholePhrase("DD",7).ShouldBe(9);
-        "AA BB CC DD DD EE DD".IndexOfWholePhrase("DD",8).ShouldBe(9);
-        "AA BB CC DD DD EE DD".IndexOfWholePhrase("DD",10).ShouldBe(12);
+        "AA BB CC DD DD EE DD".IndexOfWholePhrase("DD", 6).ShouldBe(9);
+        "AA BB CC DD DD EE DD".IndexOfWholePhrase("DD", 7).ShouldBe(9);
+        "AA BB CC DD DD EE DD".IndexOfWholePhrase("DD", 8).ShouldBe(9);
+        "AA BB CC DD DD EE DD".IndexOfWholePhrase("DD", 10).ShouldBe(12);
     }
     /// <summary>
     /// 测试 - 查找给定子字符串集合中，最靠结尾的那个字字符串的位置
@@ -267,7 +268,7 @@ public class StringShortcutTest
     public void Test_LastIndexOfAny()
     {
         var text = "AABBCCDDEEFFGG";
-        text.LastIndexOfAny("WW","XX","YY","ZZ","GG").ShouldBe(12);
+        text.LastIndexOfAny("WW", "XX", "YY", "ZZ", "GG").ShouldBe(12);
     }
     /// <summary>
     /// 测试 - 查找给定子字符串位于字符串的最后的位置，忽略大小写
@@ -287,12 +288,12 @@ public class StringShortcutTest
     public void Test_LastIndexOfIgnoreCase_WithStart()
     {
         var text = "AABBCCDDEEFFGG";
-        text.LastIndexOfIgnoreCase("GG",10,2).ShouldBe(-1);
-        text.LastIndexOfIgnoreCase("gg",10,2).ShouldBe(-1);
-        text.LastIndexOfIgnoreCase("gG",10,2).ShouldBe(-1);
-        text.LastIndexOfIgnoreCase("CC",6,4).ShouldBe(4);
-        text.LastIndexOfIgnoreCase("cc",6,4).ShouldBe(4);
-        text.LastIndexOfIgnoreCase("Cc",6,4).ShouldBe(4);
+        text.LastIndexOfIgnoreCase("GG", 10, 2).ShouldBe(-1);
+        text.LastIndexOfIgnoreCase("gg", 10, 2).ShouldBe(-1);
+        text.LastIndexOfIgnoreCase("gG", 10, 2).ShouldBe(-1);
+        text.LastIndexOfIgnoreCase("CC", 6, 4).ShouldBe(4);
+        text.LastIndexOfIgnoreCase("cc", 6, 4).ShouldBe(4);
+        text.LastIndexOfIgnoreCase("Cc", 6, 4).ShouldBe(4);
     }
     /// <summary>
     /// 测试 - 字符编码

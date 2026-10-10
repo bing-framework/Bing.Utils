@@ -162,8 +162,8 @@ public class ImageSharpHelperOcrTest
         var fillColor = fill ?? Color.FromRgb(128, 128, 128);
         var pixel = fillColor.ToPixel<Rgba32>();
         for (var x = 0; x < width; x++)
-        for (var y = 0; y < height; y++)
-            image[x, y] = pixel;
+            for (var y = 0; y < height; y++)
+                image[x, y] = pixel;
         return image;
     }
 

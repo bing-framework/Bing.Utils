@@ -1,6 +1,7 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
-[Trait("TypeUT","TypeReflections.GetDescriptionOrDisplay")]
+
+[Trait("TypeUT", "TypeReflections.GetDescriptionOrDisplay")]
 public class DescriptionOrDisplayNameTest
 {
     public Type EntryOne = typeof(NormalDescriptionClass);

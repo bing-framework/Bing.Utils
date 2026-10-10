@@ -4,7 +4,7 @@ namespace BingUtilsUT.FileUT;
 /// <summary>
 /// 文件读取测试
 /// </summary>
-[Trait("FileUT","FileHelper.Read")]
+[Trait("FileUT", "FileHelper.Read")]
 public class FileReadTest
 {
     /// <summary>

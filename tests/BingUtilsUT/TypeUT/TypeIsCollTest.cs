@@ -1,5 +1,6 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
+
 [Trait("TypeUT", "TypeIs.CollType")]
 public class TypeIsCollTest
 {
@@ -60,7 +61,7 @@ public class TypeIsCollTest
                                                || member.MemberType == MemberTypes.Field
                                                || member.MemberType == MemberTypes.Property;
         var t = typeof(NormalValueTypeClass);
-        var m0 = (MemberInfo) t;
+        var m0 = (MemberInfo)t;
         var allMembers = t.GetMembers().Where(filter).ToList();
         allMembers.ShouldNotBeNull();
         allMembers.ShouldNotBeEmpty();

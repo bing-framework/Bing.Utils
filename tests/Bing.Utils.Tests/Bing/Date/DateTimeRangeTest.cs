@@ -352,7 +352,7 @@ public class DateTimeRangeTest
     {
         var range1 = new DateTimeRange(_now, _now.AddMinutes(1));
         var range2 = new DateTimeRange(_now, _now.AddMinutes(1));
-        Assert.True(range1==range2);
+        Assert.True(range1 == range2);
     }
     /// <summary>
     /// 测试 - 输出字符串

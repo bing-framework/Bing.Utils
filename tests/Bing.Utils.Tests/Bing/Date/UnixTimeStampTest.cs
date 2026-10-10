@@ -773,7 +773,7 @@ public class UnixTimeStampTest
 
         // Act
         for (var i = 0; i < iterations; i++)
-            {
+        {
             timestamps[i] = UnixTimeStamp.Now();
             UnixTimeStamp.UtcNow().ShouldBeGreaterThan(0);
             UnixTimeStamp.CreateNow().ToTimestamp().ShouldBeGreaterThan(0);

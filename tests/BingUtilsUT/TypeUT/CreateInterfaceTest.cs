@@ -1,5 +1,6 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
+
 [Trait("TypeUT", "TypeVisit.CreateInstance")]
 public class CreateInterfaceTest
 {
@@ -32,7 +33,7 @@ public class CreateInterfaceTest
         var instance = TypeVisit.CreateInstance(typeof(NormalWithAttrClass), "test");
         instance.ShouldNotBeNull();
         instance.GetType().ShouldBe(typeof(NormalWithAttrClass));
-        ((NormalWithAttrClass) instance).Nice.ShouldBe("test");
+        ((NormalWithAttrClass)instance).Nice.ShouldBe("test");
     }
     /// <summary>
     /// 测试 - 泛型类型 - 创建实例 - 1个参数
@@ -54,8 +55,8 @@ public class CreateInterfaceTest
         var instance = TypeVisit.CreateInstance(typeof(NormalWithAttrClass), "test", 2);
         instance.ShouldNotBeNull();
         instance.GetType().ShouldBe(typeof(NormalWithAttrClass));
-        ((NormalWithAttrClass) instance).Nice.ShouldBe("test");
-        ((NormalWithAttrClass) instance).Index.ShouldBe(2);
+        ((NormalWithAttrClass)instance).Nice.ShouldBe("test");
+        ((NormalWithAttrClass)instance).Index.ShouldBe(2);
     }
     /// <summary>
     /// 测试 - 泛型类型 - 创建实例 - 2个参数

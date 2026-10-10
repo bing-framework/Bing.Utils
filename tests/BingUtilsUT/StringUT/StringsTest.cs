@@ -1,6 +1,7 @@
 using Bing.Extensions;
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
+
 [Trait("StringUT", "Strings.Basic")]
 public class StringsTest
 {
@@ -10,7 +11,7 @@ public class StringsTest
     [Fact]
     public void Test_Merge_For_AllChars()
     {
-        var chars = new List<char> {'a', 'b', 'c'};
+        var chars = new List<char> { 'a', 'b', 'c' };
         Strings.Merge(chars).ShouldBe("abc");
     }
     /// <summary>
@@ -19,7 +20,7 @@ public class StringsTest
     [Fact]
     public void Test_Merge_For_Strings()
     {
-        var strings = new List<string> {"00", "11", "22"};
+        var strings = new List<string> { "00", "11", "22" };
         Strings.Merge("AA", strings.ToArray()).ShouldBe("AA001122");
     }
     /// <summary>

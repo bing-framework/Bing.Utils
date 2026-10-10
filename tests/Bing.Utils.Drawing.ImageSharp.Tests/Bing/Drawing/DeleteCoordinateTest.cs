@@ -132,8 +132,8 @@ public class DeleteCoordinateTest
         // 通过 ImageSharp 生成一张纯红图并编码为 JPEG
         var image = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(4, 4);
         for (var x = 0; x < 4; x++)
-        for (var y = 0; y < 4; y++)
-            image[x, y] = new SixLabors.ImageSharp.PixelFormats.Rgba32(255, 0, 0, 255);
+            for (var y = 0; y < 4; y++)
+                image[x, y] = new SixLabors.ImageSharp.PixelFormats.Rgba32(255, 0, 0, 255);
 
         var jpegBytes = ImageSharpHelper.ToBytes(image, SixLabors.ImageSharp.Formats.Jpeg.JpegFormat.Instance);
         var cleaned = ImageSharpHelper.DeleteCoordinate(jpegBytes);
@@ -158,8 +158,8 @@ public class DeleteCoordinateTest
         // 使用 ImageSharp 生成一张 2x2 白色 JPEG
         var image = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(2, 2);
         for (var x = 0; x < 2; x++)
-        for (var y = 0; y < 2; y++)
-            image[x, y] = new SixLabors.ImageSharp.PixelFormats.Rgba32(255, 255, 255, 255);
+            for (var y = 0; y < 2; y++)
+                image[x, y] = new SixLabors.ImageSharp.PixelFormats.Rgba32(255, 255, 255, 255);
 
         return ImageSharpHelper.ToBytes(image, SixLabors.ImageSharp.Formats.Jpeg.JpegFormat.Instance);
     }
@@ -171,8 +171,8 @@ public class DeleteCoordinateTest
     {
         var image = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(2, 2);
         for (var x = 0; x < 2; x++)
-        for (var y = 0; y < 2; y++)
-            image[x, y] = new SixLabors.ImageSharp.PixelFormats.Rgba32(255, 255, 255, 255);
+            for (var y = 0; y < 2; y++)
+                image[x, y] = new SixLabors.ImageSharp.PixelFormats.Rgba32(255, 255, 255, 255);
 
         return ImageSharpHelper.ToBytes(image, SixLabors.ImageSharp.Formats.Png.PngFormat.Instance);
     }

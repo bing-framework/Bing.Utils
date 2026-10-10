@@ -109,7 +109,7 @@ public class JsonHelperTest : TestBase
     {
         var sample = new JsonDateTimeSample
         {
-            ConfirmTime = new DateTime(2025,1,1),
+            ConfirmTime = new DateTime(2025, 1, 1),
             OptionalTime = null
         };
         var json = JsonConvert.SerializeObject(sample);

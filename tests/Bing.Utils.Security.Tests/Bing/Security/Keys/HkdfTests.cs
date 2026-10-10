@@ -16,9 +16,9 @@ public class HkdfTests
     public void DeriveKeySha256_WhenUsingRfc5869Case1_ShouldMatchExpectedOutput()
     {
         // Arrange
-            var inputKeyMaterial = new byte[22];
-            for (var index = 0; index < inputKeyMaterial.Length; index++)
-                inputKeyMaterial[index] = 0x0b;
+        var inputKeyMaterial = new byte[22];
+        for (var index = 0; index < inputKeyMaterial.Length; index++)
+            inputKeyMaterial[index] = 0x0b;
         var salt = HexEncoding.Decode("000102030405060708090a0b0c");
         var info = HexEncoding.Decode("f0f1f2f3f4f5f6f7f8f9");
 

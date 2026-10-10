@@ -125,7 +125,7 @@ public class StringExtensionsTest
     /// 测试 - 提取字符串中所有字母以及数字
     /// </summary>
     [Theory]
-    [InlineData("测试一个ABC以及1234","ABC1234")]
+    [InlineData("测试一个ABC以及1234", "ABC1234")]
     [InlineData("测试一个ABC以###及1234", "ABC1234")]
     [InlineData("AA###及1234", "AA1234")]
     public void Test_ExtractLettersNumbers(string input, string result)
@@ -171,7 +171,7 @@ public class StringExtensionsTest
     /// 测试 - 过滤字符
     /// </summary>
     [Theory]
-    [InlineData("测试.隔壁.老王.数据.","测试隔壁老王数据",'.')]
+    [InlineData("测试.隔壁.老王.数据.", "测试隔壁老王数据", '.')]
     [InlineData("测试#隔壁#老王#数据#", "测试隔壁老王数据", '#')]
     public void Test_FilterChars(string input, string result, char c)
     {

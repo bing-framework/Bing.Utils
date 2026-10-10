@@ -1,5 +1,6 @@
- using Bing.Reflection;
- namespace BingUtilsUT.TypeUT;
+using Bing.Reflection;
+namespace BingUtilsUT.TypeUT;
+
 [Trait("TypeUT", "TypeReflections.IsDescriptionDefined")]
 public class DescriptionDefinedTest
 {

@@ -1,5 +1,6 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
+
 [Trait("StringUT", "Strings.Desensitized")]
 public class StringDesensitizedTest
 {
@@ -17,7 +18,7 @@ public class StringDesensitizedTest
     [Fact]
     public void Test_IdCardNum()
     {
-        DesensitizedHelper.IdCardNum("51343620000320711X",1,2).ShouldBe("5***************1X");
+        DesensitizedHelper.IdCardNum("51343620000320711X", 1, 2).ShouldBe("5***************1X");
     }
     /// <summary>
     /// 测试 - 脱敏 - 固定电话
@@ -41,10 +42,10 @@ public class StringDesensitizedTest
     [Fact]
     public void Test_Address()
     {
-        DesensitizedHelper.Address("广东省广州市天河区猎德街道289号",5).ShouldBe("广东省广州市天河区猎德街*****");
-        DesensitizedHelper.Address("广东省广州市天河区猎德街道289号",50).ShouldBe("*****************");
-        DesensitizedHelper.Address("广东省广州市天河区猎德街道289号",0).ShouldBe("广东省广州市天河区猎德街道289号");
-        DesensitizedHelper.Address("广东省广州市天河区猎德街道289号",-1).ShouldBe("广东省广州市天河区猎德街道289号");
+        DesensitizedHelper.Address("广东省广州市天河区猎德街道289号", 5).ShouldBe("广东省广州市天河区猎德街*****");
+        DesensitizedHelper.Address("广东省广州市天河区猎德街道289号", 50).ShouldBe("*****************");
+        DesensitizedHelper.Address("广东省广州市天河区猎德街道289号", 0).ShouldBe("广东省广州市天河区猎德街道289号");
+        DesensitizedHelper.Address("广东省广州市天河区猎德街道289号", -1).ShouldBe("广东省广州市天河区猎德街道289号");
     }
     /// <summary>
     /// 测试 - 脱敏 - 邮箱
@@ -68,15 +69,15 @@ public class StringDesensitizedTest
     /// 测试 - 脱敏 - 银行卡
     /// </summary>
     [Theory]
-    [InlineData(null,"")]
-    [InlineData("","")]
-    [InlineData(" ","")]
-    [InlineData("1234 2222 3333 4444 6789 9","1234 **** **** **** **** 9")]
-    [InlineData("1234 2222 3333 4444 6789 91","1234 **** **** **** **** 91")]
-    [InlineData("1234 2222 3333 4444 6789","1234 **** **** **** 6789")]
-    [InlineData("1234 2222 3333 4444 678","1234 **** **** **** 678")]
-    [InlineData("11011111222233333256","1101 **** **** **** 3256")]
-    [InlineData("6227880100100105123","6227 **** **** **** 123")]
+    [InlineData(null, "")]
+    [InlineData("", "")]
+    [InlineData(" ", "")]
+    [InlineData("1234 2222 3333 4444 6789 9", "1234 **** **** **** **** 9")]
+    [InlineData("1234 2222 3333 4444 6789 91", "1234 **** **** **** **** 91")]
+    [InlineData("1234 2222 3333 4444 6789", "1234 **** **** **** 6789")]
+    [InlineData("1234 2222 3333 4444 678", "1234 **** **** **** 678")]
+    [InlineData("11011111222233333256", "1101 **** **** **** 3256")]
+    [InlineData("6227880100100105123", "6227 **** **** **** 123")]
     public void Test_BankCard(string input, string result)
     {
         DesensitizedHelper.BankCard(input).ShouldBe(result);
