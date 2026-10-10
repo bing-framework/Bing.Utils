@@ -39,16 +39,6 @@ public static class Web
     private const string BearerTokenPrefix = "Bearer ";
 
     /// <summary>
-    /// 本地域名标识
-    /// </summary>
-    private const string LocalDomainIdentifier = "localhost.localdomain";
-
-    /// <summary>
-    /// 空 IP 地址标识
-    /// </summary>
-    private const string NullIpAddress = "::1";
-
-    /// <summary>
     /// 纯文本内容类型
     /// </summary>
     private const string PlainTextContentType = "text/plain;charset=utf-8";
@@ -228,37 +218,11 @@ public static class Web
     #region Host(主机)
 
     /// <summary>
-    /// 主机名称
+    /// 获取请求客户端的远程地址；无 HTTP 上下文时返回当前主机名。
     /// </summary>
-    public static string Host => HttpContext == null ? Dns.GetHostName() : GetClientHostName();
-
-    /// <summary>
-    /// 获取客户端主机名
-    /// </summary>
-    /// <returns>客户端主机名</returns>
-    private static string GetClientHostName()
-    {
-        try
-        {
-            var address = GetRemoteAddress();
-            if (string.IsNullOrWhiteSpace(address))
-                return Dns.GetHostName();
-            var hostEntry = Dns.GetHostEntry(IPAddress.Parse(address));
-            var hostName = hostEntry.HostName;
-            return hostName == LocalDomainIdentifier ? Dns.GetHostName() : hostName;
-        }
-        catch
-        {
-            return Dns.GetHostName();
-        }
-    }
-
-    /// <summary>
-    /// 获取远程地址
-    /// </summary>
-    private static string GetRemoteAddress() =>
-        HttpContext?.Request?.Headers["HTTP_X_FORWARDED_FOR"].ToString() ??
-        HttpContext?.Request?.Headers["REMOTE_ADDR"].ToString();
+    public static string Host => HttpContext == null
+        ? Dns.GetHostName()
+        : HttpContext.Connection?.RemoteIpAddress?.ToString() ?? string.Empty;
 
     #endregion
 
@@ -326,11 +290,13 @@ public static class Web
                 throw new ArgumentNullException(nameof(connection));
             try
             {
-                if (connection.RemoteIpAddress.IsSet())
-                    return connection.LocalIpAddress.IsSet()
-                        ? connection.RemoteIpAddress.Equals(connection.LocalIpAddress)
-                        : IPAddress.IsLoopback(connection.RemoteIpAddress);
-                return true;
+                var remoteAddress = NormalizeAddress(connection.RemoteIpAddress);
+                if (remoteAddress == null)
+                    return false;
+                var localAddress = NormalizeAddress(connection.LocalIpAddress);
+                return localAddress != null
+                    ? remoteAddress.Equals(localAddress)
+                    : IPAddress.IsLoopback(remoteAddress);
             }
             catch (Exception ex)
             {
@@ -340,11 +306,16 @@ public static class Web
     }
 
     /// <summary>
-    /// 判断 IP 地址是否已设置
+    /// 将 IPv4 映射的 IPv6 地址转换为 IPv4 地址。
     /// </summary>
-    /// <param name="address">IP 地址</param>
-    /// <returns>如果 IP 地址已设置返回 true，否则返回 false</returns>
-    private static bool IsSet(this IPAddress address) => address != null && address.ToString() != NullIpAddress;
+    /// <param name="address">待规范化的 IP 地址。</param>
+    /// <returns>规范化后的地址；输入为空时返回 null。</returns>
+    private static IPAddress NormalizeAddress(IPAddress address)
+    {
+        if (address == null)
+            return null;
+        return address.IsIPv4MappedToIPv6 ? address.MapToIPv4() : address;
+    }
 
     #endregion
 
@@ -615,40 +586,41 @@ public static class Web
     #region Write(输出文件)
 
     /// <summary>
-    /// 输出文件流到响应
+    /// 输出文件到 HTTP 响应。
     /// </summary>
     /// <param name="stream">文件流</param>
     /// <exception cref="ArgumentNullException">当文件流为空时</exception>
     /// <exception cref="InvalidOperationException">当响应对象不可用或输出失败时</exception>
+    [Obsolete("请改用 WriteAsync(FileStream, CancellationToken)。输入流由调用方负责释放。")]
     public static void Write(FileStream stream)
+    {
+        WriteAsync(stream).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// 输出文件到 HTTP 响应。
+    /// </summary>
+    /// <remarks>输入流由调用方负责释放。</remarks>
+    /// <param name="stream">文件流</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task WriteAsync(FileStream stream, CancellationToken cancellationToken = default)
     {
         if (stream == null)
             throw new ArgumentNullException(nameof(stream));
-        if (Response == null)
+        var response = Response;
+        if (response == null)
             throw new InvalidOperationException("HTTP 响应对象不可用");
         try
         {
-            var size = stream.Length;
-            var buffer = new byte[size];
-            _ = stream.Read(buffer, 0, (int)size);
-
             var fileName = Path.GetFileName(stream.Name);
-            stream.Dispose();
-
-            // 删除临时文件
-            if (File.Exists(stream.Name))
-                File.Delete(stream.Name);
-
-            Response.ContentType = OctetStreamContentType;
-            Response.Headers["Content-Disposition"] = $"attachment;filename={WebUtility.UrlEncode(fileName)}";
-            Response.Headers["Content-Length"] = size.ToString();
-
-            Task.Run(async () => { await Response.Body.WriteAsync(buffer, 0, (int)size); })
-                .GetAwaiter()
-                .GetResult();
-            Response.Body.Close();
+            response.ContentType = OctetStreamContentType;
+            response.Headers["Content-Disposition"] = $"attachment;filename={WebUtility.UrlEncode(fileName)}";
+            if (stream.CanSeek)
+                response.Headers["Content-Length"] = (stream.Length - stream.Position).ToString();
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, response.HttpContext.RequestAborted);
+            await stream.CopyToAsync(response.Body, 81920, linked.Token);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!(ex is OperationCanceledException))
         {
             throw new InvalidOperationException("输出文件失败", ex);
         }
@@ -659,18 +631,63 @@ public static class Web
     #region GetBodyAsync(获取请求正文)
 
     /// <summary>
-    /// 获取请求正文内容
+    /// 读取当前 HTTP 请求正文。
     /// </summary>
     /// <returns>请求正文的字符串表示</returns>
     /// <exception cref="InvalidOperationException">当无法访问请求流时</exception>
-    public static async Task<string> GetBodyAsync()
+    public static Task<string> GetBodyAsync() => GetBodyAsync(long.MaxValue, CancellationToken.None);
+
+    /// <summary>
+    /// 读取当前 HTTP 请求正文。
+    /// </summary>
+    /// <remarks>可限制读取字节数，并在可定位流上恢复原位置。</remarks>
+    /// <param name="maxBytes">允许读取的最大字节数</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>请求正文的字符串表示</returns>
+    /// <exception cref="ArgumentOutOfRangeException">大小限制小于零时抛出。</exception>
+    public static async Task<string> GetBodyAsync(long maxBytes, CancellationToken cancellationToken)
     {
+        if (maxBytes < 0)
+            throw new ArgumentOutOfRangeException(nameof(maxBytes), "正文大小限制不能小于零");
         if (Request == null)
             return string.Empty;
         try
         {
             Request.EnableBuffering();
-            return await FileHelper.ToStringAsync(Request.Body, isCloseStream: false);
+            var body = Request.Body;
+            var originalPosition = body.CanSeek ? body.Position : (long?)null;
+            if (body.CanSeek)
+                body.Position = 0;
+            try
+            {
+                using var buffer = new MemoryStream();
+                var chunk = new byte[81920];
+                long totalBytes = 0;
+                int bytesRead;
+                using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, Request.HttpContext.RequestAborted);
+                var token = linked.Token;
+                while ((bytesRead = await body.ReadAsync(chunk, 0, chunk.Length, token)) > 0)
+                {
+                    totalBytes += bytesRead;
+                    if (totalBytes > maxBytes)
+                        throw new InvalidDataException($"请求正文超过允许的 {maxBytes} 字节限制");
+                    await buffer.WriteAsync(chunk, 0, bytesRead, token);
+                }
+                return Encoding.UTF8.GetString(buffer.ToArray());
+            }
+            finally
+            {
+                if (originalPosition.HasValue)
+                    body.Position = originalPosition.Value;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (InvalidDataException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -683,7 +700,7 @@ public static class Web
     #region DownloadAsync(下载)
 
     /// <summary>
-    /// 下载文件
+    /// 下载文件到当前 HTTP 响应。
     /// </summary>
     /// <param name="filePath">文件绝对路径</param>
     /// <param name="fileName">文件名。包含扩展名</param>
@@ -698,18 +715,28 @@ public static class Web
     /// <param name="encoding">字符编码</param>
     /// <exception cref="ArgumentException">当文件路径为空时</exception>
     /// <exception cref="FileNotFoundException">当文件不存在时</exception>
-    public static async Task DownloadFileAsync(string filePath, string fileName, Encoding encoding)
+    public static Task DownloadFileAsync(string filePath, string fileName, Encoding encoding) =>
+        DownloadFileAsync(filePath, fileName, encoding, CancellationToken.None);
+
+    /// <summary>
+    /// 下载文件到当前 HTTP 响应。
+    /// </summary>
+    /// <param name="filePath">文件路径</param>
+    /// <param name="fileName">下载文件名（包含扩展名）</param>
+    /// <param name="encoding">字符编码</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    public static async Task DownloadFileAsync(string filePath, string fileName, Encoding encoding, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(filePath))
             throw new ArgumentException("文件路径不能为空", nameof(filePath));
         if (!File.Exists(filePath))
             throw new FileNotFoundException($"文件不存在：{filePath}");
-        var bytes = await FileHelper.ReadToBytesAsync(filePath);
-        await DownloadAsync(bytes, fileName, encoding);
+        using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 81920, useAsync: true);
+        await DownloadAsync(stream, fileName, encoding, Response, cancellationToken);
     }
 
     /// <summary>
-    /// 下载流内容
+    /// 将流内容下载到 HTTP 响应。
     /// </summary>
     /// <param name="stream">数据流</param>
     /// <param name="fileName">下载文件名（包含扩展名）</param>
@@ -723,12 +750,37 @@ public static class Web
     /// <param name="fileName">下载文件名（包含扩展名）</param>
     /// <param name="encoding">字符编码</param>
     /// <exception cref="ArgumentNullException">当流为空时</exception>
-    public static async Task DownloadAsync(Stream stream, string fileName, Encoding encoding)
+    public static Task DownloadAsync(Stream stream, string fileName, Encoding encoding) =>
+        DownloadAsync(stream, fileName, encoding, Response, CancellationToken.None);
+
+    /// <summary>
+    /// 将流内容下载到 HTTP 响应。
+    /// </summary>
+    /// <remarks>源流由调用方负责释放。</remarks>
+    /// <param name="stream">数据流</param>
+    /// <param name="fileName">下载文件名（包含扩展名）</param>
+    /// <param name="encoding">字符编码</param>
+    /// <param name="response">HTTP 响应对象</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <exception cref="ArgumentNullException">流、字符编码或响应对象为空时抛出。</exception>
+    /// <exception cref="ArgumentException">文件名为空时抛出。</exception>
+    public static async Task DownloadAsync(Stream stream, string fileName, Encoding encoding, HttpResponse response, CancellationToken cancellationToken = default)
     {
         if (stream == null)
             throw new ArgumentNullException(nameof(stream));
-        var bytes = await FileHelper.ToBytesAsync(stream);
-        await DownloadAsync(bytes, fileName, encoding, Response);
+        if (string.IsNullOrWhiteSpace(fileName))
+            throw new ArgumentException("文件名不能为空", nameof(fileName));
+        if (encoding == null)
+            throw new ArgumentNullException(nameof(encoding));
+        if (response == null)
+            throw new ArgumentNullException(nameof(response));
+        var encodedFileName = UrlEncode(fileName.Replace(" ", ""), encoding);
+        response.ContentType = OctetStreamContentType;
+        response.Headers["Content-Disposition"] = $"attachment; filename={encodedFileName}";
+        if (stream.CanSeek)
+            response.Headers["Content-Length"] = (stream.Length - stream.Position).ToString();
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, response.HttpContext.RequestAborted);
+        await stream.CopyToAsync(response.Body, 81920, linked.Token);
     }
 
     /// <summary>

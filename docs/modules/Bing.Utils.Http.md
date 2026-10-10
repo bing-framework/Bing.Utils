@@ -66,7 +66,7 @@ Should.Throw<ArgumentNullException>(() => Web.UrlDecode("abc", (Encoding)null));
 - 集成测试项目：`tests/Bing.Utils.Http.Tests.Integration`。[证据] `tests/Bing.Utils.Http.Tests.Integration/Bing.Utils.Http.Tests.Integration.csproj:40`
 - 关键类：`WebTest` 覆盖参数、Cookie、编码、下载、重定向、异常路径；`HttpClientServiceTest.*` 覆盖集成调用。[证据] `tests/Bing.Utils.Http.Tests/Bing/Helpers/WebTest.cs:12` [证据] `tests/Bing.Utils.Http.Tests.Integration/Http/HttpClientServiceTest.Post.cs:1`
 - 未覆盖风险点
-- 全局静态上下文并发覆盖场景缺少明确并发测试（TODO）。
+- 已覆盖启动期完成配置后的全局静态上下文并发读取；并发覆盖配置仍不受支持，必须由宿主在启动期一次性完成配置。[证据] `tests/Bing.Utils.Http.Tests/Bing/Helpers/WebTest.cs:69`
 
 ## 8. 版本与兼容性注意事项
 - 跟随公共多目标框架策略。[证据] `common.props:3`

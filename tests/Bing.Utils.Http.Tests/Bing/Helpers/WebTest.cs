@@ -1,7 +1,8 @@
+using System.Net;
+using System.Threading;
 using Bing.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using System.Net;
 namespace Bing.Helpers;
 /// <summary>
 /// Web操作 测试
@@ -10,17 +11,50 @@ namespace Bing.Helpers;
 [Collection(WebHttpContextCollection.Name)]
 public class WebTest : TestBase, IDisposable
 {
+    /// <summary>
+    /// 模拟 HTTP 上下文访问器。
+    /// </summary>
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
+    /// <summary>
+    /// 模拟 HTTP 上下文。
+    /// </summary>
     private readonly Mock<HttpContext> _mockHttpContext;
+    /// <summary>
+    /// 模拟 HTTP 请求。
+    /// </summary>
     private readonly Mock<HttpRequest> _mockRequest;
+    /// <summary>
+    /// 模拟 HTTP 响应。
+    /// </summary>
     private readonly Mock<HttpResponse> _mockResponse;
+    /// <summary>
+    /// 模拟请求 Cookie 集合。
+    /// </summary>
     private readonly Mock<IRequestCookieCollection> _mockRequestCookies;
+    /// <summary>
+    /// 模拟响应 Cookie 集合。
+    /// </summary>
     private readonly Mock<IResponseCookies> _mockResponseCookies;
+    /// <summary>
+    /// 模拟查询参数集合。
+    /// </summary>
     private readonly Mock<IQueryCollection> _mockQuery;
+    /// <summary>
+    /// 模拟表单集合。
+    /// </summary>
     private readonly Mock<IFormCollection> _mockForm;
+    /// <summary>
+    /// 模拟请求头集合。
+    /// </summary>
     private readonly Mock<IHeaderDictionary> _mockHeaders;
+    /// <summary>
+    /// 模拟连接信息。
+    /// </summary>
     private readonly Mock<ConnectionInfo> _mockConnection;
-    /// <inheritdoc />
+    /// <summary>
+    /// 初始化一个<see cref="WebTest"/>类型的实例。
+    /// </summary>
+    /// <param name="output">测试输出助手。</param>
     public WebTest(ITestOutputHelper output) : base(output)
     {
         _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
@@ -46,6 +80,7 @@ public class WebTest : TestBase, IDisposable
         // 设置 Web 类的静态属性
         Web.HttpContextAccessor = _mockHttpContextAccessor.Object;
     }
+    /// <inheritdoc />
     public void Dispose()
     {
         Web.HttpContextAccessor = null;
@@ -60,6 +95,39 @@ public class WebTest : TestBase, IDisposable
         // Assert
         result.ShouldBe(_mockHttpContext.Object);
     }
+    /// <summary>
+    /// 验证宿主完成全局上下文配置后，多个请求线程并发读取只读入口不会互相污染。
+    /// </summary>
+    [Fact]
+    public async Task ReadOnlyProperties_ShouldRemainStable_WhenAccessedConcurrently()
+    {
+        // Arrange
+        _mockRequest.Setup(x => x.Method).Returns("GET");
+        var gate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var tasks = Enumerable.Range(0, 64)
+            .Select(_ => Task.Run(async () =>
+            {
+                await gate.Task.ConfigureAwait(false);
+                return (Context: Web.HttpContext, Request: Web.Request, Response: Web.Response,
+                    Method: Web.RequestType);
+            }))
+            .ToArray();
+
+        // Act
+        gate.SetResult(true);
+        var results = await Task.WhenAll(tasks);
+
+        // Assert
+        results.Length.ShouldBe(64);
+        foreach (var result in results)
+        {
+            result.Context.ShouldBe(_mockHttpContext.Object);
+            result.Request.ShouldBe(_mockRequest.Object);
+            result.Response.ShouldBe(_mockResponse.Object);
+            result.Method.ShouldBe("GET");
+        }
+    }
+
     /// 测试 - HttpContext - HttpContextAccessor为空时返回null
     [Fact]
     public void HttpContext_ShouldReturnNull_WhenAccessorIsNull()
@@ -268,13 +336,29 @@ public class WebTest : TestBase, IDisposable
         // Assert
         result.ShouldBeFalse();
     }
-    /// 测试 - IsLocal - 远程IP为空时返回true
+    /// <summary>
+    /// 验证远端 IP 为空时将请求判定为非本地请求。
+    /// </summary>
     [Fact]
-    public void IsLocal_ShouldReturnTrue_WhenRemoteIpIsNull()
+    public void IsLocal_ShouldReturnFalse_WhenRemoteIpIsNull()
     {
         // Arrange
         _mockConnection.Setup(x => x.RemoteIpAddress).Returns((IPAddress)null);
         _mockConnection.Setup(x => x.LocalIpAddress).Returns(IPAddress.Parse("192.168.1.100"));
+        // Act
+        var result = Web.IsLocal;
+        // Assert
+        result.ShouldBeFalse();
+    }
+    /// <summary>
+    /// 验证 IPv4 映射 IPv6 地址与本地 IPv4 地址匹配时判定为本地请求。
+    /// </summary>
+    [Fact]
+    public void IsLocal_ShouldNormalizeIpv4MappedIpv6Addresses()
+    {
+        // Arrange
+        _mockConnection.Setup(x => x.RemoteIpAddress).Returns(IPAddress.Parse("::ffff:192.168.1.10"));
+        _mockConnection.Setup(x => x.LocalIpAddress).Returns(IPAddress.Parse("192.168.1.10"));
         // Act
         var result = Web.IsLocal;
         // Assert
@@ -980,6 +1064,46 @@ public class WebTest : TestBase, IDisposable
         await context.Response.Body.CopyToAsync(memory);
         memory.ToArray().ShouldBe(bytes);
     }
+    /// <summary>
+    /// 验证流式下载会写入响应正文且保留源流和响应流的所有权。
+    /// </summary>
+    [Fact]
+    public async Task DownloadAsync_WithStream_ShouldCopyWithoutOwningStreams()
+    {
+        // Arrange
+        var bytes = Enumerable.Range(0, 2048).Select(x => (byte)(x % 251)).ToArray();
+        var source = new MemoryStream(bytes);
+        var response = new DefaultHttpContext().Response;
+        response.Body = new MemoryStream();
+        // Act
+        await Web.DownloadAsync(source, "stream.bin", Encoding.UTF8, response);
+        // Assert
+        source.CanRead.ShouldBeTrue();
+        response.Body.CanWrite.ShouldBeTrue();
+        response.Headers["Content-Length"].ToString().ShouldBe(bytes.Length.ToString());
+        response.Body.Position = 0;
+        using var copy = new MemoryStream();
+        await response.Body.CopyToAsync(copy);
+        copy.ToArray().ShouldBe(bytes);
+    }
+
+    /// <summary>
+    /// 验证请求取消时会取消下载，且不取消调用方令牌。
+    /// </summary>
+    [Fact]
+    public async Task DownloadAsync_RequestAbortedCancelsEvenWithCallerToken()
+    {
+        using var aborted = new CancellationTokenSource();
+        using var caller = new CancellationTokenSource();
+        var context = new DefaultHttpContext { RequestAborted = aborted.Token };
+        context.Response.Body = new MemoryStream();
+        using var source = new MemoryStream(new byte[] { 1, 2, 3 });
+        aborted.Cancel();
+
+        await Should.ThrowAsync<OperationCanceledException>(() =>
+            Web.DownloadAsync(source, "file.bin", Encoding.UTF8, context.Response, caller.Token));
+        caller.IsCancellationRequested.ShouldBeFalse();
+    }
     #endregion
     #region Body 和 GetBodyAsync 测试
     /// 测试 - Body - Request为空时返回空字符串
@@ -1030,6 +1154,40 @@ public class WebTest : TestBase, IDisposable
         // Assert
         result.ShouldBe("async-body");
     }
+    /// <summary>
+    /// 验证正文超过字节限制时拒绝读取并恢复原始流位置。
+    /// </summary>
+    [Fact]
+    public async Task GetBodyAsync_ShouldEnforceByteLimitAndRestorePosition()
+    {
+        // Arrange
+        var context = new DefaultHttpContext();
+        context.Request.Body = new MemoryStream(Encoding.UTF8.GetBytes("async-body"));
+        context.Request.Body.Position = 3;
+        Web.HttpContextAccessor = new HttpContextAccessor { HttpContext = context };
+        // Act
+        var exception = await Should.ThrowAsync<InvalidDataException>(() => Web.GetBodyAsync(4, CancellationToken.None));
+        // Assert
+        exception.Message.ShouldContain("超过允许");
+        context.Request.Body.Position.ShouldBe(3L);
+    }
+    /// <summary>
+    /// 验证正文未超过字节限制时完整读取并恢复原始流位置。
+    /// </summary>
+    [Fact]
+    public async Task GetBodyAsync_WithLimit_ShouldReadBodyAndRestorePosition()
+    {
+        // Arrange
+        var context = new DefaultHttpContext();
+        context.Request.Body = new MemoryStream(Encoding.UTF8.GetBytes("body"));
+        context.Request.Body.Position = 2;
+        Web.HttpContextAccessor = new HttpContextAccessor { HttpContext = context };
+        // Act
+        var result = await Web.GetBodyAsync(4, CancellationToken.None);
+        // Assert
+        result.ShouldBe("body");
+        context.Request.Body.Position.ShouldBe(2L);
+    }
     #endregion
     #region Host 测试
     /// 测试 - Host - HttpContext为空时返回本地主机名
@@ -1043,6 +1201,23 @@ public class WebTest : TestBase, IDisposable
         // Assert
         result.ShouldNotBeNullOrEmpty();
         result.ShouldBe(System.Net.Dns.GetHostName());
+    }
+    /// <summary>
+    /// 验证主机地址取自连接远端地址且忽略未受信任的转发头。
+    /// </summary>
+    [Fact]
+    public void Host_ShouldUseConnectionRemoteIpAddress()
+    {
+        // Arrange
+        var context = new DefaultHttpContext();
+        context.Connection.RemoteIpAddress = IPAddress.Parse("203.0.113.7");
+        context.Request.Headers["HTTP_X_FORWARDED_FOR"] = "127.0.0.1";
+        context.Request.Headers["REMOTE_ADDR"] = "127.0.0.1";
+        Web.HttpContextAccessor = new HttpContextAccessor { HttpContext = context };
+        // Act
+        var result = Web.Host;
+        // Assert
+        result.ShouldBe("203.0.113.7");
     }
     #endregion
 }
