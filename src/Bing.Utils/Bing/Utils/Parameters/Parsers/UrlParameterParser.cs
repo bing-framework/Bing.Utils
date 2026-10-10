@@ -1,4 +1,4 @@
-﻿using System.Web;
+using System.Web;
 using Bing.Extensions;
 
 namespace Bing.Utils.Parameters.Parsers;

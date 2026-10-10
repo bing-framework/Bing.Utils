@@ -1,4 +1,4 @@
-﻿using Bing.Text.Joiners;
+using Bing.Text.Joiners;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Collections;

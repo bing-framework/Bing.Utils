@@ -1,6 +1,7 @@
 using Bing.Extensions;
 // ReSharper disable once CheckNamespace
 namespace Bing.Utils.Tests.Extensions;
+
 public class ObjectExtensionsTest
 {
     /// <summary>

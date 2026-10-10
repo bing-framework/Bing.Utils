@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Maths;
+namespace Bing.Utils.Maths;
 
 /// <summary>
 /// 温度转换

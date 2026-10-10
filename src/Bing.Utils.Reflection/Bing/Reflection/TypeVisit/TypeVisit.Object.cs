@@ -1,4 +1,4 @@
-﻿namespace Bing.Reflection;
+namespace Bing.Reflection;
 
 /// <summary>
 /// 类型访问器

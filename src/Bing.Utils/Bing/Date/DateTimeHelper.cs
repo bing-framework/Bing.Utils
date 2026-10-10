@@ -1,4 +1,4 @@
-﻿namespace Bing.Date;
+namespace Bing.Date;
 
 /// <summary>
 /// 日期时间帮助类

@@ -1,4 +1,4 @@
-﻿using Bing.Utils.Parameters.Formats;
+using Bing.Utils.Parameters.Formats;
 
 namespace Bing.Tests.Samples
 {

@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Tests.Samples;
+namespace Bing.Utils.Tests.Samples;
 
 public enum Int16Enum : short
 {

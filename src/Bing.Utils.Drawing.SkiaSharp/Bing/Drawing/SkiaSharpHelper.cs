@@ -1,5 +1,5 @@
-﻿using SkiaSharp;
 using System.Runtime.CompilerServices;
+using SkiaSharp;
 
 namespace Bing.Drawing;
 

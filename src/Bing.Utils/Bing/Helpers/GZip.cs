@@ -1,4 +1,4 @@
-﻿namespace Bing.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// GZip压缩 操作

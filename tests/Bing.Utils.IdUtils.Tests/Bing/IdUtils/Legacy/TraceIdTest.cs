@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.Legacy;
+namespace Bing.IdUtils.Legacy;
 /// <summary>
 /// 跟踪ID 测试
 /// </summary>

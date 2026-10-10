@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Xml;

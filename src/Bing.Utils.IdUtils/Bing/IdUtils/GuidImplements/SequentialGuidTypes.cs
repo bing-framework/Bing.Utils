@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.GuidImplements;
+namespace Bing.IdUtils.GuidImplements;
 
 /// <summary>
 /// 顺序 GUID 类型

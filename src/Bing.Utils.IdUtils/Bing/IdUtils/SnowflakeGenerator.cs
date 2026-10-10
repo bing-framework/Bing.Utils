@@ -1,4 +1,4 @@
-﻿using Bing.IdUtils.SnowflakeImplements.Providers;
+using Bing.IdUtils.SnowflakeImplements.Providers;
 
 namespace Bing.IdUtils;
 

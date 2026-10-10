@@ -1,4 +1,4 @@
-﻿using Bing.Date;
+using Bing.Date;
 using Bing.IdUtils.CombImplements.Providers;
 using Bing.IdUtils.CombImplements.Strategies;
 

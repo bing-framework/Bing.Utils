@@ -1,4 +1,4 @@
-﻿namespace Bing.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// 测试类：Check 参数校验缺陷回归测试。

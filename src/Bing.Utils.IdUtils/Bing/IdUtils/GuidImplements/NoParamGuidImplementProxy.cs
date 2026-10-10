@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.GuidImplements;
+namespace Bing.IdUtils.GuidImplements;
 
 /// <summary>
 /// 无参GUID 实现的代理

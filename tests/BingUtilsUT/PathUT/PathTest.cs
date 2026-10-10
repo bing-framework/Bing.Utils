@@ -1,4 +1,4 @@
-﻿using Bing.Helpers;
+using Bing.Helpers;
 namespace BingUtilsUT.PathUT;
 /// <summary>
 /// 路径测试

@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Joiners;
+namespace Bing.Text.Joiners;
 
 /// <summary>
 /// 公共合并工具

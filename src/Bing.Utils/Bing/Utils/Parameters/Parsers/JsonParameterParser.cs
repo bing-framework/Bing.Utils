@@ -1,4 +1,4 @@
-﻿using Bing.Extensions;
+using Bing.Extensions;
 using Newtonsoft.Json.Linq;
 
 namespace Bing.Utils.Parameters.Parsers;

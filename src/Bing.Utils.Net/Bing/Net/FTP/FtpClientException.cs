@@ -1,4 +1,4 @@
-﻿namespace Bing.Net.FTP;
+namespace Bing.Net.FTP;
 
 /// <summary>
 /// FTP客户端异常

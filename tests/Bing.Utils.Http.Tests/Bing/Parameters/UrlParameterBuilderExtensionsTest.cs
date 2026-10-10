@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using Bing.Helpers;
 using Bing.Utils.Parameters;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 namespace Bing.Parameters;
 /// <summary>
 /// 测试类：覆盖 `UrlParameterBuilderExtensions` 相关行为。

@@ -1,4 +1,4 @@
-﻿namespace Bing.IO;
+namespace Bing.IO;
 
 /// <summary>
 /// 临时目录

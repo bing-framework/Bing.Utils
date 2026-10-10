@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils;
+namespace Bing.IdUtils;
 
 /// <summary>
 /// Trace Id 生成器

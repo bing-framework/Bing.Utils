@@ -1,4 +1,4 @@
-﻿namespace Bing.Date;
+namespace Bing.Date;
 
 /// <summary>
 /// 时间舍入精度

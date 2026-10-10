@@ -1,5 +1,5 @@
-using SkiaSharp;
 using System.Text.RegularExpressions;
+using SkiaSharp;
 namespace Bing.Drawing;
 /// <summary>
 /// 测试类：覆盖 `SkiaSharpHelper` 相关行为。

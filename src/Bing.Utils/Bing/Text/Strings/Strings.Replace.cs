@@ -1,4 +1,4 @@
-﻿namespace Bing.Text;
+namespace Bing.Text;
 
 /// <summary>
 /// 字符串工具

@@ -1,4 +1,4 @@
-﻿using Xunit.Abstractions;
+using Xunit.Abstractions;
 
 namespace Bing.Utils.Comments.Tests
 {

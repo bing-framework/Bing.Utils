@@ -1,6 +1,6 @@
-﻿using Bing.Extensions;
 using System.ComponentModel;
 using System.Globalization;
+using Bing.Extensions;
 
 namespace Bing.IO;
 

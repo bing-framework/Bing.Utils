@@ -1,4 +1,4 @@
-﻿namespace Bing.IO;
+namespace Bing.IO;
 
 /// <summary>
 /// 文件操作帮助类 - 读取

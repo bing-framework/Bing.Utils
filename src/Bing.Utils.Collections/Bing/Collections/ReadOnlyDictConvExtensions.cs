@@ -1,4 +1,4 @@
-﻿namespace Bing.Collections;
+namespace Bing.Collections;
 
 /// <summary>
 /// 只读字典转换器扩展

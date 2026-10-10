@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using Bing.IdUtils.GuidImplements.Internals;
 
 namespace Bing.IdUtils.GuidImplements;

@@ -1,4 +1,4 @@
-﻿using Bing.Date;
+using Bing.Date;
 
 namespace Bing.IdUtils.GuidImplements;
 

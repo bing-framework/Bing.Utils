@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Signatures;
+namespace Bing.Utils.Signatures;
 
 /// <summary>
 /// 签名密钥

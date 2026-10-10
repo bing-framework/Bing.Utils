@@ -1,4 +1,4 @@
-﻿namespace BingUtilsUT.Samples;
+namespace BingUtilsUT.Samples;
 
 public class NormalInterfaceClass<T> : IModelOne, IModelTwo, IModelThree<T>
 {

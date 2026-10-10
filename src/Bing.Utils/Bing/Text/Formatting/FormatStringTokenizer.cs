@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Formatting;
+namespace Bing.Text.Formatting;
 
 /// <summary>
 /// 格式化字符串分析器

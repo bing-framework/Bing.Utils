@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Tests.Samples;
+namespace Bing.Utils.Tests.Samples;
 
 public class SampleConfig
 {

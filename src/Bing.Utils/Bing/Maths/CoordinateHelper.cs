@@ -1,4 +1,4 @@
-﻿namespace Bing.Maths;
+namespace Bing.Maths;
 
 /// <summary>
 /// 坐标轴帮助类

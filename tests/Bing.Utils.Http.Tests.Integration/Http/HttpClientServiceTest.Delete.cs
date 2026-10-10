@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Http.Tests.Integration.Http;
+namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
 /// Http客户端测试 - Delete操作

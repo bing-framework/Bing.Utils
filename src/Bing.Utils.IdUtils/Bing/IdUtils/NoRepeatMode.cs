@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils;
+namespace Bing.IdUtils;
 
 /// <summary>
 /// 不重复模式

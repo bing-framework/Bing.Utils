@@ -1,4 +1,4 @@
-﻿namespace Bing.IO;
+namespace Bing.IO;
 
 /// <summary>
 /// 沙箱。当沙箱被释放时，沙箱中创建的文件和目录将被删除

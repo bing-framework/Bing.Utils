@@ -1,4 +1,4 @@
-﻿namespace Bing.Net.IPv6;
+namespace Bing.Net.IPv6;
 
 /// <summary>
 /// IPv6地址类型枚举

@@ -1,4 +1,4 @@
-﻿using Bing.Utils.Json;
+using Bing.Utils.Json;
 using Microsoft.AspNetCore.Http;
 
 namespace Bing.Http.Extensions;

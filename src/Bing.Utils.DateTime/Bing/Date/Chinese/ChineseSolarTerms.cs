@@ -1,4 +1,4 @@
-﻿namespace Bing.Date.Chinese;
+namespace Bing.Date.Chinese;
 
 /// <summary>
 /// 农历二十四节气

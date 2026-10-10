@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.CombImplements.Strategies;
+namespace Bing.IdUtils.CombImplements.Strategies;
 
 /// <summary>
 /// COMB 日期时间策略

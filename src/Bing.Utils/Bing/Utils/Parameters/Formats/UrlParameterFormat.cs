@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Parameters.Formats;
+namespace Bing.Utils.Parameters.Formats;
 
 /// <summary>
 /// Url参数格式化器

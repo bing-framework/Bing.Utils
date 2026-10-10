@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Text;

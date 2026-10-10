@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.GuidImplements.Internals;
+namespace Bing.IdUtils.GuidImplements.Internals;
 
 /// <summary>
 /// Guid 扩展

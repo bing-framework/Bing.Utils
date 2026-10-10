@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Similarity;
+namespace Bing.Text.Similarity;
 
 /// <summary>
 /// 字符串相似度计算

@@ -1,4 +1,4 @@
-﻿namespace Bing.Threading;
+namespace Bing.Threading;
 
 /// <summary>
 /// 线程帮助类

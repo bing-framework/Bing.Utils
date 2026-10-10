@@ -1,4 +1,4 @@
-﻿namespace Bing.Collections;
+namespace Bing.Collections;
 
 /// <summary>
 /// 字典工具

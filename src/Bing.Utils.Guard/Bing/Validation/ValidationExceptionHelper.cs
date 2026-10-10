@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using AspectCore.Extensions.Reflection;
 using Bing.Exceptions;
 using Bing.Reflection;

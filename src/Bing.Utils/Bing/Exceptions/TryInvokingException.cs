@@ -1,4 +1,4 @@
-﻿namespace Bing.Exceptions;
+namespace Bing.Exceptions;
 
 /// <summary>
 /// 尝试调用异常

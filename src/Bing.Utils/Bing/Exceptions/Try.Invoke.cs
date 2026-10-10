@@ -1,4 +1,4 @@
-﻿namespace Bing.Exceptions;
+namespace Bing.Exceptions;
 
 // 尝试 - 调用
 public static partial class Try

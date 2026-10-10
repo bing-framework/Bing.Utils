@@ -1,4 +1,4 @@
-﻿namespace Bing.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// 测试类：Env 环境变量相关缺陷回归测试。

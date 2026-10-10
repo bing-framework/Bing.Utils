@@ -1,4 +1,4 @@
-﻿namespace Bing.Text;
+namespace Bing.Text;
 
 /// <summary>
 /// 数据脱敏帮助类，提供多种常见数据类型的脱敏处理功能

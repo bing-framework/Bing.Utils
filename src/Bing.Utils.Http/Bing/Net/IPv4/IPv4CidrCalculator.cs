@@ -1,4 +1,4 @@
-﻿using Bing.Net.IPv4.Internal;
+using Bing.Net.IPv4.Internal;
 
 namespace Bing.Net.IPv4;
 

@@ -1,5 +1,5 @@
-using Bing.Helpers;
 using System.IO;
+using Bing.Helpers;
 
 namespace Bing.Utils.Http.Tests.Integration.Http;
 

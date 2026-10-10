@@ -1,4 +1,4 @@
-﻿using Bing.IdUtils.GuidImplements.Internals;
+using Bing.IdUtils.GuidImplements.Internals;
 
 namespace Bing.IdUtils.GuidImplements;
 

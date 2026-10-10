@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils;
+namespace Bing.IdUtils;
 
 /// <summary>
 /// COMB 风格

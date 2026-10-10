@@ -1,6 +1,6 @@
-﻿using BenchmarkDotNet.Attributes;
-using Bing.Text;
+using BenchmarkDotNet.Attributes;
 using Bing.Extensions;
+using Bing.Text;
 
 namespace Bing.Utils.Benchmark.Benchmarks;
 

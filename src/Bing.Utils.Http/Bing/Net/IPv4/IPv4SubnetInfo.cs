@@ -1,4 +1,4 @@
-﻿namespace Bing.Net.IPv4;
+namespace Bing.Net.IPv4;
 
 /// <summary>
 /// IPv4子网信息

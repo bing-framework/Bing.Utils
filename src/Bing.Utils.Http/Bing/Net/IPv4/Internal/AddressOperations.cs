@@ -1,4 +1,4 @@
-﻿namespace Bing.Net.IPv4.Internal;
+namespace Bing.Net.IPv4.Internal;
 
 /// <summary>
 /// 地址操作类

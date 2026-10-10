@@ -1,4 +1,4 @@
-﻿using Bing.Date;
+using Bing.Date;
 using Bing.Extensions;
 
 namespace Bing.Utils.Http.Tests.Integration.Http;

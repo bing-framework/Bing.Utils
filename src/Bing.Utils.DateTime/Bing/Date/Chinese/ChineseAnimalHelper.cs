@@ -1,4 +1,4 @@
-﻿namespace Bing.Date.Chinese;
+namespace Bing.Date.Chinese;
 
 /// <summary>
 /// 中国生肖帮助类

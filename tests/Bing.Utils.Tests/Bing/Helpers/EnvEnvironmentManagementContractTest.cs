@@ -1,4 +1,4 @@
-﻿namespace Bing.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// 测试类：覆盖 Env 的 .NET 环境管理优先级、设置策略与幂等契约。

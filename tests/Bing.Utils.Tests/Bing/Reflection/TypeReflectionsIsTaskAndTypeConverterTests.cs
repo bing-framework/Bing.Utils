@@ -1,9 +1,9 @@
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using Bing.Conversions;
 using Shouldly;
 using Xunit;
-using Bing.Conversions;
 using BingTypeConverter = Bing.Conversions.TypeConverter;
 
 // ReSharper disable once CheckNamespace

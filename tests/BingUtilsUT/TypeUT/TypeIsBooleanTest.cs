@@ -1,5 +1,6 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
+
 [Trait("TypeUT", "TypeIs.BooleanType")]
 public class TypeIsBooleanTest
 {

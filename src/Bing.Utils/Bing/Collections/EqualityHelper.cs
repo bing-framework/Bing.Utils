@@ -1,4 +1,4 @@
-﻿namespace Bing.Collections;
+namespace Bing.Collections;
 
 /// <summary>
 /// 相等比较 操作辅助类，用于快速创建<see cref="IEqualityComparer{T}"/>的实例

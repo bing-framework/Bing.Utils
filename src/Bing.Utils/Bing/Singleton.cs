@@ -1,4 +1,4 @@
-﻿namespace Bing;
+namespace Bing;
 
 /// <summary>
 /// 单例

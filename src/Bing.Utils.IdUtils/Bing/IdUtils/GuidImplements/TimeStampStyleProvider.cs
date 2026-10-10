@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.GuidImplements;
+namespace Bing.IdUtils.GuidImplements;
 
 /// <summary>
 /// 时间戳风格提供程序

@@ -1,4 +1,4 @@
-﻿using Bing.Validation;
+using Bing.Validation;
 
 namespace Bing.Text;
 

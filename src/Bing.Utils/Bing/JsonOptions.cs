@@ -1,4 +1,4 @@
-﻿namespace Bing;
+namespace Bing;
 
 /// <summary>
 /// Json配置

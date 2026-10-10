@@ -1,6 +1,6 @@
-﻿using Bing.Extensions;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Bing.Extensions;
 
 namespace Bing.Helpers;
 

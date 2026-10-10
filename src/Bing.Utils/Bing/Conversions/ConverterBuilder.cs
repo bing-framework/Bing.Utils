@@ -1,4 +1,4 @@
-﻿namespace Bing.Conversions;
+namespace Bing.Conversions;
 
 /// <summary>
 /// 常用类型转换器构建器

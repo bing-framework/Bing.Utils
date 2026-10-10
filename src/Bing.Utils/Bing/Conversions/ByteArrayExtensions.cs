@@ -1,4 +1,4 @@
-﻿namespace Bing.Conversions;
+namespace Bing.Conversions;
 
 /// <summary>
 /// 字节数组(<see cref="byte"/>[]) 扩展

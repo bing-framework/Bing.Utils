@@ -1,4 +1,4 @@
-﻿namespace Bing.Net.Mac;
+namespace Bing.Net.Mac;
 
 /// <summary>
 /// MAC地址信息

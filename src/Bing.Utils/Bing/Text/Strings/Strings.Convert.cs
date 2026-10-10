@@ -1,4 +1,4 @@
-﻿namespace Bing.Text;
+namespace Bing.Text;
 
 // 字符串 - 转换相关
 public static partial class Strings

@@ -1,5 +1,6 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
+
 [Trait("TypeUT", "TypeIs.TupleType")]
 public class TypeIsTupleTest
 {

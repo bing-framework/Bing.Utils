@@ -1,5 +1,5 @@
-using Bing.Net;
 using Bing.Extensions;
+using Bing.Net;
 
 namespace Bing.Utils.Tests.Bing.Extensions;
 

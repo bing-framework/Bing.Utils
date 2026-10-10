@@ -1,4 +1,4 @@
-﻿global using System;
+global using System;
 global using Bing;
 global using Shouldly;
 global using Xunit;

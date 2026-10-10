@@ -1,5 +1,5 @@
-﻿using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 namespace Bing.Collections;
 /// <summary>
 /// 测试类：覆盖 `ReadOnlyCollConv` 相关行为。

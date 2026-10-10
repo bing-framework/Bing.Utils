@@ -1,4 +1,4 @@
-﻿namespace NodaTime.Helpers;
+namespace NodaTime.Helpers;
 
 /// <summary>
 /// 星期几(<see cref="DayOfWeek"/>) 操作辅助类

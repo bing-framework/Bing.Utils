@@ -1,4 +1,5 @@
 namespace Bing.Text.Similarity;
+
 [Trait("StringUT", "Strings.StringSimilarity")]
 public class StringSimilarityTest
 {

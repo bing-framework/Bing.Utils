@@ -1,4 +1,4 @@
-﻿using Bing.Collections;
+using Bing.Collections;
 using Bing.Extensions;
 using Bing.Helpers;
 using Bing.IO;

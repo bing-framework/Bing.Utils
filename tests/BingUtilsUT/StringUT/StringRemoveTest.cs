@@ -1,5 +1,6 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
+
 [Trait("StringUT", "Strings.Remove")]
 public class StringRemoveTest
 {

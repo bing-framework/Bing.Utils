@@ -1,4 +1,4 @@
-﻿namespace Bing.Reflection;
+namespace Bing.Reflection;
 
 /// <summary>
 /// 简单类型名称集合。

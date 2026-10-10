@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Conversions;
+namespace Bing.Utils.Conversions;
 
 /// <summary>
 /// 尝试转换

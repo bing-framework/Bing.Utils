@@ -1,5 +1,5 @@
-using Bing.Drawing;
 using Bing.Conversions;
+using Bing.Drawing;
 
 namespace Bing.Drawing;
 

@@ -1,4 +1,4 @@
-﻿namespace Bing.Collections;
+namespace Bing.Collections;
 /// <summary>
 /// 测试类：覆盖 `StringCollectionExtensions` 相关行为。
 /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace BingUtilsUT.Samples;
+namespace BingUtilsUT.Samples;
 
 [Description("NormalClassOne")]
 [DisplayName("NormalClassDisplayNameOne")]

@@ -1,6 +1,6 @@
-﻿using Bing.Text.Joiners;
-using Bing.Text.Splitters;
 using System.Text.RegularExpressions;
+using Bing.Text.Joiners;
+using Bing.Text.Splitters;
 
 namespace Bing.Text;
 

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Bing.Extensions;
 
 namespace Bing.Text.Formatting;

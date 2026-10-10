@@ -1,5 +1,5 @@
-using Bing.Text;
 using System.Text;
+using Bing.Text;
 
 namespace BingUtilsUT.StringUT;
 

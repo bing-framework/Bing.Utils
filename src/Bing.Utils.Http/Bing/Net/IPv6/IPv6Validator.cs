@@ -1,7 +1,7 @@
-﻿using Bing.Net.IPv6.Internal;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
+using Bing.Net.IPv6.Internal;
 
 namespace Bing.Net.IPv6;
 

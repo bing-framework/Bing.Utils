@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.CombImplements.Providers;
+namespace Bing.IdUtils.CombImplements.Providers;
 
 /// <summary>
 /// 基于 COMB 算法的 GUID 提供程序

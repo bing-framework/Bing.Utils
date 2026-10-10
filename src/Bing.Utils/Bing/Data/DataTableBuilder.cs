@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.Reflection.Emit;
 
 namespace Bing.Data;

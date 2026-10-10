@@ -1,4 +1,4 @@
-﻿namespace Bing;
+namespace Bing;
 
 /// <summary>
 /// 提供一个异步释放操作的封装，实现 <see cref="IAsyncDisposable"/> 接口，

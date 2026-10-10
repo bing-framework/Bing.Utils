@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.GuidImplements;
+namespace Bing.IdUtils.GuidImplements;
 
 /// <summary>
 /// 基于 Equifax 风格实现的 GUID 提供程序

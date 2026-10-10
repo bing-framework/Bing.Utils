@@ -1,4 +1,4 @@
-﻿namespace Bing.Drawing;
+namespace Bing.Drawing;
 
 /// <summary>
 /// 缩略图模式

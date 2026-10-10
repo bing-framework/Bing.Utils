@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Truncation;
+namespace Bing.Text.Truncation;
 
 /// <summary>
 /// 固定数量字母或数字的字符截断器

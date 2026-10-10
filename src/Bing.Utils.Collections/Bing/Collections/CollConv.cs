@@ -1,4 +1,4 @@
-﻿using Bing.Collections.Internals;
+using Bing.Collections.Internals;
 
 namespace Bing.Collections;
 

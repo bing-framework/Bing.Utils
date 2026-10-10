@@ -1,4 +1,4 @@
-﻿global using System;
+global using System;
 global using System.Collections;
 global using System.Collections.Generic;
 global using System.ComponentModel;
@@ -13,7 +13,7 @@ global using System.Threading.Tasks;
 global using Bing;
 global using Bing.Tests;
 global using Bing.Utils;
+global using Moq;
 global using Shouldly;
 global using Xunit;
 global using Xunit.Abstractions;
-global using Moq;

@@ -1,5 +1,6 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
+
 [Trait("TypeUT", "TypeIs.NumericType")]
 public class TypeIsNumericTypeTest
 {

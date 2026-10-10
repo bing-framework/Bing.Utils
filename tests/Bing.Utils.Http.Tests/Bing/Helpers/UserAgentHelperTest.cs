@@ -1,5 +1,5 @@
-using Shouldly;
 using System.Collections.Concurrent;
+using Shouldly;
 namespace Bing.Helpers;
 /// <summary>
 /// 用户代理帮助类 测试

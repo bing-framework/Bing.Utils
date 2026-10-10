@@ -1,4 +1,4 @@
-﻿namespace Bing.Conversions;
+namespace Bing.Conversions;
 
 /// <summary>
 /// <see cref="TimeSpan"/> 转换器

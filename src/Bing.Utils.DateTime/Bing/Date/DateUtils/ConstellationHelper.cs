@@ -1,4 +1,4 @@
-﻿namespace Bing.Date.DateUtils;
+namespace Bing.Date.DateUtils;
 
 /// <summary>
 /// 星座帮助类

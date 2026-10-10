@@ -1,4 +1,4 @@
-﻿namespace Bing.Net.NetworkInformation;
+namespace Bing.Net.NetworkInformation;
 
 /// <summary>
 /// 网络质量等级

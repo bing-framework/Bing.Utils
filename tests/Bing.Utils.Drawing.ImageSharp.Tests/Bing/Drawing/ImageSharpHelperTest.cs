@@ -1,8 +1,8 @@
+using System.Text.RegularExpressions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
-using System.Text.RegularExpressions;
 namespace Bing.Drawing;
 /// <summary>
 /// 测试类：覆盖 `ImageSharpHelper` 相关行为。

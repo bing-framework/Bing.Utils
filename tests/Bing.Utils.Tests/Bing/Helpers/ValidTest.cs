@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 namespace Bing.Helpers;
 /// <summary>
 /// 测试类：覆盖 `Valid` 的非空、格式校验与类型判断相关行为。

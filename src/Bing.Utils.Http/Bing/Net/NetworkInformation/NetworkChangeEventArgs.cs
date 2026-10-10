@@ -1,4 +1,4 @@
-﻿using System.Net.NetworkInformation;
+using System.Net.NetworkInformation;
 
 namespace Bing.Net.NetworkInformation;
 

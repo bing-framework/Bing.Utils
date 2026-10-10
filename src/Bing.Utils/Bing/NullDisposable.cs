@@ -1,4 +1,4 @@
-﻿namespace Bing;
+namespace Bing;
 
 /// <summary>
 /// 表示一个空的可释放对象，用于实现 <see cref="IDisposable"/> 接口但不执行任何实际的资源释放操作。

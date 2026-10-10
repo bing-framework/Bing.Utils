@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Drawing;

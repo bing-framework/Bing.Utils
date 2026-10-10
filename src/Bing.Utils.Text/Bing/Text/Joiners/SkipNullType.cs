@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Joiners;
+namespace Bing.Text.Joiners;
 
 /// <summary>
 /// 跳过 null 的类型

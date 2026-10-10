@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Reflection;

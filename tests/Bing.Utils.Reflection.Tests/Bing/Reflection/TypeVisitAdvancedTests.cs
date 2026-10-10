@@ -1,6 +1,6 @@
+using System.Reflection;
 using Bing.Reflection.Tests;
 using Shouldly;
-using System.Reflection;
 
 namespace Bing.Reflection;
 

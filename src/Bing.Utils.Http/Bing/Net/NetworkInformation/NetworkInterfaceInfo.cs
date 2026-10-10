@@ -1,8 +1,8 @@
-﻿using Bing.Net.IPv6;
-using Bing.Net.Mac;
-using Bing.Text;
 using System.Net.NetworkInformation;
 using System.Text;
+using Bing.Net.IPv6;
+using Bing.Net.Mac;
+using Bing.Text;
 
 namespace Bing.Net.NetworkInformation;
 

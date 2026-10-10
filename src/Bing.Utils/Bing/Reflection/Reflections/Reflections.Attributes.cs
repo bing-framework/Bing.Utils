@@ -1,4 +1,4 @@
-﻿using AspectCore.Extensions.Reflection;
+using AspectCore.Extensions.Reflection;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Reflection;

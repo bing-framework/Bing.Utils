@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Parameters;
+namespace Bing.Utils.Parameters;
 
 /// <summary>
 /// 参数管理器

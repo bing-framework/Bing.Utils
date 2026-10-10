@@ -1,6 +1,6 @@
 #pragma warning disable CS0618
-using Bing.OS;
 using System.Runtime.InteropServices;
+using Bing.OS;
 
 namespace Bing.Utils.Tests.Bing.OS;
 

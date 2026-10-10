@@ -1,4 +1,4 @@
-﻿using Bing.Extensions;
+using Bing.Extensions;
 using Bing.Helpers;
 using Bing.Utils.Json;
 using Bing.Utils.Parameters.Formats;

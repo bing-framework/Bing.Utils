@@ -1,4 +1,4 @@
-﻿using Bing.IdUtils;
+using Bing.IdUtils;
 
 namespace Bing;
 

@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using SkiaSharp;
 
 namespace Bing.Drawing;

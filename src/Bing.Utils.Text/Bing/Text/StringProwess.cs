@@ -1,4 +1,4 @@
-﻿using Bing.Collections;
+using Bing.Collections;
 
 namespace Bing.Text;
 

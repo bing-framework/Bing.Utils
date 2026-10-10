@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Parameters.Parsers;
+namespace Bing.Utils.Parameters.Parsers;
 
 /// <summary>
 /// 参数解析器

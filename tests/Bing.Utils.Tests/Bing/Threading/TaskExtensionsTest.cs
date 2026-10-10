@@ -1,4 +1,4 @@
-﻿namespace Bing.Threading;
+namespace Bing.Threading;
 /// <summary>
 /// 任务(<see cref="Task"/>) 扩展 测试
 /// </summary>

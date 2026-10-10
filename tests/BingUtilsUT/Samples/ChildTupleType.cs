@@ -1,4 +1,4 @@
-﻿namespace BingUtilsUT.Samples;
+namespace BingUtilsUT.Samples;
 
 public class ChildTupleType : Tuple<int, int>
 {

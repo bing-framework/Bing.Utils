@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Bing.Net.IPv6.Internal;
 
 namespace Bing.Net.IPv6;

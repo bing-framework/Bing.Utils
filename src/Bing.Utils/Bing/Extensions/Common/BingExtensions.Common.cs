@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Text.RegularExpressions;
 using Bing.Helpers;
 

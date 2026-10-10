@@ -1,4 +1,4 @@
-﻿namespace Bing.Helpers;
+namespace Bing.Helpers;
 
 /// <summary>
 /// 测试类：覆盖 <see cref="Env"/> 环境变量与展开逻辑的边界契约。

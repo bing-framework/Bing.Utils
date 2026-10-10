@@ -1,4 +1,4 @@
-﻿using System.Collections.Specialized;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Bing.Helpers;

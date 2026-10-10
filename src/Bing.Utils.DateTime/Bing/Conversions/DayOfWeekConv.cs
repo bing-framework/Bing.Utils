@@ -1,4 +1,4 @@
-﻿namespace Bing.Conversions;
+namespace Bing.Conversions;
 
 /// <summary>
 /// 周转换器

@@ -1,4 +1,4 @@
-﻿namespace Bing;
+namespace Bing;
 
 /// <summary>
 /// 表示 名称-值 对的数据结构，使用 <see cref="string"/> 类型作为值类型。

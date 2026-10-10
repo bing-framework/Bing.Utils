@@ -1,4 +1,4 @@
-﻿using Bing.Reflection;
+using Bing.Reflection;
 
 namespace Bing.Conversions;
 

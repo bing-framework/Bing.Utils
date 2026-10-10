@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Conversions.Internals;
+namespace Bing.Utils.Conversions.Internals;
 
 /// <summary>
 /// 字符串转bool 操作辅助类

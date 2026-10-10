@@ -1,4 +1,4 @@
-﻿namespace Bing.Date.Chinese;
+namespace Bing.Date.Chinese;
 
 /// <summary>
 /// 二十八星宿帮助类

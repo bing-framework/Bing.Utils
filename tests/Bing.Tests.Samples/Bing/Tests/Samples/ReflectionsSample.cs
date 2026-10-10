@@ -1,4 +1,4 @@
-﻿namespace Bing.Tests.Samples
+namespace Bing.Tests.Samples
 {
     /// <summary>
     /// 测试样例4

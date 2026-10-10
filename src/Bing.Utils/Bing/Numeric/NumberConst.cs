@@ -1,4 +1,4 @@
-﻿namespace Bing.Numeric;
+namespace Bing.Numeric;
 
 /// <summary>
 /// 数值常量

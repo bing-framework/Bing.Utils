@@ -1,4 +1,4 @@
-﻿using Bing.IdUtils.CombImplements;
+using Bing.IdUtils.CombImplements;
 using Bing.IdUtils.GuidImplements;
 
 namespace Bing.IdUtils;

@@ -1,4 +1,4 @@
-﻿using Bing.Net;
+using Bing.Net;
 
 namespace Bing.Helpers;
 

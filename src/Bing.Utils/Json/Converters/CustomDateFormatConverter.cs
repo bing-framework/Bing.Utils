@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Converters;
 
 namespace Bing.Utils.Json.Converters;
 

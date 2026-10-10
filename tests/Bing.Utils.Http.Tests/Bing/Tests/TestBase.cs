@@ -1,4 +1,4 @@
-﻿namespace Bing.Tests;
+namespace Bing.Tests;
 
 /// <summary>
 /// 测试基类

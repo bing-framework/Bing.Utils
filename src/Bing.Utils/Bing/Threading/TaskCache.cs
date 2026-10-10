@@ -1,4 +1,4 @@
-﻿namespace Bing.Threading;
+namespace Bing.Threading;
 
 /// <summary>
 /// 提供预先缓存的结果。

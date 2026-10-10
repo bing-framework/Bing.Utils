@@ -1,4 +1,4 @@
-﻿using Bing.Helpers;
+using Bing.Helpers;
 using Bing.IO;
 
 namespace Bing.Utils.Http.Tests.Integration.Http;

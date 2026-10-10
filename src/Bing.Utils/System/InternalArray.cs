@@ -1,4 +1,4 @@
-﻿namespace System;
+namespace System;
 
 /// <summary>
 /// 内部数组

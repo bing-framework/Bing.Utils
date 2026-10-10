@@ -1,4 +1,4 @@
-﻿using Bing.Text.Truncation;
+using Bing.Text.Truncation;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Text;

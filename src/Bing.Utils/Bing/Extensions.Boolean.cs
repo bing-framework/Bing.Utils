@@ -1,4 +1,4 @@
-﻿using Bing.Exceptions;
+using Bing.Exceptions;
 
 namespace Bing;
 

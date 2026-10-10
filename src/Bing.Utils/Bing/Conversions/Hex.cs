@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Bing.Conversions.Internals;
 
 namespace Bing.Conversions;

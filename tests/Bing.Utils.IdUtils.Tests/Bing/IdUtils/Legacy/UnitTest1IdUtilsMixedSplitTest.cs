@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.Legacy;
+namespace Bing.IdUtils.Legacy;
 
 /// <summary>
 /// 测试类：从 <c>Bing.Utils.Tests.UnitTest1</c> 拆分出的 IdUtils 混合测试方法。

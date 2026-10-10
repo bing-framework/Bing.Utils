@@ -1,4 +1,4 @@
-﻿namespace Bing.Reflection;
+namespace Bing.Reflection;
 
 /// <summary>
 /// 调用帮助类

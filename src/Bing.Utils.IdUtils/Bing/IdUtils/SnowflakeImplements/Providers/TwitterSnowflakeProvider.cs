@@ -1,4 +1,4 @@
-﻿namespace Bing.IdUtils.SnowflakeImplements.Providers;
+namespace Bing.IdUtils.SnowflakeImplements.Providers;
 
 /// <summary>
 /// 基于 Twitter 算法的雪花ID 提供程序

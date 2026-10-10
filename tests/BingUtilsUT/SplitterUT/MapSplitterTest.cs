@@ -1,4 +1,4 @@
-﻿using Bing.Text.Splitters;
+using Bing.Text.Splitters;
 
 namespace BingUtilsUT.SplitterUT;
 

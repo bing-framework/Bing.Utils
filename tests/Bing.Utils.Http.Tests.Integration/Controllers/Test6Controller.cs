@@ -1,5 +1,5 @@
-﻿using System.Text;
 using System.IO;
+using System.Text;
 using Bing.Extensions;
 using Bing.Helpers;
 using Bing.IO;

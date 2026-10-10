@@ -1,4 +1,4 @@
-﻿using Bing.Helpers;
+using Bing.Helpers;
 using Bing.Utils.Signatures;
 namespace Bing.Utils.Tests.Signatures;
 /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace Bing.Threading;
+namespace Bing.Threading;
 
 /// <summary>
 /// 一次性运行器，确保指定的操作只运行一次。<br />

@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Internals;
+namespace Bing.Text.Internals;
 
 /// <summary>
 /// 表示 Base64 编码实现的类。

@@ -1,4 +1,4 @@
-﻿namespace Bing.Threading;
+namespace Bing.Threading;
 
 /// <summary>
 /// 提供线程安全的读取操作的帮助类。

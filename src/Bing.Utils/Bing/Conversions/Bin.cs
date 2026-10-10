@@ -1,4 +1,4 @@
-﻿using Bing.Conversions.Internals;
+using Bing.Conversions.Internals;
 
 namespace Bing.Conversions;
 

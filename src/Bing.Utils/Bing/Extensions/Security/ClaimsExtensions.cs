@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Extensions;

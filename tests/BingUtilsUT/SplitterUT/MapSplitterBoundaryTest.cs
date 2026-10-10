@@ -1,5 +1,5 @@
-using Bing.Text.Splitters;
 using System.Linq;
+using Bing.Text.Splitters;
 
 namespace BingUtilsUT.SplitterUT;
 

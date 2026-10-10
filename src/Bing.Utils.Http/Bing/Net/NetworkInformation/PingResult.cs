@@ -1,4 +1,4 @@
-﻿namespace Bing.Net.NetworkInformation;
+namespace Bing.Net.NetworkInformation;
 
 /// <summary>
 /// Ping测试结果

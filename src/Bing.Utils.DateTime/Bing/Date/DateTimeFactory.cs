@@ -1,4 +1,4 @@
-﻿using Bing.Conversions;
+using Bing.Conversions;
 using Bing.Date.DateUtils;
 
 namespace Bing.Date;

@@ -1,5 +1,5 @@
-using Bing.Net.IPv6;
 using System.Numerics;
+using Bing.Net.IPv6;
 namespace Bing.Net;
 /// <summary>
 /// 测试类：覆盖 `IPv6AddressAnalyzerAndPool` 相关行为。

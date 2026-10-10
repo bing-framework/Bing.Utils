@@ -1,4 +1,4 @@
-﻿namespace BuildScript
+namespace BuildScript
 {
     /// <summary>
     /// 构建版本

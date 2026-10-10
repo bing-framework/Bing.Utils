@@ -1,4 +1,4 @@
-﻿namespace Bing.Date;
+namespace Bing.Date;
 
 /// <summary>
 /// 时间格式类型（支持标准、紧凑、中文、带毫秒等格式）

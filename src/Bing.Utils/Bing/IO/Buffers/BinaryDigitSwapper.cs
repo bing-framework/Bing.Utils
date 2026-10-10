@@ -1,4 +1,4 @@
-﻿namespace Bing.IO.Buffers;
+namespace Bing.IO.Buffers;
 
 /// <summary>
 /// 字节交换器

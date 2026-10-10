@@ -1,4 +1,4 @@
-﻿using System.Collections.Specialized;
+using System.Collections.Specialized;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Collections;

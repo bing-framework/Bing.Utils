@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Drawing;

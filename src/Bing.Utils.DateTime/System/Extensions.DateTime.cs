@@ -1,4 +1,4 @@
-﻿namespace System;
+namespace System;
 
 /// <summary>
 /// 日期时间(<see cref="DateTime"/>) 扩展

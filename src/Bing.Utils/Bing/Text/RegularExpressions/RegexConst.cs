@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.RegularExpressions;
+namespace Bing.Text.RegularExpressions;
 
 /// <summary>
 /// 常用正则表达式常量类

@@ -1,4 +1,4 @@
-﻿using Bing.Conversions;
+using Bing.Conversions;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Text;

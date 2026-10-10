@@ -1,4 +1,4 @@
-﻿namespace Bing.IO;
+namespace Bing.IO;
 /// <summary>
 /// 沙箱 测试
 /// </summary>

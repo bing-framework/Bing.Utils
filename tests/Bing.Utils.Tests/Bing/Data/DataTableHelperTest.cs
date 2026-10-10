@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Bing.Tests.Samples;
 
 namespace Bing.Data;

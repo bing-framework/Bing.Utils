@@ -1,4 +1,4 @@
-﻿namespace Bing.Http;
+namespace Bing.Http;
 
 /// <summary>
 /// Http客户端

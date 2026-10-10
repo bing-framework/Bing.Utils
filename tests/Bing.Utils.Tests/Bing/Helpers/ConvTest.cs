@@ -1,5 +1,5 @@
-using Bing.Tests.Samples;
 using System.Globalization;
+using Bing.Tests.Samples;
 namespace Bing.Helpers;
 /// <summary>
 /// 类型转换操作测试

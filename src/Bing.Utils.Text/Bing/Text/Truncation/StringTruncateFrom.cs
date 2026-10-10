@@ -1,4 +1,4 @@
-﻿namespace Bing.Text.Truncation;
+namespace Bing.Text.Truncation;
 
 /// <summary>
 /// 字符串截断位置

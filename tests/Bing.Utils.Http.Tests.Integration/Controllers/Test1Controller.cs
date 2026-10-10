@@ -1,4 +1,4 @@
-﻿namespace Bing.Utils.Http.Tests.Integration.Controllers;
+namespace Bing.Utils.Http.Tests.Integration.Controllers;
 
 /// <summary>
 /// 测试Api控制器1

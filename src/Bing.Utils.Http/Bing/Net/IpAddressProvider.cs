@@ -1,7 +1,7 @@
-﻿using Bing.Helpers;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using Bing.Helpers;
 using Bing.Net.NetworkInformation;
 
 namespace Bing.Net;

@@ -1,5 +1,6 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT.Extensions;
+
 [Trait("StringUT.Extensions", "String.Is")]
 public class StringIsExtensionsTest
 {

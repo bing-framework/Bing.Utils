@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 namespace Bing.Collections;
 /// <summary>
 /// 测试类：覆盖 `StringCollectionExtensionsAdvanced` 相关行为。

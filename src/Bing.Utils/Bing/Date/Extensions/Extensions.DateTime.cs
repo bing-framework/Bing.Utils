@@ -1,4 +1,4 @@
-﻿using Bing.Helpers;
+using Bing.Helpers;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Date;
