@@ -176,7 +176,18 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     /// <param name="fileName">文件名</param>
     /// <param name="name">参数名。默认值：file</param>
     IHttpRequest<TResult> FileContent(Stream stream, string fileName, string name = "file");
-    
+
+    /// <summary>
+    /// 添加文件上传流。
+    /// </summary>
+    /// <remarks><paramref name="leaveOpen"/>为 true 时由调用方负责释放输入流；否则请求结束时释放。</remarks>
+    /// <param name="stream">待上传的输入流</param>
+    /// <param name="fileName">发送给服务端的文件名</param>
+    /// <param name="name">表单参数名</param>
+    /// <param name="leaveOpen">为 true 时由调用方继续持有输入流；否则请求结束时释放</param>
+    /// <returns>当前请求配置对象</returns>
+    IHttpRequest<TResult> FileContent(Stream stream, string fileName, string name, bool leaveOpen);
+
     /// <summary>
     /// 添加内容类型为 multipart/form-data 的文件参数
     /// </summary>
@@ -191,6 +202,25 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     IHttpRequest<TResult> FileParameterQuotes(bool isQuote = true);
 
     /// <summary>
+    /// 配置请求级 HTTP 重试。
+    /// </summary>
+    /// <remarks>默认仅对安全方法及瞬时故障重试。</remarks>
+    /// <param name="options">重试次数、退避及允许方法配置</param>
+    /// <returns>当前请求配置对象</returns>
+    /// <exception cref="ArgumentNullException">配置为空</exception>
+    /// <exception cref="ArgumentOutOfRangeException">重试次数或延迟无效</exception>
+    IHttpRequest<TResult> Retry(HttpRetryOptions options);
+
+    /// <summary>
+    /// 设置响应正文大小上限。
+    /// </summary>
+    /// <remarks>上限同时作用于正文读取和交付；零表示仅允许空正文。</remarks>
+    /// <param name="maxBytes">允许的最大字节数，零表示仅允许空正文</param>
+    /// <returns>当前请求配置对象</returns>
+    /// <exception cref="ArgumentOutOfRangeException">上限为负数</exception>
+    IHttpRequest<TResult> MaxResponseBytes(long maxBytes);
+
+    /// <summary>
     /// 发送前事件
     /// </summary>
     /// <param name="action">发送前操作，返回false取消发送</param>
@@ -201,6 +231,14 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     /// </summary>
     /// <param name="action">发送后操作，自定义解析返回值</param>
     IHttpRequest<TResult> OnSendAfter(Func<HttpResponseMessage, Task<TResult>> action);
+
+    /// <summary>
+    /// 注册异步响应处理回调。
+    /// </summary>
+    /// <remarks>回调执行期间响应保持有效；回调应协作处理取消，且不得返回依赖响应存活的流。</remarks>
+    /// <param name="action">在响应有效期间执行的操作；不得返回依赖响应存活的流</param>
+    /// <returns>当前请求配置对象</returns>
+    IHttpRequest<TResult> OnSendAfter(Func<HttpResponseMessage, CancellationToken, Task<TResult>> action);
 
     /// <summary>
     /// 结果转换事件

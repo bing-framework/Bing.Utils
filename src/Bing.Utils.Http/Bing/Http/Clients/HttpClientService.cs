@@ -6,7 +6,7 @@ namespace Bing.Http.Clients;
 /// <summary>
 /// Http客户端服务
 /// </summary>
-public class HttpClientService : IHttpClient
+public class HttpClientService : IHttpClient, IHttpRequestFactory
 {
     #region 字段
 
@@ -50,6 +50,13 @@ public class HttpClientService : IHttpClient
     #endregion
 
     #region Get
+
+    /// <inheritdoc />
+    public IHttpRequest<TResult> CreateRequest<TResult>(HttpMethod method, string url) where TResult : class
+    {
+        if (method == null) throw new ArgumentNullException(nameof(method));
+        return new HttpRequest<TResult>(_httpClientFactory, _httpClient, method, url);
+    }
 
     /// <summary>
     /// 发送Get请求
