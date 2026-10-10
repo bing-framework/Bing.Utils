@@ -12,5 +12,5 @@ public static class HttpResponseMessageExtensions
     /// 获取内容类型
     /// </summary>
     /// <param name="message">Http响应消息</param>
-    public static string GetContentType(this HttpResponseMessage message) => message?.Content.Headers.ContentType?.MediaType;
+    public static string GetContentType(this HttpResponseMessage message) => message?.Content?.Headers.ContentType?.MediaType;
 }

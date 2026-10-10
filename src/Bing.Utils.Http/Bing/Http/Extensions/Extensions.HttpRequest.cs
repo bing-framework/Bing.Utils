@@ -163,13 +163,17 @@ public static class HttpRequestExtensions
         RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
     /// <summary>
-    /// 是否移动端浏览器
+    /// 判断请求是否来自移动端浏览器。
     /// </summary>
+    /// <remarks>User-Agent 缺失或长度不足四个字符时返回 false。</remarks>
     /// <param name="request">Http请求</param>
     public static bool IsMobileBrowser(this HttpRequest request)
     {
         var userAgent = request.UserAgent();
-        return BrowserRegex.IsMatch(userAgent) || VersionRegex.IsMatch(userAgent.Substring(0, 4));
+        if (string.IsNullOrEmpty(userAgent) || userAgent.Length < 4)
+            return false;
+        return BrowserRegex.IsMatch(userAgent) ||
+               VersionRegex.IsMatch(userAgent.Substring(0, 4));
     }
 
     #endregion

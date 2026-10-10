@@ -290,13 +290,37 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsMobileBrowser` 在 User-Agent 长度小于 4 时应抛出 `ArgumentOutOfRangeException`
+    /// 验证 User-Agent 长度不足时不匹配移动浏览器特征。
     /// </summary>
     [Fact]
-    public void IsMobileBrowser_ShouldThrowArgumentOutOfRangeException_WhenUserAgentLengthLessThan4()
+    public void IsMobileBrowser_ShouldReturnFalse_WhenUserAgentLengthLessThan4()
     {
         var request = CreateRequest(r => r.Headers["User-Agent"] = "abc");
 
-        Should.Throw<ArgumentOutOfRangeException>(() => request.IsMobileBrowser());
+        request.IsMobileBrowser().ShouldBeFalse();
+    }
+
+    /// <summary>
+    /// 验证短 User-Agent 与移动浏览器特征匹配时仍返回 false。
+    /// </summary>
+    [Theory]
+    [InlineData("psp")]
+    [InlineData("xda")]
+    public void IsMobileBrowser_ShouldReturnFalse_WhenShortUserAgentMatchesMobilePattern(string userAgent)
+    {
+        var request = CreateRequest(r => r.Headers["User-Agent"] = userAgent);
+
+        request.IsMobileBrowser().ShouldBeFalse();
+    }
+
+    /// <summary>
+    /// 验证未提供 User-Agent 时返回 false。
+    /// </summary>
+    [Fact]
+    public void IsMobileBrowser_ShouldReturnFalse_WhenUserAgentIsMissing()
+    {
+        var request = CreateRequest(_ => { });
+
+        request.IsMobileBrowser().ShouldBeFalse();
     }
 }
