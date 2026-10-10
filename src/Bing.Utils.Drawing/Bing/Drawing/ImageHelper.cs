@@ -75,9 +75,9 @@ public static partial class ImageHelper
                 GraphicsUnit.Pixel);
             return bitmap;
         }
-        catch (Exception e)
+        catch
         {
-            throw e;
+            throw;
         }
         finally
         {
