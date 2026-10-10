@@ -7,13 +7,19 @@ using Org.BouncyCastle.Crypto.Digests;
 
 namespace Bing.Security.Gm;
 
-/// <summary>提供 SM3 摘要计算。</summary>
+/// <summary>
+/// 提供 SM3 摘要计算。
+/// </summary>
 public static class Sm3
 {
-    /// <summary>SM3 摘要长度，单位为字节。</summary>
+    /// <summary>
+    /// SM3 摘要长度，单位为字节。
+    /// </summary>
     public const int DigestSize = 32;
 
-    /// <summary>计算字节数组的 SM3 摘要。</summary>
+    /// <summary>
+    /// 计算字节数组的 SM3 摘要。
+    /// </summary>
     public static byte[] Compute(byte[] data)
     {
         if (data == null)
@@ -23,7 +29,9 @@ public static class Sm3
         return Finish(digest);
     }
 
-    /// <summary>计算流的 SM3 摘要，不关闭输入流。</summary>
+    /// <summary>
+    /// 计算流的 SM3 摘要，不关闭输入流。
+    /// </summary>
     public static byte[] Compute(Stream stream)
     {
         if (stream == null)
@@ -40,7 +48,9 @@ public static class Sm3
         finally { GmCryptographicOperationsCompat.ZeroMemory(buffer); }
     }
 
-    /// <summary>异步计算流的 SM3 摘要，不关闭输入流。</summary>
+    /// <summary>
+    /// 异步计算流的 SM3 摘要，不关闭输入流。
+    /// </summary>
     public static async Task<byte[]> ComputeAsync(Stream stream, CancellationToken cancellationToken = default)
     {
         if (stream == null)
@@ -62,13 +72,19 @@ public static class Sm3
         finally { GmCryptographicOperationsCompat.ZeroMemory(buffer); }
     }
 
-    /// <summary>计算小写十六进制 SM3 摘要。</summary>
+    /// <summary>
+    /// 计算小写十六进制 SM3 摘要。
+    /// </summary>
     public static string ComputeHex(byte[] data) => HexEncoding.Encode(Compute(data));
 
-    /// <summary>计算 Base64 SM3 摘要。</summary>
+    /// <summary>
+    /// 计算 Base64 SM3 摘要。
+    /// </summary>
     public static string ComputeBase64(byte[] data) => Convert.ToBase64String(Compute(data));
 
-    /// <summary>异步计算文件的小写十六进制 SM3 摘要。</summary>
+    /// <summary>
+    /// 异步计算文件的小写十六进制 SM3 摘要。
+    /// </summary>
     public static async Task<string> ComputeFileHexAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(path))

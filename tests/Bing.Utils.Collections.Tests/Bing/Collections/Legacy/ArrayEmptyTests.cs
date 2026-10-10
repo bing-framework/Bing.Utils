@@ -3,13 +3,13 @@ using Bing.Collections;
 namespace Bing.Collections.Legacy;
 
 /// <summary>
-/// ¿ÕÊý×é
+/// ç©ºæ•°ç»„
 /// </summary>
 [Trait("CollUT", "ArrayUT.Empty")]
 public class ArrayEmptyTests
 {
     /// <summary>
-    /// ²âÊÔ - ¿ÕÊý×é
+    /// æµ‹è¯• - ç©ºæ•°ç»„
     /// </summary>
     [Fact]
     public void Test_EmptyArray()

@@ -120,11 +120,11 @@ public class RegexPoolTest : IDisposable
     /// 测试 - GenerateCacheKey - 缓存键生成逻辑
     /// </summary>
     [Theory]
-    [InlineData(@"\d+", RegexOptions.IgnoreCase, @"\d+:1")]
-    [InlineData(@"\d+", RegexOptions.None, @"\d+:0")]
-    [InlineData(@"\w+", RegexOptions.Multiline | RegexOptions.IgnoreCase, @"\w+:17")]
-    [InlineData("", RegexOptions.IgnoreCase, ":1")]
-    public void GenerateCacheKey_DifferentPatternsAndOptions_GeneratesCorrectKeys(string pattern, RegexOptions options, string expected)
+    [InlineData(@"\d+", RegexOptions.IgnoreCase)]
+    [InlineData(@"\d+", RegexOptions.None)]
+    [InlineData(@"\w+", RegexOptions.Multiline | RegexOptions.IgnoreCase)]
+    [InlineData("", RegexOptions.IgnoreCase)]
+    public void GenerateCacheKey_DifferentPatternsAndOptions_GeneratesCorrectKeys(string pattern, RegexOptions options)
     {
         // Act - 通过创建两个相同的正则表达式来间接测试缓存键生成
         RegexPool.Clear();

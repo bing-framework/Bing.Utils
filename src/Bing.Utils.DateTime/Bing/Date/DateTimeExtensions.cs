@@ -1,6 +1,6 @@
-﻿using Bing.Date.DateUtils;
-using NodaTime;
 using System.Diagnostics.Contracts;
+using Bing.Date.DateUtils;
+using NodaTime;
 
 namespace Bing.Date;
 

@@ -1,16 +1,18 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
-using System.Text;
-using TextEncoding = System.Text.Encoding;
 using Bing.Security.Encoding;
 using Shouldly;
+using Xunit;
+using TextEncoding = System.Text.Encoding;
 
 namespace Bing.Security.Gm;
 
-/// <summary>SM3、HMAC-SM3 与 SM4-GCM 互操作测试。</summary>
+/// <summary>
+/// SM3、HMAC-SM3 与 SM4-GCM 互操作测试。
+/// </summary>
 public class GmHashAndInteroperabilityTests
 {
     [Fact]

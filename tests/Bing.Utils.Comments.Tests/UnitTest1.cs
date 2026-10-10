@@ -8,7 +8,7 @@ namespace Bing.Utils.Comments.Tests
     public class UnitTest1 : TestBase
     {
         /// <summary>
-        /// ³õÊ¼»¯Ò»¸ö<see cref="TestBase"/>ÀàĞÍµÄÊµÀı
+        /// åˆå§‹åŒ–ä¸€ä¸ª<see cref="TestBase"/>ç±»å‹çš„å®ä¾‹
         /// </summary>
         public UnitTest1(ITestOutputHelper output) : base(output)
         {

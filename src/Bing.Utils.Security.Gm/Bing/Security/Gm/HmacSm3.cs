@@ -10,10 +10,14 @@ using Org.BouncyCastle.Crypto.Parameters;
 
 namespace Bing.Security.Gm;
 
-/// <summary>提供 HMAC-SM3 消息认证码计算与验证。</summary>
+/// <summary>
+/// 提供 HMAC-SM3 消息认证码计算与验证。
+/// </summary>
 public static class HmacSm3
 {
-    /// <summary>计算 HMAC-SM3。</summary>
+    /// <summary>
+    /// 计算 HMAC-SM3。
+    /// </summary>
     public static byte[] Compute(byte[] key, byte[] data)
     {
         Validate(key, data);
@@ -22,7 +26,9 @@ public static class HmacSm3
         return Finish(hmac);
     }
 
-    /// <summary>计算流的 HMAC-SM3，不关闭输入流。</summary>
+    /// <summary>
+    /// 计算流的 HMAC-SM3，不关闭输入流。
+    /// </summary>
     public static byte[] Compute(byte[] key, Stream stream)
     {
         ValidateKey(key);
@@ -40,7 +46,9 @@ public static class HmacSm3
         finally { GmCryptographicOperationsCompat.ZeroMemory(buffer); }
     }
 
-    /// <summary>异步计算流的 HMAC-SM3，不关闭输入流。</summary>
+    /// <summary>
+    /// 异步计算流的 HMAC-SM3，不关闭输入流。
+    /// </summary>
     public static async Task<byte[]> ComputeAsync(byte[] key, Stream stream, CancellationToken cancellationToken = default)
     {
         ValidateKey(key);
@@ -63,7 +71,9 @@ public static class HmacSm3
         finally { GmCryptographicOperationsCompat.ZeroMemory(buffer); }
     }
 
-    /// <summary>使用固定时间比较验证 HMAC-SM3。</summary>
+    /// <summary>
+    /// 使用固定时间比较验证 HMAC-SM3。
+    /// </summary>
     public static bool Verify(byte[] key, byte[] data, byte[] expectedMac)
     {
         if (expectedMac == null)
@@ -73,13 +83,19 @@ public static class HmacSm3
         finally { GmCryptographicOperationsCompat.ZeroMemory(actual); }
     }
 
-    /// <summary>计算小写十六进制 HMAC-SM3。</summary>
+    /// <summary>
+    /// 计算小写十六进制 HMAC-SM3。
+    /// </summary>
     public static string ComputeHex(byte[] key, byte[] data) => Encode(Compute(key, data), false);
 
-    /// <summary>计算 Base64 HMAC-SM3。</summary>
+    /// <summary>
+    /// 计算 Base64 HMAC-SM3。
+    /// </summary>
     public static string ComputeBase64(byte[] key, byte[] data) => Encode(Compute(key, data), true);
 
-    /// <summary>异步计算文件的小写十六进制 HMAC-SM3。</summary>
+    /// <summary>
+    /// 异步计算文件的小写十六进制 HMAC-SM3。
+    /// </summary>
     public static async Task<string> ComputeFileHexAsync(string path, byte[] key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(path))

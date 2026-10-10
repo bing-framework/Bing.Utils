@@ -1,9 +1,9 @@
-﻿using SixLabors.ImageSharp;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System.Runtime.CompilerServices;
-using System.Linq;
 
 namespace Bing.Drawing;
 

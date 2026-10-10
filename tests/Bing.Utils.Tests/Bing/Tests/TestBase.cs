@@ -11,7 +11,7 @@ public abstract class TestBase
     protected ITestOutputHelper Output { get; }
 
     /// <summary>
-    /// 初始化一个<see cref="TestBase"/>类型的实例
+    /// 初始化一个<see cref="TestBase"/>类型的实例。
     /// </summary>
     protected TestBase(ITestOutputHelper output) => Output = output;
 

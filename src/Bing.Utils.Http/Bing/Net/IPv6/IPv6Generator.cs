@@ -1,5 +1,5 @@
-﻿using Bing.Net.IPv6.Internal;
 using System.Security.Cryptography;
+using Bing.Net.IPv6.Internal;
 
 namespace Bing.Net.IPv6;
 
