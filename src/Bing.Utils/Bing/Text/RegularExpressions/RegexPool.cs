@@ -512,31 +512,49 @@ public static class RegexPool
     /// </summary>
     public static class CommonPatterns
     {
-        /// <summary>邮箱地址验证模式</summary>
+        /// <summary>
+        /// 邮箱地址验证模式
+        /// </summary>
         public const string Email = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
 
-        /// <summary>中国大陆手机号码验证模式</summary>
+        /// <summary>
+        /// 中国大陆手机号码验证模式
+        /// </summary>
         public const string MobilePhone = @"^1[3-9]\d{9}$";
 
-        /// <summary>IPv4地址验证模式</summary>
+        /// <summary>
+        /// IPv4地址验证模式
+        /// </summary>
         public const string IPv4 = @"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
 
-        /// <summary>中文字符匹配模式</summary>
+        /// <summary>
+        /// 中文字符匹配模式
+        /// </summary>
         public const string ChineseCharacters = @"[\u4e00-\u9fa5]";
 
-        /// <summary>纯数字匹配模式</summary>
+        /// <summary>
+        /// 纯数字匹配模式
+        /// </summary>
         public const string DigitsOnly = @"^\d+$";
 
-        /// <summary>纯字母匹配模式</summary>
+        /// <summary>
+        /// 纯字母匹配模式
+        /// </summary>
         public const string LettersOnly = @"^[a-zA-Z]+$";
 
-        /// <summary>字母数字组合匹配模式</summary>
+        /// <summary>
+        /// 字母数字组合匹配模式
+        /// </summary>
         public const string Alphanumeric = @"^[a-zA-Z0-9]+$";
 
-        /// <summary>中国大陆身份证号码验证模式</summary>
+        /// <summary>
+        /// 中国大陆身份证号码验证模式
+        /// </summary>
         public const string IdCard = @"^\d{17}[\dXx]$";
 
-        /// <summary>中国邮政编码验证模式</summary>
+        /// <summary>
+        /// 中国邮政编码验证模式
+        /// </summary>
         public const string PostalCode = @"^\d{6}$";
     }
 

@@ -1,7 +1,7 @@
-﻿using Bing.Reflection;
-using Bing.Text;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
+using Bing.Reflection;
+using Bing.Text;
 
 namespace Bing.Helpers;
 
