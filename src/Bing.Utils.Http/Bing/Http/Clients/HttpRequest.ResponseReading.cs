@@ -40,8 +40,7 @@ public partial class HttpRequest<TResult> where TResult : class
             else
                 FailHandler(response, content);
 
-            return new HttpResponseResult<TResult>(response.StatusCode, SnapshotHeaders(response.Headers),
-                SnapshotHeaders(response.Content?.Headers), data, includeRawContent ? content : null);
+            return new HttpResponseResult<TResult>(response, data, includeRawContent ? content : null);
         }
         catch (Exception ex)
         {

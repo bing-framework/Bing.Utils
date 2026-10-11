@@ -165,6 +165,23 @@ public class HttpRequestResilienceTest
 
     /// <summary>
 
+    /// 验证释放调用方拥有的上传流。
+
+    /// </summary>
+    [Fact]
+    public async Task InvalidDownloadDestination_DisposesOwnedUploadStream()
+    {
+        var source = new MemoryStream(new byte[] { 1 });
+        using var client = CreateClient((_, _) => throw new InvalidOperationException("No send expected."));
+        var request = new HttpRequest<string>(null, client, HttpMethod.Post, "https://example.test/");
+        request.FileContent(source, "upload.bin");
+
+        await Should.ThrowAsync<ArgumentNullException>(() => request.DownloadToAsync(null));
+        source.CanRead.ShouldBeFalse();
+    }
+
+    /// <summary>
+
     /// 验证调用现有受保护的响应重写方法。
 
     /// </summary>
@@ -895,6 +912,61 @@ public class HttpRequestResilienceTest
             await result.CopyToAsync(copy);
             copy.ToArray().ShouldBe(new byte[] { 4, 5, 6 });
         }
+    }
+
+    /// <summary>
+
+    /// 验证保持目标流保持打开。
+
+    /// </summary>
+    [Fact]
+    public async Task DownloadToAsync_LeavesDestinationOpen()
+    {
+        using var client = CreateClient((_, _) => new HttpResponseMessage(HttpStatusCode.OK)
+        { Content = new ByteArrayContent(new byte[] { 1, 2, 3 }) });
+        using var destination = new MemoryStream();
+        await new HttpRequest<string>(null, client, HttpMethod.Get, "https://example.test/")
+            .DownloadToAsync(destination);
+        destination.CanWrite.ShouldBeTrue();
+        destination.ToArray().ShouldBe(new byte[] { 1, 2, 3 });
+    }
+
+    /// <summary>
+
+    /// 验证处理空正文。
+
+    /// </summary>
+    [Fact]
+    public async Task DownloadToAsync_HandlesEmptyBody()
+    {
+        using var client = CreateClient((_, _) => new HttpResponseMessage(HttpStatusCode.OK)
+        { Content = new ByteArrayContent(Array.Empty<byte>()) });
+        using var destination = new MemoryStream();
+
+        await new HttpRequest<string>(null, client, HttpMethod.Get, "https://example.test/")
+            .DownloadToAsync(destination);
+
+        destination.CanWrite.ShouldBeTrue();
+        destination.ToArray().ShouldBeEmpty();
+    }
+
+    /// <summary>
+
+    /// 验证复制较短内容读取从不可定位源流。
+
+    /// </summary>
+    [Fact]
+    public async Task DownloadToAsync_CopiesShortReadsFromNonSeekableSource()
+    {
+        var bytes = Enumerable.Range(1, 257).Select(x => (byte)x).ToArray();
+        using var client = CreateClient((_, _) => new HttpResponseMessage(HttpStatusCode.OK)
+        { Content = new StreamContent(new ChunkedNonSeekableStream(bytes, maxChunkSize: 3)) });
+        using var destination = new MemoryStream();
+
+        await new HttpRequest<string>(null, client, HttpMethod.Get, "https://example.test/")
+            .DownloadToAsync(destination);
+
+        destination.ToArray().ShouldBe(bytes);
     }
 
     /// <summary>

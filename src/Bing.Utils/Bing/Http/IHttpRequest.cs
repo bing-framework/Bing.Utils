@@ -283,6 +283,25 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     Task<byte[]> GetStreamAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// 将响应正文流式写入目标流。
+    /// </summary>
+    /// <remarks>目标流由调用方持有；失败时可能已有部分内容。</remarks>
+    /// <param name="destination">调用方持有的可写目标流</param>
+    /// <param name="cancellationToken">请求和正文复制的取消令牌</param>
+    /// <exception cref="ArgumentNullException">目标流为空</exception>
+    /// <exception cref="ArgumentException">目标流不可写</exception>
+    Task DownloadToAsync(Stream destination, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 将响应正文下载到目标文件。
+    /// </summary>
+    /// <remarks>使用同目录临时文件暂存，成功后替换目标文件；失败时保留原文件。</remarks>
+    /// <param name="filePath">目标文件路径</param>
+    /// <param name="cancellationToken">请求和正文复制的取消令牌</param>
+    /// <exception cref="ArgumentException">文件路径为空或空白</exception>
+    Task DownloadFileAsync(string filePath, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// 写入文件
     /// </summary>
     /// <param name="filePath">文件绝对路径</param>

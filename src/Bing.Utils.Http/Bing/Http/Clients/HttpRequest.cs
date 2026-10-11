@@ -21,8 +21,9 @@ namespace Bing.Http.Clients;
 /// Http请求
 /// </summary>
 /// <typeparam name="TResult">结果类型</typeparam>
-public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestResponse<TResult>,
-    IHttpRequestInterceptorRegistration<TResult>, IHttpRequestObservationRegistration<TResult> where TResult : class
+public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestResponse<TResult>, IHttpRequestInterceptorRegistration<TResult>,
+    IHttpRequestDownloadResult<TResult>, IHttpRequestObservationRegistration<TResult>,
+    IHttpRequestResumableDownloadValidation<TResult> where TResult : class
 {
     #region 字段
 
@@ -72,6 +73,11 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     /// 按注册顺序执行的请求拦截器。
     /// </summary>
     private readonly List<HttpRequestInterceptor> _interceptors = new();
+    /// <summary>
+    /// 恢复下载开始前验证已存在目标文件的回调。
+    /// </summary>
+    private Func<Stream, CancellationToken, Task> _resumableDownloadValidator;
+
     #endregion
 
     #region 构造函数
@@ -872,6 +878,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     /// </summary>
     protected virtual HttpContent CreateHttpContent()
     {
+        if (_hasRawBody) return CreateRawHttpContent();
         if (!System.Net.Http.Headers.MediaTypeHeaderValue.TryParse(HttpContentType, out var parsedContentType))
             return null;
         var contentType = parsedContentType.MediaType.ToLowerInvariant();
@@ -1111,6 +1118,9 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
         Exception executionError = null;
         var retryObserver = _retryObserver;
         var retryObservationErrorHandler = _retryObservationErrorHandler;
+        var uploadProgressObserver = _uploadProgressObserver;
+        var uploadProgressMinimumBytes = _uploadProgressMinimumBytes;
+        var uploadProgressMinimumInterval = _uploadProgressMinimumInterval;
         try
         {
             var hasFiniteTimeout = HttpTimeout.HasValue && HttpTimeout.Value != System.Threading.Timeout.InfiniteTimeSpan;
@@ -1125,6 +1135,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
             HttpRequestInterceptor[] interceptors;
             lock (_interceptors) interceptors = _interceptors.ToArray();
             var items = interceptors.Length == 0 ? null : new Dictionary<string, object>();
+            var factoryContents = _bodyFactory == null ? null : new List<HttpContent>();
             HttpMethod firstMethod = null;
             for (var attempt = 0; ; attempt++)
             {
@@ -1136,6 +1147,13 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
                 {
                     message = CreateMessage();
                     prepareMessage?.Invoke(message, attempt + 1, client);
+                    if (factoryContents != null && message.Content != null)
+                    {
+                        foreach (var previousContent in factoryContents)
+                            if (ReferenceEquals(previousContent, message.Content))
+                                throw new InvalidOperationException("ContentFactory must return a new HttpContent for every attempt.");
+                        factoryContents.Add(message.Content);
+                    }
                     var originalContent = message.Content;
                     var bodyReplaced = false;
                     bool shouldSend;
@@ -1215,8 +1233,13 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
                             throw new NotSupportedException("OnSendBefore changed the HTTP method between retry attempts.");
                         if (attempt == 0 && attemptRetries > 0 && Files.Any(file => file.Stream != null && !file.Stream.CanSeek))
                             throw new NotSupportedException("Retrying a request with a non-seekable upload stream is not supported. Use a seekable stream or a file path.");
+                        if (attemptRetries > 0 && _binaryStream != null && !_binaryStream.CanSeek)
+                            throw new NotSupportedException("Retrying a non-seekable binary body requires ContentFactory.");
                         if (attemptRetries > 0 && bodyReplaced)
                             throw new NotSupportedException("The request body was replaced before sending; automatic retries require a replayable body.");
+                        if (uploadProgressObserver != null)
+                            message.Content = WrapUploadContent(message.Content, attempt + 1, uploadProgressObserver,
+                                uploadProgressMinimumBytes, uploadProgressMinimumInterval);
                         if (observation != null) observation.Attempts++;
                         response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
                         if (observation != null) observation.StatusCode = response.StatusCode;
@@ -1256,6 +1279,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
                     }
 
                     Exception responseError = null;
+                    var responseTransferred = false;
                     try
                     {
                         if (attempt < attemptRetries && IsRetryable(response.StatusCode))
@@ -1264,7 +1288,15 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
                                 continue;
                         }
                         var result = await process(response, token).ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
+                        if (result is IResponseOwnershipTransfer)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            responseTransferred = true;
+                        }
+                        else
+                        {
+                            token.ThrowIfCancellationRequested();
+                        }
                         return result;
                     }
                     catch (Exception ex)
@@ -1274,7 +1306,8 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
                     }
                     finally
                     {
-                        DisposePreservingException(response, responseError);
+                        if (!responseTransferred)
+                            DisposePreservingException(response, responseError);
                     }
                 }
                 catch (Exception ex)
@@ -1337,6 +1370,8 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
             if (file.Stream != null && !file.LeaveOpen)
                 firstError = DisposeAndCapture(file.Stream, firstError);
         }
+        if (_binaryStream != null && !_binaryLeaveOpen)
+            firstError = DisposeAndCapture(_binaryStream, firstError);
         return firstError;
     }
 
@@ -1664,18 +1699,24 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     }
 
     /// <summary>
-    /// 将响应正文复制到目标流，并在复制过程中执行大小限制。
+    /// 将响应正文复制到目标流，并在复制过程中执行大小限制和进度观测。
     /// </summary>
     /// <param name="response">待复制的 HTTP 响应。</param>
     /// <param name="destination">接收正文的目标流。</param>
     /// <param name="token">复制操作的取消令牌。</param>
+    /// <param name="progress">可选的下载进度状态。</param>
     /// <returns>写入目标流的字节数。</returns>
-    private async Task<long> CopyResponseAsync(HttpResponseMessage response, Stream destination, CancellationToken token)
+    private async Task<long> CopyResponseAsync(HttpResponseMessage response, Stream destination, CancellationToken token,
+        DownloadProgressState progress = null, long existingBytes = 0, Action<long> bytesCopied = null)
     {
         if (HasNoResponseBody(response) || response.Content == null)
+        {
+            progress?.Report(existingBytes, existingBytes, false, true);
+            progress?.Report(existingBytes, existingBytes, true, true);
             return 0;
+        }
         var length = response.Content.Headers.ContentLength;
-        if (_maxResponseBytes.HasValue && length.HasValue && length.Value > _maxResponseBytes.Value)
+        if (_maxResponseBytes.HasValue && length.HasValue && existingBytes + length.Value > _maxResponseBytes.Value)
             throw new HttpResponseSizeLimitException(_maxResponseBytes.Value);
         var source = await response.Content.ReadAsStreamAsync();
         byte[] buffer = null;
@@ -1683,16 +1724,20 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
         Exception copyError = null;
         try
         {
+            progress?.Report(existingBytes, length.HasValue ? existingBytes + length.Value : null, false, true);
             buffer = ArrayPool<byte>.Shared.Rent(81920);
             while (true)
             {
                 var count = await source.ReadAsync(buffer, 0, buffer.Length, token);
                 if (count == 0) break;
-                if (_maxResponseBytes.HasValue && copied + count > _maxResponseBytes.Value)
+                if (_maxResponseBytes.HasValue && existingBytes + copied + count > _maxResponseBytes.Value)
                     throw new HttpResponseSizeLimitException(_maxResponseBytes.Value);
                 await destination.WriteAsync(buffer, 0, count, token);
                 copied += count;
+                bytesCopied?.Invoke(copied);
+                progress?.Report(existingBytes + copied, length.HasValue ? existingBytes + length.Value : null, false, false);
             }
+            progress?.Report(existingBytes + copied, length.HasValue ? existingBytes + length.Value : null, true, true);
         }
         catch (Exception ex) { copyError = ex; throw; }
         finally
@@ -1701,6 +1746,179 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
             DisposePreservingException(source, copyError);
         }
         return copied;
+    }
+
+    /// <inheritdoc />
+    public async Task DownloadToAsync(Stream destination, CancellationToken cancellationToken = default)
+        => await DownloadToResultAsync(destination, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<HttpDownloadResult> DownloadToWithResultAsync(Stream destination, CancellationToken cancellationToken = default)
+    {
+        if (SendAfterAction != null || SendAfterWithCancellationAction != null)
+            return FailPreflightAsync<HttpDownloadResult>(
+                new NotSupportedException("Download results cannot be combined with OnSendAfter; remove the custom response handler."));
+        return DownloadToWithResultCoreAsync(destination, cancellationToken);
+    }
+
+    /// <summary>
+    /// 执行带结果信息的流式下载核心流程。
+    /// </summary>
+    /// <param name="destination">接收下载内容的目标流。</param>
+    /// <param name="cancellationToken">下载取消令牌。</param>
+    /// <returns>包含响应信息及传输字节数的下载结果。</returns>
+    private async Task<HttpDownloadResult> DownloadToWithResultCoreAsync(Stream destination, CancellationToken cancellationToken)
+    {
+        var result = await DownloadToDetailedAsync(destination, cancellationToken, true).ConfigureAwait(false);
+        return result.Result;
+    }
+
+    /// <summary>
+    /// 执行流式下载并返回请求是否成功。
+    /// </summary>
+    /// <param name="destination">接收下载内容的目标流。</param>
+    /// <param name="cancellationToken">下载取消令牌。</param>
+    /// <param name="observation">当前请求的观测状态。</param>
+    /// <param name="withResult">是否同时生成下载结果信息。</param>
+    /// <returns>表示下载是否成功的任务。</returns>
+    private async Task<bool> DownloadToResultAsync(Stream destination, CancellationToken cancellationToken,
+        ObservationState observation = null, bool nested = false)
+    {
+        var result = await DownloadToDetailedAsync(destination, cancellationToken, false, observation, nested).ConfigureAwait(false);
+        return result.Success;
+    }
+
+    /// <summary>
+    /// 执行流式下载并返回成功状态及可选的下载结果。
+    /// </summary>
+    /// <param name="destination">接收下载内容的目标流。</param>
+    /// <param name="cancellationToken">下载取消令牌。</param>
+    /// <param name="withResult">是否生成下载结果信息。</param>
+    /// <param name="observation">当前请求的观测状态。</param>
+    /// <param name="ownsDestination">操作结束后是否释放目标流。</param>
+    /// <returns>包含成功状态和可选下载结果的任务。</returns>
+    private Task<(bool Success, HttpDownloadResult Result)> DownloadToDetailedAsync(Stream destination,
+        CancellationToken cancellationToken, bool withResult, ObservationState observation = null, bool nested = false)
+    {
+        if (destination == null || !destination.CanWrite)
+        {
+            Exception error = destination == null
+                ? new ArgumentNullException(nameof(destination))
+                : new ArgumentException("Destination stream is not writable.", nameof(destination));
+            if (!nested && _completionObserver != null)
+                return FailPreflightAsync<(bool Success, HttpDownloadResult Result)>(error);
+            DisposeOwnedUploadStreams(error);
+            throw error;
+        }
+        var progress = _downloadProgressObserver == null ? null :
+            new DownloadProgressState(_downloadProgressObserver, _progressMinimumBytes, _progressMinimumInterval);
+        return ExecuteAsync(async (response, token) =>
+        {
+            object content = null;
+            Exception processingError = null;
+            try
+            {
+                long bytesWritten = 0;
+                if (response.IsSuccessStatusCode)
+                    bytesWritten = await CopyResponseAsync(response, destination, token, progress);
+                else
+                {
+                    content = await ReadResponseBytesAsync(response, token);
+                    FailHandler(response, content);
+                    return (false, withResult ? new HttpDownloadResult(response, 0, false) : null);
+                }
+                return (true, withResult ? new HttpDownloadResult(response, bytesWritten, false) : null);
+            }
+            catch (Exception ex)
+            {
+                processingError = ex;
+                throw;
+            }
+            finally
+            {
+                CompleteHandlerPreservingException(response, content, processingError);
+            }
+        }, cancellationToken, observation, nested);
+    }
+
+    /// <inheritdoc />
+    public async Task DownloadFileAsync(string filePath, CancellationToken cancellationToken = default)
+    {
+        if (_completionObserver == null)
+            await DownloadFileCoreAsync(filePath, cancellationToken, false, null).ConfigureAwait(false);
+        else
+            await ObserveOperationAsync(state => DownloadFileCoreAsync(filePath, cancellationToken, false, state)).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public Task<HttpDownloadResult> DownloadFileWithResultAsync(string filePath, CancellationToken cancellationToken = default)
+    {
+        if (SendAfterAction != null || SendAfterWithCancellationAction != null)
+            return FailPreflightAsync<HttpDownloadResult>(
+                new NotSupportedException("Download results cannot be combined with OnSendAfter; remove the custom response handler."));
+        return _completionObserver == null
+            ? DownloadFileCoreAsync(filePath, cancellationToken, true, null)
+            : ObserveOperationAsync(state => DownloadFileCoreAsync(filePath, cancellationToken, true, state));
+    }
+
+    /// <summary>
+    /// 将响应下载到同目录临时文件，并在成功后替换目标文件。
+    /// </summary>
+    /// <param name="filePath">目标文件路径。</param>
+    /// <param name="cancellationToken">下载取消令牌。</param>
+    /// <param name="withResult">是否返回下载结果信息。</param>
+    /// <param name="observation">当前请求的观测状态。</param>
+    /// <returns>包含响应信息及文件保存状态的下载结果。</returns>
+    private async Task<HttpDownloadResult> DownloadFileCoreAsync(string filePath, CancellationToken cancellationToken,
+        bool withResult, ObservationState observation)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            var error = new ArgumentException("File path is required.", nameof(filePath));
+            DisposeOwnedUploadStreams(error);
+            throw error;
+        }
+        string fullPath;
+        try { fullPath = Path.GetFullPath(filePath); }
+        catch (Exception ex)
+        {
+            DisposeOwnedUploadStreams(ex);
+            throw;
+        }
+        var temporaryPath = fullPath + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        Exception fileError = null;
+        FileStream stream = null;
+        var requestExecuted = false;
+        try
+        {
+            stream = new FileStream(temporaryPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 81920, true);
+            requestExecuted = true;
+            var result = await DownloadToDetailedAsync(stream, cancellationToken, withResult, observation, true).ConfigureAwait(false);
+            stream.Dispose();
+            stream = null;
+            if (!result.Success || (result.Result == null && withResult)) return result.Result;
+            // 提交前响应调用方取消，保留原目标；同步替换开始后不再中断。
+            cancellationToken.ThrowIfCancellationRequested();
+            if (File.Exists(fullPath))
+                File.Replace(temporaryPath, fullPath, null);
+            else
+                File.Move(temporaryPath, fullPath);
+            return result.Result?.WithFileSaved();
+        }
+        catch (Exception ex)
+        {
+            fileError = ex;
+            throw;
+        }
+        finally
+        {
+            var cleanupError = DisposeAndCapture(stream, null);
+            try { if (File.Exists(temporaryPath)) File.Delete(temporaryPath); }
+            catch (Exception ex) { cleanupError ??= ex; }
+            if (!requestExecuted) cleanupError = DisposeUploadStreams(cleanupError);
+            if (fileError == null && cleanupError != null)
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(cleanupError).Throw();
+        }
     }
 
     #endregion
@@ -1714,8 +1932,30 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     /// <param name="cancellationToken">取消令牌</param>
     public async Task WriteAsync(string filePath, CancellationToken cancellationToken = default)
     {
-        var bytes = await GetStreamAsync(cancellationToken);
-        await FileHelper.WriteAsync(bytes, filePath, cancellationToken: cancellationToken);
+        if (FailAction == null && CompleteAction == null)
+        {
+            await DownloadFileAsync(filePath, cancellationToken);
+            return;
+        }
+        if (_completionObserver == null)
+            await WriteWithCallbacksAsync(filePath, cancellationToken, null).ConfigureAwait(false);
+        else
+            await ObserveOperationAsync(state => WriteWithCallbacksAsync(filePath, cancellationToken, state)).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// 读取响应字节并写入文件，同时沿用请求回调处理流程。
+    /// </summary>
+    /// <param name="filePath">目标文件路径。</param>
+    /// <param name="cancellationToken">写入取消令牌。</param>
+    /// <param name="observation">当前请求的观测状态。</param>
+    /// <returns>表示是否写入文件的任务。</returns>
+    private async Task<bool> WriteWithCallbacksAsync(string filePath, CancellationToken cancellationToken, ObservationState observation)
+    {
+        // 内部字节读取沿用正文回调，完成观测由外层统一发出。
+        var bytes = await GetByteResultAsync(cancellationToken, observation, true).ConfigureAwait(false);
+        if (bytes != null) await FileHelper.WriteAsync(bytes, filePath, cancellationToken: cancellationToken);
+        return bytes != null;
     }
 
     #endregion
