@@ -62,10 +62,7 @@ internal class CastingReadOnlyDictionaryWrapper<TFromKey, TFromValue, TToKey, TT
         return result;
     }
 
-    /// <summary>
-    /// 根据键名获取值
-    /// </summary>
-    /// <param name="key">键名</param>
+    /// <inheritdoc />
     public TToValue this[TToKey key] => _source[(TFromKey)key];
 
     /// <summary>
