@@ -64,8 +64,7 @@ Assert.Throws<InvalidCastException>(() => Arrays.ToArraySafety<int>(array, 1));
 - 对应测试项目/测试类/关键用例
 - 项目：`tests/Bing.Utils.Collections.Tests`。[证据] `tests/Bing.Utils.Collections.Tests/Bing.Utils.Collections.Tests.csproj:11`
 - 类：`ArraysTest`，覆盖空数组、空源、count 边界、类型转换异常等关键路径。[证据] `tests/Bing.Utils.Collections.Tests/Bing/Collections/ArraysTest.cs:10` [证据] `tests/Bing.Utils.Collections.Tests/Bing/Collections/ArraysTest.cs:89` [证据] `tests/Bing.Utils.Collections.Tests/Bing/Collections/ArraysTest.cs:105` [证据] `tests/Bing.Utils.Collections.Tests/Bing/Collections/ArraysTest.cs:213`
-- 未覆盖风险点
-- `Dicts` 系列 API 的独立单测不足（TODO）。[证据] `src/Bing.Utils.Collections/Bing/Collections/Dicts.cs:6`
+- `Dicts`、`DictsExtensions` 和只读字典契约由 `DictsAndCollConvTest`、`DictsExtensionsTest`、`ReadOnlyDictsContractTest` 覆盖。
 
 ## 8. 版本与兼容性注意事项
 - 跟随公共目标框架策略：`net8.0;net7.0;net6.0;netstandard2.0`。[证据] `common.props:3`

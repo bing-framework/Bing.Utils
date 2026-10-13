@@ -1,7 +1,9 @@
-# API Reference
+# API 参考（静态快照）
 
-> 统计范围: `src/Bing.Utils.Collections` / `src/Bing.Utils.DateTime` / `src/Bing.Utils.Drawing*` / `src/Bing.Utils.Http` / `src/Bing.Utils.IdUtils` / `src/Bing.Utils.Reflection` / `src/Bing.Utils.Text`.
-> 高频 API 依据: 测试代码命中频次 + 入口类/扩展入口推断 (same-name methods may be merged).
+> 本页是一次静态扫描快照，不是全仓实时 API 清单。统计范围：`src/Bing.Utils.Collections` / `src/Bing.Utils.DateTime` / `src/Bing.Utils.Drawing*` / `src/Bing.Utils.Http` / `src/Bing.Utils.IdUtils` / `src/Bing.Utils.Reflection` / `src/Bing.Utils.Text`。
+> 高频 API 依据：测试代码命中频次与入口类/扩展入口推断（同名方法可能合并）。完整模块入口见 [模块目录](../modules/README.md)，自动生成入口见 [API 文档](../api/index.md)。
+
+以下已实现模块不在本快照统计范围内：Comments、DependencyInjection、Extra、Extra.Drawing.SkiaSharp、Guard、Net、Security、Security.Gm 和 Drawing.Shared。其公开接口与限制以对应模块文档和源码为准。
 
 ## 命名空间索引
 
@@ -598,7 +600,7 @@
 | 29 | `Bing.Reflection.TypeMetaVisitExtensions.IsTupleType()` | Reflection | ext-calls=29, overloads=2 | `[证据] src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.cs:62` |
 | 30 | `Bing.GuidExtensions.IsNullOrEmpty()` | Id | ext-calls=26, overloads=2 | `[证据] src/Bing.Utils.IdUtils/Bing/Extensions.Guid.cs:14` |
 
-## Breaking-change 敏感 API（签名变更风险高）
+## 破坏性变更敏感 API（签名变更风险高）
 
 | API | 风险原因 | 证据 |
 |---|---|---|

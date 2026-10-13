@@ -10,6 +10,8 @@
 
 ## 2. 核心类型与扩展方法
 
+核心实现位于 `src/Bing.Utils.Drawing.SkiaSharp/Bing/Drawing`，公共契约和纯算法位于 `src/Bing.Utils.Drawing.Shared/Bing/Drawing`。
+
 ### 2.1 加载与转换
 - `SkiaSharpHelper.FromFile / FromStream / FromBytes / FromBase64String / FromDataUrl`
 - `SkiaSharpHelper.ToBytes / ToBase64String / ToDataUrl / ToStream`
@@ -113,13 +115,13 @@ using var emojiImage = EmojiRenderer.Render("👍🏽", new EmojiRenderOptions
 
 ## 6. 与其他子包的关系
 - 依赖 `SkiaSharp 2.88.9`
-- 共享 `Bing.Utils.Drawing.Shared` 中的纯算法和公共类型（通过 csproj Compile Include 链接）
+- 通过 `ProjectReference` 引用 `Bing.Utils.Drawing.Shared` 的公共契约和纯算法。
 - 不依赖 `System.Drawing`、`SixLabors.ImageSharp`
 - Emoji 渲染由独立的 `Bing.Utils.Extra.Drawing.SkiaSharp` 适配包提供，避免把 SkiaSharp 依赖引入 `Bing.Utils.Extra`
 
 ## 7. 测试映射
 - 测试项目：`tests/Bing.Utils.Drawing.SkiaSharp.Tests`
-- 当前测试基线：140 条，覆盖验证码、缩略图、加载/转换、几何变换、OCR 预处理、高级效果、元数据清理、颜色转换适配；Emoji 适配包另有独立测试项目
+- 覆盖验证码、缩略图、加载/转换、几何变换、OCR 预处理、高级效果、元数据清理、颜色转换适配；Emoji 适配包另有独立测试项目。
 
 ## 8. 版本与兼容性注意事项
 - 跟随公共多目标框架策略（net8.0/net7.0/net6.0/netstandard2.0）

@@ -1,6 +1,21 @@
 # Bing.Utils.Extra
 
-## Emoji 工具
+## 功能说明
+
+`Bing.Utils.Extra` 提供基于固定数据快照的完整 Emoji 序列识别、查找、替换、别名/HTML 实体转换、本地化检索、白名单目录和肤色变体处理。它不访问网络，也不依赖系统字体完成识别。
+
+## 核心实现与关键文件
+
+- `src/Bing.Utils.Extra/Bing/Extra/Emoji/EmojiUtil.cs`：静态便利入口。
+- `EmojiCatalog.cs`：不可变目录、最长匹配、检索、筛选和自定义白名单。
+- `EmojiCatalog.Localizations.cs`：UTF-8 JSON 本地化导入和语言查询。
+- `EmojiCatalog.SkinTones.cs`：肤色家族查询、应用和移除。
+- `EmojiInfo.cs`、`EmojiMatch.cs`、`EmojiLocalization.cs`、`EmojiSkinTone.cs`：公开只读模型。
+- `EmojiCatalog.Generated.cs`、`EmojiLocalizations.Generated.cs`、`EmojiTags.Generated.cs`：由 `build/generate-emoji-data.py` 基于 `asset/emoji` 快照生成的数据。
+
+## 对外接口与用法示例
+
+### Emoji 工具
 
 命名空间：`Bing.Extra.Emoji`。入口：`EmojiUtil`。
 使用内置 Unicode Emoji 18.0、gemoji v4.1.0 与 CLDR 48.2 快照，没有新增运行时第三方依赖，不访问网络。
@@ -180,3 +195,19 @@ var plain = localized.RemoveSkinTones("👍🏽");
 可在仓库根目录运行 `python -X utf8 build/generate-emoji-data.py --check` 检查内置数据是否与快照一致。
 默认只包含 CLDR 48.2 简繁中文名称和关键词，其他语言由调用方显式离线导入。此前内置的其他语言已移除；默认目录对这些语言的查询返回空结果。稳定版 CLDR 未覆盖的表情仍可识别，但不虚构翻译。不再逐个扩充默认包的语言集合。
 核心包仍不直接包含图片渲染、自定义注册或自动生成新的肤色变体；肤色家族查询及基于官方基础项的安全移除已提供。需要图像输出时可引用可选的 `Bing.Utils.Extra.Drawing.SkiaSharp` 适配包，该包按调用方字体生成 `SKImage`，不内置字体资源。
+
+## 依赖与配置
+
+- 无运行时第三方依赖，目标框架继承 `common.props`。
+- 内置 Unicode Emoji 18.0、gemoji 4.1.0 和 CLDR 48.2 简繁中文快照；版本和许可记录在 `asset/emoji/README.md`。
+- 可通过 `WithLocalizations(Stream)` 导入调用方维护的 UTF-8 JSON，本包不会自动下载或更新语言数据。
+- NuGet 包会携带 Emoji 数据来源许可文件。
+- 行为测试位于 `tests/Bing.Utils.Extra.Tests/Bing/Extra/Emoji`，覆盖官方数据、目录行为和本地化导入。
+
+## 已知限制与注意事项
+
+- 固定清单无法识别快照发布后的新 Emoji；未收录组合可能只匹配其中的已知子序列。
+- 识别能力不代表设备字体能够正确显示对应字形。
+- 不支持运行时注册新的 Unicode 序列；自定义目录只能从已有 `EmojiInfo` 构建白名单。
+- 指定 locale 的查询要求精确语言标识且不自动回退；默认本地化仅包含 `zh` 和 `zh-Hant`。
+- 图像渲染不属于本包，需使用 `Bing.Utils.Extra.Drawing.SkiaSharp`。

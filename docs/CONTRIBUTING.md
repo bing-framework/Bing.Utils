@@ -83,10 +83,10 @@ dotnet test Bing.Utils.sln -c Release
 - public 类型/命名空间重命名或移除
 - 弃用流程采用“先标记再迁移”：优先 `[Obsolete("迁移建议", false)]`，给出替代 API。[证据] `src/Bing.Utils/Bing/Date/TimeStamp.cs:426` [证据] `src/Bing.Utils/Bing/Date/TimeStamp.cs:433` [证据] `src/Bing.Utils.IdUtils/Bing/Helpers/Id.SnowflakeId.cs:154`
 
-## 6. PR 检查清单（可复制）
+## 6. 拉取请求检查清单（可复制）
 
 ```markdown
-## PR Checklist
+## 拉取请求检查清单
 
 - [ ] 变更为基础设施通用能力，不包含业务语义
 - [ ] 命名符合规范（Extensions / Builder|Accessor|Factory / Options / Mode|Style）

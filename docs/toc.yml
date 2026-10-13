@@ -1,5 +1,15 @@
 - name: 主页
   href: index.md
+- name: 项目概览
+  href: 00-overview.md
+- name: 能力地图
+  href: 00-capability-map.md
+- name: 文档与实现盘点
+  href: 00-documentation-audit.md
+- name: 分类模块目录
+  href: 01-module-catalog.md
+- name: 模块文档
+  href: modules/README.md
 - name: 安全与密码学
   href: security.md
 - name: API 文档
@@ -8,7 +18,3 @@
   href: ReleaseNotes.md
 - name: Github
   href: https://github.com/bing-framework/Bing.Utils
-- name: Emoji
-  href: modules/Bing.Utils.Extra.md
-- name: 文本处理
-  href: modules/Bing.Utils.Text.md

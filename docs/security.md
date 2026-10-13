@@ -1,6 +1,6 @@
 # 安全与密码学
 
-`Bing.Utils.Security` 提供现代密码学基础能力；`Bing.Utils.Security.Gm` 提供隔离的国密扩展。两个包均支持 `netstandard2.0`、`.NET 6`、`.NET 7` 和 `.NET 8`，测试项目覆盖 `.NET 6`、`.NET 7` 和 `.NET 8`。
+`Bing.Utils.Security` 提供现代密码学基础能力；`Bing.Utils.Security.Gm` 提供隔离的国密扩展。两个项目均编译 `netstandard2.0`、`.NET 6`、`.NET 7` 和 `.NET 8`，测试项目覆盖 `.NET 6`、`.NET 7` 和 `.NET 8`。主安全包中的 AES-GCM、PBKDF2、RSA/ECDSA、PEM、证书和版本化签名等高级 API 使用条件编译，仅在 `.NET 6/7/8` 提供；`netstandard2.0` 保留编码、SHA-2、HMAC、随机数、固定时间比较、HKDF、参数规范化和 HMAC 请求签名等兼容能力。
 
 ## 包与依赖
 

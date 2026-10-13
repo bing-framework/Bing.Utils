@@ -11,10 +11,7 @@
           "exclude": [
             "**/obj/**",
             "**/bin/**",
-            "**/Bing.Utils.Comments.csproj",
-            "**/Bing.Utils.DependencyInjection.csproj",
-            "**/Bing.Utils.Guard.csproj",
-            "**/Bing.Utils.Net.csproj"
+            "**/Bing.Utils.DependencyInjection.csproj"
           ]
         }
       ],
