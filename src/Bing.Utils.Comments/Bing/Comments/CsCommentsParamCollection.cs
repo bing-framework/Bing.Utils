@@ -3,12 +3,12 @@
 namespace Bing.Comments;
 
 /// <summary>
-/// 用于描述注释中的 param 或者 typeparam 节点集合
+/// 表示注释中的 param 或 typeparam 节点集合。
 /// </summary>
 public sealed class CsCommentsParamCollection : Dictionary<string, CsCommentsParam>
 {
     /// <summary>
-    /// 根据节点的 name 属性获取注释，如果没有，则返回null
+    /// 根据节点的 name 属性获取注释；没有匹配项时返回 null。
     /// </summary>
     /// <param name="name">name 属性</param>
     public new CsCommentsParam this[string name]

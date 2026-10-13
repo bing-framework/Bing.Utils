@@ -6,14 +6,15 @@ using System.Reflection;
 namespace Bing.Comments;
 
 /// <summary>
-/// 注释读取器，用于读取C#程序中的注释
+/// 读取 C# 程序集生成的 XML 文档注释。
 /// </summary>
 public static class CsCommentReader
 {
-    /// <summary> 
-    /// 读取任意成员的注释信息
+    /// <summary>
+    /// 读取任意成员的注释信息。
     /// </summary>
     /// <param name="member">需要读取注释的成员</param>
+    /// <returns>成员注释；XML 文件或目标成员不存在时返回 null。</returns>
     public static CsComments Create(MemberInfo member)
     {
         if (member == null)
@@ -44,87 +45,76 @@ public static class CsCommentReader
         throw new NotSupportedException("不支持当前类型的对象");
     }
 
-    /// <summary> 
-    /// 读取任类注释信息
+    /// <summary>
+    /// 读取类型的注释信息。
     /// </summary>
     /// <param name="type">需要读取注释的类</param>
+    /// <returns>类型注释；XML 文件或目标类型不存在时返回 null。</returns>
     public static CsComments Create(Type type)
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        var xpath = $"T:{type.FullName.Replace("+", ".")}";
-        return CreateComment(type, xpath);
+        return CreateComment(type, CsCommentId.Create(type));
     }
 
-    /// <summary> 
-    /// 读取构造函数的注释信息
+    /// <summary>
+    /// 读取构造函数的注释信息。
     /// </summary>
     /// <param name="ctor">需要读取注释的构造函数</param>
+    /// <returns>构造函数注释；XML 文件或目标成员不存在时返回 null。</returns>
     public static CsComments Create(ConstructorInfo ctor)
     {
         if (ctor == null)
             throw new ArgumentNullException(nameof(ctor));
-        var xpath = GetXPath("M", ctor.DeclaringType, ctor.IsStatic ? "#cctor" : "#ctor");
-        xpath += GetXPathByParameters(ctor.GetParameters());
-        return CreateComment(ctor, xpath);
+        return CreateComment(ctor, CsCommentId.Create(ctor));
     }
 
-    /// <summary> 
-    /// 读取事件的注释信息
+    /// <summary>
+    /// 读取事件的注释信息。
     /// </summary>
     /// <param name="event">需要读取注释的事件</param>
+    /// <returns>事件注释；XML 文件或目标成员不存在时返回 null。</returns>
     public static CsComments Create(EventInfo @event)
     {
         if (@event == null)
             throw new ArgumentNullException(nameof(@event));
-        var xpath = GetXPath("E", @event.DeclaringType, @event.Name);
-        return CreateComment(@event, xpath);
+        return CreateComment(@event, CsCommentId.Create(@event));
     }
 
-    /// <summary> 
-    /// 读取方法的注释信息
+    /// <summary>
+    /// 读取方法的注释信息。
     /// </summary>
     /// <param name="method">需要读取注释的方法</param>
+    /// <returns>方法注释；XML 文件或目标成员不存在时返回 null。</returns>
     public static CsComments Create(MethodInfo method)
     {
         if (method == null)
             throw new ArgumentNullException(nameof(method));
-        var xpath = GetXPath("M", method.DeclaringType, method.Name);
-        if (method.IsGenericMethod)
-        {
-            xpath += "``" + method.GetGenericArguments().Length;
-            if (method.IsGenericMethodDefinition == false)
-            {
-                method = method.GetGenericMethodDefinition();
-            }
-        }
-        xpath += GetXPathByParameters(method.GetParameters());
-        return CreateComment(method, xpath);
+        return CreateComment(method, CsCommentId.Create(method));
     }
 
-    /// <summary> 
-    /// 读取属性的注释信息
+    /// <summary>
+    /// 读取属性的注释信息。
     /// </summary>
     /// <param name="prop">需要读取注释的属性</param>
+    /// <returns>属性注释；XML 文件或目标成员不存在时返回 null。</returns>
     public static CsComments Create(PropertyInfo prop)
     {
         if (prop == null)
             throw new ArgumentNullException(nameof(prop));
-        var xpath = GetXPath("P", prop.DeclaringType, prop.Name);
-        xpath += GetXPathByParameters(prop.GetIndexParameters());
-        return CreateComment(prop, xpath);
+        return CreateComment(prop, CsCommentId.Create(prop));
     }
 
-    /// <summary> 
-    /// 读取字段的注释信息
+    /// <summary>
+    /// 读取字段的注释信息。
     /// </summary>
     /// <param name="field">需要读取注释的字段</param>
+    /// <returns>字段注释；XML 文件或目标成员不存在时返回 null。</returns>
     public static CsComments Create(FieldInfo field)
     {
         if (field == null)
             throw new ArgumentNullException(nameof(field));
-        var xpath = GetXPath("F", field.DeclaringType, field.Name);
-        return CreateComment(field, xpath);
+        return CreateComment(field, CsCommentId.Create(field));
     }
 
     /// <summary> 
@@ -134,9 +124,10 @@ public static class CsCommentReader
     public static Dictionary<Enum, string> CreateEnumComment(Type enumType) => CreateEnumComment<Enum>(enumType);
 
     /// <summary>
-    /// 读取枚举的值和注释
+    /// 读取枚举的值和注释。
     /// </summary>
     /// <typeparam name="T">枚举的类型</typeparam>
+    /// <returns>枚举值与注释文本的映射。</returns>
     public static Dictionary<T, string> CreateEnumComment<T>() where T : struct, IComparable, IFormattable, IConvertible => CreateEnumComment<T>(typeof(T));
 
     /// <summary> 
@@ -190,8 +181,8 @@ public static class CsCommentReader
     /// 创建注释对象，读取任意成员的注释信息，如果xml不存在或者注释不存在返回null
     /// </summary>
     /// <param name="member">成员对象</param>
-    /// <param name="path">路径</param>
-    private static CsComments CreateComment(MemberInfo member, string path)
+    /// <param name="memberId">成员的 XML 文档标识</param>
+    private static CsComments CreateComment(MemberInfo member, string memberId)
     {
         if (_member == null)
             _member = new List<MemberInfo>();
@@ -199,82 +190,16 @@ public static class CsCommentReader
             return null;
         _member.Add(member);
 
-        var xml = CsCommentsXmlCache.Get(member);
-        if (xml == null)
-            return null;
-
-        var node = xml.SelectNodes("/doc/members/member[@name='" + path.Replace('+', '.') + "']");
-        if (node.Count == 0)
-            return null;
-
-        _member.RemoveAt(_member.Count - 1);
-        return new CsComments(node[0]);
-    }
-
-    /// <summary>
-    /// 如果存在参数，则返回与参数相关的Xml路径字符串
-    /// </summary>
-    /// <param name="args">参数数组</param>
-    private static string GetXPathByParameters(ParameterInfo[] args)
-    {
-        if (args == null || args.Length == 0)
-            return null;
-        var list = new List<string>(args.Length);
-        foreach (var item in args)
+        try
         {
-            var type = item.ParameterType;
-            list.Add(GetParameterName(type));
+            var node = CsCommentsXmlCache.GetMember(member, memberId);
+            if (node == null)
+                return null;
+            return new CsComments(CsCommentsInheritanceResolver.Resolve(member, memberId, node));
         }
-
-        return "(" + string.Join(",", list.ToArray()) + ")";
-    }
-
-    /// <summary>
-    /// 获取参数名
-    /// </summary>
-    /// <param name="types">类型数组</param>
-    private static string GetParameterName(Type[] types)
-    {
-        var list = new List<string>(types.Length);
-        foreach (var type in types) 
-            list.Add(GetParameterName(type));
-        return "{" + string.Join(",", list.ToArray()) + "}";
-    }
-
-    /// <summary>
-    /// 获取参数名
-    /// </summary>
-    /// <param name="type">类型</param>
-    private static string GetParameterName(Type type)
-    {
-        if (type.IsGenericType)
+        finally
         {
-            if (type.IsGenericParameter)
-                return "``" + type.GenericParameterPosition;
-            else if (type.IsGenericTypeDefinition)
-            {
-
-            }
-            else
-            {
-                return type.FullName.Substring(0, type.FullName.IndexOf('`')) +
-                       GetParameterName(type.GetGenericArguments());
-            }
+            _member.RemoveAt(_member.Count - 1);
         }
-
-        return type.FullName;
-    }
-
-    /// <summary>
-    /// 返回与类型相关的Xml路径字符串
-    /// </summary>
-    /// <param name="prefix">固定前缀</param>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    private static string GetXPath(string prefix, Type type, string name)
-    {
-        if (type.IsGenericType && type.IsGenericTypeDefinition == false) 
-            type = type.GetGenericTypeDefinition();
-        return $"{prefix}:{type.FullName.Replace("+", ".")}.{name}";
     }
 }

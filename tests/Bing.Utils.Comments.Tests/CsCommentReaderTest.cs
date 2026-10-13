@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Reflection.Emit;
+
 namespace Bing.Utils.Comments.Tests;
 
 /// <summary>
@@ -88,6 +91,26 @@ public class CsCommentReaderTest
     {
         // Assert
         Assert.Same(CsComments.Empty, CsComments.Empty);
+    }
+
+    /// <summary>
+    /// 测试目的：验证修改空注释的参数集合不会污染后续访问。
+    /// </summary>
+    [Fact]
+    public void CsComments_Empty_ParamMutation_DoesNotLeakAcrossAccesses()
+    {
+        // Arrange
+        var empty = CsComments.Empty;
+        empty.Param["value"] = CsCommentsParam.Empty;
+        empty.TypeParam["T"] = CsCommentsParam.Empty;
+
+        // Act
+        var nextParam = empty.Param["value"];
+        var nextTypeParam = empty.TypeParam["T"];
+
+        // Assert
+        Assert.Null(nextParam);
+        Assert.Null(nextTypeParam);
     }
 
     #endregion
@@ -197,7 +220,7 @@ public class CsCommentReaderTest
     [Fact]
     public void CreateEnumComment_ValidEnum_ReturnsDictionaryWithAllValues()
     {
-        // Act — SampleColor 无 XML 文档（测试程序集），走 DescriptionAttribute 或 Name 回退
+        // Act
         var dict = CsCommentReader.CreateEnumComment(typeof(SampleColor));
 
         // Assert
@@ -208,29 +231,42 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证 CreateEnumComment 对有 DescriptionAttribute 的字段优先返回描述
+    /// 测试目的：验证 CreateEnumComment 对有 XML 摘要的字段优先返回 XML 内容
     /// </summary>
     [Fact]
-    public void CreateEnumComment_FieldWithDescription_UsesDescriptionAttributeValue()
+    public void CreateEnumComment_FieldWithXmlSummary_UsesXmlSummary()
     {
         // Act — SampleColor.Green 有 [Description("绿")]
         var dict = CsCommentReader.CreateEnumComment(typeof(SampleColor));
 
-        // Assert — XML 不存在时回退到 DescriptionAttribute
-        Assert.Equal("绿", dict[SampleColor.Green]);
+        // Assert
+        Assert.Equal("绿色", dict[SampleColor.Green]);
     }
 
     /// <summary>
-    /// 测试目的：验证 CreateEnumComment 对无 Description、无 XML 的字段返回成员名称
+    /// 测试目的：验证 CreateEnumComment 对有 DescriptionAttribute 的字段返回描述
+    /// </summary>
+    [Fact]
+    public void CreateEnumComment_FieldWithDescription_UsesDescriptionAttributeValue()
+    {
+        // Act
+        var dict = CsCommentReader.CreateEnumComment(typeof(FallbackColor));
+
+        // Assert
+        Assert.Equal("绿", dict[FallbackColor.Green]);
+    }
+
+    /// <summary>
+    /// 测试目的：验证 CreateEnumComment 对无 Description 的字段返回成员名称
     /// </summary>
     [Fact]
     public void CreateEnumComment_FieldWithoutDescription_FallsBackToName()
     {
         // Act
-        var dict = CsCommentReader.CreateEnumComment(typeof(SampleColor));
+        var dict = CsCommentReader.CreateEnumComment(typeof(FallbackColor));
 
-        // Assert — Red 没有 Description，XML 也不存在，应返回 "Red"
-        Assert.Equal("Red", dict[SampleColor.Red]);
+        // Assert
+        Assert.Equal("Red", dict[FallbackColor.Red]);
     }
 
     #endregion
@@ -249,9 +285,9 @@ public class CsCommentReaderTest
         // Act
         var comments = CsCommentReader.Create(type);
 
-        // Assert — 如果 XML 不可用则返回 null（不强制），有则检查内容
-        if (comments != null)
-            Assert.False(string.IsNullOrWhiteSpace(comments.Summary));
+        // Assert
+        Assert.NotNull(comments);
+        Assert.False(string.IsNullOrWhiteSpace(comments.Summary));
     }
 
     /// <summary>
@@ -265,32 +301,417 @@ public class CsCommentReaderTest
             nameof(CsCommentReader.Create),
             new[] { typeof(Type) });
 
-        // Act — 不抛出即可
-        var exception = Record.Exception(() => CsCommentReader.Create(member));
+        // Act
+        var comments = CsCommentReader.Create(member);
 
         // Assert
-        Assert.Null(exception);
+        Assert.NotNull(comments);
+        Assert.Equal("读取类型的注释信息。", comments.Summary);
     }
 
     /// <summary>
-    /// 测试目的：验证对不支持的 MemberTypes 抛出 NotSupportedException
+    /// 测试目的：验证嵌套泛型类型能够通过 MemberInfo 重载读取 XML 注释
     /// </summary>
     [Fact]
-    public void Create_MemberInfo_UnsupportedType_ThrowsNotSupportedException()
+    public void Create_NestedGenericType_WithXmlDocs_ReturnsComments()
     {
-        // Arrange — 使用自定义 CustomMemberInfo 模拟 Custom 类型（通过枚举反射）
-        // 实际无法直接构造 Custom MemberInfo，但可以验证 Custom member type 枚举覆盖
-        // 这里改为测试 NestedType 分支（非 Type 实例）通过 TypeInfo 转换成功不抛
-        var nestedType = typeof(CsComments).GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public)
-            .FirstOrDefault();
-        if (nestedType != null)
-        {
-            // Act — NestedType 是 Type 实例，应该正常处理
-            Exception ex = null;
-            try { CsCommentReader.Create((MemberInfo)nestedType); }
-            catch (Exception e) { ex = e; }
-            Assert.Null(ex);
-        }
+        // Arrange
+        var nestedType = typeof(GenericCommentFixture<>).GetNestedType("Nested`1");
+
+        // Act
+        var comments = CsCommentReader.Create((MemberInfo)nestedType);
+
+        // Assert
+        Assert.NotNull(comments);
+        Assert.Equal("测试嵌套泛型类型。", comments.Summary);
+    }
+
+    /// <summary>
+    /// 测试目的：验证类型、字段、事件、属性、索引器和构造函数均能命中 XML 成员。
+    /// </summary>
+    [Fact]
+    public void Create_MemberKinds_WithXmlDocs_ReturnsExpectedComments()
+    {
+        // Arrange
+        var type = typeof(CommentFixture);
+        var constructor = type.GetConstructor(new[] { typeof(string) });
+        var staticConstructor = type.TypeInitializer;
+        var eventInfo = type.GetEvent(nameof(CommentFixture.Changed));
+        var property = type.GetProperty(nameof(CommentFixture.Name));
+        var indexer = type.GetProperty("Item", new[] { typeof(int) });
+        var field = type.GetField(nameof(CommentFixture.Field));
+
+        // Act
+        var typeComments = CsCommentReader.Create(type);
+        var constructorComments = CsCommentReader.Create(constructor);
+        var staticConstructorComments = CsCommentReader.Create(staticConstructor);
+        var eventComments = CsCommentReader.Create(eventInfo);
+        var propertyComments = CsCommentReader.Create(property);
+        var indexerComments = CsCommentReader.Create(indexer);
+        var fieldComments = CsCommentReader.Create(field);
+        var basePropertyComments = CsCommentReader.Create(type.GetProperty(nameof(CommentFixture.Label)));
+        var baseEventComments = CsCommentReader.Create(type.GetEvent(nameof(CommentFixture.BaseChanged)));
+
+        // Assert
+        Assert.Equal("注释读取测试夹具。", typeComments.Summary);
+        Assert.Equal("带参数构造函数。", constructorComments.Summary);
+        Assert.Equal("静态构造函数。", staticConstructorComments.Summary);
+        Assert.Equal("测试事件。", eventComments.Summary);
+        Assert.Equal("测试属性。", propertyComments.Summary);
+        Assert.Equal("索引器值。", indexerComments.Summary);
+        Assert.Equal("实例字段。", fieldComments.Summary);
+        Assert.Equal("基类属性。", basePropertyComments.Summary);
+        Assert.Equal("基类事件。", baseEventComments.Summary);
+    }
+
+    /// <summary>
+    /// 测试目的：验证结构化标签、属性、嵌套 XML 和原始成员内容均被保留。
+    /// </summary>
+    [Fact]
+    public void Create_RenderMethod_WithStructuredXml_PreservesElements()
+    {
+        // Arrange
+        var method = typeof(CommentFixture).GetMethod(nameof(CommentFixture.Render));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.Contains("结构化文档样例。", comments.Summary);
+        Assert.Contains("这是第二段内容。", comments.Summary);
+        Assert.Contains("第一项。", comments.Summary);
+        Assert.Contains("第二项。", comments.Summary);
+        Assert.Contains("<example>", comments.RawXml);
+        Assert.Contains("<paramref", comments.Param["value"].RawXml);
+        Assert.Contains("<see", comments.RawXml);
+        Assert.Contains("<list", comments.RawXml);
+        Assert.Equal(new[] { "summary", "remarks", "param", "returns", "seealso" },
+            comments.Elements.Select(element => element.Name).ToArray());
+        Assert.Single(comments.GetElements("seealso"));
+    }
+
+    /// <summary>
+    /// 测试目的：验证泛型参数、数组、引用参数、指针和转换运算符的 member ID 均能命中。
+    /// </summary>
+    [Fact]
+    public void Create_ComplexMemberIds_WithCompilerXml_ReturnsComments()
+    {
+        // Arrange
+        var type = typeof(CommentFixture);
+        var generic = type.GetMethod(nameof(CommentFixture.Generic));
+        var complex = type.GetMethod(nameof(CommentFixture.Complex));
+        var pointer = type.GetMethod(nameof(CommentFixture.Pointer));
+        var arrays = type.GetMethod(nameof(CommentFixture.Arrays));
+        var implicitOperator = type.GetMethod("op_Implicit", BindingFlags.Public | BindingFlags.Static);
+        var explicitOperator = type.GetMethod("op_Explicit", BindingFlags.Public | BindingFlags.Static);
+        var checkedExplicitOperator = type.GetMethod("op_CheckedExplicit", BindingFlags.Public | BindingFlags.Static);
+
+        // Act
+        var genericComments = CsCommentReader.Create(generic);
+        var complexComments = CsCommentReader.Create(complex);
+        var pointerComments = CsCommentReader.Create(pointer);
+        var arrayComments = CsCommentReader.Create(arrays);
+        var implicitComments = CsCommentReader.Create(implicitOperator);
+        var explicitComments = CsCommentReader.Create(explicitOperator);
+        var checkedExplicitComments = CsCommentReader.Create(checkedExplicitOperator);
+
+        // Assert
+        Assert.Equal("泛型参数样例。", genericComments.Summary);
+        Assert.Equal("复杂参数样例。", complexComments.Summary);
+        Assert.Equal("指针参数样例。", pointerComments.Summary);
+        Assert.Equal("数组参数样例。", arrayComments.Summary);
+        Assert.Equal("隐式转换样例。", implicitComments.Summary);
+        Assert.Equal("显式转换样例。", explicitComments.Summary);
+        Assert.Equal("checked 显式转换样例。", checkedExplicitComments.Summary);
+    }
+
+    /// <summary>
+    /// 测试目的：验证构造泛型参数使用编译器生成的 XML member ID。
+    /// </summary>
+    [Fact]
+    public void Create_ConstructedGenericParameter_WithCompilerXml_ReturnsComments()
+    {
+        // Arrange
+        var method = typeof(CommentFixture).GetMethod(nameof(CommentFixture.ConstructedGenericParameter));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.Equal("构造泛型参数样例。", comments.Summary);
+    }
+
+    /// <summary>
+    /// 测试目的：验证构造嵌套泛型参数使用编译器生成的 XML member ID。
+    /// </summary>
+    [Fact]
+    public void Create_NestedConstructedGenericParameter_WithCompilerXml_ReturnsComments()
+    {
+        // Arrange
+        var method = typeof(CommentFixture).GetMethod(nameof(CommentFixture.NestedConstructedGenericParameter));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.Equal("构造嵌套泛型参数样例。", comments.Summary);
+    }
+
+    /// <summary>
+    /// 测试目的：验证反射创建的非 SZ 一维数组使用 XML 文档 ID 的星号表示。
+    /// </summary>
+    [Fact]
+    public void CreateTypeName_NonSzArray_UsesStarArraySyntax()
+    {
+        // Arrange
+        var arrayType = typeof(int).MakeArrayType(1);
+
+        // Act
+        var typeName = CsCommentId.GetTypeName(arrayType);
+
+        // Assert
+        Assert.Equal("System.Int32[*]", typeName);
+    }
+
+    /// <summary>
+    /// 测试目的：验证动态构造泛型成员在无法依赖 MetadataToken 时仍能回到定义签名。
+    /// </summary>
+    [Fact]
+    public void Create_DynamicConstructedGenericMember_UsesDefinitionSignature()
+    {
+        // Arrange
+        var assembly = AssemblyBuilder.DefineDynamicAssembly(
+            new AssemblyName("Bing.Utils.Comments.DynamicFixture"), AssemblyBuilderAccess.Run);
+        var module = assembly.DefineDynamicModule("Main");
+        var typeBuilder = module.DefineType("DynamicGeneric`1", TypeAttributes.Public);
+        var genericParameters = typeBuilder.DefineGenericParameters("T");
+        var methodBuilder = typeBuilder.DefineMethod("Read", MethodAttributes.Public, typeof(void), new[] { genericParameters[0] });
+        methodBuilder.GetILGenerator().Emit(OpCodes.Ret);
+        var constructedType = typeBuilder.CreateType().MakeGenericType(typeof(string));
+        var method = constructedType.GetMethod("Read");
+
+        // Act
+        var memberId = CsCommentId.Create(method);
+
+        // Assert
+        Assert.Equal("M:DynamicGeneric`1.Read(`0)", memberId);
+    }
+
+    /// <summary>
+    /// 测试目的：验证基类、接口和显式接口实现的 inheritdoc 能补齐本地注释。
+    /// </summary>
+    [Fact]
+    public void Create_InheritedMembers_WithInheritdoc_UsesSourceComments()
+    {
+        // Arrange
+        var type = typeof(CommentFixture);
+        var overrideMethod = type.GetMethod(nameof(CommentFixture.Convert));
+        var map = type.GetInterfaceMap(typeof(ICommentContract<int>));
+        var explicitMethod = map.TargetMethods.Single(method => method.Name.Contains("ICommentContract") &&
+                                     method.Name.EndsWith(".Transform"));
+        var explicitProperty = type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic)
+            .Single(property => property.Name.Contains("ICommentContract") && property.Name.EndsWith(".Label"));
+        var explicitEvent = type.GetEvents(BindingFlags.Instance | BindingFlags.NonPublic)
+            .Single(@event => @event.Name.Contains("ICommentContract") && @event.Name.EndsWith(".ChangedContract"));
+
+        // Act
+        var overrideComments = CsCommentReader.Create(overrideMethod);
+        var explicitComments = CsCommentReader.Create(explicitMethod);
+        var explicitPropertyComments = CsCommentReader.Create(explicitProperty);
+        var explicitEventComments = CsCommentReader.Create(explicitEvent);
+
+        // Assert
+        Assert.Equal("基类操作。", overrideComments.Summary);
+        Assert.Equal("基类输入。", overrideComments.Param["value"].Text);
+        Assert.Equal("接口转换操作。", explicitComments.Summary);
+        Assert.Equal("接口属性。", explicitPropertyComments.Summary);
+        Assert.Equal("接口事件。", explicitEventComments.Summary);
+    }
+
+    /// <summary>
+    /// 测试目的：验证嵌套泛型类型和方法参数使用编译器的类型参数编号。
+    /// </summary>
+    [Fact]
+    public void Create_NestedGenericMember_WithCompilerXml_ReturnsComments()
+    {
+        // Arrange
+        var nestedType = typeof(GenericCommentFixture<>).GetNestedType("Nested`1");
+        var method = nestedType.GetMethod(nameof(GenericCommentFixture<int>.Nested<string>.Join));
+
+        // Act
+        var typeComments = CsCommentReader.Create(nestedType);
+        var methodComments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.Equal("测试嵌套泛型类型。", typeComments.Summary);
+        Assert.Equal("返回外层和内层类型参数。", methodComments.Summary);
+    }
+
+    /// <summary>
+    /// 测试目的：验证 inheritdoc 的显式来源和 path 过滤能够只继承指定元素。
+    /// </summary>
+    [Fact]
+    public void Create_ExplicitInheritdoc_WithPath_UsesFilteredSource()
+    {
+        // Arrange
+        var method = typeof(ExplicitInheritCommentFixture).GetMethod(nameof(ExplicitInheritCommentFixture.Convert));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.Equal("基类操作。", comments.Summary);
+        Assert.Null(comments.Param["value"]);
+        Assert.Null(comments.Returns);
+    }
+
+    /// <summary>
+    /// 测试目的：验证 inheritdoc path 支持同时选择多个来源元素。
+    /// </summary>
+    [Fact]
+    public void Create_ExplicitInheritdoc_WithUnionPath_UsesAllSelectedElements()
+    {
+        // Arrange
+        var method = typeof(ExplicitInheritPathCommentFixture).GetMethod(nameof(ExplicitInheritPathCommentFixture.Convert));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.Equal("基类操作。", comments.Summary);
+        Assert.Equal("基类输出。", comments.Returns);
+    }
+
+    /// <summary>
+    /// 测试目的：验证非法 inheritdoc path 会保留原节点且不伪造摘要。
+    /// </summary>
+    [Fact]
+    public void Create_ExplicitInheritdoc_WithInvalidPath_PreservesNode()
+    {
+        // Arrange
+        var method = typeof(InvalidInheritPathCommentFixture).GetMethod(nameof(InvalidInheritPathCommentFixture.Convert));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.NotNull(comments);
+        Assert.Null(comments.Summary);
+        Assert.Contains(comments.Elements, element => element.Name == "inheritdoc");
+        Assert.Single(comments.UnresolvedInheritdoc);
+        Assert.Equal("[", comments.UnresolvedInheritdoc[0].Path);
+    }
+
+    /// <summary>
+    /// 测试目的：验证 path 选中文本节点时不抛异常且不伪造成员摘要。
+    /// </summary>
+    [Fact]
+    public void Create_ExplicitInheritdoc_WithTextPath_PreservesNode()
+    {
+        // Arrange
+        var method = typeof(TextInheritPathCommentFixture).GetMethod(nameof(TextInheritPathCommentFixture.Convert));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.NotNull(comments);
+        Assert.Null(comments.Summary);
+        Assert.Contains(comments.Elements, element => element.Name == "inheritdoc");
+        Assert.NotEmpty(comments.UnresolvedInheritdoc);
+    }
+
+    /// <summary>
+    /// 测试目的：验证类型级 inheritdoc 能作为成员缺失注释时的来源。
+    /// </summary>
+    [Fact]
+    public void Create_TypeInheritdoc_PropagatesToMember()
+    {
+        // Arrange
+        var inheritedProperty = typeof(TypeInheritCommentFixture).GetProperty(nameof(TypeInheritCommentFixture.Name));
+        var missingProperty = typeof(TypeInheritCommentFixture).GetProperty(nameof(TypeInheritCommentFixture.Local));
+
+        // Act
+        var inheritedComments = CsCommentReader.Create(inheritedProperty);
+        var missingComments = CsCommentReader.Create(missingProperty);
+
+        // Assert
+        Assert.Equal("类型级继承内容。", inheritedComments.Summary);
+        Assert.NotNull(missingComments);
+        Assert.Null(missingComments.Summary);
+        Assert.Contains(missingComments.Elements, element => element.Name == "inheritdoc");
+    }
+
+    /// <summary>
+    /// 测试目的：验证 summary 内的 inheritdoc 只替换为来源元素的内容节点。
+    /// </summary>
+    [Fact]
+    public void Create_InlineInheritdoc_MergesSourceContent()
+    {
+        // Arrange
+        var method = typeof(InlineCommentFixture).GetMethod(nameof(InlineCommentFixture.Describe));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.Contains("前缀。", comments.Summary);
+        Assert.Contains("基类内联内容。", comments.Summary);
+        Assert.Contains("后缀。", comments.Summary);
+        Assert.DoesNotContain("inheritdoc", comments.RawXml);
+    }
+
+    /// <summary>
+    /// 测试目的：验证显式 inheritdoc 循环会终止并保留未解析节点。
+    /// </summary>
+    [Fact]
+    public void Create_InheritdocCycle_DoesNotRecurseForever()
+    {
+        // Arrange
+        var method = typeof(InheritCycleFixture).GetMethod(nameof(InheritCycleFixture.First));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.NotNull(comments);
+        Assert.Null(comments.Summary);
+        Assert.Contains(comments.Elements, element => element.Name == "inheritdoc");
+    }
+
+    /// <summary>
+    /// 测试目的：验证基类和接口来源按优先级合并，基类单值优先且接口缺失项补齐。
+    /// </summary>
+    [Fact]
+    public void Create_MultipleInheritdocSources_MergesWithStablePriority()
+    {
+        // Arrange
+        var method = typeof(MultiSourceCommentFixture).GetMethod(nameof(MultiSourceCommentFixture.Merge));
+
+        // Act
+        var comments = CsCommentReader.Create(method);
+
+        // Assert
+        Assert.Equal("基类摘要。", comments.Summary);
+        Assert.Equal("接口补充备注。", comments.Remarks);
+        Assert.Equal("基类返回值。", comments.Returns);
+        Assert.Equal("基类参数。", comments.Param["value"].Text);
+        Assert.Contains(comments.Exception, exception => exception.Cref == "System.InvalidOperationException");
+    }
+
+    /// <summary>
+    /// 测试目的：验证缺少成员注释时返回 null，且不会污染后续读取状态。
+    /// </summary>
+    [Fact]
+    public void Create_MissingMember_DoesNotPoisonFollowingRead()
+    {
+        // Act
+        var missing = CsCommentReader.Create(typeof(FallbackColor));
+        var existing = CsCommentReader.Create(typeof(CommentFixture));
+
+        // Assert
+        Assert.Null(missing);
+        Assert.NotNull(existing);
     }
 
     #endregion

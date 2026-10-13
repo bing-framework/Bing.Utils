@@ -3,22 +3,32 @@
 namespace Bing.Comments;
 
 /// <summary>
-/// 用于描述注释中的 param 或者 typeparam 节点
+/// 表示注释中的 param 或 typeparam 节点。
 /// </summary>
 public sealed class CsCommentsParam
 {
     /// <summary>
-    /// 节点中的 name 属性的值
+    /// 获取节点中 name 属性的值。
     /// </summary>
     public string Name { get; private set; }
 
     /// <summary>
-    /// 节点中的内容
+    /// 获取节点中的纯文本内容。
     /// </summary>
     public string Text { get; private set; }
 
     /// <summary>
-    /// 空对象
+    /// 获取 param 或 typeparam 节点的原始 XML。
+    /// </summary>
+    public string RawXml { get; private set; }
+
+    /// <summary>
+    /// 获取 param 或 typeparam 节点的结构化元素快照。
+    /// </summary>
+    public CsCommentElement Element { get; private set; }
+
+    /// <summary>
+    /// 获取空参数对象。
     /// </summary>
     public static readonly CsCommentsParam Empty = new();
 
@@ -33,6 +43,8 @@ public sealed class CsCommentsParam
     /// <param name="node">Xml节点</param>
     internal CsCommentsParam(XmlNode node)
     {
+        RawXml = node.OuterXml;
+        Element = new CsCommentElement(node);
         var attr = node.Attributes["name"];
         if (attr != null) 
             Name = attr.InnerText.Trim();
@@ -42,5 +54,6 @@ public sealed class CsCommentsParam
     /// <summary>
     /// 输出字符串
     /// </summary>
+    /// <returns>参数文本；没有文本时返回空字符串。</returns>
     public override string ToString() => Text ?? "";
 }
