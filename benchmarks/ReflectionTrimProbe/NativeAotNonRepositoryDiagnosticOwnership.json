@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "kind": "nativeaot-nonrepository-diagnostic-ownership",
+  "diagnosticContext": "sdk=8.0.425;tfm=net8.0;rid=win-x64;trim=partial;aot=true;mode=ci-single-publish",
+  "sourceReport": "historical-current-warning-report-strict.json",
+  "entryCount": 16,
+  "entries": [
+    {
+      "code": "IL2026",
+      "messageFingerprint": "1da0a70bdb0a01b36fbcc3eb7eb483105d2cad64eb3dd22a9a472d32497f12ff",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-runtime",
+      "reason": "The .NET runtime source or framework reported this diagnostic outside the repository.",
+      "action": "Review against the selected runtime pack and SDK before treating it as a repository regression."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "4c3bd5e2434a88d5af671f5914cc17599d6dd0237cea66a0a54bd7483105d239",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-runtime",
+      "reason": "The .NET runtime source or framework reported this diagnostic outside the repository.",
+      "action": "Review against the selected runtime pack and SDK before treating it as a repository regression."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "50d447c9a7aacad38424dc53336108698050350c0e589fa96d470b69b7a24aa2",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-runtime",
+      "reason": "The .NET runtime source or framework reported this diagnostic outside the repository.",
+      "action": "Review against the selected runtime pack and SDK before treating it as a repository regression."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "618ba9bc7243de78ed1168696cf48bdceb36aa898afee733f3ea384c84f474ec",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-runtime",
+      "reason": "The .NET runtime source or framework reported this diagnostic outside the repository.",
+      "action": "Review against the selected runtime pack and SDK before treating it as a repository regression."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "cb9b36dc8652d9acd46dc71a83f2c62309a3480ea6be95daf25e9cd32146d6f9",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-runtime",
+      "reason": "The .NET runtime source or framework reported this diagnostic outside the repository.",
+      "action": "Review against the selected runtime pack and SDK before treating it as a repository regression."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "eeeddf77f7f42ed17a7316af2b9212aec5dd4fc4891d957493ec6b124a0c76ca",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-runtime",
+      "reason": "The .NET runtime source or framework reported this diagnostic outside the repository.",
+      "action": "Review against the selected runtime pack and SDK before treating it as a repository regression."
+    },
+    {
+      "code": "IL2104",
+      "messageFingerprint": "31fba8f7bf6506b7988f4ac272e73ae80fe3229d27f7b7e1bbba8fb72a48082a",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "reflection-dependencies",
+      "reason": "A referenced package reported a trimming or AOT diagnostic outside the repository source tree.",
+      "action": "Track the package version and upstream trimming contract before changing reflection code."
+    },
+    {
+      "code": "IL2104",
+      "messageFingerprint": "34004c86ca64a6f3ddc8f9edd6d6178b94f3a818497d1ecb3ff11f75c11078cf",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "reflection-dependencies",
+      "reason": "A referenced package reported a trimming or AOT diagnostic outside the repository source tree.",
+      "action": "Track the package version and upstream trimming contract before changing reflection code."
+    },
+    {
+      "code": "IL2104",
+      "messageFingerprint": "94fb4a8334fa3aadd561b7962752cafad29d05551f471ba847a355494bf64fe6",
+      "origin": "repositoryGenerated",
+      "maxCount": 1,
+      "owner": "reflection-build",
+      "reason": "Generated reflection validation output is intentionally tracked separately from source diagnostics.",
+      "action": "Keep generated output out of source baselines and investigate new generated warnings."
+    },
+    {
+      "code": "IL3053",
+      "messageFingerprint": "06cae7f33534ce1fc1ddcdd8287fd81ed7219e50e5a539c5e3cc80d889f7ea10",
+      "origin": "repositoryGenerated",
+      "maxCount": 1,
+      "owner": "reflection-build",
+      "reason": "Generated reflection validation output is intentionally tracked separately from source diagnostics.",
+      "action": "Keep generated output out of source baselines and investigate new generated warnings."
+    },
+    {
+      "code": "IL3053",
+      "messageFingerprint": "331397b3d9a5cba91bf96281c8ec49d00a81eb3c4728bed12245c984aded880b",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-aot-toolchain",
+      "reason": "The NativeAOT compiler pack reported this dependency or framework diagnostic outside the repository.",
+      "action": "Review after SDK or compiler-pack upgrades; do not attribute it to repository source without evidence."
+    },
+    {
+      "code": "IL3053",
+      "messageFingerprint": "3ab35e16f9799ede9555eb0d43776357a338e319a97b8ca53acb2bca3a23217f",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-aot-toolchain",
+      "reason": "The NativeAOT compiler pack reported this dependency or framework diagnostic outside the repository.",
+      "action": "Review after SDK or compiler-pack upgrades; do not attribute it to repository source without evidence."
+    },
+    {
+      "code": "IL3053",
+      "messageFingerprint": "5eafb211e09e8b12f8e809ae2afc5d97c20135833bb71445befcce2910aa1185",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "reflection-dependencies",
+      "reason": "A referenced package reported a trimming or AOT diagnostic outside the repository source tree.",
+      "action": "Track the package version and upstream trimming contract before changing reflection code."
+    },
+    {
+      "code": "IL3053",
+      "messageFingerprint": "73972162db6d081609c35605c6dee2ee6143c4ee14c6dcc0710bac32b342aeab",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "reflection-dependencies",
+      "reason": "A referenced package reported a trimming or AOT diagnostic outside the repository source tree.",
+      "action": "Track the package version and upstream trimming contract before changing reflection code."
+    },
+    {
+      "code": "IL3053",
+      "messageFingerprint": "d1ac67ab48d7bf7e81a377a5c72e0722e23b88f467ad3ed331a7f764187df3ae",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-aot-toolchain",
+      "reason": "The NativeAOT compiler pack reported this dependency or framework diagnostic outside the repository.",
+      "action": "Review after SDK or compiler-pack upgrades; do not attribute it to repository source without evidence."
+    },
+    {
+      "code": "IL3053",
+      "messageFingerprint": "f70a1a74ab46b16d649bf08e9c5c6455fc990ca110f1f1aed9d8c09c0e91af8d",
+      "origin": "externalDependencyOrToolchain",
+      "maxCount": 1,
+      "owner": "dotnet-aot-toolchain",
+      "reason": "The NativeAOT compiler pack reported this dependency or framework diagnostic outside the repository.",
+      "action": "Review after SDK or compiler-pack upgrades; do not attribute it to repository source without evidence."
+    }
+  ]
+}

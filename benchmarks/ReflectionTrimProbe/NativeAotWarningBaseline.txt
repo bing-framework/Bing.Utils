@@ -1,0 +1,17 @@
+# NativeAOT warning IDs observed by the reflection probe.
+# This is an ID-class baseline, not a count/location budget. Review new IDs before enabling a gate.
+IL2026
+IL2046
+IL2067
+IL2070
+IL2072
+IL2075
+IL2087
+IL2090
+IL2091
+IL2104
+IL2110
+IL3000
+IL3050
+IL3051
+IL3053

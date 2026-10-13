@@ -4,7 +4,7 @@
 
 ## 当前候选验证
 
-2026-10-13 在 SDK 8.0.425 下新鲜发布 net8.0/win-x64、self-contained、NativeAOT、partial、portable PDB 探针，原生 exe 退出码为 0，并输出元数据、特性回退、byref 签名、ref return 和泛型 variance 标记。补齐生产契约后诊断报告为 260 条、244 条仓库源、218 个仓库指纹，未解析数为 0，未新增 ID；与 339 个指纹的冻结历史基线比较仍新增 24 个探针指纹，严格门禁失败。详细差异见 [基线复核清单](reflection-nativeaot-baseline-review.md)。
+2026-10-13 在 SDK 8.0.425 下新鲜发布 net8.0/win-x64、self-contained、NativeAOT、partial、portable PDB 探针，原生 exe 退出码为 0，并输出元数据、特性回退、byref 签名、ref return 和泛型 variance 标记。补齐生产契约后诊断报告为 260 条、244 条仓库源、218 个仓库指纹。相对冻结历史基线新增的 24 个探针指纹已获用户批准，加入新版 363 项、429 次上限的基线和责任清单；复核已有发布日志，五项严格门禁全部通过，新增 ID、新增仓库指纹和未解析数均为 0。详细差异见 [基线复核清单](reflection-nativeaot-baseline-review.md)。
 
 以下各节保留各自日期的历史证据。“本轮”“当前”、421/405/339 等计数不是最新候选的验证结果；历史基线保留用于发现漂移，未以当前报告覆盖。远程 CI 和本次未执行的完整部署矩阵统一标记为待确认。
 
