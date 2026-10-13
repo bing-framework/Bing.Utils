@@ -38,8 +38,10 @@ public class CmdHelper
     }
 
     /// <summary>
-    /// 初始化处理程序
+    /// 初始化进程的命令启动设置。
     /// </summary>
+    /// <param name="process">要配置的进程。</param>
+    /// <param name="cmdPath">用于设置进程启动文件名的命令路径。</param>
     private static void InitProcess(Process process, string cmdPath)
     {
         if (cmdPath == "cmd.exe")
@@ -99,27 +101,27 @@ public class CmdHelper
     public class BashResult
     {
         /// <summary>
-        /// 命令的标准输出
+        /// 获取或设置命令的标准输出
         /// </summary>
         public string Output { get; private set; }
 
         /// <summary>
-        /// 命令的错误输出
+        /// 获取或设置命令的错误输出
         /// </summary>
         public string ErrorMsg { get; private set; }
 
         /// <summary>
-        /// 命令的退出代码
+        /// 获取或设置命令的退出代码
         /// </summary>
         public int ExitCode { get; private set; }
 
         /// <summary>
-        /// 由换行符分割的命令输出数组
+        /// 获取由换行符分割的命令输出数组
         /// </summary>
         public string[] Lines => Output?.Split(Env.NewLine.ToCharArray());
 
         /// <summary>
-        /// 初始化一个<see cref="BashResult"/>类型的实例
+        /// 初始化一个 <see cref="BashResult"/> 类型的实例。
         /// </summary>
         /// <param name="output">命令的标准输出</param>
         /// <param name="errorMsg">命令的错误输出</param>
@@ -138,22 +140,22 @@ public class CmdHelper
     public class Bash
     {
         /// <summary>
-        /// 是否Linux平台
+        /// 获取是否Linux平台
         /// </summary>
         private static bool _linux { get; }
 
         /// <summary>
-        /// 是否Mac系统
+        /// 获取是否Mac系统
         /// </summary>
         private static bool _mac { get; }
 
         /// <summary>
-        /// 是否Windows系统
+        /// 获取是否Windows系统
         /// </summary>
         private static bool _windows { get; }
 
         /// <summary>
-        /// Bash路径
+        /// 获取Bash路径
         /// </summary>
         private static string _bashPath { get; }
 
@@ -163,32 +165,32 @@ public class CmdHelper
         public static bool Native { get; }
 
         /// <summary>
-        /// 子系统
+        /// 获取子系统
         /// </summary>
         public static bool Subsystem => _windows && File.Exists(@"C:\Windows\System32\bash.exe");
 
         /// <summary>
-        /// 命令的标准输出
+        /// 获取或设置命令的标准输出
         /// </summary>
         public string Output { get; private set; }
 
         /// <summary>
-        /// 由换行符分割的命令输出数组
+        /// 获取由换行符分割的命令输出数组
         /// </summary>
         public string[] Lines => Output?.Split(Env.NewLine.ToCharArray());
 
         /// <summary>
-        /// 命令的退出代码
+        /// 获取或设置命令的退出代码
         /// </summary>
         public int ExitCode { get; private set; }
 
         /// <summary>
-        /// 命令的错误输出
+        /// 获取或设置命令的错误输出
         /// </summary>
         public string ErrorMsg { get; private set; }
 
         /// <summary>
-        /// 静态构造函数
+        /// 初始化当前类型的静态状态。
         /// </summary>
         static Bash()
         {

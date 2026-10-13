@@ -144,6 +144,7 @@ public static class Env
     /// <summary>
     /// 获取运行时的标识符。
     /// </summary>
+    /// <returns>由操作系统和处理器架构组成的运行时标识。</returns>
     private static string GetRuntimeIdentifier()
 #if NET5_0_OR_GREATER
     {
@@ -158,10 +159,11 @@ public static class Env
     }
 #endif
 
-    /// <summary>
-    /// 获取操作系统平台标识符
-    /// </summary>
     // ReSharper disable once InconsistentNaming
+    /// <summary>
+    /// 获取适用于运行时标识的操作系统名称。
+    /// </summary>
+    /// <returns>当前操作系统的平台标识。</returns>
     private static string GetOSPlatformIdentifier()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -180,6 +182,7 @@ public static class Env
     /// <summary>
     /// 获取处理器架构标识符
     /// </summary>
+    /// <returns>当前处理器架构标识。</returns>
     private static string GetArchitectureIdentifier()
     {
         return RuntimeInformation.OSArchitecture switch
@@ -415,17 +418,14 @@ public static class Env
     /// - Process: 仅对当前进程有效<br />
     /// - User: 对当前用户有效（需要用户权限）<br />
     /// - Machine: 对整个机器有效（需要管理员权限）<br />
-    /// 
     /// 如果 value 为 null，则相当于删除该环境变量。
     /// </remarks>
     /// <example>
     /// <code>
     /// // 设置进程级环境变量
     /// Env.SetEnvironmentVariable("MY_APP_DEBUG", true);
-    /// 
     /// // 设置用户级环境变量
     /// Env.SetEnvironmentVariable("USER_PREFERENCE", "dark_theme", EnvironmentVariableTarget.User);
-    /// 
     /// // 删除环境变量
     /// Env.SetEnvironmentVariable("TEMP_VAR", null);
     /// </code>
@@ -486,7 +486,6 @@ public static class Env
     /// - 字符串类型<br />
     /// - 枚举类型<br />
     /// - 可空类型<br />
-    /// 
     /// 转换失败时会返回默认值而不是抛出异常。
     /// </remarks>
     /// <example>
@@ -592,7 +591,6 @@ public static class Env
     /// 查找顺序：<br />
     /// 1. ASPNETCORE_ENVIRONMENT（优先，适用于 ASP.NET Core 应用）<br />
     /// 2. DOTNET_ENVIRONMENT（通用，适用于所有 .NET 应用）<br /><br />
-    /// 
     /// 这种优先级设计确保了 ASP.NET Core 应用的环境设置不会被通用设置覆盖。
     /// </remarks>
     /// <example>
@@ -635,10 +633,8 @@ public static class Env
     /// <code>
     /// // 设置为开发环境
     /// Env.SetEnvironmentName(Env.Development);
-    /// 
     /// // 设置为生产环境，并同时设置两个环境变量
     /// Env.SetEnvironmentName(Env.Production, setBothVariables: true);
-    /// 
     /// // 设置用户级环境变量
     /// Env.SetEnvironmentName(Env.Staging, EnvironmentVariableTarget.User);
     /// </code>
@@ -672,7 +668,6 @@ public static class Env
     /// <code>
     /// // 在应用启动时确保开发环境设置
     /// Env.SetDevelopment();
-    /// 
     /// // 设置用户级开发环境
     /// Env.SetDevelopment(EnvironmentVariableTarget.User);
     /// </code>
@@ -728,7 +723,6 @@ public static class Env
     /// {
     ///     // 集成测试环境特定配置
     /// }
-    /// 
     /// if (Env.IsEnvironment("Local"))
     /// {
     ///     // 本地开发环境特定配置
@@ -881,7 +875,6 @@ public static class Env
     /// <code>
     /// string tempFile = Env.GetTempFileName();
     /// string tempImage = Env.GetTempFileName(".jpg");
-    /// 
     /// try
     /// {
     ///     // 使用临时文件
