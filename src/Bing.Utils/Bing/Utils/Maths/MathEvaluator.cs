@@ -144,7 +144,7 @@ public class CalculateExpressionParser
     };
 
     /// <summary>
-    /// 初始化一个<see cref="CalculateExpressionParser"/>类型的实例
+    /// 初始化一个 <see cref="CalculateExpressionParser"/> 类型的实例。
     /// </summary>
     /// <param name="expressionStr">表达式字符串</param>
     public CalculateExpressionParser(string expressionStr)
@@ -247,7 +247,7 @@ public struct CalculateNode
     public double Value;
 
     /// <summary>
-    /// 初始化一个<see cref="CalculateNode"/>类型的实例
+    /// 初始化一个 <see cref="CalculateNode"/> 类型的实例。
     /// </summary>
     /// <param name="symbol">计算符号</param>
     public CalculateNode(CalculationSymbol symbol)
@@ -257,7 +257,7 @@ public struct CalculateNode
     }
 
     /// <summary>
-    /// 初始化一个<see cref="CalculateNode"/>类型的实例
+    /// 初始化一个 <see cref="CalculateNode"/> 类型的实例。
     /// </summary>
     /// <param name="symbol">计算符号</param>
     /// <param name="value">值</param>
@@ -267,9 +267,7 @@ public struct CalculateNode
         Value = value;
     }
 
-    /// <summary>
-    /// 输出字符串
-    /// </summary>
+    /// <inheritdoc />
     public override string ToString()
     {
         if (Symbol == CalculationSymbol.Number)
@@ -324,12 +322,15 @@ public enum CalculationSymbol
     Number,
 
     /// <summary>
-    /// 等于
+    /// 输入结束标记。
     /// </summary>
     // ReSharper disable once InconsistentNaming
     EOF
 }
 
+/// <summary>
+/// 表示数学表达式求值失败。
+/// </summary>
 public class MathEvaluatorException : Exception
 {
 }

@@ -262,17 +262,17 @@ public static class CoordinateConv
     public struct Coordinate
     {
         /// <summary>
-        /// 经度
+        /// 获取或设置经度
         /// </summary>
         public double Lng { get; set; }
 
         /// <summary>
-        /// 纬度
+        /// 获取或设置纬度
         /// </summary>
         public double Lat { get; set; }
 
         /// <summary>
-        /// 初始化一个<see cref="Coordinate"/>类型的实例
+        /// 初始化一个 <see cref="Coordinate"/> 类型的实例。
         /// </summary>
         /// <param name="lng">经度</param>
         /// <param name="lat">纬度</param>

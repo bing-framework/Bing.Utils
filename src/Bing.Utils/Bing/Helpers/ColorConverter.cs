@@ -210,6 +210,7 @@ public static class ColorConverter
     /// 格式化RGB
     /// </summary>
     /// <param name="input"></param>
+    /// <returns>解析并限制到 RGB 字节范围的颜色分量。</returns>
     private static byte ParseRgb(string input)
     {
         string parseString = input.Trim();
@@ -227,6 +228,7 @@ public static class ColorConverter
     /// <param name="input"></param>
     /// <param name="maxValue"></param>
     /// <param name="minValue"></param>
+    /// <returns>限制在指定范围内的数值。</returns>
     private static double ParseClamp(string input, double maxValue, double minValue = 0)
     {
         if (double.TryParse(input, out var parsedValue))
@@ -250,6 +252,7 @@ public static class ColorConverter
     /// 格式化Float
     /// </summary>
     /// <param name="input"></param>
+    /// <returns>解析并转换到字节范围的浮点颜色分量。</returns>
     private static byte ParseFloat(string input)
     {
         string parseString = input.Trim();
@@ -265,6 +268,7 @@ public static class ColorConverter
     /// 格式化Hue
     /// </summary>
     /// <param name="input"></param>
+    /// <returns>解析后的色相角度。</returns>
     private static short ParseHue(string input)
     {
         string parseString = input.Trim();
