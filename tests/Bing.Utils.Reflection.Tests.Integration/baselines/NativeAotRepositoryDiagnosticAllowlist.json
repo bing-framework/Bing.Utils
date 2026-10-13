@@ -5,6 +5,13 @@
   "sourceBaseline": "NativeAotRepositoryDiagnosticBaseline.json",
   "ownerPolicy": "Source paths are assigned to the reflection, utility, or validation maintainers responsible for the affected repository boundary; dependency and toolchain diagnostics are excluded.",
   "entryCount": 363,
+  "sourcePathMigration": {
+    "date": "2026-10-13",
+    "from": "benchmarks/ReflectionTrimProbe/Program.cs",
+    "to": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+    "entryCount": 74,
+    "reason": "用户确认验证目录迁移；只更新诊断文件路径，保留原指纹和次数上限"
+  },
   "entries": [
     {
       "code": "IL2026",
@@ -353,7 +360,7 @@
     {
       "code": "IL2075",
       "messageFingerprint": "61f1f625bbf923894b52ddfd9279525f5f33cd0a4a519d1ca3d5335b99d520d3",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -409,7 +416,7 @@
     {
       "code": "IL2075",
       "messageFingerprint": "044c93666e80ffea09e86f245e4fdccae277ce02d7a2b22fffabb122c01ca405",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -425,7 +432,7 @@
     {
       "code": "IL2072",
       "messageFingerprint": "fcfceb089c64f90a68daa31d9a7786964aa353435b24ee3a8d911f8abd9827ee",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -441,7 +448,7 @@
     {
       "code": "IL2072",
       "messageFingerprint": "fc36d92ec893bcf0d326f2aedbe7c46f428293836072070a2638a4f763e2a3e4",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -481,7 +488,7 @@
     {
       "code": "IL2072",
       "messageFingerprint": "d1e457f42bf052c6095b0bc334616f10a295f90bd65fa0f7d6d01c1109f2e6d1",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -705,7 +712,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "b78dec3c2c02c671667d30df6de4628cc8bbd723ce7026b7c63733b36e810674",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -737,7 +744,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "af83ec6ca8e7daeed09f54f132948ce39c89df9dfc4f70107108a9fb10be8655",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -777,7 +784,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "9299958f1b75c3f6a79e454fd2efe8658a65722bc16be534bd8ef6ed04860018",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -793,7 +800,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "8d3879f0ec76f936776012aed3a359d46dc0457695a953abbcc21f9f3ea7d889",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -841,7 +848,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "7b14ae08961217d9bbd7a82d4f9c4ba4ec0b28e9ed5206f4f0fbd15cf57f6c1f",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -905,7 +912,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "ef2b2675de777042dadf63188596454ed6b00adf89801030b828b2ee4fadf702",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -913,7 +920,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "ee659aa182afeefc9f99d01138d7bd2986ea8c23089d88924f1435bd3ff0d698",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -953,7 +960,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "e050356b01929e1382d9de94b55ef80e9962d65cf892842856c3fa9cf27f1864",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -969,7 +976,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "da18aff7a05adbfcaf1dbdffd65b31933b46c084956b6bd6e2eb9fdb9f443256",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1177,7 +1184,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "1db5d9aa16aafeaf951d5ebc94f5691ae92e409364f8b1e4dc474cd07a1570d8",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1217,7 +1224,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "587b232981e4e8bc7ba7df65afcb353ee2edf0e20543a01b87167938bd3a939e",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1385,7 +1392,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "90819db5a61e2a4cf643c3faaa33a592e485dd0545755f212816b061fe19c939",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1425,7 +1432,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "83f4ea9cca5539b7bdbbef01f94f12ce507fe036b6082a9500fa7e596cde4af3",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1489,7 +1496,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "72b24434def52bbbdc1a6fe1c525aa2999ba14ff3ac8e80310e42f81182ca1a1",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1505,7 +1512,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "6d83b2205b75ec09f7fb32596e82fd8b2262023bd5ac26ed1e390ea678e09b56",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1569,7 +1576,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "b0eff6422c05c2a306bc9bc4afad4994976c37207d5c9bf15feb41963f32cd1d",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1593,7 +1600,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "a7c06e6af237e0d64bc08651e92e2c0b989e278ca5385cf4a23fe8c8e2903386",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1609,7 +1616,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "a4ee5462a57933469f16718209e2e06049893be1c46e1246eaaaddf9d7b075d2",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1633,7 +1640,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "9dd9e8f60acfdcddf77f77fb3a1e4045c4dcedb76041ca3c99da2183fcbc07b2",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1641,7 +1648,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "9d1459df595caecbf83e91295701098d3db81ac22bc0fde8ccf50bcad2f62f05",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1657,7 +1664,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "981c945e0661121cca27d914bc16444a167514205d4633b3b863884ad16110de",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1665,7 +1672,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "96cdb5872cf4174c9edebe04327cb4bda8b9bc4504f59702b175c8dba816d934",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1737,7 +1744,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "3d430e3ed0f23ca69f099c465e5766bb28de13eeb03119b98668a0fe3f13a7a0",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1777,7 +1784,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "2808d16ad60a239efc46759018964a13ffa4457d0505b0808e44564b9142a772",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 5,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1793,7 +1800,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "1d47809600dbe7274b2eb036afefddb4de4323a88154c53dbc3b434ac033c0ea",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1817,7 +1824,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "1b8de1dc71fa7e0bb9e068228e5342f49a5d717fd2cca2b2a2367267eb190d84",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1841,7 +1848,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "047cb71d116ba418dc024c477e74b4066490f97e76d59c3bb45d7af6ae2fd268",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1849,7 +1856,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "469a8d89dc952e9f14c27e8fd762204dd59bb0159a137be0742897851d5c7077",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1913,7 +1920,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "5ea7fd63ea38170aa2011203580d58047bbd0d4f9125bb4b229da2816f55c97a",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1937,7 +1944,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "59dd4b1b0fa82aa258e96a3322df04fbb216780de600fb8c947d3912415d60c3",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1945,7 +1952,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "c2428975cdf57d208e03e055a8c988de6efef956e61a72ff594f88c453a970c7",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -1977,7 +1984,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "50d3d62e7f161c0285ac284b5164d319c61055c03cdb84d578dfaf41be3ffea1",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 3,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2001,7 +2008,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "4e13408c71d0998327a3106d3505ca7c3352f26eefb3faa4d691a1b923261f33",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 3,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2017,7 +2024,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "4dd2514e81a01f5438e5f1e800e8ace5a651f6afbc12ef4eaca5d877c8658e1b",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2025,7 +2032,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "55e83be2eae9614807d17ebaac51ea198430f5160ae4b7022d00008870261e4c",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2033,7 +2040,7 @@
     {
       "code": "IL2072",
       "messageFingerprint": "79e72e17c962820dfa95ae460f30041b88bcee497af3406f184b0e64bc002559",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2401,7 +2408,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "e31a20d2e4d4d6f5f6fb95e7b49c937476335493524a090818bfba31b070246d",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2433,7 +2440,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "de2f5e912ff3024f2796514442eec09ece9e3c86c1105e15fd402e5ad0f0bc78",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2457,7 +2464,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "dadd354d973d98292c4721bdcad0244eeef2510c116b1f0bf8e9b9e3d38c82f8",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2497,7 +2504,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "d082dfa78f96f7c8abbe307e8013e9d5a81c5dd5dda79e6408d2c1add5eed5c4",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2505,7 +2512,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "d0614c2b69652667550cfa0d06e26e21189e22c8b53448b4ce053e1ab7948f7e",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2513,7 +2520,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "d02a40af0d374ff3cbc1b590de03ee00e9b0743999ab2585174b38017f11a673",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2545,7 +2552,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "e878cee53bcec9de7463d60ea98d224764a2d4098708ff2eb3167a85eeb01630",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2553,7 +2560,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "e87e366e1b8637bcc1bf1f2d999753190f8465a230645bd5534d6c20472084ad",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 2,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2689,7 +2696,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "ec65e03a4e95bc46dd9dcca3ebbc69f9981f9e106c380d18a90f6ef3f465bfec",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "reflection-validation",
       "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
@@ -2721,7 +2728,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "13b43af633768a6c2fc7ec85609015d840d6f71ff1e14a1dbbec284016006107",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2729,7 +2736,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "15fea155d6705e7a4f90adab64c5ab45e5f14cbb75da0c79281c440fb31ab11a",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2737,7 +2744,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "292d02df6d1f2dc1ce6f1083db71dde66d01015c7abfd6b6195ae8fccd86ceae",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2745,7 +2752,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "35b1c368efda02b460393794ba61352f991e49392fae212b6dca438aaff0ebb5",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2753,7 +2760,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "4b8a31dd312d0294b0009376e5e897d00f876fed3b17d67911efdad07e187061",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2761,7 +2768,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "596605dbe86cd66e03bccf792fc73f94c21b757cd0a0c05d1e90e6d28e6b136b",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2769,7 +2776,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "5fba0bc8bdb962f0fdce7494583680d53d8d6e7ebd69f23dafa25d771dfc22c5",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2777,7 +2784,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "7a8fe1222c71323d173047ff495fe53cad0f7999c3cd4d0437ef1d18dd7f708b",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2785,7 +2792,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "82675f9f2c8829980d884a51cc9d82b1fa52087ac72ed131d578ded9e0b3f8dc",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2793,7 +2800,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "8b6048d9940ae79b2e7edd1f6ab2e435736dafc275b7631a38697c33ad28cc8e",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2801,7 +2808,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "ab69a9496439971f79ac8bbed3d769057573e82eaff050d9917af570c1f0eb42",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2809,7 +2816,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "c5189efe8b0dfe71b58d1540c31a677d150fd3e242af5eda9cddd5403f9920e0",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2817,7 +2824,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "d3c95200f0c1e54d7564989c83c2b6a6d0d2195a693dd8e2ad0178ea27ce2ec0",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2825,7 +2832,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "db3f4ff4bbeb2fb1d54685c78b9e71d67ab9ec8e1f290ad8553fe8bd88e25514",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2833,7 +2840,7 @@
     {
       "code": "IL2026",
       "messageFingerprint": "dbb0ddb4847312958ecd7568941c517ac4151515b5d828a14980d2e5a6e46b1c",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2841,7 +2848,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "183315927afb3b91ea8ed44595ce1d22c88b56676210645f13f241da0e76aeb1",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2849,7 +2856,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "2842be04757a67a9dcedcfcdde8f49cc43ea0dab54946dca5504df8fa9179372",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2857,7 +2864,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "2a691428a0d03d2dc3a3797d0e9e89b52884656a54c0fa68e0b2e2aba712ea8c",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2865,7 +2872,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "2d298582c1e3c2f1197fefdfe9da4c48cf81649893e4ce6f4c306a29a52bd94c",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2873,7 +2880,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "553115fe284f10ae23c63d6ee06bc52801034e857d2cadf7f870ba7107d8ce69",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2881,7 +2888,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "818643d3bda45f2c9794293cc009267da0de8f8ae4871798d5e055044877e26c",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2889,7 +2896,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "a74c56b2732b12087066881c8e3d02ef8638992b8281dcaff0ff0d530ec6f049",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2897,7 +2904,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "c2f5e3c0ba2ee880dd9bdfa1a7db12a7bf47ecf29457dad3a3b5da8b9e9c5f7d",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
@@ -2905,7 +2912,7 @@
     {
       "code": "IL3050",
       "messageFingerprint": "c548332d18bc6a2c487cf666a36b049e0c1e40c0c5044cfda53c0a001e418336",
-      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
       "maxCount": 1,
       "owner": "validation-maintainers",
       "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"

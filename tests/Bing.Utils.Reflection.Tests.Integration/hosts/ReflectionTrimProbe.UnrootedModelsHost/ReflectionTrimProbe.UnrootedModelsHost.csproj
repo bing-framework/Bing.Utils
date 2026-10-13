@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- 动态类型边界探针故意观察裁剪后的成员缺失，IL2104 是该测试夹具的预期摘要。 -->
+    <NoWarn>$(NoWarn);IL2104</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\fixtures\ReflectionTrimProbe.UnrootedModels\ReflectionTrimProbe.UnrootedModels.csproj" />
+    <ProjectReference Include="..\..\fixtures\ReflectionTrimProbe.PluginModels\ReflectionTrimProbe.PluginModels.csproj" />
+    <ProjectReference Include="..\..\fixtures\ReflectionTrimProbe.TertiaryModels\ReflectionTrimProbe.TertiaryModels.csproj" />
+    <ProjectReference Include="..\..\fixtures\ReflectionTrimProbe.QuaternaryModels\ReflectionTrimProbe.QuaternaryModels.csproj" />
+    <ProjectReference Include="..\..\fixtures\ReflectionTrimProbe.QuinaryModels\ReflectionTrimProbe.QuinaryModels.csproj" />
+    <TrimmerRootDescriptor Include="TrimRoots.xml" />
+  </ItemGroup>
+</Project>

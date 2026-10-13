@@ -5,7 +5,8 @@
 - 已解决：映射缓存测试计数的跨集合并行干扰、程序集 null 名称的精确异常断言、版本读取文档与实现不符、framework-dependent 裁剪支持表述和测试迁移路径过时。
 - 验证通过：核心反射与 MapperHelper net8.0 453/453；生产契约补传后的核心反射 378/378、netstandard2.0 编译、新鲜 NativeAOT partial 发布和原生元数据 smoke；现有反射冷启动/并发/稳态/容量探针。
 - 已修复：显式根类型成员路径、目录程序集加载、可回收构造分支缺失的裁剪/动态代码契约，消除六个生产侧新增诊断。
-- 已批准并复核：24 个 NativeAOT 探针指纹加入带日期的新版基线和责任清单，保留冻结历史基线；已有发布日志的五项严格门禁全部通过，见 [复核清单](reflection-nativeaot-baseline-review.md)。当前日志为 260 条诊断，不能与历史 421 条混用。
+- 已批准并复核（迁移前证据）：24 个 NativeAOT 探针指纹加入新版基线和责任清单，保留冻结历史基线；已有 260 条诊断日志的五项严格门禁通过，见 [复核清单](reflection-nativeaot-baseline-review.md)。该日志不替代迁移后同次发布的日志与映射。
+- 验证目录已迁移：当前宿主、夹具、工具和基线入口统一位于 `tests/Bing.Utils.Reflection.Tests.Integration/`；`benchmarks/ReflectionTrim*` 仅在历史记录中用于溯源。迁移后 24 项目构建、脚本自测、fixture/framework 插件 smoke、NativeAOT 和五项严格门禁通过；新报告为 421 条诊断、405 次仓库源、343 个指纹，基线保持 363 项/429 次上限，详见 [验证证据](reflection-validation-evidence.md)。
 - 当前缓存清单为 32 项，源码静态扫描通过；这不等同于所有外部消费者缓存的可卸载证明。远程 CI 和业务性能预算仍待确认。
 
 ## 历史实施记录

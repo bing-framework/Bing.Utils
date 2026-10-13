@@ -8,7 +8,7 @@
 
 以下各节保留各自日期的历史证据。“本轮”“当前”、421/405/339 等计数不是最新候选的验证结果；历史基线保留用于发现漂移，未以当前报告覆盖。远程 CI 和本次未执行的完整部署矩阵统一标记为待确认。
 
-基线文件已集中到 `benchmarks/ReflectionTrimProbe/baselines/`，其中四份当前配置供 CI 读取，`history/20261013-before-approval/` 保存旧 339 项快照。下文历史文件位置不再作为当前命令入口；当前配置、操作命令与目录整理方案见 [反射验证目录与基线](reflection-validation-layout.md)。
+基线文件已集中到 `tests/Bing.Utils.Reflection.Tests.Integration/baselines/`，其中四份当前配置供 CI 读取，`history/20261013-before-approval/` 保存旧 339 项快照。迁移前的 `benchmarks/ReflectionTrimProbe/baselines/` 仅作为历史路径；下文历史文件位置不再作为当前命令入口，当前配置、操作命令与目录整理方案见 [反射验证目录与基线](reflection-validation-layout.md)。
 
 ## Linker root 窄化子项（2026-10-08）
 
@@ -104,7 +104,7 @@ NativeAOT 发布矩阵。
 
 ## 已验证范围
 
-`benchmarks/ReflectionTrimProbe` 覆盖需要保留元数据的公共 CLR 路径：
+`tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe` 覆盖需要保留元数据的公共 CLR 路径：
 
 - 严格公共构造函数绑定；
 - 公共属性 getter/setter 委托；
@@ -283,22 +283,24 @@ NativeAOT 产物 `verification-aot-after-contract-flow/ReflectionTrimProbe.exe` 
 
 ## 本机复核
 
+以下命令已同步为迁移后的当前路径；其后结果段落保留迁移前的历史证据。本次迁移后实际执行的编译、脚本自测、fixture/framework 插件 smoke 和 NativeAOT 结果见 [迁移后验证](reflection-validation-evidence.md)，不表示下列完整矩阵均已重跑。
+
 当前 SDK 由仓库 `global.json` 固定为 `8.0.425`。self-contained 与 NativeAOT 使用联网还原的 `win-x64`
 runtime/compiler pack；所有命令均显式限定单一 TFM。当前 SDK 不允许
 `SelfContained=false` 与 `PublishTrimmed=true` 组合，直接发布会报告 `NETSDK1102`，因此
 framework-dependent 分支改为 trim analyzer 构建加未裁剪契约执行：
 
 ```powershell
-dotnet build benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet build tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   -c Release -f net8.0 -p:TargetFrameworks=net8.0 `
   -p:EnableTrimAnalyzer=true -p:TrimMode=partial -p:DebugType=None
-dotnet benchmarks/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll
-dotnet build benchmarks/ReflectionTrimProbe.UnrootedModels/ReflectionTrimProbe.UnrootedModels.csproj `
+dotnet tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll
+dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.UnrootedModels/ReflectionTrimProbe.UnrootedModels.csproj `
   -c Release -f net8.0
-Copy-Item benchmarks/ReflectionTrimProbe.UnrootedModels/bin/Release/net8.0/ReflectionTrimProbe.UnrootedModels.dll `
-  benchmarks/ReflectionTrimProbe/bin/Release/net8.0 -Force
-dotnet benchmarks/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll `
-  benchmarks/ReflectionTrimProbe/bin/Release/net8.0
+Copy-Item tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.UnrootedModels/bin/Release/net8.0/ReflectionTrimProbe.UnrootedModels.dll `
+  tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0 -Force
+dotnet tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll `
+  tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0
 ```
 
 结果：输出 `reflection-trim-ok`，退出码 0；将 `ReflectionTrimProbe.UnrootedModels.dll` 暂存到该目标目录后，独立插件 probe
@@ -311,13 +313,13 @@ CI 和本机命令均固定为 net8.0。
 self-contained trim：
 
 ```powershell
-dotnet restore benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet restore tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   -p:TargetFrameworks=net8.0 -r win-x64
-dotnet publish benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   --no-restore -c Release -f net8.0 -r win-x64 --self-contained true `
   -p:TargetFrameworks=net8.0 -p:PublishTrimmed=true -p:TrimMode=partial -p:DebugType=None `
-  -p:PublishDir=benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/
-./benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.exe
+  -p:PublishDir=tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/
+./tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.exe
 ```
 
 结果：输出 `reflection-trim-ok`，退出码 0；该 trim 目标目录不携带未 root 外部插件，独立插件 probe 的 path/resolver/bytes
@@ -327,11 +329,11 @@ dotnet publish benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
 self-contained full trim：
 
 ```powershell
-dotnet publish benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   --no-restore -c Release -f net8.0 -r win-x64 --self-contained true `
   -p:TargetFrameworks=net8.0 -p:PublishTrimmed=true -p:TrimMode=full -p:DebugType=None `
-  -p:PublishDir=benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/
-./benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.exe
+  -p:PublishDir=tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/
+./tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.exe
 ```
 
 结果：输出 `reflection-trim-ok`，退出码 0；该 trim 目标目录不携带未 root 外部插件，独立插件 probe 的 path/resolver/bytes
@@ -340,8 +342,8 @@ dotnet publish benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
 独立插件加载 probe 对每个发布目录使用同一命令，仅替换目标目录；每次输出 path、resolver、bytes 三种加载结果：
 
 ```powershell
-dotnet benchmarks/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll `
-  benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full
+dotnet tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll `
+  tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full
 ```
 
 framework-dependent 目标目录三种方式均输出 `metadata-preserved`；partial/full trim 和 NativeAOT 目标目录三种方式均输出
@@ -350,13 +352,13 @@ framework-dependent 目标目录三种方式均输出 `metadata-preserved`；par
 NativeAOT metadata probe：
 
 ```powershell
-dotnet restore benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet restore tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   -p:TargetFrameworks=net8.0 -r win-x64 -p:PublishAot=true
-dotnet publish benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   --no-restore -c Release -f net8.0 -r win-x64 --self-contained true `
   -p:TargetFrameworks=net8.0 -p:PublishAot=true -p:PublishTrimmed=true `
   -p:TrimMode=partial -p:DebugType=None
-./benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native/ReflectionTrimProbe.exe
+./tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native/ReflectionTrimProbe.exe
 ```
 
 结果：输出 `reflection-aot-metadata-ok`，退出码 0；独立插件 probe 的
@@ -373,10 +375,10 @@ path/resolver/bytes 三行均输出 `assembly-trimmed`。显式 root 的两个�
 framework-dependent trim analyzer 构建：
 
 ```powershell
-dotnet build benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet build tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   -c Release -f net8.0 -p:TargetFrameworks=net8.0 `
   -p:EnableTrimAnalyzer=true -p:TrimMode=partial -p:DebugType=None --no-restore
-dotnet benchmarks/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll
+dotnet tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll
 ```
 
 结果：构建 0 个错误，探针输出 `reflection-trim-ok`，退出码 0。新增入口没有产生新的反射模块生产源诊断。
@@ -384,17 +386,17 @@ dotnet benchmarks/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll
 self-contained partial/full trim：
 
 ```powershell
-dotnet publish benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   --no-restore -c Release -f net8.0 -r win-x64 --self-contained true `
   -p:TargetFrameworks=net8.0 -p:PublishTrimmed=true -p:TrimMode=partial `
-  -p:DebugType=None -p:PublishDir=benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-partial/
-./benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-partial/ReflectionTrimProbe.exe
+  -p:DebugType=None -p:PublishDir=tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-partial/
+./tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-partial/ReflectionTrimProbe.exe
 
-dotnet publish benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   --no-restore -c Release -f net8.0 -r win-x64 --self-contained true `
   -p:TargetFrameworks=net8.0 -p:PublishTrimmed=true -p:TrimMode=full `
-  -p:DebugType=None -p:PublishDir=benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-full/
-./benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-full/ReflectionTrimProbe.exe
+  -p:DebugType=None -p:PublishDir=tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-full/
+./tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-full/ReflectionTrimProbe.exe
 ```
 
 两种产物均输出 `reflection-trim-ok`，退出码 0。
@@ -402,14 +404,14 @@ dotnet publish benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
 NativeAOT metadata probe：
 
 ```powershell
-dotnet restore benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet restore tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   -r win-x64 -p:PublishAot=true -p:TargetFrameworks=net8.0 --ignore-failed-sources
-dotnet publish benchmarks/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
   --no-restore -c Release -f net8.0 -r win-x64 --self-contained true `
   -p:TargetFrameworks=net8.0 -p:PublishAot=true -p:PublishTrimmed=true `
   -p:TrimMode=full -p:DebugType=None `
-  -p:PublishDir=benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-nativeaot/
-./benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-nativeaot/ReflectionTrimProbe.exe
+  -p:PublishDir=tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-nativeaot/
+./tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-type-predicates-nativeaot/ReflectionTrimProbe.exe
 ```
 
 结果：NativeAOT 发布 0 错误，原生探针输出 `reflection-aot-metadata-ok`，退出码 0。发布日志仍包含既有依赖/工具链和动态代码边界诊断；本轮新增类型谓词没有引入新的反射模块生产源诊断。
@@ -432,12 +434,12 @@ AOT 发布目录只生成 `ReflectionTrimProbe.exe`，不会生成 `ReflectionTr
 本机使用本轮新生成的 `publish-round2-nativeaot` 目录，将未 root 插件显式旁路部署后执行：
 
 ```powershell
-./benchmarks/ReflectionTrimPluginLoadProbe/Stage-ExternalPlugin.ps1 `
-  -PluginAssemblyPath benchmarks/ReflectionTrimProbe.UnrootedModels/bin/Release/net8.0/ReflectionTrimProbe.UnrootedModels.dll `
-  -HostAssemblyPath benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-round2-nativeaot/ReflectionTrimProbe.exe `
-  -OutputDirectory benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-round2-nativeaot-external
-dotnet benchmarks/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll `
-  benchmarks/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-round2-nativeaot-external --expect metadata-preserved
+./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 `
+  -PluginAssemblyPath tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.UnrootedModels/bin/Release/net8.0/ReflectionTrimProbe.UnrootedModels.dll `
+  -HostAssemblyPath tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-round2-nativeaot/ReflectionTrimProbe.exe `
+  -OutputDirectory tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-round2-nativeaot-external
+dotnet tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll `
+  tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-round2-nativeaot-external --expect metadata-preserved
 ```
 
 结果：path/resolver/bytes 三种加载方式均输出 `metadata-preserved`，退出码 0；partial/full 的 managed
@@ -777,7 +779,7 @@ path/resolver/bytes 加载均保持 `metadata-preserved`，可裁剪插件的 pa
 或日志聚合上下文，避免把不同构建配置误判为代码回归。外部依赖和未知来源不会被自动当作仓库代码。CI 默认加载 `NativeAotRepositoryDiagnosticAllowlist.json` 并传入 `-FailOnUnapprovedRepositoryDiagnostic`，同时加载 `NativeAotNonRepositoryDiagnosticOwnership.json` 并传入 `-FailOnUnownedNonRepositoryDiagnostic`；只有显式诊断排障输入允许责任门禁旁路。非仓库清单按 `(code, messageFingerprint, origin)` 记录生成物、依赖/工具链和未知来源的 `owner/reason/action`，不把绝对 NuGet 或 SDK 路径写入稳定 key。传入 `-SymbolMapPath` 后，检查器会消费由 `Build-NativeAotSourceMap.ps1` 根据实际 PE 元数据、Portable PDB 和方法签名生成的符号映射，先采用唯一文件映射，再按规范化重载签名选择唯一文件；仍无法匹配或缺少 PDB 的项继续标记为 unknown。旧 CI-like 日志包含 13 个 ID、196 条诊断且全部解析，180 条映射到仓库源文件，其中 5 条通过签名匹配；当时固定 SDK 8.0.425 的干净 AOT 发布包含 421 条诊断，其中 405 条归类为仓库源并形成 339 个指纹基线。当时 CI 默认加载该基线并上传报告、映射和候选文件，新增仓库指纹或未登记责任默认阻断；显式诊断排障输入才允许旁路。 当前工作流使用 baselines 下的 363 项配置，见 [目录与基线](reflection-validation-layout.md)。
 CI 发布步骤会从实际 `dotnet --version` 生成同一 `DiagnosticContext`，并通过环境变量传给检查步骤；上传的 JSON 因而包含可复现的发布上下文，后续基线比较不能跨配置复用。
 
-`Build-NativeAotDiagnosticBaseline.ps1` 可将 schema v2 报告压缩为可审查的仓库指纹基线：保留发布上下文、仓库诊断出现次数，以及规范化的 `code`、`messageFingerprint`、`file` 和 `maxCount`，不把外部依赖或未知来源写入仓库门禁。`Check-NativeAotWarnings.ps1` 同时接受完整 schema v2 报告和该紧凑 schema 1 基线，并继续执行上下文一致性、重复项和计数校验；检查器要求 `entryCount` 与 `entries` 数量、`repositoryDiagnosticOccurrenceCount` 与 `maxCount` 总和一致，异常基线直接拒绝；紧凑基线比较按键直接读取 `maxCount`，不会因异常大计数展开无界的临时记录。仓库 `global.json` 与 workflow 将 NativeAOT SDK 固定为 8.0.425，并在发布步骤检查实际版本；固定输入的干净 NativeAOT 发布已成功生成并运行原生 exe，产出 405 次仓库诊断、339 个指纹，历史 339 项基线现归档于 `benchmarks/ReflectionTrimProbe/baselines/history/20261013-before-approval/NativeAotRepositoryDiagnosticBaseline.json`，对应的 `NativeAotRepositoryDiagnosticAllowlist.json` 为每条指纹提供源码归属和审计理由，`NativeAotNonRepositoryDiagnosticOwnership.json` 为 16 条生成物/依赖/工具链诊断提供稳定来源归属、理由和后续动作。当前 CI 默认加载 `baselines/` 下的 363 项基线、仓库 allowlist 和非仓库责任清单进行上下文、指纹、责任字段比较并阻断新增或未登记诊断，只有显式诊断排障输入才允许漂移。
+`Build-NativeAotDiagnosticBaseline.ps1` 可将 schema v2 报告压缩为可审查的仓库指纹基线：保留发布上下文、仓库诊断出现次数，以及规范化的 `code`、`messageFingerprint`、`file` 和 `maxCount`，不把外部依赖或未知来源写入仓库门禁。`Check-NativeAotWarnings.ps1` 同时接受完整 schema v2 报告和该紧凑 schema 1 基线，并继续执行上下文一致性、重复项和计数校验；检查器要求 `entryCount` 与 `entries` 数量、`repositoryDiagnosticOccurrenceCount` 与 `maxCount` 总和一致，异常基线直接拒绝；紧凑基线比较按键直接读取 `maxCount`，不会因异常大计数展开无界的临时记录。仓库 `global.json` 与 workflow 将 NativeAOT SDK 固定为 8.0.425，并在发布步骤检查实际版本；固定输入的干净 NativeAOT 发布已成功生成并运行原生 exe，产出 405 次仓库诊断、339 个指纹。迁移前的 339 项历史基线原位于 `benchmarks/ReflectionTrimProbe/baselines/history/20261013-before-approval/NativeAotRepositoryDiagnosticBaseline.json`，当前归档于 `tests/Bing.Utils.Reflection.Tests.Integration/baselines/history/20261013-before-approval/NativeAotRepositoryDiagnosticBaseline.json`；对应的 `NativeAotRepositoryDiagnosticAllowlist.json` 为每条指纹提供源码归属和审计理由，`NativeAotNonRepositoryDiagnosticOwnership.json` 为 16 条生成物/依赖/工具链诊断提供稳定来源归属、理由和后续动作。当前 CI 默认加载 `tests/Bing.Utils.Reflection.Tests.Integration/baselines/` 下的 363 项基线、仓库 allowlist 和非仓库责任清单进行上下文、指纹、责任字段比较并阻断新增或未登记诊断，只有显式诊断排障输入才允许漂移。
 
 ## CI 部署矩阵
 

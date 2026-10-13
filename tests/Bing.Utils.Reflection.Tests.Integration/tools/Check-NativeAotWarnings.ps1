@@ -265,7 +265,7 @@ if ($DiagnosticAllowlistPath) {
         if ([string]::IsNullOrWhiteSpace($file) -or $file.StartsWith('<', [StringComparison]::Ordinal)) {
             throw "NativeAOT diagnostic allowlist requires a repository source file for $code."
         }
-        $fileInfo = Get-PathClassification $file ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..')))
+        $fileInfo = Get-PathClassification $file ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../..')))
         if ($fileInfo.origin -ne 'repositorySource' -or $fileInfo.normalized -ne $file) {
             throw "NativeAOT diagnostic allowlist file is not a normalized repository source path: $file"
         }
@@ -481,7 +481,7 @@ function Get-DiagnosticDetails([string[]]$Lines, [string]$RootPath, [hashtable]$
 }
 
 $actual = Get-WarningIds $LogPath
-$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../..'))
 $logLines = @(Get-Content -LiteralPath $LogPath -Encoding utf8)
 $diagnostics = @(Get-DiagnosticDetails $logLines $repoRoot $symbolMap)
 $diagnosticLines = @($logLines | Where-Object { $_ -match '\b(?:IL|ILC)\d{4}\s*:' })

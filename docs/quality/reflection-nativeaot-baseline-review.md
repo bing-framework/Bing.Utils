@@ -1,6 +1,6 @@
 # NativeAOT 基线差异复核（2026-10-13）
 
-状态：已批准。用户于 2026-10-13 明确接受 [诊断提案](reflection-nativeaot-diagnostic-proposal.json) 中的 24 个精确探针指纹；新版基线和责任清单已作为工作流输入。
+状态：已批准。用户于 2026-10-13 明确接受 [诊断提案](reflection-nativeaot-diagnostic-proposal.json) 中的 24 个精确探针指纹；新版基线和责任清单已作为工作流输入。本文保留批准前的诊断复核证据；目录迁移后单次 NativeAOT 发布及五项严格门禁通过，执行范围见 [迁移后验证](reflection-validation-evidence.md)。
 
 ## 已修复的问题
 
@@ -14,19 +14,19 @@
 
 ## 批准前的差异
 
-配置为 `sdk=8.0.425;tfm=net8.0;rid=win-x64;trim=partial;aot=true;mode=ci-single-publish`。日志共 260 条诊断，244 条仓库源，218 个仓库指纹；新增 ID 为 0，未解析为 0，非仓库责任门禁通过。相对历史基线仍有 24 个新增仓库指纹，全部属于 `benchmarks/ReflectionTrimProbe/Program.cs`：15 条 IL2026、9 条 IL3050。仓库指纹与责任 allowlist 严格门禁失败，远程 CI 待确认。
+配置为 `sdk=8.0.425;tfm=net8.0;rid=win-x64;trim=partial;aot=true;mode=ci-single-publish`。日志共 260 条诊断，244 条仓库源，218 个仓库指纹；新增 ID 为 0，未解析为 0，非仓库责任门禁通过。相对历史基线仍有 24 个新增仓库指纹，批准记录中的历史源码路径为 `benchmarks/ReflectionTrimProbe/Program.cs`，迁移后的当前路径为 `tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs`；其中 15 条 IL2026、9 条 IL3050。仓库指纹与责任 allowlist 严格门禁失败，远程 CI 待确认。
 
 这些警告来自探针调用 `CreateInstance/CreateInstances/CreateGenericInstance`、`GetBaseMethod/GetMethodBySignature`、`SetFieldValue<T>`、`Types.IsDefaultValue` 与 `Type.MakeGenericType`。它们明确提示元数据或动态代码限制；探针运行成功不表示限制不存在。
 
 ## 已批准的处理结果
 
-1. 原 339 项、405 次诊断的历史基线及责任清单按原内容归档到 `benchmarks/ReflectionTrimProbe/baselines/history/20261013-before-approval/`，不作为当前工作流输入。
-2. 当前基线为 `benchmarks/ReflectionTrimProbe/baselines/NativeAotRepositoryDiagnosticBaseline.json`，责任清单为同目录的 `NativeAotRepositoryDiagnosticAllowlist.json`，保留全部历史项并加入批准的 24 项；每个新增项的 `maxCount=1`，共 363 项、429 次出现上限。提案 JSON 记录批准状态、完整指纹、诊断消息、责任人和理由。
+1. 原 339 项、405 次诊断的历史基线及责任清单按原内容归档到 `tests/Bing.Utils.Reflection.Tests.Integration/baselines/history/20261013-before-approval/`；迁移前的 `benchmarks/ReflectionTrimProbe/baselines/history/20261013-before-approval/` 仅作为历史来源路径，不作为当前工作流输入。
+2. 当前基线为 `tests/Bing.Utils.Reflection.Tests.Integration/baselines/NativeAotRepositoryDiagnosticBaseline.json`，责任清单为同目录的 `NativeAotRepositoryDiagnosticAllowlist.json`，保留全部历史项并加入批准的 24 项；每个新增项的 `maxCount=1`，共 363 项、429 次出现上限。提案 JSON 记录批准状态、完整指纹、诊断消息、责任人和理由；其中 24 条 `entries.file` 保留批准时的旧路径。
 3. 工作流默认输入和上传清单改为新版文件；保留未解析、ID、指纹、仓库责任、非仓库责任五项严格门禁。
-4. 使用已有发布日志和源码映射复核，新版五项门禁全部通过：260 条诊断、244 条仓库源、218 个仓库指纹；新增 ID、新增仓库指纹、未批准仓库诊断、未归属非仓库诊断和未解析诊断均为 0。历史基线没有被覆盖；本次没有重新发布探针。远程 CI 仍待确认。
+4. 迁移前使用已有发布日志和源码映射的复核记录显示五项门禁通过：260 条诊断、244 条仓库源、218 个仓库指纹；新增 ID、新增仓库指纹、未批准仓库诊断、未归属非仓库诊断和未解析诊断均为 0。该次复核没有重新发布探针，历史基线没有被覆盖；迁移后新发布证据另见下文。
 
-工作流本身另已修复两个 PowerShell-only 脚本的返回状态误判和四处多行条件语法错误，85 个多行 `run` 块静态解析通过。此结果不代替实际远程 CI。
+工作流本身另已修复两个 PowerShell-only 脚本的返回状态误判和四处多行条件语法错误；迁移前记录的 85 个多行 `run` 块静态解析通过。此结果不代替迁移后的静态解析或实际远程 CI。
 
-基线目录职责与验证项目保留原因见 [反射验证目录与基线](reflection-validation-layout.md)。本次整理只改变基线位置和引用，不改变诊断指纹、源码路径或次数上限。
+基线目录职责与验证项目保留原因见 [反射验证目录与基线](reflection-validation-layout.md)。本次整理改变基线位置和引用；当前基线/allowlist 中 74 条主探针 `Program.cs` 的 `file` 路径随目录迁移，363 个 key、消息指纹和 429 次上限不变。
 
-本次验证日志与源码映射保存在忽略的 `benchmarks/ReflectionTrimProbe/bin/commit-fix-*-20261013.*`，批准后复核报告为 `benchmarks/ReflectionTrimProbe/bin/approved-warning-contracts-report-20261013.json`。提交文档保留可审阅的差异数据，不依赖这些本机产物作为可移植发布证据。
+本次批准前验证日志与源码映射原位于 `benchmarks/ReflectionTrimProbe/bin/commit-fix-*-20261013.*`，批准后复核报告原为 `benchmarks/ReflectionTrimProbe/bin/approved-warning-contracts-report-20261013.json`；旧产物现归档到忽略目录 `artifacts/reflection-layout-before-migration-20261013/ReflectionTrimProbe/bin/`，这些记录仅用于溯源。迁移后的运行产物位于 `tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/`；单次 NativeAOT 发布和运行成功，421 条诊断、405 次仓库源、343 个指纹均满足保持不变的基线和责任清单，五项严格门禁通过，详见 [迁移后验证](reflection-validation-evidence.md)。提交文档保留可审阅的差异数据，不依赖本机产物作为可移植发布证据。

@@ -1,6 +1,24 @@
 # 反射跨运行时验证（2026-10-09）
 
-## 当前提交验证（2026-10-13）
+## 目录迁移后验证（2026-10-13）
+
+环境为 Windows、SDK 8.0.425、Release/net8.0；仅迁移验证工程和路径，生产源码及探针 C#/XML 内容未改。以下为迁移后实际执行结果：
+
+- 24 个宿主/模型项目逐一构建通过；29 条 `ProjectReference` 指向存在的项目，程序集名称、版本和 root 配置保留。
+- 警告检查器自测通过；RuntimeCycle 分阶段编译与真实 AssemblyRef 循环、分支、多分支和深分支夹具运行通过。
+- framework 主探针、未 root 模型插件及第三方插件 smoke 通过；path/resolver/bytes 三种加载方式覆盖缺失传递依赖、版本冲突、强名称冲突、多版本和九目录依赖图（1 轮）。本次未重复长轮次/容量压力验证。
+- 主探针完成 net8.0/win-x64、self-contained、partial trim、NativeAOT 单次发布并运行成功；输出 by-ref 签名、ref 返回、泛型方差、AOT 特性回退和元数据五个预期标记。
+- 同次发布日志与源码映射的报告包含 421 条诊断、405 次仓库源诊断、343 个仓库指纹、12 个警告 ID。五项严格门禁全部通过；新增 ID、未登记仓库指纹、未批准仓库诊断、未归属非仓库诊断和未解析诊断均为 0。存在已登记警告，不表示无警告构建。
+- 当前 baseline/allowlist 仅将 74 条主探针路径映射到新位置，363 个 key、消息指纹、上下文及合计 429 次上限保持不变；两份历史快照内容不变。
+- workflow 的 85 个多行 PowerShell `run` 块静态解析通过（解析前替换 GitHub 表达式占位），当前源码引用有效，活动代码/工作流无旧 `benchmarks/ReflectionTrim*` 路径。
+
+发布日志、映射、报告分别位于 `tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/layout-migration-nativeaot-20261013.log`、`layout-migration-source-map-20261013.json`、`layout-migration-warning-report-20261013.json`；本机产物不纳入 Git。迁移前构建产物集中保存在忽略目录 `artifacts/reflection-layout-before-migration-20261013/`，可供本机溯源。当前入口及严格检查命令见 [目录与基线](reflection-validation-layout.md)。
+
+本次未修改生产代码和 xUnit 测试，复用下节原有回归证据；未重跑完整 partial/full/NativeAOT 插件矩阵，也不声明远程 CI 已通过。
+
+## 迁移前验证证据（2026-10-13）
+
+以下结果是在验证目录迁移前形成的既有证据，保留用于对照；迁移后新执行范围与结果以上节为准。
 
 - SDK 固定为 8.0.425。主包 net8.0 筛选 `FullyQualifiedName~Bing.Reflection|FullyQualifiedName~MapperHelper` 已执行两次并通过，第二次记录为 453/453。映射缓存专用 xUnit collection 隔离进程级计数，类内 32 次并发映射仍保留；程序集名称 null 用例精确断言 `ArgumentNullException`，其他非法名称断言 `ArgumentException`。
 - 本次之前的相同反射子包候选已在隔离副本通过 net8.0 306/306；本次未修改反射子包生产代码，复用该证据。旧运行时表格是历史结果，不作为本次候选的新鲜证据。

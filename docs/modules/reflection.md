@@ -229,7 +229,7 @@ var props = TypeVisit.GetProperties<DateTime>(PropertyAccessOptions.Getters);
 - tests/Bing.Utils.Tests/Bing/Reflection/ReflectionsStrictContractTests.cs | 部分类型加载失败夹具与严格失败契约
 - docs/quality/reflection-contract-migration.md | 严格失败契约迁移矩阵与仓库消费者清单
 - benchmarks/ReflectionComparisonProbe/Run-ReflectionComparison.ps1 | 支持 `-BaselineRef` 的干净 Git 基线归档和完整比较
-- benchmarks/ReflectionTrimProbe | net8.0 显式 linker roots 的 trimming、self-contained partial/full 和 NativeAOT metadata smoke，以及未 root 外部程序集边界探针
+- tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe | net8.0 显式 linker roots 的 trimming、self-contained partial/full 和 NativeAOT metadata smoke，以及未 root 外部程序集边界探针
 - docs/quality/reflection-trim-evidence.md | trimming 命令、结果和支持边界
 
 ## 13. 待确认

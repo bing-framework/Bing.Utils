@@ -3,7 +3,7 @@
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $ErrorActionPreference = 'Stop'
 
-$root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+$root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../..'))
 $checker = Join-Path $PSScriptRoot 'Check-NativeAotWarnings.ps1'
 $temporaryRoot = Join-Path ([IO.Path]::GetTempPath()) ('bing-utils-nativeaot-warning-test-' + [guid]::NewGuid().ToString('N'))
 $null = New-Item -ItemType Directory -Path $temporaryRoot
