@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- The fixture intentionally reuses a framework assembly name without its strong-name identity. -->
+    <AssemblyName>System.Text.Json</AssemblyName>
+    <RootNamespace>ReflectionTrimProbe.StrongNameConflictDependency</RootNamespace>
+    <Version>99.0.0</Version>
+    <AssemblyVersion>99.0.0.0</AssemblyVersion>
+    <FileVersion>99.0.0.0</FileVersion>
+  </PropertyGroup>
+</Project>
