@@ -6,17 +6,13 @@ namespace Bing.Utils.Parameters.Formats;
 public class UrlParameterFormat : ParameterFormatBase
 {
     /// <summary>
-    /// Url参数格式化器实例
+    /// 获取Url参数格式化器实例
     /// </summary>
     public static IParameterFormat Instance { get; } = new UrlParameterFormat();
 
-    /// <summary>
-    /// 格式化分割符
-    /// </summary>
+    /// <inheritdoc />
     protected override string FormatSeparator => "=";
 
-    /// <summary>
-    /// 连接符
-    /// </summary>
+    /// <inheritdoc />
     protected override string JoinSeparator => "&";
 }

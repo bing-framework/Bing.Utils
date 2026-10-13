@@ -16,12 +16,12 @@ public class ParameterBuilder : IParameterManager
     private readonly IDictionary<string, object> _params;
 
     /// <summary>
-    /// 初始化一个<see cref="ParameterBuilder"/>类型的实例
+    /// 初始化一个 <see cref="ParameterBuilder"/> 类型的实例。
     /// </summary>
     public ParameterBuilder() => _params = new Dictionary<string, object>();
 
     /// <summary>
-    /// 初始化一个<see cref="ParameterBuilder"/>类型的实例
+    /// 初始化一个 <see cref="ParameterBuilder"/> 类型的实例。
     /// </summary>
     /// <param name="builder">参数生成器</param>
     public ParameterBuilder(ParameterBuilder builder) : this(builder.GetDictionary())
@@ -29,7 +29,7 @@ public class ParameterBuilder : IParameterManager
     }
 
     /// <summary>
-    /// 初始化一个<see cref="ParameterBuilder"/>类型的实例
+    /// 初始化一个 <see cref="ParameterBuilder"/> 类型的实例。
     /// </summary>
     /// <param name="dictionary">字典</param>
     public ParameterBuilder(IDictionary<string, object> dictionary)
@@ -40,7 +40,7 @@ public class ParameterBuilder : IParameterManager
     }
 
     /// <summary>
-    /// 索引器
+    /// 获取或设置索引器
     /// </summary>
     /// <param name="name">参数名</param>
     public object this[string name]
@@ -50,7 +50,7 @@ public class ParameterBuilder : IParameterManager
     }
 
     /// <summary>
-    /// 是否空参数
+    /// 获取是否空参数
     /// </summary>
     public bool IsEmpty => _params.Count == 0;
 

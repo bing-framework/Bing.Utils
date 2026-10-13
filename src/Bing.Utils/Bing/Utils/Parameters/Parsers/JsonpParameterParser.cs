@@ -9,10 +9,7 @@ namespace Bing.Utils.Parameters.Parsers;
 /// </summary>
 public class JsonpParameterParser : ParameterParserBase, IParameterParser
 {
-    /// <summary>
-    /// 加载数据
-    /// </summary>
-    /// <param name="data">数据</param>
+    /// <inheritdoc />
     public override void LoadData(string data)
     {
         if (data.IsEmpty())

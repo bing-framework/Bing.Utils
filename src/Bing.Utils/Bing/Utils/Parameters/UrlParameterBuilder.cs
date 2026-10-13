@@ -12,12 +12,12 @@ public class UrlParameterBuilder
     #region 属性
 
     /// <summary>
-    /// 参数生成器
+    /// 获取参数生成器
     /// </summary>
     private ParameterBuilder ParameterBuilder { get; }
 
     /// <summary>
-    /// 索引器
+    /// 获取或设置索引器
     /// </summary>
     /// <param name="name">参数名</param>
     public object this[string name]
@@ -31,12 +31,12 @@ public class UrlParameterBuilder
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="UrlParameterBuilder"/>类型的实例
+    /// 初始化一个 <see cref="UrlParameterBuilder"/> 类型的实例。
     /// </summary>
     public UrlParameterBuilder() : this("") { }
 
     /// <summary>
-    /// 初始化一个<see cref="UrlParameterBuilder"/>类型的实例
+    /// 初始化一个 <see cref="UrlParameterBuilder"/> 类型的实例。
     /// </summary>
     /// <param name="builder">参数生成器</param>
     public UrlParameterBuilder(ParameterBuilder builder)
@@ -45,13 +45,13 @@ public class UrlParameterBuilder
     }
 
     /// <summary>
-    /// 初始化一个<see cref="UrlParameterBuilder"/>类型的实例
+    /// 初始化一个 <see cref="UrlParameterBuilder"/> 类型的实例。
     /// </summary>
     /// <param name="builder">Url参数生成器</param>
     public UrlParameterBuilder(UrlParameterBuilder builder) : this("", builder) { }
 
     /// <summary>
-    /// 初始化一个<see cref="UrlParameterBuilder"/>类型的实例
+    /// 初始化一个 <see cref="UrlParameterBuilder"/> 类型的实例。
     /// </summary>
     /// <param name="url">Url</param>
     /// <param name="builder">Url参数生成器</param>

@@ -15,18 +15,18 @@ public abstract class ParameterParserBase : IParameterParser
     private readonly IDictionary<string, object> _params;
 
     /// <summary>
-    /// 初始化一个<see cref="ParameterParserBase"/>类型的实例
+    /// 初始化一个 <see cref="ParameterParserBase"/> 类型的实例。
     /// </summary>
     protected ParameterParserBase() => _params = new Dictionary<string, object>();
 
     /// <summary>
-    /// 初始化一个<see cref="ParameterParserBase"/>类型的实例
+    /// 初始化一个 <see cref="ParameterParserBase"/> 类型的实例。
     /// </summary>
     /// <param name="parser">参数解析器</param>
     protected ParameterParserBase(IParameterParser parser) : this(parser.GetDictionary()) { }
 
     /// <summary>
-    /// 初始化一个<see cref="ParameterParserBase"/>类型的实例
+    /// 初始化一个 <see cref="ParameterParserBase"/> 类型的实例。
     /// </summary>
     /// <param name="dictionary">字典</param>
     protected ParameterParserBase(IDictionary<string, object> dictionary)
@@ -59,6 +59,7 @@ public abstract class ParameterParserBase : IParameterParser
     /// 获取格式化后的值
     /// </summary>
     /// <param name="value">值</param>
+    /// <returns>格式化后的参数值。</returns>
     private string GetFormatValue(object value)
     {
         if (value == null)
@@ -76,6 +77,7 @@ public abstract class ParameterParserBase : IParameterParser
     /// 获取值
     /// </summary>
     /// <param name="name">参数名</param>
+    /// <returns>指定名称对应的参数值。</returns>
     public object GetValue(string name)
     {
         if (name.IsEmpty())
@@ -88,17 +90,20 @@ public abstract class ParameterParserBase : IParameterParser
     /// </summary>
     /// <typeparam name="T">数据类型</typeparam>
     /// <param name="name">参数名</param>
+    /// <returns>指定名称对应的参数值。</returns>
     public T GetValue<T>(string name) => Conv.To<T>(GetValue(name));
 
     /// <summary>
     /// 获取字典
     /// </summary>
+    /// <returns>当前参数字典。</returns>
     public IDictionary<string, object> GetDictionary() => _params;
 
     /// <summary>
     /// 是否包含指定键
     /// </summary>
     /// <param name="key">键</param>
+    /// <returns>包含指定键时返回 <see langword="true"/>，否则返回 <see langword="false"/>。</returns>
     public bool HasKey(string key) => !key.IsEmpty() && _params.ContainsKey(key);
 
     /// <summary>
@@ -111,5 +116,6 @@ public abstract class ParameterParserBase : IParameterParser
     /// 转换为Json
     /// </summary>
     /// <param name="isConvertToSingleQuotes">是否将双引号转换为单引号</param>
+    /// <returns>参数字典的 JSON 表示。</returns>
     public string ToJson(bool isConvertToSingleQuotes = false) => JsonHelper.ToJson(_params, isConvertToSingleQuotes);
 }

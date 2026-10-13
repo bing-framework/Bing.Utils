@@ -9,5 +9,6 @@ public interface IParameterManager
     /// 获取值
     /// </summary>
     /// <param name="name">参数名</param>
+    /// <returns>指定参数的值。</returns>
     object GetValue(string name);
 }

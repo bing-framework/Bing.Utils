@@ -12,5 +12,6 @@ public interface IConversionTry<in TFrom, TTo>
     /// </summary>
     /// <param name="from">源对象</param>
     /// <param name="to">目标对象</param>
+    /// <returns>转换成功时返回 <see langword="true"/>，否则返回 <see langword="false"/>。</returns>
     bool Is(TFrom from, out TTo to);
 }
