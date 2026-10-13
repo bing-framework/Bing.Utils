@@ -106,22 +106,22 @@ public class CaseFormatter
     }
 
     /// <summary>
-    /// 创建一个 <see cref="CaseFormatter"/> 类型的实例（连接符分割）
+    /// 获取使用连字符分割的新大小写格式化器。
     /// </summary>
     public static CaseFormatter LowerHyphen => new(Splitter.On("-"));
 
     /// <summary>
-    /// 创建一个 <see cref="CaseFormatter"/> 类型的实例（下划线分割）
+    /// 获取使用下划线分割的新大小写格式化器。
     /// </summary>
     public static CaseFormatter LowerUnderscore => new(Splitter.On("_"));
 
     /// <summary>
-    /// 创建一个 <see cref="CaseFormatter"/> 类型的实例（普通分割器）
+    /// 获取使用连字符、下划线或空格分割的新大小写格式化器。
     /// </summary>
     public static CaseFormatter Instance => new(Splitter.On(new Regex("[-_ ]+")));
 
     /// <summary>
-    /// 创建一个 <see cref="CaseFormatter"/> 类型的实例（人性化）
+    /// 获取使用默认分割规则的新大小写格式化器。
     /// </summary>
     public static CaseFormatter Humanizer => new();
 
