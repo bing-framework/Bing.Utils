@@ -55,7 +55,7 @@ public static class Web
     #region HttpContextAccessor(Http上下文访问器)
 
     /// <summary>
-    /// HTTP 上下文访问器
+    /// 获取或设置HTTP 上下文访问器
     /// </summary>
     public static IHttpContextAccessor HttpContextAccessor { get; set; }
 
@@ -64,7 +64,7 @@ public static class Web
     #region HttpContext(当前Http上下文)
 
     /// <summary>
-    /// 当前 HTTP 上下文
+    /// 获取当前 HTTP 上下文
     /// </summary>
     public static HttpContext HttpContext => HttpContextAccessor?.HttpContext;
 
@@ -74,12 +74,12 @@ public static class Web
 
 #if NETCOREAPP3_0_OR_GREATER
     /// <summary>
-    /// 宿主环境
+    /// 获取或设置当前宿主环境。
     /// </summary>
     public static Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment { get; set; }
 #elif NETSTANDARD2_0
     /// <summary>
-    /// 宿主环境
+    /// 获取或设置当前宿主环境。
     /// </summary>
     public static Microsoft.AspNetCore.Hosting.IHostingEnvironment Environment { get; set; }
 #endif
@@ -88,7 +88,7 @@ public static class Web
     #region Request(当前Http请求)
 
     /// <summary>
-    /// 当前 HTTP 请求
+    /// 获取当前 HTTP 请求
     /// </summary>
     public static HttpRequest Request => HttpContext?.Request;
 
@@ -97,7 +97,7 @@ public static class Web
     #region Response(当前Http响应)
 
     /// <summary>
-    /// 当前 HTTP 响应
+    /// 获取当前 HTTP 响应
     /// </summary>
     public static HttpResponse Response => HttpContext?.Response;
 
@@ -106,7 +106,7 @@ public static class Web
     #region LocalIpAddress(本地IP)
 
     /// <summary>
-    /// 本地 IP 地址
+    /// 获取本地 IP 地址
     /// </summary>
     public static string LocalIpAddress
     {
@@ -133,7 +133,7 @@ public static class Web
     #region RequestType(请求类型)
 
     /// <summary>
-    /// HTTP 请求方法
+    /// 获取HTTP 请求方法
     /// </summary>
     public static string RequestType => HttpContext?.Request?.Method;
 
@@ -142,7 +142,7 @@ public static class Web
     #region Form(表单)
 
     /// <summary>
-    /// 表单数据集合
+    /// 获取表单数据集合
     /// </summary>
     public static IFormCollection Form => HttpContext?.Request?.Form;
 
@@ -151,7 +151,7 @@ public static class Web
     #region AccessToken(访问令牌)
 
     /// <summary>
-    /// 访问令牌
+    /// 获取访问令牌
     /// </summary>
     /// <returns>从 Authorization 请求头中提取的 Bearer Token，如果不存在则返回 null</returns>
     public static string AccessToken
@@ -175,7 +175,7 @@ public static class Web
     #region Body(请求正文)
 
     /// <summary>
-    /// 请求正文内容
+    /// 获取请求正文内容
     /// </summary>
     /// <returns>请求正文的字符串表示</returns>
     /// <exception cref="InvalidOperationException">当无法访问请求流时</exception>
@@ -203,13 +203,13 @@ public static class Web
 
 #if NETSTANDARD2_1
     /// <summary>
-    /// 请求地址
+    /// 获取请求地址。
     /// </summary>
     /// <exception cref="NotSupportedException">在 .NET Standard 2.1 中不支持此功能</exception>
     public static string Url => throw new NotSupportedException($"{nameof(Url)} 不支持在 NETSTANDARD2_1");
 #else
     /// <summary>
-    /// 请求地址
+    /// 获取请求地址
     /// </summary>
     public static string Url => Request?.GetDisplayUrl();
 #endif
@@ -229,7 +229,7 @@ public static class Web
     #region Browser(浏览器)
 
     /// <summary>
-    /// 用户代理字符串
+    /// 获取用户代理字符串
     /// </summary>
     public static string Browser => HttpContext?.Request?.Headers["User-Agent"];
 
@@ -239,7 +239,7 @@ public static class Web
 #if !NETSTANDARD2_1
 
     /// <summary>
-    /// 应用程序根路径
+    /// 获取应用程序根路径
     /// </summary>
     public static string RootPath => Environment?.ContentRootPath;
 #endif
@@ -249,7 +249,7 @@ public static class Web
 
 #if !NETSTANDARD2_1
     /// <summary>
-    /// Web 根路径（wwwroot 目录）
+    /// 获取Web 根路径（wwwroot 目录）
     /// </summary>
     public static string WebRootPath => Environment?.WebRootPath;
 #endif
@@ -259,7 +259,7 @@ public static class Web
     #region ContentType(内容类型)
 
     /// <summary>
-    /// 请求内容类型
+    /// 获取请求内容类型
     /// </summary>
     public static string ContentType => HttpContext?.Request?.ContentType;
 
@@ -268,7 +268,7 @@ public static class Web
     #region QueryString(参数)
 
     /// <summary>
-    /// 查询字符串参数
+    /// 获取查询字符串参数
     /// </summary>
     public static string QueryString => HttpContext?.Request?.QueryString.ToString();
 
@@ -324,7 +324,7 @@ public static class Web
     #region 构造函数
 
     /// <summary>
-    /// 静态构造函数
+    /// 初始化当前类型的静态状态。
     /// </summary>
     static Web() => ServicePointManager.DefaultConnectionLimit = DefaultConnectionLimit;
 

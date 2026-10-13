@@ -5,9 +5,7 @@ using System.Text.Json;
 namespace Bing.Http.Clients.Internal;
 
 /// <summary>
-
-/// 只读响应流：计数并限制实际读取量，预读 BOM/空白且不缓冲完整正文。
-
+/// 只读响应流，用于统计和限制读取量，并预读 BOM 与空白前缀。
 /// </summary>
 internal sealed class ResponseBodyReadStream : Stream
 {
@@ -37,16 +35,12 @@ internal sealed class ResponseBodyReadStream : Stream
     private long _bytesRead;
 
     /// <summary>
-
-    /// 初始化一个<see cref="ResponseBodyReadStream"/>类型的实例。
-
+    /// 初始化一个 <see cref="ResponseBodyReadStream"/> 类型的实例。
     /// </summary>
     public ResponseBodyReadStream(Stream inner, long? limit) { _inner = inner; _limit = limit; }
 
     /// <summary>
-
-    /// 移除 UTF-8 BOM 和前置 JSON 空白；返回是否存在非空白正文。
-
+    /// 移除 UTF-8 BOM 和前置 JSON 空白，并判断是否存在非空白正文。
     /// </summary>
     public async Task<bool> InitializeAsync(CancellationToken token)
     {
@@ -82,10 +76,9 @@ internal sealed class ResponseBodyReadStream : Stream
     }
 
     /// <summary>
-
-    /// 读取并跳过 JSON 正文开头的 Unicode 空白。
-
+    /// 异步读取并跳过 Unicode 空白字符。
     /// </summary>
+    /// <param name="token">用于取消读取的令牌。</param>
     private async Task ReadUnicodeWhitespaceAsync(CancellationToken token)
     {
         var decoder = Encoding.UTF8.GetDecoder();
@@ -128,6 +121,7 @@ internal sealed class ResponseBodyReadStream : Stream
     /// 累计读取字节并检查正文大小限制。
 
     /// </summary>
+    /// <param name="count">本次读取的字节数。</param>
     private void CountRead(int count)
     {
         _bytesRead += count;
@@ -136,10 +130,13 @@ internal sealed class ResponseBodyReadStream : Stream
     }
 
     /// <summary>
-
-    /// 读取底层响应流并累计正文字节数。
-
+    /// 从底层流异步读取数据。
     /// </summary>
+    /// <param name="buffer">接收数据的缓冲区。</param>
+    /// <param name="offset">缓冲区中的起始偏移量。</param>
+    /// <param name="count">要读取的最大字节数。</param>
+    /// <param name="token">用于取消读取的令牌。</param>
+    /// <returns>表示异步读取操作的任务，其结果为实际读取的字节数。</returns>
     private async Task<int> ReadSourceAsync(byte[] buffer, int offset, int count, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
