@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bing-framework.local/schemas/reflection-performance-policy.schema.json",
+  "title": "Bing.Utils reflection performance policy",
+  "description": "Explicit, reviewable comparison budgets. No policy file is enabled by default.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "policyId",
+    "targetFramework"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "policyId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "targetFramework": {
+      "const": "net8.0"
+    },
+    "rounds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20
+    },
+    "baselineCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{40}$"
+    },
+    "coldStartMaxTimeNs": {
+      "type": "number",
+      "minimum": 0
+    },
+    "coldStartMaxBytes": {
+      "type": "number",
+      "minimum": 0
+    },
+    "steadyStateMaxTimeNs": {
+      "type": "number",
+      "minimum": 0
+    },
+    "steadyStateMaxBytes": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "anyOf": [
+    { "required": ["coldStartMaxTimeNs"] },
+    { "required": ["coldStartMaxBytes"] },
+    { "required": ["steadyStateMaxTimeNs"] },
+    { "required": ["steadyStateMaxBytes"] }
+  ]
+}
