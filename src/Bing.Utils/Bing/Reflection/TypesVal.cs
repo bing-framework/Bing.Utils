@@ -11,7 +11,7 @@ public class TypesVal
     private readonly Type[] _types;
 
     /// <summary>
-    /// 初始化一个<see cref="TypesVal"/>类型的实例
+    /// 初始化一个 <see cref="TypesVal"/> 类型的实例。
     /// </summary>
     /// <param name="size">数组大小</param>
     private TypesVal(int size)
