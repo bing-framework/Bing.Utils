@@ -23,61 +23,61 @@ public static class Platform
         };
 
     /// <summary>
-    /// 当前操作系统是否为 Linux 操作系统
+    /// 获取当前操作系统是否为 Linux 操作系统
     /// </summary>
     [Obsolete("请使用 Env.IsLinux 属性")]
     public static bool IsLinux => Env.IsLinux;
 
     /// <summary>
-    /// 当前操作系统是否为 微软视窗（Windows）操作系统
+    /// 获取当前操作系统是否为 微软视窗（Windows）操作系统
     /// </summary>
     [Obsolete("请使用 Env.IsWindows 属性")]
     public static bool IsWindows => Env.IsWindows;
 
     /// <summary>
-    /// 当前操作系统是否为苹果 MacOS（OSX） 操作系统
+    /// 获取当前操作系统是否为苹果 MacOS（OSX） 操作系统
     /// </summary>
     [Obsolete("请使用 Env.IsOSX 属性")]
     public static bool IsOSX => Env.IsOSX;
 
     /// <summary>
-    /// 服务器名称
+    /// 获取服务器名称
     /// </summary>
     [Obsolete("请使用 Env.MachineName 属性")]
     public static string MachineName => Env.MachineName;
 
     /// <summary>
-    /// 系统名称
+    /// 获取系统名称
     /// </summary>
     [Obsolete("请使用 Env.OSDescription 属性")]
     public static string OSDescription => Env.OSDescription;
 
     /// <summary>
-    /// 系统及版本
+    /// 获取系统及版本
     /// </summary>
     [Obsolete("请使用 Env.OSVersion 属性")]
     public static string OSVersion => Env.OSVersion;
 
     /// <summary>
-    /// 系统框架
+    /// 获取系统框架
     /// </summary>
     [Obsolete("请使用 Env.FrameworkDescription 属性")]
     public static string FrameworkDescription => Env.FrameworkDescription;
 
     /// <summary>
-    /// 系统架构
+    /// 获取系统架构
     /// </summary>
     [Obsolete("请使用 Env.OSArchitecture 属性")]
     public static Architecture OSArchitecture => Env.OSArchitecture;
 
     /// <summary>
-    /// 进程架构
+    /// 获取进程架构
     /// </summary>
     [Obsolete("请使用 Env.ProcessArchitecture 属性")]
     public static Architecture ProcessArchitecture => Env.ProcessArchitecture;
 
     /// <summary>
-    /// 当前项目目录
+    /// 获取当前项目目录
     /// </summary>
     /// <remarks>
     /// 注意：此属性已不再支持设置操作。如需修改工作目录，请使用 Env.WorkingDirectory。
@@ -86,13 +86,13 @@ public static class Platform
     public static string CurrentDirectory => Env.WorkingDirectory;
 
     /// <summary>
-    /// 系统目录
+    /// 获取系统目录
     /// </summary>
     [Obsolete("请使用 Env.SystemDirectory 属性")]
     public static string SystemDirectory => Env.SystemDirectory;
 
     /// <summary>
-    /// 应用程序根目录
+    /// 获取应用程序根目录
     /// </summary>
     /// <remarks>
     /// 等价于  <see cref="AppContext.BaseDirectory"/>
@@ -101,7 +101,7 @@ public static class Platform
     public static string AppRoot => Env.ApplicationBaseDirectory;
 
     /// <summary>
-    /// 应用程序名称
+    /// 获取应用程序名称
     /// </summary>
     [Obsolete("请使用 Env.ApplicationName 属性")]
     public static string ApplicationName => Env.ApplicationName;

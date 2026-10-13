@@ -39,52 +39,52 @@ public class CodeTimer
     private Thread _thread;
 
     /// <summary>
-    /// 初始化一个<see cref="CodeTimer"/>类型的实例
+    /// 初始化一个 <see cref="CodeTimer"/> 类型的实例。
     /// </summary>
     public CodeTimer() => Gen = new[] { 0, 0, 0 };
 
     /// <summary>
-    /// 输出内容
+    /// 获取或设置输出内容
     /// </summary>
     public static Action<string> WriteLine { get; set; } = Console.Write;
 
     /// <summary>
-    /// 次数
+    /// 获取或设置次数
     /// </summary>
     public int Times { get; set; }
 
     /// <summary>
-    /// 迭代方法。如不指定，则使用Time(int index)
+    /// 获取或设置迭代方法。如不指定，则使用Time(int index)
     /// </summary>
     public Action<int> Action { get; set; }
 
     /// <summary>
-    /// 是否显示控制台进度
+    /// 获取或设置是否显示控制台进度
     /// </summary>
     public bool ShowProgress { get; set; }
 
     /// <summary>
-    /// 进度
+    /// 获取或设置进度
     /// </summary>
     public int Index { get; set; }
 
     /// <summary>
-    /// CPU周期
+    /// 获取或设置CPU周期
     /// </summary>
     public long CpuCycles { get; set; }
 
     /// <summary>
-    /// 线程时间。单位：毫秒
+    /// 获取或设置线程时间。单位：毫秒
     /// </summary>
     public long ThreadTime { get; set; }
 
     /// <summary>
-    /// GC代数
+    /// 获取或设置GC代数
     /// </summary>
     public int[] Gen { get; set; }
 
     /// <summary>
-    /// 执行时间
+    /// 获取或设置执行时间
     /// </summary>
     public TimeSpan Elapsed { get; set; }
 
@@ -264,9 +264,10 @@ public class CodeTimer
         Console.CursorVisible = cursorVisible;
     }
 
-    /// <summary>
-    /// 输出字符串。输出依次分别是：执行时间、CPU线程时间、时钟周期、GC代数
-    /// </summary>
+    /// <inheritdoc />
+    /// <remarks>
+    /// 输出耗时、线程时间、CPU 周期、GC 代数、相对进度和单次平均耗时。
+    /// </remarks>
     public override string ToString()
     {
         var ms = Elapsed.TotalMilliseconds;

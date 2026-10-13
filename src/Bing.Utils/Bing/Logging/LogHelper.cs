@@ -17,7 +17,7 @@ public class LogHelper : BaseLogHelper, IDisposable
     private static readonly Lazy<LogHelper> InstanceLazy = new(() => new LogHelper());
 
     /// <summary>
-    /// 实例
+    /// 获取实例
     /// </summary>
     public static LogHelper Instance => InstanceLazy.Value;
 
@@ -45,7 +45,7 @@ public class LogHelper : BaseLogHelper, IDisposable
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="LogHelper"/>类型的实例
+    /// 初始化一个 <see cref="LogHelper"/> 类型的实例。
     /// </summary>
     private LogHelper() : base(NullLogger.Instance) { }
 
@@ -141,7 +141,7 @@ public class LogHelper<T> : BaseLogHelper
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="LogHelper{T}"/>类型的实例
+    /// 初始化一个 <see cref="LogHelper{T}"/> 类型的实例。
     /// </summary>
     /// <param name="logger">日志记录器</param>
     public LogHelper(ILogger<T> logger) : base(logger)
@@ -198,7 +198,7 @@ public abstract class BaseLogHelper
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="BaseLogHelper"/>类型的实例
+    /// 初始化一个 <see cref="BaseLogHelper"/> 类型的实例。
     /// </summary>
     /// <param name="logger">日志记录器</param>
     protected BaseLogHelper(ILogger logger) => SetLogger(logger);
@@ -208,27 +208,27 @@ public abstract class BaseLogHelper
     #region 属性
 
     /// <summary>
-    /// 日志记录的扩展钩子【之前】
+    /// 获取或设置日志记录的扩展钩子【之前】
     /// </summary>
     public Action<LogLevel, string, Exception, object[]> BeforeLog { get; set; }
 
     /// <summary>
-    /// 日志记录的扩展钩子【之后】
+    /// 获取或设置日志记录的扩展钩子【之后】
     /// </summary>
     public Action<LogLevel, string, Exception, object[]> AfterLog { get; set; }
 
     /// <summary>
-    /// 日志记录异常的扩展钩子
+    /// 获取或设置日志记录异常的扩展钩子
     /// </summary>
     public Action<Exception> OnLogException { get; set; }
 
     /// <summary>
-    /// 日志抑制规则的扩展钩子
+    /// 获取或设置日志抑制规则的扩展钩子
     /// </summary>
     public Func<LogLevel, string, bool> SuppressLog { get; set; } = (level, message) => false;
 
     /// <summary>
-    /// 日志格式化
+    /// 获取或设置日志格式化
     /// </summary>
     public Func<string, object[], string> LogFormat { get; set; } = (message, args) =>
     {

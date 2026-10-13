@@ -75,7 +75,7 @@ public class CommandLineExecutor
     private readonly List<string> _outputToMatch;
 
     /// <summary>
-    /// 初始化一个<see cref="CommandLineExecutor"/>类型的实例
+    /// 初始化一个 <see cref="CommandLineExecutor"/> 类型的实例。
     /// </summary>
     public CommandLineExecutor()
     {

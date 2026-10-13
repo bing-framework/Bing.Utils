@@ -8,7 +8,7 @@ namespace Bing.Utils.Develops;
 public static class UnitTester
 {
     /// <summary>
-    /// 输出内容
+    /// 获取或设置输出内容
     /// </summary>
     public static Action<string> WriteLine { get; set; } = Console.WriteLine;
 

@@ -33,7 +33,7 @@ public class RuntimeMonitor : IDisposable
     private readonly System.Timers.Timer _timer = new();
 
     /// <summary>
-    /// 初始化一个<see cref="RuntimeMonitor"/>类型的实例
+    /// 初始化一个 <see cref="RuntimeMonitor"/> 类型的实例。
     /// </summary>
     /// <param name="process">需要监控的进程</param>
     /// <param name="interval">监控检查周期(ms)</param>
@@ -47,42 +47,42 @@ public class RuntimeMonitor : IDisposable
     }
 
     /// <summary>
-    /// CPU时间消耗
+    /// 获取或设置CPU时间消耗
     /// </summary>
     public int TimeCost { get; private set; }
 
     /// <summary>
-    /// 总时间消耗
+    /// 获取或设置总时间消耗
     /// </summary>
     public int TotalTimeCost { get; private set; }
 
     /// <summary>
-    /// 内存消耗
+    /// 获取或设置内存消耗
     /// </summary>
     public int MemoryCost { get; private set; }
 
     /// <summary>
-    /// CPU时间限制
+    /// 获取或设置CPU时间限制
     /// </summary>
     public int TimeLimit { get; set; }
 
     /// <summary>
-    /// 最大时间限制
+    /// 获取或设置最大时间限制
     /// </summary>
     public int TotalTimeLimit { get; set; }
 
     /// <summary>
-    /// 内存限制
+    /// 获取或设置内存限制
     /// </summary>
     public int MemoryLimit { get; set; }
 
     /// <summary>
-    /// 是否超出（时间/内存）限制而杀死进程
+    /// 获取或设置是否超出（时间/内存）限制而杀死进程
     /// </summary>
     public bool LimitExceed { get; private set; }
 
     /// <summary>
-    /// 当前监控的进程
+    /// 获取当前监控的进程
     /// </summary>
     public Process Process { get; }
 
