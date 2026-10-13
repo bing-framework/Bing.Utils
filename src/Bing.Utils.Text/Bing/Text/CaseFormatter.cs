@@ -20,7 +20,7 @@ public class CaseFormatter
     private readonly ISplitter _splitter;
 
     /// <summary>
-    /// 初始化一个<see cref="CaseFormatter"/>类型的实例
+    /// 初始化一个 <see cref="CaseFormatter"/> 类型的实例。
     /// </summary>
     /// <param name="splitter">字符串分割器</param>
     /// <exception cref="ArgumentNullException"></exception>
@@ -31,7 +31,7 @@ public class CaseFormatter
     }
 
     /// <summary>
-    /// 初始化一个<see cref="CaseFormatter"/>类型的实例
+    /// 初始化一个 <see cref="CaseFormatter"/> 类型的实例。
     /// </summary>
     private CaseFormatter()
     {
