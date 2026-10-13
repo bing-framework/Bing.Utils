@@ -1,4 +1,7 @@
 extern alias guard;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using ValidationExceptionHelper = guard::Bing.Validation.ValidationExceptionHelper;
 
 namespace Bing.Validation;
@@ -75,6 +78,30 @@ public class ValidationExceptionHelperTest
     }
 
     /// <summary>
+    /// 测试目的：验证 null 参数被类型推断过滤后，仍保持旧实现忽略多余参数的行为。
+    /// </summary>
+    [Fact]
+    public void WrapAndRaise_NullArgumentWithParameterlessConstructor_PreservesBehavior()
+    {
+        var exception = Assert.Throws<NullTolerantException>(() =>
+            ValidationExceptionHelper.WrapAndAndRaise<NullTolerantException>(false, new object[] { null! }));
+
+        Assert.Equal("parameterless", exception.Message);
+    }
+
+    /// <summary>
+    /// 测试目的：验证异常构造函数抛错时仍传播原始异常，而不是暴露 TargetInvocationException。
+    /// </summary>
+    [Fact]
+    public void WrapAndRaise_ThrowingConstructor_PreservesOriginalException()
+    {
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            ValidationExceptionHelper.WrapAndAndRaise<ThrowingException>(false));
+
+        Assert.Equal("constructor failure", exception.Message);
+    }
+
+    /// <summary>
     /// 测试目的：验证抛出不同类型的异常
     /// </summary>
     [Theory]
@@ -118,4 +145,66 @@ public class ValidationExceptionHelperTest
             ValidationExceptionHelper.WrapAndAndRaise<InvalidOperationException>(true));
         Assert.Null(exception3);
     }
+
+    private sealed class NullTolerantException : Exception
+    {
+        public NullTolerantException() : base("parameterless") { }
+
+        public NullTolerantException(string message) : base(message) { }
+    }
+
+    private sealed class ThrowingException : Exception
+    {
+        public ThrowingException() => throw new InvalidOperationException("constructor failure");
+    }
+
+#if NET6_0_OR_GREATER
+    /// <summary>
+    /// 测试目的：验证动态异常类型经过 Guard 构造后不会被构造函数缓存固定。
+    /// </summary>
+    [Fact]
+    public void WrapAndRaise_CollectibleException_DoesNotPinAssembly()
+    {
+        var assembly = UseCollectibleException();
+        for (var attempt = 0; attempt < 20 && assembly.IsAlive; attempt++)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        Assert.False(assembly.IsAlive);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static WeakReference UseCollectibleException()
+    {
+        var assembly = AssemblyBuilder.DefineDynamicAssembly(
+            new AssemblyName($"GuardCollectibleException_{Guid.NewGuid():N}"),
+            AssemblyBuilderAccess.RunAndCollect);
+        var module = assembly.DefineDynamicModule("Main");
+        var builder = module.DefineType(
+            "CollectibleValidationException",
+            TypeAttributes.Public | TypeAttributes.Class,
+            typeof(Exception));
+        var constructor = builder.DefineConstructor(
+            MethodAttributes.Public,
+            CallingConventions.Standard,
+            Type.EmptyTypes);
+        var il = constructor.GetILGenerator();
+        il.Emit(OpCodes.Ldarg_0);
+        il.Emit(OpCodes.Call, typeof(Exception).GetConstructor(Type.EmptyTypes)!);
+        il.Emit(OpCodes.Ret);
+        var exceptionType = builder.CreateTypeInfo()!.AsType();
+
+        var method = typeof(ValidationExceptionHelper)
+            .GetMethod(nameof(ValidationExceptionHelper.WrapAndAndRaise))!
+            .MakeGenericMethod(exceptionType);
+        var outer = Assert.Throws<TargetInvocationException>(() =>
+            method.Invoke(null, new object[] { false, Array.Empty<object>() }));
+
+        Assert.NotNull(outer.InnerException);
+        Assert.Equal(exceptionType, outer.InnerException!.GetType());
+        return new WeakReference(assembly);
+    }
+#endif
 }

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using AspectCore.Extensions.Reflection;
 using Bing.Exceptions;
 using Bing.Reflection;
 
@@ -34,9 +33,27 @@ internal static class ValidationExceptionHelper
     /// <param name="args">参数</param>
     private static object CreateException(Type type, params object[] args)
     {
-        return args is null || args.Length == 0
-            ? type.GetConstructors().FirstOrDefault(WithoutParamPredicate)?.GetReflector().Invoke()
-            : type.GetConstructor(Types.Of(args))?.GetReflector().Invoke(args);
+        var parameters = args ?? Array.Empty<object>();
+        var constructor = parameters.Length == 0
+            ? type.GetConstructors().FirstOrDefault(WithoutParamPredicate)
+            : type.GetConstructor(Types.Of(parameters));
+
+        // 直接调用构造函数，避免 AspectCore 的 ConstructorInfo 强键缓存固定可回收程序集。
+        if (constructor is null)
+            return null!;
+
+        var constructorParameterCount = constructor.GetParameters().Length;
+        var invokeParameters = parameters.Length > constructorParameterCount
+            ? parameters.Take(constructorParameterCount).ToArray()
+            : parameters;
+        try
+        {
+            return constructor.Invoke(invokeParameters);
+        }
+        catch (TargetInvocationException exception) when (exception.InnerException is not null)
+        {
+            return ExceptionHelper.PrepareForRethrow(exception.InnerException);
+        }
 
         bool WithoutParamPredicate(MethodBase ci) => !ci.GetParameters().Any();
     }
