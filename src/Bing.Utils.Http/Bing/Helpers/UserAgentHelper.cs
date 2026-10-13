@@ -29,7 +29,7 @@ public static class UserAgentHelper
     #region 字典
 
     /// <summary>
-    /// 操作系统字典
+    /// 获取或设置操作系统字典
     /// </summary>
     public static IDictionary<string, string> OperationSystemDict { get; set; } = new Dictionary<string, string>()
     {
@@ -80,7 +80,7 @@ public static class UserAgentHelper
     };
 
     /// <summary>
-    /// 浏览器字典
+    /// 获取或设置浏览器字典
     /// </summary>
     public static IDictionary<string, string> BrowserDict { get; set; } = new Dictionary<string, string>()
     {
@@ -327,37 +327,37 @@ public static class UserAgentHelper
 public class UserAgentInfo
 {
     /// <summary>
-    /// 浏览器
+    /// 获取或设置浏览器
     /// </summary>
     public string Browser { get; set; }
 
     /// <summary>
-    /// 版本号
+    /// 获取或设置版本号
     /// </summary>
     public string Version { get; set; }
 
     /// <summary>
-    /// 内核
+    /// 获取或设置内核
     /// </summary>
     public string Engine { get; set; }
 
     /// <summary>
-    /// 操作系统
+    /// 获取或设置操作系统
     /// </summary>
     public string Os { get; set; }
 
     /// <summary>
-    /// 操作系统版本号
+    /// 获取或设置操作系统版本号
     /// </summary>
     public string OsVersion { get; set; }
 
     /// <summary>
-    /// 设备
+    /// 获取或设置设备
     /// </summary>
     public string Device { get; set; }
 
     /// <summary>
-    /// 语言
+    /// 获取或设置语言
     /// </summary>
     public string Language { get; set; }
 }
