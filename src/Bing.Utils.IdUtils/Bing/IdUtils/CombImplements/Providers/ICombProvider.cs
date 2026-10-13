@@ -1,40 +1,45 @@
 namespace Bing.IdUtils.CombImplements.Providers;
 
 /// <summary>
-/// 基于 COMB 算法的 GUID 提供程序
+/// 提供 COMB <see cref="Guid"/> 的生成和时间提取功能。
 /// </summary>
 /// <remarks>
-/// COMB 型可以理解为一种改进的 GUID 。由于 GUID 数据毫无规律可言造成索引效率低下，影响了系统的性能，因此 COMB 将 GUID 和系统时间进行结合，以使索引和检索上有更优的性能。
+/// COMB 将时间信息编码到 GUID 中，可用于改善按该 GUID 建立索引时的数据局部性。
 /// </remarks>
 internal interface ICombProvider
 {
     /// <summary>
-    /// 创建一个 COMB 型的 <see cref="Guid"/>。由一个随机的 <see cref="Guid"/> 和当前的 UTC 时间戳组成。
+    /// 使用随机 GUID 和当前时间创建 COMB GUID。
     /// </summary>
+    /// <returns>新生成的 COMB GUID。</returns>
     Guid Create();
 
     /// <summary>
-    /// 创建一个 COMB 型的 <see cref="Guid"/>。由一个指定的 <see cref="Guid"/> 和当前的 UTC 时间戳组成。
+    /// 使用指定 GUID 和当前时间创建 COMB GUID。
     /// </summary>
-    /// <param name="value">值</param>
+    /// <param name="value">用作 COMB 基础数据的 GUID。</param>
+    /// <returns>新生成的 COMB GUID。</returns>
     Guid Create(Guid value);
 
     /// <summary>
-    /// 创建一个 COMB 型的 <see cref="Guid"/>。由一个随机的 <see cref="Guid"/> 和提供的时间戳组成。
+    /// 使用随机 GUID 和指定时间创建 COMB GUID。
     /// </summary>
-    /// <param name="timestamp">时间戳</param>
+    /// <param name="timestamp">写入 COMB GUID 的日期时间。</param>
+    /// <returns>新生成的 COMB GUID。</returns>
     Guid Create(DateTime timestamp);
 
     /// <summary>
-    /// 创建一个 COMB 型的 <see cref="Guid"/>。由一个指定的 <see cref="Guid"/> 和提供的时间戳组成。
+    /// 使用指定 GUID 和日期时间创建 COMB GUID。
     /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="timestamp">时间戳</param>
+    /// <param name="value">用作 COMB 基础数据的 GUID。</param>
+    /// <param name="timestamp">写入 COMB GUID 的日期时间。</param>
+    /// <returns>新生成的 COMB GUID。</returns>
     Guid Create(Guid value, DateTime timestamp);
 
     /// <summary>
-    /// 从提供的 COMB GUID 中获取时间戳。
+    /// 从 COMB GUID 中提取编码的日期时间。
     /// </summary>
-    /// <param name="value">COMB GUID</param>
+    /// <param name="value">包含编码日期时间的 COMB GUID。</param>
+    /// <returns>从 GUID 中提取的日期时间。</returns>
     DateTime GetTimeStamp(Guid value);
 }

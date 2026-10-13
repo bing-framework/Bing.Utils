@@ -72,14 +72,14 @@ internal sealed class RandomId : IFormattable
     private readonly string _format;
 
     /// <summary>
-    /// 初始化一个<see cref="RandomId"/>类型的实例
+    /// 初始化一个 <see cref="RandomId"/> 类型的实例。
     /// </summary>
     /// <param name="length">生成Id长度</param>
     /// <param name="dict">随机字符串字典</param>
     public RandomId(int length, string dict = RandomIdGenerator.AllWords) : this(ToFormat(length), dict) { }
 
     /// <summary>
-    /// 初始化一个<see cref="RandomId"/>类型的实例
+    /// 初始化一个 <see cref="RandomId"/> 类型的实例。
     /// </summary>
     /// <param name="format">格式化字符串</param>
     /// <param name="dict">随机字符串字典</param>
@@ -100,8 +100,6 @@ internal sealed class RandomId : IFormattable
     /// </summary>
     private static readonly Random Rand = new();
 
-    /// <summary>
-    /// 输出字符串
-    /// </summary>
+    /// <inheritdoc />
     string IFormattable.ToString(string format, IFormatProvider formatProvider) => _dict[Rand.Next(0, _rMax)].ToString();
 }

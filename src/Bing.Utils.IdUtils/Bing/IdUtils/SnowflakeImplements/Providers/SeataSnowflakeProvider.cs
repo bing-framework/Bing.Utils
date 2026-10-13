@@ -73,7 +73,7 @@ internal class SeataSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvide
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="SeataSnowflakeProvider"/>类型的实例
+    /// 初始化一个 <see cref="SeataSnowflakeProvider"/> 类型的实例。
     /// </summary>
     /// <param name="workerId">机器ID，取值范围: 0 ~ 1023</param>
     /// <exception cref="ArgumentException"></exception>
@@ -87,12 +87,9 @@ internal class SeataSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvide
     #region 属性
 
     /// <summary>
-    /// 机器ID（0 ~ 1023）<br />
-    /// 在内存中的实际布局：<br />
-    /// 最高1位：0 <br />
-    /// 中间10位：机器ID <br />
-    /// 最低53位：全部为0
+    /// 获取当前节点使用的工作机器 ID。
     /// </summary>
+    /// <remarks>内存布局为最高 1 位固定为 0、中间 10 位保存机器 ID、最低 53 位为 0。</remarks>
     public long WorkerId { get; protected set; }
 
     #endregion
@@ -145,5 +142,6 @@ internal class SeataSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvide
     }
 
     /// <inheritdoc />
+    /// <returns>经时钟偏移调整后的当前毫秒时间戳。</returns>
     protected override long TimeGen() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - TWEPOCH;
 }

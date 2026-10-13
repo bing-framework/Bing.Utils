@@ -5,9 +5,7 @@ namespace Bing.IdUtils;
 /// </summary>
 public class DefaultTraceIdMaker : ITraceIdMaker
 {
-    /// <summary>
-    /// 创建 Id
-    /// </summary>
+    /// <inheritdoc />
     public string Create()
     {
         var now = DateTime.Now;

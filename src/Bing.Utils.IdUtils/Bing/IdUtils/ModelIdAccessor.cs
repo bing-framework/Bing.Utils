@@ -40,7 +40,7 @@ public sealed class ModelIdAccessor
     private DateTime _currentTimeStamp;
 
     /// <summary>
-    /// 初始化一个<see cref="ModelIdAccessor"/>类型的实例
+    /// 初始化一个 <see cref="ModelIdAccessor"/> 类型的实例。
     /// </summary>
     /// <remarks>
     /// 构造函数会立即从时间戳工厂获取初始时间点，确保实例创建时的时间一致性。
@@ -52,7 +52,7 @@ public sealed class ModelIdAccessor
     }
 
     /// <summary>
-    /// 初始化一个<see cref="ModelIdAccessor"/>类型的实例
+    /// 初始化一个 <see cref="ModelIdAccessor"/> 类型的实例。
     /// </summary>
     ///  <param name="initialIndex">初始索引值，必须大于等于0</param>
     /// <exception cref="ArgumentOutOfRangeException">当initialIndex小于0时抛出</exception>

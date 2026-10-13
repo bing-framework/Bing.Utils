@@ -48,11 +48,11 @@ internal static class GuidUtility
     }
 
     /// <summary>
-    /// 交换
+    /// 交换字节数组中指定索引处的两个字节。
     /// </summary>
-    /// <param name="array">数组</param>
-    /// <param name="index1">交换索引</param>
-    /// <param name="index2">交换索引</param>
+    /// <param name="array">包含待交换字节的数组。</param>
+    /// <param name="index1">第一个字节的索引。</param>
+    /// <param name="index2">第二个字节的索引。</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void Swap(byte[] array, int index1, int index2) => (array[index1], array[index2]) = (array[index2], array[index1]);
 }

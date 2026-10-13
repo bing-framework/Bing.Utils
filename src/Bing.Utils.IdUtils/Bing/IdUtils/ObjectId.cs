@@ -12,7 +12,6 @@ namespace Bing.IdUtils;
 /// - 3字节机器标识符
 /// - 2字节进程ID
 /// - 3字节递增计数器
-/// 
 /// 代码改编自：https://github.com/tangxuehua/ecommon/blob/master/src/ECommon/Utilities/ObjectId.cs
 /// </remarks>
 public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
@@ -95,7 +94,7 @@ public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
     #region 静态构造函数
 
     /// <summary>
-    /// 静态构造函数，初始化静态字段
+    /// 初始化当前类型的静态状态。
     /// </summary>
     static ObjectId()
     {
@@ -112,7 +111,7 @@ public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="ObjectId"/> 类型的实例。
+    /// 初始化一个 <see cref="ObjectId"/> 类型的实例。
     /// </summary>
     /// <param name="bytes">12字节的字节数组</param>
     /// <exception cref="ArgumentNullException">当 bytes 为 null 时抛出</exception>
@@ -125,7 +124,7 @@ public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
     }
 
     /// <summary>
-    /// 初始化一个<see cref="ObjectId"/> 类型的实例。
+    /// 初始化一个 <see cref="ObjectId"/> 类型的实例。
     /// </summary>
     /// <param name="timestamp">时间戳</param>
     /// <param name="machine">机器标识符</param>
@@ -137,7 +136,7 @@ public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
     }
 
     /// <summary>
-    /// 初始化一个<see cref="ObjectId"/> 类型的实例。
+    /// 初始化一个 <see cref="ObjectId"/> 类型的实例。
     /// </summary>
     /// <param name="timestamp">Unix 时间戳</param>
     /// <param name="machine">机器标识符（必须在0-16777215范围内）</param>
@@ -158,7 +157,7 @@ public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
     }
 
     /// <summary>
-    /// 初始化一个<see cref="ObjectId"/> 类型的实例。
+    /// 初始化一个 <see cref="ObjectId"/> 类型的实例。
     /// </summary>
     /// <param name="value">24位16进制字符串</param>
     /// <exception cref="ArgumentNullException">当 value 为 null 时抛出</exception>
@@ -460,11 +459,11 @@ public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
     #region 私有静态方法
 
     /// <summary>
-    /// 获取当前进程ID。
+    /// 获取当前进程的标识。
     /// </summary>
+    /// <returns>当前进程 ID。</returns>
     /// <remarks>
-    /// 此方法存在是因为 CAS 在调用堆栈上的操作方式，在执行方法之前检查权限。
-    /// 因此，如果我们内联此调用，调用方法将不会在抛出异常之前执行。
+    /// 此方法通过独立调用满足 CAS 在方法调用前执行的权限检查。
     /// </remarks>
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static int GetCurrentProcessId() => Process.GetCurrentProcess().Id;
@@ -544,20 +543,13 @@ public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
             _increment == rhs._increment;
     }
 
-    /// <summary>
-    /// 比较此 ObjectId 与另一个对象是否相等。
-    /// </summary>
-    /// <param name="obj">要比较的另一个对象</param>
-    /// <returns>如果另一个对象是 ObjectId 且与此相等则返回 true</returns>
+    /// <inheritdoc />
     public override bool Equals(object obj)
     {
         return obj is ObjectId other && Equals(other);
     }
 
-    /// <summary>
-    /// 获取哈希码。
-    /// </summary>
-    /// <returns>哈希码</returns>
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         int hash = 17;
@@ -574,10 +566,7 @@ public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>
     /// <returns>12字节的字节数组</returns>
     public byte[] ToByteArray() => Pack(_timestamp, _machine, _pid, _increment);
 
-    /// <summary>
-    /// 返回 ObjectId 的字符串表示。
-    /// </summary>
-    /// <returns>24位16进制字符串</returns>
+    /// <inheritdoc />
     public override string ToString() => ToHexString(ToByteArray());
 
     #endregion

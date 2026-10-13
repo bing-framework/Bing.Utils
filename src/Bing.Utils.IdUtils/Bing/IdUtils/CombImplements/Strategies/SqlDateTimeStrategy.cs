@@ -8,34 +8,25 @@ namespace Bing.IdUtils.CombImplements.Strategies;
 internal class SqlDateTimeStrategy : ICombDateTimeStrategy
 {
     /// <summary>
-    /// 每天时钟数
+    /// 每天对应的 SQL 日期时间单位数（每秒 300 个单位）。
     /// </summary>
     private const double TICKS_PER_DAY = 86_400d * 300d;
 
     /// <summary>
-    /// 每毫秒时钟数
+    /// 每毫秒对应的 SQL 日期时间单位数。
     /// </summary>
     private const double TICKS_PER_MILLISECOND = 3d / 10d;
 
-    /// <summary>
-    /// 日期字节数
-    /// </summary>
+    /// <inheritdoc />
     public int NumDateBytes => 6;
 
-    /// <summary>
-    /// 最小日期时间
-    /// </summary>
+    /// <inheritdoc />
     public DateTime MinDateTimeValue { get; } = new(1900, 1, 1);
 
-    /// <summary>
-    /// 最大日期时间
-    /// </summary>
+    /// <inheritdoc />
     public DateTime MaxDateTimeValue => MinDateTimeValue.AddDays(NumberConst.UShortMax);
 
-    /// <summary>
-    /// 将 <see cref="DateTime"/> 转换为 byte[]
-    /// </summary>
-    /// <param name="timestamp">时间戳</param>
+    /// <inheritdoc />
     public byte[] DateTimeToBytes(DateTime timestamp)
     {
         var ticks = (int)(timestamp.TimeOfDay.TotalMilliseconds * TICKS_PER_MILLISECOND);
@@ -55,10 +46,7 @@ internal class SqlDateTimeStrategy : ICombDateTimeStrategy
         return ret;
     }
 
-    /// <summary>
-    /// 将 byte[] 转换为 <see cref="DateTime"/>
-    /// </summary>
-    /// <param name="value">字节数组</param>
+    /// <inheritdoc />
     public DateTime BytesToDateTime(byte[] value)
     {
         var dayBytes = new byte[2];

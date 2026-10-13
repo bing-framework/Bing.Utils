@@ -13,7 +13,7 @@ internal class MsSqlCombProvider : BaseCombProvider
     private const int EMBED_AT_INDEX = 10;
 
     /// <summary>
-    /// 初始化一个<see cref="MsSqlCombProvider"/>类型的实例
+    /// 初始化一个 <see cref="MsSqlCombProvider"/> 类型的实例。
     /// </summary>
     /// <param name="strategy">日期时间策略</param>
     /// <param name="customTimeStampProvider">自定义时间戳提供程序</param>
@@ -23,11 +23,10 @@ internal class MsSqlCombProvider : BaseCombProvider
     {
     }
 
-    /// <summary>
-    /// 创建一个 COMB 型的 <see cref="Guid"/>。由一个指定的 <see cref="Guid"/> 和提供的时间戳组成。
-    /// </summary>
-    /// <param name="value">值</param>
-    /// <param name="timestamp">时间戳</param>
+    /// <inheritdoc />
+    /// <remarks>
+    /// SQL Server 布局将日期时间字节写入 GUID 字节数组的索引 10 起始位置。
+    /// </remarks>
     public override Guid Create(Guid value, DateTime timestamp)
     {
         var gBytes = value.ToByteArray();
@@ -36,10 +35,10 @@ internal class MsSqlCombProvider : BaseCombProvider
         return new Guid(gBytes);
     }
 
-    /// <summary>
-    /// 从提供的 COMB GUID 中获取时间戳。
-    /// </summary>
-    /// <param name="value">COMB GUID</param>
+    /// <inheritdoc />
+    /// <remarks>
+    /// 从 GUID 字节数组的索引 10 起始位置读取 SQL Server 布局的日期时间数据。
+    /// </remarks>
     public override DateTime GetTimeStamp(Guid value)
     {
         var gBytes = value.ToByteArray();

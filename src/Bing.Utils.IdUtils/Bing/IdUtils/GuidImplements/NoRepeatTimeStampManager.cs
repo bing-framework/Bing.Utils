@@ -14,7 +14,7 @@ internal static class NoRepeatTimeStampManager
     private static readonly NoRepeatTimeStampFactory _factory;
 
     /// <summary>
-    /// 静态构造函数
+    /// 初始化当前类型的静态状态。
     /// </summary>
     static NoRepeatTimeStampManager() => _factory = new NoRepeatTimeStampFactory();
 

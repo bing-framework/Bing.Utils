@@ -10,11 +10,13 @@ public static class UnixTimeStampStyleProvider
     /// <summary>
     /// 获取当前 UTC Unix 时间
     /// </summary>
+    /// <returns>当前 UTC 时间。</returns>
     private static DateTime GetUnixUtcNow() => new UnixTimeStamp(DateTime.UtcNow).ToDateTime();
 
     /// <summary>
     /// 获取当前 UTC Unix 时间【不重复】
     /// </summary>
+    /// <returns>经不重复时间戳处理的当前 UTC 时间。</returns>
     private static DateTime GetNoRepeatUnixUtcNow() => NoRepeatTimeStampManager.GetFactory().GetUtcUnixTimeStampObject().ToDateTime();
 
     /// <summary>

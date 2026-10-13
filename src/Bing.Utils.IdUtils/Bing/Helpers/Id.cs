@@ -14,12 +14,12 @@ public static partial class Id
     private static readonly AsyncLocal<string> _id = new();
 
     /// <summary>
-    /// Long 生成函数
+    /// 获取或设置Long 生成函数
     /// </summary>
     public static Func<long> LongGenerateFunc { get; private set; }
 
     /// <summary>
-    /// String 生成函数
+    /// 获取或设置String 生成函数
     /// </summary>
     public static Func<string> StringGenerateFunc { get; private set; }
 

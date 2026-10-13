@@ -16,7 +16,7 @@ public sealed class TraceIdAccessor
     private readonly string _id;
 
     /// <summary>
-    /// 初始化一个<see cref="TraceIdAccessor"/>类型的实例
+    /// 初始化一个 <see cref="TraceIdAccessor"/> 类型的实例。
     /// </summary>
     /// <param name="maker">Trace Id 生成器</param>
     public TraceIdAccessor(ITraceIdMaker maker) => _id = maker is null ? DefaultMarker.Create() : maker.Create();

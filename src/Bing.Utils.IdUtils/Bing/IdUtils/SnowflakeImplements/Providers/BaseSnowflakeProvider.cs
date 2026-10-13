@@ -9,6 +9,7 @@ internal abstract class BaseSnowflakeProvider : ISnowflakeProvider
     public abstract long NextId();
 
     /// <inheritdoc />
+    /// <param name="size">要生成的标识数量。</param>
     public long[] NextIds(uint size)
     {
         var ids = new long[size];
@@ -20,6 +21,7 @@ internal abstract class BaseSnowflakeProvider : ISnowflakeProvider
     /// <summary>
     /// 获取当前时间戳
     /// </summary>
+    /// <returns>当前 Unix 毫秒时间戳。</returns>
     protected virtual long TimeGen() => TimeExtensions.CurrentTimeMills();
 
     /// <summary>
@@ -66,6 +68,7 @@ internal abstract class BaseSnowflakeProvider : ISnowflakeProvider
         /// <summary>
         /// 默认当前时间戳
         /// </summary>
+        /// <returns>按配置时间戳格式取得的 Unix 毫秒时间。</returns>
         private static long InternalCurrentTimeMillis() => (long)(DateTime.UtcNow - Jan1St1970).TotalMilliseconds;
     }
 }

@@ -102,7 +102,7 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="TwitterSnowflakeProvider"/>类型的实例
+    /// 初始化一个 <see cref="TwitterSnowflakeProvider"/> 类型的实例。
     /// </summary>
     /// <param name="workerId">机器ID，取值范围: 0 ~ 31</param>
     /// <param name="datacenterId">数据中心ID，取值范围: 0 ~ 31</param>
@@ -127,17 +127,17 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     #region 属性
 
     /// <summary>
-    /// 工作机器ID(0 ~ 31)
+    /// 获取或设置工作机器ID(0 ~ 31)
     /// </summary>
     public long WorkerId { get; protected set; }
 
     /// <summary>
-    /// 数据中心ID(0 ~ 31)
+    /// 获取或设置数据中心ID(0 ~ 31)
     /// </summary>
     public long DatacenterId { get; protected set; }
 
     /// <summary>
-    /// 毫秒内序列(0 ~ 4095)
+    /// 获取或设置毫秒内序列(0 ~ 4095)
     /// </summary>
     public long Sequence
     {
@@ -193,6 +193,7 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     /// 获取增量时间戳，防止产生的时间比之前的时间还要小（由于NTP回拨等问题），保持增量的趋势
     /// </summary>
     /// <param name="lastTimestamp">最后一个时间戳</param>
+    /// <returns>大于 lastTimestamp 的系统毫秒时间戳。</returns>
     protected virtual long TilNextMillis(long lastTimestamp)
     {
         var timestamp = TimeGen();

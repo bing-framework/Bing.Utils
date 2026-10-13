@@ -6,29 +6,20 @@ namespace Bing.IdUtils.CombImplements.Strategies;
 internal class UnixDateTimeStrategy : ICombDateTimeStrategy
 {
     /// <summary>
-    /// 每毫秒时钟数
+    /// 每毫秒对应的 .NET 时间刻度数。
     /// </summary>
     private const long TICKS_PER_MILLISECOND = 10_000;
 
-    /// <summary>
-    /// 日期字节数
-    /// </summary>
+    /// <inheritdoc />
     public int NumDateBytes => 6;
 
-    /// <summary>
-    /// 最小日期时间
-    /// </summary>
+    /// <inheritdoc />
     public DateTime MinDateTimeValue { get; } = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
-    /// <summary>
-    /// 最大日期时间
-    /// </summary>
+    /// <inheritdoc />
     public DateTime MaxDateTimeValue => MinDateTimeValue.AddMilliseconds(2 ^ (8 * NumDateBytes));
 
-    /// <summary>
-    /// 将 <see cref="DateTime"/> 转换为 byte[]
-    /// </summary>
-    /// <param name="timestamp">时间戳</param>
+    /// <inheritdoc />
     public byte[] DateTimeToBytes(DateTime timestamp)
     {
         var ms = ToUnixTimeMilliseconds(timestamp);
@@ -45,10 +36,7 @@ internal class UnixDateTimeStrategy : ICombDateTimeStrategy
         return ret;
     }
 
-    /// <summary>
-    /// 将 byte[] 转换为 <see cref="DateTime"/>
-    /// </summary>
-    /// <param name="value">字节数组</param>
+    /// <inheritdoc />
     public DateTime BytesToDateTime(byte[] value)
     {
         var msBytes = new byte[8];
@@ -65,14 +53,16 @@ internal class UnixDateTimeStrategy : ICombDateTimeStrategy
     }
 
     /// <summary>
-    /// 将 <see cref="DateTime"/> 转换为 Unix时间戳
+    /// 将日期时间转换为相对于 Unix 纪元的毫秒数。
     /// </summary>
-    /// <param name="timestamp">日期时间</param>
+    /// <param name="timestamp">要转换的日期时间。</param>
+    /// <returns>相对于 Unix 纪元的毫秒数。</returns>
     private long ToUnixTimeMilliseconds(DateTime timestamp) => (timestamp.Ticks - MinDateTimeValue.Ticks) / TICKS_PER_MILLISECOND;
 
     /// <summary>
-    /// 从 Unix时间戳 转换为 <see cref="DateTime"/>
+    /// 将相对于 Unix 纪元的毫秒数转换为日期时间。
     /// </summary>
-    /// <param name="ms">Unix时间戳</param>
+    /// <param name="ms">相对于 Unix 纪元的毫秒数。</param>
+    /// <returns>对应的日期时间。</returns>
     private DateTime FromUnixTimeMilliseconds(long ms) => MinDateTimeValue.AddTicks(ms * TICKS_PER_MILLISECOND);
 }
