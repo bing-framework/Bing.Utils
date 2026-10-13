@@ -11,7 +11,7 @@ public class Sandbox : TempDirectory
     public const string DefaultPrefix = "Sandbox-";
 
     /// <summary>
-    /// 初始化一个<see cref="Sandbox"/>类型的实例
+    /// 初始化一个 <see cref="Sandbox"/> 类型的实例。
     /// </summary>
     /// <param name="name">沙箱前缀。默认值：<see cref="DefaultPrefix"/></param>
     public Sandbox(string name = DefaultPrefix) : base(name)

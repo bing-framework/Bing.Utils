@@ -26,7 +26,7 @@ public class FileWatcher
     private int _interval = 10 * 1000;
 
     /// <summary>
-    /// 文件更改监控已启动
+    /// 获取或设置文件更改监控已启动
     /// </summary>
     public bool IsWatching { get; private set; } = false;
 
@@ -36,7 +36,7 @@ public class FileWatcher
     private ConcurrentDictionary<string, FileSystemWatcher> _watchers = new();
 
     /// <summary>
-    /// 初始化一个<see cref="FileWatcher"/>类型的实例
+    /// 初始化一个 <see cref="FileWatcher"/> 类型的实例。
     /// </summary>
     /// <param name="paths">路径</param>
     public FileWatcher(string[] paths)
@@ -195,32 +195,32 @@ public class FileWatcher
 public class FileWatcherEventArgs
 {
     /// <summary>
-    /// 变更类型
+    /// 获取变更类型
     /// </summary>
     public WatcherChangeTypes ChangeTypes { get; }
 
     /// <summary>
-    /// 文件全路径
+    /// 获取文件全路径
     /// </summary>
     public string FullPath { get; }
 
     /// <summary>
-    /// 文件名称
+    /// 获取文件名称
     /// </summary>
     public string Name { get; }
 
     /// <summary>
-    /// 旧的文件全路径
+    /// 获取旧的文件全路径
     /// </summary>
     public string OldFullPath { get; }
 
     /// <summary>
-    /// 旧的文件名称
+    /// 获取旧的文件名称
     /// </summary>
     public string OldName { get; }
 
     /// <summary>
-    /// 初始化一个<see cref="FileWatcherEventArgs"/>类型的实例
+    /// 初始化一个 <see cref="FileWatcherEventArgs"/> 类型的实例。
     /// </summary>
     /// <param name="type">监控变更类型</param>
     /// <param name="fullPath">文件全路径</param>

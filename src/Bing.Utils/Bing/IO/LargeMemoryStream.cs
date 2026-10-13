@@ -47,29 +47,19 @@ public class LargeMemoryStream : Stream
     /// </summary>
     private bool _isDisposed;
 
-    /// <summary>
-    /// 可读
-    /// </summary>
+    /// <inheritdoc />
     public override bool CanRead => true;
 
-    /// <summary>
-    /// 可查找
-    /// </summary>
+    /// <inheritdoc />
     public override bool CanSeek => true;
 
-    /// <summary>
-    /// 可写
-    /// </summary>
+    /// <inheritdoc />
     public override bool CanWrite => true;
 
-    /// <summary>
-    /// 长度
-    /// </summary>
+    /// <inheritdoc />
     public override long Length => _length;
 
-    /// <summary>
-    /// 位置
-    /// </summary>
+    /// <inheritdoc />
     public override long Position
     {
         get => _position;
@@ -101,9 +91,7 @@ public class LargeMemoryStream : Stream
     /// <returns>包含所有字节缓冲区的ArraySegment。</returns>
     public ArraySegment<byte[]> ToArraySegment() => new(_streamBuffers, 0, _streamBuffers.Length);
 
-    /// <summary>
-    /// 清理所有缓冲的数据。
-    /// </summary>
+    /// <inheritdoc />
     /// <remarks>
     /// 此方法主要执行了资源是否已释放的检查。
     /// 尝试在已释放的流上调用此方法将引发ObjectDisposedException。

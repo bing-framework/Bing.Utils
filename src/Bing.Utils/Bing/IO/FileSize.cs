@@ -35,14 +35,14 @@ public readonly struct FileSize : IEquatable<FileSize>, IComparable<FileSize>
     #endregion
 
     /// <summary>
-    /// 文件字节长度
+    /// 获取文件字节长度
     /// </summary>
     public long Size { get; }
 
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="FileSize"/>类型的实例
+    /// 初始化一个 <see cref="FileSize"/> 类型的实例。
     /// </summary>
     /// <param name="size">文件大小</param>
     /// <param name="unit">文件大小单位</param>
@@ -209,10 +209,10 @@ public readonly struct FileSize : IEquatable<FileSize>, IComparable<FileSize>
     /// <returns>格式化后的字符串</returns>
     public string ToString(int precision) => FileSizeHelper.AutoFormat(Size, precision);
 
-    /// <summary>
-    /// 输出描述
-    /// </summary>
-    /// <returns>格式化的文件大小字符串</returns>
+    /// <inheritdoc />
+    /// <remarks>
+    /// 默认保留两位小数，并按文件大小单位自动格式化。
+    /// </remarks>
     public override string ToString() => ToString(2);
 
     #endregion
@@ -299,17 +299,10 @@ public readonly struct FileSize : IEquatable<FileSize>, IComparable<FileSize>
     /// <returns>如果相等则返回true，否则返回false</returns>
     public bool Equals(FileSize other) => Size == other.Size;
 
-    /// <summary>
-    /// 判断与指定对象是否相等
-    /// </summary>
-    /// <param name="obj">要比较的对象</param>
-    /// <returns>如果相等则返回true，否则返回false</returns>
+    /// <inheritdoc />
     public override bool Equals(object? obj) => obj is FileSize other && Equals(other);
 
-    /// <summary>
-    /// 获取哈希码
-    /// </summary>
-    /// <returns>哈希码</returns>
+    /// <inheritdoc />
     public override int GetHashCode() => Size.GetHashCode();
 
     /// <summary>

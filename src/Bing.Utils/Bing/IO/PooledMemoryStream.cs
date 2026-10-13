@@ -56,12 +56,12 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     private bool _isDisposed;
 
     /// <summary>
-    /// 初始化一个<see cref="PooledMemoryStream"/>类型的实例
+    /// 初始化一个 <see cref="PooledMemoryStream"/> 类型的实例。
     /// </summary>
     public PooledMemoryStream() : this(ArrayPool<byte>.Shared) { }
 
     /// <summary>
-    /// 初始化一个<see cref="PooledMemoryStream"/>类型的实例
+    /// 初始化一个 <see cref="PooledMemoryStream"/> 类型的实例。
     /// </summary>
     /// <param name="buffer">流的初始内容。</param>
     public PooledMemoryStream(byte[] buffer) : this(ArrayPool<byte>.Shared, buffer.Length)
@@ -71,7 +71,7 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     }
 
     /// <summary>
-    /// 初始化一个<see cref="PooledMemoryStream"/>类型的实例
+    /// 初始化一个 <see cref="PooledMemoryStream"/> 类型的实例。
     /// </summary>
     /// <param name="arrayPool">用于分配缓冲区的内存池。</param>
     /// <param name="capacity">流的初始容量。</param>
@@ -83,29 +83,19 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
             _data = _pool.Rent(capacity);
     }
 
-    /// <summary>
-    /// 可读
-    /// </summary>
+    /// <inheritdoc />
     public override bool CanRead => true;
 
-    /// <summary>
-    /// 可查找
-    /// </summary>
+    /// <inheritdoc />
     public override bool CanSeek => true;
 
-    /// <summary>
-    /// 可写
-    /// </summary>
+    /// <inheritdoc />
     public override bool CanWrite => true;
 
-    /// <summary>
-    /// 长度
-    /// </summary>
+    /// <inheritdoc />
     public override long Length => _length;
 
-    /// <summary>
-    /// 位置
-    /// </summary>
+    /// <inheritdoc />
     public override long Position { get; set; }
 
     /// <summary>
@@ -131,22 +121,14 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     /// <returns>包含流数据的ArraySegment。</returns>
     public ArraySegment<byte> ToArraySegment() => new(_data, 0, (int)Length);
 
-    /// <summary>
-    /// 清理所有缓冲的数据。
-    /// </summary>
+    /// <inheritdoc />
     /// <remarks>
     /// 此方法主要执行了资源是否已释放的检查。
     /// 尝试在已释放的流上调用此方法将引发ObjectDisposedException。
     /// </remarks>
     public override void Flush() => AssertNotDisposed();
 
-    /// <summary>
-    /// 从当前流中读取字节序列到指定的缓冲区，并根据读取的字节数向前移动流的当前位置。
-    /// </summary>
-    /// <param name="buffer">目标缓冲区数组，从当前流中读取的数据将被存放在这个数组中。</param>
-    /// <param name="offset">buffer 中的字节偏移量，从此处开始存放从当前流中读取的数据。</param>
-    /// <param name="count">最大读取的字节数量。</param>
-    /// <returns>实际读取的字节数量。如果流的末尾已到达，则可能少于请求的字节数量。</returns>
+    /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
         AssertNotDisposed();
@@ -158,12 +140,7 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
         return (int)available;
     }
 
-    /// <summary>
-    /// 设置当前流中的位置。
-    /// </summary>
-    /// <param name="offset">相对于<paramref name="origin"/>参数所指定的位置的偏移量。</param>
-    /// <param name="origin">一个<see cref="SeekOrigin"/>枚举值，指示用于获取新位置的参考点。</param>
-    /// <returns>当前流中的新位置。</returns>
+    /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">如果流已被释放，则抛出此异常。</exception>
     /// <exception cref="ArgumentOutOfRangeException">如果计算得出的新位置超出了流的有效容量范围，则抛出此异常。</exception>
     /// <remarks>
@@ -206,10 +183,7 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
         }
     }
 
-    /// <summary>
-    /// 设置当前流的长度。
-    /// </summary>
-    /// <param name="value">流的新长度。</param>
+    /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">如果流已被释放，则抛出此异常。</exception>
     /// <exception cref="ArgumentOutOfRangeException">如果<paramref name="value"/>小于0，则抛出此异常。</exception>
     /// <remarks>
@@ -229,12 +203,7 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
             Position = Length;
     }
 
-    /// <summary>
-    /// 将指定缓冲区中的数据写入当前流。
-    /// </summary>
-    /// <param name="buffer">源数据的缓冲区。</param>
-    /// <param name="offset">buffer 中开始写入数据的起始位置。</param>
-    /// <param name="count">要写入的字节数。</param>
+    /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">如果流已被释放，则抛出此异常。</exception>
     /// <remarks>
     /// 此方法从 buffer 参数指定的缓冲区复制 count 个字节到当前流中，从 offset 指定的位置开始读取。

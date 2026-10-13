@@ -6,22 +6,20 @@ namespace Bing.IO;
 public class TempFile : TempPath
 {
     /// <summary>
-    /// 初始化一个<see cref="TempFile"/>类型的实例
+    /// 初始化一个 <see cref="TempFile"/> 类型的实例。
     /// </summary>
     /// <param name="prefix">临时文件前缀</param>
     public TempFile(string prefix = null) : base(prefix)
     {
     }
 
-    /// <summary>
-    /// 初始化路径
-    /// </summary>
+    /// <inheritdoc />
     protected override void InitializePath() => File.Create(FullPath).Dispose();
 
-    /// <summary>
-    /// 释放资源。确保删除临时路径
-    /// </summary>
-    /// <param name="disposing">是否释放中</param>
+    /// <inheritdoc />
+    /// <remarks>
+    /// 释放时尝试删除临时文件；删除失败时忽略异常。
+    /// </remarks>
     protected override void Dispose(bool disposing)
     {
         if (!File.Exists(FullPath))

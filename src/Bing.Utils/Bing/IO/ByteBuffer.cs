@@ -57,7 +57,7 @@ public class ByteBuffer
     private const int PoolMaxCount = 200;
 
     /// <summary>
-    /// 此对象是否池化
+    /// 获取或设置此对象是否池化
     /// </summary>
     private bool IsPool { get; set; }
 
@@ -66,7 +66,7 @@ public class ByteBuffer
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="ByteBuffer"/>类型的实例
+    /// 初始化一个 <see cref="ByteBuffer"/> 类型的实例。
     /// </summary>
     /// <param name="capacity">初始容量。</param>
     private ByteBuffer(int capacity)
@@ -78,7 +78,7 @@ public class ByteBuffer
     }
 
     /// <summary>
-    /// 初始化一个<see cref="ByteBuffer"/>类型的实例
+    /// 初始化一个 <see cref="ByteBuffer"/> 类型的实例。
     /// </summary>
     /// <param name="bytes">复制此数据并初始化。</param>
     private ByteBuffer(byte[] bytes)
@@ -95,7 +95,7 @@ public class ByteBuffer
     #region 属性
 
     /// <summary>
-    /// 设置/获取读指针位置
+    /// 获取或设置读指针位置。
     /// </summary>
     public int ReaderIndex
     {
@@ -109,7 +109,7 @@ public class ByteBuffer
     }
 
     /// <summary>
-    /// 设置/获取写指针位置
+    /// 获取或设置写指针位置。
     /// </summary>
     public int WriterIndex
     {

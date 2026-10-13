@@ -6,22 +6,20 @@ namespace Bing.IO;
 public class TempDirectory : TempPath
 {
     /// <summary>
-    /// 初始化一个<see cref="TempDirectory"/>类型的实例
+    /// 初始化一个 <see cref="TempDirectory"/> 类型的实例。
     /// </summary>
     /// <param name="prefix">临时目录前缀</param>
     public TempDirectory(string prefix = null) : base(prefix)
     {
     }
 
-    /// <summary>
-    /// 初始化路径
-    /// </summary>
+    /// <inheritdoc />
     protected override void InitializePath() => Directory.CreateDirectory(FullPath);
 
-    /// <summary>
-    /// 释放资源。确保删除临时路径
-    /// </summary>
-    /// <param name="disposing">是否释放中</param>
+    /// <inheritdoc />
+    /// <remarks>
+    /// 释放时尝试递归删除临时目录；删除失败时忽略异常。
+    /// </remarks>
     protected override void Dispose(bool disposing)
     {
         if (!Directory.Exists(FullPath))

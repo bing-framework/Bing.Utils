@@ -375,32 +375,32 @@ public static class PathHelper
 public class PathInfo
 {
     /// <summary>
-    /// 完整路径
+    /// 获取或设置完整路径
     /// </summary>
     public string FullPath { get; set; }
 
     /// <summary>
-    /// 目录名
+    /// 获取或设置目录名
     /// </summary>
     public string DirectoryName { get; set; }
 
     /// <summary>
-    /// 文件名（包含扩展名）
+    /// 获取或设置文件名（包含扩展名）
     /// </summary>
     public string FileName { get; set; }
 
     /// <summary>
-    /// 文件名（不包含扩展名）
+    /// 获取或设置文件名（不包含扩展名）
     /// </summary>
     public string FileNameWithoutExtension { get; set; }
 
     /// <summary>
-    /// 文件扩展名
+    /// 获取或设置文件扩展名
     /// </summary>
     public string Extension { get; set; }
 
     /// <summary>
-    /// 是否为绝对路径
+    /// 获取或设置是否为绝对路径
     /// </summary>
     public bool IsAbsolute { get; set; }
 }

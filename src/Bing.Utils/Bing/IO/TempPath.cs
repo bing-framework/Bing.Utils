@@ -6,7 +6,7 @@ namespace Bing.IO;
 public abstract class TempPath : IDisposable
 {
     /// <summary>
-    /// 初始化一个<see cref="TempPath"/>类型的实例
+    /// 初始化一个 <see cref="TempPath"/> 类型的实例。
     /// </summary>
     /// <param name="prefix">临时路径前缀</param>
     protected TempPath(string prefix = null)
@@ -17,12 +17,12 @@ public abstract class TempPath : IDisposable
     }
 
     /// <summary>
-    /// 完整的绝对路径
+    /// 获取完整的绝对路径
     /// </summary>
     public string FullPath { get; }
 
     /// <summary>
-    /// 名称
+    /// 获取名称
     /// </summary>
     public string Name { get; }
 
