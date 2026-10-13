@@ -53,6 +53,9 @@ public static partial class Reflections
     /// <param name="directoryPath">目录绝对路径</param>
     /// <exception cref="ArgumentException">当目录路径为空时抛出</exception>
     /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("按目录动态加载程序集，裁剪时必须保留所加载程序集及其依赖的类型和成员。")]
+#endif
     public static List<Assembly> GetAssemblies(string directoryPath)
     {
         if (string.IsNullOrWhiteSpace(directoryPath))

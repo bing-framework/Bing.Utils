@@ -158,7 +158,17 @@ internal static class StrictConstructorBinder
         return Expression.Lambda<Func<object[], object>>(body, arguments).Compile();
     }
 
-    private static object CreateCollectibleInstance(Type type, object[] args)
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("构造函数按运行时元数据绑定并编译委托，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
+    private static object CreateCollectibleInstance(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type, object[] args)
     {
         CoreCacheMetrics.RecordBypass();
         var argumentTypes = args.Select(argument => argument?.GetType()).ToArray();

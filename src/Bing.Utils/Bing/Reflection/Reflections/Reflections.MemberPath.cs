@@ -97,6 +97,9 @@ public static partial class Reflections
     /// <param name="value">成功时为路径的值；失败时为 null。</param>
     /// <param name="options">成员路径访问选项。</param>
     /// <returns>成功读取路径值时返回 true；否则返回 false。</returns>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("成员路径按显式根类型扫描属性和字段，裁剪时必须保留路径涉及的成员元数据。")]
+#endif
     internal static bool TryGetMemberValueByPath(object instance, Type rootType, string memberPath,
         out object value, MemberPathOptions options = null)
     {
@@ -165,6 +168,9 @@ public static partial class Reflections
     /// <param name="memberPath">成员路径。</param>
     /// <param name="options">成员路径访问选项。</param>
     /// <returns>成员路径的值。</returns>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("成员路径按显式根类型扫描属性和字段，裁剪时必须保留路径涉及的成员元数据。")]
+#endif
     internal static object GetMemberValueByPath(object instance, Type rootType, string memberPath,
         MemberPathOptions options = null)
     {
@@ -207,6 +213,9 @@ public static partial class Reflections
     /// <param name="value">要设置的值。</param>
     /// <param name="options">成员路径访问选项。</param>
     /// <returns>成功设置路径值时返回 true；否则返回 false。</returns>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("成员路径按显式根类型扫描属性和字段，裁剪时必须保留路径涉及的成员元数据。")]
+#endif
     internal static bool TrySetMemberValueByPath(object instance, Type rootType, string memberPath, object value,
         MemberPathOptions options = null)
     {
@@ -293,6 +302,9 @@ public static partial class Reflections
     /// <param name="memberPath">成员路径。</param>
     /// <param name="value">要设置的值。</param>
     /// <param name="options">成员路径访问选项。</param>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("成员路径按显式根类型扫描属性和字段，裁剪时必须保留路径涉及的成员元数据。")]
+#endif
     internal static void SetMemberValueByPath(object instance, Type rootType, string memberPath, object value,
         MemberPathOptions options = null)
     {
