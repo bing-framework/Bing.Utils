@@ -15,6 +15,36 @@ internal class Program
     /// <param name="args">命令行参数。</param>
     static void Main(string[] args)
     {
+        if (args.Any(arg => string.Equals(arg, "--reflection-cache", StringComparison.OrdinalIgnoreCase)))
+        {
+            ReflectionBenchmarks.RunConcurrentCacheProbe();
+            return;
+        }
+
+        if (args.Any(arg => string.Equals(arg, "--reflection-concurrent", StringComparison.OrdinalIgnoreCase)))
+        {
+            ReflectionBenchmarks.RunConcurrentSchemaProbe();
+            return;
+        }
+
+        if (args.Any(arg => string.Equals(arg, "--reflection-capacity", StringComparison.OrdinalIgnoreCase)))
+        {
+            ReflectionBenchmarks.RunCapacityProbe(args);
+            return;
+        }
+
+        if (args.Any(arg => string.Equals(arg, "--reflection-struct-map-steady", StringComparison.OrdinalIgnoreCase)))
+        {
+            ReflectionBenchmarks.RunStructMapSteadyProbe();
+            return;
+        }
+
+        if (args.Any(arg => string.Equals(arg, "--reflection-cold", StringComparison.OrdinalIgnoreCase)))
+        {
+            ReflectionBenchmarks.RunColdStartProbe();
+            return;
+        }
+
         if (args.Any(arg => string.Equals(arg, "--conv-steady", StringComparison.OrdinalIgnoreCase)))
         {
             var benchmark = new ConvSteadyStateBenchmarks();
