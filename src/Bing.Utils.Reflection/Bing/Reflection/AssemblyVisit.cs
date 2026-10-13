@@ -28,10 +28,10 @@ public static partial class AssemblyVisit
     }
 
     /// <summary>
-    /// 访问
+    /// 获取程序集文件的版本信息。
     /// </summary>
-    /// <param name="assembly">程序集</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <param name="assembly">要查询版本信息的程序集。</param>
+    /// <returns>程序集文件的版本信息。</returns>
     private static FileVersionInfo V(Assembly assembly)
     {
         if (assembly is null)

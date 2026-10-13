@@ -29,7 +29,7 @@ public enum ParameterPassingKind
 public sealed class MethodParameterSignature
 {
     /// <summary>
-    /// 初始化方法参数签名。
+    /// 初始化一个 <see cref="MethodParameterSignature"/> 类型的实例。
     /// </summary>
     /// <param name="parameterType">参数元素类型。</param>
     /// <param name="passingKind">参数传递方式。</param>

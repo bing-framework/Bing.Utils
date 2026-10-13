@@ -13,7 +13,7 @@ public abstract class DynamicBase
     private readonly Type _type;
 
     /// <summary>
-    /// 初始化一个<see cref="DynamicBase"/>类型的实例
+    /// 初始化一个 <see cref="DynamicBase"/> 类型的实例。
     /// </summary>
     protected DynamicBase() => _type = GetType();
 
@@ -21,6 +21,7 @@ public abstract class DynamicBase
     /// 获取指定属性名称的值
     /// </summary>
     /// <param name="name">属性名称</param>
+    /// <returns>指定属性的值。</returns>
     public object GetPropertyValue(string name) => _type.GetProperty(name).GetReflector().GetValue(this);
 
     /// <summary>

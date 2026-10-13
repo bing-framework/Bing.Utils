@@ -38,6 +38,7 @@ public static partial class TypeReflections
     /// <param name="member">成员元数据</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
+    /// <returns>成员的描述文本。</returns>
     private static string GetDescriptionImpl(MemberInfo member, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions)
     {
         if (member is null)
@@ -55,6 +56,7 @@ public static partial class TypeReflections
     /// <param name="parameter">参数元数据</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
+    /// <returns>参数的描述文本。</returns>
     private static string GetDescriptionImpl(ParameterInfo parameter, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions)
     {
         if (parameter is null)
@@ -179,6 +181,7 @@ public static partial class TypeReflections
     /// <param name="member">成员元数据</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
+    /// <returns>成员的显示名称。</returns>
     private static string GetDisplayNameImpl(MemberInfo member, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions)
     {
         if (member is null)
@@ -196,6 +199,7 @@ public static partial class TypeReflections
     /// <param name="parameter">参数元数据</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
+    /// <returns>参数的显示名称。</returns>
     private static string GetDisplayNameImpl(ParameterInfo parameter, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions)
     {
         if (parameter is null)
@@ -321,6 +325,7 @@ public static partial class TypeReflections
     /// <param name="defaultVal">默认值</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射消岐选项</param>
+    /// <returns>成员描述文本；未找到时返回默认值。</returns>
     private static string GetDescriptionOrImpl(MemberInfo member, string defaultVal, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions) =>
         member is not null && IsDescriptionDefined(member, refOptions)
             ? GetDescriptionImpl(member, refOptions, ambOptions)
@@ -333,6 +338,7 @@ public static partial class TypeReflections
     /// <param name="defaultVal">默认值</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射消岐选项</param>
+    /// <returns>参数描述文本；未找到时返回默认值。</returns>
     private static string GetDescriptionOrImpl(ParameterInfo parameter, string defaultVal, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions) =>
         parameter is not null && IsDescriptionDefined(parameter, refOptions)
             ? GetDescriptionImpl(parameter, refOptions, ambOptions)
@@ -428,6 +434,7 @@ public static partial class TypeReflections
     /// <param name="defaultVal">默认值</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
+    /// <returns>成员显示名称；未找到时返回默认值。</returns>
     private static string GetDisplayNameOrImpl(MemberInfo member, string defaultVal, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions)
     {
         if (member is null)
@@ -446,6 +453,7 @@ public static partial class TypeReflections
     /// <param name="defaultVal">默认值</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射歧义选项</param>
+    /// <returns>参数显示名称；未找到时返回默认值。</returns>
     private static string GetDisplayNameOrImpl(ParameterInfo parameter, string defaultVal, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions)
     {
         if (parameter is null)
@@ -546,6 +554,7 @@ public static partial class TypeReflections
     /// <param name="member">成员元数据</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射消岐选项</param>
+    /// <returns>成员描述或显示名称。</returns>
     private static string GetDescriptionOrDisplayNameImpl(MemberInfo member, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions)
     {
         if (member is null)
@@ -561,6 +570,7 @@ public static partial class TypeReflections
     /// <param name="parameter">参数元数据</param>
     /// <param name="refOptions">反射选项</param>
     /// <param name="ambOptions">反射消岐选项</param>
+    /// <returns>参数描述或显示名称。</returns>
     private static string GetDescriptionOrDisplayNameImpl(ParameterInfo parameter, ReflectionOptions refOptions, ReflectionAmbiguousOptions ambOptions)
     {
         if (parameter is null)

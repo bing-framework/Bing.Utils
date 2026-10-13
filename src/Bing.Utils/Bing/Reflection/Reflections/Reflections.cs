@@ -60,6 +60,7 @@ public static partial class Reflections
     /// </summary>
     /// <param name="findType">查找类型</param>
     /// <param name="assembly">待查找的程序集</param>
+    /// <returns>程序集内符合筛选条件的类型列表。</returns>
     private static List<Type> GetTypes(Type findType, Assembly assembly)
     {
         var result = new List<Type>();
@@ -99,6 +100,7 @@ public static partial class Reflections
     /// </summary>
     /// <param name="findType">查找类型</param>
     /// <param name="type">类型</param>
+    /// <returns>类型与泛型筛选条件匹配时为 true；否则为 false。</returns>
     private static bool MatchGeneric(Type findType, Type type)
     {
         if (findType.IsGenericTypeDefinition == false)

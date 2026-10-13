@@ -10,9 +10,10 @@ namespace Bing.Reflection;
 internal static partial class TypeFactory
 {
     /// <summary>
-    /// 签名类型
+    /// 根据输入文本生成类型签名。
     /// </summary>
-    /// <param name="input">输入值</param>
+    /// <param name="input">用于生成签名的输入文本。</param>
+    /// <returns>输入文本的 MD5 十六进制签名。</returns>
     private static string SignType(string input)
     {
         using var md5 = MD5.Create();

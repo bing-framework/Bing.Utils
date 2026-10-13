@@ -117,6 +117,7 @@ public static partial class Reflections
     /// 获取类型成员显示名称，，使用<see cref="DisplayNameAttribute"/>或<see cref="DisplayAttribute"/>设置显示名称
     /// </summary>
     /// <param name="member">成员</param>
+    /// <returns>成员的显示名称。</returns>
     private static string GetDisplayName(MemberInfo member)
     {
         if (member == null)

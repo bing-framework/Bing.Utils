@@ -14,7 +14,7 @@ public enum TypeIsOptions
     Default = 0,
 
     /// <summary>
-    /// 略可空类型的包装，直接检查其基础类型。
+    /// 检查前忽略可空类型包装，直接检查其基础类型。
     /// </summary>
     IgnoreNullable = 1
 }

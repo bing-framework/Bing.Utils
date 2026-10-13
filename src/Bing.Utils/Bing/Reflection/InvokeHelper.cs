@@ -6,7 +6,7 @@ namespace Bing.Reflection;
 public static class InvokeHelper
 {
     /// <summary>
-    /// 静态构造函数
+    /// 初始化当前类型的静态状态。
     /// </summary>
     static InvokeHelper()
     {
@@ -14,7 +14,7 @@ public static class InvokeHelper
     }
 
     /// <summary>
-    /// 调用函数异常处理
+    /// 获取或设置调用函数异常处理
     /// </summary>
     public static Action<Exception> OnInvokeException { get; set; }
 }

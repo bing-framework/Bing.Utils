@@ -5,6 +5,13 @@ namespace Bing.Reflection;
 // 类型反射 - 判断
 public static partial class TypeReflections
 {
+    /// <summary>
+    /// 判断成员声明类型经选项处理后是否满足指定条件。
+    /// </summary>
+    /// <param name="member">待检查的类型、属性或字段；其他成员返回 false。</param>
+    /// <param name="typeClear">从成员中提取声明类型的函数。</param>
+    /// <param name="typeInfer">判断处理后的类型是否符合条件的函数。</param>
+    /// <returns>成员类型满足判断条件时返回 true，否则返回 false。</returns>
     private static bool X(MemberInfo member, Func<Type, Type> typeClear, Func<Type, bool> typeInfer) =>
         member switch
         {
@@ -15,6 +22,12 @@ public static partial class TypeReflections
             _ => false
         };
 
+    /// <summary>
+    /// 根据类型判断选项处理待检查的类型。
+    /// </summary>
+    /// <param name="type">待处理的类型。</param>
+    /// <param name="isOptions">类型判断选项。</param>
+    /// <returns>应用选项后的类型。</returns>
     private static Type N(Type type, TypeIsOptions isOptions = TypeIsOptions.Default) =>
         isOptions switch
         {

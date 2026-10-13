@@ -62,6 +62,7 @@ public static partial class TypeReflections
     /// </summary>
     /// <param name="sourceInterfaceTypes">源接口类型集合</param>
     /// <param name="interfaceType">接口类型</param>
+    /// <returns>源类型集合包含指定接口时为 true；否则为 false。</returns>
     private static bool IsInterfaceDefinedImpl(IEnumerable<Type> sourceInterfaceTypes, Type interfaceType)
     {
         if (!interfaceType.IsGenericType)

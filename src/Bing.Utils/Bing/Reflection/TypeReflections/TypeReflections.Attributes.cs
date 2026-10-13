@@ -9,15 +9,12 @@ namespace Bing.Reflection;
 public enum ReflectionOptions
 {
     /// <summary>
-    /// 默认选项。
-    /// 使用此选项时，反射操作将不自动考虑继承链，只处理当前类型声明的成员。
+    /// 仅搜索当前类型声明的成员。
     /// </summary>
     Default = 0,
 
     /// <summary>
-    /// 继承选项。
-    /// 使用此选项时，反射操作将考虑类型的继承链，包括从基类继承的成员。
-    /// 这对于需要搜索整个继承层次结构中的成员时特别有用。
+    /// 搜索类型自身及其基类中的成员。
     /// </summary>
     Inherit = 1
 }
@@ -28,17 +25,15 @@ public enum ReflectionOptions
 public enum ReflectionAmbiguousOptions
 {
     /// <summary>
-    /// 默认选项。
-    /// 使用此选项时，如果存在歧义（例如，多个同名成员满足搜索条件），反射操作将抛出异常。
-    /// 这确保了搜索结果的明确性，要求调用者处理可能的歧义。
+    /// 存在多个匹配特性时报告歧义。
     /// </summary>
+    /// <remarks>
+    /// 调用方可据此处理不唯一的匹配结果。
+    /// </remarks>
     Default = 0,
 
     /// <summary>
-    /// 忽略歧义选项。
-    /// 使用此选项时，反射操作在遇到歧义情况（例如，有多个符合条件的成员）时不会抛出异常，
-    /// 而是选择其中一个成员（具体哪一个可能依赖于反射API的实现细节）。
-    /// 这对于调用者来说提供了便利，但在某些情况下可能会牺牲结果的准确性。
+    /// 存在多个匹配特性时返回枚举到的第一项。
     /// </summary>
     IgnoreAmbiguous = 1
 }
@@ -224,6 +219,7 @@ public static partial class TypeReflections
     /// <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
     /// <param name="attributeType">特性类型</param>
     /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>存在指定类型的特性时为 true；否则为 false。</returns>
     private static bool IsAttributeDefinedImpl(ICustomAttributeReflectorProvider customAttributeReflectorProvider, Type attributeType)
     {
         if (attributeType is null)
@@ -369,6 +365,7 @@ public static partial class TypeReflections
     /// <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
     /// <param name="attributeType">特性类型</param>
     /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>找到的特性实例；未找到时返回 null。</returns>
     private static Attribute GetAttributeImpl(ICustomAttributeReflectorProvider customAttributeReflectorProvider, Type attributeType)
     {
         if (attributeType is null)
@@ -490,6 +487,7 @@ public static partial class TypeReflections
     /// <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
     /// <param name="attributeType">特性类型</param>
     /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>符合指定类型的特性集合。</returns>
     private static IEnumerable<Attribute> GetAttributesImpl(ICustomAttributeReflectorProvider customAttributeReflectorProvider, Type attributeType)
     {
         if (attributeType is null)
@@ -757,6 +755,7 @@ public static partial class TypeReflections
     /// </summary>
     /// <param name="customAttributeReflectorProvider">自定义特性反射器提供程序</param>
     /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>该提供程序包含的特性集合。</returns>
     private static IEnumerable<Attribute> GetAttributesImpl(ICustomAttributeReflectorProvider customAttributeReflectorProvider)
     {
         var attributeReflectors = customAttributeReflectorProvider != null
