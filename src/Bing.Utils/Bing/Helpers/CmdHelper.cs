@@ -160,8 +160,9 @@ public class CmdHelper
         private static string _bashPath { get; }
 
         /// <summary>
-        /// 确定 bash 是否在本机操作系统中运行(Linux/MacOS)
+        /// 获取当前操作系统是否为 Linux 或 macOS。
         /// </summary>
+        /// <value>当前操作系统为 Linux 或 macOS 时为 true，否则为 false。</value>
         public static bool Native { get; }
 
         /// <summary>
@@ -240,6 +241,7 @@ public class CmdHelper
         /// </summary>
         /// <param name="input">输入字符串</param>
         /// <param name="redirectOutput">是否重定向输出</param>
+        /// <returns>配置好的 Bash 进程启动信息。</returns>
         private ProcessStartInfo BashInfo(string input, bool redirectOutput) =>
             new()
             {

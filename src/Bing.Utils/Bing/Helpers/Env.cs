@@ -130,13 +130,13 @@ public static class Env
     public static int TickCount => Environment.TickCount;
 
     /// <summary>
-    /// 检查是否为 64 位操作系统
+    /// 获取当前操作系统是否为 64 位系统。
     /// </summary>
     /// <value>如果是 64 位操作系统返回 true，否则返回 false</value>
     public static bool Is64BitOperatingSystem => Environment.Is64BitOperatingSystem;
 
     /// <summary>
-    /// 检查是否为 64 位进程
+    /// 获取当前进程是否为 64 位进程。
     /// </summary>
     /// <value>如果是 64 位进程返回 true，否则返回 false</value>
     public static bool Is64BitProcess => Environment.Is64BitProcess;
@@ -200,26 +200,26 @@ public static class Env
     #region 平台检测
 
     /// <summary>
-    /// 检查当前操作系统是否为 Windows
+    /// 获取当前操作系统是否为 Windows。
     /// </summary>
     /// <value>如果是 Windows 操作系统返回 true，否则返回 false</value>
     public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
     /// <summary>
-    /// 检查当前操作系统是否为 Linux
+    /// 获取当前操作系统是否为 Linux。
     /// </summary>
     /// <value>如果是 Linux 操作系统返回 true，否则返回 false</value>
     public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
     /// <summary>
-    /// 检查当前操作系统是否为 macOS (OSX)
+    /// 获取当前操作系统是否为 macOS。
     /// </summary>
     /// <value>如果是 macOS 操作系统返回 true，否则返回 false</value>
     // ReSharper disable once InconsistentNaming
     public static bool IsOSX => RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
     /// <summary>
-    /// 检查当前操作系统是否为 FreeBSD
+    /// 获取当前操作系统是否为 FreeBSD。
     /// </summary>
     /// <value>如果是 FreeBSD 操作系统返回 true，否则返回 false</value>
     /// <remarks>
@@ -784,7 +784,7 @@ public static class Env
     #region 实用工具方法
 
     /// <summary>
-    /// 检查是否在容器环境中运行
+    /// 获取当前进程是否被检测为在容器环境中运行。
     /// </summary>
     /// <value>如果在容器中运行返回 true，否则返回 false</value>
     /// <remarks>
@@ -816,7 +816,7 @@ public static class Env
     }
 
     /// <summary>
-    /// 检查是否在 CI/CD 环境中运行
+    /// 获取当前进程是否被检测为在 CI/CD 环境中运行。
     /// </summary>
     /// <value>如果在 CI/CD 环境中运行返回 true，否则返回 false</value>
     // ReSharper disable once InconsistentNaming
@@ -842,7 +842,7 @@ public static class Env
     }
 
     /// <summary>
-    /// 检查是否在调试模式下运行
+    /// 获取当前程序是否以调试模式编译。
     /// </summary>
     /// <value>如果在调试模式下运行返回 true，否则返回 false</value>
     public static bool IsDebugMode
@@ -858,7 +858,7 @@ public static class Env
     }
 
     /// <summary>
-    /// 检查是否有调试器附加
+    /// 获取当前进程是否有调试器附加。
     /// </summary>
     /// <value>如果有调试器附加返回 true，否则返回 false</value>
     public static bool IsDebuggerAttached => System.Diagnostics.Debugger.IsAttached;
