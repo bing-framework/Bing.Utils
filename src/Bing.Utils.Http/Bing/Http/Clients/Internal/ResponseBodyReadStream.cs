@@ -101,10 +101,12 @@ internal sealed class ResponseBodyReadStream : Stream
     }
 
     /// <summary>
-
-    /// 从已暂存前缀读取数据到调用方缓冲区。
-
+    /// 将已暂存的前缀数据复制到调用方缓冲区。
     /// </summary>
+    /// <param name="buffer">接收前缀数据的目标缓冲区。</param>
+    /// <param name="offset">目标缓冲区中的起始写入偏移量。</param>
+    /// <param name="count">要读取的最大字节数。</param>
+    /// <returns>实际复制到目标缓冲区的字节数。</returns>
     private int ReadPrefix(byte[] buffer, int offset, int count)
     {
         var copied = Math.Min(count, _prefixCount - _prefixOffset);
@@ -117,11 +119,10 @@ internal sealed class ResponseBodyReadStream : Stream
     }
 
     /// <summary>
-
     /// 累计读取字节并检查正文大小限制。
-
     /// </summary>
     /// <param name="count">本次读取的字节数。</param>
+    /// <exception cref="HttpResponseSizeLimitException">累计读取量超过配置的正文大小上限。</exception>
     private void CountRead(int count)
     {
         _bytesRead += count;

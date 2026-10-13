@@ -277,10 +277,11 @@ public static class Web
     #region IsLocal(是否本地请求)
 
     /// <summary>
-    /// 判断是否为本地请求
+    /// 获取当前请求是否来自本地。
     /// </summary>
-    /// <returns>如果是本地请求返回 true，否则返回 false</returns>
-    /// <exception cref="InvalidOperationException">当无法获取连接信息时</exception>
+    /// <value>如果是本地请求返回 true，否则返回 false。</value>
+    /// <exception cref="ArgumentNullException">无法获取当前请求的连接信息。</exception>
+    /// <exception cref="InvalidOperationException">比较请求的本地地址与远程地址时发生错误。</exception>
     public static bool IsLocal
     {
         get
