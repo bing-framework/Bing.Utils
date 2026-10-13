@@ -11,9 +11,156 @@ namespace Bing.Helpers;
 public static partial class MapperHelper
 {
     /// <summary>
-    /// Struct 映射委托缓存
+    /// Struct 映射委托缓存。
     /// </summary>
-    private static readonly ConcurrentDictionary<string, object> _structMapCache = new();
+    private static readonly ConcurrentDictionary<StructMapCacheKey, Lazy<object>> _structMapCache = new();
+
+    internal const int StructMapCacheCapacity = 1024;
+    private static readonly object StructMapCacheAdmissionGate = new();
+    private static int _structMapCompileCount;
+    private static long _structMapCacheCapacityBypassCount;
+
+    /// <summary>
+    /// 获取结构体映射表达式的编译次数，仅供回归测试验证并发去重。
+    /// </summary>
+    internal static int StructMapCompileCount => System.Threading.Volatile.Read(ref _structMapCompileCount);
+
+    /// <summary>
+    /// 获取结构体映射缓存因达到容量而旁路的次数，仅供性能探针验证容量边界。
+    /// </summary>
+    internal static long StructMapCacheCapacityBypassCount =>
+        System.Threading.Interlocked.Read(ref _structMapCacheCapacityBypassCount);
+
+    /// <summary>
+    /// 获取结构体映射缓存当前条目数，仅供性能探针验证容量准入。
+    /// </summary>
+    internal static int StructMapCacheEntryCount => _structMapCache.Count;
+
+    private enum StructMapOperation
+    {
+        Map,
+        MapWith,
+        MapWithout
+    }
+
+    /// <summary>
+    /// 结构体映射缓存键。使用类型身份和规范化属性集合，避免 FullName 碰撞。
+    /// </summary>
+    private readonly struct StructMapCacheKey : IEquatable<StructMapCacheKey>
+    {
+        private readonly Type _sourceType;
+        private readonly Type _destinationType;
+        private readonly StructMapOperation _operation;
+        private readonly string[] _propertyNames;
+        private readonly int _hashCode;
+
+        internal StructMapCacheKey(Type sourceType, Type destinationType, StructMapOperation operation, string[] propertyNames)
+        {
+            _sourceType = sourceType ?? throw new ArgumentNullException(nameof(sourceType));
+            _destinationType = destinationType ?? throw new ArgumentNullException(nameof(destinationType));
+            _operation = operation;
+            _propertyNames = propertyNames?.ToArray() ?? Array.Empty<string>();
+
+            var hash = 17;
+            hash = unchecked(hash * 31 + _sourceType.GetHashCode());
+            hash = unchecked(hash * 31 + _destinationType.GetHashCode());
+            hash = unchecked(hash * 31 + (int)_operation);
+            foreach (var propertyName in _propertyNames)
+                hash = unchecked(hash * 31 + StringComparer.OrdinalIgnoreCase.GetHashCode(propertyName));
+            _hashCode = hash;
+        }
+
+        public bool Equals(StructMapCacheKey other)
+        {
+            if (!ReferenceEquals(_sourceType, other._sourceType)
+                || !ReferenceEquals(_destinationType, other._destinationType)
+                || _operation != other._operation
+                || _propertyNames.Length != other._propertyNames.Length)
+                return false;
+
+            for (var index = 0; index < _propertyNames.Length; index++)
+            {
+                if (!StringComparer.OrdinalIgnoreCase.Equals(_propertyNames[index], other._propertyNames[index]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public override bool Equals(object obj) => obj is StructMapCacheKey other && Equals(other);
+
+        public override int GetHashCode() => _hashCode;
+    }
+
+    private static string[] NormalizeStructMapPropertyNames(string[] propertyNames)
+    {
+        if (propertyNames == null || propertyNames.Length == 0)
+            return Array.Empty<string>();
+
+        return propertyNames
+            .Where(propertyName => propertyName != null)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(propertyName => propertyName, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(propertyName => propertyName, StringComparer.Ordinal)
+            .ToArray();
+    }
+
+    private static TDelegate GetOrCreateStructMap<TDelegate>(
+        StructMapCacheKey key,
+        Type sourceType,
+        Type destinationType,
+        Func<TDelegate> factory)
+        where TDelegate : class
+    {
+        if (ReflectionCacheScope.IsCollectible(sourceType) || ReflectionCacheScope.IsCollectible(destinationType))
+            return factory();
+
+        if (_structMapCache.TryGetValue(key, out var cached))
+            return GetStructMapValue<TDelegate>(key, cached);
+
+        Lazy<object> lazy = null;
+        var bypass = false;
+        lock (StructMapCacheAdmissionGate)
+        {
+            if (_structMapCache.TryGetValue(key, out cached))
+            {
+                lazy = cached;
+            }
+            else
+            {
+                if (_structMapCache.Count >= StructMapCacheCapacity)
+                {
+                    bypass = true;
+                    System.Threading.Interlocked.Increment(ref _structMapCacheCapacityBypassCount);
+                }
+                else
+                {
+                    lazy = new Lazy<object>(() => factory(),
+                        LazyThreadSafetyMode.ExecutionAndPublication);
+                    _structMapCache.TryAdd(key, lazy);
+                }
+            }
+        }
+
+        if (bypass)
+            return factory();
+
+        return GetStructMapValue<TDelegate>(key, lazy);
+    }
+
+    private static TDelegate GetStructMapValue<TDelegate>(StructMapCacheKey key, Lazy<object> lazy)
+        where TDelegate : class
+    {
+        try
+        {
+            return (TDelegate)lazy.Value;
+        }
+        catch
+        {
+            _structMapCache.TryRemove(key, out _);
+            throw;
+        }
+    }
 
     /// <summary>
     /// 将源对象映射到目标对象
@@ -110,15 +257,16 @@ public static partial class MapperHelper
     /// <returns>映射后的目标对象</returns>
     private static TDestination MapStructDynamic<TSource, TDestination>(TSource source)
     {
-        var key = $"Map_{typeof(TSource).FullName}_{typeof(TDestination).FullName}";
-        if (!_structMapCache.TryGetValue(key, out var mapFuncObj))
-        {
-            var mapFunc = CreateStructMapFuncDynamic<TSource, TDestination>();
-            _structMapCache[key] = mapFunc;
-            mapFuncObj = mapFunc;
-        }
-
-        var func = (Func<TSource, TDestination>)mapFuncObj;
+        var key = new StructMapCacheKey(
+            typeof(TSource),
+            typeof(TDestination),
+            StructMapOperation.Map,
+            Array.Empty<string>());
+        var func = GetOrCreateStructMap(
+            key,
+            typeof(TSource),
+            typeof(TDestination),
+            static () => CreateStructMapFuncDynamic<TSource, TDestination>());
         return func(source);
     }
 
@@ -132,15 +280,17 @@ public static partial class MapperHelper
     /// <returns>映射后的目标对象</returns>
     private static TDestination MapStructWithDynamic<TSource, TDestination>(TSource source, string[] propertiesToMap)
     {
-        var key = $"MapWith_{typeof(TSource).FullName}_{typeof(TDestination).FullName}_{string.Join(",", propertiesToMap.OrderBy(p => p))}";
-        if (!_structMapCache.TryGetValue(key, out var mapFuncObj))
-        {
-            var mapFunc = CreateStructMapWithFuncDynamic<TSource, TDestination>(propertiesToMap);
-            _structMapCache[key] = mapFunc;
-            mapFuncObj = mapFunc;
-        }
-
-        var func = (Func<TSource, TDestination>)mapFuncObj;
+        var normalizedPropertyNames = NormalizeStructMapPropertyNames(propertiesToMap);
+        var key = new StructMapCacheKey(
+            typeof(TSource),
+            typeof(TDestination),
+            StructMapOperation.MapWith,
+            normalizedPropertyNames);
+        var func = GetOrCreateStructMap(
+            key,
+            typeof(TSource),
+            typeof(TDestination),
+            () => CreateStructMapWithFuncDynamic<TSource, TDestination>(normalizedPropertyNames));
         return func(source);
     }
 
@@ -154,15 +304,17 @@ public static partial class MapperHelper
     /// <returns>映射后的目标对象</returns>
     private static TDestination MapStructWithoutDynamic<TSource, TDestination>(TSource source, string[] propertiesNoMap)
     {
-        var key = $"MapWithout_{typeof(TSource).FullName}_{typeof(TDestination).FullName}_{string.Join(",", propertiesNoMap.OrderBy(p => p))}";
-        if (!_structMapCache.TryGetValue(key, out var mapFuncObj))
-        {
-            var mapFunc = CreateStructMapWithoutFuncDynamic<TSource, TDestination>(propertiesNoMap);
-            _structMapCache[key] = mapFunc;
-            mapFuncObj = mapFunc;
-        }
-
-        var func = (Func<TSource, TDestination>)mapFuncObj;
+        var normalizedPropertyNames = NormalizeStructMapPropertyNames(propertiesNoMap);
+        var key = new StructMapCacheKey(
+            typeof(TSource),
+            typeof(TDestination),
+            StructMapOperation.MapWithout,
+            normalizedPropertyNames);
+        var func = GetOrCreateStructMap(
+            key,
+            typeof(TSource),
+            typeof(TDestination),
+            () => CreateStructMapWithoutFuncDynamic<TSource, TDestination>(normalizedPropertyNames));
         return func(source);
     }
 
@@ -174,6 +326,7 @@ public static partial class MapperHelper
     /// <returns>映射委托</returns>
     private static Func<TSource, TDestination> CreateStructMapFuncDynamic<TSource, TDestination>()
     {
+        System.Threading.Interlocked.Increment(ref _structMapCompileCount);
         var sourceType = typeof(TSource);
         var targetType = typeof(TDestination);
 
@@ -214,6 +367,7 @@ public static partial class MapperHelper
     /// <returns>映射委托</returns>
     private static Func<TSource, TDestination> CreateStructMapWithFuncDynamic<TSource, TDestination>(string[] propertiesToMap)
     {
+        System.Threading.Interlocked.Increment(ref _structMapCompileCount);
         var sourceType = typeof(TSource);
         var targetType = typeof(TDestination);
 
@@ -255,6 +409,7 @@ public static partial class MapperHelper
     /// <returns>映射委托</returns>
     private static Func<TSource, TDestination> CreateStructMapWithoutFuncDynamic<TSource, TDestination>(string[] propertiesNoMap)
     {
+        System.Threading.Interlocked.Increment(ref _structMapCompileCount);
         var sourceType = typeof(TSource);
         var targetType = typeof(TDestination);
 
@@ -298,15 +453,16 @@ public static partial class MapperHelper
         where TSource : struct
         where TDestination : struct
     {
-        var key = $"Map_{typeof(TSource).FullName}_{typeof(TDestination).FullName}";
-        if (!_structMapCache.TryGetValue(key, out var mapFuncObj))
-        {
-            var mapFunc = CreateStructMapFunc<TSource, TDestination>();
-            _structMapCache[key] = mapFunc;
-            mapFuncObj = mapFunc;
-        }
-
-        var func = (Func<TSource, TDestination>)mapFuncObj;
+        var key = new StructMapCacheKey(
+            typeof(TSource),
+            typeof(TDestination),
+            StructMapOperation.Map,
+            Array.Empty<string>());
+        var func = GetOrCreateStructMap(
+            key,
+            typeof(TSource),
+            typeof(TDestination),
+            static () => CreateStructMapFunc<TSource, TDestination>());
         return func(source);
     }
 
@@ -322,15 +478,17 @@ public static partial class MapperHelper
         where TSource : struct
         where TDestination : struct
     {
-        var key = $"MapWith_{typeof(TSource).FullName}_{typeof(TDestination).FullName}_{string.Join(",", propertiesToMap.OrderBy(p => p))}";
-        if (!_structMapCache.TryGetValue(key, out var mapFuncObj))
-        {
-            var mapFunc = CreateStructMapWithFunc<TSource, TDestination>(propertiesToMap);
-            _structMapCache[key] = mapFunc;
-            mapFuncObj = mapFunc;
-        }
-
-        var func = (Func<TSource, TDestination>)mapFuncObj;
+        var normalizedPropertyNames = NormalizeStructMapPropertyNames(propertiesToMap);
+        var key = new StructMapCacheKey(
+            typeof(TSource),
+            typeof(TDestination),
+            StructMapOperation.MapWith,
+            normalizedPropertyNames);
+        var func = GetOrCreateStructMap(
+            key,
+            typeof(TSource),
+            typeof(TDestination),
+            () => CreateStructMapWithFunc<TSource, TDestination>(normalizedPropertyNames));
         return func(source);
     }
 
@@ -346,15 +504,17 @@ public static partial class MapperHelper
         where TSource : struct
         where TDestination : struct
     {
-        var key = $"MapWithout_{typeof(TSource).FullName}_{typeof(TDestination).FullName}_{string.Join(",", propertiesNoMap.OrderBy(p => p))}";
-        if (!_structMapCache.TryGetValue(key, out var mapFuncObj))
-        {
-            var mapFunc = CreateStructMapWithoutFunc<TSource, TDestination>(propertiesNoMap);
-            _structMapCache[key] = mapFunc;
-            mapFuncObj = mapFunc;
-        }
-
-        var func = (Func<TSource, TDestination>)mapFuncObj;
+        var normalizedPropertyNames = NormalizeStructMapPropertyNames(propertiesNoMap);
+        var key = new StructMapCacheKey(
+            typeof(TSource),
+            typeof(TDestination),
+            StructMapOperation.MapWithout,
+            normalizedPropertyNames);
+        var func = GetOrCreateStructMap(
+            key,
+            typeof(TSource),
+            typeof(TDestination),
+            () => CreateStructMapWithoutFunc<TSource, TDestination>(normalizedPropertyNames));
         return func(source);
     }
 
@@ -368,6 +528,7 @@ public static partial class MapperHelper
         where TSource : struct
         where TDestination : struct
     {
+        System.Threading.Interlocked.Increment(ref _structMapCompileCount);
         var sourceType = typeof(TSource);
         var targetType = typeof(TDestination);
 
@@ -410,6 +571,7 @@ public static partial class MapperHelper
         where TSource : struct
         where TDestination : struct
     {
+        System.Threading.Interlocked.Increment(ref _structMapCompileCount);
         var sourceType = typeof(TSource);
         var targetType = typeof(TDestination);
 
@@ -453,6 +615,7 @@ public static partial class MapperHelper
         where TSource : struct
         where TDestination : struct
     {
+        System.Threading.Interlocked.Increment(ref _structMapCompileCount);
         var sourceType = typeof(TSource);
         var targetType = typeof(TDestination);
 
