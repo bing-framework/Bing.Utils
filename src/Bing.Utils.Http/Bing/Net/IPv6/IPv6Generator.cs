@@ -12,8 +12,17 @@ namespace Bing.Net.IPv6;
 public static class IPv6Generator
 {
 #if NET6_0_OR_GREATER
+    /// <summary>
+    /// 用于生成 IPv6 地址随机部分的加密随机数生成器。
+    /// </summary>
     private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 #else
+    /// <summary>
+    /// 用于生成 IPv6 地址随机部分的加密随机数生成器。
+    /// </summary>
+    /// <remarks>
+    /// 此分支为每个线程提供独立实例。
+    /// </remarks>
     private static readonly ThreadLocal<RandomNumberGenerator> _rng = new(() => RandomNumberGenerator.Create());
 #endif
 
@@ -27,7 +36,6 @@ public static class IPv6Generator
     /// <code>
     /// // 基于MAC地址生成
     /// string linkLocal1 = IPv6Generator.GenerateLinkLocal("00:11:22:33:44:55");
-    /// 
     /// // 随机生成
     /// string linkLocal2 = IPv6Generator.GenerateLinkLocal();
     /// </code>
@@ -72,7 +80,6 @@ public static class IPv6Generator
     /// <code>
     /// // 完全随机
     /// string random1 = IPv6Generator.GenerateRandom();
-    /// 
     /// // 带前缀
     /// string random2 = IPv6Generator.GenerateRandom("2001:db8::", 32);
     /// </code>

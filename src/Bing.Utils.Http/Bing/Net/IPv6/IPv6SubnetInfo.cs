@@ -6,58 +6,58 @@ namespace Bing.Net.IPv6;
 public class IPv6SubnetInfo
 {
     /// <summary>
-    /// 网络前缀
+    /// 获取或设置网络前缀
     /// </summary>
     public string NetworkPrefix { get; set; }
 
     /// <summary>
-    /// 前缀长度
+    /// 获取或设置前缀长度
     /// </summary>
     public int PrefixLength { get; set; }
 
     /// <summary>
-    /// 子网掩码
+    /// 获取或设置子网掩码
     /// </summary>
     public string SubnetMask { get; set; }
 
     /// <summary>
-    /// 总地址数（对于大型子网可能为null）
+    /// 获取或设置总地址数（对于大型子网可能为null）
     /// </summary>
     public ulong? TotalAddresses { get; set; }
 
     /// <summary>
-    /// 可用地址数（排除网络地址和广播地址，对于IPv6通常等于总地址数）
+    /// 获取或设置可用地址数（排除网络地址和广播地址，对于IPv6通常等于总地址数）
     /// </summary>
     public ulong? AvailableAddresses { get; set; }
 
     /// <summary>
-    /// 地址类型
+    /// 获取或设置地址类型
     /// </summary>
     public IPv6AddressType AddressType { get; set; }
 
     /// <summary>
-    /// 第一个可用地址
+    /// 获取或设置第一个可用地址
     /// </summary>
     public string FirstUsableAddress { get; set; }
 
     /// <summary>
-    /// 最后一个可用地址
+    /// 获取或设置最后一个可用地址
     /// </summary>
     public string LastUsableAddress { get; set; }
 
     /// <summary>
-    /// 主机位数
+    /// 获取或设置主机位数
     /// </summary>
     public int HostBits { get; set; }
 
 
     /// <summary>
-    /// 是否为大型网段（主机位数>=64）
+    /// 获取是否为大型网段（主机位数>=64）
     /// </summary>
     public bool IsLargeSubnet => HostBits >= 64;
 
     /// <summary>
-    /// 子网大小描述
+    /// 获取子网大小描述
     /// </summary>
     public string SizeDescription
     {
@@ -69,9 +69,7 @@ public class IPv6SubnetInfo
         }
     }
 
-    /// <summary>
-    /// 返回格式化的字符串表示
-    /// </summary>
+    /// <inheritdoc />
     public override string ToString()
     {
         var addressDesc = IsLargeSubnet ? $"2^{HostBits}" : TotalAddresses?.ToString("N0") ?? "0";

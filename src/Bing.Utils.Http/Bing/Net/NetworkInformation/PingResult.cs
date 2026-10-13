@@ -6,48 +6,46 @@ namespace Bing.Net.NetworkInformation;
 public class PingResult
 {
     /// <summary>
-    /// 目标主机
+    /// 获取或设置目标主机
     /// </summary>
     public string TargetHost { get; set; }
 
     /// <summary>
-    /// 发送的数据包数
+    /// 获取或设置发送的数据包数
     /// </summary>
     public int PacketsSent { get; set; }
 
     /// <summary>
-    /// 接收的数据包数
+    /// 获取或设置接收的数据包数
     /// </summary>
     public int PacketsReceived { get; set; }
 
     /// <summary>
-    /// 丢包率（0-1）
+    /// 获取或设置丢包率（0-1）
     /// </summary>
     public double PacketLoss { get; set; }
 
     /// <summary>
-    /// 平均往返时间（毫秒）
+    /// 获取或设置平均往返时间（毫秒）
     /// </summary>
     public long AverageRoundtripTime { get; set; }
 
     /// <summary>
-    /// 最小往返时间（毫秒）
+    /// 获取或设置最小往返时间（毫秒）
     /// </summary>
     public long MinRoundtripTime { get; set; }
 
     /// <summary>
-    /// 最大往返时间（毫秒）
+    /// 获取或设置最大往返时间（毫秒）
     /// </summary>
     public long MaxRoundtripTime { get; set; }
 
     /// <summary>
-    /// 网络抖动（毫秒）
+    /// 获取或设置网络抖动（毫秒）
     /// </summary>
     public double Jitter { get; set; }
 
-    /// <summary>
-    /// 返回格式化的Ping结果
-    /// </summary>
+    /// <inheritdoc />
     public override string ToString()
     {
         if (PacketsReceived == 0)

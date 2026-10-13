@@ -6,27 +6,27 @@ namespace Bing.Net.NetworkInformation;
 public class NetworkChange
 {
     /// <summary>
-    /// 变化类型
+    /// 获取或设置变化类型
     /// </summary>
     public NetworkChangeType Type { get; set; }
 
     /// <summary>
-    /// 接口名称
+    /// 获取或设置接口名称
     /// </summary>
     public string InterfaceName { get; set; }
 
     /// <summary>
-    /// 变化描述
+    /// 获取或设置变化描述
     /// </summary>
     public string Description { get; set; }
 
     /// <summary>
-    /// 旧值
+    /// 获取或设置旧值
     /// </summary>
     public string OldValue { get; set; }
 
     /// <summary>
-    /// 新值
+    /// 获取或设置新值
     /// </summary>
     public string NewValue { get; set; }
 }

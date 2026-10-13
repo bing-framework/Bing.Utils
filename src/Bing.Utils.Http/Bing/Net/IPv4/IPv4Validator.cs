@@ -32,7 +32,7 @@ public static class IPv4Validator
     ]);
 
     /// <summary>
-    /// 内网IP地址范围定义
+    /// 获取内网IP地址范围定义
     /// </summary>
     private static (uint begin, uint end)[] InternalRanges => _internalRanges.Value;
 

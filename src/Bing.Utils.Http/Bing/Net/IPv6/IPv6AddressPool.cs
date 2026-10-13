@@ -6,27 +6,27 @@ namespace Bing.Net.IPv6;
 public class IPv6AddressPool
 {
     /// <summary>
-    /// 地址列表
+    /// 获取或设置地址列表
     /// </summary>
     public List<string> Addresses { get; set; } = new();
 
     /// <summary>
-    /// 地址类型
+    /// 获取或设置地址类型
     /// </summary>
     public IPv6AddressType AddressType { get; set; }
 
     /// <summary>
-    /// 前缀
+    /// 获取或设置前缀
     /// </summary>
     public string Prefix { get; set; }
 
     /// <summary>
-    /// 前缀长度
+    /// 获取或设置前缀长度
     /// </summary>
     public int PrefixLength { get; set; }
 
     /// <summary>
-    /// 创建时间
+    /// 获取或设置创建时间
     /// </summary>
     public DateTime CreatedAt { get; set; }
 
@@ -57,7 +57,7 @@ public class IPv6AddressPool
     public int RemainingCount => Math.Max(0, Addresses.Count - _usedIndex);
 
     /// <summary>
-    /// 是否已耗尽
+    /// 获取是否已耗尽
     /// </summary>
     public bool IsExhausted => _usedIndex >= Addresses.Count;
 }

@@ -211,8 +211,17 @@ public static class IPv6Operator
     /// <summary>
     /// 字节数组比较器
     /// </summary>
+    /// <summary>
+    /// 按字节顺序比较 IPv6 地址字节数组。
+    /// </summary>
     private class ByteArrayComparer : IComparer<byte[]>
     {
+        /// <summary>
+        /// 按字典序比较两个字节数组，较短的相同前缀排在前面。
+        /// </summary>
+        /// <param name="x">要比较的第一个字节数组。</param>
+        /// <param name="y">要比较的第二个字节数组。</param>
+        /// <returns>第一个数组小于、等于或大于第二个数组时分别返回负数、零或正数。</returns>
         public int Compare(byte[] x, byte[] y)
         {
             if (x == null && y == null) return 0;

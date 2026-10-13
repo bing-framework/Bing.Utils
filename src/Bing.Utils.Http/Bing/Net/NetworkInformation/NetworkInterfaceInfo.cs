@@ -12,115 +12,115 @@ namespace Bing.Net.NetworkInformation;
 public class NetworkInterfaceInfo
 {
     /// <summary>
-    /// 接口名称
+    /// 获取或设置接口名称
     /// </summary>
     public string Name { get; set; }
 
     /// <summary>
-    /// 接口描述
+    /// 获取或设置接口描述
     /// </summary>
     public string Description { get; set; }
 
     /// <summary>
-    /// 接口类型
+    /// 获取或设置接口类型
     /// </summary>
     public NetworkInterfaceType Type { get; set; }
 
     /// <summary>
-    /// 运行状态
+    /// 获取或设置运行状态
     /// </summary>
     public OperationalStatus Status { get; set; }
 
     /// <summary>
-    /// 所有IP地址列表
+    /// 获取或设置所有IP地址列表
     /// </summary>
     public List<string> IpAddresses { get; set; } = new();
 
     /// <summary>
-    /// IPv4地址列表
+    /// 获取或设置IPv4地址列表
     /// </summary>
     public List<string> IPv4Addresses { get; set; } = new();
 
     /// <summary>
-    /// IPv6地址列表
+    /// 获取或设置IPv6地址列表
     /// </summary>
     public List<string> IPv6Addresses { get; set; } = new();
 
     /// <summary>
-    /// 主要IP地址（第一个IPv4地址）
+    /// 获取主要IP地址（第一个IPv4地址）
     /// </summary>
     public string IpAddress => IPv4Addresses.FirstOrDefault() ?? IpAddresses.FirstOrDefault();
 
     /// <summary>
-    /// 主要IPv6地址（第一个全局单播地址）
+    /// 获取主要IPv6地址（第一个全局单播地址）
     /// </summary>
     public string IPv6Address => IPv6Addresses.FirstOrDefault(IPv6Validator.IsGlobalUnicast) ??
                                  IPv6Addresses.FirstOrDefault();
 
     /// <summary>
-    /// MAC地址
+    /// 获取或设置MAC地址
     /// </summary>
     public string MacAddress { get; set; }
 
     /// <summary>
-    /// 格式化的MAC地址
+    /// 获取格式化的MAC地址
     /// </summary>
     public string FormattedMacAddress => MacAddressHelper.Format(MacAddress);
 
     /// <summary>
-    /// 是否有网关
+    /// 获取或设置是否有网关
     /// </summary>
     public bool HasGateway { get; set; }
 
     /// <summary>
-    /// 网关地址列表
+    /// 获取或设置网关地址列表
     /// </summary>
     public List<string> GatewayAddresses { get; set; } = new();
 
     /// <summary>
-    /// DNS服务器地址列表
+    /// 获取或设置DNS服务器地址列表
     /// </summary>
     public List<string> DnsAddresses { get; set; } = new();
 
     /// <summary>
-    /// 网络速度（bps）
+    /// 获取或设置网络速度（bps）
     /// </summary>
     public long Speed { get; set; }
 
     /// <summary>
-    /// 是否支持IPv6
+    /// 获取或设置是否支持IPv6
     /// </summary>
     public bool SupportsIPv6 { get; set; }
 
     /// <summary>
-    /// 是否为主要网络接口（有网关且速度最快）
+    /// 获取或设置是否为主要网络接口（有网关且速度最快）
     /// </summary>
     public bool IsPrimary { get; set; }
 
     /// <summary>
-    /// 接口统计信息
+    /// 获取或设置接口统计信息
     /// </summary>
     public InterfaceStatistics Statistics { get; set; }
 
     /// <summary>
-    /// 子网掩码（IPv4）
+    /// 获取或设置子网掩码（IPv4）
     /// </summary>
     public string SubnetMask { get; set; }
 
     /// <summary>
-    /// 是否为无线接口
+    /// 获取是否为无线接口
     /// </summary>
     public bool IsWireless => Type == NetworkInterfaceType.Wireless80211 ||
                               Description.Contains("Wi-Fi", StringComparison.OrdinalIgnoreCase) ||
                               Description.Contains("Wireless", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
-    /// 是否为以太网接口
+    /// 获取是否为以太网接口
     /// </summary>
     public bool IsEthernet => Type == NetworkInterfaceType.Ethernet;
 
     /// <summary>
-    /// 格式化的速度显示
+    /// 获取格式化的速度显示
     /// </summary>
     public string FormattedSpeed
     {
@@ -158,8 +158,6 @@ public class NetworkInterfaceInfo
         return sb.ToString();
     }
 
-    /// <summary>
-    /// 返回格式化的字符串表示
-    /// </summary>
+    /// <inheritdoc />
     public override string ToString() => $"{Name} ({Type}) - IPv4: {IpAddress}, IPv6: {IPv6Address} - {FormattedMacAddress}";
 }
