@@ -25,7 +25,7 @@ public class FtpClient : IFtpClient
     private FtpClientConfig _config;
 
     /// <summary>
-    /// 初始化一个<see cref="FtpClient"/>类型的实例
+    /// 初始化一个 <see cref="FtpClient"/> 类型的实例。
     /// </summary>
     /// <param name="host">主机</param>
     /// <param name="port">端口</param>
@@ -39,7 +39,7 @@ public class FtpClient : IFtpClient
     }
 
     /// <summary>
-    /// 初始化一个<see cref="FtpClient"/>类型的实例
+    /// 初始化一个 <see cref="FtpClient"/> 类型的实例。
     /// </summary>
     /// <param name="config">Ftp客户端配置</param>
     public FtpClient(FtpClientConfig config)
@@ -83,7 +83,7 @@ public class FtpClient : IFtpClient
     }
 
     /// <summary>
-    /// 是否已连接
+    /// 获取是否已连接
     /// </summary>
     public bool IsConnected => (_client?.IsConnected ?? false) && (_client?.IsAuthenticated ?? false);
 

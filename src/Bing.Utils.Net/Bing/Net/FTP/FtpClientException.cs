@@ -6,7 +6,7 @@ namespace Bing.Net.FTP;
 public class FtpClientException : Exception
 {
     /// <summary>
-    /// 初始化一个<see cref="FtpClientException"/>类型的实例
+    /// 初始化一个 <see cref="FtpClientException"/> 类型的实例。
     /// </summary>
     /// <param name="message">错误消息</param>
     /// <param name="exception">内部异常</param>
