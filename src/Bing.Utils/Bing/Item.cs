@@ -56,8 +56,9 @@ public class Item : IComparable<Item>
     public string Group { get; set; }
 
     /// <summary>
-    /// 禁用
+    /// 获取或设置列表项的禁用状态。
     /// </summary>
+    /// <value>true 表示禁用，false 表示启用，<see langword="null"/> 表示未指定。</value>
     [DataMember(EmitDefaultValue = false)]
     public bool? Disabled { get; set; }
 

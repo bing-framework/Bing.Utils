@@ -21,12 +21,12 @@ public class TypesVal
     }
 
     /// <summary>
-    /// 计算类型集合值中的类型总数
+    /// 获取类型集合中的元素总数。
     /// </summary>
     public int Count { get; }
 
     /// <summary>
-    /// 从类型集合值中获取所有类型
+    /// 获取类型集合中所有元素的数组副本。
     /// </summary>
     public Type[] TypeArray
     {
@@ -39,12 +39,12 @@ public class TypesVal
     }
 
     /// <summary>
-    /// 从类型集合值中获取所有类型
+    /// 获取包含类型集合所有元素的可枚举副本。
     /// </summary>
     public IEnumerable<Type> Types => TypeArray;
 
     /// <summary>
-    /// 通过索引值获取类型
+    /// 获取指定索引处的类型。
     /// </summary>
     /// <param name="index">索引</param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
