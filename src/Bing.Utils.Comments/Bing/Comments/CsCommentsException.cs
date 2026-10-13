@@ -3,30 +3,30 @@ using System.Xml;
 namespace Bing.Comments;
 
 /// <summary>
-/// 注释异常
+/// 表示文档注释中的一条异常说明。
 /// </summary>
 public sealed class CsCommentsException
 {
     /// <summary>
-    /// 节点在文档中的索引
+    /// 获取异常节点在所属注释中的从零开始的索引。
     /// </summary>
     public int Index { get; private set; }
 
     /// <summary>
-    /// 节点中的 cref 属性的值
+    /// 获取异常节点 <c>cref</c> 属性去除两字符文档标识前缀后的值；属性缺失时为 <see langword="null"/>。
     /// </summary>
     public string Cref { get; private set; }
 
     /// <summary>
-    /// 节点中的内容
+    /// 获取异常节点去除首尾空白后的说明文本。
     /// </summary>
     public string Text { get; private set; }
 
     /// <summary>
-    /// 初始化一个<see cref="CsCommentsException"/>类型的实例
+    /// 初始化一个 <see cref="CsCommentsException"/> 类型的实例。
     /// </summary>
-    /// <param name="index">节点在文档中的索引</param>
-    /// <param name="node">Xml节点</param>
+    /// <param name="index">异常节点在所属注释中的从零开始的索引。</param>
+    /// <param name="node">包含 <c>cref</c> 属性和说明文本的 XML 异常节点。</param>
     internal CsCommentsException(int index, XmlNode node)
     {
         Index = index;
@@ -39,8 +39,6 @@ public sealed class CsCommentsException
         Text = node.InnerText.Trim();
     }
 
-    /// <summary>
-    /// 输出字符串
-    /// </summary>
+    /// <inheritdoc />
     public override string ToString() => Text ?? "";
 }

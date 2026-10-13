@@ -3,14 +3,14 @@ using System.Collections.Generic;
 namespace Bing.Comments;
 
 /// <summary>
-/// 用于描述注释中的 param 或者 typeparam 节点集合
+/// 表示按参数名索引的参数和泛型参数说明集合。
 /// </summary>
 public sealed class CsCommentsParamCollection : Dictionary<string, CsCommentsParam>
 {
     /// <summary>
-    /// 根据节点的 name 属性获取注释，如果没有，则返回null
+    /// 获取或设置根据参数名获取说明；查找键会忽略开头的 <c>@</c>，未找到时返回 <see langword="null"/>。
     /// </summary>
-    /// <param name="name">name 属性</param>
+    /// <param name="name">XML 文档注释中的参数名；可带编译器使用的开头 <c>@</c>。</param>
     public new CsCommentsParam this[string name]
     {
         get

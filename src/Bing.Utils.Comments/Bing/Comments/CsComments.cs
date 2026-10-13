@@ -3,47 +3,47 @@ using System.Xml;
 namespace Bing.Comments;
 
 /// <summary>
-/// 用于描述一个成员的注释信息
+/// 表示从 XML 文档注释中解析出的成员说明信息。
 /// </summary>
 public sealed class CsComments
 {
     /// <summary>
-    /// 文档注释中的 summary 或 value 节点，用于表示注释的主体说明
+    /// 获取文档注释的主体说明；内容来自 <c>summary</c> 或 <c>value</c> 节点，缺失时为 <see langword="null"/>。
     /// </summary>
     public string Summary { get; private set; }
 
     /// <summary>
-    /// 文档注释中的 remarks 节点，用于表示备注信息
+    /// 获取文档注释中的补充说明；缺失时为 <see langword="null"/>。
     /// </summary>
     public string Remarks { get; private set; }
 
     /// <summary>
-    /// 文档注释中的 returns 节点，用于表示返回值信息
+    /// 获取文档注释中的返回值说明；缺失时为 <see langword="null"/>。
     /// </summary>
     public string Returns { get; private set; }
 
     /// <summary>
-    /// 文档注释中的 param 节点，用于表示参数信息
+    /// 获取按参数名索引的参数说明集合；没有参数说明时为空集合。
     /// </summary>
     public CsCommentsParamCollection Param { get; private set; }
 
     /// <summary>
-    /// 文档注释中的 typeparam 节点，用于表示泛型参数信息
+    /// 获取按泛型参数名索引的泛型参数说明集合；没有说明时为空集合。
     /// </summary>
     public CsCommentsParamCollection TypeParam { get; private set; }
 
     /// <summary>
-    /// 文档注释中的 exception 节点
+    /// 获取文档注释中的异常说明；没有异常说明时为空数组。
     /// </summary>
     public CsCommentsException[] Exception { get; private set; }
 
     /// <summary>
-    /// 空注释
+    /// 获取所有说明均为空的注释对象。
     /// </summary>
     public static readonly CsComments Empty = new();
 
     /// <summary>
-    /// 初始化一个<see cref="CsComments"/>类型的实例
+    /// 初始化一个 <see cref="CsComments"/> 类型的实例。
     /// </summary>
     private CsComments()
     {
@@ -52,6 +52,10 @@ public sealed class CsComments
         Exception = new CsCommentsException[0];
     }
 
+    /// <summary>
+    /// 初始化一个 <see cref="CsComments"/> 类型的实例。
+    /// </summary>
+    /// <param name="node">包含文档注释子节点的 XML 成员节点。</param>
     internal CsComments(XmlNode node)
     {
         var summary = node["summary"] ?? node["value"];
@@ -89,8 +93,6 @@ public sealed class CsComments
         }
     }
 
-    /// <summary>
-    /// 输出字符串
-    /// </summary>
+    /// <inheritdoc />
     public override string ToString() => Summary ?? "";
 }
