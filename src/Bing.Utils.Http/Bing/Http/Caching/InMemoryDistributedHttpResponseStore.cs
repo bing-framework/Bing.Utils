@@ -242,18 +242,18 @@ public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpRespo
     private sealed class Entry
     {
         /// <summary>
-        /// 初始化一个<see cref="Entry"/>类型的实例。
+        /// 初始化一个 <see cref="Entry"/> 类型的实例。
         /// </summary>
         /// <param name="snapshot">要保存的响应快照。</param>
         /// <param name="expiresAt">条目过期时间。</param>
         public Entry(DistributedHttpResponseSnapshot snapshot, DateTimeOffset expiresAt)
         { Snapshot = snapshot; ExpiresAt = expiresAt; }
         /// <summary>
-        /// 条目保存的响应快照。
+        /// 获取条目保存的响应快照。
         /// </summary>
         public DistributedHttpResponseSnapshot Snapshot { get; }
         /// <summary>
-        /// 条目过期时间。
+        /// 获取条目过期时间。
         /// </summary>
         public DateTimeOffset ExpiresAt { get; }
     }
@@ -266,18 +266,18 @@ public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpRespo
     private sealed class LeaseEntry
     {
         /// <summary>
-        /// 初始化一个<see cref="LeaseEntry"/>类型的实例。
+        /// 初始化一个 <see cref="LeaseEntry"/> 类型的实例。
         /// </summary>
         /// <param name="token">租约持有者令牌。</param>
         /// <param name="expiresAt">租约过期时间。</param>
         public LeaseEntry(string token, DateTimeOffset expiresAt)
         { Token = token; ExpiresAt = expiresAt; }
         /// <summary>
-        /// 用于识别当前租约持有者的令牌。
+        /// 获取用于识别当前租约持有者的令牌。
         /// </summary>
         public string Token { get; }
         /// <summary>
-        /// 条目过期时间。
+        /// 获取条目过期时间。
         /// </summary>
         public DateTimeOffset ExpiresAt { get; }
     }
@@ -307,9 +307,7 @@ public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpRespo
         private int _released;
 
         /// <summary>
-
-        /// 初始化一个<see cref="MemoryLease"/>类型的实例。
-
+        /// 初始化一个 <see cref="MemoryLease"/> 类型的实例。
         /// </summary>
         /// <param name="owner">负责释放租约的存储实例。</param>
         /// <param name="key">租约关联的缓存键。</param>

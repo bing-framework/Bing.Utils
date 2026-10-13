@@ -7,9 +7,7 @@ using Bing.Http;
 namespace Bing.Http.Caching;
 
 /// <summary>
-
 /// 将二进制 HTTP 响应快照保存到本地文件的缓存。
-
 /// </summary>
 /// <remarks>文件名使用缓存键哈希，写入使用临时文件替换；该缓存不会自动接入请求管线。</remarks>
 public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpResponseCacheStatistics
@@ -104,9 +102,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     private long _temporaryFilesRemoved;
 
     /// <summary>
-
-    /// 初始化一个<see cref="FileHttpResponseCache"/>类型的实例。
-
+    /// 初始化一个 <see cref="FileHttpResponseCache"/> 类型的实例。
     /// </summary>
     /// <param name="directory">缓存目录。</param>
     public FileHttpResponseCache(string directory)
@@ -115,9 +111,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
-    /// 初始化一个<see cref="FileHttpResponseCache"/>类型的实例。
-
+    /// 初始化一个 <see cref="FileHttpResponseCache"/> 类型的实例。
     /// </summary>
     /// <param name="directory">缓存目录。</param>
     /// <param name="options">容量配置；为空表示不限制条目数和总字节数。</param>
@@ -127,9 +121,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
-    /// 初始化一个<see cref="FileHttpResponseCache"/>类型的实例。
-
+    /// 初始化一个 <see cref="FileHttpResponseCache"/> 类型的实例。
     /// </summary>
     /// <param name="directory">缓存目录。</param>
     /// <param name="options">容量配置。</param>
@@ -875,25 +867,25 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     private sealed class FileCacheEntry
     {
         /// <summary>
-        /// 初始化一个<see cref="FileCacheEntry"/>类型的实例。
+        /// 初始化一个 <see cref="FileCacheEntry"/> 类型的实例。
         /// </summary>
         public FileCacheEntry(string key, DateTimeOffset expiresAt, HttpResponseResult<byte[]> response,
             bool isLegacy = false)
         { Key = key; ExpiresAt = expiresAt; Response = response; IsLegacy = isLegacy; }
         /// <summary>
-        /// 记录关联的缓存键。
+        /// 获取记录关联的缓存键。
         /// </summary>
         public string Key { get; }
         /// <summary>
-        /// 记录的过期时间。
+        /// 获取记录的过期时间。
         /// </summary>
         public DateTimeOffset ExpiresAt { get; }
         /// <summary>
-        /// 记录的响应快照。
+        /// 获取记录的响应快照。
         /// </summary>
         public HttpResponseResult<byte[]> Response { get; }
         /// <summary>
-        /// 记录是否来自旧版文件格式。
+        /// 获取记录是否来自旧版文件格式。
         /// </summary>
         public bool IsLegacy { get; }
     }

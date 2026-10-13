@@ -57,9 +57,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
     private long _evictions;
 
     /// <summary>
-
-    /// 初始化一个<see cref="InMemoryHttpResponseCache{TResult}"/>类型的实例。
-
+    /// 初始化一个 <see cref="InMemoryHttpResponseCache{TResult}"/> 类型的实例。
     /// </summary>
     /// <param name="options">容量配置；为空表示不限制条目数。</param>
     public InMemoryHttpResponseCache(HttpResponseCacheOptions options = null)
@@ -330,7 +328,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
     private sealed class CacheItem
     {
         /// <summary>
-        /// 初始化一个<see cref="CacheItem"/>类型的实例。
+        /// 初始化一个 <see cref="CacheItem"/> 类型的实例。
         /// </summary>
         public CacheItem(HttpResponseResult<TResult> response, DateTimeOffset expiresAt, long sizeBytes)
         {
@@ -342,20 +340,20 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
 
         /// <summary>
 
-        /// 缓存的响应快照。
+        /// 获取缓存的响应快照。
 
         /// </summary>
         public HttpResponseResult<TResult> Response { get; }
         /// <summary>
-        /// 条目过期时间。
+        /// 获取条目过期时间。
         /// </summary>
         public DateTimeOffset ExpiresAt { get; }
         /// <summary>
-        /// 最近一次命中时间，用于淘汰顺序。
+        /// 获取或设置最近一次命中时间，用于淘汰顺序。
         /// </summary>
         public DateTimeOffset LastAccess { get; set; }
         /// <summary>
-        /// 条目的估算字节数。
+        /// 获取条目的估算字节数。
         /// </summary>
         public long SizeBytes { get; }
     }

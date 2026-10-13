@@ -17,9 +17,7 @@ public sealed class DistributedHttpResponseSnapshot
     private readonly byte[] _body;
 
     /// <summary>
-
-    /// 初始化一个<see cref="DistributedHttpResponseSnapshot"/>类型的实例。
-
+    /// 初始化一个 <see cref="DistributedHttpResponseSnapshot"/> 类型的实例。
     /// </summary>
     /// <param name="statusCode">HTTP 状态码。</param>
     /// <param name="headers">响应头。</param>

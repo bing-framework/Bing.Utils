@@ -14,6 +14,9 @@ internal interface IFileHttpResponseCacheFileSystem
     /// <summary>
     /// 枚举指定目录中的匹配文件。
     /// </summary>
+    /// <returns>匹配文件的完整路径集合。</returns>
+    /// <param name="directory">要枚举的目录。</param>
+    /// <param name="pattern">文件名匹配模式。</param>
     IEnumerable<string> GetFiles(string directory, string pattern);
 
     /// <summary>
@@ -21,6 +24,8 @@ internal interface IFileHttpResponseCacheFileSystem
     /// 枚举指定目录的直接子目录。
 
     /// </summary>
+    /// <returns>直接子目录的完整路径集合。</returns>
+    /// <param name="directory">要枚举的目录。</param>
     IEnumerable<string> GetDirectories(string directory);
 
     /// <summary>
@@ -28,6 +33,8 @@ internal interface IFileHttpResponseCacheFileSystem
     /// 判断文件是否存在。
 
     /// </summary>
+    /// <returns>文件存在时返回 <see langword="true"/>，否则返回 <see langword="false"/>。</returns>
+    /// <param name="path">文件路径。</param>
     bool FileExists(string path);
 
     /// <summary>
@@ -35,6 +42,8 @@ internal interface IFileHttpResponseCacheFileSystem
     /// 读取文件的 UTC 最后写入时间。
 
     /// </summary>
+    /// <returns>文件的 UTC 最后写入时间。</returns>
+    /// <param name="path">文件路径。</param>
     DateTime GetLastWriteTimeUtc(string path);
 
     /// <summary>
@@ -42,6 +51,10 @@ internal interface IFileHttpResponseCacheFileSystem
     /// 获取独占文件锁。
 
     /// </summary>
+    /// <returns>已打开并独占的文件流。</returns>
+    /// <param name="path">要锁定的文件路径。</param>
+    /// <param name="cancellationToken">等待锁时使用的取消令牌。</param>
+    /// <param name="onWait">锁被占用时调用的等待回调。</param>
     FileStream OpenLock(string path, CancellationToken cancellationToken, Action onWait);
 
     /// <summary>
@@ -49,6 +62,8 @@ internal interface IFileHttpResponseCacheFileSystem
     /// 尝试删除文件；删除失败返回 <see langword="false"/>。
 
     /// </summary>
+    /// <returns>删除成功时返回 <see langword="true"/>，否则返回 <see langword="false"/>。</returns>
+    /// <param name="path">要删除的文件路径。</param>
     bool TryDelete(string path);
 }
 
@@ -66,9 +81,7 @@ internal sealed class DefaultFileHttpResponseCacheFileSystem : IFileHttpResponse
         new DefaultFileHttpResponseCacheFileSystem();
 
     /// <summary>
-
-    /// 初始化一个<see cref="DefaultFileHttpResponseCacheFileSystem"/>类型的实例。
-
+    /// 初始化一个 <see cref="DefaultFileHttpResponseCacheFileSystem"/> 类型的实例。
     /// </summary>
     private DefaultFileHttpResponseCacheFileSystem()
     {

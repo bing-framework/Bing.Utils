@@ -47,9 +47,7 @@ public sealed class FileHttpResponseCacheMaintenance : IDisposable
     private bool _disposed;
 
     /// <summary>
-
-    /// 初始化一个<see cref="FileHttpResponseCacheMaintenance"/>类型的实例。
-
+    /// 初始化一个 <see cref="FileHttpResponseCacheMaintenance"/> 类型的实例。
     /// </summary>
     /// <param name="cache">要定期清理的文件缓存。</param>
     /// <param name="interval">两次清理开始之间的周期；必须为正数且为有限值。</param>
@@ -70,9 +68,7 @@ public sealed class FileHttpResponseCacheMaintenance : IDisposable
     }
 
     /// <summary>
-
-    /// 初始化一个<see cref="FileHttpResponseCacheMaintenance"/>类型的实例。
-
+    /// 初始化一个 <see cref="FileHttpResponseCacheMaintenance"/> 类型的实例。
     /// </summary>
     /// <param name="cleanup">单次清理委托。</param>
     /// <param name="interval">两次清理开始之间的周期。</param>
