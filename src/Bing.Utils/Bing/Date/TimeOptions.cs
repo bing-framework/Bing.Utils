@@ -55,7 +55,7 @@ public static class TimeOptions
     #endregion
 
     /// <summary>
-    /// 是否使用Utc日期
+    /// 获取或设置是否使用Utc日期
     /// </summary>
     public static bool IsUseUtc { get; set; } = false;
 }

@@ -24,24 +24,24 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     public const int DAYS_PER_YEAR = 365;
 
     /// <summary>
-    /// 年
+    /// 获取或设置年
     /// </summary>
     public int Years { get; set; }
 
     /// <summary>
-    /// 月
+    /// 获取或设置月
     /// </summary>
     public int Months { get; set; }
 
     /// <summary>
-    /// 时间间隔
+    /// 获取或设置时间间隔
     /// </summary>
     public TimeSpan TimeSpan { get; set; }
 
     #region Ctor
 
     /// <summary>
-    /// 初始化一个<see cref="DateTimeSpan"/>类型的实例
+    /// 初始化一个 <see cref="DateTimeSpan"/> 类型的实例。
     /// </summary>
     /// <param name="years">年</param>
     /// <param name="months">月</param>
@@ -577,7 +577,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
 
     #region Override Methods
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string ToString() => ((TimeSpan)this).ToString();
 
     /// <summary>
@@ -593,7 +593,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// <param name="provider">格式提供程序</param>
     public string ToString(string format, IFormatProvider provider) => ((TimeSpan)this).ToString(format, provider);
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override bool Equals(object obj)
     {
         if (obj is null)
@@ -606,8 +606,7 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
         return false;
     }
 
-    /// <inheritdoc/>
-    // ReSharper disable NonReadonlyMemberInGetHashCode
+    /// <inheritdoc />
     public override int GetHashCode() => Months.GetHashCode() ^ Years.GetHashCode() ^ TimeSpan.GetHashCode();
 
     #endregion
@@ -734,57 +733,57 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     #region Fields Getters
 
     /// <summary>
-    /// 刻度数
+    /// 获取刻度数
     /// </summary>
     public long Ticks => ((TimeSpan)this).Ticks;
 
     /// <summary>
-    /// 天数
+    /// 获取天数
     /// </summary>
     public int Days => ((TimeSpan)this).Days;
 
     /// <summary>
-    /// 小时数
+    /// 获取小时数
     /// </summary>
     public int Hours => ((TimeSpan)this).Hours;
 
     /// <summary>
-    /// 分钟数
+    /// 获取分钟数
     /// </summary>
     public int Minutes => ((TimeSpan)this).Minutes;
 
     /// <summary>
-    /// 秒数
+    /// 获取秒数
     /// </summary>
     public int Seconds => ((TimeSpan)this).Seconds;
 
     /// <summary>
-    /// 毫秒数
+    /// 获取毫秒数
     /// </summary>
     public int Milliseconds => ((TimeSpan)this).Milliseconds;
 
     /// <summary>
-    /// 总天数
+    /// 获取总天数
     /// </summary>
     public double TotalDays => ((TimeSpan)this).TotalDays;
 
     /// <summary>
-    /// 总小时数
+    /// 获取总小时数
     /// </summary>
     public double TotalHours => ((TimeSpan)this).TotalHours;
 
     /// <summary>
-    /// 总分钟数
+    /// 获取总分钟数
     /// </summary>
     public double TotalMinutes => ((TimeSpan)this).TotalMinutes;
 
     /// <summary>
-    /// 总秒数
+    /// 获取总秒数
     /// </summary>
     public double TotalSeconds => ((TimeSpan)this).TotalSeconds;
 
     /// <summary>
-    /// 总毫秒数
+    /// 获取总毫秒数
     /// </summary>
     public double TotalMilliseconds => ((TimeSpan)this).TotalMilliseconds;
 

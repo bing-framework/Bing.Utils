@@ -1,63 +1,85 @@
 namespace Bing.Date;
 
 /// <summary>
-/// 时间格式类型（支持标准、紧凑、中文、带毫秒等格式）
+/// 表示日期和时间格式化方式。
 /// </summary>
+/// <remarks>
+/// 内置格式字符串可通过 <see cref="TimeFormatter.Register(TimeFormatType, string)"/> 覆盖。
+/// </remarks>
 public enum TimeFormatType
 {
     /// <summary>
-    /// 默认标准格式：<c>[yyyy-MM-dd HH:mm:ss]</c>
+    /// 使用默认日期时间格式输出日期和时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy-MM-dd HH:mm:ss</c>。
+    /// </remarks>
     Default,
 
     #region Norm
 
     /// <summary>
-    /// 标准年格式：<c>[yyyy]</c>。
-    /// 例如：2025
+    /// 使用标准分隔格式输出年份。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy</c>。
+    /// </remarks>
     NormYear,
 
     /// <summary>
-    /// 标准年月格式：<c>[yyyy-MM]</c>。
-    /// 例如：2025-06
+    /// 使用标准分隔格式输出年份和月份。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy-MM</c>。
+    /// </remarks>
     NormMonth,
 
     /// <summary>
-    /// 标准日期格式：<c>[yyyy-MM-dd]</c>。
-    /// 例如：2025-06-18
+    /// 使用标准分隔格式输出日期。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy-MM-dd</c>。
+    /// </remarks>
     NormDate,
 
     /// <summary>
-    /// 标准时间格式：<c>[HH:mm:ss]</c>。
-    /// 例如：17:20:01
+    /// 使用标准分隔格式输出时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>HH:mm:ss</c>。
+    /// </remarks>
     NormTime,
 
     /// <summary>
-    /// 标准时间格式，精确到毫秒：<c>[HH:mm:ss.fff]</c>。
-    /// 例如：17:20:01.123
+    /// 使用标准分隔格式输出精确到毫秒的时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>HH:mm:ss.fff</c>。
+    /// </remarks>
     NormTimeMs,
 
     /// <summary>
-    /// 标准日期时间格式，精确到分：<c>[yyyy-MM-dd HH:mm]</c>。
-    /// 例如：2025-06-18 17:20
+    /// 使用标准分隔格式输出精确到分钟的日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy-MM-dd HH:mm</c>。
+    /// </remarks>
     NormDateTimeMinute,
 
     /// <summary>
-    /// 标准日期时间格式：<c>[yyyy-MM-dd HH:mm:ss]</c>。
-    /// 例如：2025-06-18 17:20:01
+    /// 使用标准分隔格式输出日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy-MM-dd HH:mm:ss</c>。
+    /// </remarks>
     NormDateTime,
 
     /// <summary>
-    /// 标准日期时间格式，精确到毫秒：<c>[yyyy-MM-dd HH:mm:ss.fff]</c>。
-    /// 例如：2025-06-18 17:20:01.123
+    /// 使用标准分隔格式输出精确到毫秒的日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy-MM-dd HH:mm:ss.fff</c>。
+    /// </remarks>
     NormDateTimeMs,
 
     #endregion
@@ -65,51 +87,67 @@ public enum TimeFormatType
     #region Chinese
 
     /// <summary>
-    /// 标准年格式：<c>[yyyy年]</c>。
-    /// 例如：2025年
+    /// 使用中文单位格式输出年份。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy年</c>。
+    /// </remarks>
     ChineseYear,
 
     /// <summary>
-    /// 标准年月格式：<c>[yyyy年MM月]</c>。
-    /// 例如：2025年06月
+    /// 使用中文单位格式输出年份和月份。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy年MM月</c>。
+    /// </remarks>
     ChineseMonth,
 
     /// <summary>
-    /// 标准日期格式：<c>[yyyy年MM月dd日]</c>。
-    /// 例如：2025年06月18日
+    /// 使用中文单位格式输出日期。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy年MM月dd日</c>。
+    /// </remarks>
     ChineseDate,
 
     /// <summary>
-    /// 标准日期格式：<c>[HH时mm分ss秒]</c>。
-    /// 例如：17时20分01秒
+    /// 使用中文单位格式输出时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>HH时mm分ss秒</c>。
+    /// </remarks>
     ChineseTime,
 
     /// <summary>
-    /// 标准日期格式，精确到毫秒：<c>[HH时mm分ss秒.fff]</c>。
-    /// 例如：17时20分01秒.123
+    /// 使用中文单位格式输出精确到毫秒的时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>HH时mm分ss秒.fff</c>。
+    /// </remarks>
     ChineseTimeMs,
 
     /// <summary>
-    /// 标准日期时间格式，精确到分：<c>[yyyy年MM月dd日 HH时mm分]</c>。
-    /// 例如：2025年06月18日 17时20分
+    /// 使用中文单位格式输出精确到分钟的日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy年MM月dd日 HH时mm分</c>。
+    /// </remarks>
     ChineseDateTimeMinute,
 
     /// <summary>
-    /// 标准日期时间格式：<c>[yyyy年MM月dd日 HH时mm分ss秒]</c>。
-    /// 例如：2025年06月18日 17时20分01秒
+    /// 使用中文单位格式输出日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy年MM月dd日 HH时mm分ss秒</c>。
+    /// </remarks>
     ChineseDateTime,
 
     /// <summary>
-    /// 标准日期时间格式，精确到毫秒：<c>[yyyy年MM月dd日 HH时mm分ss秒.fff]</c>。
-    /// 例如：2025年06月18日 17时20分01秒.123
+    /// 使用中文单位格式输出精确到毫秒的日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy年MM月dd日 HH时mm分ss秒.fff</c>。
+    /// </remarks>
     ChineseDateTimeMs,
 
     #endregion
@@ -117,51 +155,67 @@ public enum TimeFormatType
     #region Pure
 
     /// <summary>
-    /// 标准年格式：<c>[yyyy]</c>。
-    /// 例如：2025
+    /// 使用无分隔符格式输出年份。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy</c>。
+    /// </remarks>
     PureYear,
 
     /// <summary>
-    /// 标准年月格式：<c>[yyyyMM]</c>。
-    /// 例如：202506
+    /// 使用无分隔符格式输出年份和月份。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyyMM</c>。
+    /// </remarks>
     PureMonth,
 
     /// <summary>
-    /// 标准日期格式：<c>[yyyyMMdd]</c>。
-    /// 例如：20250618
+    /// 使用无分隔符格式输出日期。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyyMMdd</c>。
+    /// </remarks>
     PureDate,
 
     /// <summary>
-    /// 标准时间格式：<c>[HHmmss]</c>。
-    /// 例如：172001
+    /// 使用无分隔符格式输出时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>HHmmss</c>。
+    /// </remarks>
     PureTime,
 
     /// <summary>
-    /// 标准时间格式，精确到毫秒：<c>[HHmmssfff]</c>。
-    /// 例如：172001123
+    /// 使用无分隔符格式输出精确到毫秒的时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>HHmmssfff</c>。
+    /// </remarks>
     PureTimeMs,
 
     /// <summary>
-    /// 标准日期时间格式，精确到分：<c>[yyyyMMddHHmm]</c>。
-    /// 例如：202506181720
+    /// 使用无分隔符格式输出精确到分钟的日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyyMMddHHmm</c>。
+    /// </remarks>
     PureDateTimeMinute,
 
     /// <summary>
-    /// 标准日期时间格式：<c>[yyyyMMddHHmmss]</c>。
-    /// 例如：20250618172001
+    /// 使用无分隔符格式输出日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyyMMddHHmmss</c>。
+    /// </remarks>
     PureDateTime,
 
     /// <summary>
-    /// 标准日期时间格式，精确到毫秒：<c>[yyyyMMddHHmmssfff]</c>。
-    /// 例如：20250618172001123
+    /// 使用无分隔符格式输出精确到毫秒的日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyyMMddHHmmssfff</c>。
+    /// </remarks>
     PureDateTimeMs,
 
     #endregion
@@ -169,51 +223,67 @@ public enum TimeFormatType
     #region Underline
 
     /// <summary>
-    /// 标准年格式：<c>[yyyy]</c>。
-    /// 例如：2025
+    /// 使用下划线分隔格式输出年份。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy</c>。
+    /// </remarks>
     UnderlineYear,
 
     /// <summary>
-    /// 标准年月格式：<c>[yyyy_MM]</c>。
-    /// 例如：2025_06
+    /// 使用下划线分隔格式输出年份和月份。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy_MM</c>。
+    /// </remarks>
     UnderlineMonth,
 
     /// <summary>
-    /// 标准日期格式：<c>yyyy_MM_dd</c>。
-    /// 例如：2025_06_18
+    /// 使用下划线分隔格式输出日期。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy_MM_dd</c>。
+    /// </remarks>
     UnderlineDate,
 
     /// <summary>
-    /// 标准时间格式：<c>[HH_mm_ss]</c>。
-    /// 例如：17_20_01
+    /// 使用下划线分隔格式输出时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>HH_mm_ss</c>。
+    /// </remarks>
     UnderlineTime,
 
     /// <summary>
-    /// 标准时间格式，精确到毫秒：<c>[HH_mm_ss_fff]</c>。
-    /// 例如：17_20_01_123
+    /// 使用下划线分隔格式输出精确到毫秒的时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>HH_mm_ss_fff</c>。
+    /// </remarks>
     UnderlineTimeMs,
 
     /// <summary>
-    /// 标准日期时间格式，精确到分：<c>[yyyy_MM_dd_HH_mm]</c>。
-    /// 例如：2025_06_18_17_20
+    /// 使用下划线分隔格式输出精确到分钟的日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy_MM_dd_HH_mm</c>。
+    /// </remarks>
     UnderlineDateTimeMinute,
 
     /// <summary>
-    /// 标准日期时间格式：<c>[yyyy_MM_dd_HH_mm_ss]</c>。
-    /// 例如：2025_06_18_17_20_01
+    /// 使用下划线分隔格式输出日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy_MM_dd_HH_mm_ss</c>。
+    /// </remarks>
     UnderlineDateTime,
 
     /// <summary>
-    /// 标准日期时间格式，精确到毫秒：<c>[yyyy_MM_dd_HH_mm_ss_fff]</c>。
-    /// 例如：2025_06_18_17_20_01_123
+    /// 使用下划线分隔格式输出精确到毫秒的日期时间。
     /// </summary>
+    /// <remarks>
+    /// 默认格式字符串为 <c>yyyy_MM_dd_HH_mm_ss_fff</c>。
+    /// </remarks>
     UnderlineDateTimeMs,
 
     #endregion

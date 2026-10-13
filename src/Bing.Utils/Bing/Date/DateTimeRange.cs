@@ -8,12 +8,12 @@ namespace Bing.Date;
 public interface IDateTimeRange
 {
     /// <summary>
-    /// 起始时间
+    /// 获取起始时间
     /// </summary>
     DateTime StartTime { get; }
 
     /// <summary>
-    /// 结束时间
+    /// 获取结束时间
     /// </summary>
     DateTime EndTime { get; }
 }
@@ -42,12 +42,12 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     #region 字段
 
     /// <summary>
-    /// 当前时间
+    /// 获取当前时间
     /// </summary>
     private static DateTime Now => DateTime.Now;
 
     /// <summary>
-    /// 周列表
+    /// 获取周列表
     /// </summary>
     private static DayOfWeek[] Weeks =>
     [
@@ -65,14 +65,14 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// 初始化一个 <see cref="DateTimeRange"/> 类型的实例。
     /// </summary>
     public DateTimeRange() : this(DateTime.MinValue, DateTime.MaxValue)
     {
     }
 
     /// <summary>
-    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// 初始化一个 <see cref="DateTimeRange"/> 类型的实例。
     /// </summary>
     /// <param name="start">起始时间</param>
     /// <param name="end">结束时间</param>
@@ -96,7 +96,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     }
 
     /// <summary>
-    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// 初始化一个 <see cref="DateTimeRange"/> 类型的实例。
     /// </summary>
     /// <param name="start">起始时间</param>
     /// <param name="end">结束时间</param>
@@ -122,7 +122,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     }
 
     /// <summary>
-    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// 初始化一个 <see cref="DateTimeRange"/> 类型的实例。
     /// </summary>
     /// <param name="dateTimeRange">事件范围</param>
     public DateTimeRange(IDateTimeRange dateTimeRange) : this(dateTimeRange.StartTime, dateTimeRange.EndTime)
@@ -130,7 +130,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     }
 
     /// <summary>
-    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// 初始化一个 <see cref="DateTimeRange"/> 类型的实例。
     /// </summary>
     /// <param name="start">起始时间</param>
     /// <param name="duration">持续时间（必须为正值）</param>
@@ -146,7 +146,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     }
 
     /// <summary>
-    /// 初始化一个<see cref="DateTimeRange"/>类型的实例
+    /// 初始化一个 <see cref="DateTimeRange"/> 类型的实例。
     /// </summary>
     /// <param name="duration">持续时间（必须为正值）</param>
     /// <param name="end">结束时间</param>
@@ -178,52 +178,52 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     #region 属性
 
     /// <summary>
-    /// 起始时间
+    /// 获取起始时间
     /// </summary>
     public DateTime StartTime { get; }
 
     /// <summary>
-    /// 结束时间
+    /// 获取结束时间
     /// </summary>
     public DateTime EndTime { get; }
 
     /// <summary>
-    /// 起始时间（UTC）
+    /// 获取起始时间（UTC）
     /// </summary>
     public DateTime UtcStartTime { get; }
 
     /// <summary>
-    /// 结束时间（UTC）
+    /// 获取结束时间（UTC）
     /// </summary>
     public DateTime UtcEndTime { get; }
 
     /// <summary>
-    /// 时间范围跨度
+    /// 获取时间范围跨度
     /// </summary>
     public TimeSpan TimeSpan => EndTime - StartTime;
 
     /// <summary>
-    /// 总天数
+    /// 获取总天数
     /// </summary>
     public double TotalDays => TimeSpan.TotalDays;
 
     /// <summary>
-    /// 总小时数
+    /// 获取总小时数
     /// </summary>
     public double TotalHours => TimeSpan.TotalHours;
 
     /// <summary>
-    /// 总分钟数
+    /// 获取总分钟数
     /// </summary>
     public double TotalMinutes => TimeSpan.TotalMinutes;
 
     /// <summary>
-    /// 总秒数
+    /// 获取总秒数
     /// </summary>
     public double TotalSeconds => TimeSpan.TotalSeconds;
 
     /// <summary>
-    /// 总毫秒数
+    /// 获取总毫秒数
     /// </summary>
     public double TotalMilliseconds => TimeSpan.TotalMilliseconds;
 
@@ -672,10 +672,10 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
 
     #region ToString
 
-    /// <summary>
-    /// 格式化为字符串
-    /// </summary>
-    /// <returns>yyyy-MM-dd HH:mm:ss - yyyy-MM-dd HH:mm:ss</returns>
+    /// <inheritdoc />
+    /// <remarks>
+    /// 使用默认日期时间格式连接起始时间和结束时间，默认分隔符为短横线。
+    /// </remarks>
     public override string ToString() => ToString("yyyy-MM-dd HH:mm:ss");
 
     /// <summary>

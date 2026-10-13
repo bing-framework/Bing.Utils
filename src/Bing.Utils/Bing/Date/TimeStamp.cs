@@ -30,7 +30,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="TimeStamp"/>类型的实例
+    /// 初始化一个 <see cref="TimeStamp"/> 类型的实例。
     /// </summary>
     /// <remarks>
     /// 此构造函数创建一个表示当前时间的时间戳对象。
@@ -44,7 +44,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     public TimeStamp() : this(DateTime.Now) { }
 
     /// <summary>
-    /// 初始化一个<see cref="TimeStamp"/>类型的实例
+    /// 初始化一个 <see cref="TimeStamp"/> 类型的实例。
     /// </summary>
     /// <param name="timestamp">时间戳值（.NET Ticks）</param>
     /// <exception cref="ArgumentOutOfRangeException">当timestamp不在有效范围内时抛出</exception>
@@ -62,7 +62,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     public TimeStamp(long timestamp) : this(FromTimestampFunc(timestamp), timestamp) { }
 
     /// <summary>
-    /// 初始化一个<see cref="TimeStamp"/>类型的实例
+    /// 初始化一个 <see cref="TimeStamp"/> 类型的实例。
     /// </summary>
     /// <param name="dt">时间对象</param>
     /// <remarks>
@@ -78,7 +78,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     public TimeStamp(DateTime dt) : this(dt, ToTimestampFunc(dt)) { }
 
     /// <summary>
-    /// 初始化一个<see cref="TimeStamp"/>类型的实例
+    /// 初始化一个 <see cref="TimeStamp"/> 类型的实例。
     /// </summary>
     /// <param name="dt">时间对象</param>
     /// <param name="timestamp">时间戳值</param>
@@ -277,10 +277,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// </example>
     public string ToString(string format) => m_datetime.ToString(format, CultureInfo.InvariantCulture);
 
-    /// <summary>
-    /// 将时间戳转换为字符串表示
-    /// </summary>
-    /// <returns>默认格式的时间字符串</returns>
+    /// <inheritdoc />
     public override string ToString() => ToString("yyyy-MM-dd HH:mm:ss.fff");
 
     #endregion
@@ -315,17 +312,10 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
         return m_timestamp == other.m_timestamp;
     }
 
-    /// <summary>
-    /// 检查当前时间戳是否与指定对象相等
-    /// </summary>
-    /// <param name="obj">要比较的对象</param>
-    /// <returns>如果对象是相等的时间戳则返回true，否则返回false</returns>
+    /// <inheritdoc />
     public override bool Equals(object obj) => Equals(obj as TimeStamp);
 
-    /// <summary>
-    /// 获取当前时间戳的哈希码
-    /// </summary>
-    /// <returns>哈希码值</returns>
+    /// <inheritdoc />
     public override int GetHashCode() => m_timestamp.GetHashCode();
 
     #endregion

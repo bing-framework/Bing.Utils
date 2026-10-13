@@ -35,7 +35,7 @@ public class NoRepeatTimeStampFactory
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="NoRepeatTimeStampFactory"/>类型的实例
+    /// 初始化一个 <see cref="NoRepeatTimeStampFactory"/> 类型的实例。
     /// </summary>
     /// <param name="incrementMs">自增毫秒数，默认为4毫秒</param>
     /// <exception cref="ArgumentOutOfRangeException">当incrementMs小于等于0时抛出</exception>
@@ -55,7 +55,7 @@ public class NoRepeatTimeStampFactory
     #region 属性
 
     /// <summary>
-    /// 自增毫秒数
+    /// 获取或设置自增毫秒数
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">设置值小于等于0时抛出</exception>
     public double IncrementMs
@@ -276,10 +276,7 @@ public class NoRepeatTimeStampFactory
 
     #region ToString重写
 
-    /// <summary>
-    /// 返回工厂的字符串表示
-    /// </summary>
-    /// <returns>包含配置信息的字符串</returns>
+    /// <inheritdoc />
     public override string ToString() => $"NoRepeatTimeStampFactory(IncrementMs: {IncrementMs:F3})";
 
     #endregion

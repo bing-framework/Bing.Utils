@@ -16,12 +16,12 @@ public enum RangeMode
     Close,
 
     /// <summary>
-    /// >左闭右开区间：[start, end)，包含起始但不包含结束。
+    /// 左开右闭区间：(start, end]，不包含起始但包含结束。
     /// </summary>
     OpenClose,
 
     /// <summary>
-    /// 左开右闭区间：(start, end]，包含结束但不包含起始。
+    /// 左闭右开区间：[start, end)，包含起始但不包含结束。
     /// </summary>
     CloseOpen
 }

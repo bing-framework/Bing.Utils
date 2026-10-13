@@ -8,24 +8,24 @@ namespace Bing.Date;
 public class DateInfo
 {
     /// <summary>
-    /// 内部日期时间
+    /// 获取或设置内部日期时间
     /// </summary>
     // ReSharper disable once InconsistentNaming
     private DateTime _internalDateTime { get; set; }
 
     /// <summary>
-    /// 初始化一个<see cref="DateInfo"/>类型的实例
+    /// 初始化一个 <see cref="DateInfo"/> 类型的实例。
     /// </summary>
     internal DateInfo() { }
 
     /// <summary>
-    /// 初始化一个<see cref="DateInfo"/>类型的实例
+    /// 初始化一个 <see cref="DateInfo"/> 类型的实例。
     /// </summary>
     /// <param name="dt">日期时间</param>
     public DateInfo(DateTime dt) => _internalDateTime = dt.SetTime(0, 0, 0, 0);
 
     /// <summary>
-    /// 初始化一个<see cref="DateInfo"/>类型的实例
+    /// 初始化一个 <see cref="DateInfo"/> 类型的实例。
     /// </summary>
     /// <param name="year">年</param>
     /// <param name="month">月</param>
@@ -33,7 +33,7 @@ public class DateInfo
     public DateInfo(int year, int month, int day) => _internalDateTime = new DateTime(year, month, day, 0, 0, 0, 0);
 
     /// <summary>
-    /// 年
+    /// 获取或设置年
     /// </summary>
     public virtual int Year
     {
@@ -42,7 +42,7 @@ public class DateInfo
     }
 
     /// <summary>
-    /// 月
+    /// 获取或设置月
     /// </summary>
     public virtual int Month
     {
@@ -51,7 +51,7 @@ public class DateInfo
     }
 
     /// <summary>
-    /// 日
+    /// 获取或设置日
     /// </summary>
     public virtual int Day
     {
@@ -60,7 +60,7 @@ public class DateInfo
     }
 
     /// <summary>
-    /// 内部日期时间引用
+    /// 获取内部日期时间引用
     /// </summary>
     internal DateTime DateTimeRef => _internalDateTime;
 

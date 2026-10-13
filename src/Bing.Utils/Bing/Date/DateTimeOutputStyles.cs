@@ -6,42 +6,54 @@ namespace Bing.Date;
 public enum DateTimeOutputStyles
 {
     /// <summary>
-    /// 格式：yyyy-MM-dd HH:mm:ss
+    /// 按预设格式模式输出日期和时间。
     /// </summary>
+    /// <remarks>
+    /// 使用格式字符串 <c>yyyy-MM-dd HH:mm:ss</c>。
+    /// </remarks>
     DateTime,
 
     /// <summary>
-    /// 格式：yyyy-MM-dd
+    /// 按预设格式模式输出日期。
     /// </summary>
+    /// <remarks>
+    /// 使用格式字符串 <c>yyyy-MM-dd</c>。
+    /// </remarks>
     Date,
 
     /// <summary>
-    /// 格式：HH:mm:ss
+    /// 按预设格式模式输出时间。
     /// </summary>
+    /// <remarks>
+    /// 使用格式字符串 <c>HH:mm:ss</c>。
+    /// </remarks>
     Time,
 
     /// <summary>
-    /// 长日期。格式：yyyy年MM月dd日
+    /// 使用当前区域设置定义的长日期格式。
     /// </summary>
     LongDate,
 
     /// <summary>
-    /// 长时间。格式：HH:mm:ss
+    /// 使用当前区域设置定义的长时间格式。
     /// </summary>
     LongTime,
 
     /// <summary>
-    /// 短日期。格式：yyyy/MM/dd
+    /// 使用当前区域设置定义的短日期格式。
     /// </summary>
     ShortDate,
 
     /// <summary>
-    /// 短时间。格式：HH:mm
+    /// 使用当前区域设置定义的短时间格式。
     /// </summary>
     ShortTime,
 
     /// <summary>
-    /// 格式：yyyy-MM-dd HH:mm:ss.fff
+    /// 按预设格式模式输出精确到毫秒的日期时间。
     /// </summary>
+    /// <remarks>
+    /// 使用格式字符串 <c>yyyy-MM-dd HH:mm:ss.fff</c>。
+    /// </remarks>
     Millisecond,
 }

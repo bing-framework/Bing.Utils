@@ -34,7 +34,7 @@ public class UnixTimeStamp : TimeStamp
     public const long MaxUnixTimestamp32Bit = 2147483647L; // 2^31 - 1
 
     /// <summary>
-    /// Unix时间戳的实际最大值（64位，对应9999年12月31日）
+    /// 获取Unix时间戳的实际最大值（64位，对应9999年12月31日）
     /// </summary>
     /// <remarks>
     /// 计算公式：(DateTime.MaxValue.ToUniversalTime().Ticks - UnixEpoch.Ticks) / TimeSpan.TicksPerSecond
@@ -60,7 +60,7 @@ public class UnixTimeStamp : TimeStamp
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="UnixTimeStamp"/>类型的实例
+    /// 初始化一个 <see cref="UnixTimeStamp"/> 类型的实例。
     /// </summary>
     /// <remarks>
     /// 此构造函数创建一个表示当前时间的Unix时间戳对象。
@@ -74,7 +74,7 @@ public class UnixTimeStamp : TimeStamp
     public UnixTimeStamp() : this(DateTime.Now) { }
 
     /// <summary>
-    /// 初始化一个<see cref="UnixTimeStamp"/>类型的实例
+    /// 初始化一个 <see cref="UnixTimeStamp"/> 类型的实例。
     /// </summary>
     /// <param name="timestamp">Unix时间戳值（秒）</param>
     /// <exception cref="ArgumentOutOfRangeException">当时间戳超出有效范围时抛出</exception>
@@ -91,7 +91,7 @@ public class UnixTimeStamp : TimeStamp
     public UnixTimeStamp(long timestamp) : this(FromUnixTimestampFunc(timestamp), timestamp) { }
 
     /// <summary>
-    /// 初始化一个<see cref="UnixTimeStamp"/>类型的实例
+    /// 初始化一个 <see cref="UnixTimeStamp"/> 类型的实例。
     /// </summary>
     /// <param name="dt">时间对象</param>
     /// <remarks>
@@ -108,7 +108,7 @@ public class UnixTimeStamp : TimeStamp
     public UnixTimeStamp(DateTime dt) : this(dt, ToUnixTimestampFunc(dt)) { }
 
     /// <summary>
-    /// 初始化一个<see cref="UnixTimeStamp"/>类型的实例
+    /// 初始化一个 <see cref="UnixTimeStamp"/> 类型的实例。
     /// </summary>
     ///<param name="dt">时间对象</param>
     /// <param name="timestamp">Unix时间戳值</param>
@@ -122,10 +122,7 @@ public class UnixTimeStamp : TimeStamp
 
     #region 核心转换方法
 
-    /// <summary>
-    /// 转换为时间对象
-    /// </summary>
-    /// <returns>对应的DateTime对象（本地时间）</returns>
+    /// <inheritdoc />
     /// <remarks>
     /// 返回当前Unix时间戳对应的本地时间。
     /// </remarks>
@@ -138,10 +135,7 @@ public class UnixTimeStamp : TimeStamp
     /// </example>
     public override DateTime ToDateTime() => m_datetime;
 
-    /// <summary>
-    /// 转换为Unix时间戳值
-    /// </summary>
-    /// <returns>Unix时间戳值（秒）</returns>
+    /// <inheritdoc />
     /// <remarks>
     /// 返回当前时间对应的Unix时间戳值，以秒为单位。
     /// </remarks>
@@ -338,18 +332,10 @@ public class UnixTimeStamp : TimeStamp
     /// <returns>新的Unix时间戳对象</returns>
     public UnixTimeStamp AddDays(long days) => AddSeconds(days * 86400);
 
-    /// <summary>
-    /// 添加指定的时间间隔
-    /// </summary>
-    /// <param name="timeSpan">要添加的时间间隔</param>
-    /// <returns>新的Unix时间戳对象</returns>
+    /// <inheritdoc />
     public override TimeStamp Add(TimeSpan timeSpan) => new UnixTimeStamp(m_datetime.Add(timeSpan));
 
-    /// <summary>
-    /// 减去指定的时间间隔
-    /// </summary>
-    /// <param name="timeSpan">要减去的时间间隔</param>
-    /// <returns>新的Unix时间戳对象</returns>
+    /// <inheritdoc />
     public override TimeStamp Subtract(TimeSpan timeSpan) => new UnixTimeStamp(m_datetime.Subtract(timeSpan));
 
     #endregion

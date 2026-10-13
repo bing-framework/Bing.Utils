@@ -8,17 +8,17 @@ namespace Bing.Date.Chinese;
 public class ChineseDateInfo
 {
     /// <summary>
-    /// 内部日期时间
+    /// 获取内部日期时间
     /// </summary>
     private DateTime InternalDateTime { get; }
 
     /// <summary>
-    /// 中国农历日历
+    /// 获取中国农历日历
     /// </summary>
     private ChineseLunisolarCalendar Calendar { get; }
 
     /// <summary>
-    /// 初始化一个<see cref="ChineseDateInfo"/>类型的实例。
+    /// 初始化一个 <see cref="ChineseDateInfo"/> 类型的实例。
     /// </summary>
     /// <param name="dt">日期时间</param>
     public ChineseDateInfo(DateTime dt)
@@ -28,7 +28,7 @@ public class ChineseDateInfo
     }
 
     /// <summary>
-    /// 初始化一个<see cref="ChineseDateInfo"/>类型的实例。
+    /// 初始化一个 <see cref="ChineseDateInfo"/> 类型的实例。
     /// </summary>
     /// <param name="dt">日期时间</param>
     /// <param name="calendar">中国农历日历</param>
@@ -39,7 +39,7 @@ public class ChineseDateInfo
     }
 
     /// <summary>
-    /// 内部日期时间
+    /// 获取内部日期时间
     /// </summary>
     internal DateTime InternalTime => InternalDateTime;
 
