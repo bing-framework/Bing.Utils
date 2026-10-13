@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Bing.Conversions;
@@ -707,6 +708,11 @@ public static class Conv
             return null;
         var result = input is float direct ? direct : default;
         var success = input is float;
+        if (!success && TryGetIntegralValue(input, out var integral))
+        {
+            result = (float)integral;
+            success = true;
+        }
         if (!success)
             success = float.TryParse(input.SafeString(), out result);
         if (!success)
@@ -793,6 +799,11 @@ public static class Conv
             return null;
         var result = input is double direct ? direct : default;
         var success = input is double;
+        if (!success && TryGetIntegralValue(input, out var integral))
+        {
+            result = (double)integral;
+            success = true;
+        }
         if (!success)
             success = double.TryParse(input.SafeString(), out result);
         if (!success)
@@ -880,6 +891,11 @@ public static class Conv
             return null;
         var result = input is decimal direct ? direct : default;
         var success = input is decimal;
+        if (!success && TryGetIntegralValue(input, out var integral))
+        {
+            result = integral;
+            success = true;
+        }
         if (!success)
             success = decimal.TryParse(input.SafeString(), out result);
         if (!success)
@@ -2066,8 +2082,7 @@ public static class Conv
             }
             if (type.IsEnum)
             {
-                result = Enums.Parse<T>(input);
-                return true;
+                return ConvEnumParser<T>.TryParse(input.SafeString(), out result);
             }
             if (input is string numericText && type == typeof(int))
             {
@@ -2134,6 +2149,12 @@ public static class Conv
             result = (TTarget)(object)input;
             return true;
         }
+        if (!ConvTypeInfo<TSource>.IsNullableValueType &&
+            TryConvertTypedNumericPair(input, out result))
+            return true;
+        if (!ConvTypeInfo<TSource>.IsNullableValueType &&
+            IsSupportedTypedNumericPair<TSource, TTarget>())
+            return false;
         if (input is JsonElement element && typeof(TTarget) != typeof(string) &&
             typeof(TTarget) != typeof(Guid) && !ConvTypeInfo<TTarget>.UnderlyingType.IsEnum)
         {
@@ -2158,6 +2179,201 @@ public static class Conv
     }
 
     /// <summary>
+    /// 尝试无装箱转换已支持的类型化数值对。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的源值。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>源和目标为支持的数值组合且转换成功时返回 <see langword="true"/>。</returns>
+    private static bool TryConvertTypedNumericPair<TSource, TTarget>(TSource input, out TTarget result)
+    {
+        result = default;
+        if (typeof(TSource) == typeof(int))
+        {
+            var value = Unsafe.As<TSource, int>(ref input);
+            if (IsTypedTarget<TTarget, int>())
+                return SetTypedNumericResult(value, out result);
+            if (typeof(TTarget) == typeof(long))
+            {
+                var converted = (long)value;
+                result = Unsafe.As<long, TTarget>(ref converted);
+                return true;
+            }
+            if (ConvTypeInfo<TTarget>.IsNullableValueType && ConvTypeInfo<TTarget>.UnderlyingType == typeof(long))
+            {
+                result = ConvTypeInfo<TTarget>.FromNullable((long)value);
+                return true;
+            }
+            if (IsTypedTarget<TTarget, float>())
+                return SetTypedNumericResult((float)value, out result);
+            if (IsTypedTarget<TTarget, double>())
+                return SetTypedNumericResult((double)value, out result);
+            if (IsTypedTarget<TTarget, decimal>())
+                return SetTypedNumericResult((decimal)value, out result);
+        }
+        else if (typeof(TSource) == typeof(short))
+        {
+            if (IsTypedTarget<TTarget, int>())
+                return SetTypedNumericResult((int)Unsafe.As<TSource, short>(ref input), out result);
+        }
+        else if (typeof(TSource) == typeof(uint))
+        {
+            if (IsTypedTarget<TTarget, long>())
+                return SetTypedNumericResult((long)Unsafe.As<TSource, uint>(ref input), out result);
+        }
+        else if (typeof(TSource) == typeof(ulong))
+        {
+            if (IsTypedTarget<TTarget, long>())
+            {
+                var value = Unsafe.As<TSource, ulong>(ref input);
+                if (value > long.MaxValue)
+                    return false;
+                return SetTypedNumericResult((long)value, out result);
+            }
+        }
+        else if (typeof(TSource) == typeof(long))
+        {
+            var value = Unsafe.As<TSource, long>(ref input);
+            if (IsTypedTarget<TTarget, long>())
+                return SetTypedNumericResult(value, out result);
+            if (typeof(TTarget) == typeof(int))
+            {
+                if (value < int.MinValue || value > int.MaxValue)
+                    return false;
+                var converted = (int)value;
+                result = Unsafe.As<int, TTarget>(ref converted);
+                return true;
+            }
+            if (ConvTypeInfo<TTarget>.IsNullableValueType && ConvTypeInfo<TTarget>.UnderlyingType == typeof(int))
+            {
+                if (value < int.MinValue || value > int.MaxValue)
+                    return false;
+                result = ConvTypeInfo<TTarget>.FromNullable((int)value);
+                return true;
+            }
+            if (IsTypedTarget<TTarget, float>())
+                return SetTypedNumericResult((float)value, out result);
+            if (IsTypedTarget<TTarget, double>())
+                return SetTypedNumericResult((double)value, out result);
+            if (IsTypedTarget<TTarget, decimal>())
+                return SetTypedNumericResult((decimal)value, out result);
+        }
+        else if (typeof(TSource) == typeof(float))
+        {
+            var value = Unsafe.As<TSource, float>(ref input);
+            try
+            {
+                if (IsTypedTarget<TTarget, int>())
+                    return SetTypedNumericResult(Convert.ToInt32(value), out result);
+                if (IsTypedTarget<TTarget, long>())
+                    return SetTypedNumericResult(Convert.ToInt64(value), out result);
+            }
+            catch (OverflowException)
+            {
+                result = default;
+                return false;
+            }
+        }
+        else if (typeof(TSource) == typeof(double))
+        {
+            var value = Unsafe.As<TSource, double>(ref input);
+            try
+            {
+                if (IsTypedTarget<TTarget, int>())
+                    return SetTypedNumericResult(Convert.ToInt32(value), out result);
+                if (IsTypedTarget<TTarget, long>())
+                    return SetTypedNumericResult(Convert.ToInt64(value), out result);
+                if (IsTypedTarget<TTarget, decimal>())
+                {
+                    if (double.IsNaN(value) || double.IsInfinity(value) ||
+                        value >= (double)decimal.MaxValue || value <= (double)decimal.MinValue)
+                        return false;
+                    return SetTypedNumericResult(Convert.ToDecimal(value), out result);
+                }
+            }
+            catch (OverflowException)
+            {
+                result = default;
+                return false;
+            }
+        }
+        else if (typeof(TSource) == typeof(decimal))
+        {
+            var value = Unsafe.As<TSource, decimal>(ref input);
+            try
+            {
+                if (IsTypedTarget<TTarget, int>())
+                    return SetTypedNumericResult(Convert.ToInt32(value), out result);
+                if (IsTypedTarget<TTarget, long>())
+                    return SetTypedNumericResult(Convert.ToInt64(value), out result);
+                if (IsTypedTarget<TTarget, double>())
+                    return SetTypedNumericResult(Convert.ToDouble(value), out result);
+            }
+            catch (OverflowException)
+            {
+                result = default;
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 判断数值类型对是否已由类型化路径处理。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <returns>类型对已处理时返回 <see langword="true"/>。</returns>
+    private static bool IsSupportedTypedNumericPair<TSource, TTarget>() =>
+        typeof(TSource) == typeof(int) || typeof(TSource) == typeof(long)
+            ? IsTypedTarget<TTarget, int>() || IsTypedTarget<TTarget, long>() ||
+              IsTypedTarget<TTarget, float>() || IsTypedTarget<TTarget, double>() ||
+              IsTypedTarget<TTarget, decimal>()
+            : (typeof(TSource) == typeof(short) && IsTypedTarget<TTarget, int>()) ||
+              ((typeof(TSource) == typeof(uint) || typeof(TSource) == typeof(ulong)) &&
+               IsTypedTarget<TTarget, long>()) ||
+              (typeof(TSource) == typeof(double) && IsTypedTarget<TTarget, decimal>()) ||
+              (typeof(TSource) == typeof(decimal) && IsTypedTarget<TTarget, double>()) ||
+              (typeof(TSource) == typeof(float) || typeof(TSource) == typeof(double) ||
+               typeof(TSource) == typeof(decimal)) &&
+              (IsTypedTarget<TTarget, int>() || IsTypedTarget<TTarget, long>());
+
+    /// <summary>
+    /// 判断目标类型是否为指定的数值类型或其可空形式。
+    /// </summary>
+    /// <typeparam name="TTarget">声明的目标类型。</typeparam>
+    /// <typeparam name="TValue">目标数值类型。</typeparam>
+    /// <returns>目标类型匹配时返回 <see langword="true"/>。</returns>
+    private static bool IsTypedTarget<TTarget, TValue>() where TValue : struct =>
+        typeof(TTarget) == typeof(TValue) ||
+        (ConvTypeInfo<TTarget>.IsNullableValueType && ConvTypeInfo<TTarget>.UnderlyingType == typeof(TValue));
+
+    /// <summary>
+    /// 将无装箱的数值结果写入指定目标类型。
+    /// </summary>
+    /// <typeparam name="TTarget">声明的目标类型。</typeparam>
+    /// <typeparam name="TValue">结果的基础数值类型。</typeparam>
+    /// <param name="value">转换后的基础数值。</param>
+    /// <param name="result">转换结果。</param>
+    /// <returns>目标类型匹配时返回 <see langword="true"/>。</returns>
+    private static bool SetTypedNumericResult<TTarget, TValue>(TValue value, out TTarget result) where TValue : struct
+    {
+        if (typeof(TTarget) == typeof(TValue))
+        {
+            result = Unsafe.As<TValue, TTarget>(ref value);
+            return true;
+        }
+        if (ConvTypeInfo<TTarget>.IsNullableValueType && ConvTypeInfo<TTarget>.UnderlyingType == typeof(TValue))
+        {
+            result = ConvTypeInfo<TTarget>.FromNullable(value);
+            return true;
+        }
+        result = default;
+        return false;
+    }
+
+    /// <summary>
     /// 将逗号分隔的文本转换为列表。
     /// </summary>
     /// <typeparam name="T">列表元素类型。</typeparam>
@@ -2168,6 +2384,9 @@ public static class Conv
         var result = new List<T>();
         if (string.IsNullOrWhiteSpace(input))
             return result;
+#if !NETSTANDARD2_0
+        var useSpanParser = IsSpanListParseType<T>();
+#endif
         var start = 0;
         for (var index = 0; index <= input.Length; index++)
         {
@@ -2176,22 +2395,12 @@ public static class Conv
             if (index > start)
             {
 #if !NETSTANDARD2_0
-                if (typeof(T) == typeof(int))
+                if (useSpanParser)
                 {
-                    var hasContent = false;
-                    for (var offset = start; offset < index; offset++)
+                    var item = input.AsSpan(start, index - start);
+                    if (ContainsNonWhiteSpace(item))
                     {
-                        if (!char.IsWhiteSpace(input[offset]))
-                        {
-                            hasContent = true;
-                            break;
-                        }
-                    }
-                    if (hasContent)
-                    {
-                        var item = input.AsSpan(start, index - start);
-                        result.Add(int.TryParse(item, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
-                            ? (T)(object)value : default);
+                        result.Add(TryParseListItem(item, out T value) ? value : default);
                     }
                 }
                 else
@@ -2206,6 +2415,138 @@ public static class Conv
         }
         return result;
     }
+
+#if !NETSTANDARD2_0
+    /// <summary>
+    /// 判断列表元素是否支持无中间字符串解析。
+    /// </summary>
+    /// <typeparam name="T">列表元素类型。</typeparam>
+    /// <returns>支持内置值类型解析时返回 <see langword="true"/>。</returns>
+    private static bool IsSpanListParseType<T>()
+    {
+        var type = ConvTypeInfo<T>.UnderlyingType;
+        return type == typeof(sbyte) || type == typeof(byte) ||
+               type == typeof(short) || type == typeof(ushort) ||
+               type == typeof(int) || type == typeof(uint) ||
+               type == typeof(long) || type == typeof(ulong) ||
+               type == typeof(float) || type == typeof(double) ||
+               type == typeof(decimal) || type == typeof(Guid) ||
+               type == typeof(DateTime) || type == typeof(bool) || type.IsEnum;
+    }
+
+    /// <summary>
+    /// 判断文本片段是否包含非空白字符。
+    /// </summary>
+    /// <param name="value">待检查的文本片段。</param>
+    /// <returns>包含非空白字符时返回 <see langword="true"/>。</returns>
+    private static bool ContainsNonWhiteSpace(ReadOnlySpan<char> value)
+    {
+        foreach (var character in value)
+        {
+            if (!char.IsWhiteSpace(character))
+                return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 使用 invariant 区域性解析内置值类型列表项。
+    /// </summary>
+    /// <typeparam name="T">列表元素类型。</typeparam>
+    /// <param name="value">待解析的文本片段。</param>
+    /// <param name="result">解析结果。</param>
+    /// <returns>解析成功时返回 <see langword="true"/>。</returns>
+    private static bool TryParseListItem<T>(ReadOnlySpan<char> value, out T result)
+    {
+        var type = ConvTypeInfo<T>.UnderlyingType;
+        if (type.IsEnum)
+            return ConvEnumParser<T>.TryParse(value, out result);
+        if (type == typeof(bool) && bool.TryParse(value, out var boolValue))
+        {
+            result = SetListItemValue<T, bool>(boolValue);
+            return true;
+        }
+        if (type == typeof(long) && long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var longValue))
+        {
+            result = SetListItemValue<T, long>(longValue);
+            return true;
+        }
+        if (type == typeof(double) && double.TryParse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var doubleValue))
+        {
+            result = SetListItemValue<T, double>(doubleValue);
+            return true;
+        }
+        if (type == typeof(decimal) && decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var decimalValue))
+        {
+            result = SetListItemValue<T, decimal>(decimalValue);
+            return true;
+        }
+        if (type == typeof(Guid) && Guid.TryParse(value, out var guidValue))
+        {
+            result = SetListItemValue<T, Guid>(guidValue);
+            return true;
+        }
+        if (type == typeof(DateTime) && DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateValue))
+        {
+            result = SetListItemValue<T, DateTime>(dateValue);
+            return true;
+        }
+        if (type == typeof(sbyte) && sbyte.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var sbyteValue))
+        {
+            result = SetListItemValue<T, sbyte>(sbyteValue);
+            return true;
+        }
+        if (type == typeof(byte) && byte.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var byteValue))
+        {
+            result = SetListItemValue<T, byte>(byteValue);
+            return true;
+        }
+        if (type == typeof(short) && short.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var shortValue))
+        {
+            result = SetListItemValue<T, short>(shortValue);
+            return true;
+        }
+        if (type == typeof(ushort) && ushort.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ushortValue))
+        {
+            result = SetListItemValue<T, ushort>(ushortValue);
+            return true;
+        }
+        if (type == typeof(int) && int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var intValue))
+        {
+            result = SetListItemValue<T, int>(intValue);
+            return true;
+        }
+        if (type == typeof(uint) && uint.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var uintValue))
+        {
+            result = SetListItemValue<T, uint>(uintValue);
+            return true;
+        }
+        if (type == typeof(ulong) && ulong.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ulongValue))
+        {
+            result = SetListItemValue<T, ulong>(ulongValue);
+            return true;
+        }
+        if (type == typeof(float) && float.TryParse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var floatValue))
+        {
+            result = SetListItemValue<T, float>(floatValue);
+            return true;
+        }
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// 构造列表项的值类型或可空值类型结果。
+    /// </summary>
+    /// <typeparam name="T">列表元素类型。</typeparam>
+    /// <typeparam name="TValue">已解析的基础值类型。</typeparam>
+    /// <param name="value">已解析的基础值。</param>
+    /// <returns>列表元素值。</returns>
+    private static T SetListItemValue<T, TValue>(TValue value) where TValue : struct =>
+        ConvTypeInfo<T>.IsNullableValueType
+            ? ConvTypeInfo<T>.FromNullable(value)
+            : Unsafe.As<TValue, T>(ref value);
+#endif
 
     /// <summary>
     /// 将对象转换为属性字典。

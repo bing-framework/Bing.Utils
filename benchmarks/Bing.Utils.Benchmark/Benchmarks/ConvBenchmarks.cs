@@ -131,6 +131,11 @@ public class ConvBenchmarks : IDisposable
     private readonly string _listInput = "1,2,3,4,5,6,7,8,9,10";
 
     /// <summary>
+    /// 枚举列表转换使用的固定输入。
+    /// </summary>
+    private readonly string _enumListInput = "Ready,Pending,Ready,Pending,Ready,Pending,Ready,Pending,Ready,Pending";
+
+    /// <summary>
     /// 自定义转换基准使用的转换器实例。
     /// </summary>
     private readonly ConvConverter _customConverter = new ConvConverterBuilder()
@@ -234,6 +239,30 @@ public class ConvBenchmarks : IDisposable
     [Benchmark]
     [BenchmarkCategory("Collection")]
     public int ListConversion() => Conv.ToList<int>(_listInput).Count;
+
+    /// <summary>
+    /// 测量枚举列表转换。
+    /// </summary>
+    /// <returns>转换后的列表项数。</returns>
+    public int EnumListConversion() => Conv.ToList<ConvListBenchmarkState>(_enumListInput).Count;
+
+    /// <summary>
+    /// 测量可空枚举列表转换。
+    /// </summary>
+    /// <returns>转换后的列表项数。</returns>
+    public int NullableEnumListConversion() => Conv.ToList<ConvListBenchmarkState?>(_enumListInput).Count;
+
+    /// <summary>
+    /// 测量枚举文本首次转换。
+    /// </summary>
+    /// <returns>转换后的枚举整数值。</returns>
+    public int EnumTextConversion() => (int)Conv.To<ConvListBenchmarkState>("Ready");
+
+    /// <summary>
+    /// 测量可空枚举文本首次转换。
+    /// </summary>
+    /// <returns>转换后的枚举整数值。</returns>
+    public int NullableEnumTextConversion() => (int)(Conv.To<ConvListBenchmarkState?>("Ready") ?? default);
 
     /// <summary>
     /// 测量非法字符串到 int 的失败转换路径。
@@ -506,7 +535,11 @@ public class ConvBenchmarks : IDisposable
             ("TypedSameTypeInt", benchmark.TypedSameTypeInt),
             ("CustomConverterConversion", benchmark.CustomConverterConversion),
             ("DictionaryConversion", benchmark.DictionaryConversion),
-            ("ListConversion", benchmark.ListConversion)
+            ("ListConversion", benchmark.ListConversion),
+            ("EnumTextConversion", benchmark.EnumTextConversion),
+            ("NullableEnumTextConversion", benchmark.NullableEnumTextConversion),
+            ("EnumListConversion", benchmark.EnumListConversion),
+            ("NullableEnumListConversion", benchmark.NullableEnumListConversion)
         };
         if (scenario != null && !scenarios.Any(item => item.Name == scenario))
             throw new ArgumentException("未知的首次调用场景。", nameof(scenario));
@@ -583,6 +616,8 @@ public class ConvBenchmarks : IDisposable
         if (listOnly)
         {
             MeasureSustainedGc("ListConversion", benchmark.ListConversion);
+            MeasureSustainedGc("EnumListConversion", benchmark.EnumListConversion);
+            MeasureSustainedGc("NullableEnumListConversion", benchmark.NullableEnumListConversion);
             return;
         }
         MeasureSustainedGc("PreboxedNumericConversion", benchmark.PreboxedNumericConversion);
@@ -617,7 +652,7 @@ public class ConvBenchmarks : IDisposable
         stopwatch.Start();
         do
         {
-            checksum ^= operation();
+            checksum = unchecked(checksum + operation());
             count++;
         } while (stopwatch.Elapsed < TimeSpan.FromSeconds(10));
         stopwatch.Stop();

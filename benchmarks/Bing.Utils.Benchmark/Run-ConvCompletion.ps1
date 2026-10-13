@@ -5,6 +5,9 @@ param(
     [string]$Mode = 'Matrix',
     [string]$OutputDirectory = '',
     [string[]]$Filter = @(),
+    [string[]]$FirstCallScenarios = @('JsonConversion', 'GenericLongConversion', 'NumericConversion',
+        'TypedSameTypeInt', 'CustomConverterConversion', 'DictionaryConversion', 'ListConversion',
+        'EnumTextConversion', 'NullableEnumTextConversion', 'EnumListConversion', 'NullableEnumListConversion'),
     [int]$InvocationCount = 20000
 )
 
@@ -34,7 +37,13 @@ if (!$Filter.Count -and $Mode -in @('Matrix', 'Representative')) {
         @('*ConvTypedScalarBenchmarks*', '*ConvReferenceBenchmarks*', '*ConvScalarBenchmarks<Int64>*')
     } else {
         @('*ConvTypedScalarBenchmarks*', '*ConvCrossNumericBenchmarks*',
-          '*ConvDedicatedIntegerBenchmarks*', '*ConvDateParsingBenchmarks*', '*ConvReferenceBenchmarks*')
+          '*ConvTypedCrossNumericBenchmarks*',
+          '*ConvDedicatedIntegerBenchmarks*', '*ConvDedicatedFloatingBenchmarks*',
+          '*ConvListElementBenchmarks*',
+          '*ConvGuidDateListBenchmarks*', '*ConvNullableListBenchmarks*',
+          '*ConvBoolEnumListBenchmarks*', '*ConvEnumParseBenchmarks*',
+          '*ConvRemainingNumericBenchmarks*',
+          '*ConvDateParsingBenchmarks*', '*ConvReferenceBenchmarks*')
     }
 }
 
@@ -56,9 +65,15 @@ try {
         Mode = $Mode
         Utc = [DateTime]::UtcNow.ToString('O')
         SourceSha256 = (Get-FileHash -LiteralPath 'src/Bing.Utils/Bing/Helpers/Conv.cs' -Algorithm SHA256).Hash
+        SourceScopeSha256 = [ordered]@{
+            Conv = (Get-FileHash -LiteralPath 'src/Bing.Utils/Bing/Helpers/Conv.cs' -Algorithm SHA256).Hash
+            ConvEnumParser = (Get-FileHash -LiteralPath 'src/Bing.Utils/Bing/Helpers/Internals/ConvEnumParser.cs' -Algorithm SHA256).Hash
+            ConvTypeInfo = (Get-FileHash -LiteralPath 'src/Bing.Utils/Bing/Helpers/Internals/ConvTypeInfo.cs' -Algorithm SHA256).Hash
+        }
         ProductionDllSha256 = (Get-FileHash -LiteralPath (Join-Path (Split-Path $benchmarkDll) 'Bing.Utils.dll') -Algorithm SHA256).Hash
         HarnessDllSha256 = (Get-FileHash -LiteralPath $benchmarkDll -Algorithm SHA256).Hash
         Filter = $Filter
+        FirstCallScenarios = if ($Mode -eq 'FirstCall') { $FirstCallScenarios } else { @() }
         InvocationCount = $InvocationCount
         DedicatedSuccessOnly = $env:CONV_DEDICATED_CONFIRM
         ScalarSuccessOnly = $env:CONV_SCALAR_SUCCESS_ONLY
@@ -91,8 +106,7 @@ try {
         Invoke-RecordedDotNet -Arguments @('--conv-sustained-gc-list') -LogName 'console.txt'
     } elseif ($Mode -eq 'FirstCall') {
         # 每个场景使用新进程，日志保留 JIT 及共享运行时初始化成本。
-        foreach ($scenario in @('JsonConversion', 'GenericLongConversion', 'NumericConversion',
-                               'TypedSameTypeInt', 'CustomConverterConversion', 'DictionaryConversion', 'ListConversion')) {
+        foreach ($scenario in $FirstCallScenarios) {
             Invoke-RecordedDotNet -Arguments @("--conv-first-call=$scenario") -LogName "$scenario.txt"
         }
     } elseif ($Mode -eq 'Jit') {

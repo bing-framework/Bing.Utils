@@ -316,6 +316,229 @@ public class ConvTypedConversionTest
     }
 
     /// <summary>
+    /// 验证类型化 int 与 long 转换保留范围和可空目标行为。
+    /// </summary>
+    [Fact]
+    public void TypedIntegralConversion_PreservesRangeAndNullableResults()
+    {
+        Conv.TryTo<int, long>(int.MaxValue, out var longResult).ShouldBeTrue();
+        longResult.ShouldBe((long)int.MaxValue);
+        Conv.TryTo<int, long?>(-7, out var nullableLong).ShouldBeTrue();
+        nullableLong.ShouldBe(-7L);
+
+        Conv.TryTo<long, int>(int.MinValue, out var intResult).ShouldBeTrue();
+        intResult.ShouldBe(int.MinValue);
+        Conv.TryTo<long, int?>(int.MaxValue, out var nullableInt).ShouldBeTrue();
+        nullableInt.ShouldBe(int.MaxValue);
+        Conv.TryTo<long, int>(int.MaxValue + 1L, out _).ShouldBeFalse();
+        Conv.TryTo<long, int?>(long.MinValue, out var failedNullable).ShouldBeFalse();
+        failedNullable.ShouldBeNull();
+    }
+
+    /// <summary>
+    /// 验证类型化浮点、十进制和整数转换保持内置数值规则。
+    /// </summary>
+    [Fact]
+    public void TypedNumericConversion_PreservesChangeTypeResults()
+    {
+        double[] floatingValues = { -3.5d, -2.5d, 2.5d, 3.5d };
+        foreach (var input in floatingValues)
+        {
+            var expectedIntSuccess = Conv.TryTo<int>((object)input, out var expectedInt);
+            Conv.TryTo<double, int>(input, out var actualInt).ShouldBe(expectedIntSuccess);
+            actualInt.ShouldBe(expectedInt);
+
+            var expectedLongSuccess = Conv.TryTo<long>((object)input, out var expectedLong);
+            Conv.TryTo<double, long?>(input, out var actualLong).ShouldBe(expectedLongSuccess);
+            actualLong.ShouldBe(expectedLongSuccess ? expectedLong : null);
+        }
+
+        Conv.TryTo<double, int>(double.NaN, out _).ShouldBeFalse();
+        Conv.TryTo<double, long>(double.PositiveInfinity, out _).ShouldBeFalse();
+        Conv.TryTo<decimal, int>(decimal.MaxValue, out _).ShouldBeFalse();
+        Conv.TryTo<decimal, long?>(decimal.MinValue, out _).ShouldBeFalse();
+
+        Conv.TryTo<int, decimal>(int.MaxValue, out var decimalValue).ShouldBeTrue();
+        decimalValue.ShouldBe((decimal)int.MaxValue);
+        Conv.TryTo<long, double?>(long.MaxValue, out var doubleValue).ShouldBeTrue();
+        doubleValue.ShouldBe((double)long.MaxValue);
+        Conv.TryTo<long, float>(long.MaxValue, out var floatValue).ShouldBeTrue();
+        floatValue.ShouldBe((float)long.MaxValue);
+    }
+
+    /// <summary>
+    /// 验证类型化数值转换在边界和失败输入上与对象入口一致。
+    /// </summary>
+    [Fact]
+    public void TypedNumericConversion_BoundariesMatchObjectEntry()
+    {
+        AssertTypedNumericParity<int, float?>(int.MinValue);
+        AssertTypedNumericParity<int, double?>(int.MaxValue);
+        AssertTypedNumericParity<int, decimal?>(int.MaxValue);
+        AssertTypedNumericParity<long, float?>(long.MaxValue);
+        AssertTypedNumericParity<long, double?>(long.MinValue);
+        AssertTypedNumericParity<long, decimal?>(long.MaxValue);
+        AssertTypedNumericParity<long, int>(int.MaxValue + 1L);
+        AssertTypedNumericParity<long, int?>(int.MinValue - 1L);
+
+        foreach (var value in new[] { -3.5f, -2.5f, 2.5f, 3.5f, float.NaN, float.PositiveInfinity, float.MaxValue })
+        {
+            AssertTypedNumericParity<float, int>(value);
+            AssertTypedNumericParity<float, long?>(value);
+        }
+        foreach (var value in new[] { -3.5d, -2.5d, 2.5d, 3.5d, double.NaN, double.NegativeInfinity, double.MaxValue })
+        {
+            AssertTypedNumericParity<double, int?>(value);
+            AssertTypedNumericParity<double, long>(value);
+        }
+        foreach (var value in new[] { -3.5m, -2.5m, 2.5m, 3.5m, decimal.MinValue, decimal.MaxValue })
+        {
+            AssertTypedNumericParity<decimal, int>(value);
+            AssertTypedNumericParity<decimal, long?>(value);
+        }
+        foreach (var value in new[] { short.MinValue, (short)0, short.MaxValue })
+            AssertTypedNumericParity<short, int>(value);
+        AssertTypedNumericParity<uint, long>(uint.MaxValue);
+        AssertTypedNumericParity<uint, long?>(0);
+        foreach (var value in new[] { 0UL, (ulong)long.MaxValue, (ulong)long.MaxValue + 1, ulong.MaxValue })
+        {
+            AssertTypedNumericParity<ulong, long>(value);
+            AssertTypedNumericParity<ulong, long?>(value);
+        }
+        foreach (var value in new[] { 12345.625d, double.NaN, double.PositiveInfinity, double.NegativeInfinity,
+                     Math.BitDecrement((double)decimal.MaxValue), (double)decimal.MaxValue,
+                     Math.BitIncrement((double)decimal.MinValue), (double)decimal.MinValue, double.MaxValue })
+        {
+            AssertTypedNumericParity<double, decimal>(value);
+            AssertTypedNumericParity<double, decimal?>(value);
+        }
+        AssertTypedNumericParity<decimal, double>(decimal.MinValue);
+        AssertTypedNumericParity<decimal, double?>(decimal.MaxValue);
+    }
+
+    /// <summary>
+    /// 验证内置数值列表与逐项转换在不同区域性下保持一致。
+    /// </summary>
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("de-DE")]
+    public void NumericListParsing_MatchesObjectEntry(string cultureName)
+    {
+        var original = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(cultureName);
+        try
+        {
+            AssertListParity<sbyte>("-128, +127,128,invalid, ,0");
+            AssertListParity<byte>("0,255,256,invalid, ,+1");
+            AssertListParity<short>("-32768,32767,32768,invalid, ,+1");
+            AssertListParity<ushort>("0,65535,65536,invalid, ,+1");
+            AssertListParity<int>("-2147483648,2147483647,2147483648,invalid, ,+1");
+            AssertListParity<uint>("0,4294967295,4294967296,invalid, ,+1");
+            AssertListParity<long>("-9223372036854775808,9223372036854775807,9223372036854775808,invalid, ,+1");
+            AssertListParity<ulong>("0,18446744073709551615,18446744073709551616,invalid, ,+1");
+            AssertListParity<float>("1.5,-2.5,NaN,Infinity,invalid, ,+3.5");
+            AssertListParity<double>("1.5,-2.5,NaN,Infinity,invalid, ,+3.5");
+            AssertListParity<decimal>("1.5,-2.5,79228162514264337593543950335,invalid, ,+3.5");
+            AssertListParity<sbyte?>("-128,+127,128,invalid, ,0");
+            AssertListParity<byte?>("0,255,256,invalid, ,+1");
+            AssertListParity<short?>("-32768,32767,32768,invalid, ,+1");
+            AssertListParity<ushort?>("0,65535,65536,invalid, ,+1");
+            AssertListParity<int?>("-2147483648,2147483647,2147483648,invalid, ,+1");
+            AssertListParity<uint?>("0,4294967295,4294967296,invalid, ,+1");
+            AssertListParity<long?>("-9223372036854775808,9223372036854775807,9223372036854775808,invalid, ,+1");
+            AssertListParity<ulong?>("0,18446744073709551615,18446744073709551616,invalid, ,+1");
+            AssertListParity<float?>("1.5,-2.5,NaN,Infinity,invalid, ,+3.5");
+            AssertListParity<double?>("1.5,-2.5,NaN,Infinity,invalid, ,+3.5");
+            AssertListParity<decimal?>("1.5,-2.5,79228162514264337593543950335,invalid, ,+3.5");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
+    }
+
+    /// <summary>
+    /// 验证 Guid 和日期列表保留逐项转换的值及日期属性。
+    /// </summary>
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("de-DE")]
+    public void GuidAndDateListParsing_MatchesObjectEntry(string cultureName)
+    {
+        var original = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(cultureName);
+        try
+        {
+            AssertListParity<Guid>("83B0233C-A24F-49FD-8083-1337209EBC9A, ,invalid,EAB523C6-2FE7-47BE-89D5-C6D440C3033A");
+            AssertListParity<Guid?>("83B0233C-A24F-49FD-8083-1337209EBC9A, ,invalid,EAB523C6-2FE7-47BE-89D5-C6D440C3033A");
+            const string dates = "2024-01-02T03:04:05Z, ,invalid,2024-01-03T04:05:06.1234567Z";
+            var expected = dates.Split(',')
+                .Where(item => !string.IsNullOrWhiteSpace(item))
+                .Select(Conv.To<DateTime>)
+                .ToList();
+            var actual = Conv.ToList<DateTime>(dates);
+            actual.ShouldBe(expected);
+            for (var index = 0; index < expected.Count; index++)
+            {
+                actual[index].Ticks.ShouldBe(expected[index].Ticks);
+                actual[index].Kind.ShouldBe(expected[index].Kind);
+            }
+            AssertListParity<DateTime?>(dates);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
+    }
+
+    /// <summary>
+    /// 验证布尔值和枚举列表与逐项转换保持一致。
+    /// </summary>
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("de-DE")]
+    public void BoolAndEnumListParsing_MatchesObjectEntry(string cultureName)
+    {
+        var original = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(cultureName);
+        try
+        {
+            AssertListParity<bool>(" True ,false, ,invalid,TRUE");
+            AssertListParity<bool?>(" True ,false, ,invalid,TRUE");
+            AssertListParity<SampleEnum>("None,42, ,invalid, none ");
+            AssertListParity<SampleEnum?>("None,42, ,invalid, none ");
+            AssertListParity<WideEnum>("None,18446744073709551615, ,invalid,18446744073709551616");
+            AssertListParity<WideEnum?>("None,18446744073709551615, ,invalid,18446744073709551616");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
+    }
+
+    /// <summary>
+    /// 比较类型化入口与对象入口的数值结果。
+    /// </summary>
+    private static void AssertTypedNumericParity<TSource, TTarget>(TSource input)
+    {
+        var expectedSuccess = Conv.TryTo<TTarget>((object)input, out var expected);
+        Conv.TryTo<TSource, TTarget>(input, out var actual).ShouldBe(expectedSuccess);
+        actual.ShouldBe(expected);
+    }
+
+    /// <summary>
+    /// 比较列表解析与逐项转换的结果。
+    /// </summary>
+    private static void AssertListParity<T>(string input)
+    {
+        var expected = input.Split(',')
+            .Where(item => !string.IsNullOrWhiteSpace(item))
+            .Select(Conv.To<T>)
+            .ToList();
+        Conv.ToList<T>(input).ShouldBe(expected);
+    }
+
+    /// <summary>
     /// 验证泛型跨数值转换保留负数中点舍入和 ulong 边界规则。
     /// </summary>
     [Fact]
@@ -383,6 +606,22 @@ public class ConvTypedConversionTest
     }
 
     /// <summary>
+    /// 验证枚举解析保留名称、未定义数值和失败结果。
+    /// </summary>
+    [Fact]
+    public void GenericEnumParsing_PreservesUnderlyingValues()
+    {
+        Conv.To<SampleEnum>("none").ShouldBe(SampleEnum.None);
+        Conv.To<SampleEnum?>("42").ShouldBe((SampleEnum)42);
+        Conv.To<WideEnum>(ulong.MaxValue.ToString(CultureInfo.InvariantCulture)).ShouldBe((WideEnum)ulong.MaxValue);
+        Conv.To<WideEnum?>("18446744073709551615").ShouldBe((WideEnum)ulong.MaxValue);
+        Conv.TryTo<WideEnum>("18446744073709551616", out var invalid).ShouldBeFalse();
+        invalid.ShouldBe(default(WideEnum));
+        Conv.TryTo<SampleEnum?>("missing", out var missing).ShouldBeFalse();
+        missing.ShouldBeNull();
+    }
+
+    /// <summary>
     /// 验证列表片段解析保留空项过滤、失败默认值和文本内容。
     /// </summary>
     [Fact]
@@ -390,6 +629,12 @@ public class ConvTypedConversionTest
     {
         Conv.ToList<int>("1, ,invalid, +2 ,2147483648,-3,0").ShouldBe(new[] { 1, 0, 2, 0, -3, 0 });
         Conv.ToList<string>(" a , ,b").ShouldBe(new[] { " a ", "b" });
+        Conv.ToList<long>("1, ,invalid, +2 ,9223372036854775808,-3,0")
+            .ShouldBe(new[] { 1L, 0L, 2L, 0L, -3L, 0L });
+        Conv.ToList<double>("1.5, ,invalid, +2.5 ,-3.5")
+            .ShouldBe(new[] { 1.5d, 0d, 2.5d, -3.5d });
+        Conv.ToList<decimal>("1.5, ,invalid, +2.5 ,-3.5")
+            .ShouldBe(new[] { 1.5m, 0m, 2.5m, -3.5m });
     }
 
     /// <summary>
@@ -497,6 +742,43 @@ public class ConvTypedConversionTest
     }
 
     /// <summary>
+    /// 验证整数到浮点和十进制专用转换保留文本路径结果。
+    /// </summary>
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("de-DE")]
+    public void DedicatedFloatingConversion_IntegerInputMatchesTextPath(string cultureName)
+    {
+        var original = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(cultureName);
+        try
+        {
+            object[] inputs =
+            {
+                int.MinValue,
+                uint.MaxValue,
+                16_777_215,
+                16_777_217,
+                9_007_199_254_740_991L,
+                9_007_199_254_740_993L,
+                long.MaxValue,
+                ulong.MaxValue
+            };
+            foreach (var input in inputs)
+            {
+                var text = input.ToString();
+                Conv.ToFloatOrNull(input).ShouldBe(Conv.ToFloatOrNull(text));
+                Conv.ToDoubleOrNull(input).ShouldBe(Conv.ToDoubleOrNull(text));
+                Conv.ToDecimalOrNull(input).ShouldBe(Conv.ToDecimalOrNull(text));
+            }
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
+    }
+
+    /// <summary>
     /// 验证 int 输入的专用转换与文本路径在边界处一致。
     /// </summary>
     /// <param name="input">覆盖目标边界、负值及 int 极值的输入。</param>
@@ -562,6 +844,17 @@ public class ConvTypedConversionTest
     /// 表示枚举转换测试目标。
     /// </summary>
     private enum SampleEnum
+    {
+        /// <summary>
+        /// 零值。
+        /// </summary>
+        None = 0
+    }
+
+    /// <summary>
+    /// 覆盖无符号长整型底层值。
+    /// </summary>
+    private enum WideEnum : ulong
     {
         /// <summary>
         /// 零值。

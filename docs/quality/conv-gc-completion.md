@@ -1,5 +1,7 @@
 # Conv GC 与性能验收补充报告
 
+当前候选的收口状态和最新证据见 [Conv 当前验收状态](conv-current-status.md)。以下为按时间保留的历史测量与实现记录。
+
 本轮补齐上次列出的五类 TODO，日期为 2026-09-29。新增基准、独立进程首次调用入口和可复现脚本；生产改动仅为六个专用整数方法增加 int 输入的直接范围检查。没有修改包版本、提交或发布。
 
 ## 实现与测量覆盖
@@ -101,3 +103,87 @@ dotnet build benchmarks/Bing.Utils.Benchmark/Bing.Utils.Benchmark.csproj -c Rele
 本轮入口调整后，生产库 net8.0/net7.0/net6.0/netstandard2.0 均构建成功，前三个运行时的基准和测试项目也已构建。测试项目通过本地 NuGet 缓存离线还原并从最新源码构建，Conv 契约测试在 net6.0/net7.0/net8.0 各通过 57/57。主包 net8.0 完整测试通过 6975/6975；加载最终主库 DLL 的 Net 与 HTTP 消费方分别通过 21/21、1530/1530。
 
 已关闭上一轮的 .NET 7 稳态吞吐回退、最新测试源码跨运行时验证，以及列表自然 GC 证据缺口。后续独立优化候选为：枚举失败异常，`double`、`decimal` 跨数值转换的装箱与越界异常，以及其他列表元素类型的子字符串分配；实施时仍需兼顾成功路径吞吐。旧历史基线没有完整源码快照，不能恢复或倒填。当前没有对象持续保留的新证据，不把短生命周期分配称为内存泄漏。
+
+## 2026-09-30 修复候选
+
+本轮修复了类型化 `int`/`long` 互转的对象回退，并为 `float`、`double`、`decimal` 专用入口增加内置整数源的直接转换；字符串、浮点、十进制和枚举语义仍沿用原路径。稳态探针改用带索引的累积校验值，避免固定输入偶数次异或恒为零。新增 `ConvTypedCrossNumericBenchmarks` 用于区分类型化入口和调用端装箱的对象入口。
+
+当前候选身份：`Conv.cs` SHA-256 为 `A1B7462CC0BE62819A3CD447BFB188BA9A8B5F164672C05D42DCE47211835E42`；生产 DLL SHA-256 为 `95E47D483891EF15D1F613BAE527F325FE3BADE6B4FBB48D58512A0AFBABA4F4`；基准 DLL SHA-256 为 `D9190D0807594B73B5D173AFFA9876CE46796879D1447780792DB3D7C45009AA`。新增跨数值基准源码 SHA-256 为 `AA59B17F886943AF68BE4705A63A306FDF1197CAB145F6F8B1B790B004909882`。
+
+当前候选在 .NET 8.0.31 的短诊断（预热 1 次、测量 2 次、每次 10,000 调用）观察到：类型化 `int -> long` 为 12.04 ns、0 B/op，对象入口为 122.53 ns、48 B/op；类型化 `long -> int` 为 12.49 ns、0 B/op，对象入口为 207.75 ns、24 B/op。可空目标的四个组合也均为 0 B/op，而对象入口为 24 或 48 B/op。该配置迭代时间过短，数字只确认分配方向，不作为吞吐门禁。稳态探针使用新累积校验值后输出非零 checksum `562010386246652928`，说明固定输入结果未再被偶数次异或抵消。
+
+## 2026-09-30 后续性能候选
+
+本轮继续补齐双泛型数值入口和列表解析的短生命周期分配：`float`、`double`、`decimal` 到 `int/long` 使用 `Convert.ToX` 保留现有偶数舍入、NaN/Infinity 和溢出失败语义；`int/long` 到 `float/double/decimal` 使用直接数值转换；非 `netstandard2.0` 目标下，列表对内置整数、浮点和十进制类型直接从 `ReadOnlySpan<char>` 解析，其他类型继续保留 `Substring` 和通用 `Conv.To<T>` 路径。
+
+当前候选身份：`Conv.cs` SHA-256 为 `D4C1515232E5E65D9DEEFFE3321E829B3FFDC1AF028EE3F150E82B1D63D2D44B`；net8.0 生产 DLL SHA-256 为 `1D17AB39B0FB1C97A6B98E797BCFA068BE7C2AB617C988BDEE00BFF296C8037B`；基准 DLL SHA-256 为 `09C4A2413C61A74FA22E22FA74EF9739792FCBAE8B2A1C461351F2F7F45637C5`；跨数值基准源码 SHA-256 为 `E787AE7435F47641ADF7E65C8E71DC0D9150B3061DF3F6892D5244485E2A7A25`；列表基准源码 SHA-256 为 `70F9A5643069796E8A524A4FBAE911F013060058BE31217D31E9D85BAD05B39D`。
+
+在 .NET 8.0.31、Release、InProcess、预热 2 次、测量 5 次、每次 10,000 调用的诊断中，类型化 `double -> int` 为 14.10 ns、0 B/op，对象入口为 88.56 ns、48 B/op；`decimal -> int` 为 32.33 ns、0 B/op，对象入口为 116.40 ns、56 B/op。列表 10 项输入与拆分基线相比，`long` 为 519.5/984.8 ns、328/784 B/op，`double` 为 1.431/2.104 us、328/784 B/op，`decimal` 为 1.098/2.220 us、552/1016 B/op。迭代时间仍低于 BenchmarkDotNet 推荐窗口，耗时只作方向性记录；分配下降在这些场景中可重复观察。
+
+定向 Conv 测试在 net6.0、net7.0、net8.0 各通过 `902/902`；生产库 `net6.0`、`net7.0`、`net8.0`、`netstandard2.0` 编译通过。枚举失败异常仍暂缓，原因是此前 `Enum.TryParse(Type, ...)` 虽减少失败分配，却令有效解析约慢一倍；其他列表类型、浮点到非 `int/long` 目标和跨数值失败异常继续作为独立测量候选。
+
+### 本轮状态与剩余 TODO
+
+- `CLOSED`：类型化 `int`/`long`、`float`/`double`/`decimal` 跨数值成功路径的结果装箱；内置数值列表项的 `Substring` 分配；稳态探针校验值恒为零；对应的基准、边界测试和四目标框架编译验证。
+- `DEFERRED`：枚举失败异常、其他数值目标的跨类型失败异常、非内置数值列表元素的子字符串分配。此前测量显示部分替代实现会拖慢成功路径，继续改动前需要新的长窗口或真实类型分布证据。
+- `DEFERRED`：历史完整基线身份、不同 GC 模式下的生产吞吐复测。这些是证据或环境补充，不构成当前代码缺陷。
+- `OPEN_ACTIONABLE = 0`：本轮没有仍需立即修改的审查发现；下一轮若继续，应先为延后候选建立独立基准和语义对照。
+
+## 2026-10-03 TODO 收口
+
+本轮修复双泛型数值快路径的失败回退：已识别的数值类型对在越界、`NaN` 或无穷大时直接返回失败，不再装箱源值后再次执行对象转换。补齐 `int/long` 到 `float?`、`double?`、`decimal?` 的无装箱结果路径。内置数值列表解析将 `long`、`double`、`decimal` 类型检查前移，消除了最初在纯有效项输入上观察到的耗时回退。专用 `ToFloatOrNull`、`ToDoubleOrNull`、`ToDecimalOrNull` 的整数输入加入同语义文本方法体对照基准。
+
+当前候选身份：`Conv.cs` SHA-256 为 `94F5F2F2DD5DF707BCDF10273E264E84706869EDCC0662BD2EF789BBF0F6B7B3`；net8.0 生产 DLL SHA-256 为 `CD8EC7DBEE050276F1EACD5FCF5D0BFD7060F43DF0CA70B6DB217E97BD4C239E`；net8.0 基准 DLL SHA-256 为 `7DE70AA54D2686B2664656DDE5DB7F5AD2EA4B33643F68ED2D51F058973D2C16`。原始 CSV 和报告保存在被 Git 忽略的 `artifacts/conv-evidence/2026-10-03-*`。跨数值基准的 `LegacyTypedBody` 复现上一轮类型化入口的装箱与 `ChangeType` 方法体；列表的 `SubstringBaseline` 复现上一轮逐段截取方法体。它们是同入口方法体对照，不是可恢复的历史构建。
+
+| .NET 8 代表场景 | 当前 | 旧方法体 | 结论 |
+| --- | ---: | ---: | --- |
+| `double -> int?` 成功 | 0 B/op | 80 B/op | 类型化成功路径不再逐次分配。 |
+| `double -> int?` 越界或非有限输入 | 344 B/op | 616 B/op | 少一次对象回退；一次 `OverflowException` 仍会分配。 |
+| `long -> float?` 成功 | 0 B/op | 80 B/op | 可空目标快路径已覆盖。 |
+| 10 项有效 `List<long>` | 约 107 ns、328 B/op | 约 221 ns、576 B/op | 类型检查前移后的确认候选；`double`、`decimal` 同样减少分配。 |
+| 专用整数到 `float/double/decimal` | 0 B/op | 文本方法体 40 或 64 B/op | 三种预装箱整数源均保持结果一致。 |
+
+测量使用 .NET 8.0.31、Release、InProcess。跨数值诊断为 1 次预热、3 次测量、每次 100,000 调用；列表和专用整数路径另用更长窗口确认。改动前列表纯有效项在 net6/net7/net8 出现耗时回退；分支前移后的 `List<long>` 代表确认在 net6/net7 分别为当前/旧约 443/471 ns、179/553 ns，但误差较大，仅确认回退未稳定复现。三个运行时均保持 328/576 B/op 的分配方向；不据短测设置吞吐门禁。
+
+最终源码在 net6.0、net7.0、net8.0 的新增类型化测试各通过 41/41；主包 net8.0 全量测试 6982/6982，Net 与 HTTP 消费方分别通过 21/21、1530/1530。生产库四目标框架以及基准项目 net6.0/net7.0/net8.0 编译通过。`netstandard2.0` 保留原列表截取实现，Span 列表收益仅适用于其余三个目标。当前没有可重复确认的耗时回退，也没有输入对象持续保留的新证据。
+
+- `CLOSED`：失败后重复对象回退、整数到可空浮点/十进制目标、列表有效项耗时回退、新增分支边界测试、同入口方法体对照和三运行时代表性测量；`OPEN_ACTIONABLE = 0`。
+- `DEFERRED`：枚举失败异常、未支持的数值类型组合、非内置数值列表元素的子字符串分配，以及不同生产 GC 模式下的长窗口验证。后续按真实类型分布单独衡量。
+- `ACCEPTED_LIMITATION`：历史完整基线身份无法恢复，不能用本次方法体对照冒充历史构建。
+
+## 2026-10-03 枚举与剩余标量候选
+
+本轮继续处理上节 `DEFERRED` 项。枚举目标使用按封闭目标类型初始化一次的解析委托，直接调用泛型 `Enum.TryParse`；静态状态仅保存类型方法和委托，不保存输入对象。原有 `SafeString` 输入规则、大小写忽略、未定义枚举数值、可空枚举和失败默认值保持不变。`Guid`、`DateTime` 列表在 net6.0/net7.0/net8.0 使用 Span 逐段解析；`netstandard2.0` 保留兼容的截取路径。新增类型化数值对为 `short -> int`、`uint/ulong -> long`、`double -> decimal`、`decimal -> double`，含对应可空目标。`ulong` 越界及 `double` 非有限值、越界直接失败，避免预期异常。
+
+在 .NET 8.0.31、Release、InProcess 下，枚举同进程方法体对照使用 3 次预热、5 次测量、每次 1,000,000 调用：`Ready` 当前/旧方法体约 29.17/72.23 ns、0/24 B/op；未定义数值 `42` 约 24.90/92.67 ns、0/24 B/op；无效文本约 39.33 ns/10.26 us、0/712 B/op。错误范围较宽，耗时仅用于判断方向；分配差异与异常来源明确。原始结果位于 `artifacts/conv-evidence/20261003-enum-final/`。旧方法体是基准中的 `Enums.Parse<T>` 加相同失败捕获，并非独立历史程序集。
+
+10 项 `Guid` 列表当前/截取方法体为 504/813 ns、552/1512 B/op；10 项 `DateTime` 列表为 1.405/1.640 us、328/968 B/op，分别复测了包含无效项的输入。数据位于 `artifacts/conv-evidence/20261003-enum-guid-list-confirm/`。列表结果本身仍分配，减少的是逐项子字符串及相关中间对象。
+
+新增数值对的修改前后基准使用同一套 2 次预热、5 次测量、每次 100,000 调用配置，原始结果分别在 `artifacts/conv-evidence/20261003-remaining-numeric-before/` 和 `artifacts/conv-evidence/20261003-remaining-numeric-after/`。类型化成功场景从 48-88 B/op 降到 0 B/op；`ulong -> long` 越界由 368 B/op 降到 0 B/op，`double -> decimal` 非有限及越界由 616 B/op 降到 0 B/op。两次运行的耗时误差较大，仅确认分配方向；修改前程序集身份未独立冻结，不将这组数据用于正式吞吐门禁。对象入口仍会承担调用端装箱和 `ChangeType` 的结果分配。
+
+生产库 net8.0/net7.0/net6.0/netstandard2.0 编译通过。主包 net8.0 完整测试 6985/6985；Conv 定向测试在 net6.0/net7.0 各 908/908。新增测试覆盖枚举底层 `ulong`、可空与失败、数值边界和两种区域下的 Guid/DateTime 列表。基准项目 net8.0 构建通过，统一运行脚本纳入这三组新基准。最终 `Conv.cs` SHA-256 为 `F10019919D1366F61A037729246A93353B19EF48725AB403EF6C1AC069513330`，`ConvEnumParser.cs` 为 `5DBA38E5B3553EB5F6E899FCE90B5B5C348730720299FC8DAAC37CE1F1CE92E6`。没有新增长期持有输入或业务委托的状态；弱引用与自然 GC 生命周期判断复用此前固定类型证据。
+
+- `CLOSED`：枚举失败异常、Guid/DateTime 列表逐项截取，以及以上五组类型化数值对的成功结果装箱和可预判失败异常。
+- `DEFERRED`：其他未支持的跨数值类型对和自定义列表元素。仅在真实调用分布显示热点时，按相同语义对照扩展；字符串列表必须保留结果字符串。
+- `ACCEPTED_LIMITATION`：历史完整版本的 before 身份及不同生产 GC 模式的长窗口吞吐仍无可比证据。
+- `OPEN_ACTIONABLE = 0`：本轮已识别且可验证的实现项均完成；不因证据限制自动启动下一轮修复。
+
+### 可空列表补充
+
+后续检查发现，`ToList<int?>` 等可空内置值类型未进入现有 Span 列表解析，仍逐项创建子字符串。本轮将原有数值、Guid、DateTime 解析规则扩展到对应可空类型，通过 `ConvTypeInfo<T>.FromNullable` 构造成功值；失败的非空项仍写入 `null`，空白项继续跳过。`netstandard2.0` 仍走原截取实现，字符串、枚举和自定义类型列表行为不变。基准和测试只涉及 `Conv.ToList<T>`，无公开签名变更。
+
+.NET 8.0.31、Release、InProcess 的 10 项有效输入诊断与同运行方法体对照中，`int?` 为当前/截取 328/648 B/op，`double?` 为 552/872 B/op，`Guid?` 为 664/1624 B/op，`DateTime?` 为 552/1192 B/op；包含失败项时同样保持分配下降。一次较长窗口的 `int?` 为约 156/280 ns，但日期等场景的耗时误差很大，不据此宣称吞吐提升或设置门禁。原始结果位于 `artifacts/conv-evidence/20261003-nullable-list-before/`、`20261003-nullable-list-after/` 和 `20261003-nullable-list-confirm/`；前一目录的源码身份为 `Conv.cs` SHA-256 `F10019919D1366F61A037729246A93353B19EF48725AB403EF6C1AC069513330`，基准源码 SHA-256 为 `21CA0D948AA5DB9F6A05C8C50A1AEAF88E82B59BF95F25DAB7E1942919E174F1`。普通 Guid/DateTime 列表在确认运行中仍保持原有分配量，耗时没有可重复确认的回退。
+
+最终 `Conv.cs` SHA-256 为 `51D61B57C325CA1CFDD234DD47276170DFF89D14C14ABB86ABE595070E586899`。生产库 net8.0/net7.0/net6.0/netstandard2.0 编译通过；基准项目 net8.0/net7.0/net6.0 编译通过。主包 net8.0 全量测试 6985/6985，Conv 定向测试在 net6.0/net7.0 各 908/908。`git diff --check` 无内容错误；换行符提示来自现有工作树设置。
+
+`CLOSED`：内置可空值类型列表的逐项子字符串分配。`DEFERRED`：其他跨数值类型对及自定义列表元素仍缺真实调用分布，不扩展全类型矩阵。`OPEN_ACTIONABLE = 0`。
+
+### 布尔值与枚举列表补充
+
+`ToList<bool>`、`ToList<bool?>` 和枚举列表此前仍逐项创建子字符串。本轮为布尔值增加 Span 解析，并在 `ConvEnumParser<T>` 内按封闭枚举类型延迟创建 Span 解析委托，覆盖可空枚举。空白项过滤、无效项默认值、大小写忽略、未定义枚举数值均与逐项 `Conv.To<T>` 一致；`netstandard2.0` 保留原列表路径。辅助基准枚举独立成文件，不增加保存输入对象的静态状态。
+
+.NET 8.0.31、Release、InProcess 同运行方法体对照中，10 项有效输入的当前/截取分配为：`bool` 136/456 B/op，`bool?` 160/480 B/op，枚举 216/576 B/op，可空枚举 328/688 B/op。包含空白与无效项时分配方向相同。一次诊断和一次较长窗口确认没有发现可重复的耗时回退；确认窗口的有效 `bool` 为约 105/216 ns，但其余耗时误差较大，仅将分配结论视为稳定。原始结果在 `artifacts/conv-evidence/20261003-bool-enum-list-before/`、`20261003-bool-enum-list-after/` 和 `20261003-bool-enum-list-confirm/`。修改前 `Conv.cs` SHA-256 为 `51D61B57C325CA1CFDD234DD47276170DFF89D14C14ABB86ABE595070E586899`，`ConvEnumParser.cs` 为 `5DBA38E5B3553EB5F6E899FCE90B5B5C348730720299FC8DAAC37CE1F1CE92E6`。
+
+最终 `Conv.cs` SHA-256 为 `961D64E8456789EA458EA9BFE97162AE0953CF31AF4F47F068110197B3985E7A`，`ConvEnumParser.cs` 为 `9F39C3596E4E152D13D02FA0C959C866E0E643F745D97B61898165AE29C58403`。生产库 net8.0/net7.0/net6.0/netstandard2.0 编译通过；基准项目 net8.0/net7.0/net6.0 编译通过。主包 net8.0 全量测试 6987/6987，Conv 定向测试在 net6.0/net7.0 各 910/910。`git diff --check` 无内容错误。
+
+`CLOSED`：布尔值与枚举列表的逐项子字符串分配。`DEFERRED`：自定义列表元素及其他数值类型对缺少实际热点分布；字符串列表必须创建结果字符串。`OPEN_ACTIONABLE = 0`，本轮停止继续扩展。

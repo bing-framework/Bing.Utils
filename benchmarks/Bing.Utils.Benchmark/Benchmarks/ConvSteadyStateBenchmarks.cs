@@ -37,7 +37,7 @@ public sealed class ConvSteadyStateBenchmarks
     private readonly object _input = "12345";
 
     /// <summary>
-    /// 防止基准循环被优化掉的校验值。
+    /// 验证基准循环产生的转换结果。
     /// </summary>
     private long _checksum;
 
@@ -181,10 +181,10 @@ public sealed class ConvSteadyStateBenchmarks
         var start = Stopwatch.GetTimestamp();
         var checksum = 0L;
         for (var index = 0; index < OperationsPerSample; index++)
-            checksum ^= Conv.To<long>(_input);
+            checksum = unchecked(checksum * 31 + Conv.To<long>(_input) + index);
         var elapsedNanoseconds = (Stopwatch.GetTimestamp() - start) * (1_000_000_000d / Stopwatch.Frequency);
 
-        _checksum ^= checksum;
+        _checksum = unchecked(_checksum * 31 + checksum);
         return new SteadyStateMeasurement(
             elapsedNanoseconds,
             GC.GetAllocatedBytesForCurrentThread() - beforeAllocated,
@@ -207,10 +207,10 @@ public sealed class ConvSteadyStateBenchmarks
         var start = Stopwatch.GetTimestamp();
         var checksum = 0L;
         for (var index = 0; index < OperationsPerSample; index++)
-            checksum ^= LegacyBody();
+            checksum = unchecked(checksum * 31 + LegacyBody() + index);
         var elapsedNanoseconds = (Stopwatch.GetTimestamp() - start) * (1_000_000_000d / Stopwatch.Frequency);
 
-        _checksum ^= checksum;
+        _checksum = unchecked(_checksum * 31 + checksum);
         return new SteadyStateMeasurement(
             elapsedNanoseconds,
             GC.GetAllocatedBytesForCurrentThread() - beforeAllocated,
