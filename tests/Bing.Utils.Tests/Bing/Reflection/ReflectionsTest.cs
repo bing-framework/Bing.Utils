@@ -107,6 +107,42 @@ public class ReflectionsTest : TestBase
         Assert.Throws<DirectoryNotFoundException>(() => Reflections.GetAssemblies(directoryPath));
     }
     #endregion
+    #region GetAssembly
+    /// <summary>
+    /// 测试 - 程序集名称输入校验应返回稳定的参数异常。
+    /// </summary>
+    [Fact]
+    public void Test_GetAssembly_NullName_ThrowsArgumentNullException()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => Reflections.GetAssembly(null!));
+
+        Assert.Equal("assemblyName", exception.ParamName);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("BadAssembly, Version=invalid")]
+    public void Test_GetAssembly_InvalidName_ThrowsArgumentException(string assemblyName)
+    {
+        var exception = Assert.Throws<ArgumentException>(() => Reflections.GetAssembly(assemblyName));
+
+        Assert.Equal("assemblyName", exception.ParamName);
+    }
+
+    /// <summary>
+    /// 测试 - 有效程序集名称应解析到已加载程序集。
+    /// </summary>
+    [Fact]
+    public void Test_GetAssembly_ValidName_LoadsAssembly()
+    {
+        var assemblyName = typeof(Reflections).Assembly.GetName().Name;
+
+        var assembly = Reflections.GetAssembly(assemblyName);
+
+        Assert.Equal(typeof(Reflections).Assembly.GetName().Name, assembly.GetName().Name);
+    }
+    #endregion
     #region FindImplementTypes
     /// <summary>
     /// 测试 - 查找实现类型列表 - 测试类型中只有一个类实现IA接口

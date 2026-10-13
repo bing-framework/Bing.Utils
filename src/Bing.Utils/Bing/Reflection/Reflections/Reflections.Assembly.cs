@@ -23,7 +23,25 @@ public static partial class Reflections
     /// </summary>
     /// <param name="assemblyName">程序集名称</param>
     /// <returns></returns>
-    public static Assembly GetAssembly(string assemblyName) => Assembly.Load(new AssemblyName(assemblyName));
+    public static Assembly GetAssembly(string assemblyName)
+    {
+        if (assemblyName is null)
+            throw new ArgumentNullException(nameof(assemblyName));
+        if (string.IsNullOrWhiteSpace(assemblyName))
+            throw new ArgumentException("程序集名称不能为空。", nameof(assemblyName));
+
+        AssemblyName parsedName;
+        try
+        {
+            parsedName = new AssemblyName(assemblyName);
+        }
+        catch (Exception exception) when (exception is ArgumentException or FileLoadException)
+        {
+            throw new ArgumentException("程序集名称格式无效。", nameof(assemblyName), exception);
+        }
+
+        return Assembly.Load(parsedName);
+    }
 
     #endregion
 
