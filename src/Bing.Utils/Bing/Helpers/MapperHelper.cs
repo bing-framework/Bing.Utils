@@ -22,6 +22,12 @@ public static partial class MapperHelper
     /// <typeparam name="TDestination">目标类型</typeparam>
     /// <param name="source">源对象</param>
     /// <exception cref="ArgumentNullException"></exception>
+#if NET7_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("映射器的结构体映射和属性访问器通过 Expression.Compile 生成委托，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("映射器按运行时类型扫描属性并访问其访问器，裁剪时必须保留源类型和目标类型的公共属性元数据。")]
+#endif
     public static TDestination Map<TSource, TDestination>(TSource source) where TDestination : new()
     {
         if (source is null)
@@ -42,6 +48,12 @@ public static partial class MapperHelper
     /// <param name="source">源对象</param>
     /// <param name="propertiesToMap">属性映射数组，可指定映射部分属性</param>
     /// <exception cref="ArgumentNullException"></exception>
+#if NET7_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("映射器的结构体映射和属性访问器通过 Expression.Compile 生成委托，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("映射器按运行时类型扫描属性并访问其访问器，裁剪时必须保留源类型和目标类型的公共属性元数据。")]
+#endif
     public static TDestination MapWith<TSource, TDestination>(TSource source, params string[] propertiesToMap) where TDestination : new()
     {
         if (source is null)
@@ -66,6 +78,12 @@ public static partial class MapperHelper
     /// <param name="source">源对象</param>
     /// <param name="propertiesNoMap">忽略属性映射数组，忽略指定映射部分属性</param>
     /// <exception cref="ArgumentNullException"></exception>
+#if NET7_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("映射器的结构体映射和属性访问器通过 Expression.Compile 生成委托，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("映射器按运行时类型扫描属性并访问其访问器，裁剪时必须保留源类型和目标类型的公共属性元数据。")]
+#endif
     public static TDestination MapWithout<TSource, TDestination>(TSource source, params string[] propertiesNoMap) where TDestination : new()
     {
         if (source is null)
