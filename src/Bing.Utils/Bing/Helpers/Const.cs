@@ -54,7 +54,7 @@ public sealed class Const
     #region FileExtensionDict(文件扩展类型字典)
 
     /// <summary>
-    /// 文件扩展类型字典
+    /// 获取文件扩展类型字典
     /// </summary>
     public static Dictionary<string, string> FileExtensionDict => new()
     {
@@ -501,6 +501,9 @@ public sealed class Const
 
     #region Mime
 
+    /// <summary>
+    /// 获取文件扩展名与 MIME 类型的映射。
+    /// </summary>
     public static Dictionary<string, string> Mime => new()
     {
         {"3gp", "video/3gpp"},

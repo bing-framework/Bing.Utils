@@ -216,13 +216,13 @@ public static class FastPathMatcher
     }
 
     /// <summary>
-    /// 执行实际的匹配操作
+    /// 递归匹配路径模式与路径。
     /// </summary>
-    /// <param name="pattern">匹配模式</param>
-    /// <param name="patternIndex">模式当前索引</param>
-    /// <param name="path">路径字符串</param>
-    /// <param name="pathIndex">路径当前索引</param>
-    /// <returns>匹配结果</returns>
+    /// <param name="pattern">包含通配符的路径模式。</param>
+    /// <param name="patternIndex">模式中的当前索引。</param>
+    /// <param name="path">待匹配的路径。</param>
+    /// <param name="pathIndex">路径中的当前索引。</param>
+    /// <returns>剩余模式与路径相匹配时为 true；否则为 false。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool DoMatch(string pattern, int patternIndex, string path, int pathIndex)
     {
@@ -261,13 +261,13 @@ public static class FastPathMatcher
     }
 
     /// <summary>
-    /// 匹配单个路径段（* 通配符）
+    /// 匹配路径模式中的单段通配符。
     /// </summary>
-    /// <param name="pattern">匹配模式</param>
-    /// <param name="patternIndex">模式当前索引</param>
-    /// <param name="path">路径字符串</param>
-    /// <param name="pathIndex">路径当前索引</param>
-    /// <returns>匹配结果</returns>
+    /// <param name="pattern">包含通配符的路径模式。</param>
+    /// <param name="patternIndex">模式中的当前索引。</param>
+    /// <param name="path">待匹配的路径。</param>
+    /// <param name="pathIndex">路径中的当前索引。</param>
+    /// <returns>单段通配符能够匹配当前路径段时为 true；否则为 false。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool MatchSingleSegment(string pattern, int patternIndex, string path, int pathIndex)
     {
@@ -291,13 +291,13 @@ public static class FastPathMatcher
     }
 
     /// <summary>
-    /// 匹配多个路径段（** 通配符）
+    /// 匹配路径模式中的跨段通配符。
     /// </summary>
-    /// <param name="pattern">匹配模式</param>
-    /// <param name="patternIndex">模式当前索引</param>
-    /// <param name="path">路径字符串</param>
-    /// <param name="pathIndex">路径当前索引</param>
-    /// <returns>匹配结果</returns>
+    /// <param name="pattern">包含通配符的路径模式。</param>
+    /// <param name="patternIndex">模式中的当前索引。</param>
+    /// <param name="path">待匹配的路径。</param>
+    /// <param name="pathIndex">路径中的当前索引。</param>
+    /// <returns>跨段通配符能够匹配剩余路径时为 true；否则为 false。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool MatchMultipleSegments(string pattern, int patternIndex, string path, int pathIndex)
     {
@@ -318,11 +318,11 @@ public static class FastPathMatcher
     }
 
     /// <summary>
-    /// 安全地获取字符串指定位置的字符
+    /// 安全读取字符串中的字符。
     /// </summary>
-    /// <param name="str">字符串</param>
-    /// <param name="index">索引位置</param>
-    /// <returns>指定位置的字符，如果越界则返回空字符</returns>
+    /// <param name="str">要读取的字符串。</param>
+    /// <param name="index">字符索引。</param>
+    /// <returns>指定索引处的字符；索引越界时返回默认字符。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static char GetSafeChar(string str, int index) => index >= str.Length ? NullChar : str[index];
 }
