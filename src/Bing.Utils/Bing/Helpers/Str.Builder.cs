@@ -6,17 +6,17 @@ namespace Bing.Helpers;
 public partial class Str
 {
     /// <summary>
-    /// 字符串生成器
+    /// 获取或设置字符串生成器
     /// </summary>
     private StringBuilder Builder { get; set; }
 
     /// <summary>
-    /// 字符串长度
+    /// 获取字符串长度
     /// </summary>
     public int Length => Builder.Length;
 
     /// <summary>
-    /// 初始化一个<see cref="Str"/>类型的实例
+    /// 初始化一个 <see cref="Str"/> 类型的实例。
     /// </summary>
     public Str() => Builder = new StringBuilder();
 
@@ -113,8 +113,6 @@ public partial class Str
         return this;
     }
 
-    /// <summary>
-    /// 转换为字符串
-    /// </summary>
+    /// <inheritdoc />
     public override string ToString() => Builder.ToString();
 }

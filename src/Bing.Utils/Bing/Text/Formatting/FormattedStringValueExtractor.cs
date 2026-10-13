@@ -117,17 +117,17 @@ public class FormattedStringValueExtractor
     public class ExtractionResult
     {
         /// <summary>
-        /// 是否完全匹配
+        /// 获取或设置是否完全匹配
         /// </summary>
         public bool IsMatch { get; set; }
 
         /// <summary>
-        /// 匹配的动态值列表
+        /// 获取或设置匹配的动态值列表
         /// </summary>
         public List<NameValue> Matches { get; private set; }
 
         /// <summary>
-        /// 初始化一个<see cref="ExtractionResult"/>类型的实例
+        /// 初始化一个 <see cref="ExtractionResult"/> 类型的实例。
         /// </summary>
         /// <param name="isMatch">是否完全匹配</param>
         internal ExtractionResult(bool isMatch)

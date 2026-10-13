@@ -6,7 +6,7 @@ namespace Bing.Text.Formatting;
 internal class FormatStringToken
 {
     /// <summary>
-    /// 初始化一个<see cref="FormatStringToken"/>类型的实例
+    /// 初始化一个 <see cref="FormatStringToken"/> 类型的实例。
     /// </summary>
     /// <param name="text">文本</param>
     /// <param name="type">类型</param>
@@ -17,12 +17,12 @@ internal class FormatStringToken
     }
 
     /// <summary>
-    /// 文本
+    /// 获取或设置文本
     /// </summary>
     public string Text { get; private set; }
 
     /// <summary>
-    /// 类型
+    /// 获取或设置类型
     /// </summary>
     public FormatStringTokenType Type { get; private set; }
 }

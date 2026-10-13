@@ -93,6 +93,7 @@ public partial class Str
     /// 解析单个汉字的拼音简码
     /// </summary>
     /// <param name="text">汉字</param>
+    /// <returns>字符对应的拼音文本。</returns>
     private static string ResolvePinYin(char text)
     {
         byte[] charBytes = Encoding.Default.GetBytes(text.ToString());
@@ -109,6 +110,7 @@ public partial class Str
     /// 使用字符编码方式获取拼音简码
     /// </summary>
     /// <param name="unicode">字符编码</param>
+    /// <returns>Unicode 编码对应的拼音文本。</returns>
     private static string ResolveByCode(ushort unicode)
     {
         if (unicode >= '\uB0A1' && unicode <= '\uB0C4')
@@ -164,6 +166,7 @@ public partial class Str
     /// 通过拼音简码常量获取
     /// </summary>
     /// <param name="text">文本</param>
+    /// <returns>查表得到的拼音文本。</returns>
     private static string ResolveByConst(string text)
     {
         int index = Const.ChinesePinYin.IndexOf(text, StringComparison.Ordinal);
@@ -287,7 +290,7 @@ public partial class Str
     #region Empty(空字符串)
 
     /// <summary>
-    /// 空字符串
+    /// 获取空字符串
     /// </summary>
     public static string Empty => string.Empty;
 
@@ -330,6 +333,7 @@ public partial class Str
     /// </summary>
     /// <param name="endCharCount">添加结束符号的个数</param>
     /// <param name="endChar">结束符号</param>
+    /// <returns>由指定字符重复指定次数组成的字符串。</returns>
     private static string GetEndString(int endCharCount, string endChar)
     {
         var sb = new StringBuilder();

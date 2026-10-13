@@ -601,17 +601,17 @@ public static class RegexPool
     private readonly record struct CacheItem
     {
         /// <summary>
-        /// 缓存的正则表达式对象
+        /// 获取或初始化缓存的正则表达式对象
         /// </summary>
         public Regex Regex { get; init; }
 
         /// <summary>
-        /// 最后访问时间戳，用于LRU清理
+        /// 获取或初始化最后访问时间戳，用于LRU清理
         /// </summary>
         public long LastAccessTime { get; init; }
 
         /// <summary>
-        /// 初始化缓存项
+        /// 初始化一个 <see cref="CacheItem"/> 类型的实例。
         /// </summary>
         /// <param name="regex">正则表达式对象</param>
         /// <param name="lastAccessTime">最后访问时间戳</param>
