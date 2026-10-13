@@ -19,7 +19,7 @@ internal class CastingReadOnlyDictionaryWrapper<TFromKey, TFromValue, TToKey, TT
     private readonly IReadOnlyDictionary<TFromKey, TFromValue> _source;
 
     /// <summary>
-    /// 初始化一个<see cref="CastingReadOnlyDictionaryWrapper{TFromKey,TFromValue,TToKey,TToValue}"/>类型的实例
+    /// 初始化一个 <see cref="CastingReadOnlyDictionaryWrapper{TFromKey,TFromValue,TToKey,TToValue}"/> 类型的实例。
     /// </summary>
     /// <param name="source">源数据</param>
     internal CastingReadOnlyDictionaryWrapper(IReadOnlyDictionary<TFromKey, TFromValue> source)
@@ -36,13 +36,11 @@ internal class CastingReadOnlyDictionaryWrapper<TFromKey, TFromValue, TToKey, TT
     }
 
 
-    /// <summary>
-    /// 获取迭代器
-    /// </summary>
+    /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <summary>
-    /// 计数
+    /// 获取计数
     /// </summary>
     public int Count => _source.Count;
 
