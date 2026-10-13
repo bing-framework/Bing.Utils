@@ -10,9 +10,7 @@ namespace Bing.Serialization.SystemTextJson;
 /// <typeparam name="T">枚举类型</typeparam>
 public class EnumJsonConverter<T> : JsonConverter<T> where T : struct, Enum
 {
-    /// <summary>
-    /// 读取数据
-    /// </summary>
+    /// <inheritdoc />
     public override T Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options)
     {
         var isSuccess = reader.TryGetSingle(out var floatValue);
@@ -24,9 +22,7 @@ public class EnumJsonConverter<T> : JsonConverter<T> where T : struct, Enum
         return default;
     }
 
-    /// <summary>
-    /// 写入数据
-    /// </summary>
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         var code = Type.GetTypeCode(typeof(T));

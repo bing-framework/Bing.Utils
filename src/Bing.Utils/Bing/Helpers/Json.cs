@@ -31,6 +31,7 @@ public static class Json
     /// 转换序列化配置
     /// </summary>
     /// <param name="options">Json配置</param>
+    /// <returns>用于 JSON 序列化和反序列化的选项。</returns>
     private static JsonSerializerOptions ToJsonSerializerOptions(JsonOptions options)
     {
         var jsonSerializerOptions = new JsonSerializerOptions();
@@ -91,6 +92,7 @@ public static class Json
     /// 获取对象转换为Json字符串的序列化配置
     /// </summary>
     /// <param name="options">Json序列化配置</param>
+    /// <returns>应用 JSON 输出设置后的选项。</returns>
     private static JsonSerializerOptions GetToJsonOptions(JsonSerializerOptions options)
     {
         if (options != null)
@@ -208,6 +210,7 @@ public static class Json
     /// 获取Json字符串转换为对象的序列化配置
     /// </summary>
     /// <param name="options">Json序列化配置</param>
+    /// <returns>应用 JSON 反序列化设置后的选项。</returns>
     private static JsonSerializerOptions GetToObjectOptions(JsonSerializerOptions options)
     {
         if (options != null)
@@ -337,6 +340,7 @@ public static class Json
     /// 获取转换为字节数组的Json序列化配置
     /// </summary>
     /// <param name="options">Json序列化配置</param>
+    /// <returns>应用字节输出设置后的选项。</returns>
     private static JsonSerializerOptions GetToBytesOptions(JsonSerializerOptions options)
     {
         if (options != null)

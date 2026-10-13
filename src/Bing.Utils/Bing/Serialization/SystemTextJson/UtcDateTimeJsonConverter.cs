@@ -15,21 +15,19 @@ public class UtcDateTimeJsonConverter : JsonConverter<DateTime>
     private readonly string _format;
 
     /// <summary>
-    /// 初始化一个<see cref="UtcDateTimeJsonConverter"/>类型的实例
+    /// 初始化一个 <see cref="UtcDateTimeJsonConverter"/> 类型的实例。
     /// </summary>
     public UtcDateTimeJsonConverter() : this("yyyy-MM-dd HH:mm:ss")
     {
     }
 
     /// <summary>
-    /// 初始化一个<see cref="UtcDateTimeJsonConverter"/>类型的实例
+    /// 初始化一个 <see cref="UtcDateTimeJsonConverter"/> 类型的实例。
     /// </summary>
     /// <param name="format">日期格式。默认值：yyyy-MM-dd HH:mm:ss</param>
     public UtcDateTimeJsonConverter(string format) => _format = format;
 
-    /// <summary>
-    /// 读取数据
-    /// </summary>
+    /// <inheritdoc />
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.String)
@@ -39,9 +37,7 @@ public class UtcDateTimeJsonConverter : JsonConverter<DateTime>
         return DateTime.MinValue;
     }
 
-    /// <summary>
-    /// 写入数据
-    /// </summary>
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
     {
         var date = Time.Normalize(value).ToString(_format);

@@ -12,7 +12,7 @@ public partial class Xml
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="Bing.Helpers.Xml"/>类型的实例
+    /// 初始化一个 <see cref="Xml"/> 类型的实例。
     /// </summary>
     /// <param name="xml">Xml字符串</param>
     public Xml(string xml = null)
@@ -25,7 +25,7 @@ public partial class Xml
     }
 
     /// <summary>
-    /// 初始化一个<see cref="Bing.Helpers.Xml"/>类型的实例
+    /// 初始化一个 <see cref="Xml"/> 类型的实例。
     /// </summary>
     /// <param name="stream">流</param>
     public Xml(Stream stream)
@@ -41,6 +41,7 @@ public partial class Xml
     /// 获取Xml字符串
     /// </summary>
     /// <param name="xml">Xml字符串</param>
+    /// <returns>原始 XML 文本；输入为空时返回空的 xml 根元素文本。</returns>
     private string GetXml(string xml) => string.IsNullOrWhiteSpace(xml) ? "<xml></xml>" : xml;
 
     #endregion
@@ -48,12 +49,12 @@ public partial class Xml
     #region 属性
 
     /// <summary>
-    /// Xml文档
+    /// 获取Xml文档
     /// </summary>
     public XmlDocument Document { get; }
 
     /// <summary>
-    /// Xml根节点
+    /// 获取Xml根节点
     /// </summary>
     public XmlElement Root { get; }
 
@@ -78,6 +79,7 @@ public partial class Xml
     /// 获取父节点
     /// </summary>
     /// <param name="parent">父节点</param>
+    /// <returns>指定的父节点；未指定时返回根节点。</returns>
     private XmlNode GetParent(XmlNode parent) => parent ?? Root;
 
     /// <summary>
@@ -86,6 +88,7 @@ public partial class Xml
     /// <param name="name">节点名称</param>
     /// <param name="value">值</param>
     /// <param name="type">节点类型</param>
+    /// <returns>按指定名称、值和节点类型创建的 XML 节点。</returns>
     private XmlNode CreateNode(string name, object value, XmlNodeType type)
     {
         var node = Document.CreateNode(type, name, string.Empty);
@@ -125,6 +128,7 @@ public partial class Xml
     /// <summary>
     /// 创建标识
     /// </summary>
+    /// <returns>新生成的 GUID 文本。</returns>
     private string CreateId() => Guid.NewGuid().ToString("N");
 
     #endregion
@@ -224,9 +228,7 @@ public partial class Xml
 
     #region ToString(输出Xml)
 
-    /// <summary>
-    /// 输出Xml
-    /// </summary>
+    /// <inheritdoc />
     public override string ToString() => Document.OuterXml;
 
     #endregion

@@ -8,17 +8,10 @@ namespace Bing.Serialization.SystemTextJson;
 /// </summary>
 public class EnumJsonConverterFactory : JsonConverterFactory
 {
-    /// <summary>
-    /// 是否允许转换为枚举
-    /// </summary>
-    /// <param name="type">转换类型</param>
+    /// <inheritdoc />
     public override bool CanConvert(Type type) => type.IsEnum;
 
-    /// <summary>
-    /// 创建枚举Json转换器
-    /// </summary>
-    /// <param name="type">转换类型</param>
-    /// <param name="options">Json序列化配置</param>
+    /// <inheritdoc />
     public override JsonConverter CreateConverter(Type type, JsonSerializerOptions options)
     {
         return (JsonConverter)Activator.CreateInstance(GetEnumConverterType(type));

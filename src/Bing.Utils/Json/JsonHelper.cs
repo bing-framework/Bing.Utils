@@ -6,17 +6,17 @@ using Newtonsoft.Json.Serialization;
 namespace Bing.Utils.Json;
 
 /// <summary>
-/// Json操作辅助类
+/// 提供 JSON 文本、对象和文件之间的转换方法。
 /// </summary>
 public static class JsonHelper
 {
     #region JsonDateTimeFormat(Json时间格式化)
 
     /// <summary>
-    /// Json时间格式化
+    /// 将 JSON 中的旧式 <c>\/Date(milliseconds)\/</c> 标记替换为日期时间文本。
     /// </summary>
-    /// <param name="json">json</param>
-    /// <returns></returns>
+    /// <param name="json">要处理的 JSON 文本。</param>
+    /// <returns>输入为空或空白时返回原文本；否则返回替换了旧式日期标记的文本。</returns>
     public static string JsonDateTimeFormat(string json)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -38,11 +38,11 @@ public static class JsonHelper
     #region ToObject(将Json字符串转换为对象)
 
     /// <summary>
-    /// 将Json字符串转换为对象
+    /// 将 JSON 文本反序列化为对象。
     /// </summary>
-    /// <typeparam name="T">实体类型</typeparam>
-    /// <param name="json">Json字符串</param>
-    /// <returns></returns>
+    /// <typeparam name="T">反序列化结果的目标类型。</typeparam>
+    /// <param name="json">要处理的 JSON 文本。</param>
+    /// <returns>JSON 为空或空白时返回 default(T)；否则返回反序列化结果，该结果可以为 null。</returns>
     public static T ToObject<T>(string json)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -54,21 +54,21 @@ public static class JsonHelper
     }
 
     /// <summary>
-    /// 将Json字符串转换为对象
+    /// 将 JSON 文本反序列化为对象。
     /// </summary>
-    /// <param name="json">Json字符串</param>
-    /// <param name="type">实体类型</param>
-    /// <returns></returns>
+    /// <param name="json">要处理的 JSON 文本。</param>
+    /// <param name="type">反序列化结果的目标运行时类型。</param>
+    /// <returns>返回与指定运行时类型匹配的反序列化结果；JSON 表示 null 时返回 null。</returns>
     public static object ToObject(string json, Type type)
     {
         return JsonConvert.DeserializeObject(json, type);
     }
 
     /// <summary>
-    /// 将Json字符串转换为对象
+    /// 将 JSON 文本反序列化为对象。
     /// </summary>
-    /// <param name="json">Json字符串</param>
-    /// <returns></returns>
+    /// <param name="json">要处理的 JSON 文本。</param>
+    /// <returns>返回由 JSON 内容确定类型的反序列化结果；JSON 表示 null 时返回 null。</returns>
     public static object ToObject(string json)
     {
         return JsonConvert.DeserializeObject(json);
@@ -79,13 +79,13 @@ public static class JsonHelper
     #region ToJson(将对象转换为Json字符串)
 
     /// <summary>
-    /// 将对象转换为Json字符串
+    /// 将对象序列化为 JSON 文本。
     /// </summary>
-    /// <param name="target">目标对象</param>
-    /// <param name="isConvertToSingleQuotes">是否将双引号转换成单引号</param>
-    /// <param name="camelCase">是否驼峰式命名</param>
-    /// <param name="indented">是否缩进</param>
-    /// <returns></returns>
+    /// <param name="target">要序列化的对象；为 <see langword="null"/> 时返回空字符串。</param>
+    /// <param name="isConvertToSingleQuotes">是否将序列化结果中的所有双引号替换为单引号，包括字符串值中的引号。</param>
+    /// <param name="camelCase">是否使用驼峰命名序列化对象成员。</param>
+    /// <param name="indented">是否以缩进格式输出 JSON。</param>
+    /// <returns>返回序列化后的 JSON 文本；目标对象为 null 时返回空字符串。</returns>
     public static string ToJson(object target, bool isConvertToSingleQuotes = false, bool camelCase = false,
         bool indented = false)
     {
@@ -119,10 +119,10 @@ public static class JsonHelper
     #region SerializableToFile(将对象序列化到Json文件)
 
     /// <summary>
-    /// 将对象序列化到Json文件
+    /// 将对象序列化为 JSON 并写入指定文件。
     /// </summary>
-    /// <param name="fileName">文件名，绝对路径</param>
-    /// <param name="obj">对象</param>
+    /// <param name="fileName">目标文件路径，可以是绝对路径或相对路径。</param>
+    /// <param name="obj">要序列化并写入文件的对象。</param>
     public static void SerializableToFile(string fileName, object obj)
     {
         lock (obj)
@@ -142,11 +142,11 @@ public static class JsonHelper
     #region DeserializeFromFile(从Json文件反序列成对象)
 
     /// <summary>
-    /// 从Json文件反序列成对象
+    /// 从指定文件读取 JSON 并反序列化为目标类型。
     /// </summary>
     /// <typeparam name="T">对象类型</typeparam>
-    /// <param name="fileName">文件名，绝对路径</param>
-    /// <returns></returns>
+    /// <param name="fileName">目标文件路径，可以是绝对路径或相对路径。</param>
+    /// <returns>文件内容为空或空白时返回 default(T)；否则返回反序列化结果，该结果可以为 null。</returns>
     public static T DeserializeFromFile<T>(string fileName)
     {
         try
@@ -170,10 +170,10 @@ public static class JsonHelper
     #region ToJsonByForm(将Form表单转换成Json字符串)
 
     /// <summary>
-    /// 将Form表单转换成Json字符串
+    /// 将以 <c>&amp;</c> 分隔的表单键值文本转换为 JSON 对象文本。
     /// </summary>
-    /// <param name="formStr">Form表单字符串</param>
-    /// <returns></returns>
+    /// <param name="formStr">由 <c>&amp;</c> 分隔的键值对文本；方法不会进行 URL 解码，值中的等号会被丢弃。</param>
+    /// <returns>返回由表单键值对生成的 JSON 对象文本。</returns>
     public static string ToJsonByForm(string formStr)
     {
         Dictionary<string, string> dicData = new Dictionary<string, string>();
@@ -198,10 +198,11 @@ public static class JsonHelper
     #region ToJObject(将Json字符串转换为Linq对象)
 
     /// <summary>
-    /// 将Json字符串转换为Linq对象
+    /// 将 JSON 文本解析为 <see cref="JObject"/>。
     /// </summary>
-    /// <param name="json">Json字符串</param>
-    /// <returns></returns>
+    /// <param name="json">要处理的 JSON 文本。</param>
+    /// <remarks>解析前会移除所有字面量 <c>&amp;nbsp;</c>。</remarks>
+    /// <returns>返回解析得到的 JSON 对象；输入为空或空白时返回空对象。</returns>
     public static JObject ToJObject(string json)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -217,9 +218,11 @@ public static class JsonHelper
     #region IsJson(判断字符串是否为Json格式)
 
     /// <summary>
-    /// 判断字符串是否为Json格式。为效率考虑，仅做了开始和结束字符的验证
+    /// 检查文本是否以 JSON 对象或数组的括号包围；此方法不验证完整 JSON 语法。
     /// </summary>
-    /// <param name="json">json字符串</param>
+    /// <param name="json">要检查的 JSON 文本；不能为 <see langword="null"/>。</param>
+    /// <returns>当去除首尾空白后的文本以一对对象括号或数组括号包围时返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    /// <exception cref="NullReferenceException"><paramref name="json"/> 为 <see langword="null"/> 时抛出。</exception>
     public static bool IsJson(string json)
     {
         json = json.Trim();

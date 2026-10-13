@@ -134,10 +134,13 @@ public static partial class Serialize
     /// </summary>
     private sealed class ExplicitKnownTypeResolver : DataContractResolver
     {
+        /// <summary>
+        /// 获取调用方显式允许参与多态解析的类型集合。
+        /// </summary>
         private readonly ISet<Type> _knownTypes;
 
         /// <summary>
-        /// 初始化显式已知类型解析器。
+        /// 初始化一个 <see cref="ExplicitKnownTypeResolver"/> 类型的实例。
         /// </summary>
         /// <param name="knownTypes">调用方提供且已验证的已知类型集合。</param>
         public ExplicitKnownTypeResolver(IEnumerable<Type> knownTypes)
@@ -145,15 +148,10 @@ public static partial class Serialize
             _knownTypes = new HashSet<Type>(knownTypes);
         }
 
-        /// <summary>
-        /// 将显式已知运行时类型写为默认稳定类型名。
-        /// </summary>
-        /// <param name="type">运行时类型。</param>
-        /// <param name="declaredType">声明类型。</param>
-        /// <param name="knownTypeResolver">默认类型解析器。</param>
-        /// <param name="typeName">解析后的类型名称。</param>
-        /// <param name="typeNamespace">解析后的类型命名空间。</param>
-        /// <returns>类型已明确允许时返回 true，否则返回 false。</returns>
+        /// <inheritdoc />
+        /// <remarks>
+        /// 仅处理声明类型本身或显式登记的运行时类型，并委托已知类型解析器生成稳定类型名。
+        /// </remarks>
         public override bool TryResolveType(Type type, Type declaredType, DataContractResolver knownTypeResolver,
             out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
         {
@@ -167,14 +165,10 @@ public static partial class Serialize
             return knownTypeResolver.TryResolveType(type, declaredType, null, out typeName, out typeNamespace);
         }
 
-        /// <summary>
-        /// 将二进制 XML 中的类型名称解析为显式已知类型。
-        /// </summary>
-        /// <param name="typeName">输入类型名称。</param>
-        /// <param name="typeNamespace">输入类型命名空间。</param>
-        /// <param name="declaredType">声明类型。</param>
-        /// <param name="knownTypeResolver">默认类型解析器。</param>
-        /// <returns>已显式注册的类型；其他输入返回 null。</returns>
+        /// <inheritdoc />
+        /// <remarks>
+        /// 仅返回显式登记的已知类型；其他类型名称返回 null。
+        /// </remarks>
         public override Type ResolveName(string typeName, string typeNamespace, Type declaredType,
             DataContractResolver knownTypeResolver)
         {
