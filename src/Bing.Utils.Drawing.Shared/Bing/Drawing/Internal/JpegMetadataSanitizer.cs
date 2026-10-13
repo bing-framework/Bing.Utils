@@ -9,16 +9,43 @@ namespace Bing.Drawing.Internal;
 internal static class JpegMetadataSanitizer
 {
     // JPEG 标记常量
+    /// <summary>
+    /// JPEG 标记及段长度字段之前使用的前缀字节。
+    /// </summary>
     private const byte MarkerPrefix = 0xFF;
+    /// <summary>
+    /// JPEG 图像起始标记的标记码。
+    /// </summary>
     private const byte MarkerSoi = 0xD8;    // Start of Image
+    /// <summary>
+    /// JPEG APP1 段的标记码，通常用于存储 EXIF 数据。
+    /// </summary>
     private const byte MarkerApp1 = 0xE1;    // APP1 (EXIF)
+    /// <summary>
+    /// JPEG APP2 段的标记码，通常用于存储 ICC 配置文件。
+    /// </summary>
     private const byte MarkerApp2 = 0xE2;    // APP2 (ICC Profile)
+    /// <summary>
+    /// JPEG 图像结束标记的标记码。
+    /// </summary>
     private const byte MarkerEoi = 0xD9;     // End of Image
 
     // EXIF/TIFF 常量
+    /// <summary>
+    /// TIFF 大端字节序标识。
+    /// </summary>
     private const ushort TiffBigEndian = 0x4D4D;     // "MM"
+    /// <summary>
+    /// TIFF 小端字节序标识。
+    /// </summary>
     private const ushort TiffLittleEndian = 0x4949;  // "II"
+    /// <summary>
+    /// TIFF 文件头中的格式标识值。
+    /// </summary>
     private const ushort TiffMagic = 0x002A;
+    /// <summary>
+    /// EXIF IFD0 中 GPS IFD 指针标签的编号。
+    /// </summary>
     private const ushort TagGpsIfdPointer = 0x8825;
 
     /// <summary>
@@ -46,8 +73,11 @@ internal static class JpegMetadataSanitizer
     }
 
     /// <summary>
-    /// 移除整个 APP1 (EXIF) 段
+    /// 移除 JPEG APP1 段并按选项处理 ICC 段。
     /// </summary>
+    /// <param name="data">待处理的 JPEG 数据。</param>
+    /// <param name="preserveIcc">是否保留 APP2 ICC 配置文件段。</param>
+    /// <returns>处理后的 JPEG 数据。</returns>
     private static byte[] RemoveApp1Segment(byte[] data, bool preserveIcc)
     {
         using var output = new MemoryStream();
@@ -88,8 +118,10 @@ internal static class JpegMetadataSanitizer
     }
 
     /// <summary>
-    /// 从 EXIF 数据中移除 GPS IFD 指针
+    /// 从 JPEG EXIF 数据中移除 GPS IFD 指针。
     /// </summary>
+    /// <param name="data">待处理的 JPEG 数据。</param>
+    /// <returns>处理后的 JPEG 数据；未找到可处理的 EXIF 数据时返回原数组。</returns>
     private static byte[] RemoveGpsFromExif(byte[] data)
     {
         var pos = 2; // 跳过 SOI
@@ -132,8 +164,11 @@ internal static class JpegMetadataSanitizer
     }
 
     /// <summary>
-    /// 尝试在 TIFF 数据中将 GPS IFD 指针标签（0x8825）标记为已移除
+    /// 在 TIFF 数据中清除 GPS IFD 指针。
     /// </summary>
+    /// <param name="data">包含 TIFF 数据的字节数组。</param>
+    /// <param name="tiffStart">TIFF 数据在数组中的起始索引。</param>
+    /// <param name="tiffEnd">TIFF 数据后的绝对边界索引。</param>
     private static void TryRemoveGpsTagInPlace(byte[] data, int tiffStart, int tiffEnd)
     {
         if (tiffStart + 8 > tiffEnd)
@@ -181,6 +216,13 @@ internal static class JpegMetadataSanitizer
         }
     }
 
+    /// <summary>
+    /// 按指定字节序读取 16 位无符号整数。
+    /// </summary>
+    /// <param name="data">待读取的字节数组。</param>
+    /// <param name="offset">起始字节索引。</param>
+    /// <param name="bigEndian">是否使用大端字节序。</param>
+    /// <returns>读取的 16 位无符号整数。</returns>
     private static ushort ReadUInt16(byte[] data, int offset, bool bigEndian)
     {
         if (bigEndian)
@@ -188,6 +230,13 @@ internal static class JpegMetadataSanitizer
         return (ushort)(data[offset] | (data[offset + 1] << 8));
     }
 
+    /// <summary>
+    /// 按指定字节序读取 32 位无符号整数。
+    /// </summary>
+    /// <param name="data">待读取的字节数组。</param>
+    /// <param name="offset">起始字节索引。</param>
+    /// <param name="bigEndian">是否使用大端字节序。</param>
+    /// <returns>读取的 32 位无符号整数。</returns>
     private static uint ReadUInt32(byte[] data, int offset, bool bigEndian)
     {
         if (bigEndian)
@@ -195,6 +244,13 @@ internal static class JpegMetadataSanitizer
         return (uint)(data[offset] | (data[offset + 1] << 8) | (data[offset + 2] << 16) | (data[offset + 3] << 24));
     }
 
+    /// <summary>
+    /// 按指定字节序将 16 位无符号整数写入数组。
+    /// </summary>
+    /// <param name="data">接收写入数据的字节数组。</param>
+    /// <param name="offset">起始写入索引。</param>
+    /// <param name="value">要写入的无符号整数。</param>
+    /// <param name="bigEndian">是否使用大端字节序。</param>
     private static void WriteUInt16(byte[] data, int offset, ushort value, bool bigEndian)
     {
         if (bigEndian)

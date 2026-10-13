@@ -6,27 +6,27 @@ namespace Bing.Drawing;
 public readonly struct RgbColor : IEquatable<RgbColor>
 {
     /// <summary>
-    /// 红色分量
+    /// 获取红色分量
     /// </summary>
     public byte R { get; }
 
     /// <summary>
-    /// 绿色分量
+    /// 获取绿色分量
     /// </summary>
     public byte G { get; }
 
     /// <summary>
-    /// 蓝色分量
+    /// 获取蓝色分量
     /// </summary>
     public byte B { get; }
 
     /// <summary>
-    /// Alpha 分量
+    /// 获取Alpha 分量
     /// </summary>
     public byte A { get; }
 
     /// <summary>
-    /// 初始化一个<see cref="RgbColor"/>类型的实例（不透明）
+    /// 初始化一个 <see cref="RgbColor"/> 类型的实例。
     /// </summary>
     /// <param name="r">红色分量</param>
     /// <param name="g">绿色分量</param>
@@ -40,7 +40,7 @@ public readonly struct RgbColor : IEquatable<RgbColor>
     }
 
     /// <summary>
-    /// 初始化一个<see cref="RgbColor"/>类型的实例
+    /// 初始化一个 <see cref="RgbColor"/> 类型的实例。
     /// </summary>
     /// <param name="r">红色分量</param>
     /// <param name="g">绿色分量</param>

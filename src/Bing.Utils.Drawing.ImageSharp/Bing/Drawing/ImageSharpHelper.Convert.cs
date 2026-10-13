@@ -12,15 +12,17 @@ namespace Bing.Drawing;
 public static partial class ImageSharpHelper
 {
     /// <summary>
-    /// 获取默认图片格式
+    /// 根据可选格式确定编码格式，未指定时使用 PNG。
     /// </summary>
-    /// <param name="imageFormat">图片格式</param>
+    /// <param name="imageFormat">可选的图像格式；未指定时使用 PNG。</param>
+    /// <returns>确定后的图像格式。</returns>
     private static IImageFormat NormalizeImageFormat(IImageFormat? imageFormat) => imageFormat ?? PngFormat.Instance;
 
     /// <summary>
-    /// 验证质量参数
+    /// 验证图像编码质量是否处于有效范围。
     /// </summary>
-    /// <param name="quality">质量</param>
+    /// <param name="quality">1 到 100 之间的编码质量。</param>
+    /// <returns>通过验证的编码质量。</returns>
     private static int ValidateQuality(int quality)
     {
         if (quality < 1 || quality > 100)
@@ -29,12 +31,12 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 保存图像到流
+    /// 将图像按指定格式保存到流。
     /// </summary>
-    /// <param name="image">图像</param>
-    /// <param name="stream">流</param>
-    /// <param name="imageFormat">图片格式</param>
-    /// <param name="quality">质量</param>
+    /// <param name="image">要保存的图像。</param>
+    /// <param name="stream">接收编码数据的目标流。</param>
+    /// <param name="imageFormat">要使用的图像格式。</param>
+    /// <param name="quality">可选的编码质量，范围为 1 到 100。</param>
     private static void Save(Image image, Stream stream, IImageFormat imageFormat, int? quality = default)
     {
         if (quality.HasValue)
@@ -158,7 +160,7 @@ public static partial class ImageSharpHelper
     /// 格式：data:image/png;base64,base64String
     /// </summary>
     /// <param name="image">图像</param>
-    /// <param name="imageFormat">图片格式</param>
+    /// <param name="imageFormat">要使用的图像格式。</param>
     /// <exception cref="ArgumentNullException"></exception>
     public static string ToDataUrl(Image image, IImageFormat? imageFormat = default)
     {

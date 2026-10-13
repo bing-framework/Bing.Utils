@@ -8,8 +8,12 @@ namespace Bing.Drawing;
 internal static class DrawingCompatibilityHelper
 {
     /// <summary>
-    /// 限制整数范围
+    /// 将整数限制在指定范围内。
     /// </summary>
+    /// <param name="value">待限制的整数。</param>
+    /// <param name="min">允许的最小值。</param>
+    /// <param name="max">允许的最大值。</param>
+    /// <returns>限制后的整数。</returns>
     internal static int Clamp(int value, int min, int max)
     {
         if (value < min)
@@ -20,8 +24,10 @@ internal static class DrawingCompatibilityHelper
     }
 
     /// <summary>
-    /// 限制字节范围
+    /// 将数值限制在字节可表示的范围内。
     /// </summary>
+    /// <param name="value">待限制的数值。</param>
+    /// <returns>限制到 0 到 255 的字节值。</returns>
     internal static byte ClampToByte(float value)
     {
         var rounded = (int)Math.Round(value, MidpointRounding.AwayFromZero);
@@ -29,8 +35,10 @@ internal static class DrawingCompatibilityHelper
     }
 
     /// <summary>
-    /// 生成指定上界内的随机整数
+    /// 生成小于上限的随机整数。
     /// </summary>
+    /// <param name="maxExclusive">随机数的独占上限。</param>
+    /// <returns>生成的随机整数。</returns>
     internal static int GetRandomInt32(int maxExclusive)
     {
         if (maxExclusive <= 0)

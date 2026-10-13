@@ -28,8 +28,10 @@ internal static class EncodedImageSanitizer
     }
 
     /// <summary>
-    /// 检测编码图像格式
+    /// 根据文件签名识别图像格式。
     /// </summary>
+    /// <param name="data">待识别的图像数据。</param>
+    /// <returns>识别出的图像格式；无法识别时返回 Unknown。</returns>
     internal static ImageFormat DetectFormat(byte[] data)
     {
         if (data.Length >= 3 && data[0] == 0xFF && data[1] == 0xD8 && data[2] == 0xFF)
@@ -48,8 +50,17 @@ internal static class EncodedImageSanitizer
     /// </summary>
     internal enum ImageFormat
     {
+        /// <summary>
+        /// 未识别为受支持的 JPEG 或 PNG 格式。
+        /// </summary>
         Unknown,
+        /// <summary>
+        /// JPEG 编码图像格式。
+        /// </summary>
         Jpeg,
+        /// <summary>
+        /// PNG 编码图像格式。
+        /// </summary>
         Png
     }
 }

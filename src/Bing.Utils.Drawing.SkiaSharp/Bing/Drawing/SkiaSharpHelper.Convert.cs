@@ -6,8 +6,11 @@ namespace Bing.Drawing;
 public static partial class SkiaSharpHelper
 {
     /// <summary>
-    /// 规范化图片格式参数
+    /// 根据图像和可选参数确定编码格式及质量。
     /// </summary>
+    /// <param name="image">待编码的图像。</param>
+    /// <param name="imageFormat">可选的编码格式和质量；未指定时使用图像格式和质量 100。</param>
+    /// <returns>确定后的编码格式和已验证的质量。</returns>
     private static (SKEncodedImageFormat Format, int Quality) NormalizeImageFormat(SKImage image, (SKEncodedImageFormat Format, int Quality)? imageFormat)
     {
         var format = imageFormat ?? (GetEncodedImageFormat(image), 100);
@@ -15,8 +18,11 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 编码图片数据
+    /// 按确定的格式和质量编码图像。
     /// </summary>
+    /// <param name="image">待编码的图像。</param>
+    /// <param name="imageFormat">可选的编码格式和质量。</param>
+    /// <returns>包含编码图像数据的对象。</returns>
     private static SKData Encode(SKImage image, (SKEncodedImageFormat Format, int Quality)? imageFormat = default)
     {
         var format = NormalizeImageFormat(image, imageFormat);
@@ -24,9 +30,10 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 验证质量参数
+    /// 验证图像编码质量是否处于有效范围。
     /// </summary>
-    /// <param name="quality">质量</param>
+    /// <param name="quality">1 到 100 之间的编码质量。</param>
+    /// <returns>通过验证的编码质量。</returns>
     private static int ValidateQuality(int quality)
     {
         if (quality < 1 || quality > 100)

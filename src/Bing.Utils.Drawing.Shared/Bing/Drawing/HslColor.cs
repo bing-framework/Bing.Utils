@@ -13,22 +13,22 @@ namespace Bing.Drawing;
 public readonly struct HslColor : IEquatable<HslColor>
 {
     /// <summary>
-    /// 色相。范围：[0, 360)
+    /// 获取色相。范围：[0, 360)
     /// </summary>
     public double H { get; }
 
     /// <summary>
-    /// 饱和度。范围：0-1
+    /// 获取饱和度。范围：0-1
     /// </summary>
     public double S { get; }
 
     /// <summary>
-    /// 亮度。范围：0-1
+    /// 获取亮度。范围：0-1
     /// </summary>
     public double L { get; }
 
     /// <summary>
-    /// 初始化一个<see cref="HslColor"/>类型的实例
+    /// 初始化一个 <see cref="HslColor"/> 类型的实例。
     /// </summary>
     /// <param name="h">色相</param>
     /// <param name="s">饱和度</param>

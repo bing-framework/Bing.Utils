@@ -34,8 +34,10 @@ internal static class ChineseCaptchaGlyphSet
         "标写存候毛亲快效斯院查江型眼王按格养易置派层片始却专状育";
 
     /// <summary>
-    /// 获取字符在白名单中的索引，不在白名单中返回 -1
+    /// 获取字符在字形白名单中的索引。
     /// </summary>
+    /// <param name="c">待查找的字符。</param>
+    /// <returns>字符索引；未找到时返回负值。</returns>
     internal static int GetCharIndex(char c)
     {
         return Chars.IndexOf(c);
@@ -74,13 +76,15 @@ internal static class ChineseCaptchaGlyphSet
     // 每个字符 32 字节，每行 2 字节（16 位），高位在左
     // 这些是为验证码可读性优化的简化字形，不是精确书法字体
     // ========================================================================
+    /// <summary>
+    /// 按白名单字符顺序存储的简化点阵数据，每个字符占 32 字节。
+    /// </summary>
     private static readonly byte[] GlyphDatabase = GenerateGlyphDatabase();
 
     /// <summary>
-    /// 生成字形数据库。
-    /// 使用确定性算法从字符笔画特征生成 16x16 简化点阵，
-    /// 保证每个字符都有唯一可辨识的视觉特征。
+    /// 根据白名单字符生成中文验证码字形点阵数据。
     /// </summary>
+    /// <returns>每个白名单字符对应 32 字节的点阵数据。</returns>
     private static byte[] GenerateGlyphDatabase()
     {
         var count = Chars.Length;

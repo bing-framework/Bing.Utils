@@ -6,17 +6,17 @@ namespace Bing.Drawing.Internal;
 internal struct MatrixPoint : IEquatable<MatrixPoint>
 {
     /// <summary>
-    /// X 坐标（列）
+    /// 获取X 坐标（列）
     /// </summary>
     public int X { get; }
 
     /// <summary>
-    /// Y 坐标（行）
+    /// 获取Y 坐标（行）
     /// </summary>
     public int Y { get; }
 
     /// <summary>
-    /// 初始化一个<see cref="MatrixPoint"/>类型的实例
+    /// 初始化一个 <see cref="MatrixPoint"/> 类型的实例。
     /// </summary>
     /// <param name="x">X 坐标</param>
     /// <param name="y">Y 坐标</param>

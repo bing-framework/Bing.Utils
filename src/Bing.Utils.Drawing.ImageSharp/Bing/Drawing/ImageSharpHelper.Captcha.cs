@@ -89,6 +89,12 @@ public static partial class ImageSharpHelper
 
     #region 验证码绘制内部方法
 
+    /// <summary>
+    /// 在验证码图像的四边绘制银灰色边框。
+    /// </summary>
+    /// <param name="image">要写入边框像素的图像。</param>
+    /// <param name="width">图像宽度，单位为像素。</param>
+    /// <param name="height">图像高度，单位为像素。</param>
     private static void DrawCaptchaBorder(Image<Rgba32> image, int width, int height)
     {
         var borderColor = new Rgba32(192, 192, 192, 255); // Silver
@@ -105,6 +111,16 @@ public static partial class ImageSharpHelper
         }
     }
 
+    /// <summary>
+    /// 根据验证码文本绘制指定数量的干扰线。
+    /// </summary>
+    /// <param name="image">要写入干扰线像素的图像。</param>
+    /// <param name="code">用于确定干扰线位置和颜色种子的验证码文本。</param>
+    /// <param name="width">绘制区域宽度，单位为像素。</param>
+    /// <param name="height">绘制区域高度，单位为像素。</param>
+    /// <param name="lineCount">要绘制的干扰线数量。</param>
+    /// <param name="randomColor">是否根据文本种子生成彩色干扰线；为 false 时使用黑色。</param>
+    /// <param name="background">传递给强调色计算的背景色参数；当前计算未使用该值。</param>
     private static void DrawCaptchaDisorderLine(Image<Rgba32> image, string code, int width, int height, int lineCount, bool randomColor, Rgba32 background)
     {
         for (var i = 0; i < lineCount; i++)
@@ -121,6 +137,17 @@ public static partial class ImageSharpHelper
         }
     }
 
+    /// <summary>
+    /// 使用给定颜色绘制线段，并将越界像素裁剪到绘制区域之外。
+    /// </summary>
+    /// <param name="image">要写入线段像素的图像。</param>
+    /// <param name="x0">线段起点的横坐标。</param>
+    /// <param name="y0">线段起点的纵坐标。</param>
+    /// <param name="x1">线段终点的横坐标。</param>
+    /// <param name="y1">线段终点的纵坐标。</param>
+    /// <param name="color">线段使用的颜色。</param>
+    /// <param name="width">绘制区域宽度，单位为像素。</param>
+    /// <param name="height">绘制区域高度，单位为像素。</param>
     private static void DrawLine(Image<Rgba32> image, int x0, int y0, int x1, int y1, Rgba32 color, int width, int height)
     {
         var dx = Math.Abs(x1 - x0);
@@ -152,6 +179,14 @@ public static partial class ImageSharpHelper
         }
     }
 
+    /// <summary>
+    /// 根据验证码文本在图像中绘制指定数量的干扰点。
+    /// </summary>
+    /// <param name="image">要写入干扰点像素的图像。</param>
+    /// <param name="code">用于确定干扰点位置和颜色种子的验证码文本。</param>
+    /// <param name="pointCount">要绘制的干扰点数量。</param>
+    /// <param name="randomColor">是否根据文本和背景色生成彩色干扰点；为 false 时使用黑色。</param>
+    /// <param name="background">参与干扰点颜色种子计算的背景色。</param>
     private static void DrawCaptchaDisorderPoint(Image<Rgba32> image, string code, int pointCount, bool randomColor, Rgba32 background)
     {
         var width = image.Width;
@@ -166,6 +201,17 @@ public static partial class ImageSharpHelper
         }
     }
 
+    /// <summary>
+    /// 根据配置将验证码文本绘制为内嵌点阵字形。
+    /// </summary>
+    /// <param name="image">要写入文本像素的图像。</param>
+    /// <param name="code">要绘制的验证码文本；字符须存在于内嵌字形库中。</param>
+    /// <param name="width">绘制区域宽度，单位为像素。</param>
+    /// <param name="height">绘制区域高度，单位为像素。</param>
+    /// <param name="fontSize">字形的像素尺寸。</param>
+    /// <param name="fontWidth">每个字符的水平排布宽度，单位为像素。</param>
+    /// <param name="options">控制文字颜色和位置的验证码配置。</param>
+    /// <exception cref="NotSupportedException">文本包含内嵌字形库不支持的字符。</exception>
     private static void DrawCaptchaText(Image<Rgba32> image, string code, int width, int height, int fontSize, int fontWidth, CaptchaOptions options)
     {
         var textColor = options.RandomColor
@@ -267,6 +313,13 @@ public static partial class ImageSharpHelper
         }
     }
 
+    /// <summary>
+    /// 根据种子和颜色开关创建不透明的验证码强调色。
+    /// </summary>
+    /// <param name="seed">用于确定颜色通道值的整数种子。</param>
+    /// <param name="randomColor">是否生成种子决定的彩色；为 false 时返回黑色。</param>
+    /// <param name="background">背景色参数；当前实现未使用该值。</param>
+    /// <returns>颜色开关关闭时的不透明黑色，或由种子确定的不透明彩色。</returns>
     private static Rgba32 CreateCaptchaAccentColor(int seed, bool randomColor, Rgba32 background)
     {
         if (!randomColor)
@@ -333,6 +386,11 @@ public static partial class ImageSharpHelper
             }
         }
 
+        /// <summary>
+        /// 将五行位图字形转换为列优先的像素矩阵。
+        /// </summary>
+        /// <param name="rows">每行包含五个字符的位图，字符 <c>1</c> 表示前景像素。</param>
+        /// <returns>宽五、高七的矩阵；前景像素为 1，其余为 0。</returns>
         private static byte[,] Glyph(string[] rows)
         {
             var result = new byte[5, 7];

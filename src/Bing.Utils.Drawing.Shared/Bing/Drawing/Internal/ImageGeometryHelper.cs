@@ -6,8 +6,10 @@ namespace Bing.Drawing.Internal;
 internal static class ImageGeometryHelper
 {
     /// <summary>
-    /// 规范化角度到 [0, 360)
+    /// 将角度规范化到 [0, 360) 范围。
     /// </summary>
+    /// <param name="angle">以度为单位的角度。</param>
+    /// <returns>规范化后的角度。</returns>
     internal static float NormalizeAngle(int angle)
     {
         var normalized = angle % 360;
@@ -17,8 +19,9 @@ internal static class ImageGeometryHelper
     }
 
     /// <summary>
-    /// 验证阈值参数在 [0, 1] 范围内
+    /// 验证阈值是否处于 [0, 1] 范围。
     /// </summary>
+    /// <param name="threshold">待验证的阈值。</param>
     internal static void ValidateThreshold(float threshold)
     {
         if (threshold < 0 || threshold > 1)
@@ -26,8 +29,10 @@ internal static class ImageGeometryHelper
     }
 
     /// <summary>
-    /// 验证非负比例参数
+    /// 验证数值参数是否为非负数。
     /// </summary>
+    /// <param name="amount">待验证的数值。</param>
+    /// <param name="paramName">参数名，用于构造范围异常。</param>
     internal static void ValidateAmount(float amount, string paramName)
     {
         if (amount < 0)
@@ -35,8 +40,9 @@ internal static class ImageGeometryHelper
     }
 
     /// <summary>
-    /// 验证 5x5 颜色矩阵
+    /// 验证颜色矩阵不为 null 且尺寸为 5x5。
     /// </summary>
+    /// <param name="matrix">待验证的颜色矩阵。</param>
     internal static void ValidateColorMatrix(float[,] matrix)
     {
         if (matrix is null)
@@ -46,9 +52,15 @@ internal static class ImageGeometryHelper
     }
 
     /// <summary>
-    /// 计算等比缩放后的尺寸
+    /// 计算等比缩放后的尺寸。
     /// </summary>
-    /// <returns>(width, height)</returns>
+    /// <param name="sourceWidth">源图像宽度。</param>
+    /// <param name="sourceHeight">源图像高度。</param>
+    /// <param name="targetWidth">目标边界宽度。</param>
+    /// <param name="targetHeight">目标边界高度。</param>
+    /// <param name="keepAspectRatio">是否保持宽高比。</param>
+    /// <param name="allowEnlarge">是否允许放大源图像。</param>
+    /// <returns>计算得到的宽度和高度。</returns>
     internal static (int Width, int Height) CalculateResizeSize(
         int sourceWidth, int sourceHeight, int targetWidth, int targetHeight,
         bool keepAspectRatio, bool allowEnlarge)
@@ -72,9 +84,15 @@ internal static class ImageGeometryHelper
     }
 
     /// <summary>
-    /// 规范化裁剪区域（左上角 + 宽高表示法）
+    /// 规范化裁剪区域（左上角和宽高表示法）。
     /// </summary>
-    /// <returns>(left, top, width, height)</returns>
+    /// <param name="left">裁剪区域左边界。</param>
+    /// <param name="top">裁剪区域上边界。</param>
+    /// <param name="width">裁剪区域宽度。</param>
+    /// <param name="height">裁剪区域高度。</param>
+    /// <param name="imageWidth">图像宽度。</param>
+    /// <param name="imageHeight">图像高度。</param>
+    /// <returns>裁剪区域与图像边界相交后的左、上坐标及宽、高。</returns>
     internal static (int Left, int Top, int Width, int Height) NormalizeCropRectangle(
         int left, int top, int width, int height, int imageWidth, int imageHeight)
     {
@@ -95,9 +113,14 @@ internal static class ImageGeometryHelper
     }
 
     /// <summary>
-    /// 应用 5x5 颜色矩阵到 RGBA 分量（归一化输入）
+    /// 对归一化输入应用 5x5 颜色矩阵，并将结果转换为 RGBA 分量。
     /// </summary>
-    /// <returns>(resultR, resultG, resultB, resultA) 各 0..255</returns>
+    /// <param name="r">输入红色分量。</param>
+    /// <param name="g">输入绿色分量。</param>
+    /// <param name="b">输入蓝色分量。</param>
+    /// <param name="a">输入透明度分量。</param>
+    /// <param name="matrix">5x5 颜色变换矩阵。</param>
+    /// <returns>经矩阵变换并限制在 0 到 255 的 RGBA 分量。</returns>
     internal static (byte R, byte G, byte B, byte A) ApplyColorMatrix(
         byte r, byte g, byte b, byte a, float[,] matrix)
     {
@@ -119,16 +142,27 @@ internal static class ImageGeometryHelper
     }
 
     /// <summary>
-    /// 计算加权灰度值（0..1）
+    /// 计算加权灰度值。
     /// </summary>
+    /// <param name="r">红色分量。</param>
+    /// <param name="g">绿色分量。</param>
+    /// <param name="b">蓝色分量。</param>
+    /// <returns>归一化到 0 到 1 的加权灰度值。</returns>
     internal static float GetGrayScale(byte r, byte g, byte b)
     {
         return (0.30f * r + 0.59f * g + 0.11f * b) / 255f;
     }
 
     /// <summary>
-    /// 计算加权颜色差异（欧式距离变体）
+    /// 计算两个颜色的加权距离。
     /// </summary>
+    /// <param name="r1">第一个颜色的红色分量。</param>
+    /// <param name="g1">第一个颜色的绿色分量。</param>
+    /// <param name="b1">第一个颜色的蓝色分量。</param>
+    /// <param name="r2">第二个颜色的红色分量。</param>
+    /// <param name="g2">第二个颜色的绿色分量。</param>
+    /// <param name="b2">第二个颜色的蓝色分量。</param>
+    /// <returns>两个颜色的加权距离。</returns>
     internal static double ColorDifference(byte r1, byte g1, byte b1, byte r2, byte g2, byte b2)
     {
         var m = (r1 + r2) / 2d;
@@ -139,8 +173,18 @@ internal static class ImageGeometryHelper
     }
 
     /// <summary>
-    /// 判断两个颜色是否近似
+    /// 判断两个颜色是否满足近似判断。
     /// </summary>
+    /// <param name="a1">第一个颜色的透明度分量。</param>
+    /// <param name="r1">第一个颜色的红色分量。</param>
+    /// <param name="g1">第一个颜色的绿色分量。</param>
+    /// <param name="b1">第一个颜色的蓝色分量。</param>
+    /// <param name="a2">第二个颜色的透明度分量。</param>
+    /// <param name="r2">第二个颜色的红色分量。</param>
+    /// <param name="g2">第二个颜色的绿色分量。</param>
+    /// <param name="b2">第二个颜色的蓝色分量。</param>
+    /// <param name="accuracy">允许的颜色差异阈值。</param>
+    /// <returns>颜色满足相似度判断时为 true；否则为 false。</returns>
     internal static bool IsSimilarColors(
         byte a1, byte r1, byte g1, byte b1,
         byte a2, byte r2, byte g2, byte b2,

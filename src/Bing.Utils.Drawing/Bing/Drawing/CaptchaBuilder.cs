@@ -30,62 +30,62 @@ public class CaptchaBuilder
     #region 属性
 
     /// <summary>
-    /// 字体名称集合
+    /// 获取或设置字体名称集合
     /// </summary>
     public List<string> FontNames { get; set; }
 
     /// <summary>
-    /// 汉字字体名称集合
+    /// 获取或设置汉字字体名称集合
     /// </summary>
     public List<string> FontNamesForChinese { get; set; }
 
     /// <summary>
-    /// 字体大小
+    /// 获取或设置字体大小
     /// </summary>
     public int FontSize { get; set; }
 
     /// <summary>
-    /// 字体宽度
+    /// 获取或设置字体宽度
     /// </summary>
     public int FontWidth { get; set; }
 
     /// <summary>
-    /// 图片高度
+    /// 获取或设置图片高度
     /// </summary>
     public int Height { get; set; }
 
     /// <summary>
-    /// 背景色
+    /// 获取或设置背景色
     /// </summary>
     public Color Background { get; set; }
 
     /// <summary>
-    /// 是否有边框
+    /// 获取或设置是否有边框
     /// </summary>
     public bool HasBorder { get; set; }
 
     /// <summary>
-    /// 是否随机位置
+    /// 获取或设置是否随机位置
     /// </summary>
     public bool RandomPosition { get; set; }
 
     /// <summary>
-    /// 是否随机颜色
+    /// 获取或设置是否随机颜色
     /// </summary>
     public bool RandomColor { get; set; }
 
     /// <summary>
-    /// 是否随机倾斜字体
+    /// 获取或设置是否随机倾斜字体
     /// </summary>
     public bool RandomItalic { get; set; }
 
     /// <summary>
-    /// 随机干扰点百分比（百分数形式）
+    /// 获取或设置随机干扰点百分比（百分数形式）
     /// </summary>
     public double RandomPointPercent { get; set; }
 
     /// <summary>
-    /// 随机干扰线数量
+    /// 获取或设置随机干扰线数量
     /// </summary>
     public int RandomLineCount { get; set; }
 
@@ -94,7 +94,7 @@ public class CaptchaBuilder
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="CaptchaBuilder"/>类型的实例
+    /// 初始化一个 <see cref="CaptchaBuilder"/> 类型的实例。
     /// </summary>
     public CaptchaBuilder()
     {

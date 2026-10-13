@@ -12,15 +12,28 @@ namespace Bing.Drawing;
 /// </summary>
 public static partial class ImageSharpHelper
 {
+    /// <summary>
+    /// 以弱引用方式记录图像对象的原始编码格式。
+    /// </summary>
     private static readonly ConditionalWeakTable<Image, ImageFormatHolder> ImageFormats = new();
 
+    /// <summary>
+    /// 保存与图像对象关联的原始编码格式。
+    /// </summary>
     private sealed class ImageFormatHolder
     {
+        /// <summary>
+        /// 初始化一个 <see cref="ImageFormatHolder"/> 类型的实例。
+        /// </summary>
+        /// <param name="format">与图像关联的编码格式。</param>
         public ImageFormatHolder(IImageFormat format)
         {
             Format = format;
         }
 
+        /// <summary>
+        /// 获取图像的原始编码格式。
+        /// </summary>
         public IImageFormat Format { get; }
     }
 
@@ -546,8 +559,15 @@ public static partial class ImageSharpHelper
     #endregion
 
     /// <summary>
-    /// 计算缩放尺寸
+    /// 计算满足目标边界的图像尺寸。
     /// </summary>
+    /// <param name="sourceWidth">源图像宽度。</param>
+    /// <param name="sourceHeight">源图像高度。</param>
+    /// <param name="targetWidth">目标边界宽度。</param>
+    /// <param name="targetHeight">目标边界高度。</param>
+    /// <param name="keepAspectRatio">是否保持宽高比。</param>
+    /// <param name="allowEnlarge">是否允许放大源图像。</param>
+    /// <returns>计算得到的图像尺寸。</returns>
     private static Size CalculateResizeSize(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight,
         bool keepAspectRatio, bool allowEnlarge)
     {
@@ -557,8 +577,12 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 规范化裁剪区域
+    /// 将裁剪区域限制在图像边界内。
     /// </summary>
+    /// <param name="rectangle">待规范化的裁剪区域。</param>
+    /// <param name="imageWidth">图像宽度。</param>
+    /// <param name="imageHeight">图像高度。</param>
+    /// <returns>与图像边界相交后的裁剪区域。</returns>
     private static Rectangle NormalizeCropRectangle(Rectangle rectangle, int imageWidth, int imageHeight)
     {
         var (left, top, width, height) = Internal.ImageGeometryHelper.NormalizeCropRectangle(
@@ -567,64 +591,83 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 规范化角度
+    /// 将角度规范化到 [0, 360) 范围。
     /// </summary>
+    /// <param name="angle">以度为单位的角度。</param>
+    /// <returns>规范化后的角度。</returns>
     private static float NormalizeAngle(int angle)
     {
         return Internal.ImageGeometryHelper.NormalizeAngle(angle);
     }
 
     /// <summary>
-    /// 验证阈值
+    /// 验证阈值是否处于 [0, 1] 范围。
     /// </summary>
+    /// <param name="threshold">待验证的阈值。</param>
     private static void ValidateThreshold(float threshold)
     {
         Internal.ImageGeometryHelper.ValidateThreshold(threshold);
     }
 
     /// <summary>
-    /// 验证非负比例
+    /// 验证数值参数是否为非负数。
     /// </summary>
+    /// <param name="amount">待验证的数值。</param>
+    /// <param name="paramName">用于构造范围异常的参数名。</param>
     private static void ValidateAmount(float amount, string paramName)
     {
         Internal.ImageGeometryHelper.ValidateAmount(amount, paramName);
     }
 
     /// <summary>
-    /// 验证颜色矩阵
+    /// 验证颜色矩阵不为 null 且尺寸为 5x5。
     /// </summary>
+    /// <param name="matrix">待验证的颜色矩阵。</param>
     private static void ValidateColorMatrix(float[,] matrix)
     {
         Internal.ImageGeometryHelper.ValidateColorMatrix(matrix);
     }
 
     /// <summary>
-    /// 判断是否为近似颜色
+    /// 判断两个颜色在指定精度下是否相似。
     /// </summary>
+    /// <param name="x">第一个颜色。</param>
+    /// <param name="y">第二个颜色。</param>
+    /// <param name="accuracy">允许的颜色差异阈值。</param>
+    /// <returns>两个颜色满足相似度判断时为 true；否则为 false。</returns>
     private static bool IsSimilarColors(Rgba32 x, Rgba32 y, int accuracy)
     {
         return Internal.ImageGeometryHelper.IsSimilarColors(x.A, x.R, x.G, x.B, y.A, y.R, y.G, y.B, accuracy);
     }
 
     /// <summary>
-    /// 计算颜色差异
+    /// 计算两个颜色的加权差异。
     /// </summary>
+    /// <param name="x">第一个颜色。</param>
+    /// <param name="y">第二个颜色。</param>
+    /// <returns>两个颜色之间的加权差异值。</returns>
     private static double ColorDifference(Rgba32 x, Rgba32 y)
     {
         return Internal.ImageGeometryHelper.ColorDifference(x.R, x.G, x.B, y.R, y.G, y.B);
     }
 
     /// <summary>
-    /// 获取灰度值
+    /// 获取颜色的归一化灰度值。
     /// </summary>
+    /// <param name="color">待转换的颜色。</param>
+    /// <returns>范围为 0 到 1 的灰度值。</returns>
     private static float GetGrayScale(Rgba32 color)
     {
         return Internal.ImageGeometryHelper.GetGrayScale(color.R, color.G, color.B);
     }
 
     /// <summary>
-    /// 获取双色调颜色
+    /// 根据源颜色灰度在两种颜色间插值得到双色调颜色。
     /// </summary>
+    /// <param name="sourceColor">用于计算灰度的源颜色。</param>
+    /// <param name="colorA">灰度较低时对应的颜色。</param>
+    /// <param name="colorB">灰度较高时对应的颜色。</param>
+    /// <returns>插值得到的颜色，并保留源颜色的 Alpha 分量。</returns>
     private static Rgba32 GetDuotoneColor(Rgba32 sourceColor, Rgba32 colorA, Rgba32 colorB)
     {
         var grayScale = GetGrayScale(sourceColor);
@@ -635,8 +678,11 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 应用颜色矩阵到单像素
+    /// 对颜色应用 5x5 颜色变换矩阵。
     /// </summary>
+    /// <param name="color">待变换的颜色。</param>
+    /// <param name="matrix">5x5 颜色变换矩阵。</param>
+    /// <returns>经矩阵变换后的颜色。</returns>
     private static Rgba32 ApplyColorMatrix(Rgba32 color, float[,] matrix)
     {
         var (r, g, b, a) = Internal.ImageGeometryHelper.ApplyColorMatrix(color.R, color.G, color.B, color.A, matrix);
@@ -644,32 +690,40 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 创建亮度矩阵
+    /// 创建亮度调整矩阵。
     /// </summary>
+    /// <param name="amount">亮度调整幅度。</param>
+    /// <returns>5x5 亮度变换矩阵。</returns>
     private static float[,] CreateBrightnessMatrix(float amount)
     {
         return ColorMatrices.CreateBrightnessFilter(amount);
     }
 
     /// <summary>
-    /// 创建对比度矩阵
+    /// 创建对比度调整矩阵。
     /// </summary>
+    /// <param name="amount">对比度调整幅度。</param>
+    /// <returns>5x5 对比度变换矩阵。</returns>
     private static float[,] CreateContrastMatrix(float amount)
     {
         return ColorMatrices.CreateContrastFilter(amount);
     }
 
     /// <summary>
-    /// 创建饱和度矩阵
+    /// 创建饱和度调整矩阵。
     /// </summary>
+    /// <param name="amount">饱和度调整幅度。</param>
+    /// <returns>5x5 饱和度变换矩阵。</returns>
     private static float[,] CreateSaturationMatrix(float amount)
     {
         return ColorMatrices.CreateSaturationFilter(amount);
     }
 
     /// <summary>
-    /// 应用柔化边缘效果
+    /// 根据边缘半径调整图像透明度。
     /// </summary>
+    /// <param name="image">要修改的 RGBA 图像。</param>
+    /// <param name="radius">柔化边缘的半径。</param>
     private static void ApplySoftEdgeEffect(Image<Rgba32> image, float radius)
     {
         var mask = CreateSoftEdgeAlphaMask(image);
@@ -684,8 +738,10 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 创建 Alpha 蒙层
+    /// 根据图像透明区域创建 Alpha 蒙层。
     /// </summary>
+    /// <param name="image">用于生成蒙层的 RGBA 图像。</param>
+    /// <returns>以像素 Alpha 值表示的二维蒙层。</returns>
     private static byte[,] CreateSoftEdgeAlphaMask(Image<Rgba32> image)
     {
         var mask = new byte[image.Width, image.Height];
@@ -699,8 +755,10 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 应用 Alpha 蒙层
+    /// 将 Alpha 蒙层应用到图像像素。
     /// </summary>
+    /// <param name="image">要修改透明度的图像。</param>
+    /// <param name="mask">每个像素对应的 Alpha 蒙层。</param>
     private static void ApplySoftEdgeAlphaMask(Image<Rgba32> image, byte[,] mask)
     {
         for (var x = 0; x < image.Width; x++)
@@ -715,8 +773,13 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 腐蚀 Alpha 蒙层
+    /// 按指定偏移和迭代次数腐蚀 Alpha 蒙层。
     /// </summary>
+    /// <param name="sourceMask">待处理的 Alpha 蒙层。</param>
+    /// <param name="offsetX">水平方向的采样偏移。</param>
+    /// <param name="offsetY">垂直方向的采样偏移。</param>
+    /// <param name="iteration">腐蚀迭代次数。</param>
+    /// <returns>腐蚀后的 Alpha 蒙层。</returns>
     private static byte[,] ErodeAlphaMask(byte[,] sourceMask, int offsetX, int offsetY, int iteration)
     {
         var cols = sourceMask.GetLength(0);
@@ -754,8 +817,13 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 模糊 Alpha 蒙层
+    /// 按指定偏移和迭代次数模糊 Alpha 蒙层。
     /// </summary>
+    /// <param name="sourceMask">待处理的 Alpha 蒙层。</param>
+    /// <param name="offsetX">水平方向的采样偏移。</param>
+    /// <param name="offsetY">垂直方向的采样偏移。</param>
+    /// <param name="iteration">模糊迭代次数。</param>
+    /// <returns>模糊后的 Alpha 蒙层。</returns>
     private static byte[,] BlurAlphaMask(byte[,] sourceMask, int offsetX, int offsetY, int iteration)
     {
         var cols = sourceMask.GetLength(0);
@@ -791,8 +859,10 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 应用雾化效果
+    /// 生成带有雾化采样效果的图像。
     /// </summary>
+    /// <param name="image">要处理的源图像。</param>
+    /// <returns>应用雾化效果的新图像。</returns>
     private static Image<Rgba32> ApplyAtomizingEffect(Image image)
     {
         using var source = image.CloneAs<Rgba32>();
@@ -814,8 +884,13 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 应用卷积效果
+    /// 使用卷积核处理图像像素。
     /// </summary>
+    /// <param name="image">要处理的源图像。</param>
+    /// <param name="kernel">用于卷积的权重数组。</param>
+    /// <param name="divisor">卷积结果的除数。</param>
+    /// <param name="bias">加到卷积结果上的偏移量。</param>
+    /// <returns>卷积处理后的新图像。</returns>
     private static Image<Rgba32> ApplyConvolutionEffect(Image image, float[] kernel, float divisor, float bias = 0)
     {
         using var source = image.CloneAs<Rgba32>();
@@ -853,16 +928,22 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 将值限制到字节范围
+    /// 将数值限制在字节可表示的范围内。
     /// </summary>
+    /// <param name="value">待限制的数值。</param>
+    /// <returns>限制到 0 到 255 的字节值。</returns>
     private static byte ClampToByte(float value)
     {
         return DrawingCompatibilityHelper.ClampToByte(value);
     }
 
     /// <summary>
-    /// 记录图片格式
+    /// 将编码格式与图像对象关联。
     /// </summary>
+    /// <typeparam name="TImage">图像类型。</typeparam>
+    /// <param name="image">要记录格式的图像；为 null 时直接返回。</param>
+    /// <param name="imageFormat">要记录的编码格式；为 null 时不添加记录。</param>
+    /// <returns>传入的图像对象。</returns>
     private static TImage? TrackFormat<TImage>(TImage? image, IImageFormat? imageFormat) where TImage : Image
     {
         if (image is null || imageFormat is null)
@@ -873,16 +954,22 @@ public static partial class ImageSharpHelper
     }
 
     /// <summary>
-    /// 复制图片格式信息
+    /// 将源图像记录的编码格式复制到目标图像。
     /// </summary>
+    /// <typeparam name="TImage">目标图像类型。</typeparam>
+    /// <param name="source">提供编码格式记录的源图像。</param>
+    /// <param name="target">接收编码格式记录的目标图像。</param>
+    /// <returns>已关联源图像编码格式的目标图像。</returns>
     private static TImage CopyTrackedFormat<TImage>(Image source, TImage target) where TImage : Image
     {
         return TrackFormat(target, GetTrackedFormat(source))!;
     }
 
     /// <summary>
-    /// 获取已跟踪图片格式
+    /// 获取图像对象记录的编码格式。
     /// </summary>
+    /// <param name="image">要查询编码格式的图像。</param>
+    /// <returns>已记录的编码格式；没有记录时返回 null。</returns>
     private static IImageFormat? GetTrackedFormat(Image image)
     {
         return ImageFormats.TryGetValue(image, out var holder) ? holder.Format : null;

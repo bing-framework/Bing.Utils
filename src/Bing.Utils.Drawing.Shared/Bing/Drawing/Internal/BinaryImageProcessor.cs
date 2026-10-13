@@ -6,16 +6,22 @@ namespace Bing.Drawing.Internal;
 internal static class BinaryImageProcessor
 {
     /// <summary>
-    /// 是否是前景像素（灰度值小于阈值视为前景）
+    /// 判断像素是否属于前景。
     /// </summary>
+    /// <param name="value">像素灰度值。</param>
+    /// <param name="threshold">前景判定阈值。</param>
+    /// <returns>像素灰度值小于阈值时为 true；否则为 false。</returns>
     internal static bool IsForeground(byte value, byte threshold)
     {
         return value < threshold;
     }
 
     /// <summary>
-    /// 是否是背景像素
+    /// 判断像素是否属于背景。
     /// </summary>
+    /// <param name="value">像素灰度值。</param>
+    /// <param name="threshold">背景判定阈值。</param>
+    /// <returns>像素灰度值大于或等于阈值时为 true；否则为 false。</returns>
     internal static bool IsBackground(byte value, byte threshold)
     {
         return value >= threshold;

@@ -688,6 +688,15 @@ public static class BitmapExtensions
 
     #endregion
 
+    /// <summary>
+    /// 计算像素及其周围八个位置的灰度平均值。
+    /// </summary>
+    /// <param name="source">按横纵坐标索引的灰度矩阵。</param>
+    /// <param name="x">当前像素的横坐标。</param>
+    /// <param name="y">当前像素的纵坐标。</param>
+    /// <param name="w">矩阵宽度。</param>
+    /// <param name="h">矩阵高度。</param>
+    /// <returns>九个位置的灰度平均值；边界外的位置按白色处理。</returns>
     private static byte GetAverageColor(byte[,] source, int x, int y, int w, int h)
     {
         var result = source[x, y]
@@ -702,6 +711,11 @@ public static class BitmapExtensions
         return (byte)(result / 9);
     }
 
+    /// <summary>
+    /// 判断灰度值是否表示纯白色。
+    /// </summary>
+    /// <param name="value">待检查的灰度值。</param>
+    /// <returns>灰度值为 255 时返回 true，否则返回 false。</returns>
     private static bool IsWhite(byte value)
     {
         return value == 255;

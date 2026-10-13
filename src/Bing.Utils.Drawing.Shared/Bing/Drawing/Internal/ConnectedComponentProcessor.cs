@@ -40,8 +40,16 @@ internal static class ConnectedComponentProcessor
     }
 
     /// <summary>
-    /// 4 邻域泛洪填充，返回填充的像素列表
+    /// 从起点执行四邻域泛洪填充。
     /// </summary>
+    /// <param name="binBytes">二值图像矩阵。</param>
+    /// <param name="visited">记录已访问像素的矩阵。</param>
+    /// <param name="startX">起点横坐标。</param>
+    /// <param name="startY">起点纵坐标。</param>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <param name="foregroundThreshold">前景像素阈值。</param>
+    /// <returns>连通区域中的像素列表。</returns>
     internal static List<MatrixPoint> FloodFill4(byte[,] binBytes, bool[,] visited, int startX, int startY, int width, int height, byte foregroundThreshold)
     {
         var points = new List<MatrixPoint>();
@@ -116,8 +124,10 @@ internal static class ConnectedComponentProcessor
     }
 
     /// <summary>
-    /// 从连通域结果中获取所有组件的像素总数
+    /// 统计所有连通区域的像素数量。
     /// </summary>
+    /// <param name="components">按组件编号分组的像素集合。</param>
+    /// <returns>连通区域中的像素总数。</returns>
     internal static int GetTotalComponentPixels(Dictionary<int, List<MatrixPoint>> components)
     {
         var total = 0;

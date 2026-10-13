@@ -6,8 +6,12 @@ namespace Bing.Drawing.Internal;
 internal static class GrayImageBuffer
 {
     /// <summary>
-    /// 从 RGB 通道计算加权灰度值。公式：Gray = 0.299*R + 0.587*G + 0.114*B
+    /// 将 RGB 分量转换为灰度值。
     /// </summary>
+    /// <param name="r">红色分量。</param>
+    /// <param name="g">绿色分量。</param>
+    /// <param name="b">蓝色分量。</param>
+    /// <returns>计算得到的灰度值。</returns>
     internal static byte ToGray(byte r, byte g, byte b)
     {
         return (byte)((r * 19595 + g * 38469 + b * 7472) >> 16);
@@ -57,8 +61,12 @@ internal static class GrayImageBuffer
     }
 
     /// <summary>
-    /// 去除指定范围的灰度。在 [minGray, maxGray] 范围内的灰度值设为背景（255）。
+    /// 将指定灰度范围设置为白色。
     /// </summary>
+    /// <param name="grayBytes">源灰度矩阵。</param>
+    /// <param name="minGray">范围下限。</param>
+    /// <param name="maxGray">范围上限。</param>
+    /// <returns>处理后的灰度矩阵。</returns>
     internal static byte[,] ClearGrayRange(byte[,] grayBytes, byte minGray, byte maxGray)
     {
         int width = grayBytes.GetLength(0), height = grayBytes.GetLength(1);
@@ -105,8 +113,11 @@ internal static class GrayImageBuffer
     }
 
     /// <summary>
-    /// 去除图片边框（设为背景）
+    /// 将灰度矩阵边缘设置为白色。
     /// </summary>
+    /// <param name="grayBytes">源灰度矩阵。</param>
+    /// <param name="border">边框宽度。</param>
+    /// <returns>处理后的灰度矩阵副本。</returns>
     internal static byte[,] ClearBorder(byte[,] grayBytes, int border)
     {
         int width = grayBytes.GetLength(0), height = grayBytes.GetLength(1);
@@ -124,8 +135,12 @@ internal static class GrayImageBuffer
     }
 
     /// <summary>
-    /// 添加图片边框（默认白色背景）
+    /// 为灰度矩阵添加指定颜色的边框。
     /// </summary>
+    /// <param name="grayBytes">源灰度矩阵。</param>
+    /// <param name="border">边框宽度。</param>
+    /// <param name="borderColor">边框颜色。</param>
+    /// <returns>添加边框后的灰度矩阵。</returns>
     internal static byte[,] AddBorder(byte[,] grayBytes, int border, byte borderColor)
     {
         int width = grayBytes.GetLength(0), height = grayBytes.GetLength(1);
@@ -142,8 +157,12 @@ internal static class GrayImageBuffer
     }
 
     /// <summary>
-    /// 将小图绘制到大图上
+    /// 按偏移将源灰度矩阵绘制到目标矩阵。
     /// </summary>
+    /// <param name="target">接收绘制结果的目标矩阵。</param>
+    /// <param name="source">要绘制的源矩阵。</param>
+    /// <param name="offsetX">水平方向偏移量。</param>
+    /// <param name="offsetY">垂直方向偏移量。</param>
     internal static void DrawOnto(byte[,] target, byte[,] source, int offsetX, int offsetY)
     {
         int sw = source.GetLength(0), sh = source.GetLength(1);
@@ -161,8 +180,10 @@ internal static class GrayImageBuffer
     }
 
     /// <summary>
-    /// 复制二维数组
+    /// 复制灰度矩阵。
     /// </summary>
+    /// <param name="source">要复制的灰度矩阵。</param>
+    /// <returns>源矩阵的深拷贝。</returns>
     internal static byte[,] Copy(byte[,] source)
     {
         int w = source.GetLength(0), h = source.GetLength(1);
@@ -177,8 +198,14 @@ internal static class GrayImageBuffer
     }
 
     /// <summary>
-    /// 从原矩阵中截取子矩阵
+    /// 截取灰度矩阵的子矩阵。
     /// </summary>
+    /// <param name="source">源灰度矩阵。</param>
+    /// <param name="x1">起始横坐标。</param>
+    /// <param name="y1">起始纵坐标。</param>
+    /// <param name="width">子矩阵宽度。</param>
+    /// <param name="height">子矩阵高度。</param>
+    /// <returns>截取后的灰度矩阵。</returns>
     internal static byte[,] SubMatrix(byte[,] source, int x1, int y1, int width, int height)
     {
         int sw = source.GetLength(0), sh = source.GetLength(1);

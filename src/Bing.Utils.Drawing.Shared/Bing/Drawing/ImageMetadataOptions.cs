@@ -6,22 +6,22 @@ namespace Bing.Drawing;
 public class ImageMetadataOptions
 {
     /// <summary>
-    /// 是否移除 GPS 相关标签。默认 true
+    /// 获取或设置是否移除 GPS 相关标签；默认值为 true。
     /// </summary>
     public bool RemoveGps { get; set; } = true;
 
     /// <summary>
-    /// 是否移除全部 EXIF 数据段（而非仅 GPS）。默认 false
+    /// 获取或设置是否移除全部 EXIF 数据段（而非仅 GPS）；默认值为 false。
     /// </summary>
     public bool RemoveEntireExif { get; set; }
 
     /// <summary>
-    /// 是否保留 ICC 颜色配置文件。默认 true
+    /// 获取或设置是否保留 ICC 颜色配置文件；默认值为 true。
     /// </summary>
     public bool PreserveIccProfile { get; set; } = true;
 
     /// <summary>
-    /// 遇到不支持的格式时的行为。默认 Throw
+    /// 获取或设置遇到不支持的格式时的行为；默认值为 <see cref="UnsupportedFormatBehavior.Throw"/>。
     /// </summary>
     public UnsupportedFormatBehavior UnsupportedFormatBehavior { get; set; } = UnsupportedFormatBehavior.Throw;
 }

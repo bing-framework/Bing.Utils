@@ -8,15 +8,28 @@ namespace Bing.Drawing;
 /// </summary>
 public static partial class SkiaSharpHelper
 {
+    /// <summary>
+    /// 以弱引用方式记录图像对象的原始编码格式。
+    /// </summary>
     private static readonly ConditionalWeakTable<SKImage, EncodedImageFormatHolder> ImageFormats = new();
 
+    /// <summary>
+    /// 保存与图像对象关联的原始编码格式。
+    /// </summary>
     private sealed class EncodedImageFormatHolder
     {
+        /// <summary>
+        /// 初始化一个 <see cref="EncodedImageFormatHolder"/> 类型的实例。
+        /// </summary>
+        /// <param name="format">与图像关联的编码格式。</param>
         public EncodedImageFormatHolder(SKEncodedImageFormat format)
         {
             Format = format;
         }
 
+        /// <summary>
+        /// 获取图像的原始编码格式。
+        /// </summary>
         public SKEncodedImageFormat Format { get; }
     }
 
@@ -675,16 +688,20 @@ public static partial class SkiaSharpHelper
     #endregion
 
     /// <summary>
-    /// 克隆图片
+    /// 克隆图像并保留其记录的编码格式。
     /// </summary>
+    /// <param name="image">要克隆的图像。</param>
+    /// <returns>图像副本。</returns>
     private static SKImage CloneImage(SKImage image)
     {
         using var bitmap = SKBitmap.FromImage(image);
         return CopyTrackedFormat(image, SKImage.FromBitmap(bitmap));
     }
     /// <summary>
-    /// 获取编码格式
+    /// 获取图像的编码格式。
     /// </summary>
+    /// <param name="image">要检查的图像。</param>
+    /// <returns>记录或从图像数据识别出的格式；无法识别时使用 PNG。</returns>
     private static SKEncodedImageFormat GetEncodedImageFormat(SKImage image)
     {
         var trackedFormat = GetTrackedFormat(image);
@@ -697,8 +714,15 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 计算缩放尺寸
+    /// 计算满足目标边界的图像尺寸。
     /// </summary>
+    /// <param name="sourceWidth">源图像宽度。</param>
+    /// <param name="sourceHeight">源图像高度。</param>
+    /// <param name="targetWidth">目标边界宽度。</param>
+    /// <param name="targetHeight">目标边界高度。</param>
+    /// <param name="keepAspectRatio">是否保持宽高比。</param>
+    /// <param name="allowEnlarge">是否允许放大源图像。</param>
+    /// <returns>计算得到的图像尺寸。</returns>
     private static SKSizeI CalculateResizeSize(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight,
         bool keepAspectRatio, bool allowEnlarge)
     {
@@ -708,8 +732,12 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 规范化裁剪区域
+    /// 将裁剪矩形限制在图像边界内。
     /// </summary>
+    /// <param name="rectangle">待规范化的裁剪矩形。</param>
+    /// <param name="imageWidth">图像宽度。</param>
+    /// <param name="imageHeight">图像高度。</param>
+    /// <returns>与图像边界相交后的裁剪矩形。</returns>
     private static SKRectI NormalizeCropRectangle(SKRectI rectangle, int imageWidth, int imageHeight)
     {
         var (left, top, width, height) = Internal.ImageGeometryHelper.NormalizeCropRectangle(
@@ -718,16 +746,21 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 规范化角度
+    /// 将角度规范化到 [0, 360) 范围。
     /// </summary>
+    /// <param name="angle">以度为单位的角度。</param>
+    /// <returns>规范化后的角度。</returns>
     private static float NormalizeAngle(int angle)
     {
         return Internal.ImageGeometryHelper.NormalizeAngle(angle);
     }
 
     /// <summary>
-    /// 转换图片像素
+    /// 将颜色转换函数应用到图像的每个像素。
     /// </summary>
+    /// <param name="image">要转换的图像。</param>
+    /// <param name="transform">用于转换像素颜色的函数。</param>
+    /// <returns>转换后的图像，并保留源图像的编码格式。</returns>
     private static SKImage TransformImage(SKImage image, Func<SKColor, SKColor> transform)
     {
         using var bitmap = SKBitmap.FromImage(image);
@@ -742,32 +775,39 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 验证阈值
+    /// 验证阈值是否处于 [0, 1] 范围。
     /// </summary>
+    /// <param name="threshold">待验证的阈值。</param>
     private static void ValidateThreshold(float threshold)
     {
         Internal.ImageGeometryHelper.ValidateThreshold(threshold);
     }
 
     /// <summary>
-    /// 验证非负比例
+    /// 验证数值参数是否为非负数。
     /// </summary>
+    /// <param name="amount">待验证的数值。</param>
+    /// <param name="paramName">用于构造范围异常的参数名。</param>
     private static void ValidateAmount(float amount, string paramName)
     {
         Internal.ImageGeometryHelper.ValidateAmount(amount, paramName);
     }
 
     /// <summary>
-    /// 验证颜色矩阵
+    /// 验证颜色矩阵不为 null 且尺寸为 5x5。
     /// </summary>
+    /// <param name="matrix">待验证的颜色矩阵。</param>
     private static void ValidateColorMatrix(float[,] matrix)
     {
         Internal.ImageGeometryHelper.ValidateColorMatrix(matrix);
     }
 
     /// <summary>
-    /// 应用颜色矩阵到单像素
+    /// 对颜色应用 5x5 颜色变换矩阵。
     /// </summary>
+    /// <param name="color">待变换的颜色。</param>
+    /// <param name="matrix">5x5 颜色变换矩阵。</param>
+    /// <returns>经矩阵变换后的颜色。</returns>
     private static SKColor ApplyColorMatrix(SKColor color, float[,] matrix)
     {
         var (r, g, b, a) = Internal.ImageGeometryHelper.ApplyColorMatrix(color.Red, color.Green, color.Blue, color.Alpha, matrix);
@@ -775,32 +815,41 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 创建亮度矩阵
+    /// 创建亮度调整矩阵。
     /// </summary>
+    /// <param name="amount">亮度调整幅度。</param>
+    /// <returns>5x5 亮度变换矩阵。</returns>
     private static float[,] CreateBrightnessMatrix(float amount)
     {
         return ColorMatrices.CreateBrightnessFilter(amount);
     }
 
     /// <summary>
-    /// 创建对比度矩阵
+    /// 创建对比度调整矩阵。
     /// </summary>
+    /// <param name="amount">对比度调整幅度。</param>
+    /// <returns>5x5 对比度变换矩阵。</returns>
     private static float[,] CreateContrastMatrix(float amount)
     {
         return ColorMatrices.CreateContrastFilter(amount);
     }
 
     /// <summary>
-    /// 创建饱和度矩阵
+    /// 创建饱和度调整矩阵。
     /// </summary>
+    /// <param name="amount">饱和度调整幅度。</param>
+    /// <returns>5x5 饱和度变换矩阵。</returns>
     private static float[,] CreateSaturationMatrix(float amount)
     {
         return ColorMatrices.CreateSaturationFilter(amount);
     }
 
     /// <summary>
-    /// 应用柔化边缘效果
+    /// 根据边缘半径生成已调整透明度的位图。
     /// </summary>
+    /// <param name="bitmap">要处理的源位图。</param>
+    /// <param name="radius">柔化边缘的半径。</param>
+    /// <returns>应用柔化效果的新位图。</returns>
     private static SKBitmap ApplySoftEdgeEffect(SKBitmap bitmap, float radius)
     {
         var output = bitmap.Copy();
@@ -817,8 +866,10 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 创建 Alpha 蒙层
+    /// 根据位图透明区域创建 Alpha 蒙层。
     /// </summary>
+    /// <param name="bitmap">用于生成蒙层的位图。</param>
+    /// <returns>以像素 Alpha 值表示的二维蒙层。</returns>
     private static byte[,] CreateSoftEdgeAlphaMask(SKBitmap bitmap)
     {
         var mask = new byte[bitmap.Width, bitmap.Height];
@@ -832,8 +883,10 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 应用 Alpha 蒙层
+    /// 将 Alpha 蒙层应用到位图像素。
     /// </summary>
+    /// <param name="bitmap">要修改透明度的位图。</param>
+    /// <param name="mask">每个像素对应的 Alpha 蒙层。</param>
     private static void ApplySoftEdgeAlphaMask(SKBitmap bitmap, byte[,] mask)
     {
         for (var x = 0; x < bitmap.Width; x++)
@@ -848,8 +901,13 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 腐蚀 Alpha 蒙层
+    /// 按指定偏移和迭代次数腐蚀 Alpha 蒙层。
     /// </summary>
+    /// <param name="sourceMask">待处理的 Alpha 蒙层。</param>
+    /// <param name="offsetX">水平方向的采样偏移。</param>
+    /// <param name="offsetY">垂直方向的采样偏移。</param>
+    /// <param name="iteration">腐蚀迭代次数。</param>
+    /// <returns>腐蚀后的 Alpha 蒙层。</returns>
     private static byte[,] ErodeAlphaMask(byte[,] sourceMask, int offsetX, int offsetY, int iteration)
     {
         var cols = sourceMask.GetLength(0);
@@ -887,8 +945,13 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 模糊 Alpha 蒙层
+    /// 按指定偏移和迭代次数模糊 Alpha 蒙层。
     /// </summary>
+    /// <param name="sourceMask">待处理的 Alpha 蒙层。</param>
+    /// <param name="offsetX">水平方向的采样偏移。</param>
+    /// <param name="offsetY">垂直方向的采样偏移。</param>
+    /// <param name="iteration">模糊迭代次数。</param>
+    /// <returns>模糊后的 Alpha 蒙层。</returns>
     private static byte[,] BlurAlphaMask(byte[,] sourceMask, int offsetX, int offsetY, int iteration)
     {
         var cols = sourceMask.GetLength(0);
@@ -924,8 +987,10 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 应用雾化效果
+    /// 生成带有雾化采样效果的图像。
     /// </summary>
+    /// <param name="image">要处理的源图像。</param>
+    /// <returns>应用雾化效果的新图像。</returns>
     private static SKImage ApplyAtomizingEffect(SKImage image)
     {
         using var source = SKBitmap.FromImage(image);
@@ -947,8 +1012,11 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 绘制验证码边框
+    /// 在画布边界绘制验证码边框。
     /// </summary>
+    /// <param name="canvas">绘制目标画布。</param>
+    /// <param name="width">验证码图像宽度。</param>
+    /// <param name="height">验证码图像高度。</param>
     private static void DrawCaptchaBorder(SKCanvas canvas, int width, int height)
     {
         using var paint = new SKPaint
@@ -963,8 +1031,14 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 绘制验证码干扰线
+    /// 按验证码选项在画布上绘制随机干扰线。
     /// </summary>
+    /// <param name="canvas">绘制目标画布。</param>
+    /// <param name="code">用于确定干扰线数量的验证码文本。</param>
+    /// <param name="width">验证码图像宽度。</param>
+    /// <param name="height">验证码图像高度。</param>
+    /// <param name="options">验证码绘制选项。</param>
+    /// <param name="rng">用于生成随机位置和颜色的随机数生成器。</param>
     private static void DrawCaptchaDisorderLine(SKCanvas canvas, string code, int width, int height, CaptchaOptions options, Random rng)
     {
         using var paint = new SKPaint
@@ -989,8 +1063,14 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 绘制验证码干扰点
+    /// 按验证码选项在位图上绘制随机干扰点。
     /// </summary>
+    /// <param name="bitmap">绘制目标位图。</param>
+    /// <param name="code">用于确定干扰点数量的验证码文本。</param>
+    /// <param name="width">验证码图像宽度。</param>
+    /// <param name="height">验证码图像高度。</param>
+    /// <param name="options">验证码绘制选项。</param>
+    /// <param name="rng">用于生成随机位置和颜色的随机数生成器。</param>
     private static void DrawCaptchaDisorderPoint(SKBitmap bitmap, string code, int width, int height, CaptchaOptions options, Random rng)
     {
         var pointCount = options.NoisePointCount >= 0
@@ -1007,8 +1087,16 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 绘制验证码文本
+    /// 在画布上绘制带随机位置和角度的验证码文本。
     /// </summary>
+    /// <param name="canvas">绘制目标画布。</param>
+    /// <param name="code">要绘制的验证码文本。</param>
+    /// <param name="width">验证码图像宽度。</param>
+    /// <param name="height">验证码图像高度。</param>
+    /// <param name="fontSize">验证码字体大小。</param>
+    /// <param name="fontWidth">验证码字符宽度。</param>
+    /// <param name="options">验证码绘制选项。</param>
+    /// <param name="rng">用于生成文本位置和角度的随机数生成器。</param>
     private static void DrawCaptchaText(SKCanvas canvas, string code, int width, int height, int fontSize, int fontWidth, CaptchaOptions options, Random rng)
     {
         var textColor = options.RandomColor
@@ -1048,8 +1136,11 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 创建验证码强调色
+    /// 根据种子和随机颜色选项生成验证码强调色。
     /// </summary>
+    /// <param name="seed">用于生成颜色的种子值。</param>
+    /// <param name="randomColor">是否生成随机颜色。</param>
+    /// <returns>生成的不透明强调色。</returns>
     private static SKColor CreateCaptchaAccentColor(int seed, bool randomColor)
     {
         if (!randomColor)
@@ -1064,8 +1155,13 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 应用卷积效果
+    /// 使用卷积核处理图像像素。
     /// </summary>
+    /// <param name="image">要处理的源图像。</param>
+    /// <param name="kernel">用于卷积的权重数组。</param>
+    /// <param name="divisor">卷积结果的除数。</param>
+    /// <param name="bias">加到卷积结果上的偏移量。</param>
+    /// <returns>卷积处理后的新图像，并保留源图像的编码格式。</returns>
     private static SKImage ApplyConvolutionEffect(SKImage image, float[] kernel, float divisor, float bias = 0)
     {
         using var source = SKBitmap.FromImage(image);
@@ -1104,16 +1200,21 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 将值限制到字节范围
+    /// 将数值限制在字节可表示的范围内。
     /// </summary>
+    /// <param name="value">待限制的数值。</param>
+    /// <returns>限制到 0 到 255 的字节值。</returns>
     private static byte ClampToByte(float value)
     {
         return DrawingCompatibilityHelper.ClampToByte(value);
     }
 
     /// <summary>
-    /// 记录图片格式
+    /// 将编码格式与图像对象关联。
     /// </summary>
+    /// <param name="image">要记录格式的图像；为 null 时直接返回。</param>
+    /// <param name="imageFormat">要记录的编码格式；为 null 时不添加记录。</param>
+    /// <returns>传入的图像对象。</returns>
     private static SKImage? TrackFormat(SKImage? image, SKEncodedImageFormat? imageFormat)
     {
         if (image is null || imageFormat is null)
@@ -1125,16 +1226,21 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 复制图片格式信息
+    /// 将源图像的编码格式复制到目标图像。
     /// </summary>
+    /// <param name="source">提供编码格式记录的源图像。</param>
+    /// <param name="target">接收编码格式记录的目标图像。</param>
+    /// <returns>已关联源图像编码格式的目标图像。</returns>
     private static SKImage CopyTrackedFormat(SKImage source, SKImage target)
     {
         return TrackFormat(target, GetTrackedFormat(source) ?? GetEncodedImageFormat(source))!;
     }
 
     /// <summary>
-    /// 获取已跟踪图片格式
+    /// 获取图像对象记录的编码格式。
     /// </summary>
+    /// <param name="image">要查询编码格式的图像。</param>
+    /// <returns>已记录的编码格式；没有记录时返回 null。</returns>
     private static SKEncodedImageFormat? GetTrackedFormat(SKImage image)
     {
         return ImageFormats.TryGetValue(image, out var holder) ? holder.Format : null;
