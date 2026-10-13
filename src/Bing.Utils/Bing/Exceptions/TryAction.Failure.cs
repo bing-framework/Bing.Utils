@@ -6,7 +6,7 @@ namespace Bing.Exceptions;
 public class FailureAction : TryAction
 {
     /// <summary>
-    /// 初始化一个<see cref="FailureAction"/>类型的实例
+    /// 初始化一个 <see cref="FailureAction"/> 类型的实例。
     /// </summary>
     /// <param name="exception">异常</param>
     /// <param name="hashOfAction">操作哈希值</param>

@@ -7,7 +7,7 @@ namespace Bing.Exceptions;
 public class Success<T> : Try<T>
 {
     /// <summary>
-    /// 初始化一个<see cref="Success{T}"/>类型的实例
+    /// 初始化一个 <see cref="Success{T}"/> 类型的实例。
     /// </summary>
     /// <param name="value">值</param>
     internal Success(T value) => Value = value;
@@ -96,11 +96,7 @@ public class Success<T> : Try<T>
         return this;
     }
 
-    /// <summary>
-    /// 绑定
-    /// </summary>
-    /// <typeparam name="TResult">结果类型</typeparam>
-    /// <param name="bind">绑定函数</param>
+    /// <inheritdoc />
     internal override Try<TResult> Bind<TResult>(Func<T, Try<TResult>> bind)
     {
         if (bind is null)

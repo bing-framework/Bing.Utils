@@ -11,7 +11,7 @@ public class SuccessAction : TryAction
     private readonly int _hashOfAction;
 
     /// <summary>
-    /// 初始化一个<see cref="SuccessAction"/>类型的实例
+    /// 初始化一个 <see cref="SuccessAction"/> 类型的实例。
     /// </summary>
     /// <param name="hashOfAction">操作哈希值</param>
     internal SuccessAction(int hashOfAction) => _hashOfAction = hashOfAction;

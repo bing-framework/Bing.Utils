@@ -21,7 +21,7 @@ public sealed class TryCreatingValueException : Exception
     private const long ERROR_CODE = 1052;
 
     /// <summary>
-    /// 初始化一个<see cref="TryCreatingValueException"/>类型的实例
+    /// 初始化一个 <see cref="TryCreatingValueException"/> 类型的实例。
     /// </summary>
     /// <param name="exception">异常</param>
     /// <param name="cause">导致错误的原因</param>
@@ -32,7 +32,7 @@ public sealed class TryCreatingValueException : Exception
     }
 
     /// <summary>
-    /// 初始化一个<see cref="TryCreatingValueException"/>类型的实例
+    /// 初始化一个 <see cref="TryCreatingValueException"/> 类型的实例。
     /// </summary>
     /// <param name="errorCode">错误码</param>
     /// <param name="errorMessage">错误消息</param>
@@ -46,17 +46,17 @@ public sealed class TryCreatingValueException : Exception
     }
 
     /// <summary>
-    /// 错误码
+    /// 获取错误码
     /// </summary>
     public string Code { get; }
 
     /// <summary>
-    /// 错误标识
+    /// 获取错误标识
     /// </summary>
     public string Flag { get; }
 
     /// <summary>
-    /// 导致错误的原因
+    /// 获取导致错误的原因
     /// </summary>
     public string Cause { get; }
 }
