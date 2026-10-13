@@ -14,7 +14,7 @@ internal sealed class ReadOnlyListWrapper<T> : IList<T>
     private readonly IReadOnlyList<T> _list;
 
     /// <summary>
-    /// 初始化一个<see cref="ReadOnlyListWrapper{T}"/>类型的实例
+    /// 初始化一个 <see cref="ReadOnlyListWrapper{T}"/> 类型的实例。
     /// </summary>
     /// <param name="list">只读列表</param>
     internal ReadOnlyListWrapper(IReadOnlyList<T> list) => _list = list ?? throw new ArgumentNullException(nameof(list));

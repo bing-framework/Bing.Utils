@@ -14,7 +14,7 @@ internal class AppendedReadOnlyCollection<T> : IReadOnlyCollection<T>
     private readonly IEnumerable<T> _enumerable;
 
     /// <summary>
-    /// 初始化一个<see cref="AppendedReadOnlyCollection{T}"/>类型的实例
+    /// 初始化一个 <see cref="AppendedReadOnlyCollection{T}"/> 类型的实例。
     /// </summary>
     /// <param name="root">只读集合</param>
     /// <param name="item">追加项</param>

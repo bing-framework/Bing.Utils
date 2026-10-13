@@ -19,7 +19,7 @@ internal class InternalNullIfEmptySkipFirstMoveNextEnumeratorWrapper<T> : IEnume
     private readonly IEnumerator<T> _inner;
 
     /// <summary>
-    /// 初始化一个<see cref="InternalNullIfEmptySkipFirstMoveNextEnumeratorWrapper{T}"/>类型的实例
+    /// 初始化一个 <see cref="InternalNullIfEmptySkipFirstMoveNextEnumeratorWrapper{T}"/> 类型的实例。
     /// </summary>
     /// <param name="inner">迭代器</param>
     public InternalNullIfEmptySkipFirstMoveNextEnumeratorWrapper(IEnumerator<T> inner) => _inner = inner ?? throw new ArgumentNullException(nameof(inner));

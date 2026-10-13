@@ -19,7 +19,7 @@ internal class InternalSingleUseEnumerable<T> : IEnumerable<T>
     private IEnumerator<T> _enumerator;
 
     /// <summary>
-    /// 初始化一个<see cref="InternalSingleUseEnumerable{T}"/>类型的实例
+    /// 初始化一个 <see cref="InternalSingleUseEnumerable{T}"/> 类型的实例。
     /// </summary>
     /// <param name="enumerator">迭代器</param>
     public InternalSingleUseEnumerable(IEnumerator<T> enumerator) => _enumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));

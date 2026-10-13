@@ -14,7 +14,7 @@ public class EnumerableProxy<T> : IEnumerable<T>
     private readonly IEnumerable<T> _enumerable;
 
     /// <summary>
-    /// 初始化一个<see cref="EnumerableProxy{T}"/>类型的实例
+    /// 初始化一个 <see cref="EnumerableProxy{T}"/> 类型的实例。
     /// </summary>
     /// <param name="enumerable">集合</param>
     public EnumerableProxy(IEnumerable<T> enumerable) => _enumerable = enumerable ?? throw new ArgumentNullException(nameof(enumerable));
