@@ -15,7 +15,8 @@
 - [反射性能证据](quality/reflection-performance-evidence.md)：历史逐轮测量与显式预算用法。
 - [反射裁剪证据](quality/reflection-trim-evidence.md)：trimming/NativeAOT 部署命令和支持边界。
 - [反射实施状态](quality/reflection-todo-status.md)：当前剩余问题与历史任务记录。
-- [NativeAOT 基线复核](quality/reflection-nativeaot-baseline-review.md)：未通过门禁的精确诊断及待确认提案。
+- [NativeAOT 基线复核](quality/reflection-nativeaot-baseline-review.md)：批准的精确诊断范围与严格门禁复核结果。
+- [反射验证目录与基线](quality/reflection-validation-layout.md)：当前基线入口、夹具保留依据与待确认目录迁移方案。
 - [贡献指南](CONTRIBUTING.md)
 
 ## 维护约定

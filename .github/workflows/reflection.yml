@@ -976,7 +976,7 @@ jobs:
           AOT_DIAGNOSTIC_ALLOWLIST_PATH: ${{ inputs.aot_diagnostic_allowlist_path }}
           AOT_NONREPOSITORY_OWNERSHIP_PATH: ${{ inputs.aot_nonrepository_ownership_path }}
         run: |
-          $baseline = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionTrimProbe/NativeAotWarningBaseline.txt'
+          $baseline = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionTrimProbe/baselines/NativeAotWarningBaseline.txt'
           $report = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionTrimProbe/bin/nativeaot-warning-report.json'
           if ([string]::IsNullOrWhiteSpace($env:REFLECTION_NATIVEAOT_DIAGNOSTIC_CONTEXT)) { throw 'NativeAOT diagnostic context was not exported by the publish step.' }
           $arguments = @(
@@ -985,7 +985,7 @@ jobs:
             '-OutputPath', $report,
             '-DiagnosticContext', $env:REFLECTION_NATIVEAOT_DIAGNOSTIC_CONTEXT,
             '-SymbolMapPath', $env:REFLECTION_NATIVEAOT_SYMBOL_MAP)
-          $diagnosticBaseline = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionTrimProbe/NativeAotRepositoryDiagnosticBaseline.20261013.json'
+          $diagnosticBaseline = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionTrimProbe/baselines/NativeAotRepositoryDiagnosticBaseline.json'
           $manualDispatch = '${{ github.event_name }}' -eq 'workflow_dispatch'
           $allowRepositoryFingerprintDrift = ('${{ inputs.allow_aot_repository_fingerprint_drift }}' -eq 'true') -or ($manualDispatch -and '${{ inputs.strict_aot_repository_fingerprints }}' -eq 'false')
           if (Test-Path -LiteralPath $diagnosticBaseline -PathType Leaf) {
@@ -999,7 +999,7 @@ jobs:
           if (!$allowUnparsedDiagnostics) { $arguments += '-FailOnUnparsedDiagnostic' }
           $allowlistPath = ([string]$env:AOT_DIAGNOSTIC_ALLOWLIST_PATH).Trim()
           if ([string]::IsNullOrWhiteSpace($allowlistPath)) {
-            $allowlistPath = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionTrimProbe/NativeAotRepositoryDiagnosticAllowlist.20261013.json'
+            $allowlistPath = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionTrimProbe/baselines/NativeAotRepositoryDiagnosticAllowlist.json'
           }
           $allowRepositoryWarningDrift = ('${{ inputs.allow_aot_repository_warning_drift }}' -eq 'true') -or ($manualDispatch -and '${{ inputs.strict_aot_repository_warnings }}' -eq 'false')
           if (Test-Path -LiteralPath $allowlistPath -PathType Leaf) {
@@ -1010,7 +1010,7 @@ jobs:
           }
           $nonRepositoryOwnershipPath = ([string]$env:AOT_NONREPOSITORY_OWNERSHIP_PATH).Trim()
           if ([string]::IsNullOrWhiteSpace($nonRepositoryOwnershipPath)) {
-            $nonRepositoryOwnershipPath = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionTrimProbe/NativeAotNonRepositoryDiagnosticOwnership.json'
+            $nonRepositoryOwnershipPath = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionTrimProbe/baselines/NativeAotNonRepositoryDiagnosticOwnership.json'
           }
           $allowNonRepositoryDiagnosticDrift = '${{ inputs.allow_aot_nonrepository_diagnostic_drift }}' -eq 'true'
           if (Test-Path -LiteralPath $nonRepositoryOwnershipPath -PathType Leaf) {
@@ -1244,10 +1244,10 @@ jobs:
             benchmarks/ReflectionTrimProbe/bin/nativeaot-warning-report.json
             benchmarks/ReflectionTrimProbe/bin/nativeaot-repository-fingerprint-baseline.json
             benchmarks/ReflectionTrimProbe/bin/nativeaot-source-map.json
-            benchmarks/ReflectionTrimProbe/NativeAotWarningBaseline.txt
-            benchmarks/ReflectionTrimProbe/NativeAotRepositoryDiagnosticBaseline.20261013.json
-            benchmarks/ReflectionTrimProbe/NativeAotRepositoryDiagnosticAllowlist.20261013.json
-            benchmarks/ReflectionTrimProbe/NativeAotNonRepositoryDiagnosticOwnership.json
+            benchmarks/ReflectionTrimProbe/baselines/NativeAotWarningBaseline.txt
+            benchmarks/ReflectionTrimProbe/baselines/NativeAotRepositoryDiagnosticBaseline.json
+            benchmarks/ReflectionTrimProbe/baselines/NativeAotRepositoryDiagnosticAllowlist.json
+            benchmarks/ReflectionTrimProbe/baselines/NativeAotNonRepositoryDiagnosticOwnership.json
           if-no-files-found: warn
       - name: Build reflection runtime inputs
         run: |

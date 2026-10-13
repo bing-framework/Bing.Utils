@@ -7,7 +7,7 @@
   "approvalSource": "用户在当前会话明确批准",
   "diagnosticContext": "sdk=8.0.425;tfm=net8.0;rid=win-x64;trim=partial;aot=true;mode=ci-single-publish",
   "sourceReport": "benchmarks/ReflectionTrimProbe/bin/commit-fix-warning-contracts-report-20261013.json",
-  "baseBaseline": "benchmarks/ReflectionTrimProbe/NativeAotRepositoryDiagnosticBaseline.json",
+  "baseBaseline": "benchmarks/ReflectionTrimProbe/baselines/history/20261013-before-approval/NativeAotRepositoryDiagnosticBaseline.json",
   "baseEntryCount": 339,
   "baseOccurrenceCount": 405,
   "proposedEntryCount": 363,

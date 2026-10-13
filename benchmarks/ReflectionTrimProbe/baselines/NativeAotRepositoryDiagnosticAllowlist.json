@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "nativeaot-repository-diagnostic-allowlist",
   "diagnosticContext": "sdk=8.0.425;tfm=net8.0;rid=win-x64;trim=partial;aot=true;mode=ci-single-publish",
-  "sourceBaseline": "NativeAotRepositoryDiagnosticBaseline.20261013.json",
+  "sourceBaseline": "NativeAotRepositoryDiagnosticBaseline.json",
   "ownerPolicy": "Source paths are assigned to the reflection, utility, or validation maintainers responsible for the affected repository boundary; dependency and toolchain diagnostics are excluded.",
   "entryCount": 363,
   "entries": [
@@ -2914,7 +2914,7 @@
   "approval": {
     "date": "2026-10-13",
     "authority": "用户在当前会话明确批准",
-    "previousAllowlist": "NativeAotRepositoryDiagnosticAllowlist.json",
+    "previousAllowlist": "history/20261013-before-approval/NativeAotRepositoryDiagnosticAllowlist.json",
     "addedEntryCount": 24
   }
 }

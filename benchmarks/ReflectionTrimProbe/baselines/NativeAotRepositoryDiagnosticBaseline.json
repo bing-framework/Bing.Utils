@@ -2189,8 +2189,8 @@
   "approval": {
     "date": "2026-10-13",
     "authority": "用户在当前会话明确批准",
-    "sourceProposal": "../../docs/quality/reflection-nativeaot-diagnostic-proposal.json",
-    "previousBaseline": "NativeAotRepositoryDiagnosticBaseline.json",
+    "sourceProposal": "../../../docs/quality/reflection-nativeaot-diagnostic-proposal.json",
+    "previousBaseline": "history/20261013-before-approval/NativeAotRepositoryDiagnosticBaseline.json",
     "addedEntryCount": 24
   }
 }

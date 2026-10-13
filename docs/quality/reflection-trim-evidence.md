@@ -8,6 +8,8 @@
 
 以下各节保留各自日期的历史证据。“本轮”“当前”、421/405/339 等计数不是最新候选的验证结果；历史基线保留用于发现漂移，未以当前报告覆盖。远程 CI 和本次未执行的完整部署矩阵统一标记为待确认。
 
+基线文件已集中到 `benchmarks/ReflectionTrimProbe/baselines/`，其中四份当前配置供 CI 读取，`history/20261013-before-approval/` 保存旧 339 项快照。下文历史文件位置不再作为当前命令入口；当前配置、操作命令与目录整理方案见 [反射验证目录与基线](reflection-validation-layout.md)。
+
 ## Linker root 窄化子项（2026-10-08）
 
 主探针的 `TrimParameterlessSample` root 已从 `preserve="all"` 收窄为
@@ -772,10 +774,10 @@ path/resolver/bytes 加载均保持 `metadata-preserved`，可裁剪插件的 pa
 全部解析，未解析数量为 0；旧 CI-like 日志的 ID 均属于 15 个历史基线。当前固定 SDK 8.0.425 的干净 AOT 日志同样为 15 个 ID、421 条诊断和 0 条未解析，严格 ID 比较无新增。若提供同一发布配置下的上一份 JSON 报告并传入
 `-DiagnosticBaselinePath ... -FailOnNewRepositoryDiagnostic`，还会按仓库源 `(code, messageFingerprint, file)`
 计数识别同一 ID 下新增的仓库诊断；传入 `-DiagnosticAllowlistPath -FailOnUnapprovedRepositoryDiagnostic` 后，还会按规范化仓库文件、诊断 ID、消息指纹、`maxCount`、非空 `owner` 和 `reason` 执行可审计的所有权 allowlist 门禁；同时必须传入 `-DiagnosticContext`，报告会拒绝缺失或不一致的 SDK、TFM、RID、TrimMode
-或日志聚合上下文，避免把不同构建配置误判为代码回归。外部依赖和未知来源不会被自动当作仓库代码。CI 默认加载 `NativeAotRepositoryDiagnosticAllowlist.json` 并传入 `-FailOnUnapprovedRepositoryDiagnostic`，同时加载 `NativeAotNonRepositoryDiagnosticOwnership.json` 并传入 `-FailOnUnownedNonRepositoryDiagnostic`；只有显式诊断排障输入允许责任门禁旁路。非仓库清单按 `(code, messageFingerprint, origin)` 记录生成物、依赖/工具链和未知来源的 `owner/reason/action`，不把绝对 NuGet 或 SDK 路径写入稳定 key。传入 `-SymbolMapPath` 后，检查器会消费由 `Build-NativeAotSourceMap.ps1` 根据实际 PE 元数据、Portable PDB 和方法签名生成的符号映射，先采用唯一文件映射，再按规范化重载签名选择唯一文件；仍无法匹配或缺少 PDB 的项继续标记为 unknown。旧 CI-like 日志包含 13 个 ID、196 条诊断且全部解析，180 条映射到仓库源文件，其中 5 条通过签名匹配；当前固定 SDK 8.0.425 的干净 AOT 发布包含 421 条诊断，其中 405 条归类为仓库源并形成 339 个指纹基线。CI 默认加载该基线并上传报告、映射和候选文件，新增仓库指纹或未登记责任默认阻断；显式诊断排障输入才允许旁路。
+或日志聚合上下文，避免把不同构建配置误判为代码回归。外部依赖和未知来源不会被自动当作仓库代码。CI 默认加载 `NativeAotRepositoryDiagnosticAllowlist.json` 并传入 `-FailOnUnapprovedRepositoryDiagnostic`，同时加载 `NativeAotNonRepositoryDiagnosticOwnership.json` 并传入 `-FailOnUnownedNonRepositoryDiagnostic`；只有显式诊断排障输入允许责任门禁旁路。非仓库清单按 `(code, messageFingerprint, origin)` 记录生成物、依赖/工具链和未知来源的 `owner/reason/action`，不把绝对 NuGet 或 SDK 路径写入稳定 key。传入 `-SymbolMapPath` 后，检查器会消费由 `Build-NativeAotSourceMap.ps1` 根据实际 PE 元数据、Portable PDB 和方法签名生成的符号映射，先采用唯一文件映射，再按规范化重载签名选择唯一文件；仍无法匹配或缺少 PDB 的项继续标记为 unknown。旧 CI-like 日志包含 13 个 ID、196 条诊断且全部解析，180 条映射到仓库源文件，其中 5 条通过签名匹配；当时固定 SDK 8.0.425 的干净 AOT 发布包含 421 条诊断，其中 405 条归类为仓库源并形成 339 个指纹基线。当时 CI 默认加载该基线并上传报告、映射和候选文件，新增仓库指纹或未登记责任默认阻断；显式诊断排障输入才允许旁路。 当前工作流使用 baselines 下的 363 项配置，见 [目录与基线](reflection-validation-layout.md)。
 CI 发布步骤会从实际 `dotnet --version` 生成同一 `DiagnosticContext`，并通过环境变量传给检查步骤；上传的 JSON 因而包含可复现的发布上下文，后续基线比较不能跨配置复用。
 
-`Build-NativeAotDiagnosticBaseline.ps1` 可将 schema v2 报告压缩为可审查的仓库指纹基线：保留发布上下文、仓库诊断出现次数，以及规范化的 `code`、`messageFingerprint`、`file` 和 `maxCount`，不把外部依赖或未知来源写入仓库门禁。`Check-NativeAotWarnings.ps1` 同时接受完整 schema v2 报告和该紧凑 schema 1 基线，并继续执行上下文一致性、重复项和计数校验；检查器要求 `entryCount` 与 `entries` 数量、`repositoryDiagnosticOccurrenceCount` 与 `maxCount` 总和一致，异常基线直接拒绝；紧凑基线比较按键直接读取 `maxCount`，不会因异常大计数展开无界的临时记录。仓库 `global.json` 与 workflow 将 NativeAOT SDK 固定为 8.0.425，并在发布步骤检查实际版本；固定输入的干净 NativeAOT 发布已成功生成并运行原生 exe，产出 405 次仓库诊断、339 个指纹，基线已提交为 `benchmarks/ReflectionTrimProbe/NativeAotRepositoryDiagnosticBaseline.json`，对应的 `NativeAotRepositoryDiagnosticAllowlist.json` 为每条指纹提供源码归属和审计理由，`NativeAotNonRepositoryDiagnosticOwnership.json` 为 16 条生成物/依赖/工具链诊断提供稳定来源归属、理由和后续动作。CI 会默认加载基线、仓库 allowlist 和非仓库责任清单进行上下文、指纹、责任字段比较并阻断新增或未登记诊断，只有显式诊断排障输入才允许漂移。
+`Build-NativeAotDiagnosticBaseline.ps1` 可将 schema v2 报告压缩为可审查的仓库指纹基线：保留发布上下文、仓库诊断出现次数，以及规范化的 `code`、`messageFingerprint`、`file` 和 `maxCount`，不把外部依赖或未知来源写入仓库门禁。`Check-NativeAotWarnings.ps1` 同时接受完整 schema v2 报告和该紧凑 schema 1 基线，并继续执行上下文一致性、重复项和计数校验；检查器要求 `entryCount` 与 `entries` 数量、`repositoryDiagnosticOccurrenceCount` 与 `maxCount` 总和一致，异常基线直接拒绝；紧凑基线比较按键直接读取 `maxCount`，不会因异常大计数展开无界的临时记录。仓库 `global.json` 与 workflow 将 NativeAOT SDK 固定为 8.0.425，并在发布步骤检查实际版本；固定输入的干净 NativeAOT 发布已成功生成并运行原生 exe，产出 405 次仓库诊断、339 个指纹，历史 339 项基线现归档于 `benchmarks/ReflectionTrimProbe/baselines/history/20261013-before-approval/NativeAotRepositoryDiagnosticBaseline.json`，对应的 `NativeAotRepositoryDiagnosticAllowlist.json` 为每条指纹提供源码归属和审计理由，`NativeAotNonRepositoryDiagnosticOwnership.json` 为 16 条生成物/依赖/工具链诊断提供稳定来源归属、理由和后续动作。当前 CI 默认加载 `baselines/` 下的 363 项基线、仓库 allowlist 和非仓库责任清单进行上下文、指纹、责任字段比较并阻断新增或未登记诊断，只有显式诊断排障输入才允许漂移。
 
 ## CI 部署矩阵
 
