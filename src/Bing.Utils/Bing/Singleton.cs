@@ -6,12 +6,12 @@ namespace Bing;
 public class Singleton
 {
     /// <summary>
-    /// 所有单例对象
+    /// 获取所有单例对象
     /// </summary>
     public static IDictionary<Type, object> AllSingletons { get; }
 
     /// <summary>
-    /// 初始化一个<see cref="Singleton"/>类型的静态实例
+    /// 初始化当前类型的静态状态。
     /// </summary>
     static Singleton() => AllSingletons = new Dictionary<Type, object>();
 }
@@ -28,7 +28,7 @@ public class Singleton<T> : Singleton
     private static T _instance;
 
     /// <summary>
-    /// 实例
+    /// 获取或设置实例
     /// </summary>
     public static T Instance
     {
@@ -48,12 +48,12 @@ public class Singleton<T> : Singleton
 public class SingletonList<T> : Singleton<IList<T>>
 {
     /// <summary>
-    /// 实例
+    /// 获取实例
     /// </summary>
     public new static IList<T> Instance => Singleton<IList<T>>.Instance;
 
     /// <summary>
-    /// 初始化一个<see cref="SingletonList{T}"/>类型的静态实例
+    /// 初始化当前类型的静态状态。
     /// </summary>
     static SingletonList() => Singleton<IList<T>>.Instance = new List<T>();
 }
@@ -66,12 +66,12 @@ public class SingletonList<T> : Singleton<IList<T>>
 public class SingletonDictionary<TKey, TValue> : Singleton<IDictionary<TKey, TValue>>
 {
     /// <summary>
-    /// 实例
+    /// 获取实例
     /// </summary>
     public new static IDictionary<TKey, TValue> Instance => Singleton<Dictionary<TKey, TValue>>.Instance;
 
     /// <summary>
-    /// 初始化一个<see cref="SingletonDictionary{TKey,TValue}"/>类型的静态实例
+    /// 初始化当前类型的静态状态。
     /// </summary>
     static SingletonDictionary() => Singleton<Dictionary<TKey, TValue>>.Instance = new Dictionary<TKey, TValue>();
 }

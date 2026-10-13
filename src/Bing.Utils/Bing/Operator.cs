@@ -62,13 +62,13 @@ public enum Operator
     Contains,
 
     /// <summary>
-    /// In
+    /// 属于集合。
     /// </summary>
     [Description("In")]
     In,
 
     /// <summary>
-    /// Not In
+    /// 不属于集合。
     /// </summary>
     [Description("Not In")]
     NotIn,

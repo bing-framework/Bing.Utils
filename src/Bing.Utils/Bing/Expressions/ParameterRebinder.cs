@@ -13,7 +13,7 @@ public class ParameterRebinder : ExpressionVisitor
     private readonly Dictionary<ParameterExpression, ParameterExpression> _map;
 
     /// <summary>
-    /// 初始化一个<see cref="ParameterRebinder"/>类型的实例
+    /// 初始化一个 <see cref="ParameterRebinder"/> 类型的实例。
     /// </summary>
     /// <param name="map">参数字典</param>
     public ParameterRebinder(Dictionary<ParameterExpression, ParameterExpression> map) => _map = map ?? new Dictionary<ParameterExpression, ParameterExpression>();
@@ -26,10 +26,7 @@ public class ParameterRebinder : ExpressionVisitor
     public static Expression ReplaceParameters(Dictionary<ParameterExpression, ParameterExpression> map, Expression exp) =>
         new ParameterRebinder(map).Visit(exp);
 
-    /// <summary>
-    /// 访问参数
-    /// </summary>
-    /// <param name="parameterExpression">参数表达式</param>
+    /// <inheritdoc />
     protected override Expression VisitParameter(ParameterExpression parameterExpression)
     {
         if (_map.TryGetValue(parameterExpression, out var replacement))

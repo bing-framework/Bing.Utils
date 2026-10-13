@@ -12,52 +12,52 @@ public static class TypeDefault
     public static TValue Of<TValue>() => default;
 
     /// <summary>
-    /// int
+    /// 获取int
     /// </summary>
     public static int Int => default;
 
     /// <summary>
-    /// long
+    /// 获取long
     /// </summary>
     public static long Long => default;
 
     /// <summary>
-    /// float
+    /// 获取float
     /// </summary>
     public static float Float => default;
 
     /// <summary>
-    /// double
+    /// 获取double
     /// </summary>
     public static double Double => default;
 
     /// <summary>
-    /// decimal
+    /// 获取decimal
     /// </summary>
     public static decimal Decimal => default;
 
     /// <summary>
-    /// char
+    /// 获取char
     /// </summary>
     public static char Char => default;
 
     /// <summary>
-    /// string
+    /// 获取string
     /// </summary>
     public static string String => default;
 
     /// <summary>
-    /// empty
+    /// 获取empty
     /// </summary>
     public static string StringEmpty => string.Empty;
 
     /// <summary>
-    /// DateTime
+    /// 获取DateTime
     /// </summary>
     public static DateTime DateTime => default;
 
     /// <summary>
-    /// TimeSpan
+    /// 获取TimeSpan
     /// </summary>
     public static TimeSpan TimeSpan => default;
 }

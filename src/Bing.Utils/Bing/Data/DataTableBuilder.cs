@@ -34,7 +34,7 @@ internal class DataTableBuilder<T>
     private Load _handler;
 
     /// <summary>
-    /// 初始化一个<see cref="DataTableBuilder{T}"/>类型的实例
+    /// 初始化一个 <see cref="DataTableBuilder{T}"/> 类型的实例。
     /// </summary>
     private DataTableBuilder()
     {

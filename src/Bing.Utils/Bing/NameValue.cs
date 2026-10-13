@@ -8,12 +8,12 @@ namespace Bing;
 public class NameValue : NameValue<string>
 {
     /// <summary>
-    /// 初始化一个<see cref="NameValue"/>类型的实例
+    /// 初始化一个 <see cref="NameValue"/> 类型的实例。
     /// </summary>
     public NameValue() { }
 
     /// <summary>
-    /// 初始化一个<see cref="NameValue"/>类型的实例
+    /// 初始化一个 <see cref="NameValue"/> 类型的实例。
     /// </summary>
     /// <param name="name">名称</param>
     /// <param name="value">值</param>
@@ -33,12 +33,12 @@ public class NameValue : NameValue<string>
 public class NameValue<T>
 {
     /// <summary>
-    /// 初始化一个<see cref="NameValue{T}"/>类型的实例
+    /// 初始化一个 <see cref="NameValue{T}"/> 类型的实例。
     /// </summary>
     public NameValue() { }
 
     /// <summary>
-    /// 初始化一个<see cref="NameValue{T}"/>类型的实例
+    /// 初始化一个 <see cref="NameValue{T}"/> 类型的实例。
     /// </summary>
     /// <param name="name">名称</param>
     /// <param name="value">值</param>

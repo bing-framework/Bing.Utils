@@ -47,13 +47,13 @@ public static class EqualityHelper<T>
         private readonly Func<T, TV> _keySelector;
 
         /// <summary>
-        /// 初始化一个<see cref="CommonEqualityComparer{TV}"/>类型的实例
+        /// 初始化一个 <see cref="CommonEqualityComparer{TV}"/> 类型的实例。
         /// </summary>
         /// <param name="keySelector">键选择器</param>
         public CommonEqualityComparer(Func<T, TV> keySelector) : this(keySelector, EqualityComparer<TV>.Default) { }
 
         /// <summary>
-        /// 初始化一个<see cref="CommonEqualityComparer{TV}"/>类型的实例
+        /// 初始化一个 <see cref="CommonEqualityComparer{TV}"/> 类型的实例。
         /// </summary>
         /// <param name="keySelector">键选择器</param>
         /// <param name="comparer">相等比较器</param>

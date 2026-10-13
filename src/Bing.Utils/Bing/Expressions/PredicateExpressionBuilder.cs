@@ -19,7 +19,7 @@ public class PredicateExpressionBuilder<TEntity>
     private Expression _result;
 
     /// <summary>
-    /// 初始化一个<see cref="PredicateExpressionBuilder{TEntity}"/>类型的实例
+    /// 初始化一个 <see cref="PredicateExpressionBuilder{TEntity}"/> 类型的实例。
     /// </summary>
     public PredicateExpressionBuilder() => _parameter = Expression.Parameter(typeof(TEntity), "t");
 
