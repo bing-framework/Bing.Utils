@@ -14,7 +14,7 @@ public static class CsCommentReader
     /// 读取指定反射成员的文档注释。
     /// </summary>
     /// <param name="member">要读取注释的类型、构造函数、事件、字段、方法或属性。</param>
-/// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
+    /// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
     /// <exception cref="NotSupportedException">成员类型不受支持时抛出。</exception>
     public static CsComments Create(MemberInfo member)
     {
@@ -50,7 +50,7 @@ public static class CsCommentReader
     /// 读取指定类型的文档注释。
     /// </summary>
     /// <param name="type">要读取注释的类型。</param>
-/// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
+    /// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
     public static CsComments Create(Type type)
     {
         if (type == null)
@@ -63,7 +63,7 @@ public static class CsCommentReader
     /// 读取指定构造函数的文档注释。
     /// </summary>
     /// <param name="ctor">要读取注释的构造函数。</param>
-/// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
+    /// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
     public static CsComments Create(ConstructorInfo ctor)
     {
         if (ctor == null)
@@ -77,7 +77,7 @@ public static class CsCommentReader
     /// 读取指定事件的文档注释。
     /// </summary>
     /// <param name="event">要读取注释的事件。</param>
-/// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
+    /// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
     public static CsComments Create(EventInfo @event)
     {
         if (@event == null)
@@ -90,7 +90,7 @@ public static class CsCommentReader
     /// 读取指定方法的文档注释。
     /// </summary>
     /// <param name="method">要读取注释的方法。</param>
-/// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
+    /// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
     public static CsComments Create(MethodInfo method)
     {
         if (method == null)
@@ -112,7 +112,7 @@ public static class CsCommentReader
     /// 读取指定属性或索引器的文档注释。
     /// </summary>
     /// <param name="prop">要读取注释的属性或索引器。</param>
-/// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
+    /// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
     public static CsComments Create(PropertyInfo prop)
     {
         if (prop == null)
@@ -126,7 +126,7 @@ public static class CsCommentReader
     /// 读取指定字段的文档注释。
     /// </summary>
     /// <param name="field">要读取注释的字段。</param>
-/// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
+    /// <returns>找到文档注释时返回解析结果；没有注释或 XML 文档时返回 <see langword="null"/>。</returns>
     public static CsComments Create(FieldInfo field)
     {
         if (field == null)
@@ -139,14 +139,14 @@ public static class CsCommentReader
     /// 创建枚举值到说明文本的映射。
     /// </summary>
     /// <param name="enumType">要读取成员说明的枚举类型。</param>
-/// <returns>每个枚举值及其文档注释或备用描述文本组成的映射。</returns>
+    /// <returns>每个枚举值及其文档注释或备用描述文本组成的映射。</returns>
     public static Dictionary<Enum, string> CreateEnumComment(Type enumType) => CreateEnumComment<Enum>(enumType);
 
     /// <summary>
     /// 创建枚举值到说明文本的映射。
     /// </summary>
     /// <typeparam name="T">要读取说明的枚举类型。</typeparam>
-/// <returns>每个枚举值及其文档注释或备用描述文本组成的映射。</returns>
+    /// <returns>每个枚举值及其文档注释或备用描述文本组成的映射。</returns>
     public static Dictionary<T, string> CreateEnumComment<T>() where T : struct, IComparable, IFormattable, IConvertible => CreateEnumComment<T>(typeof(T));
 
     /// <summary>
@@ -154,7 +154,7 @@ public static class CsCommentReader
     /// </summary>
     /// <typeparam name="T">要读取说明的枚举类型。</typeparam>
     /// <param name="enumType">要读取成员说明的枚举类型。</param>
-/// <returns>每个枚举值及其文档注释或备用描述文本组成的映射。</returns>
+    /// <returns>每个枚举值及其文档注释或备用描述文本组成的映射。</returns>
     private static Dictionary<T, string> CreateEnumComment<T>(Type enumType)
     {
         if (enumType == null)
@@ -183,7 +183,7 @@ public static class CsCommentReader
     /// 获取成员的 <see cref="DescriptionAttribute"/> 描述；特性缺失时返回成员名称。
     /// </summary>
     /// <param name="member">要读取描述文本的成员。</param>
-/// <returns>特性中的描述；特性缺失时为成员名称。</returns>
+    /// <returns>特性中的描述；特性缺失时为成员名称。</returns>
     private static string GetDescription(MemberInfo member)
     {
         var attr = (DescriptionAttribute)Attribute.GetCustomAttribute(member, typeof(DescriptionAttribute));
@@ -203,7 +203,7 @@ public static class CsCommentReader
     /// </summary>
     /// <param name="member">要解析注释的反射成员。</param>
     /// <param name="path">XML 文档中对应成员的标识路径。</param>
-/// <returns>找到成员节点时返回解析结果；无法读取或正在递归解析时返回 <see langword="null"/>。</returns>
+    /// <returns>找到成员节点时返回解析结果；无法读取或正在递归解析时返回 <see langword="null"/>。</returns>
     private static CsComments CreateComment(MemberInfo member, string path)
     {
         if (_member == null)
@@ -228,7 +228,7 @@ public static class CsCommentReader
     /// 根据反射参数生成 XML 文档成员标识中的参数部分。
     /// </summary>
     /// <param name="args">方法或索引器的反射参数。</param>
-/// <returns>不含参数时为 <see langword="null"/>；否则返回括号包围的参数类型列表。</returns>
+    /// <returns>不含参数时为 <see langword="null"/>；否则返回括号包围的参数类型列表。</returns>
     private static string GetXPathByParameters(ParameterInfo[] args)
     {
         if (args == null || args.Length == 0)
@@ -247,7 +247,7 @@ public static class CsCommentReader
     /// 将类型信息转换为 XML 文档成员标识使用的名称。
     /// </summary>
     /// <param name="types">要转换的类型序列。</param>
-/// <returns>以花括号包围、逗号分隔的类型标识。</returns>
+    /// <returns>以花括号包围、逗号分隔的类型标识。</returns>
     private static string GetParameterName(Type[] types)
     {
         var list = new List<string>(types.Length);
@@ -260,7 +260,7 @@ public static class CsCommentReader
     /// 将类型信息转换为 XML 文档成员标识使用的名称。
     /// </summary>
     /// <param name="type">要转换或用于成员标识的类型。</param>
-/// <returns>符合 XML 文档成员标识格式的类型名称。</returns>
+    /// <returns>符合 XML 文档成员标识格式的类型名称。</returns>
     private static string GetParameterName(Type type)
     {
         if (type.IsGenericType)
@@ -287,7 +287,7 @@ public static class CsCommentReader
     /// <param name="prefix">成员标识的种类前缀，例如类型、方法、属性、事件或字段。</param>
     /// <param name="type">要转换或用于成员标识的类型。</param>
     /// <param name="name">成员名称。</param>
-/// <returns>包含前缀、完整类型名和成员名的 XML 文档标识。</returns>
+    /// <returns>包含前缀、完整类型名和成员名的 XML 文档标识。</returns>
     private static string GetXPath(string prefix, Type type, string name)
     {
         if (type.IsGenericType && type.IsGenericTypeDefinition == false)

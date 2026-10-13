@@ -121,7 +121,13 @@ public class UnixTimeStampTest
         var unixTimeStamp = new UnixTimeStamp(testTimestamp);
         // Assert
         unixTimeStamp.ToTimestamp().ShouldBe(testTimestamp);
+<<<<<<< TODO: 项目“Bing.Utils.Tests(net7.0)”的未合并的更改, 在此之前:
         Assert.NotNull(unixTimeStamp.ToDateTime());
+    }
+=======
+    }
+>>>>>>> 晚于
+
     }
     #endregion
     #region 转换方法测试
@@ -555,7 +561,13 @@ public class UnixTimeStampTest
         var timestamp = baseRef.ToTimestamp();
         // Assert
         timestamp.ShouldBe(1640995200L);
+<<<<<<< TODO: 项目“Bing.Utils.Tests(net7.0)”的未合并的更改, 在此之前:
         Assert.NotNull(dateTime);
+        // 验证运行时类型
+=======
+        // 验证运行时类型
+>>>>>>> 晚于
+
         // 验证运行时类型
         baseRef.ShouldBeOfType<UnixTimeStamp>();
     }
