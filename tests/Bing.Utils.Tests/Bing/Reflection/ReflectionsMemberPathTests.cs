@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using System.Globalization;
+
 namespace Bing.Reflection;
 
 /// <summary>
@@ -87,6 +90,22 @@ public class ReflectionsMemberPathTests
         result.ShouldBeFalse();
     }
 
+    [Fact]
+    public void HasMemberPath_WithSetterOnlyIntermediate_ReturnsFalse()
+    {
+        Reflections.HasMemberPath(typeof(SetterOnlyIntermediateRoot), "Child.Label").ShouldBeFalse();
+        Reflections.HasMemberPath(typeof(SetterOnlyIntermediateRoot), "Child").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void TrySetMemberValue_WithConverterReturningWrongType_ReturnsFalse()
+    {
+        var root = new ConversionRoot();
+
+        Reflections.TrySetMemberValueByPath(root, nameof(ConversionRoot.Value), 123).ShouldBeFalse();
+        root.Value.ShouldBeNull();
+    }
+
     /// <summary>
     /// 测试目的：实例 HasMember 入口应识别有效路径，并将 null 实例视为不可访问。
     /// </summary>
@@ -162,6 +181,28 @@ public class ReflectionsMemberPathTests
         setField.ShouldBeTrue();
         getField.ShouldBeTrue();
         fieldValue.ShouldBe(8);
+    }
+
+    /// <summary>
+    /// 测试目的：嵌套路径中的私有成员默认不可访问，只有显式启用 IncludeNonPublic 后才可读写。
+    /// </summary>
+    [Fact]
+    public void NestedPrivateMember_RequiresIncludeNonPublic()
+    {
+        var root = new NestedVisibilityRoot();
+        const string path = "Child.Secret";
+        var options = new MemberPathOptions { IncludeNonPublic = true };
+
+        Reflections.HasMemberPath(typeof(NestedVisibilityRoot), path).ShouldBeFalse();
+        Reflections.TryGetMemberValueByPath(root, path, out _).ShouldBeFalse();
+        Reflections.TrySetMemberValueByPath(root, path, "blocked").ShouldBeFalse();
+        root.Child.SecretValue.ShouldBe("initial");
+
+        Reflections.HasMemberPath(typeof(NestedVisibilityRoot), path, options).ShouldBeTrue();
+        Reflections.TryGetMemberValueByPath(root, path, out var value, options).ShouldBeTrue();
+        value.ShouldBe("initial");
+        Reflections.TrySetMemberValueByPath(root, path, "changed", options).ShouldBeTrue();
+        root.Child.SecretValue.ShouldBe("changed");
     }
 
     /// <summary>
@@ -318,6 +359,205 @@ public class ReflectionsMemberPathTests
         value.ShouldBeNull();
     }
 
+    [Fact]
+    public void TryGetMemberValue_WithAmbiguousIgnoreCaseMatch_ThrowsAmbiguousMatchException()
+    {
+        var root = new AmbiguousCaseRoot();
+        var options = new MemberPathOptions { IgnoreCase = true };
+
+        Should.Throw<AmbiguousMatchException>(() =>
+            Reflections.TryGetMemberValue(root, "VALUE", out _, options));
+        Should.Throw<AmbiguousMatchException>(() =>
+            Reflections.TrySetMemberValue(root, "VALUE", 3, options));
+    }
+
+    [Fact]
+    public void TryGetMemberValue_UsesOptionsCapturedAtCallStart()
+    {
+        var options = new MemberPathOptions { IncludeNonPublic = true };
+        var root = new MutatingOptionsRoot(options);
+
+        Reflections.TryGetMemberValueByPath(root, "Child.Secret", out var value, options).ShouldBeTrue();
+        value.ShouldBe(7);
+        options.IncludeNonPublic.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void TrySetMemberValue_WithNestedValueTypes_WritesBackToRoot()
+    {
+        var root = new ValueRoot();
+
+        Reflections.TrySetMemberValueByPath(root, "Child.Grandchild.Number", 42).ShouldBeTrue();
+
+        root.Child.Grandchild.Number.ShouldBe(42);
+    }
+
+    [Fact]
+    public void TrySetMemberValue_WhenStructWritebackSetterThrows_PropagatesWithoutRollback()
+    {
+        var root = new ThrowingWritebackRoot();
+
+        var exception = Should.Throw<TargetInvocationException>(() =>
+            Reflections.TrySetMemberValueByPath(root, "Child.Number", 9));
+
+        exception.InnerException.ShouldBeOfType<InvalidOperationException>();
+        root.WriteAttempts.ShouldBe(1);
+        root.Child.Number.ShouldBe(0);
+    }
+
+    [Fact]
+    public void TrySetMemberValue_WithReadOnlyValueIntermediate_RejectsWrite()
+    {
+        var root = new ValueRoot();
+
+        Reflections.TrySetMemberValueByPath(root, "ReadOnlyChild.Number", 42).ShouldBeFalse();
+
+        root.ReadOnlyChild.Number.ShouldBe(0);
+    }
+
+    [Fact]
+    public void TrySetMemberValue_WithReadOnlyStructContainingReference_AllowsReferenceMutation()
+    {
+        var root = new ReadOnlyStructReferenceRoot();
+
+        Reflections.TrySetMemberValueByPath(root, "Child.Reference.Count", 7).ShouldBeTrue();
+
+        root.Child.Reference.Count.ShouldBe(7);
+    }
+
+    [Fact]
+    public void TrySetMemberValue_WithReadOnlyInterfaceHoldingBoxedStruct_UpdatesBoxWithoutWriteback()
+    {
+        var root = new BoxedValueRoot();
+
+        Reflections.TrySetMemberValueByPath(root, "Child.Number", 7).ShouldBeTrue();
+
+        root.Child.Number.ShouldBe(7);
+    }
+
+    [Fact]
+    public void SetFieldValue_WithStruct_RequiresRefAndWritesBack()
+    {
+        var root = new StructFieldRoot();
+
+        Should.Throw<NotSupportedException>(() => Reflections.SetFieldValue(root, nameof(StructFieldRoot.Count), 3));
+        Reflections.SetFieldValue(ref root, nameof(StructFieldRoot.Count), 3);
+
+        root.Count.ShouldBe(3);
+    }
+
+    [Fact]
+    public void SetMemberValueByPath_WithStructRoot_WritesBack()
+    {
+        var root = new ValueChild();
+
+        Reflections.SetMemberValueByPath(ref root, "Grandchild.Number", 21);
+
+        root.Grandchild.Number.ShouldBe(21);
+    }
+
+    [Fact]
+    public void TrySetMemberValue_WithStructRoot_WritesBack()
+    {
+        var root = new ValueChild();
+
+        Reflections.TrySetMemberValue(ref root, "Grandchild.Number", 18).ShouldBeTrue();
+
+        root.Grandchild.Number.ShouldBe(18);
+    }
+
+    [Fact]
+    public void LegacyReflectionEntrypoints_DefaultToPublicAndFailClearly()
+    {
+        var root = new VisibilityRoot();
+
+        Should.Throw<MissingFieldException>(() => Reflections.SetFieldValue(root, "PrivateField", 3));
+        Should.Throw<MissingFieldException>(() => Reflections.GetFieldValue(root, "PrivateField"));
+        Should.Throw<InvalidOperationException>(() => Reflections.SetPropertyValueByPath(
+            root, typeof(VisibilityRoot), nameof(VisibilityRoot.PublicGetPrivateSet), "changed"));
+        Should.Throw<InvalidOperationException>(() => Reflections.GetPropertyValueByPath(
+            root, typeof(VisibilityRoot), "Missing"));
+    }
+
+    /// <summary>
+    /// 测试目的：兼容路径入口应以显式 objectType 作为根类型，不能越过基类视图访问派生成员。
+    /// </summary>
+    [Fact]
+    public void LegacyPropertyPath_UsesExplicitObjectTypeAsRoot()
+    {
+        var root = new LegacyPathDerived { Name = "derived", DerivedOnly = "only-derived" };
+        ((LegacyPathBase)root).Name = "base";
+
+        Reflections.GetPropertyValueByPath(root, typeof(LegacyPathBase), nameof(LegacyPathBase.Name))
+            .ShouldBe("base");
+        Reflections.GetPropertyValueByPath(root, typeof(LegacyPathBase),
+                $"{typeof(LegacyPathBase).FullName}.{nameof(LegacyPathBase.Name)}")
+            .ShouldBe("base");
+        Should.Throw<InvalidOperationException>(() => Reflections.GetPropertyValueByPath(
+            root, typeof(LegacyPathBase), nameof(LegacyPathDerived.DerivedOnly)));
+
+        Reflections.SetPropertyValueByPath(root, typeof(LegacyPathBase), nameof(LegacyPathBase.Name), "base-updated");
+        ((LegacyPathBase)root).Name.ShouldBe("base-updated");
+        root.Name.ShouldBe("derived");
+        Should.Throw<InvalidOperationException>(() => Reflections.SetPropertyValueByPath(
+            root, typeof(LegacyPathBase), nameof(LegacyPathDerived.DerivedOnly), "rejected"));
+
+        Reflections.GetPropertyValueByPath(root, typeof(LegacyPathDerived), nameof(LegacyPathDerived.DerivedOnly))
+            .ShouldBe("only-derived");
+        Reflections.SetPropertyValueByPath(root, typeof(LegacyPathDerived), nameof(LegacyPathDerived.DerivedOnly), "updated");
+        root.DerivedOnly.ShouldBe("updated");
+    }
+
+    public sealed class ValueRoot
+    {
+        public ValueChild Child { get; set; }
+        public ValueGrandchild ReadOnlyChild => default;
+    }
+
+    public sealed class ThrowingWritebackRoot
+    {
+        public int WriteAttempts { get; private set; }
+        public ValueGrandchild Child
+        {
+            get => default;
+            set
+            {
+                WriteAttempts++;
+                throw new InvalidOperationException("writeback");
+            }
+        }
+    }
+
+    public struct ValueChild
+    {
+        public ValueGrandchild Grandchild { get; set; }
+    }
+
+    public struct StructFieldRoot
+    {
+        public int Count;
+    }
+
+    public sealed class ReadOnlyStructReferenceRoot
+    {
+        public ReadOnlyStructReference Child { get; } = new(new PathChild());
+    }
+
+    public readonly struct ReadOnlyStructReference
+    {
+        public ReadOnlyStructReference(PathChild reference) => Reference = reference;
+        public PathChild Reference { get; }
+    }
+
+    public interface IBoxedValue { int Number { get; set; } }
+    public struct BoxedValue : IBoxedValue { public int Number { get; set; } }
+    public sealed class BoxedValueRoot { public IBoxedValue Child { get; } = new BoxedValue(); }
+
+    public struct ValueGrandchild
+    {
+        public int Number { get; set; }
+    }
+
     public sealed class PathRoot
     {
         public static string StaticValue { get; set; }
@@ -330,6 +570,28 @@ public class ReflectionsMemberPathTests
         public int Count;
     }
 
+    public sealed class SetterOnlyIntermediateRoot
+    {
+        public PathChild Child { set { } }
+    }
+
+    public sealed class ConversionRoot
+    {
+        public ConvertedTarget Value { get; set; }
+    }
+
+    [TypeConverter(typeof(WrongTypeConverter))]
+    public sealed class ConvertedTarget;
+
+    public sealed class WrongTypeConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) =>
+            sourceType == typeof(int) || base.CanConvertFrom(context, sourceType);
+
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) =>
+            "wrong type";
+    }
+
     public sealed class VisibilityRoot
     {
         private int PrivateField;
@@ -337,6 +599,28 @@ public class ReflectionsMemberPathTests
         public const int ConstantField = 1;
         public string PublicGetPrivateSet { get; private set; } = "initial";
         public string PrivateGetPublicSet { private get; set; } = "initial";
+    }
+
+    private sealed class NestedVisibilityRoot
+    {
+        public NestedVisibilityChild Child { get; } = new();
+    }
+
+    private sealed class NestedVisibilityChild
+    {
+        private string Secret { get; set; } = "initial";
+        public string SecretValue => Secret;
+    }
+
+    public class LegacyPathBase
+    {
+        public string Name { get; set; }
+    }
+
+    public sealed class LegacyPathDerived : LegacyPathBase
+    {
+        public new string Name { get; set; }
+        public string DerivedOnly { get; set; }
     }
 
     public sealed class ThrowingRoot
@@ -348,5 +632,30 @@ public class ReflectionsMemberPathTests
     public sealed class IndexerRoot
     {
         public string this[int index] => index.ToString();
+    }
+
+    public sealed class AmbiguousCaseRoot
+    {
+        public int Value { get; set; }
+        public int value { get; set; }
+    }
+
+    public sealed class MutatingOptionsRoot
+    {
+        private readonly MemberPathOptions _options;
+        public MutatingOptionsRoot(MemberPathOptions options) => _options = options;
+        public MutatingOptionsChild Child
+        {
+            get
+            {
+                _options.IncludeNonPublic = false;
+                return new MutatingOptionsChild();
+            }
+        }
+    }
+
+    public sealed class MutatingOptionsChild
+    {
+        private int Secret => 7;
     }
 }

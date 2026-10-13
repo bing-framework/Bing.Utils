@@ -1,4 +1,10 @@
 using System.Reflection;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
+
+#if NET5_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace Bing.Reflection;
 
@@ -20,7 +26,10 @@ public enum ParameterPassingKind
     /// <summary>
     /// 输出参数。
     /// </summary>
-    Out
+    Out,
+
+    /// <summary>只读引用参数（in，包括元数据上标记为输入的引用参数）。</summary>
+    In
 }
 
 /// <summary>
@@ -37,6 +46,9 @@ public sealed class MethodParameterSignature
     public MethodParameterSignature(Type parameterType, ParameterPassingKind passingKind = ParameterPassingKind.Value)
     {
         ParameterType = parameterType ?? throw new ArgumentNullException(nameof(parameterType));
+        if (passingKind != ParameterPassingKind.Value && passingKind != ParameterPassingKind.Ref
+            && passingKind != ParameterPassingKind.Out && passingKind != ParameterPassingKind.In)
+            throw new ArgumentOutOfRangeException(nameof(passingKind), passingKind, "无效的参数传递方式。");
         PassingKind = passingKind;
     }
 
@@ -56,6 +68,15 @@ public sealed class MethodParameterSignature
 /// </summary>
 public static partial class TypeVisit
 {
+    internal const int NamedMethodCacheCapacity = 1024;
+
+    private sealed class NamedMethodLookup
+    {
+        internal readonly ConcurrentDictionary<string, Lazy<MethodInfo>> Methods = new();
+        internal readonly object AdmissionGate = new();
+    }
+
+    private static readonly ConditionalWeakTable<Type, NamedMethodLookup> NamedMethodCache = new();
     /// <summary>
     /// 判断候选方法是否与给定方法的签名兼容。
     /// </summary>
@@ -72,7 +93,8 @@ public static partial class TypeVisit
         if (!string.Equals(candidate.Name, method.Name, StringComparison.Ordinal)
             || candidate.IsStatic != method.IsStatic
             || candidate.GetGenericArguments().Length != method.GetGenericArguments().Length
-            || !AreSignatureTypesEquivalent(candidate.ReturnType, method.ReturnType))
+            || !AreSignatureTypesEquivalent(candidate.ReturnType, method.ReturnType)
+            || !HaveSameCustomModifiers(candidate.ReturnParameter, method.ReturnParameter))
             return false;
 
         var candidateParameters = candidate.GetParameters();
@@ -82,7 +104,8 @@ public static partial class TypeVisit
 
         for (var index = 0; index < parameters.Length; index++)
         {
-            if (candidateParameters[index].IsOut != parameters[index].IsOut
+            if (GetPassingKind(candidateParameters[index]) != GetPassingKind(parameters[index])
+                || !HaveSameCustomModifiers(candidateParameters[index], parameters[index])
                 || !AreSignatureTypesEquivalent(candidateParameters[index].ParameterType, parameters[index].ParameterType))
                 return false;
         }
@@ -95,11 +118,23 @@ public static partial class TypeVisit
     /// </summary>
     /// <param name="type">待查找的目标类型。</param>
     /// <param name="method">作为签名依据的方法。</param>
-    /// <returns>唯一匹配的方法；未匹配时返回 null。</returns>
+    /// <returns>唯一匹配的方法。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 或 <paramref name="method"/> 为 null 时抛出。</exception>
+    /// <exception cref="MissingMethodException">未找到签名兼容的方法时抛出。</exception>
     /// <exception cref="AmbiguousMatchException">当存在多个签名兼容方法时抛出。</exception>
+    /// <remarks>该入口按运行时元数据扫描候选方法；裁剪应用必须保留目标类型的方法和接口元数据。</remarks>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
     public static MethodInfo FindMethod(Type type, MethodInfo method)
+        => GetMethodBySignature(type, method);
+
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
+    private static MethodInfo ResolveMethodBySignature(Type type, MethodInfo method)
     {
+        System.Threading.Interlocked.Increment(ref _methodSignatureScanCount);
         if (type == null)
             throw new ArgumentNullException(nameof(type));
         if (method == null)
@@ -109,7 +144,7 @@ public static partial class TypeVisit
             .Where(candidate => IsSignatureCompatible(candidate, method))
             .ToArray();
         if (candidates.Length == 0)
-            return null;
+            throw new MissingMethodException($"类型“{type.FullName}”中未找到与方法“{GetFullyQualifiedName(method)}”签名兼容的方法。");
         if (candidates.Length > 1)
             throw new AmbiguousMatchException($"类型“{type.FullName}”中存在多个与方法“{GetFullyQualifiedName(method)}”签名兼容的候选项。");
         return candidates[0];
@@ -121,10 +156,15 @@ public static partial class TypeVisit
     /// <param name="type">待查找的目标类型。</param>
     /// <param name="name">方法名称。</param>
     /// <param name="parameterTypes">参数类型。</param>
-    /// <returns>唯一匹配的方法；未匹配时返回 null。</returns>
+    /// <returns>唯一匹配的方法。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 或 <paramref name="parameterTypes"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当 <paramref name="name"/> 为空或参数类型包含 null 时抛出。</exception>
+    /// <exception cref="MissingMethodException">未找到匹配的方法时抛出。</exception>
     /// <exception cref="AmbiguousMatchException">当存在多个匹配方法时抛出。</exception>
+    /// <remarks>该入口按运行时元数据扫描候选方法；裁剪应用必须保留目标类型的方法和接口元数据。</remarks>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
     public static MethodInfo FindMethod(Type type, string name, params Type[] parameterTypes) =>
         FindMethod(type, name, DefaultMethodBindingFlags, parameterTypes);
 
@@ -135,10 +175,15 @@ public static partial class TypeVisit
     /// <param name="name">方法名称。</param>
     /// <param name="bindingFlags">方法查找绑定标志。</param>
     /// <param name="parameterTypes">参数类型。</param>
-    /// <returns>唯一匹配的方法；未匹配时返回 null。</returns>
+    /// <returns>唯一匹配的方法。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 或 <paramref name="parameterTypes"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当 <paramref name="name"/> 为空或参数类型包含 null 时抛出。</exception>
+    /// <exception cref="MissingMethodException">未找到匹配的方法时抛出。</exception>
     /// <exception cref="AmbiguousMatchException">当存在多个匹配方法时抛出。</exception>
+    /// <remarks>显式绑定标志可能包含非公开方法；裁剪时必须保留请求范围内的方法元数据。</remarks>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留请求范围内的方法元数据。")]
+#endif
     public static MethodInfo FindMethod(Type type, string name, BindingFlags bindingFlags, params Type[] parameterTypes)
     {
         if (parameterTypes == null)
@@ -157,12 +202,61 @@ public static partial class TypeVisit
     /// <param name="name">方法名称。</param>
     /// <param name="genericParameterCount">方法泛型参数数量。</param>
     /// <param name="parameterSignatures">参数签名。</param>
-    /// <returns>唯一匹配的方法定义；未匹配时返回 null。</returns>
+    /// <returns>唯一匹配的方法定义。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 或 <paramref name="parameterSignatures"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当名称、泛型参数数量或参数签名无效时抛出。</exception>
+    /// <exception cref="MissingMethodException">未找到匹配的方法定义时抛出。</exception>
     /// <exception cref="AmbiguousMatchException">当存在多个匹配方法时抛出。</exception>
+    /// <remarks>该入口按运行时元数据扫描候选方法；裁剪应用必须保留目标类型的方法和接口元数据。</remarks>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
     public static MethodInfo FindMethod(Type type, string name, int genericParameterCount, params MethodParameterSignature[] parameterSignatures) =>
         FindMethod(type, name, DefaultMethodBindingFlags, genericParameterCount, parameterSignatures);
+
+    /// <summary>
+    /// 按名称、返回类型和普通参数签名查找非泛型、按值传递的方法。
+    /// </summary>
+    /// <param name="type">待查找的目标类型。</param>
+    /// <param name="name">方法名称。</param>
+    /// <param name="returnType">返回类型。</param>
+    /// <param name="parameterSignatures">参数签名。</param>
+    /// <returns>唯一匹配的方法。</returns>
+    /// <exception cref="ArgumentNullException">当 <paramref name="type"/>、<paramref name="returnType"/> 或 <paramref name="parameterSignatures"/> 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">当名称、参数签名或返回类型无效时抛出。</exception>
+    /// <exception cref="MissingMethodException">未找到匹配的方法时抛出。</exception>
+    /// <exception cref="AmbiguousMatchException">当存在多个匹配方法时抛出。</exception>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
+    public static MethodInfo FindMethodByReturnType(Type type, string name, Type returnType,
+        params MethodParameterSignature[] parameterSignatures) =>
+        FindMethodByReturnType(type, name, returnType, DefaultMethodBindingFlags, 0, parameterSignatures);
+
+    /// <summary>
+    /// 按名称、返回类型、绑定标志、泛型参数数量和参数签名查找方法。
+    /// </summary>
+    /// <param name="type">待查找的目标类型。</param>
+    /// <param name="name">方法名称。</param>
+    /// <param name="returnType">返回类型。</param>
+    /// <param name="bindingFlags">方法查找绑定标志。</param>
+    /// <param name="genericParameterCount">方法泛型参数数量。</param>
+    /// <param name="parameterSignatures">参数签名。</param>
+    /// <returns>唯一匹配的方法。</returns>
+    /// <exception cref="ArgumentNullException">当 <paramref name="type"/>、<paramref name="returnType"/> 或 <paramref name="parameterSignatures"/> 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">当名称、泛型参数数量或参数签名无效时抛出。</exception>
+    /// <exception cref="MissingMethodException">未找到匹配的方法时抛出。</exception>
+    /// <exception cref="AmbiguousMatchException">当存在多个匹配方法时抛出。</exception>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
+    public static MethodInfo FindMethodByReturnType(Type type, string name, Type returnType,
+        BindingFlags bindingFlags, int genericParameterCount, params MethodParameterSignature[] parameterSignatures)
+    {
+        if (returnType == null)
+            throw new ArgumentNullException(nameof(returnType));
+        return FindNamedMethod(type, name, bindingFlags, genericParameterCount, returnType, parameterSignatures);
+    }
 
     /// <summary>
     /// 按名称、绑定标志、泛型参数数量和参数签名查找方法。
@@ -172,16 +266,27 @@ public static partial class TypeVisit
     /// <param name="bindingFlags">方法查找绑定标志。</param>
     /// <param name="genericParameterCount">方法泛型参数数量。</param>
     /// <param name="parameterSignatures">参数签名。</param>
-    /// <returns>唯一匹配的方法定义；未匹配时返回 null。</returns>
+    /// <returns>唯一匹配的方法定义。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 或 <paramref name="parameterSignatures"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当名称、泛型参数数量或参数签名无效时抛出。</exception>
+    /// <exception cref="MissingMethodException">未找到匹配的方法定义时抛出。</exception>
     /// <exception cref="AmbiguousMatchException">当存在多个匹配方法时抛出。</exception>
+    /// <remarks>显式绑定标志可能包含非公开方法；裁剪时必须保留请求范围内的方法元数据。</remarks>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留请求范围内的方法元数据。")]
+#endif
     public static MethodInfo FindMethod(Type type, string name, BindingFlags bindingFlags, int genericParameterCount,
         params MethodParameterSignature[] parameterSignatures)
     {
+        return FindNamedMethod(type, name, bindingFlags, genericParameterCount, null, parameterSignatures);
+    }
+
+    private static MethodInfo FindNamedMethod(Type type, string name, BindingFlags bindingFlags,
+        int genericParameterCount, Type returnType, MethodParameterSignature[] parameterSignatures)
+    {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        if (string.IsNullOrWhiteSpace(name))
+        if (name == null || name.Length == 0 || string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("方法名称不能为空", nameof(name));
         if (genericParameterCount < 0)
             throw new ArgumentException("泛型参数数量不能小于 0", nameof(genericParameterCount));
@@ -190,16 +295,95 @@ public static partial class TypeVisit
         if (parameterSignatures.Any(signature => signature == null))
             throw new ArgumentException("参数签名不能包含 null", nameof(parameterSignatures));
 
+        var signatures = parameterSignatures.ToArray();
+        if (ReflectionPackageCacheScope.IsCollectible(type) || name.Length > 1024
+            || (returnType != null && ReflectionPackageCacheScope.IsCollectible(returnType))
+            || signatures.Any(signature => ReflectionPackageCacheScope.IsCollectible(signature.ParameterType)))
+        {
+            ReflectionCacheMetrics.RecordBypass();
+            return ResolveNamedMethod(type, name, bindingFlags, genericParameterCount, returnType, signatures);
+        }
+
+        var normalizedName = (bindingFlags & BindingFlags.IgnoreCase) != 0 ? name.ToUpperInvariant() : name;
+        var returnIdentity = returnType == null ? "<any>" : CreateTypeIdentity(returnType);
+        var key = $"{(int)bindingFlags}:{genericParameterCount}:{normalizedName.Length}:{normalizedName}:" +
+                  $"r:{returnIdentity.Length}:{returnIdentity}:" +
+                  string.Concat(signatures.Select(signature =>
+                  {
+                      var identity = CreateTypeIdentity(signature.ParameterType);
+                      return $"{(int)signature.PassingKind}:{identity.Length}:{identity};";
+                  }));
+        if (key.Length > 8192)
+        {
+            ReflectionCacheMetrics.RecordStructuralBypass();
+            ReflectionCacheMetrics.RecordBypass();
+            return ResolveNamedMethod(type, name, bindingFlags, genericParameterCount, returnType, signatures);
+        }
+        var lookup = NamedMethodCache.GetValue(type, _ => new NamedMethodLookup());
+        if (lookup.Methods.TryGetValue(key, out var existing))
+        {
+            ReflectionCacheMetrics.Record(existing);
+            return GetCachedNamedMethod(lookup, key, existing);
+        }
+
+        Lazy<MethodInfo> lazy = null;
+        var bypass = false;
+        lock (lookup.AdmissionGate)
+        {
+            if (lookup.Methods.TryGetValue(key, out existing))
+            {
+                ReflectionCacheMetrics.Record(existing);
+                lazy = existing;
+            }
+            else if (lookup.Methods.Count >= NamedMethodCacheCapacity)
+            {
+                ReflectionCacheMetrics.RecordStructuralBypass();
+                ReflectionCacheMetrics.RecordBypass();
+                bypass = true;
+            }
+            else
+            {
+                lazy = ReflectionCacheMetrics.CreateLazy(() =>
+                    ResolveNamedMethod(type, name, bindingFlags, genericParameterCount, returnType, signatures));
+                lookup.Methods.TryAdd(key, lazy);
+                ReflectionCacheMetrics.RecordMiss();
+            }
+        }
+
+        if (bypass)
+            return ResolveNamedMethod(type, name, bindingFlags, genericParameterCount, returnType, signatures);
+        return GetCachedNamedMethod(lookup, key, lazy);
+    }
+
+    private static MethodInfo GetCachedNamedMethod(NamedMethodLookup lookup, string key, Lazy<MethodInfo> lazy)
+    {
+        var method = lazy.Value;
+        if (!ReflectionPackageCacheScope.IsCollectible(method))
+            return method;
+
+        // 方法返回类型或签名可能引用 collectible 元数据；解析结果不能被非 collectible 宿主的强缓存持有。
+        ((ICollection<KeyValuePair<string, Lazy<MethodInfo>>>)lookup.Methods)
+            .Remove(new KeyValuePair<string, Lazy<MethodInfo>>(key, lazy));
+        ReflectionCacheMetrics.RecordBypass();
+        return method;
+    }
+
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("命名方法按运行时绑定标志扫描，裁剪时必须保留请求范围内的方法和接口元数据。")]
+#endif
+    private static MethodInfo ResolveNamedMethod(Type type, string name, BindingFlags bindingFlags,
+        int genericParameterCount, Type returnType, MethodParameterSignature[] parameterSignatures)
+    {
         var comparison = (bindingFlags & BindingFlags.IgnoreCase) == BindingFlags.IgnoreCase
             ? StringComparison.OrdinalIgnoreCase
             : StringComparison.Ordinal;
         var candidates = GetMethodCandidates(type, bindingFlags)
             .Where(candidate => string.Equals(candidate.Name, name, comparison))
             .Where(candidate => candidate.GetGenericArguments().Length == genericParameterCount)
-            .Where(candidate => IsParameterSignatureCompatible(candidate, parameterSignatures))
+            .Where(candidate => IsParameterSignatureCompatible(candidate, returnType, parameterSignatures))
             .ToArray();
         if (candidates.Length == 0)
-            return null;
+            throw new MissingMethodException($"类型“{type.FullName}”中未找到名称为“{name}”的匹配方法。");
         if (candidates.Length > 1)
             throw new AmbiguousMatchException($"类型“{type.FullName}”中存在多个名称为“{name}”的匹配方法。");
         return candidates[0];
@@ -231,6 +415,7 @@ public static partial class TypeVisit
         {
             return left.IsArray && right.IsArray
                                 && left.GetArrayRank() == right.GetArrayRank()
+                                && IsVectorArray(left) == IsVectorArray(right)
                                 && AreSignatureTypesEquivalent(left.GetElementType()!, right.GetElementType()!);
         }
 
@@ -252,7 +437,7 @@ public static partial class TypeVisit
     /// <summary>
     /// 默认方法查找绑定标志。
     /// </summary>
-    private const BindingFlags DefaultMethodBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+    private const BindingFlags DefaultMethodBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
 
     /// <summary>
     /// 获取符合绑定标志的方法候选项。
@@ -260,6 +445,9 @@ public static partial class TypeVisit
     /// <param name="type">待查找类型。</param>
     /// <param name="bindingFlags">方法查找绑定标志。</param>
     /// <returns>去重后的方法候选项。</returns>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法候选项按运行时绑定标志扫描，裁剪时必须保留请求范围内的方法和接口元数据。")]
+#endif
     private static IEnumerable<MethodInfo> GetMethodCandidates(Type type, BindingFlags bindingFlags)
     {
         if (!type.IsInterface || (bindingFlags & BindingFlags.DeclaredOnly) == BindingFlags.DeclaredOnly)
@@ -272,12 +460,14 @@ public static partial class TypeVisit
     }
 
     /// <summary>
-    /// 判断方法参数是否与请求参数签名兼容。
+    /// 判断候选方法的参数和可选返回类型是否与请求签名兼容。
     /// </summary>
     /// <param name="method">候选方法。</param>
+    /// <param name="returnType">请求返回类型；为 null 时不限制返回类型。</param>
     /// <param name="parameterSignatures">请求参数签名。</param>
-    /// <returns>参数数量、传递方式和类型均匹配时返回 true；否则返回 false。</returns>
-    private static bool IsParameterSignatureCompatible(MethodInfo method, IReadOnlyList<MethodParameterSignature> parameterSignatures)
+    /// <returns>签名兼容时返回 true；否则返回 false。</returns>
+    private static bool IsParameterSignatureCompatible(MethodInfo method, Type returnType,
+        IReadOnlyList<MethodParameterSignature> parameterSignatures)
     {
         var parameters = method.GetParameters();
         if (parameters.Length != parameterSignatures.Count)
@@ -296,7 +486,10 @@ public static partial class TypeVisit
                 return false;
         }
 
-        return true;
+        if (returnType == null)
+            return true;
+
+        return TryMatchSignatureType(method.ReturnType, returnType, genericBindings);
     }
 
     /// <summary>
@@ -308,8 +501,17 @@ public static partial class TypeVisit
     {
         if (!parameter.ParameterType.IsByRef)
             return ParameterPassingKind.Value;
-        return parameter.IsOut ? ParameterPassingKind.Out : ParameterPassingKind.Ref;
+        return parameter.IsOut ? ParameterPassingKind.Out
+            : parameter.IsIn || HasReadOnlyRequiredModifier(parameter)
+                ? ParameterPassingKind.In
+                : ParameterPassingKind.Ref;
     }
+
+    private static bool HasReadOnlyRequiredModifier(ParameterInfo parameter) =>
+        parameter.GetRequiredCustomModifiers().Any(modifier =>
+            string.Equals(modifier.FullName,
+                "System.Runtime.CompilerServices.IsReadOnlyAttribute",
+                StringComparison.Ordinal));
 
     /// <summary>
     /// 将候选参数类型与请求类型进行严格结构匹配。
@@ -320,6 +522,12 @@ public static partial class TypeVisit
     /// <returns>类型结构匹配时返回 true；否则返回 false。</returns>
     private static bool TryMatchSignatureType(Type candidateType, Type requestedType, IDictionary<int, Type> genericBindings)
     {
+        if (candidateType.IsByRef || requestedType.IsByRef)
+        {
+            return candidateType.IsByRef && requestedType.IsByRef
+                                 && TryMatchSignatureType(candidateType.GetElementType()!, requestedType.GetElementType()!, genericBindings);
+        }
+
         if (candidateType.IsGenericParameter && candidateType.DeclaringMethod != null)
         {
             if (genericBindings.TryGetValue(candidateType.GenericParameterPosition, out var existing))
@@ -332,6 +540,7 @@ public static partial class TypeVisit
         {
             return candidateType.IsArray && requestedType.IsArray
                                          && candidateType.GetArrayRank() == requestedType.GetArrayRank()
+                                         && IsVectorArray(candidateType) == IsVectorArray(requestedType)
                                          && TryMatchSignatureType(candidateType.GetElementType(), requestedType.GetElementType(), genericBindings);
         }
 
@@ -357,9 +566,32 @@ public static partial class TypeVisit
     private static string CreateMethodIdentity(MethodInfo method)
     {
         return string.Concat(method.Name, "|", method.IsStatic, "|", method.GetGenericArguments().Length, "|",
-            method.ReturnType.AssemblyQualifiedName, "|",
-            string.Join(";", method.GetParameters().Select(parameter => $"{parameter.IsOut}:{parameter.ParameterType.AssemblyQualifiedName}")));
+            CreateTypeIdentity(method.ReturnType), ":", CreateModifierIdentity(method.ReturnParameter), "|",
+            string.Join(";", method.GetParameters().Select(parameter =>
+                $"{(int)GetPassingKind(parameter)}:{CreateTypeIdentity(parameter.ParameterType)}:{CreateModifierIdentity(parameter)}")));
     }
+
+    private static bool HaveSameCustomModifiers(ParameterInfo left, ParameterInfo right) =>
+        left.GetRequiredCustomModifiers().SequenceEqual(right.GetRequiredCustomModifiers())
+        && left.GetOptionalCustomModifiers().SequenceEqual(right.GetOptionalCustomModifiers());
+
+    private static string CreateModifierIdentity(ParameterInfo parameter) =>
+        "required[" + string.Join(",", parameter.GetRequiredCustomModifiers().Select(CreateTypeIdentity))
+        + "]optional[" + string.Join(",", parameter.GetOptionalCustomModifiers().Select(CreateTypeIdentity)) + "]";
+
+    private static string CreateTypeIdentity(Type type)
+    {
+        if (type.IsGenericParameter)
+            return $"!{(type.DeclaringMethod == null ? "T" : "M")}{type.GenericParameterPosition}";
+        if (type.HasElementType)
+            return $"{CreateTypeIdentity(type.GetElementType()!)}:{(type.IsArray ? IsVectorArray(type) ? "szarray" : $"array{type.GetArrayRank()}" : type.IsByRef ? "ref" : "ptr")}";
+        if (type.IsGenericType && !type.IsGenericTypeDefinition)
+            return $"{CreateTypeIdentity(type.GetGenericTypeDefinition())}[{string.Join(",", type.GetGenericArguments().Select(CreateTypeIdentity))}]";
+        return $"{type.AssemblyQualifiedName}@{type.TypeHandle.Value.ToInt64()}";
+    }
+
+    private static bool IsVectorArray(Type type) => type.IsArray && type.GetArrayRank() == 1
+        && type == type.GetElementType()!.MakeArrayType();
 }
 
 /// <summary>
@@ -381,7 +613,12 @@ public static partial class TypeMetaVisitExtensions
     /// </summary>
     /// <param name="type">待查找的目标类型。</param>
     /// <param name="method">作为签名依据的方法。</param>
-    /// <returns>唯一匹配的方法；未匹配时返回 null。</returns>
+    /// <returns>唯一匹配的方法。</returns>
+    /// <exception cref="MissingMethodException">未找到签名兼容的方法时抛出。</exception>
+    /// <remarks>该入口按运行时元数据扫描候选方法；裁剪应用必须保留目标类型的方法和接口元数据。</remarks>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
     public static MethodInfo FindMethod(this Type type, MethodInfo method) => TypeVisit.FindMethod(type, method);
 
     /// <summary>
@@ -390,7 +627,12 @@ public static partial class TypeMetaVisitExtensions
     /// <param name="type">待查找的目标类型。</param>
     /// <param name="name">方法名称。</param>
     /// <param name="parameterTypes">参数类型。</param>
-    /// <returns>唯一匹配的方法；未匹配时返回 null。</returns>
+    /// <returns>唯一匹配的方法。</returns>
+    /// <exception cref="MissingMethodException">未找到匹配的方法时抛出。</exception>
+    /// <remarks>该入口按运行时元数据扫描候选方法；裁剪应用必须保留目标类型的方法和接口元数据。</remarks>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
     public static MethodInfo FindMethod(this Type type, string name, params Type[] parameterTypes) => TypeVisit.FindMethod(type, name, parameterTypes);
 
     /// <summary>
@@ -401,7 +643,44 @@ public static partial class TypeMetaVisitExtensions
     /// <param name="bindingFlags">方法查找绑定标志。</param>
     /// <param name="genericParameterCount">方法泛型参数数量。</param>
     /// <param name="parameterSignatures">参数签名。</param>
-    /// <returns>唯一匹配的方法定义；未匹配时返回 null。</returns>
+    /// <returns>唯一匹配的方法定义。</returns>
+    /// <exception cref="MissingMethodException">未找到匹配的方法定义时抛出。</exception>
+    /// <remarks>显式绑定标志可能包含非公开方法；裁剪时必须保留请求范围内的方法元数据。</remarks>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留请求范围内的方法元数据。")]
+#endif
     public static MethodInfo FindMethod(this Type type, string name, BindingFlags bindingFlags, int genericParameterCount,
         params MethodParameterSignature[] parameterSignatures) => TypeVisit.FindMethod(type, name, bindingFlags, genericParameterCount, parameterSignatures);
+
+    /// <summary>
+    /// 按名称、返回类型和参数签名查找方法。
+    /// </summary>
+    /// <param name="type">待查找的目标类型。</param>
+    /// <param name="name">方法名称。</param>
+    /// <param name="returnType">返回类型。</param>
+    /// <param name="parameterSignatures">参数签名。</param>
+    /// <returns>唯一匹配的方法。</returns>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
+    public static MethodInfo FindMethodByReturnType(this Type type, string name, Type returnType,
+        params MethodParameterSignature[] parameterSignatures) =>
+        TypeVisit.FindMethodByReturnType(type, name, returnType, parameterSignatures);
+
+    /// <summary>
+    /// 按名称、返回类型、绑定标志、泛型参数数量和参数签名查找方法。
+    /// </summary>
+    /// <param name="type">待查找的目标类型。</param>
+    /// <param name="name">方法名称。</param>
+    /// <param name="returnType">返回类型。</param>
+    /// <param name="bindingFlags">方法查找绑定标志。</param>
+    /// <param name="genericParameterCount">方法泛型参数数量。</param>
+    /// <param name="parameterSignatures">参数签名。</param>
+    /// <returns>唯一匹配的方法。</returns>
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
+#endif
+    public static MethodInfo FindMethodByReturnType(this Type type, string name, Type returnType,
+        BindingFlags bindingFlags, int genericParameterCount, params MethodParameterSignature[] parameterSignatures) =>
+        TypeVisit.FindMethodByReturnType(type, name, returnType, bindingFlags, genericParameterCount, parameterSignatures);
 }

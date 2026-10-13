@@ -16,6 +16,7 @@ internal static class MemberVisitHelper
     public static Type GetActualType(MemberInfo member) =>
         member switch
         {
+            null => throw new ArgumentNullException(nameof(member)),
             TypeInfo typeInfo => typeInfo.AsType(),
             Type type => type,
             FieldInfo field => field.FieldType,
@@ -29,7 +30,8 @@ internal static class MemberVisitHelper
     /// 获取实际类型
     /// </summary>
     /// <param name="parameter">参数元数据</param>
-    public static Type GetActualType(ParameterInfo parameter) => parameter.ParameterType;
+    public static Type GetActualType(ParameterInfo parameter) =>
+        (parameter ?? throw new ArgumentNullException(nameof(parameter))).ParameterType;
 }
 
 /// <summary>

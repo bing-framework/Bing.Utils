@@ -17,7 +17,21 @@ public static partial class Reflections
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="type">类型</param>
     /// <param name="parameters">传递给构造函数的参数</param>
-    public static T CreateInstance<T>(Type type, params object[] parameters) => Conv.To<T>(Activator.CreateInstance(type, parameters));
+    /// <remarks>只匹配兼容的公共构造函数，不执行数值转换或返回值转换。</remarks>
+#if NET7_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("构造函数按运行时类型和参数匹配，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
+    public static T CreateInstance<T>(Type type, params object[] parameters)
+    {
+        if (type is null)
+            throw new ArgumentNullException(nameof(type));
+        if (!typeof(T).IsAssignableFrom(type))
+            throw new ArgumentException($"类型“{type.FullName}”不可赋值给“{typeof(T).FullName}”。", nameof(type));
+        return (T)StrictConstructorBinder.CreateInstance(type, parameters);
+    }
 
     /// <summary>
     /// 动态创建实例
@@ -25,9 +39,22 @@ public static partial class Reflections
     /// <typeparam name="T">目标类型</typeparam>
     /// <param name="className">类名，包括命名空间,如果类型不处于当前执行程序集中，需要包含程序集名，范例：Test.Core.Test2,Test.Core</param>
     /// <param name="parameters">传递给构造函数的参数</param>
+#if NET7_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("按名称解析类型并匹配构造函数，裁剪时必须保留目标类型和公共构造函数。")]
+#endif
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public static T CreateInstance<T>(string className, params object[] parameters)
     {
+        if (className is null)
+            throw new ArgumentNullException(nameof(className));
+        if (string.IsNullOrWhiteSpace(className))
+            throw new ArgumentException("类型名称不能为空。", nameof(className));
         var type = Type.GetType(className) ?? Assembly.GetCallingAssembly().GetType(className);
+        if (type is null)
+            throw new ArgumentException($"无法解析指定类型名称“{className}”。", nameof(className));
         return CreateInstance<T>(type, parameters);
     }
 
@@ -40,6 +67,9 @@ public static partial class Reflections
     /// </summary>
     /// <typeparam name="TFind">查找类型</typeparam>
     /// <param name="assemblies">待查找的程序集列表</param>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("程序集类型扫描依赖运行时元数据，裁剪时必须保留目标程序集中的类型。")]
+#endif
     public static List<Type> FindImplementTypes<TFind>(params Assembly[] assemblies) => FindImplementTypes(typeof(TFind), assemblies);
 
     /// <summary>
@@ -47,8 +77,15 @@ public static partial class Reflections
     /// </summary>
     /// <param name="findType">查找类型</param>
     /// <param name="assemblies">待查找的程序集列表</param>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("程序集类型扫描依赖运行时元数据，裁剪时必须保留目标程序集中的类型。")]
+#endif
     public static List<Type> FindImplementTypes(Type findType, params Assembly[] assemblies)
     {
+        Check.NotNull(findType, nameof(findType));
+        Check.NotNull(assemblies, nameof(assemblies));
+        if (assemblies.Any(assembly => assembly is null))
+            throw new ArgumentException("程序集列表不能包含 null。", nameof(assemblies));
         var result = new List<Type>();
         foreach (var assembly in assemblies)
             result.AddRange(GetTypes(findType, assembly));
@@ -60,20 +97,15 @@ public static partial class Reflections
     /// </summary>
     /// <param name="findType">查找类型</param>
     /// <param name="assembly">待查找的程序集</param>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("程序集类型扫描依赖运行时元数据，裁剪时必须保留目标程序集中的类型。")]
+#endif
     private static List<Type> GetTypes(Type findType, Assembly assembly)
     {
         var result = new List<Type>();
         if (assembly == null)
             return result;
-        Type[] types;
-        try
-        {
-            types = assembly.GetTypes();
-        }
-        catch (ReflectionTypeLoadException)
-        {
-            return result;
-        }
+        var types = GetLoadableTypes(assembly);
         foreach (var type in types)
             AddType(result, findType, type);
         return result;
@@ -99,6 +131,9 @@ public static partial class Reflections
     /// </summary>
     /// <param name="findType">查找类型</param>
     /// <param name="type">类型</param>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "调用方 FindImplementTypes 已声明程序集扫描的裁剪风险；此处处理的是扫描得到的运行时类型。")]
+#endif
     private static bool MatchGeneric(Type findType, Type type)
     {
         if (findType.IsGenericTypeDefinition == false)
@@ -108,7 +143,8 @@ public static partial class Reflections
         {
             if (implementedInterface.IsGenericType == false)
                 continue;
-            return definition.IsAssignableFrom(implementedInterface.GetGenericTypeDefinition());
+            if (definition.IsAssignableFrom(implementedInterface.GetGenericTypeDefinition()))
+                return true;
         }
         return false;
     }
@@ -122,17 +158,44 @@ public static partial class Reflections
     /// </summary>
     /// <typeparam name="TInterface">接口类型</typeparam>
     /// <param name="assembly">在该程序集中查找</param>
+#if NET7_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("程序集中的实现类型通过运行时构造函数委托实例化，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("程序集类型扫描和构造函数匹配依赖运行时元数据，裁剪时必须保留实现类型及其公共构造函数。")]
+#endif
     public static List<TInterface> GetInstancesByInterface<TInterface>(Assembly assembly)
     {
+        Check.NotNull(assembly, nameof(assembly));
         var typeInterface = typeof(TInterface);
         return
-            assembly.GetTypes()
+            GetLoadableTypes(assembly)
                 .Where(
                     t =>
                         typeInterface.GetTypeInfo().IsAssignableFrom(t) && t != typeInterface &&
                         t.GetTypeInfo().IsAbstract == false)
                 .Select(t => CreateInstance<TInterface>(t))
                 .ToList();
+    }
+
+    /// <summary>
+    /// 获取程序集当前能够加载的类型；程序集存在部分类型加载失败时保留可用类型。
+    /// </summary>
+    /// <param name="assembly">程序集。</param>
+    /// <returns>可加载类型数组。</returns>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Assembly.GetTypes 依赖运行时类型元数据，裁剪后可能缺少未静态引用的类型。")]
+#endif
+    private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
+    {
+        try
+        {
+            return assembly.GetTypes();
+        }
+        catch (ReflectionTypeLoadException exception)
+        {
+            return exception.Types.Where(type => type != null);
+        }
     }
 
     #endregion
@@ -145,6 +208,9 @@ public static partial class Reflections
     /// <typeparam name="T">在该类型上查找接口</typeparam>
     /// <param name="baseInterfaceTypes">基接口类型列表，只返回继承了基接口的直接接口。</param>
     /// <returns>直接实现的接口类型列表。如果提供了基接口类型，只返回同时满足直接实现和基接口条件的类型。</returns>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("接口图通过运行时元数据遍历；裁剪时必须保留目标类型的接口元数据。")]
+#endif
     public static List<Type> GetDirectInterfaceTypes<T>(params Type[] baseInterfaceTypes) => GetDirectInterfaceTypes(typeof(T), baseInterfaceTypes);
 
     /// <summary>
@@ -153,8 +219,17 @@ public static partial class Reflections
     /// <param name="type">在该类型上查找接口</param>
     /// <param name="baseInterfaceTypes">基接口类型列表，只返回继承了基接口的直接接口。</param>
     /// <returns>直接实现的接口类型列表。如果提供了基接口类型，只返回同时满足直接实现和基接口条件的类型。</returns>
-    public static List<Type> GetDirectInterfaceTypes(Type type, params Type[] baseInterfaceTypes)
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("接口图通过运行时元数据遍历；裁剪时必须保留目标类型的接口元数据。")]
+#endif
+    public static List<Type> GetDirectInterfaceTypes(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, params Type[] baseInterfaceTypes)
     {
+        Check.NotNull(type, nameof(type));
+        ValidateBaseInterfaceTypes(baseInterfaceTypes);
         var interfaceTypes = type.GetInterfaces();
         var directInterfaceTypes = interfaceTypes.Except(interfaceTypes.SelectMany(t => t.GetInterfaces())).ToList();
         if (baseInterfaceTypes == null || baseInterfaceTypes.Length == 0)
@@ -168,6 +243,9 @@ public static partial class Reflections
     /// <param name="interfaceTypes">要检查的接口类型集合。</param>
     /// <param name="baseInterfaceTypes">检查实现的基接口类型数组。</param>
     /// <returns>实现了指定基接口的接口类型列表。如果接口类型为泛型且不是泛型定义本身，则添加其泛型定义。</returns>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "接口集合来自运行时 Assembly/Type 扫描，IEnumerable<Type> 无法表达元素级接口元数据要求。")]
+#endif
     private static List<Type> GetInterfaceTypes(IEnumerable<Type> interfaceTypes, Type[] baseInterfaceTypes)
     {
         var result = new List<Type>();
@@ -197,6 +275,9 @@ public static partial class Reflections
     /// <typeparam name="T">在该类型上查找接口</typeparam>
     /// <param name="baseInterfaceTypes">用于筛选的基接口类型数组。只有实现了这些接口的类型才会被包含在结果中。</param>
     /// <returns>满足条件的接口类型列表。如果没有提供基接口类型或没有找到满足条件的接口，则返回该类型实现的所有接口。</returns>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("接口图通过运行时元数据遍历；裁剪时必须保留目标类型的接口元数据。")]
+#endif
     public static List<Type> GetInterfaceTypes<T>(params Type[] baseInterfaceTypes) => GetInterfaceTypes(typeof(T), baseInterfaceTypes);
 
     /// <summary>
@@ -205,12 +286,28 @@ public static partial class Reflections
     /// <param name="type">在该类型上查找接口</param>
     /// <param name="baseInterfaceTypes">用于筛选的基接口类型数组。只有实现了这些接口的类型才会被包含在结果中。</param>
     /// <returns>满足条件的接口类型列表。如果没有提供基接口类型或没有找到满足条件的接口，则返回该类型实现的所有接口。</returns>
-    public static List<Type> GetInterfaceTypes(Type type, params Type[] baseInterfaceTypes)
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("接口图通过运行时元数据遍历；裁剪时必须保留目标类型的接口元数据。")]
+#endif
+    public static List<Type> GetInterfaceTypes(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, params Type[] baseInterfaceTypes)
     {
+        Check.NotNull(type, nameof(type));
+        ValidateBaseInterfaceTypes(baseInterfaceTypes);
         var interfaceTypes = type.GetInterfaces();
         if (baseInterfaceTypes == null || baseInterfaceTypes.Length == 0)
             return interfaceTypes.ToList();
         return GetInterfaceTypes(interfaceTypes, baseInterfaceTypes);
+    }
+
+    private static void ValidateBaseInterfaceTypes(Type[] baseInterfaceTypes)
+    {
+        // null 数组表示未指定筛选条件；数组中的 null 不是合法类型。
+        if (baseInterfaceTypes?.Any(type => type is null) == true)
+            throw new ArgumentException("基接口类型列表不能包含 null。", nameof(baseInterfaceTypes));
     }
 
     #endregion
@@ -224,14 +321,20 @@ public static partial class Reflections
     public static bool IsBool(MemberInfo member)
     {
         if (member == null)
-            return false;
+            throw new ArgumentNullException(nameof(member));
         switch (member.MemberType)
         {
             case MemberTypes.TypeInfo:
-                return member.ToString() == "System.Boolean";
+                return ((TypeInfo)member).AsType() == typeof(bool);
 
             case MemberTypes.Property:
                 return IsBool((PropertyInfo)member);
+
+            case MemberTypes.Field:
+            {
+                var fieldType = ((FieldInfo)member).FieldType;
+                return fieldType == typeof(bool) || fieldType == typeof(bool?);
+            }
         }
         return false;
     }
@@ -240,7 +343,11 @@ public static partial class Reflections
     /// 是否布尔类型
     /// </summary>
     /// <param name="property">属性</param>
-    public static bool IsBool(PropertyInfo property) => property.PropertyType == typeof(bool) || property.PropertyType == typeof(bool?);
+    public static bool IsBool(PropertyInfo property)
+    {
+        Check.NotNull(property, nameof(property));
+        return property.PropertyType == typeof(bool) || property.PropertyType == typeof(bool?);
+    }
 
     #endregion
 
@@ -253,14 +360,23 @@ public static partial class Reflections
     public static bool IsEnum(MemberInfo member)
     {
         if (member == null)
-            return false;
+            throw new ArgumentNullException(nameof(member));
         switch (member.MemberType)
         {
             case MemberTypes.TypeInfo:
-                return ((TypeInfo)member).IsEnum;
+                return ((TypeInfo)member).AsType().IsEnum;
 
             case MemberTypes.Property:
                 return IsEnum((PropertyInfo)member);
+
+            case MemberTypes.Field:
+            {
+                var fieldType = ((FieldInfo)member).FieldType;
+                if (fieldType.GetTypeInfo().IsEnum)
+                    return true;
+                var underlyingType = Nullable.GetUnderlyingType(fieldType);
+                return underlyingType?.GetTypeInfo().IsEnum == true;
+            }
         }
         return false;
     }
@@ -271,6 +387,7 @@ public static partial class Reflections
     /// <param name="property">属性</param>
     public static bool IsEnum(PropertyInfo property)
     {
+        Check.NotNull(property, nameof(property));
         if (property.PropertyType.GetTypeInfo().IsEnum)
             return true;
         var value = Nullable.GetUnderlyingType(property.PropertyType);
@@ -290,14 +407,20 @@ public static partial class Reflections
     public static bool IsDate(MemberInfo member)
     {
         if (member == null)
-            return false;
+            throw new ArgumentNullException(nameof(member));
         switch (member.MemberType)
         {
             case MemberTypes.TypeInfo:
-                return member.ToString() == "System.DateTime";
+                return ((TypeInfo)member).AsType() == typeof(DateTime);
 
             case MemberTypes.Property:
                 return IsDate((PropertyInfo)member);
+
+            case MemberTypes.Field:
+            {
+                var fieldType = ((FieldInfo)member).FieldType;
+                return fieldType == typeof(DateTime) || fieldType == typeof(DateTime?);
+            }
         }
         return false;
     }
@@ -308,6 +431,7 @@ public static partial class Reflections
     /// <param name="property">属性</param>
     public static bool IsDate(PropertyInfo property)
     {
+        Check.NotNull(property, nameof(property));
         if (property.PropertyType == typeof(DateTime))
             return true;
         if (property.PropertyType == typeof(DateTime?))
@@ -326,15 +450,25 @@ public static partial class Reflections
     public static bool IsInt(MemberInfo member)
     {
         if (member == null)
-            return false;
+            throw new ArgumentNullException(nameof(member));
         switch (member.MemberType)
         {
             case MemberTypes.TypeInfo:
-                return member.ToString() == "System.Int32" || member.ToString() == "System.Int16" ||
-                       member.ToString() == "System.Int64";
+            {
+                var type = ((TypeInfo)member).AsType();
+                return type == typeof(int) || type == typeof(short) || type == typeof(long);
+            }
 
             case MemberTypes.Property:
                 return IsInt((PropertyInfo)member);
+
+            case MemberTypes.Field:
+            {
+                var fieldType = ((FieldInfo)member).FieldType;
+                return fieldType == typeof(int) || fieldType == typeof(int?)
+                    || fieldType == typeof(short) || fieldType == typeof(short?)
+                    || fieldType == typeof(long) || fieldType == typeof(long?);
+            }
         }
         return false;
     }
@@ -345,6 +479,7 @@ public static partial class Reflections
     /// <param name="property">成员</param>
     public static bool IsInt(PropertyInfo property)
     {
+        Check.NotNull(property, nameof(property));
         if (property.PropertyType == typeof(int))
             return true;
         if (property.PropertyType == typeof(int?))
@@ -371,17 +506,27 @@ public static partial class Reflections
     public static bool IsNumber(MemberInfo member)
     {
         if (member == null)
-            return false;
+            throw new ArgumentNullException(nameof(member));
         if (IsInt(member))
             return true;
         switch (member.MemberType)
         {
             case MemberTypes.TypeInfo:
-                return member.ToString() == "System.Double" || member.ToString() == "System.Decimal" ||
-                       member.ToString() == "System.Single";
+            {
+                var type = ((TypeInfo)member).AsType();
+                return type == typeof(double) || type == typeof(decimal) || type == typeof(float);
+            }
 
             case MemberTypes.Property:
                 return IsNumber((PropertyInfo)member);
+
+            case MemberTypes.Field:
+            {
+                var fieldType = ((FieldInfo)member).FieldType;
+                return fieldType == typeof(double) || fieldType == typeof(double?)
+                    || fieldType == typeof(decimal) || fieldType == typeof(decimal?)
+                    || fieldType == typeof(float) || fieldType == typeof(float?);
+            }
         }
         return false;
     }
@@ -392,6 +537,7 @@ public static partial class Reflections
     /// <param name="property">属性</param>
     public static bool IsNumber(PropertyInfo property)
     {
+        Check.NotNull(property, nameof(property));
         if (property.PropertyType == typeof(double))
             return true;
         if (property.PropertyType == typeof(double?))
@@ -415,7 +561,11 @@ public static partial class Reflections
     /// 是否集合
     /// </summary>
     /// <param name="type">类型</param>
-    public static bool IsCollection(Type type) => type.IsArray || IsGenericCollection(type);
+    public static bool IsCollection(Type type)
+    {
+        Check.NotNull(type, nameof(type));
+        return type.IsArray || IsGenericCollection(type);
+    }
 
     #endregion
 
@@ -427,6 +577,7 @@ public static partial class Reflections
     /// <param name="type">类型</param>
     public static bool IsGenericCollection(Type type)
     {
+        Check.NotNull(type, nameof(type));
         if (!type.IsGenericType)
             return false;
         var typeDefinition = type.GetGenericTypeDefinition();
@@ -443,13 +594,18 @@ public static partial class Reflections
     #region GetPublicProperties(获取公共属性列表)
 
     /// <summary>
-    /// 获取公共属性列表
+    /// 获取公共可读实例属性列表。
     /// </summary>
     /// <param name="instance">实例</param>
+    /// <remarks>静态属性、索引器和只有 setter 的属性不会进入结果。</remarks>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("对象的运行时类型由 object.GetType() 决定，裁剪时必须保留目标类型的公共属性。")]
+#endif
     public static List<Item> GetPublicProperties(object instance)
     {
-        var properties = instance.GetType().GetProperties();
-        return properties.ToList().Select(t => new Item(t.Name, t.GetValue(instance))).ToList();
+        Check.NotNull(instance, nameof(instance));
+        var properties = TypeReflections.GetPublicReadableInstanceProperties(instance.GetType());
+        return properties.Select(property => new Item(property.Name, property.GetValue(instance))).ToList();
     }
 
     #endregion
@@ -468,13 +624,15 @@ public static partial class Reflections
     /// <param name="type">类型</param>
     public static Type GetTopBaseType(Type type)
     {
-        if (type == null)
-            return null;
+        Check.NotNull(type, nameof(type));
         if (type.IsInterface)
             return type;
-        if (type.BaseType == typeof(object))
-            return type;
-        return GetTopBaseType(type.BaseType);
+        for (var current = type; current != null; current = current.BaseType)
+        {
+            if (current.BaseType == typeof(object))
+                return current;
+        }
+        return null;
     }
 
     #endregion
@@ -487,7 +645,11 @@ public static partial class Reflections
     /// <typeparam name="TBaseType">基类型</typeparam>
     /// <param name="type">当前类型</param>
     /// <param name="canAbstract">能否是抽象类</param>
-    public static bool IsDeriveClassFrom<TBaseType>(Type type, bool canAbstract = false) => IsDeriveClassFrom(type, typeof(TBaseType), canAbstract);
+    public static bool IsDeriveClassFrom<TBaseType>(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, bool canAbstract = false) => IsDeriveClassFrom(type, typeof(TBaseType), canAbstract);
 
     /// <summary>
     /// 判断当前类型是否可由指定类型派生
@@ -495,7 +657,11 @@ public static partial class Reflections
     /// <param name="type">当前类型</param>
     /// <param name="baseType">基类型</param>
     /// <param name="canAbstract">能否是抽象类</param>
-    public static bool IsDeriveClassFrom(Type type, Type baseType, bool canAbstract = false)
+    public static bool IsDeriveClassFrom(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, Type baseType, bool canAbstract = false)
     {
         Check.NotNull(type, nameof(type));
         Check.NotNull(baseType, nameof(baseType));
@@ -511,16 +677,29 @@ public static partial class Reflections
     /// </summary>
     /// <typeparam name="TBaseType">基类型</typeparam>
     /// <param name="type">类型</param>
-    public static bool IsBaseOn<TBaseType>(Type type) => IsBaseOn(type, typeof(TBaseType));
+    public static bool IsBaseOn<TBaseType>(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type) => IsBaseOn(type, typeof(TBaseType));
 
     /// <summary>
     /// 返回当前类型是否是指定基类的派生类
     /// </summary>
     /// <param name="type">类型</param>
     /// <param name="baseType">基类类型</param>
-    public static bool IsBaseOn(Type type, Type baseType) => baseType.IsGenericTypeDefinition
-        ? baseType.IsGenericAssignableFrom(type)
-        : baseType.IsAssignableFrom(type);
+    public static bool IsBaseOn(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, Type baseType)
+    {
+        Check.NotNull(type, nameof(type));
+        Check.NotNull(baseType, nameof(baseType));
+        return baseType.IsGenericTypeDefinition
+            ? baseType.IsGenericAssignableFrom(type)
+            : baseType.IsAssignableFrom(type);
+    }
 
     #endregion
 
@@ -531,12 +710,22 @@ public static partial class Reflections
     /// </summary>
     /// <param name="genericType">泛型类型</param>
     /// <param name="type">指定类型</param>
-    public static bool IsGenericAssignableFrom(Type genericType, Type type)
+    public static bool IsGenericAssignableFrom(Type genericType,
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type)
     {
         Check.NotNull(genericType, nameof(genericType));
         Check.NotNull(type, nameof(type));
         if (!genericType.IsGenericType)
             throw new ArgumentException("该功能只支持泛型类型的调用，非泛型类型可使用 IsAssignableFrom 方法。");
+
+        // 闭合泛型应遵循 CLR 的真实赋值规则，包括泛型协变/逆变和闭合泛型基类。
+        // 只有开放泛型定义需要继续按泛型定义遍历继承链。
+        if (!genericType.IsGenericTypeDefinition)
+            return genericType.IsAssignableFrom(type);
+
         var allOthers = new List<Type>() { type };
         if (genericType.IsInterface) allOthers.AddRange(type.GetInterfaces());
 
@@ -545,9 +734,7 @@ public static partial class Reflections
             var cur = other;
             while (cur != null)
             {
-                if (cur.IsGenericType)
-                    cur = cur.GetGenericTypeDefinition();
-                if (cur.IsSubclassOf(genericType) || cur == genericType)
+                if (cur.IsGenericType && cur.GetGenericTypeDefinition() == genericType)
                     return true;
                 cur = cur.BaseType;
             }

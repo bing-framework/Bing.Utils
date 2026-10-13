@@ -119,7 +119,11 @@ public static partial class TypeReflections
     /// <param name="type">类型</param>
     /// <param name="memberName">成员名称</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDescription(Type type, string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDescription(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        Type type, string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (type is null)
             return string.Empty;
@@ -140,7 +144,11 @@ public static partial class TypeReflections
     /// <typeparam name="T">泛型类型</typeparam>
     /// <param name="memberName">成员名称</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDescription<T>(string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDescription<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        T>(string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (string.IsNullOrWhiteSpace(memberName))
             return string.Empty;
@@ -260,7 +268,11 @@ public static partial class TypeReflections
     /// <param name="type">类型</param>
     /// <param name="memberName">成员名称</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDisplayName(Type type, string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDisplayName(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        Type type, string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (type is null)
             return string.Empty;
@@ -281,7 +293,11 @@ public static partial class TypeReflections
     /// <typeparam name="T">泛型类型</typeparam>
     /// <param name="memberName">成员名称</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDisplayName<T>(string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDisplayName<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        T>(string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (string.IsNullOrWhiteSpace(memberName))
             return string.Empty;
@@ -375,7 +391,11 @@ public static partial class TypeReflections
     /// <param name="memberName">成员名称</param>
     /// <param name="defaultVal">默认值</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDescriptionOr(Type type, string memberName, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDescriptionOr(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        Type type, string memberName, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (type is null)
             return defaultVal;
@@ -392,7 +412,11 @@ public static partial class TypeReflections
     /// <param name="memberName">成员名称</param>
     /// <param name="defaultVal">默认值</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDescriptionOr<T>(string memberName, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDescriptionOr<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        T>(string memberName, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (string.IsNullOrWhiteSpace(memberName))
             return defaultVal;
@@ -494,7 +518,11 @@ public static partial class TypeReflections
     /// <param name="memberName">成员名称</param>
     /// <param name="defaultVal">默认值</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDisplayNameOr(Type type, string memberName, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDisplayNameOr(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        Type type, string memberName, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (type is null)
             return defaultVal;
@@ -511,7 +539,11 @@ public static partial class TypeReflections
     /// <param name="memberName">成员名称</param>
     /// <param name="defaultVal">默认值</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDisplayNameOr<T>(string memberName, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDisplayNameOr<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        T>(string memberName, string defaultVal, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (string.IsNullOrWhiteSpace(memberName))
             return defaultVal;
@@ -603,7 +635,11 @@ public static partial class TypeReflections
     /// <param name="type">类型</param>
     /// <param name="memberName">成员名称</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDescriptionOrDisplayName(Type type, string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDescriptionOrDisplayName(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        Type type, string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (type is null)
             return string.Empty;
@@ -619,7 +655,11 @@ public static partial class TypeReflections
     /// <typeparam name="T">泛型类型</typeparam>
     /// <param name="memberName">成员名称</param>
     /// <param name="refOptions">反射选项</param>
-    public static string GetDescriptionOrDisplayName<T>(string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
+    public static string GetDescriptionOrDisplayName<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        T>(string memberName, ReflectionOptions refOptions = ReflectionOptions.Default)
     {
         if (string.IsNullOrWhiteSpace(memberName))
             return string.Empty;

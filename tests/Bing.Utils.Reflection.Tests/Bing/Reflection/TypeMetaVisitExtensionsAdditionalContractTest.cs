@@ -79,47 +79,47 @@ public class TypeMetaVisitExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：IsNumeric 在 null 成员元数据场景下当前实现抛 InvalidOperationException。
+    /// 测试用例：空成员元数据抛出带参数名的异常。
     /// </summary>
     [Fact]
-    public void IsNumeric_NullMemberInfo_CurrentlyThrowsInvalidOperationException()
+    public void IsNumeric_NullMemberInfo_ThrowsArgumentNullException()
     {
         MemberInfo member = null;
 
-        Should.Throw<InvalidOperationException>(() => member.IsNumeric());
+        Should.Throw<ArgumentNullException>(() => member.IsNumeric()).ParamName.ShouldBe("member");
     }
 
     /// <summary>
-    /// 测试用例：IsNumeric 在 null 参数元数据场景下，当前实现抛 NullReferenceException。
+    /// 测试用例：空参数元数据抛出带参数名的异常。
     /// </summary>
     [Fact]
-    public void IsNumeric_NullParameterInfo_CurrentlyThrowsNullReferenceException()
+    public void IsNumeric_NullParameterInfo_ThrowsArgumentNullException()
     {
         ParameterInfo parameter = null;
 
-        Should.Throw<NullReferenceException>(() => parameter.IsNumeric());
+        Should.Throw<ArgumentNullException>(() => parameter.IsNumeric()).ParamName.ShouldBe("parameter");
     }
 
     /// <summary>
-    /// 测试用例：IsTupleType 在 null 参数元数据场景下，当前实现抛 NullReferenceException。
+    /// 测试用例：元组判断拒绝空参数元数据。
     /// </summary>
     [Fact]
-    public void IsTupleType_NullParameterInfo_CurrentlyThrowsNullReferenceException()
+    public void IsTupleType_NullParameterInfo_ThrowsArgumentNullException()
     {
         ParameterInfo parameter = null;
 
-        Should.Throw<NullReferenceException>(() => parameter.IsTupleType());
+        Should.Throw<ArgumentNullException>(() => parameter.IsTupleType()).ParamName.ShouldBe("parameter");
     }
 
     /// <summary>
-    /// 测试用例：IsStructType 在 null 参数元数据场景下，当前实现抛 NullReferenceException。
+    /// 测试用例：结构体判断拒绝空参数元数据。
     /// </summary>
     [Fact]
-    public void IsStructType_NullParameterInfo_CurrentlyThrowsNullReferenceException()
+    public void IsStructType_NullParameterInfo_ThrowsArgumentNullException()
     {
         ParameterInfo parameter = null;
 
-        Should.Throw<NullReferenceException>(() => parameter.IsStructType());
+        Should.Throw<ArgumentNullException>(() => parameter.IsStructType()).ParamName.ShouldBe("parameter");
     }
 
     /// <summary>

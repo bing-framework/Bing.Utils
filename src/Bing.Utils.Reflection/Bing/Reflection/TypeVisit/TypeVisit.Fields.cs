@@ -13,11 +13,15 @@ public static partial class TypeVisit
     /// </summary>
     /// <param name="type">类型</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static IEnumerable<FieldInfo> GetFields(Type type)
+    public static IEnumerable<FieldInfo> GetFields(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicFields)]
+#endif
+        Type type)
     {
         if (type is null)
             throw new ArgumentNullException(nameof(type));
-        return type.GetFields();
+        return TypeReflections.TypeCacheManager.GetTypeFields(type);
     }
 
     /// <summary>
@@ -25,7 +29,10 @@ public static partial class TypeVisit
     /// </summary>
     /// <typeparam name="T">类型</typeparam>
     /// <param name="fieldSelectors">字段选择器集合</param>
-    public static IEnumerable<FieldInfo> GetFields<T>(params Expression<Func<T, object>>[] fieldSelectors) => GetFields((IEnumerable<Expression<Func<T, object>>>)fieldSelectors);
+    public static IEnumerable<FieldInfo> GetFields<T>(params Expression<Func<T, object>>[] fieldSelectors) =>
+        fieldSelectors is null || fieldSelectors.Length == 0
+            ? GetFields(typeof(T))
+            : GetFields((IEnumerable<Expression<Func<T, object>>>)fieldSelectors);
 
     /// <summary>
     /// 获取字段列表
@@ -37,7 +44,11 @@ public static partial class TypeVisit
     {
         if (fieldSelectors is null)
             throw new ArgumentNullException(nameof(fieldSelectors));
-        return fieldSelectors.Select(GetField);
+
+        var fields = new List<FieldInfo>();
+        foreach (var selector in fieldSelectors)
+            fields.Add(GetField(selector));
+        return fields.ToArray();
     }
 
     /// <summary>

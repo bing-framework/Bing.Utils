@@ -13,7 +13,8 @@ public class TypeConvTest
     public void Test_NullableTypeToNonNullableType()
     {
         TypeConv.GetNonNullableType(typeof(object)).ShouldBe(typeof(object));
-        TypeConv.GetNonNullableType(null).ShouldBeNull();
+        Should.Throw<ArgumentNullException>(() => TypeConv.GetNonNullableType(null!))
+            .ParamName.ShouldBe("type");
         TypeConv.GetNonNullableType(typeof(byte)).ShouldBe(typeof(byte));
         TypeConv.GetNonNullableType(typeof(byte?)).ShouldBe(typeof(byte));
         TypeConv.GetNonNullableType(typeof(sbyte)).ShouldBe(typeof(sbyte));

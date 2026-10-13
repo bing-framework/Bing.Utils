@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Linq.Expressions;
 namespace Bing.Reflection;
 /// <summary>
 /// 测试类：覆盖 `TypeVisitTypesFieldsAndMetadata` 相关行为。
@@ -125,14 +126,14 @@ public class TypeVisitTypesFieldsAndMetadataTest
     /// 测试用例：验证 `AttributeExtensions` 在 `NonGenericIsAttributeNotDefined` 场景下，结果为 `CurrentBehaviorEqualsDefined`。
     /// </summary>
     [Fact]
-    public void AttributeExtensions_NonGenericIsAttributeNotDefined_CurrentBehaviorEqualsDefined()
+    public void AttributeExtensions_NonGenericIsAttributeNotDefined_ReturnsInverseOfDefined()
     {
         var member = typeof(MetadataSample).GetProperty(nameof(MetadataSample.WithObsolete));
         var memberWithout = typeof(MetadataSample).GetProperty(nameof(MetadataSample.WithoutDescription));
         member.IsAttributeDefined(typeof(ObsoleteAttribute)).ShouldBeTrue();
-        member.IsAttributeNotDefined(typeof(ObsoleteAttribute)).ShouldBeTrue();
+        member.IsAttributeNotDefined(typeof(ObsoleteAttribute)).ShouldBeFalse();
         memberWithout.IsAttributeDefined(typeof(ObsoleteAttribute)).ShouldBeFalse();
-        memberWithout.IsAttributeNotDefined(typeof(ObsoleteAttribute)).ShouldBeFalse();
+        memberWithout.IsAttributeNotDefined(typeof(ObsoleteAttribute)).ShouldBeTrue();
     }
     private class FieldSample
     {

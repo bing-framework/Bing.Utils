@@ -30,9 +30,15 @@ public static class TypeJudge
     /// </summary>
     /// <param name="typeInfo">类型信息</param>
     /// <param name="mayNullable">是否可空</param>
-    public static bool IsEnumType(TypeInfo typeInfo, bool mayNullable = false) => mayNullable
-        ? (Nullable.GetUnderlyingType(typeInfo) ?? typeInfo).IsEnum
-        : typeInfo.IsEnum;
+    /// <exception cref="ArgumentNullException">类型信息为 null 时抛出。</exception>
+    public static bool IsEnumType(TypeInfo typeInfo, bool mayNullable = false)
+    {
+        if (typeInfo is null)
+            throw new ArgumentNullException(nameof(typeInfo));
+        return mayNullable
+            ? (Nullable.GetUnderlyingType(typeInfo) ?? typeInfo).IsEnum
+            : typeInfo.IsEnum;
+    }
 
     #endregion
 
@@ -65,7 +71,13 @@ public static class TypeJudge
     /// 是否数值类型
     /// </summary>
     /// <param name="typeInfo">类型信息</param>
-    public static bool IsNumericType(TypeInfo typeInfo) => IsNumericType(typeInfo.AsType());
+    /// <exception cref="ArgumentNullException">类型信息为 null 时抛出。</exception>
+    public static bool IsNumericType(TypeInfo typeInfo)
+    {
+        if (typeInfo is null)
+            throw new ArgumentNullException(nameof(typeInfo));
+        return IsNumericType(typeInfo.AsType());
+    }
 
     #endregion
 
@@ -90,7 +102,13 @@ public static class TypeJudge
     /// 是否可空类型
     /// </summary>
     /// <param name="typeInfo">类型信息</param>
-    public static bool IsNullableType(TypeInfo typeInfo) => IsNullableType(typeInfo.AsType());
+    /// <exception cref="ArgumentNullException">类型信息为 null 时抛出。</exception>
+    public static bool IsNullableType(TypeInfo typeInfo)
+    {
+        if (typeInfo is null)
+            throw new ArgumentNullException(nameof(typeInfo));
+        return IsNullableType(typeInfo.AsType());
+    }
 
     #endregion
 
@@ -102,7 +120,11 @@ public static class TypeJudge
     /// <param name="type">类型</param>
     /// <param name="genericType">泛型类型</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static bool IsGenericImplementation(Type type, Type genericType)
+    public static bool IsGenericImplementation(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, Type genericType)
     {
         if (type is null)
             throw new ArgumentNullException(nameof(type));
@@ -110,6 +132,11 @@ public static class TypeJudge
             throw new ArgumentNullException(nameof(genericType));
         if (!genericType.IsGenericType)
             return false;
+        // 开放泛型按定义匹配，闭合泛型保留参数进行精确匹配。
+        var genericTypeDefinition = genericType.IsGenericTypeDefinition
+            ? genericType
+            : genericType.GetGenericTypeDefinition();
+        var matchGenericDefinition = genericType.IsGenericTypeDefinition;
         bool testFlag;
         testFlag = type.GetInterfaces().Any(_checkRawGenericType);
         if (testFlag)
@@ -126,7 +153,14 @@ public static class TypeJudge
 
         // 检查原始泛型类型
         // ReSharper disable once InconsistentNaming
-        bool _checkRawGenericType(Type test) => genericType == (test.IsGenericType ? test.GetGenericTypeDefinition() : test);
+        bool _checkRawGenericType(Type test)
+        {
+            if (!test.IsGenericType)
+                return false;
+            return matchGenericDefinition
+                ? genericTypeDefinition == test.GetGenericTypeDefinition()
+                : genericType == test;
+        }
     }
 
     /// <summary>
@@ -134,7 +168,11 @@ public static class TypeJudge
     /// </summary>
     /// <typeparam name="TGot">类型</typeparam>
     /// <typeparam name="TGeneric">泛型类型</typeparam>
-    public static bool IsGenericImplementation<TGot, TGeneric>() => IsGenericImplementation(typeof(TGot), typeof(TGeneric));
+    public static bool IsGenericImplementation<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        TGot, TGeneric>() => IsGenericImplementation(typeof(TGot), typeof(TGeneric));
 
     #endregion
 

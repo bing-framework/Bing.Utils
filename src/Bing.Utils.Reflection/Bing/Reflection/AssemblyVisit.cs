@@ -1,4 +1,3 @@
-﻿using System.Diagnostics;
 using System.Reflection;
 using Bing.Extensions;
 
@@ -13,7 +12,15 @@ public static partial class AssemblyVisit
     /// 获取 <see cref="Assembly"/> 文件的版本
     /// </summary>
     /// <param name="assembly">程序集</param>
-    public static string GetFileVersion(Assembly assembly) => V(assembly).FileVersion;
+    public static string GetFileVersion(Assembly assembly)
+    {
+        if (assembly is null)
+            throw new ArgumentNullException(nameof(assembly));
+
+        return assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
+            ?? assembly.GetName().Version?.ToString()
+            ?? string.Empty;
+    }
 
     /// <summary>
     /// 获取 <see cref="Assembly"/> 文件的产品版本
@@ -21,21 +28,15 @@ public static partial class AssemblyVisit
     /// <param name="assembly">程序集</param>
     public static string GetProductVersion(Assembly assembly)
     {
-        var version = V(assembly).ProductVersion;
-        if (version?.Contains("+") == true) 
-            version = version.ReplaceWith(@"\+(\w+)?", "");
-        return version;
-    }
-
-    /// <summary>
-    /// 访问
-    /// </summary>
-    /// <param name="assembly">程序集</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    private static FileVersionInfo V(Assembly assembly)
-    {
         if (assembly is null)
             throw new ArgumentNullException(nameof(assembly));
-        return FileVersionInfo.GetVersionInfo(assembly.Location);
+
+        var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+            ?? assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
+            ?? assembly.GetName().Version?.ToString()
+            ?? string.Empty;
+        if (version.Contains("+"))
+            version = version.ReplaceWith(@"\+(\w+)?", "");
+        return version;
     }
 }

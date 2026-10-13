@@ -1,5 +1,9 @@
 using System.Reflection;
 
+#if NET5_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
+
 namespace Bing.Reflection;
 
 /// <summary>
@@ -7,6 +11,8 @@ namespace Bing.Reflection;
 /// </summary>
 public static partial class TypeVisit
 {
+    internal static int ConstructorScanCount => StrictConstructorBinder.ConstructorScanCount;
+    internal static int ConstructorInvokerBuildCount => StrictConstructorBinder.ConstructorInvokerBuildCount;
     /// <summary>
     /// 批量创建指定类型的实例。
     /// </summary>
@@ -16,6 +22,12 @@ public static partial class TypeVisit
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 或 <paramref name="argumentSets"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当目标类型不可实例化，或不存在唯一兼容构造函数时抛出。</exception>
     /// <exception cref="InvalidOperationException">当构造函数执行失败时抛出。</exception>
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("批量构造实例使用运行时生成的构造函数委托，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("批量构造实例依赖运行时构造函数元数据，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
     public static IReadOnlyList<object> CreateInstances(Type type, IEnumerable<object[]> argumentSets)
     {
         if (type == null)
@@ -25,8 +37,28 @@ public static partial class TypeVisit
         EnsureCreatableType(type);
 
         var result = new List<object>();
+        var index = 0;
         foreach (var arguments in argumentSets)
-            result.Add(CreateInstanceStrict(type, arguments));
+        {
+            try
+            {
+                result.Add(CreateInstanceStrict(type, arguments));
+            }
+            catch (ArgumentException exception)
+            {
+                throw new ArgumentException(
+                    $"无法创建类型“{type.FullName}”的第 {index} 个参数集合。构造参数类型：{GetArgumentTypeDescription(arguments)}。",
+                    nameof(argumentSets), exception);
+            }
+            catch (InvalidOperationException exception)
+            {
+                throw new InvalidOperationException(
+                    $"创建类型“{type.FullName}”的第 {index} 个参数集合时发生异常。",
+                    exception);
+            }
+
+            index++;
+        }
         return result;
     }
 
@@ -39,6 +71,12 @@ public static partial class TypeVisit
     /// <exception cref="ArgumentNullException">当 <paramref name="argumentSets"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当目标类型不可实例化，或不存在唯一兼容构造函数时抛出。</exception>
     /// <exception cref="InvalidOperationException">当构造函数执行失败时抛出。</exception>
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("批量构造实例使用运行时生成的构造函数委托，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("批量构造实例依赖运行时构造函数元数据，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
     public static IReadOnlyList<TInstance> CreateInstances<TInstance>(IEnumerable<object[]> argumentSets)
     {
         var instances = CreateInstances(typeof(TInstance), argumentSets);
@@ -54,6 +92,12 @@ public static partial class TypeVisit
     /// <exception cref="ArgumentNullException">当 <paramref name="types"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当类型集合包含 null、不可实例化类型或不存在唯一兼容构造函数时抛出。</exception>
     /// <exception cref="InvalidOperationException">当构造函数执行失败时抛出。</exception>
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("批量构造实例使用运行时生成的构造函数委托，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("批量构造实例依赖运行时类型和构造函数元数据，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
     public static IReadOnlyList<object> CreateInstances(IEnumerable<Type> types, params object[] constructorArguments)
     {
         if (types == null)
@@ -95,6 +139,12 @@ public static partial class TypeVisit
     /// <exception cref="ArgumentNullException">当 <paramref name="types"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当类型集合包含 null、不可实例化类型、不可赋值类型或不存在唯一兼容构造函数时抛出。</exception>
     /// <exception cref="InvalidOperationException">当构造函数执行失败时抛出。</exception>
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("批量构造实例使用运行时生成的构造函数委托，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("批量构造实例依赖运行时类型和构造函数元数据，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
     public static IReadOnlyList<TInstance> CreateInstances<TInstance>(IEnumerable<Type> types, params object[] constructorArguments)
     {
         if (types == null)
@@ -123,6 +173,12 @@ public static partial class TypeVisit
     /// <exception cref="ArgumentNullException">当 <paramref name="openGenericType"/> 或 <paramref name="genericArguments"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当类型不是开放泛型定义、类型实参无效，或不存在唯一兼容构造函数时抛出。</exception>
     /// <exception cref="InvalidOperationException">当构造函数执行失败时抛出。</exception>
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("封闭泛型类型并生成构造函数委托需要运行时动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("封闭泛型类型和构造函数实例化依赖运行时元数据，裁剪时必须保留相关类型及构造函数。")]
+#endif
     public static object CreateGenericInstance(Type openGenericType, Type[] genericArguments, params object[] args)
     {
         if (openGenericType == null)
@@ -136,17 +192,7 @@ public static partial class TypeVisit
         if (openGenericType.GetGenericArguments().Length != genericArguments.Length)
             throw new ArgumentException("泛型类型实参数量与开放泛型类型定义不匹配", nameof(genericArguments));
 
-        Type closedType;
-        try
-        {
-            closedType = openGenericType.MakeGenericType(genericArguments);
-        }
-        catch (ArgumentException exception)
-        {
-            throw new ArgumentException("泛型类型实参与开放泛型类型不兼容", nameof(genericArguments), exception);
-        }
-
-        return CreateInstanceStrict(closedType, args);
+        return CreateInstanceStrict(CloseGenericType(openGenericType, genericArguments), args);
     }
 
     /// <summary>
@@ -159,6 +205,12 @@ public static partial class TypeVisit
     /// <exception cref="ArgumentNullException">当 <paramref name="openGenericType"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当目标类型不是与 <typeparamref name="TInstance"/> 对应的开放泛型定义，或不存在唯一兼容构造函数时抛出。</exception>
     /// <exception cref="InvalidOperationException">当构造函数执行失败时抛出。</exception>
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("封闭泛型类型并生成构造函数委托需要运行时动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("封闭泛型类型和构造函数实例化依赖运行时元数据，裁剪时必须保留相关类型及构造函数。")]
+#endif
     public static TInstance CreateGenericInstance<TInstance>(Type openGenericType, params object[] constructorArguments)
     {
         if (openGenericType == null)
@@ -180,101 +232,64 @@ public static partial class TypeVisit
     /// <param name="constructorArguments">传递给构造函数的参数。</param>
     /// <returns>创建的强类型实例。</returns>
     /// <exception cref="InvalidCastException">当封闭泛型类型不可赋值给 <typeparamref name="TInstance"/> 时抛出。</exception>
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("封闭泛型类型并生成构造函数委托需要运行时动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("封闭泛型类型和构造函数实例化依赖运行时元数据，裁剪时必须保留相关类型及构造函数。")]
+#endif
     public static TInstance CreateGenericInstance<TInstance>(Type openGenericType, Type[] genericArguments, params object[] constructorArguments)
     {
-        var instance = CreateGenericInstance(openGenericType, genericArguments, constructorArguments);
-        if (instance is TInstance typedInstance)
-            return typedInstance;
-        throw new InvalidCastException($"封闭泛型类型“{instance.GetType().FullName}”不可赋值给目标类型“{typeof(TInstance).FullName}”。");
+        if (openGenericType == null)
+            throw new ArgumentNullException(nameof(openGenericType));
+        if (genericArguments == null)
+            throw new ArgumentNullException(nameof(genericArguments));
+        if (!openGenericType.IsGenericTypeDefinition)
+            throw new ArgumentException("类型必须是开放泛型类型定义", nameof(openGenericType));
+        if (genericArguments.Any(argument => argument == null))
+            throw new ArgumentException("泛型类型实参不能包含 null", nameof(genericArguments));
+        if (openGenericType.GetGenericArguments().Length != genericArguments.Length)
+            throw new ArgumentException("泛型类型实参数量与开放泛型类型定义不匹配", nameof(genericArguments));
+
+        var closedType = CloseGenericType(openGenericType, genericArguments);
+        if (!typeof(TInstance).IsAssignableFrom(closedType))
+            throw new InvalidCastException($"封闭泛型类型“{closedType.FullName}”不可赋值给目标类型“{typeof(TInstance).FullName}”。");
+        return (TInstance)CreateInstanceStrict(closedType, constructorArguments);
     }
 
-    /// <summary>
-    /// 严格创建单个实例。
-    /// </summary>
-    /// <param name="type">要创建实例的类型。</param>
-    /// <param name="args">构造函数参数。</param>
-    /// <returns>创建的实例。</returns>
-    /// <exception cref="ArgumentException">当目标类型不可实例化，或不存在唯一兼容构造函数时抛出。</exception>
-    /// <exception cref="InvalidOperationException">当构造函数执行失败时抛出。</exception>
-    private static object CreateInstanceStrict(Type type, object[] args)
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("封闭泛型类型需要运行时动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("封闭泛型类型需要运行时泛型元数据。")]
+#endif
+    private static Type CloseGenericType(Type openGenericType, Type[] genericArguments)
     {
-        EnsureCreatableType(type);
-        args ??= Array.Empty<object>();
-        var constructor = FindCompatibleConstructor(type, args);
-
         try
         {
-            return constructor.Invoke(args);
+            return openGenericType.MakeGenericType(genericArguments);
         }
-        catch (TargetInvocationException exception)
+        catch (ArgumentException exception)
         {
-            throw new InvalidOperationException($"调用类型“{type.FullName}”的构造函数时发生异常", exception.InnerException ?? exception);
+            throw new ArgumentException("泛型类型实参与开放泛型类型不兼容", nameof(genericArguments), exception);
         }
     }
 
-    /// <summary>
-    /// 查找唯一的兼容构造函数。
-    /// </summary>
-    /// <param name="type">目标类型。</param>
-    /// <param name="args">构造函数参数。</param>
-    /// <returns>唯一兼容的构造函数。</returns>
-    /// <exception cref="ArgumentException">当不存在或存在多个兼容构造函数时抛出。</exception>
-    private static ConstructorInfo FindCompatibleConstructor(Type type, object[] args)
-    {
-        var candidates = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
-            .Where(constructor => IsConstructorCompatible(constructor, args))
-            .ToArray();
-        if (candidates.Length == 0)
-            throw new ArgumentException($"类型“{type.FullName}”不存在与给定参数兼容的公共构造函数", nameof(args));
-        if (candidates.Length > 1)
-            throw new ArgumentException($"类型“{type.FullName}”存在多个与给定参数兼容的公共构造函数", nameof(args));
-        return candidates[0];
-    }
+    /// <summary>使用核心包共用的绑定器严格创建单个实例。</summary>
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("构造函数按运行时类型和参数匹配，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
+    private static object CreateInstanceStrict(Type type, object[] args) =>
+        StrictConstructorBinder.CreateInstance(type, args);
 
-    /// <summary>
-    /// 判断构造函数是否与给定实参兼容。
-    /// </summary>
-    /// <param name="constructor">构造函数元数据。</param>
-    /// <param name="args">构造函数实参。</param>
-    /// <returns>实参数量和类型均兼容时返回 true；否则返回 false。</returns>
-    private static bool IsConstructorCompatible(ConstructorInfo constructor, object[] args)
-    {
-        var parameters = constructor.GetParameters();
-        if (parameters.Length != args.Length)
-            return false;
-
-        for (var index = 0; index < parameters.Length; index++)
-        {
-            if (!IsArgumentCompatible(parameters[index].ParameterType, args[index]))
-                return false;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// 判断单个构造函数实参是否可赋值给参数类型。
-    /// </summary>
-    /// <param name="parameterType">构造函数参数类型。</param>
-    /// <param name="argument">构造函数实参。</param>
-    /// <returns>实参可赋值时返回 true；否则返回 false。</returns>
-    private static bool IsArgumentCompatible(Type parameterType, object argument)
-    {
-        if (argument == null)
-            return !parameterType.IsValueType || Nullable.GetUnderlyingType(parameterType) != null;
-        return parameterType.IsInstanceOfType(argument);
-    }
-
-    /// <summary>
-    /// 验证类型可通过公共构造函数创建实例。
-    /// </summary>
-    /// <param name="type">待验证的类型。</param>
-    /// <exception cref="ArgumentException">当类型为接口、抽象类、开放泛型或指针类型时抛出。</exception>
-    private static void EnsureCreatableType(Type type)
-    {
-        if (type.IsInterface || type.IsAbstract || type.ContainsGenericParameters || type.IsPointer)
-            throw new ArgumentException($"类型“{type.FullName}”不能通过公共构造函数创建实例", nameof(type));
-    }
+    private static void EnsureCreatableType(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type) => StrictConstructorBinder.EnsureCreatableType(type);
 
     /// <summary>
     /// 获取构造参数类型说明。

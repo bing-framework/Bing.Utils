@@ -71,20 +71,17 @@ public class PropertyInfoExtensionsTests
     }
 
     [Fact]
-    public void GetValueGetter_Generic_WriteOnlyProp_ReturnsNull()
+    public void GetValueGetter_Generic_WriteOnlyProp_ThrowsInvalidOperationException()
     {
         var prop = typeof(PersonModel).GetProperty(nameof(PersonModel.WriteOnlyProp))!;
-        var getter = prop.GetValueGetter<PersonModel>();
-        getter.ShouldBeNull();
+        Should.Throw<InvalidOperationException>(() => prop.GetValueGetter<PersonModel>());
     }
 
     [Fact]
-    public void GetValueGetter_Generic_StaticProp_ReturnsNull()
+    public void GetValueGetter_Generic_StaticProp_ThrowsArgumentException()
     {
-        // 静态属性被跳过，返回 null
         var prop = typeof(PersonModel).GetProperty(nameof(PersonModel.ClassName))!;
-        var getter = prop.GetValueGetter<PersonModel>();
-        getter.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => prop.GetValueGetter<PersonModel>());
     }
 
     [Fact]
@@ -132,11 +129,10 @@ public class PropertyInfoExtensionsTests
     }
 
     [Fact]
-    public void GetValueGetter_NonGeneric_WriteOnlyProp_ReturnsNull()
+    public void GetValueGetter_NonGeneric_WriteOnlyProp_ThrowsInvalidOperationException()
     {
         var prop = typeof(PersonModel).GetProperty(nameof(PersonModel.WriteOnlyProp))!;
-        var getter = prop.GetValueGetter();
-        getter.ShouldBeNull();
+        Should.Throw<InvalidOperationException>(() => prop.GetValueGetter());
     }
 
     [Fact]
@@ -175,20 +171,17 @@ public class PropertyInfoExtensionsTests
     }
 
     [Fact]
-    public void GetValueSetter_Generic_ReadOnlyProp_ReturnsNull()
+    public void GetValueSetter_Generic_ReadOnlyProp_ThrowsInvalidOperationException()
     {
         var prop = typeof(PersonModel).GetProperty(nameof(PersonModel.ReadOnlyProp))!;
-        var setter = prop.GetValueSetter<PersonModel>();
-        setter.ShouldBeNull();
+        Should.Throw<InvalidOperationException>(() => prop.GetValueSetter<PersonModel>());
     }
 
     [Fact]
-    public void GetValueSetter_Generic_StaticProp_ReturnsNull()
+    public void GetValueSetter_Generic_StaticProp_ThrowsArgumentException()
     {
-        // 泛型版本跳过静态属性
         var prop = typeof(PersonModel).GetProperty(nameof(PersonModel.StaticCount))!;
-        var setter = prop.GetValueSetter<PersonModel>();
-        setter.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => prop.GetValueSetter<PersonModel>());
     }
 
     [Fact]
@@ -229,11 +222,10 @@ public class PropertyInfoExtensionsTests
     }
 
     [Fact]
-    public void GetValueSetter_NonGeneric_ReadOnlyProp_ReturnsNull()
+    public void GetValueSetter_NonGeneric_ReadOnlyProp_ThrowsInvalidOperationException()
     {
         var prop = typeof(PersonModel).GetProperty(nameof(PersonModel.ReadOnlyProp))!;
-        var setter = prop.GetValueSetter();
-        setter.ShouldBeNull();
+        Should.Throw<InvalidOperationException>(() => prop.GetValueSetter());
     }
 
     [Fact]

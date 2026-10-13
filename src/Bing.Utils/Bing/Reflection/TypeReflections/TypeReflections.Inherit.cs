@@ -31,7 +31,11 @@ public static partial class TypeReflections
     /// <param name="isOptions">类型判断选项</param>
     /// <param name="derivedOptions">类型派生选项</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static bool IsObjectDerivedFrom<TSource>(TSource value, Type parentType, TypeIsOptions isOptions = TypeIsOptions.Default, TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default)
+    public static bool IsObjectDerivedFrom<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        TSource>(TSource value, Type parentType, TypeIsOptions isOptions = TypeIsOptions.Default, TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default)
     {
         if (parentType is null)
             throw new ArgumentNullException(nameof(parentType));
@@ -51,7 +55,11 @@ public static partial class TypeReflections
     /// <param name="value">值</param>
     /// <param name="isOptions">类型判断选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsObjectDerivedFrom<TSource, TParent>(TSource value, TypeIsOptions isOptions = TypeIsOptions.Default) =>
+    public static bool IsObjectDerivedFrom<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        TSource, TParent>(TSource value, TypeIsOptions isOptions = TypeIsOptions.Default) =>
         IsObjectDerivedFrom(value, typeof(TParent), isOptions);
 
     #endregion
@@ -65,7 +73,11 @@ public static partial class TypeReflections
     /// <param name="parentType">父类型</param>
     /// <param name="derivedOptions">类型派生选项</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static bool IsTypeDerivedFrom(Type sourceType, Type parentType, TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default)
+    public static bool IsTypeDerivedFrom(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type sourceType, Type parentType, TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default)
     {
         if (sourceType == null)
             throw new ArgumentNullException(nameof(sourceType));
@@ -94,7 +106,11 @@ public static partial class TypeReflections
     /// <typeparam name="TParent">父类型</typeparam>
     /// <param name="derivedOptions">类型派生选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsTypeDerivedFrom<TSource, TParent>(TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default) =>
+    public static bool IsTypeDerivedFrom<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        TSource, TParent>(TypeDerivedOptions derivedOptions = TypeDerivedOptions.Default) =>
         IsTypeDerivedFrom(typeof(TSource), typeof(TParent), derivedOptions);
 
     #endregion
@@ -107,7 +123,11 @@ public static partial class TypeReflections
     /// <param name="sourceType">来源类型</param>
     /// <param name="parentType">父类型</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static bool IsTypeBasedOn(Type sourceType, Type parentType)
+    public static bool IsTypeBasedOn(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type sourceType, Type parentType)
     {
         if (sourceType is null)
             throw new ArgumentNullException(nameof(sourceType));
@@ -124,7 +144,11 @@ public static partial class TypeReflections
     /// <typeparam name="TSource">来源类型</typeparam>
     /// <typeparam name="TParent">父类型</typeparam>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsTypeBasedOn<TSource, TParent>() => IsTypeBasedOn(typeof(TSource), typeof(TParent));
+    public static bool IsTypeBasedOn<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        TSource, TParent>() => IsTypeBasedOn(typeof(TSource), typeof(TParent));
 
     #endregion
 
@@ -138,7 +162,11 @@ public static partial class TypeReflections
     /// <param name="genericType">泛型类型</param>
     /// <param name="genericArguments">泛型参数</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static bool IsImplementationOfGenericType(Type sourceType, Type parentGenericType, out Type genericType,
+    public static bool IsImplementationOfGenericType(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type sourceType, Type parentGenericType, out Type genericType,
         out Type[] genericArguments)
     {
         if (sourceType is null)
@@ -197,7 +225,11 @@ public static partial class TypeReflections
     /// <param name="parentGenericType">父泛型类型</param>
     /// <param name="genericArguments">泛型参数</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsImplementationOfGenericType(Type sourceType, Type parentGenericType, out Type[] genericArguments) =>
+    public static bool IsImplementationOfGenericType(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type sourceType, Type parentGenericType, out Type[] genericArguments) =>
         IsImplementationOfGenericType(sourceType, parentGenericType, out _, out genericArguments);
 
     /// <summary>
@@ -207,7 +239,11 @@ public static partial class TypeReflections
     /// <typeparam name="TGenericParent">父泛型类型</typeparam>
     /// <param name="genericArguments">泛型参数</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsImplementationOfGenericType<TSource, TGenericParent>(out Type[] genericArguments) => 
+    public static bool IsImplementationOfGenericType<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        TSource, TGenericParent>(out Type[] genericArguments) =>
         IsImplementationOfGenericType(typeof(TSource), typeof(TGenericParent), out genericArguments);
 
     #endregion
@@ -221,7 +257,11 @@ public static partial class TypeReflections
     /// <param name="sourceType">来源类型</param>
     /// <param name="parentGenericType">父泛型类型</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Type GetRawTypeFromGenericType(Type sourceType, Type parentGenericType) =>
+    public static Type GetRawTypeFromGenericType(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type sourceType, Type parentGenericType) =>
         IsImplementationOfGenericType(sourceType, parentGenericType, out var genericType, out _)
             ? genericType
             : default;
@@ -233,7 +273,11 @@ public static partial class TypeReflections
     /// <typeparam name="TSource">来源类型</typeparam>
     /// <typeparam name="TGenericParent">父泛型类型</typeparam>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Type GetRawTypeFromGenericType<TSource, TGenericParent>() => GetRawTypeFromGenericType(typeof(TSource), typeof(TGenericParent));
+    public static Type GetRawTypeFromGenericType<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        TSource, TGenericParent>() => GetRawTypeFromGenericType(typeof(TSource), typeof(TGenericParent));
 
     #endregion
 
@@ -246,7 +290,11 @@ public static partial class TypeReflections
     /// <param name="sourceType">来源类型</param>
     /// <param name="parentGenericType">父泛型类型</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TypesVal GetRawTypeArgsFromGenericType(Type sourceType, Type parentGenericType) =>
+    public static TypesVal GetRawTypeArgsFromGenericType(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type sourceType, Type parentGenericType) =>
         IsImplementationOfGenericType(sourceType, parentGenericType, out _, out var genericArguments)
             ? TypesVal.Create(genericArguments)
             : TypesVal.Empty;
@@ -258,7 +306,11 @@ public static partial class TypeReflections
     /// <typeparam name="TSource">来源类型</typeparam>
     /// <typeparam name="TGenericParent">父泛型类型</typeparam>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TypesVal GetRawTypeArgsFromGenericType<TSource, TGenericParent>() => GetRawTypeArgsFromGenericType(typeof(TSource), typeof(TGenericParent));
+    public static TypesVal GetRawTypeArgsFromGenericType<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        TSource, TGenericParent>() => GetRawTypeArgsFromGenericType(typeof(TSource), typeof(TGenericParent));
 
     #endregion
 
@@ -268,11 +320,12 @@ public static partial class TypeReflections
     /// 获取枚举的底层类型
     /// </summary>
     /// <param name="type">类型</param>
+    /// <exception cref="ArgumentNullException">类型为 null 时抛出。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Type GetEnumUnderlyingType(Type type)
     {
         if (type is null)
-            return null;
+            throw new ArgumentNullException(nameof(type));
         if (!type.IsEnum)
             return null;
         return type.GetEnumUnderlyingType();

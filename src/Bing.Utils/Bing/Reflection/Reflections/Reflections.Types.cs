@@ -23,10 +23,11 @@ public static partial class Reflections
     /// 获取基础类型
     /// </summary>
     /// <param name="type">类型</param>
+    /// <exception cref="ArgumentNullException">类型为 null 时抛出。</exception>
     public static Type GetUnderlyingType(Type type)
     {
         if (type is null)
-            return null;
+            throw new ArgumentNullException(nameof(type));
         return Nullable.GetUnderlyingType(type) ?? type;
     }
 
@@ -34,10 +35,11 @@ public static partial class Reflections
     /// 获取基础类型
     /// </summary>
     /// <param name="typeInfo">类型信息</param>
+    /// <exception cref="ArgumentNullException">类型信息为 null 时抛出。</exception>
     public static Type GetUnderlyingType(TypeInfo typeInfo)
     {
         if (typeInfo is null)
-            return null;
+            throw new ArgumentNullException(nameof(typeInfo));
         var type = typeInfo.AsType();
         return Nullable.GetUnderlyingType(type) ?? type;
     }
@@ -60,6 +62,11 @@ public static partial class Reflections
             throw new ArgumentNullException(nameof(genericType));
         if (!genericType.IsGenericType)
             return null;
+        // 开放泛型按定义匹配，闭合泛型保留参数进行精确匹配。
+        var genericTypeDefinition = genericType.IsGenericTypeDefinition
+            ? genericType
+            : genericType.GetGenericTypeDefinition();
+        var matchGenericDefinition = genericType.IsGenericTypeDefinition;
         while (type != null && type != TypeClass.ObjectClazz)
         {
             var testFlag = _checkRawGenericType(type);
@@ -72,8 +79,14 @@ public static partial class Reflections
 
         // 检查原始泛型类型
         // ReSharper disable once InconsistentNaming
-        bool _checkRawGenericType(Type test) =>
-            genericType == (test.IsGenericType ? test.GetGenericTypeDefinition() : test);
+        bool _checkRawGenericType(Type test)
+        {
+            if (!test.IsGenericType)
+                return false;
+            return matchGenericDefinition
+                ? genericTypeDefinition == test.GetGenericTypeDefinition()
+                : genericType == test;
+        }
     }
 
     /// <summary>

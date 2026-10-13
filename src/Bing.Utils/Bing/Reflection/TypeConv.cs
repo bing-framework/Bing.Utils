@@ -12,10 +12,16 @@ public static class TypeConv
     /// </summary>
     /// <param name="type">类型</param>
     /// <returns>基础类型</returns>
+    /// <exception cref="ArgumentNullException">类型为 null 时抛出。</exception>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "集合和字典的泛型参数来自运行时 Type，MakeGenericType 的保留要求无法静态推导。")]
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "集合识别遍历运行时 Type 的接口图，调用方负责保留目标类型接口元数据。")]
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "该归一化仅在运行时重建集合/字典类型，AOT 调用方不会依赖预生成的具体泛型实例。")]
+#endif
     public static Type GetNonNullableType(Type type)
     {
         if (type is null)
-            return null;
+            throw new ArgumentNullException(nameof(type));
 
         if (type.IsArray)
             return GetNonNullableType(type.GetElementType())?.MakeArrayType();

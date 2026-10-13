@@ -38,12 +38,12 @@ public class TypeVisitDynamicInstanceBoundaryTest
     /// 测试用例：空字典创建的对象调用 DynamicBase 访问器时，当前行为抛出空引用异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_EmptyDictionary_DynamicBaseAccessor_CurrentlyThrowsNullReferenceException()
+    public void CreateInstance_EmptyDictionary_DynamicBaseAccessor_ThrowsMissingMemberException()
     {
         var instance = (DynamicBase)TypeVisit.CreateInstance(new Dictionary<string, object>());
 
-        Should.Throw<NullReferenceException>(() => instance.GetPropertyValue("Any"));
-        Should.Throw<NullReferenceException>(() => instance.SetPropertyValue("Any", 1));
+        Should.Throw<MissingMemberException>(() => instance.GetPropertyValue("Any"));
+        Should.Throw<MissingMemberException>(() => instance.SetPropertyValue("Any", 1));
     }
 }
 

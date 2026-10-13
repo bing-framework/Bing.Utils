@@ -6,12 +6,13 @@ namespace Bing.Reflection;
 public class TypeConvAndTypesValTest
 {
     /// <summary>
-    /// 测试用例：验证 `GetNonNullableType` 在 `NullInput` 场景下，结果为 `ReturnsNull`。
+    /// 测试用例：验证 `GetNonNullableType` 在 `NullInput` 场景下抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void GetNonNullableType_NullInput_ReturnsNull()
+    public void GetNonNullableType_NullInput_ThrowsArgumentNullException()
     {
-        TypeConv.GetNonNullableType(null).ShouldBeNull();
+        Should.Throw<ArgumentNullException>(() => TypeConv.GetNonNullableType(null!))
+            .ParamName.ShouldBe("type");
     }
     /// <summary>
     /// 测试用例：验证 `GetNonNullableType` 在 `NullableType` 场景下，结果为 `ReturnsUnderlyingType`。

@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Bing.Reflection;
 /// <summary>
 /// 测试类：覆盖 `TypeVisitDynamicInstance` 相关行为。
@@ -10,14 +12,16 @@ public class TypeVisitDynamicInstanceTest
     /// 测试用例：验证 `CreateInstance` 在 `WithPropertyDictionary` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
     /// </summary>
     [Fact]
-    public void CreateInstance_WithPropertyDictionary_CurrentlyThrowsNullReferenceException()
+    public void CreateInstance_WithPropertyDictionary_CreatesReadableObject()
     {
         var values = new Dictionary<string, object>
         {
             ["Name"] = "Alice",
             ["Age"] = 18
         };
-        Should.Throw<NullReferenceException>(() => TypeVisit.CreateInstance(values));
+        var instance = (Bing.Dynamic.DynamicBase)TypeVisit.CreateInstance(values);
+        instance.GetPropertyValue("Name").ShouldBe("Alice");
+        instance.GetPropertyValue("Age").ShouldBe(18);
     }
     /// <summary>
     /// 测试用例：验证 `CreateDynamicType` 在 `WithPropertyDictionary` 场景下，结果为 `ReturnsTypeContainingProperties`。
@@ -59,7 +63,7 @@ public class TypeVisitDynamicInstanceTest
     /// 测试用例：验证 `CreateDynamicType` 在 `WithSamePropertiesDifferentOrder` 场景下，结果为 `CurrentlyReturnsDifferentTypes`。
     /// </summary>
     [Fact]
-    public void CreateDynamicType_WithSamePropertiesDifferentOrder_CurrentlyReturnsDifferentTypes()
+    public void CreateDynamicType_WithSamePropertiesDifferentOrder_ReturnsSameType()
     {
         var first = new Dictionary<string, Type>
         {
@@ -73,7 +77,7 @@ public class TypeVisitDynamicInstanceTest
         };
         var type1 = TypeVisit.CreateDynamicType(first);
         var type2 = TypeVisit.CreateDynamicType(second);
-        type1.ShouldNotBeSameAs(type2);
+        type1.ShouldBeSameAs(type2);
     }
     /// <summary>
     /// 测试用例：验证 `CreateDynamicType` 在 `WithEmptyProperties` 场景下，结果为 `ReturnsTypeDerivedFromDynamicBase`。
@@ -93,7 +97,7 @@ public class TypeVisitDynamicInstanceTest
     public void CreateDynamicType_WithNullProperties_CurrentlyThrowsArgumentNullException()
     {
         var ex = Should.Throw<ArgumentNullException>(() => TypeVisit.CreateDynamicType(null));
-        ex.ParamName.ShouldBe("source");
+        ex.ParamName.ShouldBe("properties");
     }
     /// <summary>
     /// 测试用例：验证 `CreateInstance` 在 `WithNullDictionary` 场景下，结果为 `CurrentlyThrowsArgumentNullException`。
@@ -102,19 +106,22 @@ public class TypeVisitDynamicInstanceTest
     public void CreateInstance_WithNullDictionary_CurrentlyThrowsArgumentNullException()
     {
         var ex = Should.Throw<ArgumentNullException>(() => TypeVisit.CreateInstance((IDictionary<string, object>)null));
-        ex.ParamName.ShouldBe("source");
+        ex.ParamName.ShouldBe("values");
     }
     /// <summary>
     /// 测试用例：验证 `CreateInstance` 在 `WithNullPropertyValue` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
     /// </summary>
     [Fact]
-    public void CreateInstance_WithNullPropertyValue_CurrentlyThrowsNullReferenceException()
+    public void CreateInstance_WithNullPropertyValue_UsesObjectProperty()
     {
         var values = new Dictionary<string, object>
         {
             ["Name"] = null
         };
-        Should.Throw<NullReferenceException>(() => TypeVisit.CreateInstance(values));
+        var instance = (Bing.Dynamic.DynamicBase)TypeVisit.CreateInstance(values);
+        instance.GetType().GetProperty("Name")!.PropertyType.ShouldBe(typeof(object));
+        instance.GetPropertyValue("Name").ShouldBeNull();
+        instance.SetPropertyValue("Name", null);
     }
 #endif
 }

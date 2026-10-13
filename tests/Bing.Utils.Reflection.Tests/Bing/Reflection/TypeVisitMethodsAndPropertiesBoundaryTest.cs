@@ -1,3 +1,7 @@
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading.Tasks;
+
 namespace Bing.Reflection;
 /// <summary>
 /// 测试类：覆盖 `TypeVisitMethodsAndPropertiesBoundary` 相关行为。
@@ -50,14 +54,13 @@ public class TypeVisitMethodsAndPropertiesBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `GetBaseMethod` 在 `NullMethod` 场景下，结果为 `ReturnsNull`。
+    /// 测试用例：验证 `GetBaseMethod` 在 `NullMethod` 场景下抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void GetBaseMethod_NullMethod_ReturnsNull()
+    public void GetBaseMethod_NullMethod_ThrowsArgumentNullException()
     {
-        var baseMethod = TypeVisit.GetBaseMethod(null);
-
-        baseMethod.ShouldBeNull();
+        var ex = Should.Throw<ArgumentNullException>(() => TypeVisit.GetBaseMethod(null));
+        ex.ParamName.ShouldBe("method");
     }
     /// <summary>
     /// 测试用例：验证 `IsVisibleAndVirtual` 在 `WithVisibleVirtualMethod` 场景下，结果为 `ReturnsTrue`。
@@ -113,7 +116,7 @@ public class TypeVisitMethodsAndPropertiesBoundaryTest
         taskMethod.IsAsyncMethod().ShouldBeTrue();
         taskOfTMethod.IsAsyncMethod().ShouldBeTrue();
         valueTaskMethod.IsAsyncMethod().ShouldBeTrue();
-        valueTaskOfTMethod.IsAsyncMethod().ShouldBeFalse();
+        valueTaskOfTMethod.IsAsyncMethod().ShouldBeTrue();
         normalMethod.IsAsyncMethod().ShouldBeFalse();
     }
     /// <summary>
@@ -135,18 +138,18 @@ public class TypeVisitMethodsAndPropertiesBoundaryTest
     /// 测试用例：验证 `GetFullName` 在 `NullMethod` 场景下，结果为 `CurrentBehaviorThrowsNullReferenceException`。
     /// </summary>
     [Fact]
-    public void GetFullName_NullMethod_CurrentBehaviorThrowsNullReferenceException()
+    public void GetFullName_NullMethod_ThrowsArgumentNullException()
     {
-        Should.Throw<NullReferenceException>(() => TypeVisit.GetFullName((MethodInfo)null));
+        Should.Throw<ArgumentNullException>(() => TypeVisit.GetFullName((MethodInfo)null));
     }
 
     /// <summary>
     /// 测试用例：验证 `GetFullyQualifiedName` 在 `NullMethod` 场景下，结果为 `CurrentBehaviorThrowsNullReferenceException`。
     /// </summary>
     [Fact]
-    public void GetFullyQualifiedName_NullMethod_CurrentBehaviorThrowsNullReferenceException()
+    public void GetFullyQualifiedName_NullMethod_ThrowsArgumentNullException()
     {
-        Should.Throw<NullReferenceException>(() => TypeVisit.GetFullyQualifiedName((MethodInfo)null));
+        Should.Throw<ArgumentNullException>(() => TypeVisit.GetFullyQualifiedName((MethodInfo)null));
     }
     /// <summary>
     /// 测试用例：验证 `GetProperties` 在 `NullType` 场景下，结果为 `ThrowsArgumentNullException`。
@@ -184,10 +187,10 @@ public class TypeVisitMethodsAndPropertiesBoundaryTest
     /// 测试用例：验证 `IsVisibleAndVirtual` 在 `WriteOnlyProperty` 场景下，结果为 `CurrentlyThrowsArgumentNullException`。
     /// </summary>
     [Fact]
-    public void IsVisibleAndVirtual_WriteOnlyProperty_CurrentlyThrowsArgumentNullException()
+    public void IsVisibleAndVirtual_WriteOnlyProperty_ReturnsTrue()
     {
         var property = typeof(WriteOnlyVirtualPropertySample).GetProperty(nameof(WriteOnlyVirtualPropertySample.WriteOnly));
-        Should.Throw<ArgumentNullException>(() => TypeVisit.IsVisibleAndVirtual(property));
+        TypeVisit.IsVisibleAndVirtual(property).ShouldBeTrue();
     }
     /// <summary>
     /// 测试用例：验证 `PropertyMetaExtensions` 在 `IsVirtualAndIsAbstract` 场景下，结果为 `ReturnExpected`。
@@ -203,14 +206,14 @@ public class TypeVisitMethodsAndPropertiesBoundaryTest
         normalProperty.IsAbstract().ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `PropertyMetaExtensions` 在 `NullProperty` 场景下，结果为 `CurrentBehaviorThrowsNullReferenceException`。
+    /// 测试用例：空属性元数据抛出带参数名的异常。
     /// </summary>
     [Fact]
-    public void PropertyMetaExtensions_NullProperty_CurrentBehaviorThrowsNullReferenceException()
+    public void PropertyMetaExtensions_NullProperty_ThrowsArgumentNullException()
     {
         PropertyInfo property = null;
-        Should.Throw<NullReferenceException>(() => property.IsVirtual());
-        Should.Throw<NullReferenceException>(() => property.IsAbstract());
+        Should.Throw<ArgumentNullException>(() => property.IsVirtual()).ParamName.ShouldBe("property");
+        Should.Throw<ArgumentNullException>(() => property.IsAbstract()).ParamName.ShouldBe("property");
     }
     private class MethodSample
     {

@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Reflection.Emit;
 using Shouldly;
 
 namespace Bing.Reflection;
@@ -30,8 +31,13 @@ public class AssemblyVisitTests
         // Arrange — 使用当前执行程序集（测试 DLL 本身）
         var assembly = Assembly.GetExecutingAssembly();
 
-        // Act & Assert — 只要不抛异常即通过
-        Should.NotThrow(() => AssemblyVisit.GetFileVersion(assembly));
+        // Act
+        var version = AssemblyVisit.GetFileVersion(assembly);
+
+        // Assert — 优先读取程序集文件版本特性，不依赖 Assembly.Location
+        version.ShouldBe(assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
+            ?? assembly.GetName().Version?.ToString()
+            ?? string.Empty);
     }
 
     #endregion
@@ -57,8 +63,33 @@ public class AssemblyVisitTests
         // Arrange
         var assembly = Assembly.GetExecutingAssembly();
 
-        // Act & Assert
-        Should.NotThrow(() => AssemblyVisit.GetProductVersion(assembly));
+        // Act
+        var version = AssemblyVisit.GetProductVersion(assembly);
+
+        // Assert — single-file 与普通程序集都不应依赖物理路径
+        var rawVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+            ?? assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
+            ?? assembly.GetName().Version?.ToString()
+            ?? string.Empty;
+        version.ShouldBe(rawVersion.Contains("+")
+            ? System.Text.RegularExpressions.Regex.Replace(rawVersion, @"\+(\w+)?", "")
+            : rawVersion);
+    }
+
+    /// <summary>
+    /// 测试目的：程序集没有版本特性时，应回退到程序集名称版本，而不是访问空的物理路径。
+    /// </summary>
+    [Fact]
+    public void GetVersion_WhenAssemblyHasNoVersionAttributes_UsesAssemblyNameVersion()
+    {
+        var name = new AssemblyName("AssemblyVisitVersionFallback")
+        {
+            Version = new Version(2, 3, 4, 5)
+        };
+        var assembly = AssemblyBuilder.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+
+        AssemblyVisit.GetFileVersion(assembly).ShouldBe("2.3.4.5");
+        AssemblyVisit.GetProductVersion(assembly).ShouldBe("2.3.4.5");
     }
 
     /// <summary>

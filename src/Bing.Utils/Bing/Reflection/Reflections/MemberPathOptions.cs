@@ -1,7 +1,7 @@
 namespace Bing.Reflection;
 
 /// <summary>
-/// 成员路径访问选项。
+/// 成员路径访问选项。调用开始时读取各属性；调用方不应在捕获期间并发修改同一选项实例。
 /// </summary>
 public sealed class MemberPathOptions
 {

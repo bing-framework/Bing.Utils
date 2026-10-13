@@ -33,12 +33,22 @@ public static partial class Reflections
     /// 从目录获取所有程序集
     /// </summary>
     /// <param name="directoryPath">目录绝对路径</param>
-    public static List<Assembly> GetAssemblies(string directoryPath) =>
-        Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories)
-            .ToList()
-            .Where(t => t.EndsWith(".exe") || t.EndsWith(".dll"))
-            .Select(path => Assembly.Load(new AssemblyName(path)))
+    /// <exception cref="ArgumentException">当目录路径为空时抛出</exception>
+    /// <exception cref="DirectoryNotFoundException">当目录不存在时抛出</exception>
+    public static List<Assembly> GetAssemblies(string directoryPath)
+    {
+        if (string.IsNullOrWhiteSpace(directoryPath))
+            throw new ArgumentException("程序集目录路径不能为空。", nameof(directoryPath));
+
+        if (!Directory.Exists(directoryPath))
+            throw new DirectoryNotFoundException($"程序集目录不存在: {directoryPath}");
+
+        return Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.AllDirectories)
+            .Where(path => path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+                           || path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            .Select(Assembly.LoadFrom)
             .ToList();
+    }
 
     #endregion
 }

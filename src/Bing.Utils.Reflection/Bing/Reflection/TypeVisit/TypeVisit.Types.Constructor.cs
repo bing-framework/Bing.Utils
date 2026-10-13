@@ -1,5 +1,9 @@
 ﻿using System.Reflection;
 
+#if NET5_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
+
 namespace Bing.Reflection;
 
 /// <summary>
@@ -12,28 +16,40 @@ public static partial class TypeVisit
     /// </summary>
     /// <param name="type">类型</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static bool HasParameterlessConstructor(Type type)
+    /// <exception cref="ArgumentException">类型不可实例化时抛出。</exception>
+    public static bool HasParameterlessConstructor(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type)
     {
         if (type is null)
             throw new ArgumentNullException(nameof(type));
-        var ctor = type.GetConstructors()
-            .OrderBy(c => c.IsPublic ? 0 : (c.IsPrivate ? 2 : 1))
-            .ThenBy(c => c.GetParameters().Length)
-            .FirstOrDefault();
-        return ctor?.GetParameters().Length == 0;
+        try
+        {
+            GetParameterlessConstructor(type);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
     }
 
     /// <summary>
     /// 获取当前类型的无参构造函数
     /// </summary>
     /// <param name="type">类型</param>
-    public static ConstructorInfo GetParameterlessConstructor(Type type)
+    /// <returns>公共无参构造函数。</returns>
+    /// <exception cref="ArgumentNullException">类型为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">类型不可实例化或不存在公共无参构造函数时抛出。</exception>
+    public static ConstructorInfo GetParameterlessConstructor(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type)
     {
-        var ctor = type.GetConstructors()
-            .OrderBy(c => c.IsPublic ? 0 : (c.IsPrivate ? 2 : 1))
-            .ThenBy(c => c.GetParameters().Length)
-            .FirstOrDefault();
-        return ctor?.GetParameters().Length == 0 ? ctor : null;
+        return GetMatchingConstructor(type, Type.EmptyTypes);
     }
 
     /// <summary>
@@ -41,16 +57,24 @@ public static partial class TypeVisit
     /// </summary>
     /// <param name="type">类型</param>
     /// <param name="constructorParameterTypes">构造函数参数类型</param>
-    public static ConstructorInfo GetMatchingConstructor(Type type, Type[] constructorParameterTypes)
+    /// <returns>唯一兼容的公共构造函数。</returns>
+    /// <exception cref="ArgumentNullException">类型或参数类型数组为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">类型不可实例化、参数类型数组包含 null 或不存在兼容构造函数时抛出。</exception>
+    /// <exception cref="AmbiguousMatchException">多个构造函数兼容时抛出。</exception>
+    public static ConstructorInfo GetMatchingConstructor(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type, Type[] constructorParameterTypes)
     {
-        if (constructorParameterTypes == null || constructorParameterTypes.Length == 0)
-            return GetParameterlessConstructor(type);
-        return type.GetConstructors()
-            .FirstOrDefault(c => c
-                .GetParameters()
-                .Select(p => p.ParameterType)
-                .SequenceEqual(constructorParameterTypes)
-            );
+        if (type == null)
+            throw new ArgumentNullException(nameof(type));
+        if (constructorParameterTypes == null)
+            throw new ArgumentNullException(nameof(constructorParameterTypes));
+        if (constructorParameterTypes.Any(parameterType => parameterType == null))
+            throw new ArgumentException("参数类型不能包含 null。", nameof(constructorParameterTypes));
+        EnsureCreatableType(type);
+        return StrictConstructorBinder.FindConstructor(type, constructorParameterTypes.ToArray());
     }
 }
 
@@ -63,18 +87,30 @@ public static partial class TypeMetaVisitExtensions
     /// 推测当前类型是否存在无参构造函数
     /// </summary>
     /// <param name="type">类型</param>
-    public static bool HasParameterlessConstructor(this Type type) => TypeVisit.HasParameterlessConstructor(type);
+    public static bool HasParameterlessConstructor(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        this Type type) => TypeVisit.HasParameterlessConstructor(type);
 
     /// <summary>
     /// 获取当前类型的无参构造函数
     /// </summary>
     /// <param name="type">类型</param>
-    public static ConstructorInfo GetParameterlessConstructor(this Type type) => TypeVisit.GetParameterlessConstructor(type);
+    public static ConstructorInfo GetParameterlessConstructor(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        this Type type) => TypeVisit.GetParameterlessConstructor(type);
 
     /// <summary>
     /// 获取命中参数的构造函数
     /// </summary>
     /// <param name="type">类型</param>
     /// <param name="constructorParameterTypes">构造函数参数类型</param>
-    public static ConstructorInfo GetMatchingConstructor(this Type type, Type[] constructorParameterTypes) => TypeVisit.GetMatchingConstructor(type, constructorParameterTypes);
+    public static ConstructorInfo GetMatchingConstructor(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        this Type type, Type[] constructorParameterTypes) => TypeVisit.GetMatchingConstructor(type, constructorParameterTypes);
 }

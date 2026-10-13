@@ -465,10 +465,11 @@ public static partial class Types
     /// </summary>
     /// <param name="objects">对象数组</param>
     /// <param name="options">类型选项</param>
+    /// <exception cref="ArgumentNullException">对象数组为 null 时抛出。</exception>
     public static Type[] Of(object[] objects, TypeOfOptions options = TypeOfOptions.Owner)
     {
         if (objects is null)
-            return null;
+            throw new ArgumentNullException(nameof(objects));
 
         var nativeTypes = GetNativeTypeArray(objects);
 

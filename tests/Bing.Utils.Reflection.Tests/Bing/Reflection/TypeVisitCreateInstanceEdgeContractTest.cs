@@ -43,12 +43,12 @@ public class TypeVisitCreateInstanceEdgeContractTest
     }
 
     /// <summary>
-    /// 测试用例：构造函数参数与实际参数类型不兼容时，应抛出 InvalidCastException。
+    /// 测试用例：构造函数参数与实际参数类型不兼容时，应抛出 ArgumentException。
     /// </summary>
     [Fact]
-    public void CreateInstance_TypeOverload_IncompatibleNumericArgument_ThrowsInvalidCastException()
+    public void CreateInstance_TypeOverload_IncompatibleNumericArgument_ThrowsArgumentException()
     {
-        Should.Throw<InvalidCastException>(() => TypeVisit.CreateInstance(typeof(LongCtorSample), 1));
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance(typeof(LongCtorSample), 1));
     }
 
     /// <summary>
@@ -64,113 +64,95 @@ public class TypeVisitCreateInstanceEdgeContractTest
     }
 
     /// <summary>
-    /// 测试用例：参数数组包含 null 且无法匹配构造函数时，当前行为返回 null。
+    /// 测试用例：参数数组包含 null 时，严格绑定器应选择可接受 null 的构造函数。
     /// </summary>
     [Fact]
-    public void CreateInstance_TypeOverload_NullElementInArgsArray_CurrentlyReturnsNull()
+    public void CreateInstance_TypeOverload_NullElementInArgsArray_CreatesInstance()
     {
         var instance = TypeVisit.CreateInstance(typeof(ObjectCtorSample), new object[] { null });
 
-        instance.ShouldBeNull();
+        instance.ShouldBeOfType<ObjectCtorSample>().Payload.ShouldBeNull();
     }
 
     /// <summary>
-    /// 测试用例：泛型+Type 重载在目标类型不兼容时，应返回默认值。
+    /// 测试用例：泛型+Type 重载在目标类型不兼容时，应抛出 ArgumentException。
     /// </summary>
     [Fact]
-    public void CreateInstance_GenericWithTypeOverload_IncompatibleTargetType_ReturnsDefault()
+    public void CreateInstance_GenericWithTypeOverload_IncompatibleTargetType_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance<int>(typeof(ParameterlessSample));
-
-        instance.ShouldBe(0);
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance<int>(typeof(ParameterlessSample)));
     }
 
     /// <summary>
-    /// 测试用例：仅存在私有无参构造时，当前行为返回 null。
+    /// 测试用例：仅存在私有无参构造时，应抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_TypeOverload_PrivateParameterlessConstructor_CurrentlyReturnsNull()
+    public void CreateInstance_TypeOverload_PrivateParameterlessConstructor_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance(typeof(PrivateCtorSample));
-
-        instance.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance(typeof(PrivateCtorSample)));
     }
 
     /// <summary>
-    /// 测试用例：泛型重载在没有可用构造函数时，应返回引用类型默认值 null。
+    /// 测试用例：泛型重载在没有可用构造函数时，应抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_GenericOverload_NoAvailableConstructor_ReturnsNull()
+    public void CreateInstance_GenericOverload_NoAvailableConstructor_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance<OnlyParameterizedSample>();
-
-        instance.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance<OnlyParameterizedSample>());
     }
 
     /// <summary>
-    /// 测试用例：当目标类型为抽象类时，当前行为应返回 null。
+    /// 测试用例：当目标类型为抽象类时，应抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_TypeOverload_AbstractType_CurrentlyReturnsNull()
+    public void CreateInstance_TypeOverload_AbstractType_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance(typeof(AbstractSample));
-
-        instance.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance(typeof(AbstractSample)));
     }
 
     /// <summary>
-    /// 测试用例：当目标类型为接口时，泛型重载应返回引用类型默认值 null。
+    /// 测试用例：当目标类型为接口时，泛型重载应抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_GenericOverload_InterfaceType_ReturnsDefaultNull()
+    public void CreateInstance_GenericOverload_InterfaceType_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance<IInterfaceSample>();
-
-        instance.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance<IInterfaceSample>());
     }
 
     /// <summary>
-    /// 测试用例：当目标类型为值类型且无可见无参构造时，泛型重载应返回值类型默认值。
+    /// 测试用例：当目标类型为值类型且没有显式公共无参构造时，泛型重载应抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_GenericOverload_ValueTypeWithoutPublicCtor_ReturnsDefaultValue()
+    public void CreateInstance_GenericOverload_ValueTypeWithoutPublicCtor_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance<int>();
-
-        instance.ShouldBe(0);
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance<int>());
     }
 
     /// <summary>
-    /// 测试用例：非泛型重载在接口类型场景下，当前行为应返回 null。
+    /// 测试用例：非泛型重载在接口类型场景下，应抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_TypeOverload_InterfaceType_CurrentlyReturnsNull()
+    public void CreateInstance_TypeOverload_InterfaceType_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance(typeof(IInterfaceSample));
-
-        instance.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance(typeof(IInterfaceSample)));
     }
 
     /// <summary>
-    /// 测试用例：非泛型重载在值类型无参创建场景下，当前行为返回 null（未走默认值补偿）。
+    /// 测试用例：非泛型重载在值类型没有显式公共无参构造场景下，应抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_TypeOverload_ValueTypeWithoutCtor_CurrentlyReturnsNull()
+    public void CreateInstance_TypeOverload_ValueTypeWithoutCtor_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance(typeof(int));
-
-        instance.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance(typeof(int)));
     }
 
     /// <summary>
-    /// 测试用例：泛型+Type 重载在值类型无参创建场景下，应返回值类型默认值。
+    /// 测试用例：泛型+Type 重载在值类型没有显式公共无参构造场景下，应抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_GenericWithTypeOverload_ValueTypeWithoutCtor_ReturnsDefaultValue()
+    public void CreateInstance_GenericWithTypeOverload_ValueTypeWithoutCtor_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance<int>(typeof(int));
-
-        instance.ShouldBe(0);
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance<int>(typeof(int)));
     }
 
     /// <summary>

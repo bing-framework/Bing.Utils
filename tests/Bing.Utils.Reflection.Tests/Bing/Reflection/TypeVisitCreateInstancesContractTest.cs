@@ -24,13 +24,12 @@ public class TypeVisitCreateInstancesContractTest
         ex.ParamName.ShouldBe("type");
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `NoMatchingConstructor` 场景下，结果为 `CurrentBehaviorReturnsNull`。
+    /// 测试用例：验证 `CreateInstance` 在 `NoMatchingConstructor` 场景下抛出 `ArgumentException`。
     /// </summary>
     [Fact]
-    public void CreateInstance_NoMatchingConstructor_CurrentBehaviorReturnsNull()
+    public void CreateInstance_NoMatchingConstructor_ThrowsArgumentException()
     {
-        var instance = TypeVisit.CreateInstance(typeof(Sample), 123);
-        instance.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance(typeof(Sample), 123));
     }
     /// <summary>
     /// 测试用例：验证 `CreateInstance` 在 `WithMatchingConstructor` 场景下，结果为 `ReturnsCreatedObject`。
@@ -73,7 +72,7 @@ public class TypeVisitCreateInstancesContractTest
     public void CreateInstance_DynamicValuesNull_CurrentBehaviorThrowsArgumentNullException()
     {
         var ex = Should.Throw<ArgumentNullException>(() => TypeVisit.CreateInstance((IDictionary<string, object>)null));
-        ex.ParamName.ShouldBe("source");
+        ex.ParamName.ShouldBe("values");
     }
     /// <summary>
     /// 测试用例：验证 `CreateDynamicType` 在 `SamePropertySchema` 场景下，结果为 `ReturnsSameCachedType`。
@@ -102,7 +101,7 @@ public class TypeVisitCreateInstancesContractTest
     public void CreateDynamicType_NullProperties_CurrentBehaviorThrowsArgumentNullException()
     {
         var ex = Should.Throw<ArgumentNullException>(() => TypeVisit.CreateDynamicType(null));
-        ex.ParamName.ShouldBe("source");
+        ex.ParamName.ShouldBe("properties");
     }
 #endif
     private sealed class Sample

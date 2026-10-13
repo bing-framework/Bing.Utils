@@ -43,13 +43,14 @@ public class TypeVisitConstructorTest
         ctor!.GetParameters().Length.ShouldBe(0);
     }
     /// <summary>
-    /// 测试用例：验证 `GetParameterlessConstructor` 在 `WithoutParameterlessCtor` 场景下，结果为 `ReturnsNull`。
+    /// 测试用例：验证 `GetParameterlessConstructor` 在 `WithoutParameterlessCtor` 场景下，结果为 `ThrowsArgumentException`。
     /// </summary>
     [Fact]
-    public void GetParameterlessConstructor_WithoutParameterlessCtor_ReturnsNull()
+    public void GetParameterlessConstructor_WithoutParameterlessCtor_ThrowsArgumentException()
     {
-        var ctor = TypeVisit.GetParameterlessConstructor(typeof(OnlyParameterizedCtorClass));
-        ctor.ShouldBeNull();
+        var exception = Should.Throw<ArgumentException>(() =>
+            TypeVisit.GetParameterlessConstructor(typeof(OnlyParameterizedCtorClass)));
+        exception.ParamName.ShouldBe("args");
     }
     /// <summary>
     /// 测试用例：验证 `GetMatchingConstructor` 在 `WithMatchingParameterTypes` 场景下，结果为 `ReturnsCtor`。

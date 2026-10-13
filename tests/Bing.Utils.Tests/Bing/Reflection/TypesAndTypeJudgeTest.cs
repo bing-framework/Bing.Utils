@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Bing.Reflection;
 /// <summary>
 /// 测试类：覆盖 `TypesAndTypeJudge` 相关行为。
@@ -24,12 +26,12 @@ public class TypesAndTypeJudgeTest
         result.ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `DefaultValue` 在 `ByType_NullType` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 测试用例：验证 `DefaultValue` 在 `ByType_NullType` 场景下，结果为 `ThrowsArgumentNullException`。
     /// </summary>
     [Fact]
-    public void DefaultValue_ByType_NullType_CurrentlyThrowsNullReferenceException()
+    public void DefaultValue_ByType_NullType_ThrowsArgumentNullException()
     {
-        Should.Throw<NullReferenceException>(() => Types.DefaultValue((Type)null));
+        Should.Throw<ArgumentNullException>(() => Types.DefaultValue((Type)null));
     }
     /// <summary>
     /// 测试用例：验证 `IsDefaultValue` 在 `GenericAndObjectOverloads` 场景下，结果为 `ReturnExpected`。
@@ -65,12 +67,13 @@ public class TypesAndTypeJudgeTest
         types.ShouldBe([typeof(int), typeof(string)]);
     }
     /// <summary>
-    /// 测试用例：验证 `Of` 在 `ObjectArray_NullArray` 场景下，结果为 `ReturnsNull`。
+    /// 测试用例：验证 `Of` 在 `ObjectArray_NullArray` 场景下抛出明确参数异常。
     /// </summary>
     [Fact]
-    public void Of_ObjectArray_NullArray_ReturnsNull()
+    public void Of_ObjectArray_NullArray_ThrowsArgumentNullException()
     {
-        Types.Of(null).ShouldBeNull();
+        Should.Throw<ArgumentNullException>(() => Types.Of((object[])null!))
+            .ParamName.ShouldBe("objects");
     }
     /// <summary>
     /// 测试用例：验证 `IsTupleType` 在 `WithTupleAndValueTuple` 场景下，结果为 `ReturnsTrue`。
@@ -108,6 +111,17 @@ public class TypesAndTypeJudgeTest
         object value = 123;
         Types.IsNumericType(value).ShouldBeFalse();
     }
+
+    /// <summary>
+    /// 测试用例：验证 `IsStructType` 的 TypeInfo 重载在空值和有效结构类型场景下返回预期结果。
+    /// </summary>
+    [Fact]
+    public void IsStructType_TypeInfo_NullAndValueType_ReturnsExpected()
+    {
+        Types.IsStructType((TypeInfo)null).ShouldBeFalse();
+        Types.IsStructType(typeof(DateTime).GetTypeInfo()).ShouldBeTrue();
+    }
+
     /// <summary>
     /// 测试用例：验证 `IsCollectionType` 在 `NullValueWithIgnoreNullable` 场景下，结果为 `ReturnsTypeBasedResult`。
     /// </summary>
@@ -162,13 +176,17 @@ public class TypesAndTypeJudgeTest
         TypeJudge.IsGenericImplementation(typeof(DerivedGeneric), typeof(BaseGeneric<>)).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `Types` 在 `IsGenericImplementation_WrapperMethod` 场景下，结果为 `CurrentlyRequiresOpenGenericAndReturnsFalseForClosedGeneric`。
+    /// 测试用例：验证 `Types` 在泛型实现和原始类型查询场景下，闭合泛型参数也能正确匹配。
     /// </summary>
     [Fact]
-    public void Types_IsGenericImplementation_WrapperMethod_CurrentlyRequiresOpenGenericAndReturnsFalseForClosedGeneric()
+    public void Types_IsGenericImplementationAndRawType_WrapperMethods_AcceptClosedGeneric()
     {
         Types.IsGenericImplementation(typeof(List<int>), typeof(IEnumerable<>)).ShouldBeTrue();
-        Types.IsGenericImplementation<DerivedGeneric, BaseGeneric<int>>().ShouldBeFalse();
+        Types.IsGenericImplementation<DerivedGeneric, BaseGeneric<int>>().ShouldBeTrue();
+        Types.IsGenericImplementation<DerivedGeneric, BaseGeneric<string>>().ShouldBeFalse();
+        Types.GetRawTypeFromGenericClass(typeof(DerivedGeneric), typeof(BaseGeneric<int>)).ShouldBe(typeof(int));
+        Types.GetRawTypeFromGenericClass<DerivedGeneric, BaseGeneric<int>>().ShouldBe(typeof(int));
+        Types.GetRawTypeFromGenericClass(typeof(DerivedGeneric), typeof(BaseGeneric<string>)).ShouldBeNull();
     }
     private enum TestEnum
     {

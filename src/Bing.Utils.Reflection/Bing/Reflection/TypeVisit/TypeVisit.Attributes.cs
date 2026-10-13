@@ -51,5 +51,5 @@ public static partial class TypeMetaVisitExtensions
     /// <param name="attributeType">特性类型</param>
     /// <param name="options">反射选项</param>
     public static bool IsAttributeNotDefined(this MemberInfo member, Type attributeType, ReflectionOptions options = ReflectionOptions.Default) =>
-        TypeReflections.IsAttributeDefined(member, attributeType, options);
+        !TypeReflections.IsAttributeDefined(member, attributeType, options);
 }

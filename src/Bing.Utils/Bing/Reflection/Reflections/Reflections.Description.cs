@@ -48,21 +48,40 @@ public static partial class Reflections
     /// </summary>
     /// <typeparam name="T">类型</typeparam>
     /// <param name="memberName">成员名称</param>
-    public static string GetDescription<T>(string memberName) => GetDescription(Types.Of<T>(TypeOfOptions.Underlying), memberName);
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "可空泛型的底层类型由 Nullable.GetUnderlyingType 返回，成员扫描仍由调用方显式保留泛型类型元数据。")]
+#endif
+    public static string GetDescription<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        T>(string memberName)
+    {
+        var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+        return GetDescription(type, memberName);
+    }
 
     /// <summary>
     /// 获取类型成员描述，使用<see cref="DescriptionAttribute"/>设置描述
     /// </summary>
     /// <param name="type">类型</param>
     /// <param name="memberName">成员名称</param>
-    public static string GetDescription(Type type, string memberName) => GetDescription(type.GetTypeInfo(), memberName);
+    public static string GetDescription(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        Type type, string memberName) => GetDescription(type.GetTypeInfo(), memberName);
 
     /// <summary>
     /// 获取类型成员描述，使用<see cref="DescriptionAttribute"/>设置描述
     /// </summary>
     /// <param name="typeInfo">类型信息</param>
     /// <param name="memberName">成员名称</param>
-    public static string GetDescription(TypeInfo typeInfo, string memberName)
+    public static string GetDescription(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        TypeInfo typeInfo, string memberName)
     {
         if (typeInfo is null)
             return string.Empty;

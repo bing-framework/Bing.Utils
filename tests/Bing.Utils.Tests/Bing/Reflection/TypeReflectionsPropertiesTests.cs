@@ -88,7 +88,12 @@ public class TypeReflectionsPropertiesTests
         var writable = TypeReflections.GetPublicWritableInstanceProperties(typeof(AccessorProperties)).Select(property => property.Name);
 
         // Assert
-        readable.ShouldBe(new[] { nameof(AccessorProperties.PrivateSet), nameof(AccessorProperties.ReadOnly) });
+        readable.ShouldBe(new[]
+        {
+            nameof(AccessorProperties.InitOnly),
+            nameof(AccessorProperties.PrivateSet),
+            nameof(AccessorProperties.ReadOnly)
+        });
         writable.ShouldBe(new[] { nameof(AccessorProperties.PrivateGet), nameof(AccessorProperties.WriteOnly) });
     }
 
@@ -158,6 +163,7 @@ public class TypeReflectionsPropertiesTests
 
     public sealed class AccessorProperties
     {
+        public int InitOnly { get; init; }
         public string ReadOnly { get; } = "read";
         public string WriteOnly { private get; set; }
         public string PrivateGet { private get; set; }

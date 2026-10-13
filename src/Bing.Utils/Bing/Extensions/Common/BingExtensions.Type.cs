@@ -168,7 +168,11 @@ public static partial class BingExtensions
     /// <typeparam name="TBaseType">基类型</typeparam>
     /// <param name="type">当前类型</param>
     /// <param name="canAbstract">能否是抽象类</param>
-    public static bool IsDeriveClassFrom<TBaseType>(this Type type, bool canAbstract = false) => Reflections.IsDeriveClassFrom<TBaseType>(type, canAbstract);
+    public static bool IsDeriveClassFrom<TBaseType>(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        this Type type, bool canAbstract = false) => Reflections.IsDeriveClassFrom<TBaseType>(type, canAbstract);
 
     /// <summary>
     /// 判断当前类型是否可由指定类型派生
@@ -176,7 +180,11 @@ public static partial class BingExtensions
     /// <param name="type">当前类型</param>
     /// <param name="baseType">基类型</param>
     /// <param name="canAbstract">能否是抽象类</param>
-    public static bool IsDeriveClassFrom(this Type type, Type baseType, bool canAbstract = false) => Reflections.IsDeriveClassFrom(type, baseType, canAbstract);
+    public static bool IsDeriveClassFrom(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        this Type type, Type baseType, bool canAbstract = false) => Reflections.IsDeriveClassFrom(type, baseType, canAbstract);
 
     #endregion
 
@@ -187,14 +195,22 @@ public static partial class BingExtensions
     /// </summary>
     /// <typeparam name="TBaseType">基类型</typeparam>
     /// <param name="type">类型</param>
-    public static bool IsBaseOn<TBaseType>(this Type type) => Reflections.IsBaseOn<TBaseType>(type);
+    public static bool IsBaseOn<TBaseType>(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        this Type type) => Reflections.IsBaseOn<TBaseType>(type);
 
     /// <summary>
     /// 返回当前类型是否是指定基类的派生类
     /// </summary>
     /// <param name="type">类型</param>
     /// <param name="baseType">基类类型</param>
-    public static bool IsBaseOn(this Type type, Type baseType) => Reflections.IsBaseOn(type, baseType);
+    public static bool IsBaseOn(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        this Type type, Type baseType) => Reflections.IsBaseOn(type, baseType);
 
     #endregion
 
@@ -205,7 +221,11 @@ public static partial class BingExtensions
     /// </summary>
     /// <param name="genericType">泛型类型</param>
     /// <param name="type">指定类型</param>
-    public static bool IsGenericAssignableFrom(this Type genericType, Type type) => Reflections.IsGenericAssignableFrom(genericType, type);
+    public static bool IsGenericAssignableFrom(this Type genericType,
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type) => Reflections.IsGenericAssignableFrom(genericType, type);
 
     #endregion
 

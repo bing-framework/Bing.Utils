@@ -68,7 +68,7 @@ public class TypeVisitDynamicTypeTest
             ["Alias"] = typeof(string)
         });
 
-        var instance = Activator.CreateInstance(type, 99, "bing");
+        var instance = Activator.CreateInstance(type, "bing", 99);
         instance.ShouldNotBeNull();
 
         type.GetProperty("Code")!.GetValue(instance).ShouldBe(99);
@@ -82,7 +82,7 @@ public class TypeVisitDynamicTypeTest
     public void CreateDynamicType_NullProperties_ThrowsArgumentNullException()
     {
         var ex = Should.Throw<ArgumentNullException>(() => TypeVisit.CreateDynamicType(null));
-        ex.ParamName.ShouldBe("source");
+        ex.ParamName.ShouldBe("properties");
     }
 }
 

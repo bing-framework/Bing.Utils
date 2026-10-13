@@ -61,6 +61,52 @@ public class ReflectionsTest : TestBase
         Assert.Equal("测试样例", Reflections.GetDisplayNameOrDescription<Sample>());
     }
     #endregion
+    #region GetAssemblies
+    /// <summary>
+    /// 测试 - 按绝对路径加载目录中的程序集，并支持大小写不同的扩展名
+    /// </summary>
+    [Fact]
+    public void Test_GetAssemblies_LoadsAssemblyFromPath()
+    {
+        var sourcePath = typeof(Reflections).Assembly.Location;
+        Assert.False(string.IsNullOrWhiteSpace(sourcePath));
+
+        var directoryPath = Path.Combine(Path.GetTempPath(), $"bing-utils-reflections-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(directoryPath);
+        try
+        {
+            var targetPath = Path.Combine(directoryPath, "ReflectionCopy.DLL");
+            File.Copy(sourcePath, targetPath);
+
+            var assemblies = Reflections.GetAssemblies(directoryPath);
+
+            Assert.Contains(assemblies, assembly =>
+                assembly.GetName().Name == typeof(Reflections).Assembly.GetName().Name);
+        }
+        finally
+        {
+            if (Directory.Exists(directoryPath))
+                Directory.Delete(directoryPath, recursive: true);
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Test_GetAssemblies_EmptyDirectoryPath_ThrowsArgumentException(string directoryPath)
+    {
+        Assert.Throws<ArgumentException>(() => Reflections.GetAssemblies(directoryPath));
+    }
+
+    [Fact]
+    public void Test_GetAssemblies_MissingDirectory_ThrowsDirectoryNotFoundException()
+    {
+        var directoryPath = Path.Combine(Path.GetTempPath(), $"bing-utils-reflections-missing-{Guid.NewGuid():N}");
+
+        Assert.Throws<DirectoryNotFoundException>(() => Reflections.GetAssemblies(directoryPath));
+    }
+    #endregion
     #region FindImplementTypes
     /// <summary>
     /// 测试 - 查找实现类型列表 - 测试类型中只有一个类实现IA接口
@@ -333,7 +379,7 @@ public class ReflectionsTest : TestBase
     [Fact]
     public void Test_GetTopBaseType()
     {
-        Assert.Null(Reflections.GetTopBaseType(null));
+        Assert.Throws<ArgumentNullException>(() => Reflections.GetTopBaseType(null));
     }
     #endregion
     #region GetElementType
@@ -392,8 +438,8 @@ public class ReflectionsTest : TestBase
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Name").ShouldBe("test-children");
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Count").ShouldBe(9);
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Bing.Reflection.ReflectionsTest+GetPropertyValueByPathTestClass.Children.Name").ShouldBe("test-children");
-        Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.NotExists").ShouldBeNull();
-        Reflections.GetPropertyValueByPath(value, value.GetType(), "NotExists").ShouldBeNull();
+        Should.Throw<InvalidOperationException>(() => Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.NotExists"));
+        Should.Throw<InvalidOperationException>(() => Reflections.GetPropertyValueByPath(value, value.GetType(), "NotExists"));
     }
     /// <summary>
     /// 测试 - 通过指定对象的属性路径设置属性值
@@ -470,6 +516,20 @@ public class ReflectionsTest : TestBase
         constants.ShouldNotBeEmpty();
         constants.Except(IdentityPermissions.GetAll()).Count().ShouldBe(0);
     }
+
+    [Fact]
+    public void Test_GetPublicConstantsRecursively_NullType_ThrowsArgumentNullException()
+    {
+        Should.Throw<ArgumentNullException>(() => Reflections.GetPublicConstantsRecursively(null));
+    }
+
+    [Fact]
+    public void Test_GetPublicConstantsRecursively_NullStringConstant_IsSkipped()
+    {
+        var constants = Reflections.GetPublicConstantsRecursively(typeof(NullConstants));
+
+        constants.ShouldBe(new[] { "Present" });
+    }
     #endregion
     #region GetBaseClasses
     /// <summary>
@@ -508,6 +568,13 @@ public class BaseRole
 {
     public const string BaseRoleName = "DefaultBaseRoleName";
 }
+
+public static class NullConstants
+{
+    public const string Missing = null;
+    public const string Present = "Present";
+}
+
 public class Roles : BaseRole
 {
     public const string RoleName = "DefaultRoleName";
