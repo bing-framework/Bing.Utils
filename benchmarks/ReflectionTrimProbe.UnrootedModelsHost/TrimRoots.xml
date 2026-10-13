@@ -1,0 +1,80 @@
+<linker>
+  <assembly fullname="ReflectionTrimProbe.UnrootedModels">
+    <type fullname="ReflectionTrimProbe.UnrootedModels.UnrootedBoundaryModel" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.UnrootedModels.FieldsOnlyRootModel" preserve="fields" />
+    <type fullname="ReflectionTrimProbe.UnrootedModels.PropertiesOnlyRootModel" preserve="nothing">
+      <property name="PreservedProperty" />
+    </type>
+    <type fullname="ReflectionTrimProbe.UnrootedModels.MethodsOnlyRootModel" preserve="methods" />
+    <type fullname="ReflectionTrimProbe.UnrootedModels.NothingRootModel" preserve="nothing" />
+  </assembly>
+  <assembly fullname="ReflectionTrimProbe.PluginModels">
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositeFieldsRootModel" preserve="fields" />
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositePropertiesRootModel" preserve="nothing">
+      <property name="PreservedProperty" />
+    </type>
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositeMethodsRootModel" preserve="methods" />
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositeNothingRootModel" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositeGenericRootModel`1" preserve="nothing">
+      <field name="PreservedField" />
+      <property name="PreservedProperty" />
+      <method name="PreservedMethod" />
+    </type>
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositeConstrainedGenericRootModel`1" preserve="nothing">
+      <property name="PreservedProperty" />
+      <method name="PreservedMethod" />
+    </type>
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositeNestedRootModel/PreservedNested" preserve="fields" />
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositeCrossAssemblyBase" preserve="nothing">
+      <field name="PreservedBaseField" />
+    </type>
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositeCrossAssemblyPayload" preserve="nothing">
+      <field name="PreservedPayloadField" />
+    </type>
+    <type fullname="ReflectionTrimProbe.PluginModels.CompositeSignatureRootModel" preserve="nothing">
+      <method signature="System.Void .ctor(System.Int32)" />
+      <method signature="System.Int32 PreservedMethod(System.Int32)" />
+    </type>
+  </assembly>
+  <assembly fullname="ReflectionTrimProbe.TertiaryModels">
+    <type fullname="ReflectionTrimProbe.TertiaryModels.TertiaryFieldsRootModel" preserve="fields" />
+    <type fullname="ReflectionTrimProbe.TertiaryModels.TertiaryPropertiesRootModel" preserve="nothing">
+      <property name="PreservedProperty" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TertiaryModels.TertiaryNothingRootModel" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.TertiaryModels.CrossAssemblyNestedRootModel/PreservedNested" preserve="nothing">
+      <field name="PreservedNestedField" />
+      <field name="PreservedPayload" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TertiaryModels.CrossAssemblyNestedRootModel/TrimmedNested" preserve="nothing" />
+  </assembly>
+  <assembly fullname="ReflectionTrimProbe.QuaternaryModels">
+    <type fullname="ReflectionTrimProbe.QuaternaryModels.QuaternaryFieldsRootModel" preserve="fields" />
+    <type fullname="ReflectionTrimProbe.QuaternaryModels.QuaternaryMethodsRootModel" preserve="nothing">
+      <method name="PreservedMethod" />
+    </type>
+    <type fullname="ReflectionTrimProbe.QuaternaryModels.QuaternaryNestedRootModel/PreservedNested" preserve="nothing">
+      <field name="PreservedField" />
+    </type>
+    <!-- 第四程序集的嵌套 root 通过字段引用第三程序集，并显式保留字段和完整方法签名。 -->
+    <type fullname="ReflectionTrimProbe.QuaternaryModels.CrossAssemblyRootModel/PreservedNested" preserve="nothing">
+      <field name="PreservedTertiaryPayload" />
+      <field name="PreservedNestedField" />
+      <method signature="System.Int32 PreservedMethod(System.Int32)" />
+    </type>
+    <!-- nothing root 仅保留嵌套类型身份，字段和方法应被裁剪。 -->
+    <type fullname="ReflectionTrimProbe.QuaternaryModels.CrossAssemblyRootModel/TrimmedNested" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.QuaternaryModels.QuaternaryNothingRootModel" preserve="nothing" />
+  </assembly>
+  <assembly fullname="ReflectionTrimProbe.QuinaryModels">
+    <!-- 第五程序集同时引用第三、第四程序集，显式保留两条分支的字段和完整方法签名。 -->
+    <type fullname="ReflectionTrimProbe.QuinaryModels.CrossBranchRootModel/PreservedNested" preserve="nothing">
+      <field name="PreservedQuaternaryPayload" />
+      <field name="PreservedTertiaryPayload" />
+      <field name="PreservedNestedField" />
+      <method signature="System.Int32 PreservedMethod(System.Int32)" />
+    </type>
+    <!-- nothing root 仅保留嵌套类型身份，字段和方法应被裁剪。 -->
+    <type fullname="ReflectionTrimProbe.QuinaryModels.CrossBranchRootModel/TrimmedNested" preserve="nothing" />
+  </assembly>
+</linker>
