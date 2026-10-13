@@ -15,7 +15,7 @@ namespace Bing.Http;
 public sealed class HttpResponseResult<TResult> where TResult : class
 {
     /// <summary>
-    /// 初始化一个<see cref="HttpResponseResult{TResult}"/>类型的实例。
+    /// 初始化一个 <see cref="HttpResponseResult{TResult}"/> 类型的实例。
     /// </summary>
     /// <param name="statusCode">HTTP 响应状态码。</param>
     /// <param name="headers">响应头；构造时会复制为大小写不敏感的只读快照。</param>
@@ -33,9 +33,7 @@ public sealed class HttpResponseResult<TResult> where TResult : class
     }
 
     /// <summary>
-
-    /// 初始化一个<see cref="HttpResponseResult{TResult}"/>类型的实例。
-
+    /// 初始化一个 <see cref="HttpResponseResult{TResult}"/> 类型的实例。
     /// </summary>
     /// <param name="response">尚未释放的响应消息。</param>
     /// <param name="data">转换后的成功响应数据。</param>

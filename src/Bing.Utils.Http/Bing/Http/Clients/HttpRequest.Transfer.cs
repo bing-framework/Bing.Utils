@@ -195,9 +195,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
         private TimeSpan _lastTime;
 
         /// <summary>
-
-        /// 初始化一个<see cref="DownloadProgressState"/>类型的实例。
-
+        /// 初始化一个 <see cref="DownloadProgressState"/> 类型的实例。
         /// </summary>
         public DownloadProgressState(Action<HttpDownloadProgress> observer, long minimumBytes, TimeSpan minimumInterval)
         {

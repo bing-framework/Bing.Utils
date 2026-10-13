@@ -10,7 +10,7 @@ namespace Bing.Http;
 public sealed class HttpRetryScheduled
 {
     /// <summary>
-    /// 初始化一个<see cref="HttpRetryScheduled"/>类型的实例。
+    /// 初始化一个 <see cref="HttpRetryScheduled"/> 类型的实例。
     /// </summary>
     /// <param name="failedAttempt">刚失败的发送尝试序号，从 1 开始。</param>
     /// <param name="delay">最终计划等待时间，包含现有退避、抖动及 Retry-After 决策。</param>
@@ -29,20 +29,20 @@ public sealed class HttpRetryScheduled
 
     /// <summary>
 
-    /// 刚失败的发送尝试序号，从 1 开始。
+    /// 获取刚失败的发送尝试序号，从 1 开始。
 
     /// </summary>
     public int FailedAttempt { get; }
     /// <summary>
-    /// 计划等待时长，不是实际等待耗时。
+    /// 获取计划等待时长，不是实际等待耗时。
     /// </summary>
     public TimeSpan Delay { get; }
     /// <summary>
-    /// 导致重试的响应状态码；发送异常时为空。
+    /// 获取导致重试的响应状态码；发送异常时为空。
     /// </summary>
     public HttpStatusCode? StatusCode { get; }
     /// <summary>
-    /// 原始发送异常引用；可能包含底层信息，导出时由调用方选择字段。
+    /// 获取原始发送异常引用；可能包含底层信息，导出时由调用方选择字段。
     /// </summary>
     public Exception Exception { get; }
 }

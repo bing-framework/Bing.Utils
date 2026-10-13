@@ -13,34 +13,34 @@ namespace Bing.Http;
 public sealed class HttpDownloadSegmentState
 {
     /// <summary>
-    /// 分片起始偏移。
+    /// 获取或设置分片起始偏移。
     /// </summary>
     public long Start { get; set; }
 
     /// <summary>
 
-    /// 分片包含式结束偏移。
+    /// 获取或设置分片包含式结束偏移。
 
     /// </summary>
     public long End { get; set; }
 
     /// <summary>
 
-    /// 当前已写入的字节数。
+    /// 获取或设置当前已写入的字节数。
 
     /// </summary>
     public long BytesWritten { get; set; }
 
     /// <summary>
 
-    /// 分片是否已完整写入。
+    /// 获取或设置分片是否已完整写入。
 
     /// </summary>
     public bool Completed { get; set; }
 
     /// <summary>
 
-    /// 可选的分片 SHA-256 十六进制摘要。
+    /// 获取或设置可选的分片 SHA-256 十六进制摘要。
 
     /// </summary>
     public string Sha256 { get; set; }
@@ -62,34 +62,34 @@ public sealed class HttpDownloadSegmentState
 public sealed class HttpDownloadSegmentsState
 {
     /// <summary>
-    /// 当前状态格式版本。
+    /// 获取或设置当前状态格式版本。
     /// </summary>
     public int SchemaVersion { get; set; }
 
     /// <summary>
 
-    /// 正文总长度。
+    /// 获取或设置正文总长度。
 
     /// </summary>
     public long TotalLength { get; set; }
 
     /// <summary>
 
-    /// 用于确认正文身份的可选验证器。
+    /// 获取或设置用于确认正文身份的可选验证器。
 
     /// </summary>
     public string Validator { get; set; }
 
     /// <summary>
 
-    /// 服务端响应的内容编码。
+    /// 获取或设置服务端响应的内容编码。
 
     /// </summary>
     public string ContentEncoding { get; set; }
 
     /// <summary>
 
-    /// 正文的完整分片状态。
+    /// 获取或设置正文的完整分片状态。
 
     /// </summary>
     public List<HttpDownloadSegmentState> Segments { get; set; }

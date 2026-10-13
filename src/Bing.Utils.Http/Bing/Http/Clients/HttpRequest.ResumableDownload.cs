@@ -42,10 +42,12 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 执行带状态文件和验证器的断点续传下载。
-
     /// </summary>
+    /// <param name="filePath">下载完成后写入的目标文件路径。</param>
+    /// <param name="cancellationToken">用于取消下载的令牌。</param>
+    /// <param name="observation">可选的下载观察状态；为 null 时不记录传输进度。</param>
+    /// <returns>包含下载结果的任务。</returns>
     private async Task<HttpDownloadResult> DownloadFileResumableCoreAsync(
         string filePath, CancellationToken cancellationToken, ObservationState observation)
     {
@@ -267,10 +269,10 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 获取目标文件对应的断点续传锁。
-
     /// </summary>
+    /// <param name="fullPath">目标文件的完整路径。</param>
+    /// <returns>用于独占访问断点续传状态的文件流。</returns>
     private static FileStream AcquireResumeLock(string fullPath)
     {
         return new FileStream(
@@ -282,8 +284,11 @@ public partial class HttpRequest<TResult> where TResult : class
             FileOptions.SequentialScan);
     }
     /// <summary>
-    /// 生成用于匹配恢复状态的请求身份信息。
+    /// 生成用于匹配断点续传状态的请求身份标识。
     /// </summary>
+    /// <param name="message">用于下载的 HTTP 请求。</param>
+    /// <param name="client">用于解析相对请求 URI 的 HTTP 客户端。</param>
+    /// <returns>绝对 URI 可解析时返回请求方法和 URI 组成的标识；否则返回 null。</returns>
     private static string BuildRequestIdentity(HttpRequestMessage message, HttpClient client)
     {
         if (message?.RequestUri == null) return null;
@@ -298,10 +303,11 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
-    /// 生成包含请求和客户端配置的恢复指纹。
-
+    /// 生成用于匹配断点续传状态的请求指纹。
     /// </summary>
+    /// <param name="message">用于下载的 HTTP 请求。</param>
+    /// <param name="client">用于解析请求 URI 的 HTTP 客户端。</param>
+    /// <returns>请求头及客户端配置内容的 SHA-256 指纹。</returns>
     private static string BuildRequestFingerprint(HttpRequestMessage message, HttpClient client)
     {
         var values = new System.Collections.Generic.List<string>();
@@ -318,10 +324,10 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
-    /// 将影响恢复身份的请求头加入指纹。
-
+    /// 将参与恢复匹配的请求头加入指纹数据。
     /// </summary>
+    /// <param name="values">接收规范化请求头数据的集合。</param>
+    /// <param name="headers">要加入指纹的请求头集合。</param>
     private static void AddFingerprintHeaders(
         System.Collections.Generic.List<string> values,
         System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string,
@@ -340,10 +346,11 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
-    /// 确认恢复响应与已保存的请求身份一致。
-
+    /// 验证响应请求身份与已保存的断点续传状态一致。
     /// </summary>
+    /// <param name="response">断点续传请求的 HTTP 响应。</param>
+    /// <param name="client">用于解析响应请求 URI 的 HTTP 客户端。</param>
+    /// <param name="state">已保存的断点续传状态。</param>
     private static void ValidateResumeResponseIdentity(
         HttpResponseMessage response, HttpClient client, ResumeDownloadState state)
     {
@@ -356,37 +363,42 @@ public partial class HttpRequest<TResult> where TResult : class
             throw new HttpRequestException("The request headers changed during the partial download.");
     }
     /// <summary>
-    /// 根据已保存的验证器生成 If-Range 值。
+    /// 根据断点续传状态选择 If-Range 验证器。
     /// </summary>
+    /// <param name="state">已保存的断点续传状态。</param>
+    /// <returns>优先返回强 ETag；没有强 ETag 时返回 Last-Modified，均不可用时返回 null。</returns>
     private static string GetIfRange(ResumeDownloadState state) =>
         !string.IsNullOrWhiteSpace(state.ETag) &&
         !state.ETag.StartsWith("W/", StringComparison.OrdinalIgnoreCase)
             ? state.ETag : state.LastModified;
 
     /// <summary>
-
-    /// 判断恢复状态是否包含有效的响应验证器。
-
+    /// 判断断点续传状态是否包含可用的响应验证器。
     /// </summary>
+    /// <param name="state">待检查的断点续传状态。</param>
+    /// <returns>包含强 ETag 或 Last-Modified 时为 true；否则为 false。</returns>
     private static bool HasValidator(ResumeDownloadState state) =>
         state != null &&
         (!string.IsNullOrWhiteSpace(state.ETag) && !state.ETag.StartsWith("W/", StringComparison.OrdinalIgnoreCase) ||
          !string.IsNullOrWhiteSpace(state.LastModified));
 
     /// <summary>
-
-    /// 判断恢复状态是否包含强 ETag 验证器。
-
+    /// 判断断点续传状态是否包含强 ETag。
     /// </summary>
+    /// <param name="state">待检查的断点续传状态。</param>
+    /// <returns>包含非弱 ETag 时为 true；否则为 false。</returns>
     private static bool HasStrongETag(ResumeDownloadState state) =>
         !string.IsNullOrWhiteSpace(state?.ETag) &&
         !state.ETag.StartsWith("W/", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
-
-    /// 判断响应是否支持继续追加到已有部分文件。
-
+    /// 判断已有部分文件是否可用于当前请求的断点续传。
     /// </summary>
+    /// <param name="state">已保存的断点续传状态。</param>
+    /// <param name="partialPath">部分下载文件的路径。</param>
+    /// <param name="identity">当前请求的身份标识。</param>
+    /// <param name="requestFingerprint">当前请求的指纹。</param>
+    /// <returns>状态、请求身份、验证器及部分文件长度均匹配时为 true；否则为 false。</returns>
     private static bool IsResumeCandidate(
         ResumeDownloadState state, string partialPath, string identity, string requestFingerprint)
     {
@@ -401,10 +413,11 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 加载并校验已有的断点续传状态。
-
     /// </summary>
+    /// <param name="partialPath">部分下载文件的路径。</param>
+    /// <param name="statePath">状态文件的路径。</param>
+    /// <returns>校验通过的状态；状态无效或读取失败时返回 null。</returns>
     private static ResumeDownloadState LoadResumeState(string partialPath, string statePath)
     {
         try
@@ -436,10 +449,13 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
-    /// 根据响应信息创建新的断点续传状态。
-
+    /// 根据响应和已有状态创建断点续传状态。
     /// </summary>
+    /// <param name="response">用于创建状态的 HTTP 响应。</param>
+    /// <param name="identity">当前请求的身份标识。</param>
+    /// <param name="offset">本次响应数据在目标文件中的起始偏移量。</param>
+    /// <param name="previous">可供沿用验证信息的已有状态。</param>
+    /// <returns>从响应及已有状态构造的续传状态。</returns>
     private static ResumeDownloadState CreateResumeState(
         HttpResponseMessage response, string identity, long offset, ResumeDownloadState previous)
     {
@@ -461,18 +477,19 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
-    /// 读取响应的内容编码头。
-
+    /// 获取响应的内容编码。
     /// </summary>
+    /// <param name="response">待读取的 HTTP 响应。</param>
+    /// <returns>响应声明的内容编码；未声明时返回 identity。</returns>
     private static string GetContentEncoding(HttpResponseMessage response) =>
         GetHeader(response, "Content-Encoding") ?? "identity";
 
     /// <summary>
-
-    /// 从响应中读取指定名称的首个头值。
-
+    /// 从响应头中获取指定名称的首个值。
     /// </summary>
+    /// <param name="response">待读取的 HTTP 响应。</param>
+    /// <param name="name">要查找的头名称。</param>
+    /// <returns>找到时返回首个头值；否则返回 null。</returns>
     private static string GetHeader(HttpResponseMessage response, string name)
     {
         if (response.Headers.TryGetValues(name, out var values))
@@ -482,10 +499,11 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
-    /// 校验部分响应与已保存的续传状态匹配。
-
+    /// 验证部分响应与已保存的续传状态匹配。
     /// </summary>
+    /// <param name="response">部分内容的 HTTP 响应。</param>
+    /// <param name="state">已保存的断点续传状态。</param>
+    /// <returns>响应中预期的内容字节数。</returns>
     private static long ValidatePartialResponse(
         HttpResponseMessage response, ResumeDownloadState state)
     {
@@ -524,10 +542,11 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
-    /// 判断响应是否已覆盖完整的目标字节范围。
-
+    /// 判断响应是否覆盖完整目标字节范围并匹配验证器。
     /// </summary>
+    /// <param name="response">待检查的 HTTP 响应。</param>
+    /// <param name="state">已保存的断点续传状态。</param>
+    /// <returns>响应范围和资源验证器均匹配时为 true；否则为 false。</returns>
     private static bool IsCompletedRangeResponse(
         HttpResponseMessage response, ResumeDownloadState state)
     {
@@ -553,10 +572,10 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 将断点续传状态原子写入状态文件。
-
     /// </summary>
+    /// <param name="statePath">状态文件的路径。</param>
+    /// <param name="state">要保存的断点续传状态。</param>
     private static void SaveResumeState(string statePath, ResumeDownloadState state)
     {
         var temporaryPath = statePath + "." + Guid.NewGuid().ToString("N") + ".tmp";
@@ -588,10 +607,10 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 删除断点续传使用的部分文件和状态文件。
-
     /// </summary>
+    /// <param name="partialPath">部分下载文件的路径。</param>
+    /// <param name="statePath">状态文件的路径。</param>
     private static void DeleteResumeFiles(string partialPath, string statePath)
     {
         DeleteFileIfExists(partialPath);
@@ -599,10 +618,11 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 尝试删除文件并保留已有的首个异常。
-
     /// </summary>
+    /// <param name="path">要删除的文件路径。</param>
+    /// <param name="firstError">已有的首个异常；没有时传入 null。</param>
+    /// <returns>删除后记录的首个异常；没有异常时返回 null。</returns>
     private static Exception CaptureDelete(string path, Exception firstError)
     {
         try { DeleteFileIfExists(path); }
@@ -611,10 +631,9 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
-    /// 存在时删除指定文件。
-
+    /// 文件存在时将其删除。
     /// </summary>
+    /// <param name="path">要检查并删除的文件路径。</param>
     private static void DeleteFileIfExists(string path)
     {
         if (File.Exists(path)) File.Delete(path);

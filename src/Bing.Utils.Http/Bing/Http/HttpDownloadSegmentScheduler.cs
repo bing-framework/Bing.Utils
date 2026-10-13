@@ -43,7 +43,7 @@ public sealed class HttpDownloadSegmentScheduler
 
     /// <summary>
 
-    /// 创建分片下载调度器。
+    /// 初始化一个 <see cref="HttpDownloadSegmentScheduler"/> 类型的实例。
 
     /// </summary>
     /// <param name="fileStore">分片文件存储。</param>

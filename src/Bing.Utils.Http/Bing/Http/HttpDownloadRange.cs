@@ -11,7 +11,7 @@ namespace Bing.Http;
 public readonly struct HttpDownloadRange : IEquatable<HttpDownloadRange>
 {
     /// <summary>
-    /// 初始化字节范围。
+    /// 初始化一个 <see cref="HttpDownloadRange"/> 类型的实例。
     /// </summary>
     /// <param name="start">起始偏移。</param>
     /// <param name="end">包含的结束偏移。</param>
@@ -25,21 +25,21 @@ public readonly struct HttpDownloadRange : IEquatable<HttpDownloadRange>
 
     /// <summary>
 
-    /// 范围的起始偏移。
+    /// 获取范围的起始偏移。
 
     /// </summary>
     public long Start { get; }
 
     /// <summary>
 
-    /// 范围的包含式结束偏移。
+    /// 获取范围的包含式结束偏移。
 
     /// </summary>
     public long End { get; }
 
     /// <summary>
 
-    /// 范围包含的字节数。
+    /// 获取范围包含的字节数。
 
     /// </summary>
     public long Length => End - Start + 1;

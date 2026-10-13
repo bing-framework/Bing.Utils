@@ -63,6 +63,9 @@ public interface IHttpRequestDownloadResult<TResult> where TResult : class
     /// <summary>
     /// 将成功响应写入调用方拥有的流，并返回下载元数据；拒绝发送时返回空。
     /// </summary>
+    /// <returns>下载结果；发送被拒绝时返回 <see langword="null"/>。</returns>
+    /// <param name="destination">调用方持有的可写目标流。</param>
+    /// <param name="cancellationToken">请求和正文复制的取消令牌。</param>
     Task<HttpDownloadResult> DownloadToWithResultAsync(Stream destination, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -70,6 +73,9 @@ public interface IHttpRequestDownloadResult<TResult> where TResult : class
     /// 通过临时文件保存成功响应，并返回下载元数据；拒绝发送时返回空。
 
     /// </summary>
+    /// <returns>下载结果；发送被拒绝时返回 <see langword="null"/>。</returns>
+    /// <param name="filePath">目标文件路径。</param>
+    /// <param name="cancellationToken">请求和正文复制的取消令牌。</param>
     Task<HttpDownloadResult> DownloadFileWithResultAsync(string filePath, CancellationToken cancellationToken = default);
 }
 
@@ -118,6 +124,8 @@ public interface IHttpRequestObservationRegistration<TResult> where TResult : cl
     /// 设置完成观测回调及可选的观测错误处理回调。
     /// </summary>
     /// <remarks>观测回调异常不会改变请求结果；错误处理回调自身异常也会被隔离。</remarks>
+    /// <param name="observer">请求完成时调用的观测回调。</param>
+    /// <param name="onObserverError">观测回调发生异常时调用的错误处理回调。</param>
     void SetCompletionObserver(Action<HttpRequestCompletion> observer, Action<Exception> onObserverError = null);
 }
 

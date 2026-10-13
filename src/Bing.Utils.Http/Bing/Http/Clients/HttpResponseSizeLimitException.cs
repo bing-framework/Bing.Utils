@@ -8,7 +8,7 @@ namespace Bing.Http.Clients;
 public sealed class HttpResponseSizeLimitException : IOException
 {
     /// <summary>
-    /// 创建响应正文超限异常。
+    /// 初始化一个 <see cref="HttpResponseSizeLimitException"/> 类型的实例。
     /// </summary>
     /// <param name="limit">已配置的最大响应正文字节数</param>
     public HttpResponseSizeLimitException(long limit)
@@ -16,7 +16,7 @@ public sealed class HttpResponseSizeLimitException : IOException
 
     /// <summary>
 
-    /// 配置的字节上限。
+    /// 获取配置的字节上限。
 
     /// </summary>
     public long Limit { get; }

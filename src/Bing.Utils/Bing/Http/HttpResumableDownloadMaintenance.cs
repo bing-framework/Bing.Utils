@@ -8,7 +8,7 @@ namespace Bing.Http;
 public sealed class HttpResumableDownloadCleanupResult
 {
     /// <summary>
-    /// 初始化一个<see cref="HttpResumableDownloadCleanupResult"/>类型的实例。
+    /// 初始化一个 <see cref="HttpResumableDownloadCleanupResult"/> 类型的实例。
     /// </summary>
     /// <param name="partialFilesRemoved">移除的续传临时数据文件数。</param>
     /// <param name="stateFilesRemoved">移除的续传状态文件数。</param>
@@ -25,35 +25,35 @@ public sealed class HttpResumableDownloadCleanupResult
 
     /// <summary>
 
-    /// 移除的 .binghttp.part 文件数。
+    /// 获取移除的 .binghttp.part 文件数。
 
     /// </summary>
     public int PartialFilesRemoved { get; }
 
     /// <summary>
 
-    /// 移除的 .binghttp.resume.json 文件数。
+    /// 获取移除的 .binghttp.resume.json 文件数。
 
     /// </summary>
     public int StateFilesRemoved { get; }
 
     /// <summary>
 
-    /// 移除的续传状态临时文件数。
+    /// 获取移除的续传状态临时文件数。
 
     /// </summary>
     public int TemporaryFilesRemoved { get; }
 
     /// <summary>
 
-    /// 保留的锁文件数；包括活跃锁和为并发安全而保留的空闲锁。
+    /// 获取保留的锁文件数；包括活跃锁和为并发安全而保留的空闲锁。
 
     /// </summary>
     public int LockFilesRetained { get; }
 
     /// <summary>
 
-    /// 本次实际移除的侧车文件总数。
+    /// 获取本次实际移除的侧车文件总数。
 
     /// </summary>
     public int TotalRemoved => PartialFilesRemoved + StateFilesRemoved + TemporaryFilesRemoved;

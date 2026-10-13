@@ -28,9 +28,7 @@ public partial class HttpRequest<TResult> where TResult : class
         private ResponseBodyReadStream _body;
 
         /// <summary>
-
-        /// 初始化一个<see cref="JsonArrayResponseLease"/>类型的实例。
-
+        /// 初始化一个 <see cref="JsonArrayResponseLease"/> 类型的实例。
         /// </summary>
         public JsonArrayResponseLease(HttpResponseMessage response, ResponseBodyReadStream body)
         {
@@ -139,9 +137,7 @@ public partial class HttpRequest<TResult> where TResult : class
         private int _enumerated;
 
         /// <summary>
-
-        /// 初始化一个<see cref="JsonArrayEnumerable"/>类型的实例。
-
+        /// 初始化一个 <see cref="JsonArrayEnumerable"/> 类型的实例。
         /// </summary>
         public JsonArrayEnumerable(HttpRequest<TResult> request, CancellationToken requestToken)
         {
@@ -208,9 +204,7 @@ public partial class HttpRequest<TResult> where TResult : class
         private bool _disposed;
 
         /// <summary>
-
-        /// 初始化一个<see cref="JsonArrayEnumerator"/>类型的实例。
-
+        /// 初始化一个 <see cref="JsonArrayEnumerator"/> 类型的实例。
         /// </summary>
         public JsonArrayEnumerator(HttpRequest<TResult> request, CancellationToken token,
             CancellationTokenSource linkedTokenSource)
@@ -336,9 +330,7 @@ public partial class HttpRequest<TResult> where TResult : class
         private int _valueDepth;
 
         /// <summary>
-
-        /// 初始化一个<see cref="JsonArrayParser"/>类型的实例。
-
+        /// 初始化一个 <see cref="JsonArrayParser"/> 类型的实例。
         /// </summary>
         public JsonArrayParser(ResponseBodyReadStream body, JsonSerializerOptions options)
         {

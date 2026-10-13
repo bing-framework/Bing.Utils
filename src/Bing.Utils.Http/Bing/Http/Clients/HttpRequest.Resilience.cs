@@ -83,6 +83,12 @@ public partial class HttpRequest<TResult> where TResult : class
         _observationErrorHandler = onObserverError;
     }
 
+    /// <summary>
+    /// 将发送请求前的验证错误纳入完成观测后抛出。
+    /// </summary>
+    /// <typeparam name="T">请求结果的类型。</typeparam>
+    /// <param name="error">导致请求无法发送的错误。</param>
+    /// <returns>此操作以所提供的错误结束，不会产生正常结果。</returns>
     private Task<T> FailPreflightAsync<T>(Exception error)
     {
         if (_completionObserver == null)
@@ -97,6 +103,12 @@ public partial class HttpRequest<TResult> where TResult : class
         });
     }
 
+    /// <summary>
+    /// 执行异步操作并在结束时报告请求完成情况。
+    /// </summary>
+    /// <typeparam name="T">异步操作结果的类型。</typeparam>
+    /// <param name="operation">接收观测状态并执行的异步操作。</param>
+    /// <returns>异步操作产生的结果。</returns>
     private async Task<T> ObserveOperationAsync<T>(Func<ObservationState, Task<T>> operation)
     {
         var observer = _completionObserver;

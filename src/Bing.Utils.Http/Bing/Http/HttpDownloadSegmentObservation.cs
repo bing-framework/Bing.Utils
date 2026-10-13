@@ -8,7 +8,7 @@ namespace Bing.Http;
 public sealed class HttpDownloadSegmentProgress
 {
     /// <summary>
-    /// 初始化分片进度。
+    /// 初始化一个 <see cref="HttpDownloadSegmentProgress"/> 类型的实例。
     /// </summary>
     public HttpDownloadSegmentProgress(HttpDownloadRange range, int attempt,
         long completedBytes, long totalBytes)
@@ -21,28 +21,28 @@ public sealed class HttpDownloadSegmentProgress
 
     /// <summary>
 
-    /// 已完成的分片范围。
+    /// 获取已完成的分片范围。
 
     /// </summary>
     public HttpDownloadRange Range { get; }
 
     /// <summary>
 
-    /// 该分片使用的尝试序号，从一开始。
+    /// 获取该分片使用的尝试序号，从一开始。
 
     /// </summary>
     public int Attempt { get; }
 
     /// <summary>
 
-    /// 当前所有成功分片累计字节数。
+    /// 获取当前所有成功分片累计字节数。
 
     /// </summary>
     public long CompletedBytes { get; }
 
     /// <summary>
 
-    /// 正文总字节数。
+    /// 获取正文总字节数。
 
     /// </summary>
     public long TotalBytes { get; }
@@ -56,7 +56,7 @@ public sealed class HttpDownloadSegmentProgress
 public sealed class HttpDownloadSegmentFailure
 {
     /// <summary>
-    /// 初始化分片失败信息。
+    /// 初始化一个 <see cref="HttpDownloadSegmentFailure"/> 类型的实例。
     /// </summary>
     public HttpDownloadSegmentFailure(HttpDownloadRange range, int attempts, Exception error)
     {
@@ -67,21 +67,21 @@ public sealed class HttpDownloadSegmentFailure
 
     /// <summary>
 
-    /// 失败的分片范围。
+    /// 获取失败的分片范围。
 
     /// </summary>
     public HttpDownloadRange Range { get; }
 
     /// <summary>
 
-    /// 已执行的总尝试次数。
+    /// 获取已执行的总尝试次数。
 
     /// </summary>
     public int Attempts { get; }
 
     /// <summary>
 
-    /// 最后一次失败异常。
+    /// 获取最后一次失败异常。
 
     /// </summary>
     public Exception Error { get; }

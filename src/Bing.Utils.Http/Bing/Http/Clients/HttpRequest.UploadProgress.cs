@@ -71,9 +71,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
         private readonly TimeSpan _minimumInterval;
 
         /// <summary>
-
-        /// 初始化一个<see cref="UploadProgressContent"/>类型的实例。
-
+        /// 初始化一个 <see cref="UploadProgressContent"/> 类型的实例。
         /// </summary>
         public UploadProgressContent(HttpContent inner, int attempt, Action<HttpUploadProgress> observer,
             long minimumBytes, TimeSpan minimumInterval)
@@ -177,9 +175,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
         private TimeSpan _lastTime;
 
         /// <summary>
-
-        /// 初始化一个<see cref="UploadProgressState"/>类型的实例。
-
+        /// 初始化一个 <see cref="UploadProgressState"/> 类型的实例。
         /// </summary>
         public UploadProgressState(int attempt, Action<HttpUploadProgress> observer, long minimumBytes, TimeSpan minimumInterval, long? totalBytes)
         {
@@ -192,7 +188,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
 
         /// <summary>
 
-        /// 当前发送尝试已经写入的字节数。
+        /// 获取当前发送尝试已经写入的字节数。
 
         /// </summary>
         public long BytesWritten { get; private set; }
@@ -245,9 +241,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
         private readonly UploadProgressState _state;
 
         /// <summary>
-
-        /// 初始化一个<see cref="ProgressStream"/>类型的实例。
-
+        /// 初始化一个 <see cref="ProgressStream"/> 类型的实例。
         /// </summary>
         public ProgressStream(Stream inner, UploadProgressState state)
         {

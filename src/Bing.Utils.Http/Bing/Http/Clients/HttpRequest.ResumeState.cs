@@ -15,35 +15,35 @@ public partial class HttpRequest<TResult> where TResult : class
     private sealed class ResumeDownloadState
     {
         /// <summary>
-        /// 状态文件的架构版本。
+        /// 获取或设置状态文件的架构版本。
         /// </summary>
         public int SchemaVersion { get; set; }
         /// <summary>
-        /// 用于校验恢复请求目标的身份信息。
+        /// 获取或设置用于校验恢复请求目标的身份信息。
         /// </summary>
         public string Identity { get; set; }
         /// <summary>
-        /// 用于比较恢复请求配置的指纹。
+        /// 获取或设置用于比较恢复请求配置的指纹。
         /// </summary>
         public string RequestFingerprint { get; set; }
         /// <summary>
-        /// 已保存部分响应使用的内容编码。
+        /// 获取或设置已保存部分响应使用的内容编码。
         /// </summary>
         public string ContentEncoding { get; set; }
         /// <summary>
-        /// 部分文件中已写入的字节数。
+        /// 获取或设置部分文件中已写入的字节数。
         /// </summary>
         public long BytesWritten { get; set; }
         /// <summary>
-        /// 用于验证响应版本的 ETag 值。
+        /// 获取或设置用于验证响应版本的 ETag 值。
         /// </summary>
         public string ETag { get; set; }
         /// <summary>
-        /// 用于验证响应版本的最后修改时间。
+        /// 获取或设置用于验证响应版本的最后修改时间。
         /// </summary>
         public string LastModified { get; set; }
         /// <summary>
-        /// 已知时表示完整响应的总字节数。
+        /// 获取或设置已知时表示完整响应的总字节数。
         /// </summary>
         public long? TotalLength { get; set; }
     }

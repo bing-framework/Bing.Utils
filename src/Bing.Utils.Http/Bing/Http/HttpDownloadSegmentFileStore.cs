@@ -21,7 +21,7 @@ public sealed class HttpDownloadSegmentFileStore
 
     /// <summary>
 
-    /// 创建分片文件存储。
+    /// 初始化一个 <see cref="HttpDownloadSegmentFileStore"/> 类型的实例。
 
     /// </summary>
     /// <param name="stagingDirectory">分片临时目录。</param>
@@ -238,6 +238,9 @@ public sealed class HttpDownloadSegmentFileStore
         catch { }
     }
 
+    /// <summary>
+    /// 仅当目录存在且为空时尝试删除该目录。</summary>
+    /// <param name="path">待检查的目录路径。</param>
     private static void TryDeleteEmptyDirectory(string path)
     {
         try

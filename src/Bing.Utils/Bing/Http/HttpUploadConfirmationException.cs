@@ -9,7 +9,7 @@ namespace Bing.Http;
 public sealed class HttpUploadConfirmationException<TResult> : InvalidOperationException where TResult : class
 {
     /// <summary>
-    /// 初始化一个<see cref="HttpUploadConfirmationException{TResult}"/>类型的实例。
+    /// 初始化一个 <see cref="HttpUploadConfirmationException{TResult}"/> 类型的实例。
     /// </summary>
     /// <param name="response">未通过确认校验的服务端响应。</param>
     public HttpUploadConfirmationException(HttpResponseResult<TResult> response)

@@ -13,9 +13,7 @@ internal sealed class NonClosingStream : Stream
     private readonly Stream _inner;
 
     /// <summary>
-
-    /// 初始化一个<see cref="NonClosingStream"/>类型的实例。
-
+    /// 初始化一个 <see cref="NonClosingStream"/> 类型的实例。
     /// </summary>
     public NonClosingStream(Stream inner) => _inner = inner;
     /// <inheritdoc />

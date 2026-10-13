@@ -11,23 +11,23 @@ public class PhysicalFileParameter : IFileParameter
     private FileStream _stream;
 
     /// <summary>
-    /// 绝对路径
+    /// 获取绝对路径
     /// </summary>
     public string AbsolutePath { get; }
 
     /// <summary>
-    /// 参数名
+    /// 获取参数名
     /// </summary>
     public string Name { get; }
 
     /// <summary>
-    /// 初始化一个<see cref="PhysicalFileParameter"/>类型的实例
+    /// 初始化一个 <see cref="PhysicalFileParameter"/> 类型的实例。
     /// </summary>
     /// <param name="absolutePath">绝对路径</param>
     public PhysicalFileParameter(string absolutePath) : this(absolutePath, "files") { }
 
     /// <summary>
-    /// 初始化一个<see cref="PhysicalFileParameter"/>类型的实例
+    /// 初始化一个 <see cref="PhysicalFileParameter"/> 类型的实例。
     /// </summary>
     /// <param name="absolutePath">绝对路径</param>
     /// <param name="name">参数名</param>

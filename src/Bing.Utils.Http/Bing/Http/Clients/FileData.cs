@@ -6,7 +6,7 @@ namespace Bing.Http.Clients;
 public class FileData
 {
     /// <summary>
-    /// 初始化一个<see cref="FileData"/>类型的实例。
+    /// 初始化一个 <see cref="FileData"/> 类型的实例。
     /// </summary>
     /// <param name="stream">文件流</param>
     /// <param name="fileName">文件名</param>
@@ -21,7 +21,7 @@ public class FileData
     }
 
     /// <summary>
-    /// 初始化一个<see cref="FileData"/>类型的实例。
+    /// 初始化一个 <see cref="FileData"/> 类型的实例。
     /// </summary>
     /// <param name="filePath">文件路径</param>
     /// <param name="name">参数名</param>
@@ -32,27 +32,27 @@ public class FileData
     }
 
     /// <summary>
-    /// 文件流
+    /// 获取文件流
     /// </summary>
     public Stream Stream { get; }
 
     /// <summary>
-    /// 发送后是否保留调用方的流。
+    /// 获取发送后是否保留调用方的流。
     /// </summary>
     public bool LeaveOpen { get; }
 
     /// <summary>
-    /// 文件路径
+    /// 获取文件路径
     /// </summary>
     public string FilePath { get; }
 
     /// <summary>
-    /// 文件名
+    /// 获取文件名
     /// </summary>
     public string FileName { get; }
 
     /// <summary>
-    /// 参数名
+    /// 获取参数名
     /// </summary>
     public string Name { get; }
 }

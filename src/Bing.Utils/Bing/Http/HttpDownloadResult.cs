@@ -13,7 +13,7 @@ namespace Bing.Http;
 public sealed class HttpDownloadResult
 {
     /// <summary>
-    /// 初始化一个<see cref="HttpDownloadResult"/>类型的实例。
+    /// 初始化一个 <see cref="HttpDownloadResult"/> 类型的实例。
     /// </summary>
     /// <param name="statusCode">响应状态码。</param>
     /// <param name="headers">响应头；为空时使用空快照。</param>
@@ -32,9 +32,7 @@ public sealed class HttpDownloadResult
     }
 
     /// <summary>
-
-    /// 初始化一个<see cref="HttpDownloadResult"/>类型的实例。
-
+    /// 初始化一个 <see cref="HttpDownloadResult"/> 类型的实例。
     /// </summary>
     /// <param name="response">用于创建结果快照的响应消息。</param>
     /// <param name="bytesWritten">实际写入目标的字节数。</param>
@@ -50,33 +48,33 @@ public sealed class HttpDownloadResult
 
     /// <summary>
 
-    /// 响应状态码。
+    /// 获取响应状态码。
 
     /// </summary>
     public HttpStatusCode StatusCode { get; }
     /// <summary>
-    /// 响应状态码是否为 2xx。
+    /// 获取响应状态码是否为 2xx。
     /// </summary>
     public bool IsSuccessStatusCode => (int)StatusCode >= 200 && (int)StatusCode <= 299;
     /// <summary>
-    /// 响应状态码是否为 304（未修改）。
+    /// 获取响应状态码是否为 304（未修改）。
     /// </summary>
     public bool IsNotModified => StatusCode == HttpStatusCode.NotModified;
     /// <summary>
-    /// 响应头快照。
+    /// 获取响应头快照。
     /// </summary>
     public IReadOnlyDictionary<string, IReadOnlyList<string>> Headers { get; }
     /// <summary>
-    /// 内容头快照。
+    /// 获取内容头快照。
     /// </summary>
     public IReadOnlyDictionary<string, IReadOnlyList<string>> ContentHeaders { get; }
     /// <summary>
-    /// 实际写入的字节数。
+    /// 获取实际写入的字节数。
     /// </summary>
     /// <remarks>续传失败时包含仍保留的临时片段长度。</remarks>
     public long BytesWritten { get; }
     /// <summary>
-    /// 文件是否已成功保存。
+    /// 获取文件是否已成功保存。
     /// </summary>
     /// <remarks>下载到流时始终为 <see langword="false"/>。</remarks>
     public bool IsFileSaved { get; }
@@ -90,9 +88,7 @@ public sealed class HttpDownloadResult
     internal HttpDownloadResult WithFileSaved() => new HttpDownloadResult(StatusCode, Headers, ContentHeaders, BytesWritten);
 
     /// <summary>
-
-    /// 初始化一个<see cref="HttpDownloadResult"/>类型的实例。
-
+    /// 初始化一个 <see cref="HttpDownloadResult"/> 类型的实例。
     /// </summary>
     /// <param name="statusCode">响应状态码。</param>
     /// <param name="headers">已复制的响应头快照。</param>

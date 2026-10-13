@@ -38,27 +38,27 @@ public enum HttpDownloadRangeSupportStatus
 public sealed class HttpDownloadRangeResponseMetadata
 {
     /// <summary>
-    /// 响应状态码。
+    /// 获取或设置响应状态码。
     /// </summary>
     public HttpStatusCode StatusCode { get; set; }
 
     /// <summary>
 
-    /// Accept-Ranges 头值。
+    /// 获取或设置 Accept-Ranges 头值。
 
     /// </summary>
     public string AcceptRanges { get; set; }
 
     /// <summary>
 
-    /// Content-Length 值。
+    /// 获取或设置 Content-Length 值。
 
     /// </summary>
     public long? ContentLength { get; set; }
 
     /// <summary>
 
-    /// 解析后的 Content-Range 值。
+    /// 获取或设置解析后的 Content-Range 值。
 
     /// </summary>
     public ContentRangeHeaderValue ContentRange { get; set; }
@@ -72,7 +72,7 @@ public sealed class HttpDownloadRangeResponseMetadata
 public sealed class HttpDownloadRangeProbeResult
 {
     /// <summary>
-    /// 初始化一个<see cref="HttpDownloadRangeProbeResult"/>类型的实例。
+    /// 初始化一个 <see cref="HttpDownloadRangeProbeResult"/> 类型的实例。
     /// </summary>
     internal HttpDownloadRangeProbeResult(HttpDownloadRangeSupportStatus status, long? totalLength, string reason)
     {
@@ -83,21 +83,21 @@ public sealed class HttpDownloadRangeProbeResult
 
     /// <summary>
 
-    /// 探测状态。
+    /// 获取探测状态。
 
     /// </summary>
     public HttpDownloadRangeSupportStatus Status { get; }
 
     /// <summary>
 
-    /// 响应报告的正文总长度。
+    /// 获取响应报告的正文总长度。
 
     /// </summary>
     public long? TotalLength { get; }
 
     /// <summary>
 
-    /// 状态说明。
+    /// 获取状态说明。
 
     /// </summary>
     public string Reason { get; }

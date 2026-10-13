@@ -8,7 +8,7 @@ namespace Bing.Http;
 public sealed class HttpUploadProgress
 {
     /// <summary>
-    /// 初始化一个<see cref="HttpUploadProgress"/>类型的实例。
+    /// 初始化一个 <see cref="HttpUploadProgress"/> 类型的实例。
     /// </summary>
     /// <param name="attempt">发送尝试序号，从 1 开始。</param>
     /// <param name="bytesWritten">已成功写入传输流的字节数。</param>
@@ -27,20 +27,20 @@ public sealed class HttpUploadProgress
 
     /// <summary>
 
-    /// 发送尝试序号，从 1 开始。
+    /// 获取发送尝试序号，从 1 开始。
 
     /// </summary>
     public int Attempt { get; }
     /// <summary>
-    /// 已成功写入传输流的字节数。
+    /// 获取已成功写入传输流的字节数。
     /// </summary>
     public long BytesWritten { get; }
     /// <summary>
-    /// 正文总长度；未知时为空。
+    /// 获取正文总长度；未知时为空。
     /// </summary>
     public long? TotalBytes { get; }
     /// <summary>
-    /// 正文是否已完整写入传输流。
+    /// 获取正文是否已完整写入传输流。
     /// </summary>
     public bool IsCompleted { get; }
 }

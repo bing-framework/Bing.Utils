@@ -83,7 +83,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="HttpRequest{TResult}"/>类型的实例
+    /// 初始化一个 <see cref="HttpRequest{TResult}"/> 类型的实例。
     /// </summary>
     /// <param name="httpClientFactory">Http客户端工厂</param>
     /// <param name="httpClient">Http客户端</param>
@@ -115,112 +115,112 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     #region 属性
 
     /// <summary>
-    /// 基地址
+    /// 获取或设置基地址
     /// </summary>
     protected string BaseAddressUri { get; private set; }
 
     /// <summary>
-    /// 证书路径
+    /// 获取或设置证书路径
     /// </summary>
     protected string CertificatePath { get; private set; }
 
     /// <summary>
-    /// 证书密码
+    /// 获取或设置证书密码
     /// </summary>
     protected string CertificatePassword { get; private set; }
 
     /// <summary>
-    /// 内容类型
+    /// 获取或设置内容类型
     /// </summary>
     protected string HttpContentType { get; private set; }
 
     /// <summary>
-    /// 字符编码
+    /// 获取或设置字符编码
     /// </summary>
     protected Encoding CharacterEncoding { get; private set; }
 
     /// <summary>
-    /// 超时时间间隔
+    /// 获取或设置超时时间间隔
     /// </summary>
     protected TimeSpan? HttpTimeout { get; private set; }
 
     /// <summary>
-    /// 请求头参数集合
+    /// 获取请求头参数集合
     /// </summary>
     protected IDictionary<string, string> HeaderParams { get; }
 
     /// <summary>
-    /// Cookie参数集合
+    /// 获取Cookie参数集合
     /// </summary>
     protected IDictionary<string, string> Cookies { get; }
 
     /// <summary>
-    /// 查询字符串参数集合
+    /// 获取查询字符串参数集合
     /// </summary>
     protected IDictionary<string, string> QueryParams { get; }
 
     /// <summary>
-    /// 参数集合
+    /// 获取参数集合
     /// </summary>
     protected IDictionary<string, object> Params { get; }
 
     /// <summary>
-    /// 参数
+    /// 获取或设置参数
     /// </summary>
     protected object Param { get; private set; }
 
     /// <summary>
-    /// 文件数据列表
+    /// 获取或设置文件数据列表
     /// </summary>
     protected List<FileData> Files { get; private set; }
 
     /// <summary>
-    /// 是否自动携带cookie
+    /// 获取或设置是否自动携带cookie
     /// </summary>
     protected bool IsUseCookies { get; private set; }
 
     /// <summary>
-    /// 文件上传参数是否添加双引号
+    /// 获取或设置文件上传参数是否添加双引号
     /// </summary>
     protected bool IsFileParameterQuotes { get; private set; }
 
     /// <summary>
-    /// 发送前操作
+    /// 获取或设置发送前操作
     /// </summary>
     protected Func<HttpRequestMessage, bool> SendBeforeAction { get; private set; }
 
     /// <summary>
-    /// 发送后操作
+    /// 获取或设置发送后操作
     /// </summary>
     protected Func<HttpResponseMessage, Task<TResult>> SendAfterAction { get; private set; }
 
     /// <summary>
-    /// 支持协作取消的发送后操作。
+    /// 获取或设置支持协作取消的发送后操作。
     /// </summary>
     protected Func<HttpResponseMessage, CancellationToken, Task<TResult>> SendAfterWithCancellationAction { get; private set; }
 
     /// <summary>
-    /// 结果转换操作
+    /// 获取或设置结果转换操作
     /// </summary>
     protected Func<string, TResult> ConvertAction { get; private set; }
 
     /// <summary>
-    /// 执行成功操作
+    /// 获取或设置执行成功操作
     /// </summary>
     protected Action<TResult> SuccessAction { get; private set; }
 
     /// <summary>
-    /// 执行成功操作
+    /// 获取或设置执行成功操作
     /// </summary>
     protected Func<TResult, Task> SuccessFunc { get; private set; }
 
     /// <summary>
-    /// 执行失败操作
+    /// 获取或设置执行失败操作
     /// </summary>
     protected Action<HttpResponseMessage, object> FailAction { get; private set; }
 
     /// <summary>
-    /// 执行完成操作
+    /// 获取或设置执行完成操作
     /// </summary>
     protected Action<HttpResponseMessage, object> CompleteAction { get; private set; }
 
@@ -1100,6 +1100,17 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
 
     #region SendAsync(发送请求)
 
+    /// <summary>
+    /// 执行请求处理流程，并按需接入请求完成观测。
+    /// </summary>
+    /// <typeparam name="T">请求处理流程的结果类型。</typeparam>
+    /// <param name="process">接收响应与取消令牌并生成结果的处理流程。</param>
+    /// <param name="cancellationToken">取消请求处理的令牌。</param>
+    /// <param name="observation">供当前请求共享的观测状态。</param>
+    /// <param name="nested">是否为嵌套请求；嵌套请求不重复创建观测操作。</param>
+    /// <param name="allowRetries">是否允许按当前请求策略重试。</param>
+    /// <param name="prepareMessage">发送每次请求前准备消息的可选回调。</param>
+    /// <returns>异步请求处理结果。</returns>
     private Task<T> ExecuteAsync<T>(Func<HttpResponseMessage, CancellationToken, Task<T>> process,
         CancellationToken cancellationToken, ObservationState observation = null, bool nested = false,
         bool allowRetries = true, Action<HttpRequestMessage, int, HttpClient> prepareMessage = null)
@@ -1109,6 +1120,16 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
         return ObserveOperationAsync(state => ExecuteCoreAsync(process, cancellationToken, state, allowRetries, prepareMessage));
     }
 
+    /// <summary>
+    /// 执行一次请求及其响应处理流程。
+    /// </summary>
+    /// <typeparam name="T">响应处理结果的类型。</typeparam>
+    /// <param name="process">处理响应并生成结果的函数。</param>
+    /// <param name="cancellationToken">请求取消令牌。</param>
+    /// <param name="observation">当前请求的观测状态。</param>
+    /// <param name="allowRetries">是否允许按请求策略重试。</param>
+    /// <param name="prepareMessage">发送每次请求前准备消息的可选回调。</param>
+    /// <returns>异步响应处理结果。</returns>
     private async Task<T> ExecuteCoreAsync<T>(Func<HttpResponseMessage, CancellationToken, Task<T>> process,
         CancellationToken cancellationToken, ObservationState observation, bool allowRetries = true,
         Action<HttpRequestMessage, int, HttpClient> prepareMessage = null)
@@ -1779,7 +1800,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     /// <param name="destination">接收下载内容的目标流。</param>
     /// <param name="cancellationToken">下载取消令牌。</param>
     /// <param name="observation">当前请求的观测状态。</param>
-    /// <param name="withResult">是否同时生成下载结果信息。</param>
+    /// <param name="nested">是否属于已观测请求中的嵌套下载。</param>
     /// <returns>表示下载是否成功的任务。</returns>
     private async Task<bool> DownloadToResultAsync(Stream destination, CancellationToken cancellationToken,
         ObservationState observation = null, bool nested = false)
@@ -1795,7 +1816,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     /// <param name="cancellationToken">下载取消令牌。</param>
     /// <param name="withResult">是否生成下载结果信息。</param>
     /// <param name="observation">当前请求的观测状态。</param>
-    /// <param name="ownsDestination">操作结束后是否释放目标流。</param>
+    /// <param name="nested">是否属于已观测请求中的嵌套下载。</param>
     /// <returns>包含成功状态和可选下载结果的任务。</returns>
     private Task<(bool Success, HttpDownloadResult Result)> DownloadToDetailedAsync(Stream destination,
         CancellationToken cancellationToken, bool withResult, ObservationState observation = null, bool nested = false)

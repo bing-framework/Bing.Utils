@@ -78,6 +78,12 @@ public partial class HttpRequest<TResult> where TResult : class
         return result;
     }
 
+    /// <summary>
+    /// 加载并校验分片状态；状态无效时删除残留文件并复制请求状态。</summary>
+    /// <param name="statePath">分片状态文件路径。</param>
+    /// <param name="requested">当前请求规划的分片状态。</param>
+    /// <param name="segmentSize">每个分片的目标大小，单位为字节。</param>
+    /// <returns>可用于当前请求的分片状态。</returns>
     private static HttpDownloadSegmentsState LoadSegmentState(string statePath, HttpDownloadSegmentsState requested,
         long segmentSize)
     {
@@ -99,6 +105,12 @@ public partial class HttpRequest<TResult> where TResult : class
         }
     }
 
+    /// <summary>
+    /// 根据模板和响应长度创建新的分片状态。</summary>
+    /// <param name="template">包含请求验证信息的状态模板。</param>
+    /// <param name="totalLength">响应正文总长度，单位为字节。</param>
+    /// <param name="segmentSize">每个分片的目标大小，单位为字节。</param>
+    /// <returns>按响应长度规划的分片状态。</returns>
     private static HttpDownloadSegmentsState CreateSegmentState(HttpDownloadSegmentsState template,
         long totalLength, long segmentSize)
     {
@@ -109,6 +121,10 @@ public partial class HttpRequest<TResult> where TResult : class
         return state;
     }
 
+    /// <summary>
+    /// 复制分片状态及其各分片记录。</summary>
+    /// <param name="state">要复制的分片状态。</param>
+    /// <returns>字段值与源状态一致的新状态对象。</returns>
     private static HttpDownloadSegmentsState CloneSegmentState(HttpDownloadSegmentsState state)
         => new HttpDownloadSegmentsState
         {
@@ -126,12 +142,18 @@ public partial class HttpRequest<TResult> where TResult : class
             }).ToList()
         };
 
+    /// <summary>
+    /// 尝试删除分片状态文件；文件删除失败时忽略异常。</summary>
+    /// <param name="statePath">分片状态文件路径。</param>
     private static void TryDeleteSegmentState(string statePath)
     {
         try { if (File.Exists(statePath)) File.Delete(statePath); }
         catch { }
     }
 
+    /// <summary>
+    /// 尝试删除指定目录中的文件，并在目录为空时删除目录。</summary>
+    /// <param name="directory">要清理的目录路径。</param>
     private static void TryDeleteDirectoryContents(string directory)
     {
         try

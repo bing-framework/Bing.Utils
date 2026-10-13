@@ -39,7 +39,7 @@ public abstract class HttpRequestInterceptor
 public sealed class HttpRequestInterceptorContext
 {
     /// <summary>
-    /// 创建一次发送尝试的拦截上下文。
+    /// 初始化一个 <see cref="HttpRequestInterceptorContext"/> 类型的实例。
     /// </summary>
     /// <param name="request">当前尝试的请求消息；其生命周期由 HTTP 请求管线管理。</param>
     /// <param name="attempt">从 1 开始的尝试序号。</param>

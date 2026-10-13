@@ -25,7 +25,7 @@ public class HttpClientService : IHttpClient, IHttpRequestFactory
     #region 构造函数
 
     /// <summary>
-    /// 初始化一个<see cref="HttpClientService"/>类型的实例
+    /// 初始化一个 <see cref="HttpClientService"/> 类型的实例。
     /// </summary>
     /// <param name="httpClientFactory">Http客户端工厂</param>
     public HttpClientService(IHttpClientFactory httpClientFactory = null)
