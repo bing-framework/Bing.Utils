@@ -27,7 +27,6 @@ namespace Bing;
 ///     // 执行一些需要资源的操作
 ///     Console.WriteLine("正在使用资源");
 /// } // 当 await using 块结束时，将执行异步清理操作
-/// 
 /// // 创建临时异步锁定机制
 /// public async ValueTask&lt;IAsyncDisposable> LockResourceAsync()
 /// {
@@ -48,7 +47,7 @@ public class AsyncDisposeFunc : IAsyncDisposable
     private readonly Func<Task> _func;
 
     /// <summary>
-    /// 初始化一个<see cref="AsyncDisposeFunc"/>类型的实例
+    /// 初始化一个 <see cref="AsyncDisposeFunc"/> 类型的实例。
     /// </summary>
     /// <param name="func">在对象异步释放时要执行的异步操作</param>
     /// <exception cref="ArgumentNullException">当 func 参数为 null 时抛出</exception>

@@ -12,7 +12,7 @@ public sealed class NullDisposable : IDisposable
     public static NullDisposable Instance { get; } = new();
 
     /// <summary>
-    /// 初始化一个<see cref="NullDisposable"/>类型的实例
+    /// 初始化一个 <see cref="NullDisposable"/> 类型的实例。
     /// </summary>
     private NullDisposable() { }
 

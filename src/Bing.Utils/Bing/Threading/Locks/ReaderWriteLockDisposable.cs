@@ -21,7 +21,7 @@ public class ReaderWriteLockDisposable : IDisposable
     private readonly ReaderWriteLockType _readerWriteLockType;
 
     /// <summary>
-    /// 初始化一个<see cref="ReaderWriteLockDisposable"/>类型的实例
+    /// 初始化一个 <see cref="ReaderWriteLockDisposable"/> 类型的实例。
     /// </summary>
     /// <param name="rwLock">读写锁</param>
     /// <param name="readerWriteLockType">读写锁类型</param>

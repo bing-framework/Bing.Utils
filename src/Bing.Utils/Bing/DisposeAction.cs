@@ -21,7 +21,6 @@ namespace Bing;
 ///     // 执行一些需要资源的操作
 ///     Console.WriteLine("正在使用资源");
 /// } // 当 using 块结束时，将输出 "资源已清理"
-/// 
 /// // 创建临时锁定机制
 /// public IDisposable LockResource()
 /// {
@@ -38,7 +37,7 @@ public class DisposeAction : IDisposable
     private readonly Action _action;
 
     /// <summary>
-    /// 初始化一个<see cref="DisposeAction"/>类型的实例
+    /// 初始化一个 <see cref="DisposeAction"/> 类型的实例。
     /// </summary>
     /// <param name="action">操作</param>
     public DisposeAction(Action action) => _action = action ?? throw new ArgumentNullException(nameof(action));
@@ -72,14 +71,12 @@ public class DisposeAction : IDisposable
 /// // 使用示例：释放数据库连接
 /// var connection = new SqlConnection(connectionString);
 /// connection.Open();
-/// 
 /// // 创建一个在 Dispose 时会关闭连接的对象
 /// using (var connectionCloser = new DisposeAction&lt;SqlConnection>(conn => conn.Close(), connection))
 /// {
 ///     // 使用数据库连接进行操作
 ///     // ...
 /// } // 当 using 块结束时，连接将被关闭
-/// 
 /// // SemaphoreSlim 锁定示例
 /// public static IDisposable Lock(this SemaphoreSlim semaphore)
 /// {
@@ -101,7 +98,7 @@ public class DisposeAction<T> : IDisposable
     private readonly T _parameter;
 
     /// <summary>
-    /// 初始化一个<see cref="DisposeAction{T}"/>类型的实例
+    /// 初始化一个 <see cref="DisposeAction{T}"/> 类型的实例。
     /// </summary>
     /// <param name="action">在对象释放时要执行的操作</param>
     /// <param name="parameter">要传递给操作的参数</param>

@@ -6,17 +6,17 @@ namespace Bing.Threading;
 public static class TaskCache
 {
     /// <summary>
-    /// 预先缓存的返回 true 结果
+    /// 获取预先缓存的返回 true 结果
     /// </summary>
     public static Task<bool> TrueResult { get; }
 
     /// <summary>
-    /// 预先缓存的返回 false 结果
+    /// 获取预先缓存的返回 false 结果
     /// </summary>
     public static Task<bool> FalseResult { get; }
 
     /// <summary>
-    /// 静态构造函数
+    /// 初始化当前类型的静态状态。
     /// </summary>
     static TaskCache()
     {

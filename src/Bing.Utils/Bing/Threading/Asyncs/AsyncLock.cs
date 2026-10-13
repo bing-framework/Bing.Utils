@@ -16,7 +16,7 @@ public class AsyncLock
     private readonly AsyncSemaphore _semaphore;
 
     /// <summary>
-    /// 初始一个<see cref="AsyncLock"/>类型的实例
+    /// 初始化一个 <see cref="AsyncLock"/> 类型的实例。
     /// </summary>
     public AsyncLock()
     {
@@ -50,7 +50,7 @@ public class AsyncLock
         private readonly AsyncLock _toRelease;
 
         /// <summary>
-        /// 初始化一个<see cref="Releaser"/>类型的实例
+        /// 初始化一个 <see cref="Releaser"/> 类型的实例。
         /// </summary>
         /// <param name="toRelease">异步锁</param>
         internal Releaser(AsyncLock toRelease) => _toRelease = toRelease;

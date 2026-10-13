@@ -23,7 +23,7 @@ public class AsyncSemaphore
     private int _currentCount;
 
     /// <summary>
-    /// 初始化一个<see cref="AsyncSemaphore"/>类型的实例
+    /// 初始化一个 <see cref="AsyncSemaphore"/> 类型的实例。
     /// </summary>
     /// <param name="initialCount">初始化计数器</param>
     public AsyncSemaphore(int initialCount)

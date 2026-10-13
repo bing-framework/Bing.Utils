@@ -18,7 +18,6 @@ namespace Bing.Threading;
 /// {
 ///     await SaveAsync(cancellationToken);
 /// });
-///
 /// _ = debouncer.DebounceAsync(token =&gt; RefreshAsync("A", token));
 /// _ = debouncer.DebounceAsync(token =&gt; RefreshAsync("B", token));
 /// await debouncer.DebounceAsync(token =&gt; RefreshAsync("C", token));
@@ -68,7 +67,7 @@ public sealed class AsyncDebouncer : IAsyncDisposable
     private Task _disposeTask;
 
     /// <summary>
-    /// 初始化 <see cref="AsyncDebouncer"/> 的新实例。
+    /// 初始化一个 <see cref="AsyncDebouncer"/> 类型的实例。
     /// </summary>
     /// <param name="delay">从最后一次有效提交到开始执行回调之间的延迟。允许为 <see cref="TimeSpan.Zero"/>。</param>
     /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="delay"/> 小于 <see cref="TimeSpan.Zero"/> 时抛出。</exception>
@@ -334,7 +333,7 @@ public sealed class AsyncDebouncer : IAsyncDisposable
     private sealed class PendingSubmission : IDisposable
     {
         /// <summary>
-        /// 初始化 <see cref="PendingSubmission"/> 的新实例。
+        /// 初始化一个 <see cref="PendingSubmission"/> 类型的实例。
         /// </summary>
         /// <param name="action">业务回调。</param>
         /// <param name="externalCancellationToken">调用方取消令牌。</param>

@@ -13,7 +13,7 @@ public sealed class NullAsyncDisposable : IAsyncDisposable
     public static NullAsyncDisposable Instance { get; } = new();
 
     /// <summary>
-    /// 初始化一个<see cref="NullAsyncDisposable"/>类型的实例
+    /// 初始化一个 <see cref="NullAsyncDisposable"/> 类型的实例。
     /// </summary>
     private NullAsyncDisposable() { }
 
