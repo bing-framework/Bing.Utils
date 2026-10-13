@@ -9,19 +9,14 @@ public partial class Joiner : IMapJoiner
 {
     #region SkipValueNulls
 
-    /// <summary>
-    /// 跳过 null
-    /// </summary>
+    /// <inheritdoc />
     IMapJoiner IMapJoiner.SkipNulls()
     {
         Options.SetSkipValueNulls();
         return this;
     }
 
-    /// <summary>
-    /// 跳过 null
-    /// </summary>
-    /// <param name="type">跳过 null 的类型</param>
+    /// <inheritdoc />
     IMapJoiner IMapJoiner.SkipNulls(SkipNullType type)
     {
         Options.SetSkipValueNulls(type);
@@ -32,72 +27,42 @@ public partial class Joiner : IMapJoiner
 
     #region UseForNull
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="value">值</param>
+    /// <inheritdoc />
     IMapJoiner IMapJoiner.UseForNull(string key, string value)
     {
         Options.SetMapReplace<string, string, string, string>(_ => key, _ => value);
         return this;
     }
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     IMapJoiner IMapJoiner.UseForNull(Func<string, string> keyFunc, Func<string, string> valueFunc)
     {
         Options.SetMapReplace(keyFunc, valueFunc);
         return this;
     }
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     IMapJoiner IMapJoiner.UseForNull(Func<string, int, string> keyFunc, Func<string, int, string> valueFunc)
     {
         Options.SetIndexedMapReplace(keyFunc, valueFunc);
         return this;
     }
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="key">键</param>
-    /// <param name="value">值</param>
+    /// <inheritdoc />
     IMapJoiner IMapJoiner.UseForNull<T1, T2>(T1 key, T2 value)
     {
         Options.SetMapReplace<T1, T1, T2, T2>(_ => key, _ => value);
         return this;
     }
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     IMapJoiner IMapJoiner.UseForNull<T1, T2>(Func<T1, T1> keyFunc, Func<T2, T2> valueFunc)
     {
         Options.SetMapReplace(keyFunc, valueFunc);
         return this;
     }
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     IMapJoiner IMapJoiner.UseForNull<T1, T2>(Func<T1, int, T1> keyFunc, Func<T2, int, T2> valueFunc)
     {
         Options.SetIndexedMapReplace(keyFunc, valueFunc);
@@ -108,19 +73,14 @@ public partial class Joiner : IMapJoiner
 
     #region FromTuple
 
-    /// <summary>
-    /// 切换为 Tuple 模式
-    /// </summary>
+    /// <inheritdoc />
     ITupleJoiner IMapJoiner.FromTuple() => this;
 
     #endregion
 
     #region Join - KeyValuePair
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <param name="list">列表</param>
+    /// <inheritdoc />
     string IMapJoiner.Join(IEnumerable<string> list)
     {
         var replacer = Options.GetMapReplace<string, string, string, string>();
@@ -133,12 +93,7 @@ public partial class Joiner : IMapJoiner
         return middle.JoinToString(_on, JoinerUtils.GetMapPredicate(Options));
     }
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <param name="list">列表</param>
-    /// <param name="defaultKey">默认键</param>
-    /// <param name="defaultValue">默认值</param>
+    /// <inheritdoc />
     string IMapJoiner.Join(IEnumerable<string> list, string defaultKey, string defaultValue)
     {
         var replacer = Options.GetMapReplace<string, string, string, string>();
@@ -149,12 +104,7 @@ public partial class Joiner : IMapJoiner
         return middle.JoinToString(_on, JoinerUtils.GetMapPredicate(Options));
     }
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <param name="str1">字符串</param>
-    /// <param name="str2">字符串</param>
-    /// <param name="restStrings">其余字符串</param>
+    /// <inheritdoc />
     string IMapJoiner.Join(string str1, string str2, params string[] restStrings)
     {
         var list = new List<string> { str1, str2 };
@@ -267,11 +217,7 @@ public partial class Joiner : IMapJoiner
 
     #region AppendTo
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="list">列表</param>
+    /// <inheritdoc />
     StringBuilder IMapJoiner.AppendTo(StringBuilder builder, IEnumerable<string> list)
     {
         var replacer = Options.GetMapReplace<string, string, string, string>();
@@ -283,13 +229,7 @@ public partial class Joiner : IMapJoiner
         return builder;
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="list">列表</param>
-    /// <param name="defaultKey">默认键</param>
-    /// <param name="defaultValue">默认值</param>
+    /// <inheritdoc />
     StringBuilder IMapJoiner.AppendTo(StringBuilder builder, IEnumerable<string> list, string defaultKey, string defaultValue)
     {
         var replacer = Options.GetMapReplace<string, string, string, string>();
@@ -299,13 +239,7 @@ public partial class Joiner : IMapJoiner
         return builder;
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="str1">字符串</param>
-    /// <param name="str2">字符串</param>
-    /// <param name="restStrings">其余字符串</param>
+    /// <inheritdoc />
     StringBuilder IMapJoiner.AppendTo(StringBuilder builder, string str1, string str2, params string[] restStrings)
     {
         var list = new List<string> { str1, str2 };
@@ -323,12 +257,12 @@ public partial class Joiner : IMapJoiner
         #region Skip Value Nulls - Map
 
         /// <summary>
-        /// 值跳过 null 标志
+        /// 获取或设置值跳过 null 标志
         /// </summary>
         public bool SkipValueNullsFlag { get; private set; }
 
         /// <summary>
-        /// 值跳过 null 的类型
+        /// 获取或设置值跳过 null 的类型
         /// </summary>
         public SkipNullType SkipValueNullType { get; private set; } = SkipNullType.Nothing;
 
@@ -356,17 +290,17 @@ public partial class Joiner : IMapJoiner
         #region UseForNull - Map
 
         /// <summary>
-        /// 映射替代器
+        /// 获取或设置映射替代器
         /// </summary>
         private JoinerObjectReplacer MapReplacer { get; set; }
 
         /// <summary>
-        /// 映射值替代器标志
+        /// 获取或设置映射值替代器标志
         /// </summary>
         private bool MapValueReplacerFlag { get; set; }
 
         /// <summary>
-        /// 映射值替代器索引标志
+        /// 获取或设置映射值替代器索引标志
         /// </summary>
         private bool MapValueReplacerIndexedFlag { get; set; }
 
@@ -436,7 +370,7 @@ public partial class Joiner : IMapJoiner
         #region WithKeyValueSeparator(设置键值对分隔符)
 
         /// <summary>
-        /// 映射分隔符
+        /// 获取或设置映射分隔符
         /// </summary>
         public string MapSeparator { get; private set; }
 

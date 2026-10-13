@@ -87,7 +87,7 @@ internal class FixedNumberOfCharactersTruncator : IStringTruncator
     }
 
     /// <summary>
-    /// 实例
+    /// 获取实例
     /// </summary>
     public static FixedNumberOfCharactersTruncator Instance { get; } = new();
 }

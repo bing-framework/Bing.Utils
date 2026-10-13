@@ -36,7 +36,7 @@ internal class FixedNumberOfLinesTruncator : IStringTruncator
     }
 
     /// <summary>
-    /// 实例
+    /// 获取实例
     /// </summary>
     public static FixedNumberOfLinesTruncator Instance { get; } = new();
 }

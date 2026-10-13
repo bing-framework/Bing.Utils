@@ -9,19 +9,14 @@ public partial class Joiner : ITupleJoiner
 {
     #region SkipValueNulls
 
-    /// <summary>
-    /// 跳过 null
-    /// </summary>
+    /// <inheritdoc />
     ITupleJoiner ITupleJoiner.SkipNulls()
     {
         Options.SetSkipTupleValueNulls();
         return this;
     }
 
-    /// <summary>
-    /// 跳过 null
-    /// </summary>
-    /// <param name="type">跳过 null 的类型</param>
+    /// <inheritdoc />
     ITupleJoiner ITupleJoiner.SkipNulls(SkipNullType type)
     {
         Options.SetSkipTupleValueNulls(type);
@@ -32,13 +27,7 @@ public partial class Joiner : ITupleJoiner
 
     #region UseForNull
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="tupleKeyFunc">元组键函数</param>
-    /// <param name="tupleValueFunc">元祖值函数</param>
+    /// <inheritdoc />
     ITupleJoiner ITupleJoiner.UseForNull<T1, T2>(Func<T1, T2, T1> tupleKeyFunc, Func<T1, T2, T2> tupleValueFunc)
     {
         Options.SetTupleReplace(tupleKeyFunc, tupleValueFunc);
@@ -49,10 +38,7 @@ public partial class Joiner : ITupleJoiner
 
     #region Join - Tuple
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <param name="list">列表</param>
+    /// <inheritdoc />
     string ITupleJoiner.Join(IEnumerable<(string, string)> list)
     {
         var replacer = Options.GetTupleReplace<string, string, string, string>();
@@ -65,12 +51,7 @@ public partial class Joiner : ITupleJoiner
         return middle.JoinToString(_on, JoinerUtils.GetTuplePredicate(Options));
     }
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <param name="list">列表</param>
-    /// <param name="defaultKey">默认键</param>
-    /// <param name="defaultValue">默认值</param>
+    /// <inheritdoc />
     string ITupleJoiner.Join(IEnumerable<(string, string)> list, string defaultKey, string defaultValue)
     {
         var replacer = Options.GetTupleReplace<string, string, string, string>();
@@ -81,14 +62,7 @@ public partial class Joiner : ITupleJoiner
         return middle.JoinToString(_on, JoinerUtils.GetTuplePredicate(Options));
     }
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="list">列表</param>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     string ITupleJoiner.Join<T1, T2>(IEnumerable<(T1, T2)> list, Func<T1, string> keyFunc, Func<T2, string> valueFunc)
     {
         var middle = new List<string>();
@@ -98,16 +72,7 @@ public partial class Joiner : ITupleJoiner
         return middle.JoinToString(_on, JoinerUtils.GetTuplePredicate(Options));
     }
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="list">列表</param>
-    /// <param name="defaultKey">默认键</param>
-    /// <param name="defaultValue">默认值</param>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     string ITupleJoiner.Join<T1, T2>(IEnumerable<(T1, T2)> list, T1 defaultKey, T2 defaultValue, Func<T1, string> keyFunc, Func<T2, string> valueFunc)
     {
         var middle = new List<string>();
@@ -117,11 +82,7 @@ public partial class Joiner : ITupleJoiner
         return middle.JoinToString(_on, JoinerUtils.GetTuplePredicate(Options));
     }
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <param name="tuple1">元组</param>
-    /// <param name="restTuples">其余元组</param>
+    /// <inheritdoc />
     string ITupleJoiner.Join((string, string) tuple1, params (string, string)[] restTuples)
     {
         var list = new List<(string, string)> { tuple1 };
@@ -129,15 +90,7 @@ public partial class Joiner : ITupleJoiner
         return ((ITupleJoiner)this).Join(list);
     }
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
-    /// <param name="tuple1">元组</param>
-    /// <param name="restTuples">其余元组</param>
+    /// <inheritdoc />
     string ITupleJoiner.Join<T1, T2>(Func<T1, string> keyFunc, Func<T2, string> valueFunc, (T1, T2) tuple1, params (T1, T2)[] restTuples)
     {
         var list = new List<(T1, T2)> { tuple1 };
@@ -195,11 +148,7 @@ public partial class Joiner : ITupleJoiner
 
     #region AppendTo
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="list">列表</param>
+    /// <inheritdoc />
     StringBuilder ITupleJoiner.AppendTo(StringBuilder builder, IEnumerable<(string, string)> list)
     {
         var replacer = Options.GetTupleReplace<string, string, string, string>();
@@ -211,13 +160,7 @@ public partial class Joiner : ITupleJoiner
         return builder;
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="list">列表</param>
-    /// <param name="defaultKey">默认键</param>
-    /// <param name="defaultValue">默认值</param>
+    /// <inheritdoc />
     StringBuilder ITupleJoiner.AppendTo(StringBuilder builder, IEnumerable<(string, string)> list, string defaultKey, string defaultValue)
     {
         var replacer = Options.GetTupleReplace<string, string, string, string>();
@@ -227,12 +170,7 @@ public partial class Joiner : ITupleJoiner
         return builder;
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="tuple1">元组</param>
-    /// <param name="restTuples">其余元组</param>
+    /// <inheritdoc />
     StringBuilder ITupleJoiner.AppendTo(StringBuilder builder, (string, string) tuple1, params (string, string)[] restTuples)
     {
         var list = new List<(string, string)> { tuple1 };
@@ -240,15 +178,7 @@ public partial class Joiner : ITupleJoiner
         return ((ITupleJoiner)this).AppendTo(builder, list);
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="list">列表</param>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     StringBuilder ITupleJoiner.AppendTo<T1, T2>(StringBuilder builder, IEnumerable<(T1, T2)> list, Func<T1, string> keyFunc, Func<T2, string> valueFunc)
     {
         JoinToTupleString(
@@ -257,17 +187,7 @@ public partial class Joiner : ITupleJoiner
         return builder;
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="list">列表</param>
-    /// <param name="defaultKey">默认键</param>
-    /// <param name="defaultValue">默认值</param>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     StringBuilder ITupleJoiner.AppendTo<T1, T2>(StringBuilder builder, IEnumerable<(T1, T2)> list, T1 defaultKey, T2 defaultValue, Func<T1, string> keyFunc, Func<T2, string> valueFunc)
     {
         JoinToTupleString(
@@ -276,16 +196,7 @@ public partial class Joiner : ITupleJoiner
         return builder;
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <typeparam name="T1">键类型</typeparam>
-    /// <typeparam name="T2">值类型</typeparam>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="keyFunc">键函数</param>
-    /// <param name="valueFunc">值函数</param>
-    /// <param name="tuple1">元组</param>
-    /// <param name="restTuples">其余元组</param>
+    /// <inheritdoc />
     StringBuilder ITupleJoiner.AppendTo<T1, T2>(StringBuilder builder, Func<T1, string> keyFunc, Func<T2, string> valueFunc, (T1, T2) tuple1, params (T1, T2)[] restTuples)
     {
         var list = new List<(T1, T2)> { tuple1 };
@@ -303,12 +214,12 @@ public partial class Joiner : ITupleJoiner
         #region Skip Value Nulls - Map
 
         /// <summary>
-        /// 元组跳过 null 标志
+        /// 获取或设置元组跳过 null 标志
         /// </summary>
         public bool SkipTupleValueNullsFlag { get; private set; }
 
         /// <summary>
-        /// 元组跳过 null 的类型
+        /// 获取或设置元组跳过 null 的类型
         /// </summary>
         public SkipNullType SkipTupleValueNullType { get; private set; }
 
@@ -336,12 +247,12 @@ public partial class Joiner : ITupleJoiner
         #region UseForNull - Tuple
 
         /// <summary>
-        /// 元组替代器
+        /// 获取或设置元组替代器
         /// </summary>
         private JoinerObjectReplacer TupleReplacer { get; set; }
 
         /// <summary>
-        /// 元组替代器标志
+        /// 获取或设置元组替代器标志
         /// </summary>
         private bool TupleValueReplacerFlag { get; set; }
 

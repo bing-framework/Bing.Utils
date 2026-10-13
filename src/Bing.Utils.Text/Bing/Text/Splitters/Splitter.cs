@@ -38,12 +38,12 @@ public partial class Splitter : ISplitter
     private readonly int _fixedLengthPattern;
 
     /// <summary>
-    /// 文本分割器选项配置
+    /// 获取或设置文本分割器选项配置
     /// </summary>
     private SplitterOptions Options { get; set; } = new();
 
     /// <summary>
-    /// 初始化一个<see cref="Splitter"/>类型的实例
+    /// 初始化一个 <see cref="Splitter"/> 类型的实例。
     /// </summary>
     /// <param name="on">分隔符</param>
     private Splitter(string[] on)
@@ -57,7 +57,7 @@ public partial class Splitter : ISplitter
     }
 
     /// <summary>
-    /// 初始化一个<see cref="Splitter"/>类型的实例
+    /// 初始化一个 <see cref="Splitter"/> 类型的实例。
     /// </summary>
     /// <param name="pattern">字符串正则表达式</param>
     private Splitter(string pattern)
@@ -71,7 +71,7 @@ public partial class Splitter : ISplitter
     }
 
     /// <summary>
-    /// 初始化一个<see cref="Splitter"/>类型的实例
+    /// 初始化一个 <see cref="Splitter"/> 类型的实例。
     /// </summary>
     /// <param name="regexPattern">正则表达式</param>
     private Splitter(Regex regexPattern)
@@ -85,7 +85,7 @@ public partial class Splitter : ISplitter
     }
 
     /// <summary>
-    /// 初始化一个<see cref="Splitter"/>类型的实例
+    /// 初始化一个 <see cref="Splitter"/> 类型的实例。
     /// </summary>
     /// <param name="fixedLength">固定长度</param>
     private Splitter(int fixedLength)
@@ -113,19 +113,14 @@ public partial class Splitter : ISplitter
 
     #region TrimResults(裁剪结果)
 
-    /// <summary>
-    /// 裁剪结果
-    /// </summary>
+    /// <inheritdoc />
     ISplitter ISplitter.TrimResults()
     {
         Options.SetTrimResults();
         return this;
     }
 
-    /// <summary>
-    /// 裁剪结果
-    /// </summary>
-    /// <param name="trimFunc">裁剪函数</param>
+    /// <inheritdoc />
     ISplitter ISplitter.TrimResults(Func<string, string> trimFunc)
     {
         Options.SetTrimResults(trimFunc);
@@ -136,10 +131,7 @@ public partial class Splitter : ISplitter
 
     #region Limit(限制)
 
-    /// <summary>
-    /// 限制
-    /// </summary>
-    /// <param name="limit">限制长度</param>
+    /// <inheritdoc />
     ISplitter ISplitter.Limit(int limit)
     {
         Options.SetLimitLength(limit);
@@ -150,20 +142,14 @@ public partial class Splitter : ISplitter
 
     #region WithKeyValueSeparator(设置键值对分隔符)
 
-    /// <summary>
-    /// 设置键值对分隔符
-    /// </summary>
-    /// <param name="separator">分隔符</param>
+    /// <inheritdoc />
     IMapSplitter ISplitter.WithKeyValueSeparator(char separator)
     {
         Options.SetMapSeparator(separator);
         return this;
     }
 
-    /// <summary>
-    /// 设置键值对分隔符
-    /// </summary>
-    /// <param name="separator">分隔符</param>
+    /// <inheritdoc />
     IMapSplitter ISplitter.WithKeyValueSeparator(string separator)
     {
         Options.SetMapSeparator(separator);
@@ -179,16 +165,10 @@ public partial class Splitter : ISplitter
     /// </summary>
     private bool _doesUseInLimitedMode() => Options.LimitLength >= 0 && (!_regexMode && _regexPattern == null);
 
-    /// <summary>
-    /// 切割
-    /// </summary>
-    /// <param name="originalString">字符串</param>
+    /// <inheritdoc />
     IEnumerable<string> ISplitter.Split(string originalString) => InternalSplitToEnumerable(originalString, s => s);
 
-    /// <summary>
-    /// 切割为列表
-    /// </summary>
-    /// <param name="originalString">字符串</param>
+    /// <inheritdoc />
     List<string> ISplitter.SplitToList(string originalString) => ((ISplitter)this).Split(originalString).ToList();
 
     /// <summary>
@@ -224,10 +204,7 @@ public partial class Splitter : ISplitter
 
     #region Split - Array
 
-    /// <summary>
-    /// 切割为数组
-    /// </summary>
-    /// <param name="originalString">字符串</param>
+    /// <inheritdoc />
     string[] ISplitter.SplitToArray(string originalString) => ((ISplitter)this).Split(originalString).ToArray();
 
     #endregion
@@ -302,7 +279,7 @@ public partial class Splitter : ISplitter
         #region OmitEmptyStrings(忽略空字符串)
 
         /// <summary>
-        /// 忽略空字符串
+        /// 获取或设置忽略空字符串
         /// </summary>
         private bool OmitEmptyStrings { get; set; }
 
@@ -321,7 +298,7 @@ public partial class Splitter : ISplitter
         #region Limit(限制长度)
 
         /// <summary>
-        /// 限制长度
+        /// 获取或设置限制长度
         /// </summary>
         public int LimitLength { get; private set; } = -1;
 
@@ -342,12 +319,12 @@ public partial class Splitter : ISplitter
         #region TrimResults(裁剪结果)
 
         /// <summary>
-        /// 裁剪结果标记
+        /// 获取或设置裁剪结果标记
         /// </summary>
         public bool TrimResultsFlag { get; private set; }
 
         /// <summary>
-        /// 裁剪函数
+        /// 获取或设置裁剪函数
         /// </summary>
         public Func<string, string> TrimFunc { get; private set; }
 

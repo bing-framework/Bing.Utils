@@ -9,22 +9,22 @@ namespace Bing.Text;
 public static class StringTruncators
 {
     /// <summary>
-    /// 固定长度截断器
+    /// 获取固定长度截断器
     /// </summary>
     public static IStringTruncator ByLength => FixedLengthTruncator.Instance;
 
     /// <summary>
-    /// 固定数量字符截断器
+    /// 获取固定数量字符截断器
     /// </summary>
     public static IStringTruncator ByNumberOfCharacters => FixedNumberOfCharactersTruncator.Instance;
 
     /// <summary>
-    /// 固定数量单词截断器
+    /// 获取固定数量单词截断器
     /// </summary>
     public static IStringTruncator ByNumberOfWords => FixedNumberOfWordsTruncator.Instance;
 
     /// <summary>
-    /// 固定数量行截断器
+    /// 获取固定数量行截断器
     /// </summary>
     public static IStringTruncator ByNumberOfLines => FixedNumberOfLinesTruncator.Instance;
 }

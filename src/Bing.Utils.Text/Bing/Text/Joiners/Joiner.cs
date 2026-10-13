@@ -13,21 +13,19 @@ public partial class Joiner : IJoiner
     private readonly string _on;
 
     /// <summary>
-    /// 连接器选项配置
+    /// 获取或设置连接器选项配置
     /// </summary>
     private JoinerOptions Options { get; set; } = new();
 
     /// <summary>
-    /// 初始化一个<see cref="Joiner"/>类型的实例
+    /// 初始化一个 <see cref="Joiner"/> 类型的实例。
     /// </summary>
     /// <param name="on">分隔符</param>
     private Joiner(string on) => _on = on;
 
     #region SkipNulls(跳过 null)
 
-    /// <summary>
-    /// 跳过 null
-    /// </summary>
+    /// <inheritdoc />
     IJoiner IJoiner.SkipNulls()
     {
         Options.SetSkipNulls();
@@ -38,30 +36,21 @@ public partial class Joiner : IJoiner
 
     #region UseForNull(如果为 null，则使用指定的值来替代)
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <param name="value">值</param>
+    /// <inheritdoc />
     IJoiner IJoiner.UseForNull(string value)
     {
         Options.SetReplacer<string>(_ => value);
         return this;
     }
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     IJoiner IJoiner.UseForNull(Func<string, string> valueFunc)
     {
         Options.SetReplacer(valueFunc);
         return this;
     }
 
-    /// <summary>
-    /// 如果为 null，则使用指定的值来替代
-    /// </summary>
-    /// <param name="valueFunc">值函数</param>
+    /// <inheritdoc />
     IJoiner IJoiner.UseForNull(Func<string, int, string> valueFunc)
     {
         Options.SetIndexedReplacer(valueFunc);
@@ -72,20 +61,14 @@ public partial class Joiner : IJoiner
 
     #region WithKeyVaslueSeparator(设置键值对分隔符)
 
-    /// <summary>
-    /// 设置键值对分隔符
-    /// </summary>
-    /// <param name="separator">分隔符</param>
+    /// <inheritdoc />
     IMapJoiner IJoiner.WithKeyValueSeparator(char separator)
     {
         Options.SetMapSeparator(separator);
         return this;
     }
 
-    /// <summary>
-    /// 设置键值对分隔符
-    /// </summary>
-    /// <param name="separator">分隔符</param>
+    /// <inheritdoc />
     IMapJoiner IJoiner.WithKeyValueSeparator(string separator)
     {
         Options.SetMapSeparator(separator);
@@ -96,18 +79,11 @@ public partial class Joiner : IJoiner
 
     #region Join - List
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <param name="list">列表</param>
+    /// <inheritdoc />
     string IJoiner.Join(IEnumerable<string> list) =>
         list.JoinToString(_on, JoinerUtils.GetStringPredicate(Options), Options.GetReplacer<string>());
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <param name="str1">字符串</param>
-    /// <param name="restStrings">其余字符串</param>
+    /// <inheritdoc />
     string IJoiner.Join(string str1, params string[] restStrings)
     {
         var list = new List<string> { str1 };
@@ -115,22 +91,11 @@ public partial class Joiner : IJoiner
         return ((IJoiner)this).Join(list);
     }
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <typeparam name="T">泛型类型</typeparam>
-    /// <param name="list">列表</param>
-    /// <param name="to">转换函数</param>
+    /// <inheritdoc />
     string IJoiner.Join<T>(IEnumerable<T> list, Func<T, string> to) =>
         list.JoinToString(_on, JoinerUtils.GetObjectPredicate<T>(Options), to, Options.GetReplacer<T>());
 
-    /// <summary>
-    /// 连接
-    /// </summary>
-    /// <typeparam name="T">泛型类型</typeparam>
-    /// <param name="to">转换函数</param>
-    /// <param name="item1">项</param>
-    /// <param name="restItems">其余项</param>
+    /// <inheritdoc />
     string IJoiner.Join<T>(Func<T, string> to, T item1, params T[] restItems)
     {
         var list = new List<T> { item1 };
@@ -142,23 +107,14 @@ public partial class Joiner : IJoiner
 
     #region AppendTo
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="list">列表</param>
+    /// <inheritdoc />
     StringBuilder IJoiner.AppendTo(StringBuilder builder, IEnumerable<string> list)
     {
         CommonJoinUtils.JoinToString(builder, (c, s) => c.Append(s), list, _on, JoinerUtils.GetStringPredicate(Options), s => s, Options.GetReplacer<string>());
         return builder;
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="str1">字符串</param>
-    /// <param name="restStrings">其余字符串</param>
+    /// <inheritdoc />
     StringBuilder IJoiner.AppendTo(StringBuilder builder, string str1, params string[] restStrings)
     {
         var list = new List<string> { str1 };
@@ -166,27 +122,14 @@ public partial class Joiner : IJoiner
         return ((IJoiner)this).AppendTo(builder, list);
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <typeparam name="T">泛型类型</typeparam>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="list">列表</param>
-    /// <param name="to">转换函数</param>
+    /// <inheritdoc />
     StringBuilder IJoiner.AppendTo<T>(StringBuilder builder, IEnumerable<T> list, Func<T, string> to)
     {
         CommonJoinUtils.JoinToString(builder, (c, s) => c.Append(s), list, _on, JoinerUtils.GetObjectPredicate<T>(Options), to, Options.GetReplacer<T>());
         return builder;
     }
 
-    /// <summary>
-    /// 附加到...
-    /// </summary>
-    /// <typeparam name="T">泛型类型</typeparam>
-    /// <param name="builder">字符串拼接器</param>
-    /// <param name="to">转换函数</param>
-    /// <param name="item1">项</param>
-    /// <param name="restItems">其余项</param>
+    /// <inheritdoc />
     StringBuilder IJoiner.AppendTo<T>(StringBuilder builder, Func<T, string> to, T item1, params T[] restItems)
     {
         var list = new List<T> { item1 };
@@ -220,7 +163,7 @@ public partial class Joiner : IJoiner
         #region Skip Nulls - List
 
         /// <summary>
-        /// 跳过 null 标志
+        /// 获取或设置跳过 null 标志
         /// </summary>
         public bool SkipNullsFlag { get; private set; }
 
@@ -234,17 +177,17 @@ public partial class Joiner : IJoiner
         #region UseForNull
 
         /// <summary>
-        /// 连接器对象替代器
+        /// 获取或设置连接器对象替代器
         /// </summary>
         private JoinerObjectReplacer ObjectReplacer { get; set; }
 
         /// <summary>
-        /// 对象替代器标志
+        /// 获取或设置对象替代器标志
         /// </summary>
         private bool ObjectReplacerFlag { get; set; }
 
         /// <summary>
-        /// 对象替代器索引标志
+        /// 获取或设置对象替代器索引标志
         /// </summary>
         private bool ObjectReplacerIndexedFlag { get; set; }
 
@@ -293,17 +236,17 @@ public partial class Joiner : IJoiner
         private class JoinerObjectReplacer
         {
             /// <summary>
-            /// 键函数
+            /// 获取键函数
             /// </summary>
             private dynamic KeyFunc { get; }
 
             /// <summary>
-            /// 值函数
+            /// 获取值函数
             /// </summary>
             private dynamic ValueFunc { get; }
 
             /// <summary>
-            /// 初始化一个<see cref="JoinerObjectReplacer"/>类型的实例
+            /// 初始化一个 <see cref="JoinerObjectReplacer"/> 类型的实例。
             /// </summary>
             /// <param name="keyFunc">键函数</param>
             /// <param name="valueFunc">值函数</param>

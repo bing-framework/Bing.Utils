@@ -7,9 +7,7 @@ public partial class Splitter : IMapSplitter
 {
     #region TrimResults(裁剪结果)
 
-    /// <summary>
-    /// 裁剪结果
-    /// </summary>
+    /// <inheritdoc />
     IMapSplitter IMapSplitter.TrimResults()
     {
         Options.SetTrimResults(k => k.Trim(), v => v.Trim());
@@ -31,10 +29,7 @@ public partial class Splitter : IMapSplitter
 
     #region Limit(限制)
 
-    /// <summary>
-    /// 限制
-    /// </summary>
-    /// <param name="limit">限制长度</param>
+    /// <inheritdoc />
     IMapSplitter IMapSplitter.Limit(int limit)
     {
         Options.SetLimitLength(limit);
@@ -45,10 +40,7 @@ public partial class Splitter : IMapSplitter
 
     #region Split - KeyValuePair
 
-    /// <summary>
-    /// 切割
-    /// </summary>
-    /// <param name="originalString">字符串</param>
+    /// <inheritdoc />
     IEnumerable<KeyValuePair<string, string>> IMapSplitter.Split(string originalString) =>
         InternalSplitToKeyValuePair(originalString, s => s);
 
@@ -94,7 +86,7 @@ public partial class Splitter : IMapSplitter
         #region WithKeyValueSeparator(设置键值分隔符)
 
         /// <summary>
-        /// 映射分隔符
+        /// 获取或设置映射分隔符
         /// </summary>
         public string MapSeparator { get; private set; }
 
@@ -115,17 +107,17 @@ public partial class Splitter : IMapSplitter
         #region TrimResults(裁剪结果)
 
         /// <summary>
-        /// 映射裁剪结果标记
+        /// 获取或设置映射裁剪结果标记
         /// </summary>
         public bool MapTrimResultsFlag { get; private set; }
 
         /// <summary>
-        /// 键裁剪函数
+        /// 获取或设置键裁剪函数
         /// </summary>
         public Func<string, string> KeyTrimFunc { get; private set; }
 
         /// <summary>
-        /// 值裁剪函数
+        /// 获取或设置值裁剪函数
         /// </summary>
         public Func<string, string> ValueTrimFunc { get; private set; }
 

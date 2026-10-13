@@ -7,19 +7,14 @@ public partial class Splitter : IFixedLengthSplitter
 {
     #region TrimResults(裁剪结果)
 
-    /// <summary>
-    /// 裁剪结果
-    /// </summary>
+    /// <inheritdoc />
     IFixedLengthSplitter IFixedLengthSplitter.TrimResults()
     {
         Options.SetTrimResults();
         return this;
     }
 
-    /// <summary>
-    /// 裁剪结果
-    /// </summary>
-    /// <param name="trimFunc">裁剪函数</param>
+    /// <inheritdoc />
     IFixedLengthSplitter IFixedLengthSplitter.TrimResults(Func<string, string> trimFunc)
     {
         Options.SetTrimResults(trimFunc);
@@ -30,10 +25,7 @@ public partial class Splitter : IFixedLengthSplitter
 
     #region Limit(限制)
 
-    /// <summary>
-    /// 限制
-    /// </summary>
-    /// <param name="limit">限制长度</param>
+    /// <inheritdoc />
     IFixedLengthSplitter IFixedLengthSplitter.Limit(int limit)
     {
         Options.SetLimitLength(limit);
@@ -44,20 +36,14 @@ public partial class Splitter : IFixedLengthSplitter
 
     #region WithKeyValueSeparator(设置键值对分隔符)
 
-    /// <summary>
-    /// 设置键值对分隔符
-    /// </summary>
-    /// <param name="separator">分隔符</param>
+    /// <inheritdoc />
     IMapSplitter IFixedLengthSplitter.WithKeyValueSeparator(char separator)
     {
         Options.SetMapSeparator(separator);
         return this;
     }
 
-    /// <summary>
-    /// 设置键值对分隔符
-    /// </summary>
-    /// <param name="separator">分隔符</param>
+    /// <inheritdoc />
     IMapSplitter IFixedLengthSplitter.WithKeyValueSeparator(string separator)
     {
         Options.SetMapSeparator(separator);
@@ -68,16 +54,10 @@ public partial class Splitter : IFixedLengthSplitter
 
     #region Split - List - FixedLength
 
-    /// <summary>
-    /// 切割
-    /// </summary>
-    /// <param name="originalString">字符串</param>
+    /// <inheritdoc />
     IEnumerable<string> IFixedLengthSplitter.Split(string originalString) => InternalSplitToEnumerable2(originalString, s => s);
 
-    /// <summary>
-    /// 切割为列表
-    /// </summary>
-    /// <param name="originalString">字符串</param>
+    /// <inheritdoc />
     List<string> IFixedLengthSplitter.SplitToList(string originalString) => ((IFixedLengthSplitter)this).Split(originalString).ToList();
 
     /// <summary>
@@ -111,10 +91,7 @@ public partial class Splitter : IFixedLengthSplitter
 
     #region Split - Array - FiexdLength
 
-    /// <summary>
-    /// 切割为数组
-    /// </summary>
-    /// <param name="originalString">字符串</param>
+    /// <inheritdoc />
     string[] IFixedLengthSplitter.SplitToArray(string originalString) => ((IFixedLengthSplitter)this).Split(originalString).ToArray();
 
     #endregion

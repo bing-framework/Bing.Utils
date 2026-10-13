@@ -44,7 +44,7 @@ internal class FixedLengthTruncator : IStringTruncator
     }
 
     /// <summary>
-    /// 实例
+    /// 获取实例
     /// </summary>
     public static FixedLengthTruncator Instance { get; } = new();
 }

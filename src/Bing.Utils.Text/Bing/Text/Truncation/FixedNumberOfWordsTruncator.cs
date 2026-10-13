@@ -102,7 +102,7 @@ internal class FixedNumberOfWordsTruncator : IStringTruncator
     }
 
     /// <summary>
-    /// 实例
+    /// 获取实例
     /// </summary>
     public static FixedNumberOfWordsTruncator Instance { get; } = new();
 }
