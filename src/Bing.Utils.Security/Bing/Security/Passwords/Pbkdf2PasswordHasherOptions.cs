@@ -32,17 +32,17 @@ public sealed class Pbkdf2PasswordHasherOptions
     public const int MaximumEncodedHashLength = 512;
 
     /// <summary>
-    /// PBKDF2 迭代次数，必须介于 100000 和 1000000 之间。
+    /// 获取或初始化 PBKDF2 迭代次数；默认值为 310000，必须介于 100000 和 1000000 之间。
     /// </summary>
     public int IterationCount { get; init; } = DefaultIterationCount;
 
     /// <summary>
-    /// 随机盐字节长度，必须介于 16 和 64 之间。
+    /// 获取或初始化随机盐长度，单位为字节；默认值为 16，必须介于 16 和 64 之间。
     /// </summary>
     public int SaltSize { get; init; } = 16;
 
     /// <summary>
-    /// 派生哈希字节长度，必须介于 32 和 64 之间。
+    /// 获取或初始化派生哈希长度，单位为字节；默认值为 32，必须介于 32 和 64 之间。
     /// </summary>
     public int HashSize { get; init; } = 32;
 }

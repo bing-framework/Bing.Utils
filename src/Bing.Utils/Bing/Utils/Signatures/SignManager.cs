@@ -21,7 +21,7 @@ public class SignManager : ISignManager
     private readonly UrlParameterBuilder _builder;
 
     /// <summary>
-    /// 初始化一个<see cref="SignManager"/>类型的实例
+    /// 初始化一个 <see cref="SignManager"/> 类型的实例。
     /// </summary>
     /// <param name="key">签名密钥</param>
     /// <param name="builder">Url参数生成器</param>

@@ -93,6 +93,11 @@ public static class Sm3
         return HexEncoding.Encode(await ComputeAsync(stream, cancellationToken).ConfigureAwait(false));
     }
 
+    /// <summary>
+    /// 完成 SM3 摘要计算并返回摘要字节。
+    /// </summary>
+    /// <param name="digest">已更新输入数据的摘要计算器。</param>
+    /// <returns>SM3 摘要字节。</returns>
     private static byte[] Finish(SM3Digest digest)
     {
         var result = new byte[DigestSize];

@@ -8,6 +8,12 @@ namespace Bing.Security.Cryptography;
 /// </summary>
 internal static class Bss2NonceSequence
 {
+    /// <summary>
+    /// 根据固定前缀和记录序号写入 12 字节 Nonce。
+    /// </summary>
+    /// <param name="prefix">8 字节的 Nonce 前缀。</param>
+    /// <param name="index">记录序号，以大端序写入 Nonce 尾部。</param>
+    /// <param name="destination">长度为 12 字节的目标缓冲区。</param>
     internal static void Write(ReadOnlySpan<byte> prefix, uint index, Span<byte> destination)
     {
         if (prefix.Length != Bss2Constants.NoncePrefixLength)

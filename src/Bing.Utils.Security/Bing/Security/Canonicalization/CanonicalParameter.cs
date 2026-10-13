@@ -6,17 +6,17 @@ namespace Bing.Security.Canonicalization;
 public sealed class CanonicalParameter
 {
     /// <summary>
-    /// 参数键。
+    /// 获取参数键。
     /// </summary>
     public string Key { get; }
 
     /// <summary>
-    /// 参数值序列；数组会被展开为使用相同键的多个参数对。
+    /// 获取参数值序列；数组会被展开为使用相同键的多个参数对。
     /// </summary>
     public IReadOnlyList<object> Values { get; }
 
     /// <summary>
-    /// 使用参数键和一个或多个显式值初始化参数。
+    /// 初始化一个 <see cref="CanonicalParameter"/> 类型的实例。
     /// </summary>
     /// <param name="key">非空参数键。</param>
     /// <param name="values">参数值；可使用 <c>null</c> 表示显式空值。</param>

@@ -7,17 +7,17 @@ namespace Bing.Security.Keys;
 public sealed class EcdsaKeyPair
 {
     /// <summary>
-    /// 使用 SubjectPublicKeyInfo 格式导出的 ECDSA 公钥 PEM。
+    /// 获取使用 SubjectPublicKeyInfo 格式导出的 ECDSA 公钥 PEM。
     /// </summary>
     public string PublicKeyPem { get; }
 
     /// <summary>
-    /// 使用 PKCS#8 格式导出的 ECDSA 私钥 PEM。
+    /// 获取使用 PKCS#8 格式导出的 ECDSA 私钥 PEM。
     /// </summary>
     public string PrivateKeyPem { get; }
 
     /// <summary>
-    /// 使用标准 PEM 表示初始化 ECDSA 密钥对。
+    /// 初始化一个 <see cref="EcdsaKeyPair"/> 类型的实例。
     /// </summary>
     /// <param name="publicKeyPem">SubjectPublicKeyInfo 公钥 PEM。</param>
     /// <param name="privateKeyPem">PKCS#8 私钥 PEM。</param>

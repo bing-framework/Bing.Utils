@@ -25,7 +25,7 @@ public sealed class Pbkdf2PasswordHasher
     private readonly Pbkdf2PasswordHasherOptions _options;
 
     /// <summary>
-    /// 使用指定或默认安全参数初始化密码哈希器。
+    /// 初始化一个 <see cref="Pbkdf2PasswordHasher"/> 类型的实例。
     /// </summary>
     /// <param name="options">密码哈希选项，未指定时使用默认值。</param>
     public Pbkdf2PasswordHasher(Pbkdf2PasswordHasherOptions options = null)

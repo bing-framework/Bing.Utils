@@ -104,11 +104,22 @@ public static class HmacSm3
         return Encode(await ComputeAsync(key, stream, cancellationToken).ConfigureAwait(false), false);
     }
 
+    /// <summary>
+    /// 按指定格式编码 HMAC-SM3 摘要，并清零摘要缓冲区。
+    /// </summary>
+    /// <param name="mac">待编码的摘要字节。</param>
+    /// <param name="base64">为 true 时使用 Base64，否则使用十六进制。</param>
+    /// <returns>编码后的摘要文本。</returns>
     private static string Encode(byte[] mac, bool base64)
     {
         try { return base64 ? Convert.ToBase64String(mac) : HexEncoding.Encode(mac); }
         finally { GmCryptographicOperationsCompat.ZeroMemory(mac); }
     }
+    /// <summary>
+    /// 创建并初始化 SM3 HMAC 计算器。
+    /// </summary>
+    /// <param name="key">用于初始化计算器的密钥字节。</param>
+    /// <returns>使用指定密钥初始化的 HMAC-SM3 计算器。</returns>
     private static HMac Create(byte[] key)
     {
         var hmac = new HMac(new SM3Digest());
@@ -116,6 +127,11 @@ public static class HmacSm3
         return hmac;
     }
 
+    /// <summary>
+    /// 完成 HMAC-SM3 计算并取得摘要字节。
+    /// </summary>
+    /// <param name="hmac">待完成的 HMAC 计算器。</param>
+    /// <returns>计算得到的摘要字节。</returns>
     private static byte[] Finish(HMac hmac)
     {
         var result = new byte[hmac.GetMacSize()];
@@ -123,6 +139,11 @@ public static class HmacSm3
         return result;
     }
 
+    /// <summary>
+    /// 验证 HMAC-SM3 运算所需的密钥和数据。
+    /// </summary>
+    /// <param name="key">用于计算摘要的密钥。</param>
+    /// <param name="data">参与摘要计算的数据。</param>
     private static void Validate(byte[] key, byte[] data)
     {
         ValidateKey(key);
@@ -130,6 +151,10 @@ public static class HmacSm3
             throw new ArgumentNullException(nameof(data));
     }
 
+    /// <summary>
+    /// 验证 HMAC-SM3 密钥非空且至少包含一个字节。
+    /// </summary>
+    /// <param name="key">待验证的密钥。</param>
     private static void ValidateKey(byte[] key)
     {
         if (key == null)

@@ -7,17 +7,17 @@ namespace Bing.Security.Keys;
 public sealed class RsaKeyPair
 {
     /// <summary>
-    /// 使用 SubjectPublicKeyInfo 格式导出的 RSA 公钥 PEM。
+    /// 获取使用 SubjectPublicKeyInfo 格式导出的 RSA 公钥 PEM。
     /// </summary>
     public string PublicKeyPem { get; }
 
     /// <summary>
-    /// 使用 PKCS#8 格式导出的 RSA 私钥 PEM。
+    /// 获取使用 PKCS#8 格式导出的 RSA 私钥 PEM。
     /// </summary>
     public string PrivateKeyPem { get; }
 
     /// <summary>
-    /// 使用标准 PEM 表示初始化 RSA 密钥对。
+    /// 初始化一个 <see cref="RsaKeyPair"/> 类型的实例。
     /// </summary>
     /// <param name="publicKeyPem">SubjectPublicKeyInfo 公钥 PEM。</param>
     /// <param name="privateKeyPem">PKCS#8 私钥 PEM。</param>

@@ -8,17 +8,17 @@ namespace Bing.Security.Gm;
 public sealed class Sm2KeyPair
 {
     /// <summary>
-    /// SubjectPublicKeyInfo PEM 格式的 SM2 公钥。
+    /// 获取SubjectPublicKeyInfo PEM 格式的 SM2 公钥。
     /// </summary>
     public string PublicKeyPem { get; }
 
     /// <summary>
-    /// PKCS#8 PEM 格式的 SM2 私钥。
+    /// 获取PKCS#8 PEM 格式的 SM2 私钥。
     /// </summary>
     public string PrivateKeyPem { get; }
 
     /// <summary>
-    /// 使用 PEM 编码的 SM2 密钥初始化密钥对。
+    /// 初始化一个 <see cref="Sm2KeyPair"/> 类型的实例。
     /// </summary>
     /// <param name="publicKeyPem">SubjectPublicKeyInfo PEM 公钥。</param>
     /// <param name="privateKeyPem">PKCS#8 PEM 私钥。</param>

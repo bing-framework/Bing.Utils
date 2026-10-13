@@ -25,12 +25,12 @@ public sealed class HybridEncryptedPayload
     public const byte CurrentVersion = 1;
 
     /// <summary>
-    /// 载荷格式版本。
+    /// 获取载荷格式版本。
     /// </summary>
     public byte Version { get; }
 
     /// <summary>
-    /// 使用 RSA-OAEP-SHA256 加密的临时 AES 密钥。
+    /// 获取由载荷持有的 RSA 加密临时 AES 密钥。
     /// </summary>
     public ReadOnlyMemory<byte> EncryptedKey => _encryptedKey;
 
@@ -40,12 +40,12 @@ public sealed class HybridEncryptedPayload
     private readonly byte[] _encryptedKey;
 
     /// <summary>
-    /// 使用 AES-GCM 加密的数据载荷。
+    /// 获取使用 AES-GCM 加密的数据载荷。
     /// </summary>
     public AesGcmPayload EncryptedData { get; }
 
     /// <summary>
-    /// 使用当前版本初始化混合加密载荷。
+    /// 初始化一个 <see cref="HybridEncryptedPayload"/> 类型的实例。
     /// </summary>
     /// <param name="encryptedKey">RSA 加密的临时 AES 密钥。</param>
     /// <param name="encryptedData">AES-GCM 数据载荷。</param>
@@ -54,7 +54,7 @@ public sealed class HybridEncryptedPayload
     }
 
     /// <summary>
-    /// 使用指定版本初始化混合加密载荷。
+    /// 初始化一个 <see cref="HybridEncryptedPayload"/> 类型的实例。
     /// </summary>
     /// <param name="version">载荷格式版本。</param>
     /// <param name="encryptedKey">RSA 加密的临时 AES 密钥。</param>

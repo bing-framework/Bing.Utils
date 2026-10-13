@@ -34,7 +34,7 @@ public sealed class Sm4GcmPayload
     private readonly byte[] _tag;
 
     /// <summary>
-    /// 负载格式版本。
+    /// 获取负载格式版本。
     /// </summary>
     public byte Version { get; }
 
@@ -49,22 +49,22 @@ public sealed class Sm4GcmPayload
     public const int TagSize = 16;
 
     /// <summary>
-    /// 每次加密唯一的 12 字节 Nonce。
+    /// 获取每次加密唯一的 12 字节 Nonce。
     /// </summary>
     public ReadOnlyMemory<byte> Nonce => _nonce;
 
     /// <summary>
-    /// 加密后的密文字节。
+    /// 获取加密后的密文字节。
     /// </summary>
     public ReadOnlyMemory<byte> Ciphertext => _ciphertext;
 
     /// <summary>
-    /// 16 字节 GCM 认证标签。
+    /// 获取16 字节 GCM 认证标签。
     /// </summary>
     public ReadOnlyMemory<byte> Tag => _tag;
 
     /// <summary>
-    /// 使用已认证的 SM4-GCM 字段初始化载荷。
+    /// 初始化一个 <see cref="Sm4GcmPayload"/> 类型的实例。
     /// </summary>
     /// <param name="nonce">12 字节随机 Nonce。</param>
     /// <param name="ciphertext">密文字节。</param>
@@ -75,7 +75,7 @@ public sealed class Sm4GcmPayload
     }
 
     /// <summary>
-    /// 使用指定格式版本和已认证的 SM4-GCM 字段初始化载荷。
+    /// 初始化一个 <see cref="Sm4GcmPayload"/> 类型的实例。
     /// </summary>
     /// <param name="version">负载格式版本。</param>
     /// <param name="nonce">12 字节随机 Nonce。</param>

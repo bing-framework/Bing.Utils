@@ -8,6 +8,17 @@ namespace Bing.Security.Cryptography;
 /// </summary>
 internal static class Bss2AssociatedData
 {
+    /// <summary>
+    /// 将 BSS2 记录元数据和扩展数据写入附加认证数据缓冲区。
+    /// </summary>
+    /// <param name="destination">用于写入附加认证数据的目标缓冲区。</param>
+    /// <param name="headerDigest">32 字节的格式头摘要。</param>
+    /// <param name="recordType">记录类型标识。</param>
+    /// <param name="index">记录序号。</param>
+    /// <param name="length">记录数据长度。</param>
+    /// <param name="isFinal">是否为最后一条记录。</param>
+    /// <param name="extra">追加到固定认证数据后的扩展数据。</param>
+    /// <returns>写入的字节数。</returns>
     internal static int Write(Span<byte> destination, ReadOnlySpan<byte> headerDigest, byte recordType, uint index, uint length, bool isFinal, ReadOnlySpan<byte> extra)
     {
         if (headerDigest.Length != 32)

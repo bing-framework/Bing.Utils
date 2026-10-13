@@ -50,27 +50,27 @@ public sealed class AesGcmPayload
     internal const int BinaryHeaderLength = 7;
 
     /// <summary>
-    /// 载荷格式版本。
+    /// 获取载荷格式版本。
     /// </summary>
     public byte Version { get; }
 
     /// <summary>
-    /// 每次加密唯一的随机 Nonce。
+    /// 获取每次加密唯一的随机 Nonce。
     /// </summary>
     public ReadOnlyMemory<byte> Nonce => _nonce;
 
     /// <summary>
-    /// 已认证的密文字节。
+    /// 获取已认证的密文字节。
     /// </summary>
     public ReadOnlyMemory<byte> Ciphertext => _ciphertext;
 
     /// <summary>
-    /// GCM 认证标签。
+    /// 获取GCM 认证标签。
     /// </summary>
     public ReadOnlyMemory<byte> Tag => _tag;
 
     /// <summary>
-    /// 使用当前格式版本初始化认证加密载荷。
+    /// 初始化一个 <see cref="AesGcmPayload"/> 类型的实例。
     /// </summary>
     /// <param name="nonce">12 字节随机 Nonce。</param>
     /// <param name="ciphertext">密文字节。</param>
@@ -80,7 +80,7 @@ public sealed class AesGcmPayload
     }
 
     /// <summary>
-    /// 使用指定格式版本初始化认证加密载荷。
+    /// 初始化一个 <see cref="AesGcmPayload"/> 类型的实例。
     /// </summary>
     /// <param name="version">载荷格式版本。</param>
     /// <param name="nonce">12 字节随机 Nonce。</param>
@@ -105,7 +105,7 @@ public sealed class AesGcmPayload
     }
 
     /// <summary>
-    /// 使用指定所有权模式初始化认证加密载荷。
+    /// 初始化一个 <see cref="AesGcmPayload"/> 类型的实例。
     /// </summary>
     private AesGcmPayload(byte version, byte[] nonce, byte[] ciphertext, byte[] tag, bool takeOwnership)
     {

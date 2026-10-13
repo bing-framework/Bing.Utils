@@ -34,7 +34,7 @@ internal sealed class RsaHelper : IDisposable
     private readonly Encoding _encoding;
 
     /// <summary>
-    /// 初始化一个<see cref="RsaHelper"/>类型的实例
+    /// 初始化一个 <see cref="RsaHelper"/> 类型的实例。
     /// </summary>
     /// <param name="rsaType">加密算法类型 RSA SHA1;RSA2 SHA256 密钥长度至少为2048</param>
     /// <param name="encoding">编码类型</param>
@@ -265,6 +265,7 @@ internal sealed class RsaHelper : IDisposable
     /// 获取int大小
     /// </summary>
     /// <param name="binr">二进制读取器</param>
+    /// <returns>当前 ASN.1 整数的字节长度。</returns>
     private int GetIntegerSize(BinaryReader binr)
     {
         byte bt = 0;
@@ -302,6 +303,7 @@ internal sealed class RsaHelper : IDisposable
     /// </summary>
     /// <param name="a">byte[]</param>
     /// <param name="b">byte[]</param>
+    /// <returns>两个字节数组内容相同时为 true；否则为 false。</returns>
     private bool CompareBytearrays(byte[] a, byte[] b)
     {
         if (a.Length != b.Length)

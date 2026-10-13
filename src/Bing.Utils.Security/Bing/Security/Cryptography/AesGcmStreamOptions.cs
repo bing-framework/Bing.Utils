@@ -12,8 +12,11 @@ public sealed class AesGcmStreamOptions
     public const int DefaultBlockSize = 65536;
 
     /// <summary>
-    /// 每个认证加密块的最大明文字节数，必须介于 4096 和 1048576 之间。
+    /// 获取或初始化每个认证加密块的明文字节数。
     /// </summary>
+    /// <remarks>
+    /// 默认值为 65536，且必须介于 4096 和 1048576 之间。
+    /// </remarks>
     public int BlockSize { get; init; } = DefaultBlockSize;
 }
 #endif

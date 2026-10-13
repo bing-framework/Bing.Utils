@@ -25,7 +25,7 @@ public static partial class Encrypt
     private static Random? _random;
 
     /// <summary>
-    /// 随机数生成器【线程安全】
+    /// 获取随机数生成器【线程安全】
     /// </summary>
     public static Random Random
     {
@@ -76,6 +76,7 @@ public static partial class Encrypt
     /// <param name="encoding">字符编码</param>
     /// <param name="startIndex">开始索引</param>
     /// <param name="length">长度</param>
+    /// <returns>按指定编码计算并格式化的 MD5 摘要。</returns>
     private static string Md5(string value, Encoding encoding, int? startIndex, int? length)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -102,7 +103,7 @@ public static partial class Encrypt
     #region DES加密
 
     /// <summary>
-    /// DES密钥，24位字符串
+    /// 获取或设置DES密钥，24位字符串
     /// </summary>
     [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string DesKey { get; set; } = "#s^un2ye21fcv%|f0XpR,+vh";
@@ -143,12 +144,14 @@ public static partial class Encrypt
     /// </summary>
     /// <param name="text">待加密的文本</param>
     /// <param name="key">密钥，24位</param>
+    /// <returns>输入文本和密钥满足 DES 加密条件时为 true；否则为 false。</returns>
     private static bool ValidateDes(string text, string key) => !string.IsNullOrWhiteSpace(text) && !string.IsNullOrWhiteSpace(key) && key.Length == 24;
 
     /// <summary>
     /// 创建Des加密服务提供程序
     /// </summary>
     /// <param name="key">密钥，24位</param>
+    /// <returns>配置了指定密钥的 Triple DES 提供程序。</returns>
     private static TripleDESCryptoServiceProvider CreateDesProvider(string key) =>
         new()
         {
@@ -163,6 +166,7 @@ public static partial class Encrypt
     /// <param name="value">待加密的值</param>
     /// <param name="encoding">字符编码</param>
     /// <param name="transform">加密器</param>
+    /// <returns>经指定转换器加密后的文本。</returns>
     private static string GetEncryptResult(string value, Encoding encoding, ICryptoTransform transform)
     {
         var bytes = encoding.GetBytes(value);
@@ -207,6 +211,7 @@ public static partial class Encrypt
     /// <param name="value">待解密的值</param>
     /// <param name="encoding">字符编码</param>
     /// <param name="transform">加密器</param>
+    /// <returns>经指定转换器解密后的文本。</returns>
     private static string GetDecryptResult(string value, Encoding encoding, ICryptoTransform transform)
     {
         var bytes = Convert.FromBase64String(value);
@@ -224,7 +229,7 @@ public static partial class Encrypt
     private static byte[] _iv;
 
     /// <summary>
-    /// 128位0向量
+    /// 获取128位0向量
     /// </summary>
     private static byte[] Iv
     {
@@ -244,7 +249,7 @@ public static partial class Encrypt
     }
 
     /// <summary>
-    /// AES密钥
+    /// 获取或设置AES密钥
     /// </summary>
     [Obsolete("此密码 API 仅用于兼容旧数据，请迁移到 Bing.Utils.Security 的认证加密、SHA-2/HMAC-SHA2 或 RSA-OAEP/PSS API。")]
     public static string AesKey { get; set; } = "QaP1AF8utIarcBqdhYTZpVGbiNQ9M6IL";
@@ -284,6 +289,7 @@ public static partial class Encrypt
     /// 创建RijndaelManaged
     /// </summary>
     /// <param name="key">密钥</param>
+    /// <returns>配置了指定密钥的 Rijndael 提供程序。</returns>
     private static RijndaelManaged CreateRijndaelManaged(string key) =>
         new()
         {
@@ -369,6 +375,7 @@ public static partial class Encrypt
     /// <param name="key">私钥</param>
     /// <param name="encoding">字符编码</param>
     /// <param name="type">RSA算法类型</param>
+    /// <returns>按指定算法生成的 RSA 签名。</returns>
     private static string RsaSign(string value, string key, Encoding encoding, RSAType type)
     {
         if (string.IsNullOrWhiteSpace(value) || string.IsNullOrWhiteSpace(key))
@@ -423,6 +430,7 @@ public static partial class Encrypt
     /// <param name="sign">签名</param>
     /// <param name="encoding">字符编码</param>
     /// <param name="type">RSA算法类型</param>
+    /// <returns>签名有效时为 true；否则为 false。</returns>
     private static bool RsaVerify(string value, string publicKey, string sign, Encoding encoding, RSAType type)
     {
         if (string.IsNullOrWhiteSpace(value))
