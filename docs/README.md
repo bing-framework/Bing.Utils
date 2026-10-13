@@ -10,6 +10,12 @@
 - [API 参考说明](reference/api-reference.md)
 - [安全与密码学专题](security.md)
 - [质量与验证资料](quality/)
+- [反射验证状态](quality/reflection-validation-evidence.md)：当前候选的测试、发布结果与历史证据边界。
+- [反射失败契约迁移](quality/reflection-contract-migration.md)：异常契约变化及已迁移的消费者测试。
+- [反射性能证据](quality/reflection-performance-evidence.md)：历史逐轮测量与显式预算用法。
+- [反射裁剪证据](quality/reflection-trim-evidence.md)：trimming/NativeAOT 部署命令和支持边界。
+- [反射实施状态](quality/reflection-todo-status.md)：当前剩余问题与历史任务记录。
+- [NativeAOT 基线复核](quality/reflection-nativeaot-baseline-review.md)：未通过门禁的精确诊断及待确认提案。
 - [贡献指南](CONTRIBUTING.md)
 
 ## 维护约定

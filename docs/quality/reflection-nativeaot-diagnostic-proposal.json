@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "kind": "nativeaot-repository-diagnostic-review-proposal",
+  "status": "待确认",
+  "approved": false,
+  "diagnosticContext": "sdk=8.0.425;tfm=net8.0;rid=win-x64;trim=partial;aot=true;mode=ci-single-publish",
+  "sourceReport": "benchmarks/ReflectionTrimProbe/bin/commit-fix-warning-contracts-report-20261013.json",
+  "baseBaseline": "benchmarks/ReflectionTrimProbe/NativeAotRepositoryDiagnosticBaseline.json",
+  "baseEntryCount": 339,
+  "baseOccurrenceCount": 405,
+  "proposedEntryCount": 363,
+  "proposedOccurrenceLimit": 429,
+  "entryCount": 24,
+  "entries": [
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "13b43af633768a6c2fc7ec85609015d840d6f71ff1e14a1dbbec284016006107",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.Main(): Using member 'Bing.Reflection.TypeVisit.CreateInstances<TrimSample>(IEnumerable`1<Object[]>)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 批量构造实例依赖运行时构造函数元数据，裁剪时必须保留目标类型的公共构造函数。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "15fea155d6705e7a4f90adab64c5ab45e5f14cbb75da0c79281c440fb31ab11a",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateGenericInstance<TrimGenericSample`1<Int32>>(Type,Type[],Object[])' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 封闭泛型类型和构造函数实例化依赖运行时元数据，裁剪时必须保留相关类型及构造函数。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "292d02df6d1f2dc1ce6f1083db71dde66d01015c7abfd6b6195ae8fccd86ceae",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateInstances<TrimSample>(IEnumerable`1<Object[]>)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 批量构造实例依赖运行时构造函数元数据，裁剪时必须保留目标类型的公共构造函数。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "35b1c368efda02b460393794ba61352f991e49392fae212b6dca438aaff0ebb5",
+      "maxCount": 1,
+      "message": "Using member 'Bing.Reflection.Types.IsDefaultValue(Object)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 对象的运行时类型由 object.GetType() 决定，默认值创建可能需要被裁剪的构造函数元数据。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "4b8a31dd312d0294b0009376e5e897d00f876fed3b17d67911efdad07e187061",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateInstances<TrimSample>(IEnumerable`1<Type>,Object[])' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 批量构造实例依赖运行时类型和构造函数元数据，裁剪时必须保留目标类型的公共构造函数。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "596605dbe86cd66e03bccf792fc73f94c21b757cd0a0c05d1e90e6d28e6b136b",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateGenericInstance<TrimGenericSample`1<Int32>>(Type,Object[])' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 封闭泛型类型和构造函数实例化依赖运行时元数据，裁剪时必须保留相关类型及构造函数。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "5fba0bc8bdb962f0fdce7494583680d53d8d6e7ebd69f23dafa25d771dfc22c5",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyTypeRelationshipEntrypoints(): Using member 'Bing.Reflection.Types.IsDefaultValue(Object)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 对象的运行时类型由 object.GetType() 决定，默认值创建可能需要被裁剪的构造函数元数据。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "7a8fe1222c71323d173047ff495fe53cad0f7999c3cd4d0437ef1d18dd7f708b",
+      "maxCount": 1,
+      "message": "Using member 'Bing.Reflection.TypeVisit.GetBaseMethod(MethodInfo)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 基础方法按运行时方法签名扫描，裁剪时必须保留目标类型的方法和接口元数据。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "82675f9f2c8829980d884a51cc9d82b1fa52087ac72ed131d578ded9e0b3f8dc",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyMemberClassificationEntrypoints(): Using member 'Bing.Reflection.TypeVisit.GetBaseMethod(MethodInfo)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 基础方法按运行时方法签名扫描，裁剪时必须保留目标类型的方法和接口元数据。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "8b6048d9940ae79b2e7edd1f6ab2e435736dafc275b7631a38697c33ad28cc8e",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyMemberClassificationEntrypoints(): Using member 'Bing.Reflection.TypeVisit.GetMethodBySignature(Type,MethodInfo)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "ab69a9496439971f79ac8bbed3d769057573e82eaff050d9917af570c1f0eb42",
+      "maxCount": 1,
+      "message": "Using member 'Bing.Reflection.TypeVisit.GetMethodBySignature(Type, MethodInfo)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "c5189efe8b0dfe71b58d1540c31a677d150fd3e242af5eda9cddd5403f9920e0",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.Main(): Using member 'Bing.Reflection.TypeVisit.CreateInstance(IDictionary`2<String,Object>)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 动态对象创建依赖运行时生成的属性元数据，裁剪时必须显式保留相关成员。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "d3c95200f0c1e54d7564989c83c2b6a6d0d2195a693dd8e2ad0178ea27ce2ec0",
+      "maxCount": 1,
+      "message": "Using member 'Bing.Reflection.Reflections.SetFieldValue<T>(T, String, Object)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 字段按泛型声明类型解析，裁剪时必须保留该类型的公共字段。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "db3f4ff4bbeb2fb1d54685c78b9e71d67ab9ec8e1f290ad8553fe8bd88e25514",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.Main(): Using member 'Bing.Reflection.Reflections.SetFieldValue<TrimFieldSample>(TrimFieldSample,String,Object)' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 字段按泛型声明类型解析，裁剪时必须保留该类型的公共字段。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL2026",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "dbb0ddb4847312958ecd7568941c517ac4151515b5d828a14980d2e5a6e46b1c",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateInstances(IEnumerable`1<Type>,Object[])' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code. 批量构造实例依赖运行时类型和构造函数元数据，裁剪时必须保留目标类型的公共构造函数。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL3050",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "183315927afb3b91ea8ed44595ce1d22c88b56676210645f13f241da0e76aeb1",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateGenericInstance<TrimGenericSample`1<Int32>>(Type,Object[])' which has 'RequiresDynamicCodeAttribute' can break functionality when AOT compiling. 封闭泛型类型并生成构造函数委托需要运行时动态代码。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL3050",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "2842be04757a67a9dcedcfcdde8f49cc43ea0dab54946dca5504df8fa9179372",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.Main(): Using member 'Bing.Reflection.TypeVisit.CreateInstance(IDictionary`2<String,Object>)' which has 'RequiresDynamicCodeAttribute' can break functionality when AOT compiling. 动态对象通过 Reflection.Emit 创建类型，要求运行时支持动态代码。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL3050",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "2a691428a0d03d2dc3a3797d0e9e89b52884656a54c0fa68e0b2e2aba712ea8c",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateInstances<TrimSample>(IEnumerable`1<Object[]>)' which has 'RequiresDynamicCodeAttribute' can break functionality when AOT compiling. 批量构造实例使用运行时生成的构造函数委托，要求运行时支持动态代码。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL3050",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "2d298582c1e3c2f1197fefdfe9da4c48cf81649893e4ce6f4c306a29a52bd94c",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateInstances<TrimSample>(IEnumerable`1<Type>,Object[])' which has 'RequiresDynamicCodeAttribute' can break functionality when AOT compiling. 批量构造实例使用运行时生成的构造函数委托，要求运行时支持动态代码。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL3050",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "553115fe284f10ae23c63d6ee06bc52801034e857d2cadf7f870ba7107d8ce69",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'System.Type.MakeGenericType(Type[])' which has 'RequiresDynamicCodeAttribute' can break functionality when AOT compiling. The native code for this instantiation might not be available at runtime.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL3050",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "818643d3bda45f2c9794293cc009267da0de8f8ae4871798d5e055044877e26c",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateInstances(IEnumerable`1<Type>,Object[])' which has 'RequiresDynamicCodeAttribute' can break functionality when AOT compiling. 批量构造实例使用运行时生成的构造函数委托，要求运行时支持动态代码。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL3050",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "a74c56b2732b12087066881c8e3d02ef8638992b8281dcaff0ff0d530ec6f049",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.VerifyConstructorAndAsyncEntrypoints(): Using member 'Bing.Reflection.TypeVisit.CreateGenericInstance<TrimGenericSample`1<Int32>>(Type,Type[],Object[])' which has 'RequiresDynamicCodeAttribute' can break functionality when AOT compiling. 封闭泛型类型并生成构造函数委托需要运行时动态代码。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL3050",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "c2f5e3c0ba2ee880dd9bdfa1a7db12a7bf47ecf29457dad3a3b5da8b9e9c5f7d",
+      "maxCount": 1,
+      "message": "ReflectionTrimProbe.Program.Main(): Using member 'Bing.Reflection.TypeVisit.CreateInstances<TrimSample>(IEnumerable`1<Object[]>)' which has 'RequiresDynamicCodeAttribute' can break functionality when AOT compiling. 批量构造实例使用运行时生成的构造函数委托，要求运行时支持动态代码。.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    },
+    {
+      "code": "IL3050",
+      "file": "benchmarks/ReflectionTrimProbe/Program.cs",
+      "messageFingerprint": "c548332d18bc6a2c487cf666a36b049e0c1e40c0c5044cfda53c0a001e418336",
+      "maxCount": 1,
+      "message": "Using member 'System.Type.MakeGenericType(params Type[])' which has 'RequiresDynamicCodeAttribute' can break functionality when AOT compiling. The native code for this instantiation might not be available at runtime.",
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。",
+      "decision": "待确认"
+    }
+  ]
+}
