@@ -145,6 +145,31 @@ public class TypeVisitMembersTests
     }
 
     /// <summary>
+    /// 测试目的：显式传入 null 或空选择器数组时，应返回全部公开可读属性。
+    /// </summary>
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void GetProperties_GenericNullOrEmptySelectors_ReturnsAllGetterProperties(bool useNullSelectors)
+    {
+        Expression<Func<SampleEntity, object>>[] selectors = useNullSelectors
+            ? null!
+            : Array.Empty<Expression<Func<SampleEntity, object>>>();
+
+        var props = TypeVisit.GetProperties<SampleEntity>(PropertyAccessOptions.Getters, selectors)
+            .Select(property => property.Name)
+            .OrderBy(name => name)
+            .ToArray();
+
+        props.ShouldBe(new[]
+        {
+            nameof(SampleEntity.ExpressionProp),
+            nameof(SampleEntity.ReadOnlyProp),
+            nameof(SampleEntity.ReadWriteProp)
+        });
+    }
+
+    /// <summary>
     /// 测试目的：用 Setters 选项获取属性，只返回有公开 setter 的属性
     /// </summary>
     [Fact]
