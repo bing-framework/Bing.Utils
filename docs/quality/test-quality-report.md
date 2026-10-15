@@ -1,5 +1,7 @@
 ﻿# 测试质量报告（阶段5）
 
+> 2026-10-15 核对：本文 P0 的 SendBefore、FileHelper 异步写入已修复；P1-1 的三类上传用例已补齐。P1-2 已增加 net8 目标及 net6/net8 nightly，实际 CI 结果待验证。本轮另完成覆盖计划 P2-1 的 HTTP 失败链路，net6/net8 默认完整集成各 65/65 通过。当前证据见 [TODO 执行记录](todo-execution.md) 和 [HTTP 后续记录](http-security-reliability-report.md)。下文为原阶段记录。
+
 ## 1. 本轮完成范围
 
 - 已补齐 P0（图像相关核心单测）：`ImageSharpHelper`、`SkiaSharpHelper`、`CaptchaBuilder` 的正向与边界行为。  

@@ -3,6 +3,8 @@
 > 图像模块现状更新：Drawing、ImageSharp、SkiaSharp 均已有专属单元测试；另有 Drawing.Tests.Integration 跨后端集成项目。下文旧审计中的“无图像测试/待创建”属于历史状态，不再作为当前行动项。最新证据见 [图像执行记录](image-processing-execution.md)。
 
 
+> 2026-10-15 核对：P0、P1 及 P2-1 HTTP 失败链路此前已完成，HTTP 的 net6/net8 集成各 65/65 通过。P2-2 沿用反射专项的已完成实现与本地证据，外部结果待验证；本轮完成 P2-3 [六类边界清单](boundary-test-checklist.md)，接入既有补测模板与贡献指南。本轮仅修改文档，未重跑构建或测试。当前状态、证据及依赖见 [TODO 执行记录](todo-execution.md)，旧审计描述保留用于溯源。
+
 ## 1. 测试资产总览
 
 - 解决方案存在逻辑分组 `02-tests`（solution folder），其下测试项目物理路径集中在 `tests/*`，包含分包测试与聚合测试两类。[证据] `Bing.Utils.sln:28` [证据] `Bing.Utils.sln:30` [证据] `Bing.Utils.sln:73` [证据] `Bing.Utils.sln:83` [证据] `Bing.Utils.sln:99`

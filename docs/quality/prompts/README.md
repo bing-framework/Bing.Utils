@@ -1,11 +1,13 @@
-# 测试重归类 Prompt 模板索引（精简版）
+# 测试协作 Prompt 模板索引
 
 ## 1. 目的
-本目录用于存放“测试重归类/迁移”场景的总控提示词模板（Controller Prompts），用于驱动 Codex 按统一流程执行：
+本目录存放测试归属审计、迁移、增量补测与风格规范化模板，用于按既有计划执行：
 
 - 审计清单（不改代码）
 - 多模块批量迁移（仅可直接迁移项）
 - 多模块混合测试拆分（方法级）
+- 单文件或批量增量补测
+- 测试风格规范化
 - 最小修复
 - 编译/测试验证
 - 报告生成
@@ -20,14 +22,16 @@
 
 ---
 
-## 2. 关联规则与文档（执行前必读）
+## 2. 关联规则与文档
+
+公共规则（执行前必读）：
+
 - `AGENTS.md`
 - `.agents/skills/test-project-boundary/SKILL.md`
 - `.agents/skills/test-project-boundary/refs/test-project-boundary.md`
-- `docs/quality/test-reclassification-plan.md`
-- `docs/quality/migration-reports/README.md`
+- 补测时读取 [六类边界检查清单](../boundary-test-checklist.md)，逐类记录适用性、契约、断言与证据。
 
-> 所有 prompt 模板默认依赖上述规则与文档。若路径调整，请同步更新模板内容。
+迁移任务另读 `docs/quality/test-reclassification-plan.md` 与 `docs/quality/migration-reports/README.md`；其他任务按对应模板读取所需计划，不强制执行迁移流程。
 
 ---
 
@@ -65,17 +69,22 @@
 
 ---
 
-## 4. Prompt 模板总览（仅保留 3 个）
+## 4. Prompt 模板总览
 
 | 文件                                              | 场景               | 输入前提        | 主要产出                    | 连续执行 | 备注          |
 | ----------------------------------------------- | ---------------- | ----------- | ----------------------- | ---- | ----------- |
 | `audit-only-controller.prompt.md`               | 只审计不改代码          | 有或没有规划文档都可  | 审计结果 + 批次规划建议 + 文档草案    | 是    | 新批次前推荐先跑    |
 | `multi-module-batch-controller.prompt.md`       | 多模块批量迁移（仅可直接迁移项） | 已有规划文档/审计结果 | 批量迁移结果 + 报告 + 索引 + 规划更新 | 是    | 主力模板        |
 | `multi-module-mixed-split-controller.prompt.md` | 多模块混合测试拆分（方法级）   | 已有混合测试清单    | 拆分结果 + 专项报告 + 索引 + 规划更新 | 是    | 高风险专项，建议小批次 |
+| [test-completion-for-file.prompt.md](test-completion-for-file.prompt.md) | 单文件增量补测 | 已明确目标文件和契约 | 六类边界记录 + 必要测试 + 验证证据 | 是 | 复用已有用例 |
+| [test-completion-batch.prompt.md](test-completion-batch.prompt.md) | 批量增量补测 | 已有按优先级排列的补测清单 | 分批边界记录 + 必要测试 + 进度 | 是 | 不重排或扩大条目 |
+| [test-style-normalization.prompt.md](test-style-normalization.prompt.md) | 测试风格规范化 | 已明确目标测试范围 | 规范化测试 + 必要验证 | 是 | 不代替功能补测 |
 
 ---
 
-## 5. 模板详细说明
+## 5. 迁移模板详细说明
+
+补测任务直接使用上述单文件或批量模板，并填写 [六类边界检查清单](../boundary-test-checklist.md)。无需先运行迁移审计；已有测试可作为证据，不机械增加并发测试或性能基线。
 
 ### 5.1 `audit-only-controller.prompt.md`
 
@@ -211,15 +220,13 @@
 * `SKILL.md`：通用流程（能力级）
 * `*.prompt.md`：执行级模板（本目录）
 
-### Q2：为什么只保留这 3 个模板？
+### Q2：如何选择迁移、补测与风格模板？
 
-因为你的主场景已经升级为“多模块迁移抽离”，这 3 个模板正好覆盖完整闭环：
+按实际任务选择：
 
-* 审计
-* 批量迁移
-* 混合拆分
-
-模板更少，维护成本更低，也更不容易选错。
+* 测试归属不明：审计；归属已明确：批量迁移或混合拆分。
+* 缺少契约断言：单文件或批量补测，统一使用六类边界清单。
+* 仅命名、结构或断言风格不一致：风格规范化。
 
 ### Q3：如果 Codex 仍然频繁确认怎么办？
 
@@ -297,7 +304,7 @@
 
 ## 10. 后续扩展（可选，不必现在做）
 
-当前仅保留 3 个模板已足够支撑主流程。若后续确有需要，再考虑补充专项模板：
+优先复用已有审计、迁移、补测和风格模板。以下仅为可选建议，并非本轮实施项：
 
 * [ ] `dedup-matrix-controller.prompt.md`（重复测试映射/去重专项）
 * [ ] `verification-only-controller.prompt.md`（只做编译/测试验证与报告）

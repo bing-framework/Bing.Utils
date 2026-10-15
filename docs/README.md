@@ -10,6 +10,9 @@
 - [API 参考说明](reference/api-reference.md)
 - [安全与密码学专题](security.md)
 - [质量与验证资料](quality/)
+- [TODO 执行记录](quality/todo-execution.md)：既定清单当前状态、本轮交付及剩余依赖。
+- [六类边界检查清单](quality/boundary-test-checklist.md)：补测时统一记录输入、溢出、并发和性能边界的适用性、契约与证据。
+- [测试协作模板索引](quality/prompts/README.md)：审计、迁移、补测与风格规范化的既有模板入口。
 - [反射验证状态](quality/reflection-validation-evidence.md)：当前候选的测试、发布结果与历史证据边界。
 - [反射失败契约迁移](quality/reflection-contract-migration.md)：异常契约变化及已迁移的消费者测试。
 - [反射性能证据](quality/reflection-performance-evidence.md)：历史逐轮测量与显式预算用法。
