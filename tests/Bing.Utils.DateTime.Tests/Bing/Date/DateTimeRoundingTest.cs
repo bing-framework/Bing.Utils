@@ -1,14 +1,17 @@
 namespace Bing.Date;
 
 /// <summary>
-/// <see cref="DateTimeExtensions"/> 任意间隔取整单元测试
+/// 验证日期时间按任意间隔向上与向下取整。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.Rounding")]
 public class DateTimeRoundingTest
 {
     /// <summary>
-    /// 测试目的：向上取整应返回最近的秒、分钟和小时边界。
+    /// 验证向上取整返回最近的秒、分钟或小时边界。
     /// </summary>
+    /// <param name="source">待取整的日期时间文本。</param>
+    /// <param name="intervalSeconds">以秒表示的取整间隔。</param>
+    /// <param name="expected">预期取整后的日期时间文本。</param>
     [Theory]
     [InlineData("2024-01-01 10:00:00.001", 1, "2024-01-01 10:00:01")]
     [InlineData("2024-01-01 10:00:01", 60, "2024-01-01 10:01:00")]
@@ -26,7 +29,7 @@ public class DateTimeRoundingTest
     }
 
     /// <summary>
-    /// 测试目的：向下取整应支持不规则间隔并保持边界值不变。
+    /// 验证向下取整支持不规则间隔并保持边界值不变。
     /// </summary>
     [Fact]
     public void RoundDown_IrregularIntervalAndBoundary_ReturnsExpectedBoundary()
@@ -46,8 +49,9 @@ public class DateTimeRoundingTest
     }
 
     /// <summary>
-    /// 测试目的：取整应保留 UTC 和 Local 的 Kind。
+    /// 验证取整保留原时间种类。
     /// </summary>
+    /// <param name="kind">需要验证保留的时间种类。</param>
     [Theory]
     [InlineData(DateTimeKind.Utc)]
     [InlineData(DateTimeKind.Local)]
@@ -66,8 +70,9 @@ public class DateTimeRoundingTest
     }
 
     /// <summary>
-    /// 测试目的：零和负间隔应抛出参数范围异常。
+    /// 验证取整拒绝零值及负值间隔。
     /// </summary>
+    /// <param name="seconds">以秒表示的无效取整间隔。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
@@ -83,7 +88,7 @@ public class DateTimeRoundingTest
     }
 
     /// <summary>
-    /// 测试目的：最小值可向下取整，最大值无法向上取整时应避免溢出。
+    /// 验证日期最小值可向下取整且最大值向上溢出时抛出异常。
     /// </summary>
     [Fact]
     public void RoundUpAndRoundDown_DateTimeExtremes_UsesDefinedBoundaryBehavior()

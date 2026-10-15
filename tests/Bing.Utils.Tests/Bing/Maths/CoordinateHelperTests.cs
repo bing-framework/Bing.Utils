@@ -11,6 +11,9 @@ public class CoordinateHelperTests
     // CalcDistance — 同点距离为 0
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证相同地理坐标之间的距离为零。
+    /// </summary>
     [Fact]
     public void CalcDistance_SamePoint_ReturnsZero()
     {
@@ -23,6 +26,9 @@ public class CoordinateHelperTests
     // CalcDistance — 已知距离验证（赤道上 1° 经度 ≈ 111.32 km）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证赤道上相差一度经度的距离约为 111 千米。
+    /// </summary>
     [Fact]
     public void CalcDistance_OnEquator1Degree_IsApprox111km()
     {
@@ -31,6 +37,9 @@ public class CoordinateHelperTests
         dist.ShouldBeInRange(110000, 112000);
     }
 
+    /// <summary>
+    /// 验证相同经度上相差一度纬度的距离约为 111 千米。
+    /// </summary>
     [Fact]
     public void CalcDistance_ZeroLongitudeDiff1LatDegree_IsApprox111km()
     {
@@ -42,6 +51,9 @@ public class CoordinateHelperTests
     // CalcDistance — 对称性（A→B == B→A）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证交换地理坐标后距离不变。
+    /// </summary>
     [Fact]
     public void CalcDistance_IsSymmetric()
     {
@@ -56,6 +68,9 @@ public class CoordinateHelperTests
     // CalcDistance — 北京到上海 ≈ 1050 km
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证北京到上海的距离处于预期范围。
+    /// </summary>
     [Fact]
     public void CalcDistance_BeijingToShanghai_IsReasonable()
     {
@@ -68,6 +83,9 @@ public class CoordinateHelperTests
     // CalcDistance — 返回值精度为两位小数
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证地理距离保留两位小数。
+    /// </summary>
     [Fact]
     public void CalcDistance_ReturnsTwoDecimalPlaces()
     {

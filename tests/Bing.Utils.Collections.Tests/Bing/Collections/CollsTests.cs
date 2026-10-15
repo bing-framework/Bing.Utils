@@ -5,13 +5,13 @@ using Bing.Collections;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：`Colls` 集合工具方法与扩展方法测试
+/// 集合批量追加的顺序和输入保留测试。
 /// </summary>
 [Trait("CollUT", "Colls")]
 public class CollsTests
 {
     /// <summary>
-    /// 测试用例：`Colls.AddRange` 静态方法应按顺序合并两个集合，且不修改输入集合
+    /// 验证静态批量追加按顺序合并且保留输入列表。
     /// </summary>
     [Fact]
     public void AddRange_StaticMethod_TwoLists_MergesInOrderWithoutMutatingInputs()
@@ -27,7 +27,7 @@ public class CollsTests
     }
 
     /// <summary>
-    /// 测试用例：`AddRange` 扩展方法在指定 `limit` 时，仅追加限定数量元素并保持顺序
+    /// 验证扩展批量追加限制元素数量且保留输入列表。
     /// </summary>
     [Fact]
     public void AddRange_ExtensionMethod_WithLimit_AppendsLimitedItemsInOrder()

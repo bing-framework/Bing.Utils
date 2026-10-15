@@ -25,6 +25,9 @@ public class BingExtensionsTypeTests
 
     private class BaseClass { }
     private class DerivedClass : BaseClass { }
+    /// <summary>
+    /// 用于验证类型与接口继承关系的标记契约。
+    /// </summary>
     private interface IFoo { }
     private class FooImpl : IFoo { }
 

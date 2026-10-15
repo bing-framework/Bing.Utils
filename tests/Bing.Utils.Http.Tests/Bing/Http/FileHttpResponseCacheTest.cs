@@ -9,10 +9,10 @@ using Bing.Http.Caching;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// 文件 HTTP 响应缓存的持久化、损坏恢复和失效测试。
-
 /// </summary>
 public class FileHttpResponseCacheTest
 {
@@ -34,10 +34,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证读取旧格式缓存并迁移到当前版本。
-
     /// </summary>
     [Fact]
     public async Task LegacyFormatIsReadAndMigratedToCurrentVersion()
@@ -65,10 +65,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证未知格式版本是否拒绝并已移除。
-
     /// </summary>
     [Fact]
     public async Task UnknownFormatVersionIsRejectedAndRemoved()
@@ -92,10 +92,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝空并路径穿越键。
-
     /// </summary>
     [Fact]
     public async Task RejectsEmptyAndPathTraversalKeys()
@@ -106,10 +106,10 @@ public class FileHttpResponseCacheTest
         await Should.ThrowAsync<ArgumentException>(() => cache.SetAsync("a/b", Response("x"), TimeSpan.FromMinutes(1)));
     }
 
+
+
     /// <summary>
-
     /// 验证忽略损坏文件并按序号前缀移除缓存。
-
     /// </summary>
     [Fact]
     public async Task CorruptFileIsIgnoredAndPrefixRemovalIsOrdinal()
@@ -128,10 +128,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证并发写入方保持可读原子缓存项。
-
     /// </summary>
     [Fact]
     public async Task ConcurrentWritersLeaveReadableAtomicEntry()
@@ -149,10 +149,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证容量不足时淘汰最近最少访问项。
-
     /// </summary>
     [Fact]
     public async Task CapacityEvictsLeastRecentlyAccessedEntry()
@@ -175,10 +175,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证容量锁是否不占用用户缓存键缓存键。
-
     /// </summary>
     [Fact]
     public async Task CapacityLockDoesNotReserveAUserCacheKey()
@@ -193,10 +193,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证缓存容量淘汰过期项并拒绝过大的缓存项。
-
     /// </summary>
     [Fact]
     public async Task CapacityRemovesExpiredEntriesAndRejectsOversizedEntry()
@@ -216,10 +216,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证容量选项要求正数值。
-
     /// </summary>
     [Fact]
     public void CapacityOptionsRequirePositiveValues()
@@ -240,10 +240,10 @@ public class FileHttpResponseCacheTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证串行化相同键工厂并是否不缓存失败。
-
     /// </summary>
     [Fact]
     public async Task GetOrCreate_SerializesSameKeyFactoryAndDoesNotCacheFailure()
@@ -272,10 +272,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证等待锁之前再次检查缓存项。
-
     /// </summary>
     [Fact]
     public async Task GetOrCreate_WaitsForOccupiedLockBeforeDoubleChecking()
@@ -311,10 +311,10 @@ public class FileHttpResponseCacheTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证等待其他进程持有的锁并原子发布缓存项。
-
     /// </summary>
     [Fact]
     public async Task GetOrCreate_WaitsForLockHeldBySeparateProcessAndPublishesAtomically()
@@ -360,10 +360,10 @@ public class FileHttpResponseCacheTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证取消期间锁等待停止之前工厂。
-
     /// </summary>
     [Fact]
     public async Task GetOrCreate_CancellationDuringLockWaitStopsBeforeFactory()
@@ -393,10 +393,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证取消工厂是否不写入缓存。
-
     /// </summary>
     [Fact]
     public async Task GetOrCreate_CancelledFactoryDoesNotWriteCache()
@@ -418,10 +418,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证清理过期缓存和陈旧临时文件，同时保留锁文件。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_RemovesExpiredCachesAndStaleTemporaryFilesButKeepsLocks()
@@ -452,10 +452,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证移除嵌套文件期间默认清理范围保持在顶层目录。
-
     /// </summary>
     [Fact]
     public async Task CleanupRecursiveAsync_RemovesNestedFiles_WhileDefaultCleanupStaysTopLevel()
@@ -487,10 +487,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证遵循取消之前锁取得。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_HonorsCancellationBeforeLockAcquisition()
@@ -509,10 +509,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证保留被锁定的临时文件且不计入删除失败数。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_KeepsLockedTemporaryFileAndDoesNotCountFailedDelete()
@@ -535,10 +535,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证等待缓存项锁时遵循取消请求。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_HonorsCancellationWhileWaitingForEntryLock()
@@ -563,10 +563,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证重新读取缓存项之后其键锁是否释放。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_RereadsEntryAfterItsKeyLockIsReleased()
@@ -602,10 +602,10 @@ public class FileHttpResponseCacheTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证仅清理根目录缓存文件，并忽略损坏文件和临时文件。
-
     /// </summary>
     [Fact]
     public async Task ClearAsync_RemovesOnlyRootCacheFilesAndIgnoresCorruptAndTemporaryFiles()
@@ -633,10 +633,10 @@ public class FileHttpResponseCacheTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证注入的删除操作失败时不计入已删除数量。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_UsesInjectedDeleteFailureWithoutCountingRemoval()
@@ -658,10 +658,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证注入的权限错误不会被计入已删除数量。
-
     /// </summary>
     [Fact]
     public async Task ClearAsync_UsesInjectedPermissionFailureWithoutCountingRemoval()
@@ -679,10 +679,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证枚举操作异常会向上传播。
-
     /// </summary>
     [Fact]
     public async Task ClearAsync_PropagatesInjectedEnumerationFailure()
@@ -698,10 +698,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证截断文件是否被忽略获取并清理。
-
     /// </summary>
     [Fact]
     public async Task TruncatedFileIsIgnoredByGetAndClear()
@@ -727,10 +727,10 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证是否不正在运行的回源操作不重复发布工厂。
-
     /// </summary>
     [Fact]
     public async Task ClearAsync_DoesNotRepublishAnAlreadyRunningFactory()
@@ -757,11 +757,15 @@ public class FileHttpResponseCacheTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
-    /// 写入测试所需的数据。
-
+    /// 按旧版缓存格式写入用于迁移测试的缓存文件。
     /// </summary>
+    /// <param name="directory">保存缓存文件的目录。</param>
+    /// <param name="key">写入文件并用于计算文件名的缓存键。</param>
+    /// <param name="response">要序列化的响应状态、头及字节正文。</param>
+    /// <param name="ttl">相对当前时间计算过期时刻的有效期。</param>
     private static void WriteLegacyCacheFile(string directory, string key,
         HttpResponseResult<byte[]> response, TimeSpan ttl)
     {
@@ -780,11 +784,13 @@ public class FileHttpResponseCacheTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 写入测试所需的数据。
-
+    /// 将多值响应头写入旧版缓存的二进制结构。
     /// </summary>
+    /// <param name="writer">接收响应头数据的二进制写入器。</param>
+    /// <param name="headers">待写入的响应头集合；为 null 时写入零项。</param>
     private static void WriteHeaders(BinaryWriter writer,
         IReadOnlyDictionary<string, IReadOnlyList<string>> headers)
     {
@@ -799,21 +805,24 @@ public class FileHttpResponseCacheTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 创建测试用 HTTP 响应。
-
+    /// 创建包含固定字节正文及实体标签的成功响应样例。
     /// </summary>
+    /// <param name="value">响应的原始字符串正文。</param>
+    /// <returns>实体标签为 <c>v1</c> 且数据为三个固定字节的响应。</returns>
     private static HttpResponseResult<byte[]> Response(string value)
         => new HttpResponseResult<byte[]>(HttpStatusCode.OK,
             new Dictionary<string, IReadOnlyList<string>> { ["ETag"] = new[] { "\"v1\"" } },
             new Dictionary<string, IReadOnlyList<string>>(), new byte[] { 1, 2, 3 }, value);
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建用于文件响应缓存测试的独立临时目录。
     /// </summary>
+    /// <returns>已创建的唯一临时目录完整路径。</returns>
     private static string CreateDirectory()
     {
         var path = Path.Combine(Path.GetTempPath(), "bing-file-cache-" + Guid.NewGuid().ToString("N"));
@@ -821,11 +830,16 @@ public class FileHttpResponseCacheTest
         return path;
     }
 
+
+
     /// <summary>
-
-    /// 处理测试场景中的 StartLockHelper。
-
+    /// 启动持有独占文件锁并通过标记文件同步的测试进程。
     /// </summary>
+    /// <param name="lockPath">子进程独占打开的锁文件路径。</param>
+    /// <param name="readyPath">获取锁后写入的就绪标记路径。</param>
+    /// <param name="releasePath">指示子进程释放锁并退出的标记路径。</param>
+    /// <returns>已启动的 PowerShell 进程，调用方负责同步退出并释放。</returns>
+    /// <remarks>当前系统缺少可启动的 PowerShell 时，以跳过测试异常报告环境限制。</remarks>
     private static Process StartLockHelper(string lockPath, string readyPath, string releasePath)
     {
         var executable = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "powershell.exe" : "pwsh";
@@ -853,11 +867,13 @@ public class FileHttpResponseCacheTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 等待测试条件满足。
-
+    /// 异步等待跨进程锁辅助程序写入就绪标记。
     /// </summary>
+    /// <param name="path">预期出现的就绪标记文件路径。</param>
+    /// <remarks>最多等待五秒；超时后通过断言报告失败。</remarks>
     private static async Task WaitForFileAsync(string path)
     {
         var deadline = DateTime.UtcNow.AddSeconds(5);
@@ -866,34 +882,36 @@ public class FileHttpResponseCacheTest
         File.Exists(path).ShouldBeTrue("The cross-process lock helper did not signal readiness.");
     }
 
+
+
     /// <summary>
-
-    /// 计算测试用缓存键的哈希值。
-
+    /// 计算缓存键的 UTF-8 SHA-256 文件名摘要。
     /// </summary>
+    /// <param name="key">需要映射为缓存文件名的原始键。</param>
+    /// <returns>不含分隔符的小写十六进制摘要。</returns>
     private static string Hash(string key)
     {
         using (var sha = SHA256.Create())
             return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(key))).Replace("-", string.Empty).ToLowerInvariant();
     }
 
+
+
     /// <summary>
-
     /// 为缓存清理测试提供可控的文件和目录操作实现。
-
     /// </summary>
     private sealed class TestMaintenanceFileSystem : IFileHttpResponseCacheFileSystem
     {
         /// <summary>
-        /// 控制删除操作是否返回失败。
+        /// 获取或设置是否模拟文件删除返回失败。
         /// </summary>
         public bool DeleteReturnsFalse { get; set; }
         /// <summary>
-        /// 控制删除操作是否抛出权限异常。
+        /// 获取或设置是否在文件删除时抛出模拟的权限异常。
         /// </summary>
         public bool DeleteThrowsUnauthorized { get; set; }
         /// <summary>
-        /// 指定枚举操作抛出的异常。
+        /// 获取或设置文件枚举时抛出的模拟异常；为 null 时正常枚举。
         /// </summary>
         public Exception EnumerationError { get; set; }
 

@@ -63,8 +63,18 @@ public class TraceIdAccessorTest
     /// </summary>
     private sealed class FixedTraceIdMaker : ITraceIdMaker
     {
+        /// <summary>
+        /// 获取固定的跟踪 ID。
+        /// </summary>
         private readonly string _value;
+
+        /// <summary>
+        /// 初始化一个 <see cref="FixedTraceIdMaker"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">要返回的固定跟踪 ID。</param>
         public FixedTraceIdMaker(string value) => _value = value;
+
+        /// <inheritdoc />
         public string Create() => _value;
     }
 
@@ -73,6 +83,7 @@ public class TraceIdAccessorTest
     /// </summary>
     private sealed class ThrowingTraceIdMaker : ITraceIdMaker
     {
+        /// <inheritdoc />
         public string Create() => throw new InvalidOperationException("maker-failed");
     }
 }

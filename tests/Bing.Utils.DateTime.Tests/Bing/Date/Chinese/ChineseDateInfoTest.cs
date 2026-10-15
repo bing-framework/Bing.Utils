@@ -3,7 +3,7 @@ using System.Globalization;
 namespace Bing.Date.Chinese;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="ChineseDateInfo"/> 相关行为。
+/// 农历日期信息的转换、名称、判断及日期偏移测试。
 /// </summary>
 [Trait("DateTimeUT", "ChineseDate.DateInfo")]
 public class ChineseDateInfoTest
@@ -11,7 +11,7 @@ public class ChineseDateInfoTest
     #region Constructor & Properties
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo"/> 在 `Constructor_WithDateTime` 场景下，结果为 `PropertiesArePositive`。
+    /// 验证默认历法构造的农历年月日均为正数。
     /// </summary>
     [Fact]
     public void Constructor_WithDateTime_PropertiesArePositive()
@@ -23,7 +23,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo"/> 在 `Constructor_WithCalendar` 场景下，结果为 `PropertiesMatchCalendar`。
+    /// 验证指定历法构造的农历年月日与历法计算一致。
     /// </summary>
     [Fact]
     public void Constructor_WithCalendar_PropertiesMatchCalendar()
@@ -37,7 +37,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.ToDateTime"/> 在 `RoundTrip` 场景下，结果为 `ReturnsSameDate`。
+    /// 验证转换回公历后保留原日期。
     /// </summary>
     [Fact]
     public void ToDateTime_RoundTrip_ReturnsSameDate()
@@ -52,8 +52,7 @@ public class ChineseDateInfoTest
     #region IsLeapYear / IsLeapMonth / IsLeapDay
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.IsLeapYear"/> 在 `LeapYear2020` 场景下，结果为 `ReturnsTrue`。
-    /// 2020年(庚子年)有闰四月
+    /// 验证二〇二〇年被判断为农历闰年。
     /// </summary>
     [Fact]
     public void IsLeapYear_LeapYear2020_ReturnsTrue()
@@ -63,7 +62,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.IsLeapYear"/> 在 `NonLeapYear` 场景下，结果为 `ReturnsFalse`。
+    /// 验证二〇二一年被判断为农历平年。
     /// </summary>
     [Fact]
     public void IsLeapYear_NonLeapYear_ReturnsFalse()
@@ -73,8 +72,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.IsLeapMonth"/> 在 `DateInLeapMonth` 场景下，结果为 `ReturnsTrue`。
-    /// 2020年5月(公历)对应农历闰四月槽位(month=5)
+    /// 验证当前映射下的闰月日期返回肯定结果。
     /// </summary>
     [Fact]
     public void IsLeapMonth_DateInLeapMonth_ReturnsTrue()
@@ -85,7 +83,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.IsLeapMonth"/> 在 `DateNotInLeapMonth` 场景下，结果为 `ReturnsFalse`。
+    /// 验证当前映射下的非闰月日期返回否定结果。
     /// </summary>
     [Fact]
     public void IsLeapMonth_DateNotInLeapMonth_ReturnsFalse()
@@ -95,7 +93,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.IsLeapDay"/> 在 `DayInLeapMonth` 场景下，结果为 `ReturnsTrue`。
+    /// 验证当前映射下的闰月日期被判断为闰日。
     /// </summary>
     [Fact]
     public void IsLeapDay_DayInLeapMonth_ReturnsTrue()
@@ -106,7 +104,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.IsLeapDay"/> 在 `DayNotInLeapMonth` 场景下，结果为 `ReturnsFalse`。
+    /// 验证当前映射下的普通日期不属于闰日。
     /// </summary>
     [Fact]
     public void IsLeapDay_DayNotInLeapMonth_ReturnsFalse()
@@ -120,7 +118,7 @@ public class ChineseDateInfoTest
     #region IsWeekend / IsWorkDay
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.IsWeekend"/> 在 `Saturday` 场景下，结果为 `ReturnsTrue`。
+    /// 验证星期六被判断为周末。
     /// </summary>
     [Fact]
     public void IsWeekend_Saturday_ReturnsTrue()
@@ -131,7 +129,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.IsWorkDay"/> 在 `Monday` 场景下，结果为 `ReturnsTrue`。
+    /// 验证星期一被判断为工作日。
     /// </summary>
     [Fact]
     public void IsWorkDay_Monday_ReturnsTrue()
@@ -146,7 +144,7 @@ public class ChineseDateInfoTest
     #region GetChineseYear / GetSexagenaryYear
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetChineseYear"/> 在 `ValidDate` 场景下，结果为 `ReturnsNonEmpty`。
+    /// 验证中文年份名称非空。
     /// </summary>
     [Fact]
     public void GetChineseYear_ValidDate_ReturnsNonEmpty()
@@ -156,8 +154,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetSexagenaryYear"/> 在 `Year2023RabbitYear` 场景下，结果为 `ReturnsCancao`。
-    /// 2023年(癸卯年), 农历新年2023-01-22，节气立春2023-02-04之后
+    /// 验证二〇二三年日期的干支年名称包含癸卯。
     /// </summary>
     [Fact]
     public void GetSexagenaryYear_Year2023RabbitYear_ReturnsCancao()
@@ -174,7 +171,7 @@ public class ChineseDateInfoTest
     #region GetChineseMonth / GetChineseDay / GetChineseDate
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetChineseMonth"/> 在 `ValidDate` 场景下，结果为 `ReturnsNonEmpty`。
+    /// 验证农历月份名称非空。
     /// </summary>
     [Fact]
     public void GetChineseMonth_ValidDate_ReturnsNonEmpty()
@@ -184,7 +181,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetChineseDay"/> 在 `ValidDate` 场景下，结果为 `ReturnsNonEmpty`。
+    /// 验证农历日名称非空。
     /// </summary>
     [Fact]
     public void GetChineseDay_ValidDate_ReturnsNonEmpty()
@@ -194,7 +191,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetChineseDate"/> 在 `ReturnsMonthPlusDay` 场景下，结果为 `ConcatenatesMonthAndDay`。
+    /// 验证农历日期文本由月份和日名称拼接而成。
     /// </summary>
     [Fact]
     public void GetChineseDate_ReturnsMonthPlusDay_ConcatenatesMonthAndDay()
@@ -207,7 +204,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetChineseDateWithYear"/> 在 `ValidDate` 场景下，结果为 `ContainsYearMonthDay`。
+    /// 验证完整农历日期以中文年份开头并包含后续文本。
     /// </summary>
     [Fact]
     public void GetChineseDateWithYear_ValidDate_ContainsYearMonthDay()
@@ -224,8 +221,7 @@ public class ChineseDateInfoTest
     #region GetSolarTerm
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetSolarTerm"/> 在 `LiChunDay` 场景下，结果为 `ReturnsLiChun`。
-    /// 2023-02-04 是立春
+    /// 验证立春当日返回立春名称。
     /// </summary>
     [Fact]
     public void GetSolarTerm_LiChunDay_ReturnsLiChun()
@@ -235,7 +231,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetSolarTerm"/> 在 `NonSolarTermDay` 场景下，结果为 `ReturnsEmpty`。
+    /// 验证非节气日期返回空文本。
     /// </summary>
     [Fact]
     public void GetSolarTerm_NonSolarTermDay_ReturnsEmpty()
@@ -250,7 +246,7 @@ public class ChineseDateInfoTest
     #region AddDays / Tomorrow / Yesterday
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.AddDays"/> 在 `PositiveDays` 场景下，结果为 `AdvancesDate`。
+    /// 验证按指定天数向后偏移日期。
     /// </summary>
     [Fact]
     public void AddDays_PositiveDays_AdvancesDate()
@@ -262,7 +258,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.Tomorrow"/> 在 `BasicCase` 场景下，结果为 `AdvancesOneDay`。
+    /// 验证明天对应下一天的公历日期。
     /// </summary>
     [Fact]
     public void Tomorrow_BasicCase_AdvancesOneDay()
@@ -273,7 +269,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.Yesterday"/> 在 `BasicCase` 场景下，结果为 `SubtractsOneDay`。
+    /// 验证昨天对应前一天的公历日期。
     /// </summary>
     [Fact]
     public void Yesterday_BasicCase_SubtractsOneDay()
@@ -284,8 +280,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.AddWorkDays"/> 在 `StartsOnFriday` 场景下，结果为 `SkipsWeekend`。
-    /// 从周五加1工作日应跳过周末，到达下周一
+    /// 验证从星期五增加一个工作日会跳过周末。
     /// </summary>
     [Fact]
     public void AddWorkDays_StartsOnFriday_SkipsWeekend()
@@ -303,8 +298,7 @@ public class ChineseDateInfoTest
     #region GetDaysInYear / GetDaysInMonth / DayOfYear
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetDaysInYear"/> 在 `LeapYear` 场景下，结果为 `ReturnsMoreDays`。
-    /// 农历闰年(13个月)比普通年多天
+    /// 验证所选农历闰年的天数多于平年。
     /// </summary>
     [Fact]
     public void GetDaysInYear_LeapYear_ReturnsMoreDaysThanNonLeapYear()
@@ -315,7 +309,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetDaysInMonth"/> 在 `ValidDate` 场景下，结果为 `ReturnsReasonableDays`。
+    /// 验证农历月份天数为二十九或三十天。
     /// </summary>
     [Fact]
     public void GetDaysInMonth_ValidDate_ReturnsReasonableDays()
@@ -326,7 +320,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.DayOfYear"/> 在 `ValidDate` 场景下，结果为 `ReturnsDayInRange`。
+    /// 验证农历年内序号位于合理范围。
     /// </summary>
     [Fact]
     public void DayOfYear_ValidDate_ReturnsDayInRange()
@@ -340,7 +334,7 @@ public class ChineseDateInfoTest
     #region Of / OfLunar
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.Of"/> 在 `ValidGregorianDate` 场景下，结果为 `ReturnsSameAsConstructor`。
+    /// 验证公历年月日工厂与构造函数结果一致。
     /// </summary>
     [Fact]
     public void Of_ValidGregorianDate_ReturnsSameAsConstructor()
@@ -352,8 +346,7 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.OfLunar"/> 在 `LanternFestival2023` 场景下，结果为 `ReturnsCorrectGregorianDate`。
-    /// 2023年农历正月十五(元宵节)对应公历 2023-02-05
+    /// 验证二〇二三年元宵节的农历日期转换为二月五日。
     /// </summary>
     [Fact]
     public void OfLunar_LanternFestival2023_ReturnsCorrectGregorianDate()
@@ -368,7 +361,7 @@ public class ChineseDateInfoTest
     #region GetDayOfWeek
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseDateInfo.GetDayOfWeek"/> 在 `KnownMonday` 场景下，结果为 `ReturnsMonday`。
+    /// 验证已知星期一日期的星期值。
     /// </summary>
     [Fact]
     public void GetDayOfWeek_KnownMonday_ReturnsMonday()

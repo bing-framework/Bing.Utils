@@ -3,13 +3,13 @@ using NodaTime;
 namespace Bing.Date;
 
 /// <summary>
-/// 测试类：覆盖 `DateInfo` 相关行为。
+/// 验证日期对象的构造、分量设置、日期偏移及 NodaTime 转换。
 /// </summary>
 [Trait("DateTimeUT", "DateInfo.Contract")]
 public class DateInfoContractTest
 {
     /// <summary>
-    /// 测试用例：验证 `DateInfo` 在 `ConstructWithDateTime` 场景下，结果为 `TruncatesTimePart`。
+    /// 验证日期对象构造时截断时间并保留时间种类。
     /// </summary>
     [Fact]
     public void DateInfo_ConstructWithDateTime_TruncatesTimePart()
@@ -23,7 +23,7 @@ public class DateInfoContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `DateInfo` 在 `ConstructWithYearMonthDay` 场景下，结果为 `StoresExpectedDate`。
+    /// 验证按年月日构造日期对象时保存闰日。
     /// </summary>
     [Fact]
     public void DateInfo_ConstructWithYearMonthDay_StoresExpectedDate()
@@ -36,7 +36,7 @@ public class DateInfoContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `Setters` 在 `ValidDateChange` 场景下，结果为 `UpdatesDateFields`。
+    /// 验证日期分量设置后返回更新的日期。
     /// </summary>
     [Fact]
     public void Setters_ValidDateChange_UpdatesDateFields()
@@ -52,8 +52,9 @@ public class DateInfoContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `MonthSetter` 在 `OutOfRangeValue` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证月份设置拒绝超出一至十二月的数值。
     /// </summary>
+    /// <param name="month">用于验证范围检查的无效月份。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(13)]
@@ -65,7 +66,7 @@ public class DateInfoContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `DaySetter` 在 `InvalidDayInMonth` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证日分量设置拒绝目标月份中不存在的日期。
     /// </summary>
     [Fact]
     public void DaySetter_InvalidDayInMonth_ThrowsArgumentOutOfRangeException()
@@ -76,7 +77,7 @@ public class DateInfoContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `AddDays` 在 `ChainCall` 场景下，结果为 `MutatesSelfAndReturnsSameReference`。
+    /// 验证连续日期偏移修改同一对象并返回原引用。
     /// </summary>
     [Fact]
     public void AddDays_ChainCall_MutatesSelfAndReturnsSameReference()
@@ -90,7 +91,7 @@ public class DateInfoContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ToLocalDateAndToLocalDateTime` 在 `NormalDate` 场景下，结果为 `ReturnsEquivalentNodaValues`。
+    /// 验证日期对象转换为等价的 NodaTime 日期及午夜时间。
     /// </summary>
     [Fact]
     public void ToLocalDateAndToLocalDateTime_NormalDate_ReturnsEquivalentNodaValues()

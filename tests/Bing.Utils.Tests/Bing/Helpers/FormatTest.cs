@@ -272,6 +272,7 @@ public class FormatTest
     /// <summary>
     /// 测试 - FormatMoney - 无效格式字符串回退到默认格式
     /// </summary>
+    /// <param name="invalidFormat">无效、空或空白的格式字符串。</param>
     [Theory]
     //[InlineData("INVALID")] // 结果返回的是 INVALID 字符串
     [InlineData("")]

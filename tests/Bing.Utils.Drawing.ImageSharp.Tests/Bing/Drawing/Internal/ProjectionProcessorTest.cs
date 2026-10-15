@@ -1,11 +1,14 @@
 namespace Bing.Drawing.Internal;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="ProjectionProcessor"/> 纯算法。
+/// 验证前景投影计数、投影分段及二值字符编码。
 /// </summary>
 [Trait("Drawing", "Shared.ProjectionProcessor")]
 public class ProjectionProcessorTest
 {
+    /// <summary>
+    /// 验证垂直投影按矩阵第一维统计各列前景数。
+    /// </summary>
     [Fact]
     public void VerticalProjection_CountsForegroundPerColumn()
     {
@@ -24,6 +27,9 @@ public class ProjectionProcessorTest
         proj[2].ShouldBe(0); // first dim index 2: all 255 → 0 foreground
     }
 
+    /// <summary>
+    /// 验证水平投影按矩阵第二维统计各行前景数。
+    /// </summary>
     [Fact]
     public void HorizontalProjection_CountsForegroundPerRow()
     {
@@ -41,6 +47,9 @@ public class ProjectionProcessorTest
         proj[2].ShouldBe(0); // second dim index 2: all 255 → 0 foreground
     }
 
+    /// <summary>
+    /// 验证投影分段找到两段前景区间及其首尾索引。
+    /// </summary>
     [Fact]
     public void FindVerticalSegments_FindsCorrectSegments()
     {
@@ -53,6 +62,9 @@ public class ProjectionProcessorTest
         segments[1].End.ShouldBe(7);
     }
 
+    /// <summary>
+    /// 验证无前景投影时不返回任何分段。
+    /// </summary>
     [Fact]
     public void FindVerticalSegments_NoForeground_ReturnsEmpty()
     {
@@ -61,6 +73,9 @@ public class ProjectionProcessorTest
         segments.Count.ShouldBe(0);
     }
 
+    /// <summary>
+    /// 验证全前景投影合并为覆盖全部位置的单个分段。
+    /// </summary>
     [Fact]
     public void FindVerticalSegments_AllForeground_ReturnsSingleSegment()
     {
@@ -71,6 +86,9 @@ public class ProjectionProcessorTest
         segments[0].End.ShouldBe(2);
     }
 
+    /// <summary>
+    /// 验证垂直投影按空白列分隔两个前景字符区域。
+    /// </summary>
     [Fact]
     public void SplitByVerticalProjection_SplitsCharacters()
     {
@@ -89,6 +107,9 @@ public class ProjectionProcessorTest
         splits.Count.ShouldBe(2);
     }
 
+    /// <summary>
+    /// 验证启用换行的二值编码包含回车换行符。
+    /// </summary>
     [Fact]
     public void ToCodeString_BreakLine_IncludesLineBreaks()
     {
@@ -102,6 +123,9 @@ public class ProjectionProcessorTest
         code.Length.ShouldBeGreaterThan(4);
     }
 
+    /// <summary>
+    /// 验证禁用换行的二值编码按像素顺序输出单行字符串。
+    /// </summary>
     [Fact]
     public void ToCodeString_NoBreakLine_SingleLine()
     {

@@ -60,7 +60,7 @@ public class CommonPathAndRetryEdgeContractTest
     }
 
     /// <summary>
-    /// 测试用例：`GetParentDirectory` 在 `depth < 0` 时应抛出 `ArgumentOutOfRangeException(depth)`
+    /// 测试用例：`GetParentDirectory` 在深度小于零时抛出参数异常。
     /// </summary>
     [Theory]
     [InlineData(-1)]
@@ -124,6 +124,7 @@ public class CommonPathAndRetryEdgeContractTest
     /// <summary>
     /// 测试数据：`maxRetries=0` 且首轮成功场景下的延迟参数
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetRetryExecuteSuccessWithoutRetryCases()
     {
         yield return new object[] { null };
@@ -134,6 +135,7 @@ public class CommonPathAndRetryEdgeContractTest
     /// <summary>
     /// 测试数据：空白起始路径输入
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetInvalidStartPathCases()
     {
         yield return new object[] { string.Empty };
@@ -142,6 +144,11 @@ public class CommonPathAndRetryEdgeContractTest
         yield return new object[] { "\r\n" };
     }
 
+    /// <summary>
+    /// 沿目录父级向上查找最顶层目录。
+    /// </summary>
+    /// <param name="path">用于开始查找的目录路径。</param>
+    /// <returns>路径树中最顶层的目录路径。</returns>
     private static string GetTopMostDirectory(string path)
     {
         var current = path;

@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符串删除、空白清理和重复字符规整行为。
+/// </summary>
 [Trait("StringUT", "Strings.Remove")]
 public class StringRemoveTest
 {

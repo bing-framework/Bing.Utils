@@ -1,11 +1,14 @@
 using Bing.Conversions;
 namespace BingUtilsUT.ConvUT;
 /// <summary>
-/// BASE 转换工具测试
+/// 验证常用进制编码与解码能够还原输入数据。
 /// </summary>
 [Trait("ConvUT", "BaseX")]
 public class BaseConvTest
 {
+    /// <summary>
+    /// 获取用于编码往返测试的固定文本。
+    /// </summary>
     private const string TestValue = "Bing.Utils";
     #region Base32
     /// <summary>
@@ -159,12 +162,25 @@ public class BaseConvTest
     }
     #endregion
 }
+/// <summary>
+/// 提供带定界符的 ASCII85 字节编码与解码。
+/// </summary>
 public static class Base85
 {
     #region EncodeToString
+    /// <summary>
+    /// 将字节数组编码为带 ASCII85 定界符的字符串。
+    /// </summary>
+    /// <param name="binary">待编码的字节数组。</param>
+    /// <returns>编码后的 ASCII85 字符串。</returns>
     public static string EncodeToString(byte[] binary) => Encoding.ASCII.GetString(Encode(binary));
     #endregion
     #region Encode
+    /// <summary>
+    /// 将字节数组编码为带定界符的 ASCII85 字节序列。
+    /// </summary>
+    /// <param name="binary">待编码的字节数组。</param>
+    /// <returns>编码后的 ASCII85 字节序列。</returns>
     public static byte[] Encode(byte[] binary)
     {
         if (binary == null) { throw new ArgumentNullException(); }
@@ -241,9 +257,19 @@ public static class Base85
     }
     #endregion
     #region DecodeFromString
+    /// <summary>
+    /// 将 ASCII85 字符串解码为字节数组。
+    /// </summary>
+    /// <param name="str">带 ASCII85 定界符的编码字符串。</param>
+    /// <returns>解码后的字节数组。</returns>
     public static byte[] DecodeFromString(string str) => Decode(Encoding.ASCII.GetBytes(str));
     #endregion
     #region Decode
+    /// <summary>
+    /// 将带定界符的 ASCII85 字节序列解码为原始字节数组。
+    /// </summary>
+    /// <param name="ascii">带 ASCII85 定界符的编码字节序列。</param>
+    /// <returns>解码后的字节数组。</returns>
     public static byte[] Decode(byte[] ascii)
     {
         if (ascii == null) { throw new ArgumentNullException(nameof(ascii)); }

@@ -328,6 +328,10 @@ public class CommonTest : TestBase
         Output.WriteLine($"路径连接: [{string.Join(", ", pathParts)}] -> '{result}'");
     }
 
+    /// <summary>
+    /// 提供用于验证多段路径连接的输入片段。
+    /// </summary>
+    /// <returns>由一个或多个路径片段组成的测试数据。</returns>
     public static IEnumerable<object[]> GetJoinPathBasicFunctionalityCases()
     {
         yield return new object[] { new[] { "folder", "file.txt" } };

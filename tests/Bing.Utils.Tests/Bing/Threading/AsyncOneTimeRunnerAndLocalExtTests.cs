@@ -12,6 +12,10 @@ public class AsyncOneTimeRunnerTests
     // 基本功能
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证首次调用执行异步操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task RunAsync_FirstCall_ExecutesAction()
     {
@@ -21,6 +25,10 @@ public class AsyncOneTimeRunnerTests
         called.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证第二次调用不再执行异步操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task RunAsync_SecondCall_DoesNotExecuteAction()
     {
@@ -31,6 +39,10 @@ public class AsyncOneTimeRunnerTests
         called.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证连续三次调用仅执行一次异步操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task RunAsync_ThirdCall_DoesNotExecuteAction()
     {
@@ -42,6 +54,10 @@ public class AsyncOneTimeRunnerTests
         called.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证首次执行后不再进入新的异步委托。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task RunAsync_AfterFirstRun_SkipsImmediately()
     {
@@ -61,6 +77,10 @@ public class AsyncOneTimeRunnerTests
     // 并发场景
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证并发调用仅执行一次异步操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task RunAsync_ConcurrentCalls_ExecutesOnlyOnce()
     {
@@ -80,6 +100,10 @@ public class AsyncOneTimeRunnerTests
     // 独立实例互不干扰
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证不同异步运行器各自执行一次操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task TwoRunners_AreIndependent()
     {
@@ -103,6 +127,9 @@ public class AsyncLocalExtensionsTests
     // SetScoped
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证作用域内使用新设置的异步局部值。
+    /// </summary>
     [Fact]
     public void SetScoped_SetsNewValue_WithinScope()
     {
@@ -113,6 +140,9 @@ public class AsyncLocalExtensionsTests
         }
     }
 
+    /// <summary>
+    /// 验证释放作用域后恢复原有异步局部值。
+    /// </summary>
     [Fact]
     public void SetScoped_RestoresPreviousValue_AfterDispose()
     {
@@ -125,6 +155,9 @@ public class AsyncLocalExtensionsTests
         local.Value.ShouldBe(10);
     }
 
+    /// <summary>
+    /// 验证释放作用域后恢复空异步局部值。
+    /// </summary>
     [Fact]
     public void SetScoped_WithDefaultPreviousValue_RestoresDefault()
     {
@@ -136,6 +169,9 @@ public class AsyncLocalExtensionsTests
         local.Value.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 验证设置作用域返回可释放对象。
+    /// </summary>
     [Fact]
     public void SetScoped_ReturnsIDisposable()
     {
@@ -145,6 +181,9 @@ public class AsyncLocalExtensionsTests
         disposable.Dispose();
     }
 
+    /// <summary>
+    /// 验证嵌套作用域按退出顺序恢复异步局部值。
+    /// </summary>
     [Fact]
     public void SetScoped_NestedScopes_RestoreInCorrectOrder()
     {
@@ -163,6 +202,9 @@ public class AsyncLocalExtensionsTests
         local.Value.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证字符串异步局部值在作用域退出后恢复。
+    /// </summary>
     [Fact]
     public void SetScoped_StringType_Works()
     {

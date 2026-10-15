@@ -9,7 +9,7 @@ using Xunit;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：DictConvExtensions 字典转换扩展方法（Cast / ToDictionary / ToTuple / ToSortedArray 系列）
+/// 字典、元组及按键值排序数组的转换测试。
 /// </summary>
 [Trait("CollUT", "DictConvExtensions")]
 public class DictConvExtensionsTest
@@ -17,7 +17,7 @@ public class DictConvExtensionsTest
     #region ToDictionary(IEnumerable<KeyValuePair>) — KVP 集合转字典
 
     /// <summary>
-    /// 测试目的：从 KeyValuePair 集合转换的字典应包含所有键值对
+    /// 验证从 KeyValuePair 集合转换的字典应包含所有键值对
     /// </summary>
     [Fact]
     public void ToDictionary_FromKvpEnumerable_ContainsAllPairs()
@@ -40,7 +40,7 @@ public class DictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：从空 KVP 集合转换应返回空字典
+    /// 验证从空 KVP 集合转换应返回空字典
     /// </summary>
     [Fact]
     public void ToDictionary_FromEmptyKvpEnumerable_ReturnsEmptyDict()
@@ -60,7 +60,7 @@ public class DictConvExtensionsTest
     #region ToDictionary(Hashtable) — Hashtable 转字典
 
     /// <summary>
-    /// 测试目的：从 Hashtable 转换应返回包含所有键值对的强类型字典
+    /// 验证从 Hashtable 转换应返回包含所有键值对的强类型字典
     /// </summary>
     [Fact]
     public void ToDictionary_FromHashtable_ContainsAllPairs()
@@ -86,7 +86,7 @@ public class DictConvExtensionsTest
     #region ToSortedArrayByKey — 按键排序
 
     /// <summary>
-    /// 测试目的：ToSortedArrayByKey 应返回按键升序排列的 KeyValuePair 列表
+    /// 验证ToSortedArrayByKey 应返回按键升序排列的 KeyValuePair 列表
     /// </summary>
     [Fact]
     public void ToSortedArrayByKey_UnorderedDict_SortsAscendingByKey()
@@ -108,7 +108,7 @@ public class DictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToSortedArrayByKey 对空字典应返回空列表
+    /// 验证ToSortedArrayByKey 对空字典应返回空列表
     /// </summary>
     [Fact]
     public void ToSortedArrayByKey_EmptyDict_ReturnsEmptyList()
@@ -124,7 +124,7 @@ public class DictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToSortedArrayByKey 对整数键字典应按数字大小升序排列
+    /// 验证ToSortedArrayByKey 对整数键字典应按数字大小升序排列
     /// </summary>
     [Fact]
     public void ToSortedArrayByKey_IntKeys_SortsNumerically()
@@ -149,7 +149,7 @@ public class DictConvExtensionsTest
     #region ToSortedArrayByValue — 按值排序
 
     /// <summary>
-    /// 测试目的：ToSortedArrayByValue(asc=true) 应返回按值升序排列的列表
+    /// 验证ToSortedArrayByValue(asc=true) 应返回按值升序排列的列表
     /// </summary>
     [Fact]
     public void ToSortedArrayByValue_Ascending_SortsByValueAsc()
@@ -170,7 +170,7 @@ public class DictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToSortedArrayByValue(asc=false) 应返回按值降序排列的列表
+    /// 验证ToSortedArrayByValue(asc=false) 应返回按值降序排列的列表
     /// </summary>
     [Fact]
     public void ToSortedArrayByValue_Descending_SortsByValueDesc()
@@ -195,7 +195,7 @@ public class DictConvExtensionsTest
     #region ToTuple — 字典转元组集合
 
     /// <summary>
-    /// 测试目的：ToTuple 应将字典中每个键值对转换为 Tuple&lt;TKey, TValue&gt;
+    /// 验证ToTuple 应将字典中每个键值对转换为 Tuple&lt;TKey, TValue&gt;
     /// </summary>
     [Fact]
     public void ToTuple_FromDict_ReturnsAllTuples()
@@ -217,7 +217,7 @@ public class DictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToTuple 对空字典应返回空集合
+    /// 验证ToTuple 对空字典应返回空集合
     /// </summary>
     [Fact]
     public void ToTuple_EmptyDict_ReturnsEmptyCollection()

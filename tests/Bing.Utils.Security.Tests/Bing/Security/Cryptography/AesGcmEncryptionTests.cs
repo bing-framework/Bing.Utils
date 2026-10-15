@@ -12,8 +12,9 @@ namespace Bing.Security.Cryptography;
 public class AesGcmEncryptionTests
 {
     /// <summary>
-    /// 测试目的：支持的 AES 密钥长度应能够加密和解密空数据及二进制数据。
+    /// 验证支持的 AES 密钥长度可往返处理空数据和二进制数据。
     /// </summary>
+    /// <param name="keySize">要用于往返加解密的 AES 密钥长度。</param>
     [Theory]
     [InlineData(AesKeySize.Size128)]
     [InlineData(AesKeySize.Size192)]
@@ -35,7 +36,7 @@ public class AesGcmEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：同一明文和密钥多次加密时必须使用不同 Nonce。
+    /// 验证同一明文和密钥的重复加密使用不同 Nonce。
     /// </summary>
     [Fact]
     public void Encrypt_WhenCalledMultipleTimes_ShouldUseDifferentNonces()
@@ -54,7 +55,7 @@ public class AesGcmEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：密文、Nonce、标签、关联数据或密钥被修改后必须无法解密。
+    /// 验证修改密文、Nonce、认证标签、关联数据或密钥后无法解密。
     /// </summary>
     [Fact]
     public void Decrypt_WhenAuthenticatedInputChanges_ShouldThrowCryptographicException()
@@ -89,7 +90,7 @@ public class AesGcmEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：版本化载荷应可往返解析，并拒绝截断或未知版本。
+    /// 验证版本化载荷可往返解析，并拒绝截断数据。
     /// </summary>
     [Fact]
     public void AesGcmPayload_WhenEncodedAndParsed_ShouldValidateFormat()
@@ -111,7 +112,7 @@ public class AesGcmEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：公开读取到的负载字节副本被修改时，不得影响原始负载的认证结果。
+    /// 验证修改读取出的密文字节副本不会改变载荷保存的认证数据。
     /// </summary>
     [Fact]
     public void AesGcmPayload_WhenExportedBytesAreModified_ShouldRetainOwnedData()

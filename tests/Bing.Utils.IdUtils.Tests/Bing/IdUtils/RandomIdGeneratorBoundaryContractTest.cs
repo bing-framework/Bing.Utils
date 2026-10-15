@@ -51,6 +51,7 @@ public class RandomIdGeneratorBoundaryContractTest
     /// <summary>
     /// 测试用例：验证 `Create` 在 `SingleCharacterDictionary` 场景下，结果为 `ReturnsRepeatedSameCharacter`。
     /// </summary>
+    /// <param name="length">要生成的 ID 长度。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(1)]

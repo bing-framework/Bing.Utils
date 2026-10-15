@@ -1,12 +1,12 @@
 namespace Bing.Reflection;
 /// <summary>
-/// 测试类：覆盖 `TypeVisitConstructor` 相关行为。
+/// 验证无参构造函数查找及参数签名匹配。
 /// </summary>
 [Trait("Bing.Reflection", "TypeVisit.Constructor")]
 public class TypeVisitConstructorTest
 {
     /// <summary>
-    /// 测试用例：验证 `HasParameterlessConstructor` 在 `WhenTypeIsNull` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证无参构造函数检查拒绝空类型。
     /// </summary>
     [Fact]
     public void HasParameterlessConstructor_WhenTypeIsNull_ThrowsArgumentNullException()
@@ -15,7 +15,7 @@ public class TypeVisitConstructorTest
         ex.ParamName.ShouldBe("type");
     }
     /// <summary>
-    /// 测试用例：验证 `HasParameterlessConstructor` 在 `WithParameterlessCtor` 场景下，结果为 `ReturnsTrue`。
+    /// 验证能够识别公开无参构造函数。
     /// </summary>
     [Fact]
     public void HasParameterlessConstructor_WithParameterlessCtor_ReturnsTrue()
@@ -24,7 +24,7 @@ public class TypeVisitConstructorTest
         result.ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `HasParameterlessConstructor` 在 `WithoutParameterlessCtor` 场景下，结果为 `ReturnsFalse`。
+    /// 验证仅有带参构造函数的类型不被判定为具有无参构造函数。
     /// </summary>
     [Fact]
     public void HasParameterlessConstructor_WithoutParameterlessCtor_ReturnsFalse()
@@ -33,7 +33,7 @@ public class TypeVisitConstructorTest
         result.ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `GetParameterlessConstructor` 在 `WithParameterlessCtor` 场景下，结果为 `ReturnsCtor`。
+    /// 验证查找到的无参构造函数不含参数。
     /// </summary>
     [Fact]
     public void GetParameterlessConstructor_WithParameterlessCtor_ReturnsCtor()
@@ -43,7 +43,7 @@ public class TypeVisitConstructorTest
         ctor!.GetParameters().Length.ShouldBe(0);
     }
     /// <summary>
-    /// 测试用例：验证 `GetParameterlessConstructor` 在 `WithoutParameterlessCtor` 场景下，结果为 `ReturnsNull`。
+    /// 验证不存在无参构造函数时返回空。
     /// </summary>
     [Fact]
     public void GetParameterlessConstructor_WithoutParameterlessCtor_ReturnsNull()
@@ -52,7 +52,7 @@ public class TypeVisitConstructorTest
         ctor.ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `GetMatchingConstructor` 在 `WithMatchingParameterTypes` 场景下，结果为 `ReturnsCtor`。
+    /// 验证按字符串与整数参数签名匹配构造函数。
     /// </summary>
     [Fact]
     public void GetMatchingConstructor_WithMatchingParameterTypes_ReturnsCtor()
@@ -65,7 +65,7 @@ public class TypeVisitConstructorTest
         parameters[1].ParameterType.ShouldBe(typeof(int));
     }
     /// <summary>
-    /// 测试用例：验证 `GetMatchingConstructor` 在 `WithEmptyParameterTypes` 场景下，结果为 `ReturnsParameterlessCtor`。
+    /// 验证空参数类型数组匹配无参构造函数。
     /// </summary>
     [Fact]
     public void GetMatchingConstructor_WithEmptyParameterTypes_ReturnsParameterlessCtor()
@@ -75,7 +75,7 @@ public class TypeVisitConstructorTest
         ctor!.GetParameters().Length.ShouldBe(0);
     }
     /// <summary>
-    /// 测试用例：验证 `TypeMetaVisitExtensions` 在 `WrapTypeVisitCorrectly` 场景下的行为。
+    /// 验证类型扩展入口提供相同的构造函数查找能力。
     /// </summary>
     [Fact]
     public void TypeMetaVisitExtensions_WrapTypeVisitCorrectly()
@@ -85,28 +85,58 @@ public class TypeVisitConstructorTest
         type.GetParameterlessConstructor().ShouldNotBeNull();
         type.GetMatchingConstructor(new[] { typeof(string), typeof(int) }).ShouldNotBeNull();
     }
+    /// <summary>
+    /// 提供隐式公开无参构造函数的测试类型。
+    /// </summary>
     private class ParameterlessCtorClass
     {
     }
+    /// <summary>
+    /// 提供仅含带参构造函数的测试类型。
+    /// </summary>
     private class OnlyParameterizedCtorClass
     {
+        /// <summary>
+        /// 初始化一个 <see cref="OnlyParameterizedCtorClass"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">用于初始化只读属性的测试文本。</param>
         public OnlyParameterizedCtorClass(string value)
         {
             Value = value;
         }
+        /// <summary>
+        /// 获取构造函数传入的测试文本。
+        /// </summary>
         public string Value { get; }
     }
+    /// <summary>
+    /// 提供无参与双参数构造函数的测试类型。
+    /// </summary>
     private class MultiCtorClass
     {
+        /// <summary>
+        /// 初始化一个 <see cref="MultiCtorClass"/> 类型的实例。
+        /// </summary>
         public MultiCtorClass()
         {
         }
+        /// <summary>
+        /// 初始化一个 <see cref="MultiCtorClass"/> 类型的实例。
+        /// </summary>
+        /// <param name="name">测试名称。</param>
+        /// <param name="age">测试年龄。</param>
         public MultiCtorClass(string name, int age)
         {
             Name = name;
             Age = age;
         }
+        /// <summary>
+        /// 获取构造函数传入的测试名称。
+        /// </summary>
         public string Name { get; }
+        /// <summary>
+        /// 获取构造函数传入的测试年龄。
+        /// </summary>
         public int Age { get; }
     }
 }

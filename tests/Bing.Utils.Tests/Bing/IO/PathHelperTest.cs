@@ -8,6 +8,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - GetPhysicalPath - 正常场景
     /// </summary>
+    /// <param name="relativePath">待处理的相对路径。</param>
     [Theory]
     [InlineData("a/b.txt")]
     [InlineData("/a/b.txt")]
@@ -25,6 +26,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - GetPhysicalPath - 空输入应抛出异常
     /// </summary>
+    /// <param name="relativePath">待处理的相对路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -54,6 +56,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - GetPhysicalPath - 复杂路径处理
     /// </summary>
+    /// <param name="relativePath">待处理的相对路径。</param>
     [Theory]
     [InlineData("folder/subfolder/file.txt")]
     [InlineData("~/folder/subfolder/file.txt")]
@@ -75,6 +78,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - GetWebRootPath - 正常场景
     /// </summary>
+    /// <param name="relativePath">待处理的相对路径。</param>
     [Theory]
     [InlineData("css/style.css")]
     [InlineData("/js/script.js")]
@@ -91,6 +95,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - GetWebRootPath - 空输入
     /// </summary>
+    /// <param name="relativePath">待处理的相对路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -124,6 +129,8 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - ConvertWindowsPathToUnixPath - 各种Windows路径格式
     /// </summary>
+    /// <param name="windowsPath">待转换的 Windows 路径。</param>
+    /// <param name="expected">预期的处理结果。</param>
     [Theory]
     [InlineData(@"C:\folder\file.txt", "C:/folder/file.txt")]
     [InlineData(@"C:\folder\subfolder\file.txt", "C:/folder/subfolder/file.txt")]
@@ -142,6 +149,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - ConvertWindowsPathToUnixPath - 空或无效输入
     /// </summary>
+    /// <param name="windowsPath">待转换的 Windows 路径。</param>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
@@ -157,6 +165,8 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - ConvertUnixPathToWindowsPath - 各种Unix路径格式
     /// </summary>
+    /// <param name="unixPath">待转换的 Unix 路径。</param>
+    /// <param name="expected">预期的处理结果。</param>
     [Theory]
     [InlineData("C:/folder/file.txt", @"C:\folder\file.txt")]
     [InlineData("C:/folder/subfolder/file.txt", @"C:\folder\subfolder\file.txt")]
@@ -175,6 +185,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - ConvertUnixPathToWindowsPath - 空或无效输入
     /// </summary>
+    /// <param name="unixPath">待转换的 Unix 路径。</param>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
@@ -190,6 +201,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - AutoPathConvert - 空输入
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -205,6 +217,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - AutoPathConvert - 有效路径
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
     [Theory]
     [InlineData("test/path")]
     [InlineData("test\\path")]
@@ -251,6 +264,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - NormalizePath - 各种路径格式
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
     [Theory]
     [InlineData("test/path")]
     [InlineData("test\\path")]
@@ -275,6 +289,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - NormalizePath - 空输入
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
@@ -291,6 +306,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - IsValidRelativePath - 有效相对路径
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
     [Theory]
     [InlineData("test/file.txt")]
     [InlineData("folder\\document.pdf")]
@@ -307,6 +323,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - IsValidRelativePath - 无效路径
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
     [Theory]
     [InlineData("C:\\absolute\\path")]
     [InlineData("/absolute/path")]
@@ -342,6 +359,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - SafeCombinePaths - 空基础路径
     /// </summary>
+    /// <param name="basePath">路径操作使用的基准路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -355,6 +373,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - SafeCombinePaths - 空相对路径
     /// </summary>
+    /// <param name="relativePath">待处理的相对路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -370,6 +389,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - SafeCombinePaths - 路径遍历攻击
     /// </summary>
+    /// <param name="maliciousPath">包含目录遍历片段的路径。</param>
     [Theory]
     [InlineData("../../../etc/passwd")]
     [InlineData("..\\..\\..\\windows\\system32")]
@@ -403,6 +423,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - GetRelativePath - 空起始路径
     /// </summary>
+    /// <param name="fromPath">相对路径计算的起始路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -416,6 +437,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - GetRelativePath - 空目标路径
     /// </summary>
+    /// <param name="toPath">相对路径计算的目标路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -448,6 +470,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - GetPathInfo - 空路径
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -532,6 +555,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - EnsureDirectoryExists - 空路径
     /// </summary>
+    /// <param name="directoryPath">待操作的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -642,6 +666,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - GetUniqueFilePath - 空路径
     /// </summary>
+    /// <param name="filePath">待处理的文件路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -689,6 +714,8 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - PathEquals - 相同路径
     /// </summary>
+    /// <param name="path1">第一个待比较的路径。</param>
+    /// <param name="path2">第二个待比较的路径。</param>
     [Theory]
     [InlineData("C:/temp/file.txt", "C:\\temp\\file.txt")]
     [InlineData("temp/file.txt", "temp\\file.txt")]
@@ -703,6 +730,8 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - PathEquals - 不同路径
     /// </summary>
+    /// <param name="path1">第一个待比较的路径。</param>
+    /// <param name="path2">第二个待比较的路径。</param>
     [Theory]
     [InlineData("C:/temp/file1.txt", "C:/temp/file2.txt")]
     [InlineData("C:/temp", "D:/temp")]
@@ -746,6 +775,8 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - IsPathUnderBase - 空输入
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
+    /// <param name="basePath">路径操作使用的基准路径。</param>
     [Theory]
     [InlineData(null, "C:/temp")]
     [InlineData("", "C:/temp")]
@@ -764,6 +795,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - 路径包含特殊字符
     /// </summary>
+    /// <param name="fileName">包含特殊字符的文件名。</param>
     [Theory]
     [InlineData("file with spaces.txt")]
     [InlineData("file-with-dashes.txt")]
@@ -794,6 +826,7 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - Unicode字符路径
     /// </summary>
+    /// <param name="unicodePath">包含 Unicode 字符的路径。</param>
     [Theory]
     [InlineData("文件夹/文件.txt")]
     [InlineData("папка/файл.txt")]
@@ -808,7 +841,7 @@ public class PathHelperTest
     #endregion
     #region 性能和压力测试
     /// <summary>
-    /// 测试 - 大量路径转换性能
+    /// 验证批量转换示例路径时不抛出异常。
     /// </summary>
     [Fact]
     public void PathConversion_WithManyPaths_ShouldPerformReasonably()
@@ -833,6 +866,8 @@ public class PathHelperTest
     /// <summary>
     /// 测试 -  将 Windows 路径转换为 Unix 路径
     /// </summary>
+    /// <param name="windowsPath">待转换的 Windows 路径。</param>
+    /// <param name="expectedUnixPath">预期的 Unix 路径。</param>
     [Theory]
     [InlineData(@"C:\folder\file.txt", "C:/folder/file.txt")]
     [InlineData(@"C:\folder\subfolder\file.txt", "C:/folder/subfolder/file.txt")]
@@ -855,6 +890,8 @@ public class PathHelperTest
     /// <summary>
     /// 测试 - 将 Unix 路径转换为 Windows 路径
     /// </summary>
+    /// <param name="unixPath">待转换的 Unix 路径。</param>
+    /// <param name="expectedWindowsPath">预期的 Windows 路径。</param>
     [Theory]
     [InlineData("C:/folder/file.txt", @"C:\folder\file.txt")]
     [InlineData("C:/folder/subfolder/file.txt", @"C:\folder\subfolder\file.txt")]

@@ -1,12 +1,12 @@
 namespace Bing.Date;
 /// <summary>
-/// 测试类：覆盖 `DateTimeFactory` 相关行为。
+/// 日期时间工厂的创建和星期定位测试。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeFactory")]
 public class DateTimeFactoryTest
 {
     /// <summary>
-    /// 测试用例：验证 `Now` 在 `Invoked` 场景下，结果为 `ReturnsValueBetweenBeforeAndAfter`。
+    /// 验证本地当前时间位于调用前后的容差范围内。
     /// </summary>
     [Fact]
     public void Now_Invoked_ReturnsValueBetweenBeforeAndAfter()
@@ -18,7 +18,7 @@ public class DateTimeFactoryTest
         result.ShouldBeLessThanOrEqualTo(after.AddSeconds(1));
     }
     /// <summary>
-    /// 测试用例：验证 `UtcNow` 在 `Invoked` 场景下，结果为 `ReturnsValueBetweenBeforeAndAfter`。
+    /// 验证 UTC 当前时间位于调用前后的容差范围内。
     /// </summary>
     [Fact]
     public void UtcNow_Invoked_ReturnsValueBetweenBeforeAndAfter()
@@ -30,7 +30,7 @@ public class DateTimeFactoryTest
         result.ShouldBeLessThanOrEqualTo(after.AddSeconds(1));
     }
     /// <summary>
-    /// 测试用例：验证 `CreateLastDayOfMonth` 在 `LeapYearFebruary` 场景下，结果为 `ReturnsExpectedDate`。
+    /// 验证闰年二月的最后一天为二十九日。
     /// </summary>
     [Fact]
     public void CreateLastDayOfMonth_LeapYearFebruary_ReturnsExpectedDate()
@@ -39,7 +39,7 @@ public class DateTimeFactoryTest
         result.ShouldBe(new DateTime(2024, 2, 29));
     }
     /// <summary>
-    /// 测试用例：验证 `CreateFirstDayOfMonth` 在 `WithDayOfWeek` 场景下，结果为 `ReturnsFirstMatchingDate`。
+    /// 验证创建月内第一个指定星期的日期。
     /// </summary>
     [Fact]
     public void CreateFirstDayOfMonth_WithDayOfWeek_ReturnsFirstMatchingDate()
@@ -48,7 +48,7 @@ public class DateTimeFactoryTest
         result.ShouldBe(new DateTime(2024, 1, 1));
     }
     /// <summary>
-    /// 测试用例：验证 `CreateLastDayOfMonth` 在 `WithDayOfWeek` 场景下，结果为 `ReturnsLastMatchingDate`。
+    /// 验证创建月内最后一个指定星期的日期。
     /// </summary>
     [Fact]
     public void CreateLastDayOfMonth_WithDayOfWeek_ReturnsLastMatchingDate()
@@ -57,7 +57,7 @@ public class DateTimeFactoryTest
         result.ShouldBe(new DateTime(2024, 1, 29));
     }
     /// <summary>
-    /// 测试用例：验证 `CreateByWeek` 在 `ThirdMonday` 场景下，结果为 `ReturnsExpectedDate`。
+    /// 验证创建月内第三个星期一的日期。
     /// </summary>
     [Fact]
     public void CreateByWeek_ThirdMonday_ReturnsExpectedDate()
@@ -66,7 +66,7 @@ public class DateTimeFactoryTest
         result.ShouldBe(new DateTime(2024, 2, 19));
     }
     /// <summary>
-    /// 测试用例：验证 `CreateNextDayByWeek` 在 `WhenSameWeekday` 场景下，结果为 `ReturnsNextWeek`。
+    /// 验证源日期已匹配星期时定位到下一周。
     /// </summary>
     [Fact]
     public void CreateNextDayByWeek_WhenSameWeekday_ReturnsNextWeek()
@@ -76,7 +76,7 @@ public class DateTimeFactoryTest
         result.ShouldBe(new DateTime(2024, 1, 8));
     }
     /// <summary>
-    /// 测试用例：验证 `CreatePreviousDayByWeek` 在 `WhenSameWeekday` 场景下，结果为 `ReturnsPreviousWeek`。
+    /// 验证源日期已匹配星期时定位到上一周。
     /// </summary>
     [Fact]
     public void CreatePreviousDayByWeek_WhenSameWeekday_ReturnsPreviousWeek()
@@ -86,7 +86,7 @@ public class DateTimeFactoryTest
         result.ShouldBe(new DateTime(2024, 1, 1));
     }
     /// <summary>
-    /// 测试用例：验证 `Create` 在 `InvalidMonth` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证无效月份触发参数越界异常。
     /// </summary>
     [Fact]
     public void Create_InvalidMonth_ThrowsArgumentOutOfRangeException()
@@ -95,7 +95,7 @@ public class DateTimeFactoryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `Create` 在 `WithMillisecondAndKind` 场景下，结果为 `KeepsExpectedComponents`。
+    /// 验证创建日期时保留毫秒和日期时间种类。
     /// </summary>
     [Fact]
     public void Create_WithMillisecondAndKind_KeepsExpectedComponents()
@@ -107,7 +107,7 @@ public class DateTimeFactoryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `CreateFirstDayOfMonth` 在 `IntDayOfWeekOverload` 场景下，结果与 `DayOfWeek` 重载一致。
+    /// 验证整数星期重载与枚举重载的结果一致。
     /// </summary>
     [Fact]
     public void CreateFirstDayOfMonth_IntDayOfWeekOverload_MatchesEnumOverload()
@@ -120,7 +120,7 @@ public class DateTimeFactoryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `CreateLastDayOfMonth` 在 `IntDayOfWeekOverload` 场景下，结果与 `DayOfWeek` 重载一致。
+    /// 验证整数星期重载与枚举重载的结果一致。
     /// </summary>
     [Fact]
     public void CreateLastDayOfMonth_IntDayOfWeekOverload_MatchesEnumOverload()
@@ -133,7 +133,7 @@ public class DateTimeFactoryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `CreateByWeek` 在 `InvalidOccurrence` 场景下，结果为 `ThrowsArgumentException`。
+    /// 验证无效的月内出现序号被拒绝并报告参数名。
     /// </summary>
     [Fact]
     public void CreateByWeek_InvalidOccurrence_ThrowsArgumentException()
@@ -144,7 +144,7 @@ public class DateTimeFactoryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `CreateLastDayOfMonth` 在 `InvalidIntDayOfWeek` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证无效的整数星期被拒绝并报告参数名。
     /// </summary>
     [Fact]
     public void CreateLastDayOfMonth_InvalidIntDayOfWeek_ThrowsArgumentOutOfRangeException()

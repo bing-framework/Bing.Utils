@@ -7,8 +7,14 @@ using Xunit;
 
 namespace Bing.Security.Cryptography;
 
+/// <summary>
+/// 验证 AES-GCM 文件加密对大小写敏感路径的处理。
+/// </summary>
 public class AesGcmFilePathTests
 {
+    /// <summary>
+    /// 验证源路径和目标路径仅大小写不同时遵循平台文件系统语义。
+    /// </summary>
     [Fact]
     public async Task EncryptFileAsync_WhenPathsDifferOnlyByCase_ShouldUsePlatformSemantics()
     {

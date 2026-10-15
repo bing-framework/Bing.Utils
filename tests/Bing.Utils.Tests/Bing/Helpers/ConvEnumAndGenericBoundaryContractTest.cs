@@ -84,7 +84,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试用例：`To<string>` 对 `null/empty/whitespace` 当前返回 `null`
+    /// 测试用例：`To&lt;string&gt;` 对空值或空白字符串返回 `null`。
     /// </summary>
     [Theory]
     [MemberData(nameof(GetStringToStringNullCases))]
@@ -96,7 +96,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试用例：`To<Enum>` 对非法名称输入应返回枚举默认值
+    /// 测试用例：`To&lt;Enum&gt;` 对非法名称输入返回枚举默认值。
     /// </summary>
     [Theory]
     [MemberData(nameof(GetInvalidEnumNameStringInputs))]
@@ -108,7 +108,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试用例：`To<Enum>` 对未定义数字字符串当前会返回原始枚举值（不回退默认值）
+    /// 测试用例：`To&lt;Enum&gt;` 对未定义数字字符串返回对应的原始枚举值。
     /// </summary>
     [Theory]
     [InlineData("99")]
@@ -122,7 +122,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试用例：`To<int>` 对越界数值输入应返回默认值 `0`
+    /// 测试用例：`To&lt;int&gt;` 对越界数值输入返回默认值 `0`。
     /// </summary>
     [Theory]
     [InlineData(long.MaxValue)]
@@ -135,7 +135,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试用例：`To<T>` 当输入对象已是目标类型时，应返回同一引用
+    /// 测试用例：`To&lt;T&gt;` 的输入已是目标类型时返回同一引用。
     /// </summary>
     [Fact]
     public void To_CustomTypeInputSameType_ReturnsSameReference()
@@ -150,6 +150,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     /// <summary>
     /// 测试数据：`ToEnumOrNull` 合法输入
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetValidEnumInputs()
     {
         yield return new object[] { "Opened", SampleState.Opened };
@@ -162,6 +163,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     /// <summary>
     /// 测试数据：`ToEnumOrNull` 非法名称/空输入
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetInvalidEnumNameInputs()
     {
         yield return new object[] { null };
@@ -173,6 +175,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     /// <summary>
     /// 测试数据：`ToEnum` 显式默认值回退场景（非法名称/空输入）
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetInvalidEnumDefaultFallbackInputs()
     {
         yield return new object[] { null };
@@ -184,6 +187,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     /// <summary>
     /// 测试数据：`ToEnum` 无显式默认值返回零值场景
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetInvalidEnumDefaultZeroInputs()
     {
         yield return new object[] { null };
@@ -193,8 +197,9 @@ public class ConvEnumAndGenericBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试数据：`To<string>` 输入为空样式字符串时返回 `null`
+    /// 测试数据：`To&lt;string&gt;` 输入为空样式字符串时返回 `null`。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetStringToStringNullCases()
     {
         yield return new object[] { null };
@@ -207,6 +212,7 @@ public class ConvEnumAndGenericBoundaryContractTest
     /// <summary>
     /// 测试数据：无效枚举名称字符串
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetInvalidEnumNameStringInputs()
     {
         yield return new object[] { string.Empty };
@@ -214,15 +220,33 @@ public class ConvEnumAndGenericBoundaryContractTest
         yield return new object[] { "invalid" };
     }
 
+    /// <summary>
+    /// 表示用于泛型转换边界测试的样例状态。
+    /// </summary>
     public enum SampleState
     {
+        /// <summary>
+        /// 未设置状态。
+        /// </summary>
         None = 0,
+        /// <summary>
+        /// 已打开状态。
+        /// </summary>
         Opened = 1,
+        /// <summary>
+        /// 已关闭状态。
+        /// </summary>
         Closed = 2
     }
 
+    /// <summary>
+    /// 用于验证对象转换时属性保留行为的载荷样例。
+    /// </summary>
     private sealed class Payload
     {
+        /// <summary>
+        /// 获取或设置载荷名称。
+        /// </summary>
         public string Name { get; set; }
     }
 }

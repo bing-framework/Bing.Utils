@@ -8,10 +8,10 @@ using Bing.Http.Clients;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// HttpRequest 显式分片入口的 fake transport 测试。
-
 /// </summary>
 public class HttpRequestSegmentedDownloadTest
 {
@@ -72,10 +72,10 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝服务端未使用范围之前写入。
-
     /// </summary>
     [Fact]
     public async Task SegmentedDownload_RejectsServerWithoutRangesBeforeWriting()
@@ -107,10 +107,10 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝状态不同时使用不同分段大小探测。
-
     /// </summary>
     [Fact]
     public async Task SegmentedDownload_RejectsStateWithDifferentSegmentSizeBeforeProbe()
@@ -142,10 +142,10 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
     /// 验证发送范围响应头并读取206正文。
-
     /// </summary>
     [Fact]
     public async Task SegmentedDownloadFromRequest_SendsRangeHeadersAndReads206Bodies()
@@ -176,6 +176,9 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+    /// <summary>
+    /// 验证服务端正文长度变化后重新规划分片并下载完整内容。
+    /// </summary>
     [Fact]
     public async Task SegmentedDownloadFromRequest_ReplansWhenServerLengthChanges()
     {
@@ -199,10 +202,10 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
     /// 验证重试范围失败并报告进度一次。
-
     /// </summary>
     [Fact]
     public async Task SegmentedDownloadFromRequest_RetriesRangeFailureAndReportsProgressOnce()
@@ -228,10 +231,10 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
     /// 验证持久化失败保留原目标文件并报告失败。
-
     /// </summary>
     [Fact]
     public async Task SegmentedDownloadFromRequest_PersistentFailureKeepsOldTargetAndReportsFailure()
@@ -259,10 +262,10 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
     /// 验证转发重试观察器并隔离观察器异常。
-
     /// </summary>
     [Fact]
     public async Task SegmentedDownloadFromRequest_BridgesRetryObserverAndIsolatesObserverErrors()
@@ -292,10 +295,10 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
     /// 验证取消传播从处理程序。
-
     /// </summary>
     [Fact]
     public async Task SegmentedDownloadFromRequest_CancellationPropagatesFromHandler()
@@ -320,10 +323,10 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝On发送之后使用显式原因。
-
     /// </summary>
     [Fact]
     public void SegmentedDownloadFromRequest_RejectsOnSendAfterWithExplicitReason()
@@ -343,6 +346,9 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+    /// <summary>
+    /// 验证失败后从持久化检查点恢复，跳过已完成分片并在合并后清理状态。
+    /// </summary>
     [Fact]
     public async Task SegmentedDownload_ResumesFromPersistedCheckpointAfterFailure()
     {
@@ -389,6 +395,9 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+    /// <summary>
+    /// 验证无法识别的持久化状态版本触发重新下载。
+    /// </summary>
     [Fact]
     public async Task SegmentedDownload_UnknownStateSchemaStartsOver()
     {
@@ -418,6 +427,9 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+    /// <summary>
+    /// 验证取消保留已完成分片及检查点，且不替换现有目标文件。
+    /// </summary>
     [Fact]
     public async Task SegmentedDownload_CancellationRetainsCompletedCheckpoint()
     {
@@ -451,11 +463,14 @@ public class HttpRequestSegmentedDownloadTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
-    /// 处理测试场景中的 State。
-
+    /// 创建按分片大小规划的下载状态样例。
     /// </summary>
+    /// <param name="totalLength">待下载正文的总字节数。</param>
+    /// <param name="segmentSize">每个完整分片的字节数。</param>
+    /// <returns>按指定分片大小规划的初始下载状态。</returns>
     private static HttpDownloadSegmentsState State(long totalLength, long segmentSize)
         => new HttpDownloadSegmentsState
         {
@@ -465,6 +480,11 @@ public class HttpRequestSegmentedDownloadTest
                 new HttpDownloadSegmentState { Start = range.Start, End = range.End }).ToList()
         };
 
+    /// <summary>
+    /// 创建声明支持字节范围的成功探测元数据。
+    /// </summary>
+    /// <param name="totalLength">响应正文的总字节数。</param>
+    /// <returns>状态为成功、范围单位为字节且包含指定正文长度的元数据。</returns>
     private static HttpDownloadRangeResponseMetadata ProbeMetadata(long totalLength)
         => new HttpDownloadRangeResponseMetadata
         {
@@ -473,10 +493,10 @@ public class HttpRequestSegmentedDownloadTest
             ContentLength = totalLength
         };
 
+
+
     /// <summary>
-
     /// 始终返回成功响应的消息处理器。
-
     /// </summary>
     private sealed class StubHandler : HttpMessageHandler
     {
@@ -485,10 +505,10 @@ public class HttpRequestSegmentedDownloadTest
             => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
     }
 
+
+
     /// <summary>
-
     /// 按请求范围返回正文片段并记录范围头。
-
     /// </summary>
     private sealed class RangeHandler : HttpMessageHandler
     {
@@ -497,25 +517,25 @@ public class HttpRequestSegmentedDownloadTest
         /// </summary>
         private readonly byte[] _body;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="RangeHandler"/>类型的实例。
-
+        /// 初始化一个 <see cref="RangeHandler"/> 类型的实例。
         /// </summary>
         /// <param name="body">响应正文数据。</param>
         public RangeHandler(byte[] body) { _body = body; }
 
+
+
         /// <summary>
-
-        /// 记录请求中的范围头。
-
+        /// 获取处理器接收到的范围请求头列表。
         /// </summary>
         public List<string> RangeHeaders { get; } = new List<string>();
 
+
+
         /// <summary>
-
-        /// 记录收到的请求数量。
-
+        /// 获取处理器收到的请求总数，包含探测请求。
         /// </summary>
         public int RequestCount { get; private set; }
 
@@ -547,10 +567,10 @@ public class HttpRequestSegmentedDownloadTest
         }
     }
 
+
+
     /// <summary>
-
     /// 对指定范围注入失败并记录各范围尝试次数。
-
     /// </summary>
     private sealed class RetryRangeHandler : HttpMessageHandler
     {
@@ -563,18 +583,18 @@ public class HttpRequestSegmentedDownloadTest
         /// </summary>
         private readonly int _failureStart;
         /// <summary>
-        /// 剩余要注入的失败次数。
+        /// 指定目标范围在前几次请求中返回模拟失败的次数。
         /// </summary>
         private readonly int _failures;
         /// <summary>
-        /// 测试期间记录的调用状态。
+        /// 按完整范围请求头累计发送次数，供判断失败注入及重试结果。
         /// </summary>
         private readonly Dictionary<string, int> _attempts = new Dictionary<string, int>();
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="RetryRangeHandler"/>类型的实例。
-
+        /// 初始化一个 <see cref="RetryRangeHandler"/> 类型的实例。
         /// </summary>
         /// <param name="body">响应正文数据。</param>
         /// <param name="failureStart">开始注入失败的范围起始位置。</param>
@@ -586,10 +606,10 @@ public class HttpRequestSegmentedDownloadTest
             _failures = failures;
         }
 
+
+
         /// <summary>
-
-        /// 记录测试替身使用的状态。
-
+        /// 获取按范围请求头记录的尝试次数。
         /// </summary>
         public IReadOnlyDictionary<string, int> RangeAttempts => _attempts;
 
@@ -620,10 +640,10 @@ public class HttpRequestSegmentedDownloadTest
         }
     }
 
+
+
     /// <summary>
-
     /// 延迟返回范围响应以验证分段调度的消息处理器。
-
     /// </summary>
     private sealed class SlowRangeHandler : HttpMessageHandler
     {
@@ -645,11 +665,12 @@ public class HttpRequestSegmentedDownloadTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建用于请求分片下载测试的独立临时目录。
     /// </summary>
+    /// <returns>已创建的唯一临时目录完整路径。</returns>
     private static string CreateDirectory()
     {
         var path = Path.Combine(Path.GetTempPath(), "bing-http-request-segmented-" + Guid.NewGuid().ToString("N"));
@@ -657,11 +678,12 @@ public class HttpRequestSegmentedDownloadTest
         return path;
     }
 
+
+
     /// <summary>
-
-    /// 清理测试生成的临时资源。
-
+    /// 递归删除测试创建的临时目录。
     /// </summary>
+    /// <param name="path">待清理的目录完整路径；目录不存在时不执行操作。</param>
     private static void Delete(string path)
     {
         if (Directory.Exists(path)) Directory.Delete(path, true);

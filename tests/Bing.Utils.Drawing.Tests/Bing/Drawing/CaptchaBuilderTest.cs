@@ -9,8 +9,14 @@ namespace Bing.Drawing;
 [Trait("Drawing", "CaptchaBuilder")]
 public class CaptchaBuilderTest
 {
+    /// <summary>
+    /// 获取当前测试使用的验证码生成器。
+    /// </summary>
     private readonly CaptchaBuilder _coder = new();
 
+    /// <summary>
+    /// 初始化一个 <see cref="CaptchaBuilderTest"/> 类型的实例。
+    /// </summary>
     public CaptchaBuilderTest()
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

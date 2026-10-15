@@ -14,30 +14,45 @@ namespace Bing.Threading;
 /// </summary>
 public class TaskCacheTests
 {
+    /// <summary>
+    /// 验证缓存的真结果任务已经完成。
+    /// </summary>
     [Fact]
     public void TrueResult_IsCompletedTask()
     {
         TaskCache.TrueResult.IsCompleted.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证缓存的真结果任务返回真。
+    /// </summary>
     [Fact]
     public void TrueResult_ReturnsTrue()
     {
         TaskCache.TrueResult.Result.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证缓存的假结果任务已经完成。
+    /// </summary>
     [Fact]
     public void FalseResult_IsCompletedTask()
     {
         TaskCache.FalseResult.IsCompleted.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证缓存的假结果任务返回假。
+    /// </summary>
     [Fact]
     public void FalseResult_ReturnsFalse()
     {
         TaskCache.FalseResult.Result.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证重复访问真结果返回相同任务实例。
+    /// </summary>
     [Fact]
     public void TrueResult_SameInstance_WhenAccessedMultipleTimes()
     {
@@ -46,6 +61,9 @@ public class TaskCacheTests
         ReferenceEquals(first, second).ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证重复访问假结果返回相同任务实例。
+    /// </summary>
     [Fact]
     public void FalseResult_SameInstance_WhenAccessedMultipleTimes()
     {
@@ -54,6 +72,9 @@ public class TaskCacheTests
         ReferenceEquals(first, second).ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证真假结果采用不同任务实例。
+    /// </summary>
     [Fact]
     public void TrueResult_And_FalseResult_AreDifferentInstances()
     {
@@ -72,6 +93,9 @@ public class ReaderWriteLockDisposableTests
 {
     // ── 构造函数参数校验 ────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证读写锁释放器拒绝空锁。
+    /// </summary>
     [Fact]
     public void Constructor_NullLock_ThrowsArgumentNullException()
     {
@@ -81,6 +105,9 @@ public class ReaderWriteLockDisposableTests
 
     // ── 写锁 ───────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证默认进入写锁并在作用域退出后释放。
+    /// </summary>
     [Fact]
     public void Constructor_DefaultLockType_EntersWriteLock()
     {
@@ -93,6 +120,9 @@ public class ReaderWriteLockDisposableTests
         rwLock.IsWriteLockHeld.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证指定写锁类型时进入并释放写锁。
+    /// </summary>
     [Fact]
     public void Constructor_WriteLockType_EntersAndExitsWriteLock()
     {
@@ -106,6 +136,9 @@ public class ReaderWriteLockDisposableTests
 
     // ── 读锁 ───────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证指定读锁类型时进入并释放读锁。
+    /// </summary>
     [Fact]
     public void Constructor_ReadLockType_EntersAndExitsReadLock()
     {
@@ -119,6 +152,9 @@ public class ReaderWriteLockDisposableTests
 
     // ── 升级读锁 ───────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证指定可升级读锁时进入并释放对应锁。
+    /// </summary>
     [Fact]
     public void Constructor_UpgradeableReadLockType_EntersAndExitsUpgradeableReadLock()
     {
@@ -132,6 +168,9 @@ public class ReaderWriteLockDisposableTests
 
     // ── 多次 Dispose 安全 ──────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证读写锁释放器重复释放不抛出异常。
+    /// </summary>
     [Fact]
     public void Dispose_CalledTwice_DoesNotThrow()
     {
@@ -144,6 +183,9 @@ public class ReaderWriteLockDisposableTests
 
     // ── 释放后可重新获取锁 ─────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证写锁释放后可以再次获取写锁。
+    /// </summary>
     [Fact]
     public void Dispose_WriteLock_AllowsSubsequentWriteLock()
     {
@@ -160,6 +202,9 @@ public class ReaderWriteLockDisposableTests
         }
     }
 
+    /// <summary>
+    /// 验证读锁释放后可以再次获取读锁。
+    /// </summary>
     [Fact]
     public void Dispose_ReadLock_AllowsSubsequentReadLock()
     {

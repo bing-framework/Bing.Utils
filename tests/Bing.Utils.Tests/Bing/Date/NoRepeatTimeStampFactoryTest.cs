@@ -21,8 +21,9 @@ public class NoRepeatTimeStampFactoryTest
         factory.GeneratedCount.ShouldBe(0);
     }
     /// <summary>
-    /// 测试 - 带参数构造函数 - 设置正确
+    /// 验证构造函数保存指定的毫秒增量。
     /// </summary>
+    /// <param name="incrementMs">时间戳递增的毫秒数。</param>
     [Theory]
     [InlineData(1.0)]
     [InlineData(2.5)]
@@ -36,8 +37,9 @@ public class NoRepeatTimeStampFactoryTest
         factory.IncrementMs.ShouldBe(incrementMs);
     }
     /// <summary>
-    /// 测试 - 构造函数 - 无效参数抛出异常
+    /// 验证构造函数拒绝非正毫秒增量。
     /// </summary>
+    /// <param name="invalidIncrementMs">无效的毫秒增量。</param>
     [Theory]
     [InlineData(0.0)]
     [InlineData(-1.0)]
@@ -49,8 +51,9 @@ public class NoRepeatTimeStampFactoryTest
             .ParamName.ShouldBe("value");
     }
     /// <summary>
-    /// 测试 - IncrementMs属性 - 设置和获取
+    /// 验证毫秒增量属性保存设置值。
     /// </summary>
+    /// <param name="incrementMs">待设置的毫秒增量。</param>
     [Theory]
     [InlineData(0.5)]
     [InlineData(1.0)]
@@ -66,8 +69,9 @@ public class NoRepeatTimeStampFactoryTest
         factory.IncrementMs.ShouldBe(incrementMs, 1e-10); // 允许浮点精度误差
     }
     /// <summary>
-    /// 测试 - IncrementMs属性 - 设置无效值抛出异常
+    /// 验证毫秒增量属性拒绝非正值。
     /// </summary>
+    /// <param name="invalidValue">无效的毫秒增量。</param>
     [Theory]
     [InlineData(0.0)]
     [InlineData(-1.0)]
@@ -139,8 +143,9 @@ public class NoRepeatTimeStampFactoryTest
         }
     }
     /// <summary>
-    /// 测试 - GetTimeStamp - 控制条件下确保最小间隔
+    /// 验证相同基准时间的连续时间戳满足指定增量。
     /// </summary>
+    /// <param name="incrementMs">时间戳递增的毫秒数。</param>
     [Theory]
     [InlineData(0.1)]
     [InlineData(1.0)]
@@ -159,8 +164,9 @@ public class NoRepeatTimeStampFactoryTest
         diffMs.ShouldBeGreaterThanOrEqualTo(incrementMs - 0.01); // 允许微小误差
     }
     /// <summary>
-    /// 测试 - GetTimeStamp - 连续调用确保唯一性和递增性
+    /// 验证连续生成的时间戳唯一且递增。
     /// </summary>
+    /// <param name="incrementMs">时间戳递增的毫秒数。</param>
     [Theory]
     [InlineData(0.1)]
     [InlineData(1.0)]
@@ -292,8 +298,9 @@ public class NoRepeatTimeStampFactoryTest
     #endregion
     #region 批量生成测试
     /// <summary>
-    /// 测试 - GetTimeStamps - 批量生成本地时间戳
+    /// 验证批量时间戳的数量、唯一性和递增顺序。
     /// </summary>
+    /// <param name="count">生成的时间戳数量。</param>
     [Theory]
     [InlineData(1)]
     [InlineData(10)]
@@ -338,8 +345,9 @@ public class NoRepeatTimeStampFactoryTest
         }
     }
     /// <summary>
-    /// 测试 - GetTimeStamps - 无效参数
+    /// 验证批量生成拒绝非正数量。
     /// </summary>
+    /// <param name="invalidCount">无效的生成数量。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
@@ -374,7 +382,7 @@ public class NoRepeatTimeStampFactoryTest
     #endregion
     #region 线程安全测试
     /// <summary>
-    /// 测试 - 多线程环境 - 确保线程安全性
+    /// 验证并发逐个生成的时间戳数量正确且无重复。
     /// </summary>
     [Fact]
     public void MultiThreaded_ConcurrentAccess_IsThreadSafe()
@@ -411,7 +419,7 @@ public class NoRepeatTimeStampFactoryTest
         }
     }
     /// <summary>
-    /// 测试 - 高并发批量生成 - 线程安全性
+    /// 验证并发批量生成的时间戳数量正确且无重复。
     /// </summary>
     [Fact]
     public void MultiThreaded_BatchGeneration_IsThreadSafe()
@@ -443,7 +451,7 @@ public class NoRepeatTimeStampFactoryTest
         distinctTimestamps.Count.ShouldBe(timestampList.Count);
     }
     /// <summary>
-    /// 测试 - 混合方法并发调用 - 线程安全性
+    /// 验证并发混用时间戳生成方法的结果无重复。
     /// </summary>
     [Fact]
     public void MultiThreaded_MixedMethodCalls_IsThreadSafe()
@@ -691,8 +699,9 @@ public class NoRepeatTimeStampFactoryTest
     #endregion
     #region 边界条件和错误处理测试
     /// <summary>
-    /// 测试 - 极端IncrementMs值 - 非常小的值
+    /// 验证极小增量下的时间戳唯一且递增。
     /// </summary>
+    /// <param name="incrementMs">时间戳递增的毫秒数。</param>
     [Theory]
     [InlineData(0.001)]  // 1微秒
     [InlineData(0.0001)] // 0.1微秒
@@ -716,8 +725,9 @@ public class NoRepeatTimeStampFactoryTest
         }
     }
     /// <summary>
-    /// 测试 - 极端IncrementMs值 - 非常大的值（控制条件下）
+    /// 验证固定基准时间下的大增量按预期生效。
     /// </summary>
+    /// <param name="incrementMs">时间戳递增的毫秒数。</param>
     [Theory]
     [InlineData(1000.0)]   // 1秒
     [InlineData(60000.0)]  // 1分钟
@@ -738,8 +748,9 @@ public class NoRepeatTimeStampFactoryTest
         second.ShouldBe(baseTime.AddMilliseconds(incrementMs));
     }
     /// <summary>
-    /// 测试 - 极端IncrementMs值 - 实际使用场景
+    /// 验证大增量下连续生成的时间戳唯一且递增。
     /// </summary>
+    /// <param name="incrementMs">时间戳递增的毫秒数。</param>
     [Theory]
     [InlineData(1000.0)]   // 1秒
     [InlineData(60000.0)]  // 1分钟
@@ -829,7 +840,7 @@ public class NoRepeatTimeStampFactoryTest
     #endregion
     #region 实际使用场景测试
     /// <summary>
-    /// 测试 - 实际使用场景 - 分布式ID生成
+    /// 验证并发组合标识符的数量、唯一性和四段格式。
     /// </summary>
     [Fact]
     public void RealWorldScenario_DistributedIdGeneration_WorksCorrectly()

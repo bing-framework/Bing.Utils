@@ -16,16 +16,49 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class SourceModel
     {
+        /// <summary>
+        /// 获取或设置映射样例的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置映射样例的名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置映射样例的电子邮件地址。
+        /// </summary>
         public string Email { get; set; }
+        /// <summary>
+        /// 获取或设置映射样例的年龄。
+        /// </summary>
         public int Age { get; set; }
+        /// <summary>
+        /// 获取或设置映射样例的出生日期。
+        /// </summary>
         public DateTime? BirthDate { get; set; }
+        /// <summary>
+        /// 获取或设置映射样例的启用状态。
+        /// </summary>
         public bool IsActive { get; set; }
+        /// <summary>
+        /// 获取或设置映射样例的薪资金额。
+        /// </summary>
         public decimal Salary { get; set; }
+        /// <summary>
+        /// 获取或设置映射样例所属部门。
+        /// </summary>
         public string Department { get; set; }
+        /// <summary>
+        /// 获取或设置用于映射的密码样例值。
+        /// </summary>
         public string Password { get; set; }
+        /// <summary>
+        /// 获取固定的只读属性值。
+        /// </summary>
         public string ReadOnlyProperty => "ReadOnly";
+        /// <summary>
+        /// 获取或设置仅公开设置访问器的属性值。
+        /// </summary>
         public string WriteOnlyProperty { private get; set; }
     }
     /// <summary>
@@ -33,16 +66,49 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class DestinationModel
     {
+        /// <summary>
+        /// 获取或设置映射目标的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置映射目标的名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置映射目标的电子邮件地址。
+        /// </summary>
         public string Email { get; set; }
+        /// <summary>
+        /// 获取或设置映射目标的年龄。
+        /// </summary>
         public int Age { get; set; }
+        /// <summary>
+        /// 获取或设置映射目标的出生日期。
+        /// </summary>
         public DateTime? BirthDate { get; set; }
+        /// <summary>
+        /// 获取或设置映射目标的启用状态。
+        /// </summary>
         public bool IsActive { get; set; }
+        /// <summary>
+        /// 获取或设置映射目标的薪资金额。
+        /// </summary>
         public decimal Salary { get; set; }
+        /// <summary>
+        /// 获取或设置映射目标所属部门。
+        /// </summary>
         public string Department { get; set; }
+        /// <summary>
+        /// 获取或设置目标模型中源模型没有的附加信息。
+        /// </summary>
         public string AdditionalInfo { get; set; }
+        /// <summary>
+        /// 获取只读目标属性的值。
+        /// </summary>
         public string ReadOnlyProperty { get; }
+        /// <summary>
+        /// 获取或设置仅公开设置访问器的目标属性值。
+        /// </summary>
         public string WriteOnlyProperty { set; private get; }
     }
     /// <summary>
@@ -50,8 +116,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class PartialModel
     {
+        /// <summary>
+        /// 获取或设置部分映射样例的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置部分映射样例的名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置部分映射样例的电子邮件地址。
+        /// </summary>
         public string Email { get; set; }
     }
     /// <summary>
@@ -59,8 +134,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class DifferentPropertyModel
     {
+        /// <summary>
+        /// 获取或设置用户标识。
+        /// </summary>
         public int UserId { get; set; }
+        /// <summary>
+        /// 获取或设置用户名。
+        /// </summary>
         public string UserName { get; set; }
+        /// <summary>
+        /// 获取或设置用户电子邮件地址。
+        /// </summary>
         public string UserEmail { get; set; }
     }
     /// <summary>
@@ -74,7 +158,13 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class NestedModel
     {
+        /// <summary>
+        /// 获取或设置嵌套样例的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置嵌套的源模型。
+        /// </summary>
         public SourceModel NestedObject { get; set; }
     }
     /// <summary>
@@ -82,8 +172,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class CaseTestSource
     {
+        /// <summary>
+        /// 获取或设置用于大小写映射测试的标识字段。
+        /// </summary>
         public int ID { get; set; }
+        /// <summary>
+        /// 获取或设置用于大小写映射测试的名称字段。
+        /// </summary>
         public string NAME { get; set; }
+        /// <summary>
+        /// 获取或设置用于大小写映射测试的电子邮件字段。
+        /// </summary>
         public string emailAddress { get; set; }
     }
     /// <summary>
@@ -91,8 +190,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class CaseTestDestination
     {
+        /// <summary>
+        /// 获取或设置用于大小写映射测试的标识。
+        /// </summary>
         public int id { get; set; }
+        /// <summary>
+        /// 获取或设置用于大小写映射测试的名称。
+        /// </summary>
         public string name { get; set; }
+        /// <summary>
+        /// 获取或设置用于大小写映射测试的电子邮件地址。
+        /// </summary>
         public string EmailAddress { get; set; }
     }
     /// <summary>
@@ -100,14 +208,41 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class ComplexTypeSource
     {
+        /// <summary>
+        /// 获取或设置复杂类型样例的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置标签集合。
+        /// </summary>
         public List<string> Tags { get; set; }
+        /// <summary>
+        /// 获取或设置扩展元数据。
+        /// </summary>
         public Dictionary<string, object> Metadata { get; set; }
+        /// <summary>
+        /// 获取或设置分数数组。
+        /// </summary>
         public decimal[] Scores { get; set; }
+        /// <summary>
+        /// 获取或设置嵌套模型。
+        /// </summary>
         public NestedModel NestedObject { get; set; }
+        /// <summary>
+        /// 获取或设置创建时间。
+        /// </summary>
         public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// 获取或设置持续时长。
+        /// </summary>
         public TimeSpan Duration { get; set; }
+        /// <summary>
+        /// 获取或设置全局唯一标识。
+        /// </summary>
         public Guid UniqueId { get; set; }
+        /// <summary>
+        /// 获取或设置网站 URI。
+        /// </summary>
         public Uri Website { get; set; }
     }
     /// <summary>
@@ -115,14 +250,41 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class ComplexTypeDestination
     {
+        /// <summary>
+        /// 获取或设置复杂类型目标的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置标签集合。
+        /// </summary>
         public List<string> Tags { get; set; }
+        /// <summary>
+        /// 获取或设置扩展元数据。
+        /// </summary>
         public Dictionary<string, object> Metadata { get; set; }
+        /// <summary>
+        /// 获取或设置分数数组。
+        /// </summary>
         public decimal[] Scores { get; set; }
+        /// <summary>
+        /// 获取或设置嵌套模型。
+        /// </summary>
         public NestedModel NestedObject { get; set; }
+        /// <summary>
+        /// 获取或设置创建时间。
+        /// </summary>
         public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// 获取或设置持续时长。
+        /// </summary>
         public TimeSpan Duration { get; set; }
+        /// <summary>
+        /// 获取或设置全局唯一标识。
+        /// </summary>
         public Guid UniqueId { get; set; }
+        /// <summary>
+        /// 获取或设置网站 URI。
+        /// </summary>
         public Uri Website { get; set; }
     }
     /// <summary>
@@ -130,7 +292,13 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class ExceptionTestSource
     {
+        /// <summary>
+        /// 获取或设置异常映射样例的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 读取时始终引发异常的属性值。
+        /// </summary>
         public string ThrowingProperty => throw new InvalidOperationException("Test exception");
     }
     /// <summary>
@@ -138,7 +306,13 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class ExceptionTestDestination
     {
+        /// <summary>
+        /// 获取或设置异常映射目标的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置用于映射异常属性的值。
+        /// </summary>
         public string ThrowingProperty { get; set; }
     }
     /// <summary>
@@ -146,8 +320,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct ValueTypeSource
     {
+        /// <summary>
+        /// 获取或设置值类型源样例的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置值类型源样例的名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置值类型源样例的创建时间。
+        /// </summary>
         public DateTime CreatedAt { get; set; }
     }
     /// <summary>
@@ -155,8 +338,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct ValueTypeDestination
     {
+        /// <summary>
+        /// 获取或设置值类型目标的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置值类型目标的名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置值类型目标的创建时间。
+        /// </summary>
         public DateTime CreatedAt { get; set; }
     }
     /// <summary>
@@ -164,9 +356,21 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class IndexerTestModel
     {
+        /// <summary>
+        /// 获取或设置索引器测试模型的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置索引器测试模型的名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置按字符串键访问的动态数据。
+        /// </summary>
         private readonly Dictionary<string, object> _data = new();
+        /// <summary>
+        /// 通过键获取或设置动态数据项。
+        /// </summary>
         public object this[string key]
         {
             get => _data.TryGetValue(key, out var value) ? value : null;
@@ -178,8 +382,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class StaticPropertyModel
     {
+        /// <summary>
+        /// 获取或设置静态属性测试模型的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置静态属性测试模型的名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置供映射测试使用的静态属性值。
+        /// </summary>
         public static string StaticProperty { get; set; } = "Static";
     }
     /// <summary>
@@ -187,8 +400,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class ReadOnlyFieldModel
     {
+        /// <summary>
+        /// 只读字段测试使用的固定值。
+        /// </summary>
         public readonly string ReadOnlyField = "ReadOnly";
+        /// <summary>
+        /// 获取或设置只读字段测试模型的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置只读字段测试模型的名称。
+        /// </summary>
         public string Name { get; set; }
     }
     /// <summary>
@@ -196,13 +418,37 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class CollectionTestSource
     {
+        /// <summary>
+        /// 获取或设置集合映射源的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置字符串列表。
+        /// </summary>
         public IList<string> StringList { get; set; }
+        /// <summary>
+        /// 获取或设置整数集合。
+        /// </summary>
         public ICollection<int> IntCollection { get; set; }
+        /// <summary>
+        /// 获取或设置日期枚举序列。
+        /// </summary>
         public IEnumerable<DateTime> DateEnumerable { get; set; }
+        /// <summary>
+        /// 获取或设置字符串数组。
+        /// </summary>
         public string[] StringArray { get; set; }
+        /// <summary>
+        /// 获取或设置不重复的字符串集合。
+        /// </summary>
         public HashSet<string> StringHashSet { get; set; }
+        /// <summary>
+        /// 获取或设置整数队列。
+        /// </summary>
         public Queue<int> IntQueue { get; set; }
+        /// <summary>
+        /// 获取或设置字符串栈。
+        /// </summary>
         public Stack<string> StringStack { get; set; }
     }
     /// <summary>
@@ -210,13 +456,37 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class CollectionTestDestination
     {
+        /// <summary>
+        /// 获取或设置集合映射目标的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置字符串列表。
+        /// </summary>
         public IList<string> StringList { get; set; }
+        /// <summary>
+        /// 获取或设置整数集合。
+        /// </summary>
         public ICollection<int> IntCollection { get; set; }
+        /// <summary>
+        /// 获取或设置日期枚举序列。
+        /// </summary>
         public IEnumerable<DateTime> DateEnumerable { get; set; }
+        /// <summary>
+        /// 获取或设置字符串数组。
+        /// </summary>
         public string[] StringArray { get; set; }
+        /// <summary>
+        /// 获取或设置不重复的字符串集合。
+        /// </summary>
         public HashSet<string> StringHashSet { get; set; }
+        /// <summary>
+        /// 获取或设置整数队列。
+        /// </summary>
         public Queue<int> IntQueue { get; set; }
+        /// <summary>
+        /// 获取或设置字符串栈。
+        /// </summary>
         public Stack<string> StringStack { get; set; }
     }
     #endregion
@@ -226,9 +496,21 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct AddressSource
     {
+        /// <summary>
+        /// 获取或设置地址的街道。
+        /// </summary>
         public string Street { get; set; }
+        /// <summary>
+        /// 获取或设置地址所在城市。
+        /// </summary>
         public string City { get; set; }
+        /// <summary>
+        /// 获取或设置地址的邮政编码。
+        /// </summary>
         public string PostalCode { get; set; }
+        /// <summary>
+        /// 获取或设置地址所在国家或地区。
+        /// </summary>
         public string Country { get; set; }
     }
     /// <summary>
@@ -236,9 +518,21 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct AddressDestination
     {
+        /// <summary>
+        /// 获取或设置目标地址的街道。
+        /// </summary>
         public string Street { get; set; }
+        /// <summary>
+        /// 获取或设置目标地址所在城市。
+        /// </summary>
         public string City { get; set; }
+        /// <summary>
+        /// 获取或设置目标地址的邮政编码。
+        /// </summary>
         public string PostalCode { get; set; }
+        /// <summary>
+        /// 获取或设置目标地址所在国家或地区。
+        /// </summary>
         public string Country { get; set; }
     }
     /// <summary>
@@ -246,8 +540,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct ContactSource
     {
+        /// <summary>
+        /// 获取或设置联系人的电话号码。
+        /// </summary>
         public string Phone { get; set; }
+        /// <summary>
+        /// 获取或设置联系人的电子邮件地址。
+        /// </summary>
         public string Email { get; set; }
+        /// <summary>
+        /// 获取或设置联系人是否为首选联系人。
+        /// </summary>
         public bool IsPreferred { get; set; }
     }
     /// <summary>
@@ -255,8 +558,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct ContactDestination
     {
+        /// <summary>
+        /// 获取或设置目标联系人的电话号码。
+        /// </summary>
         public string Phone { get; set; }
+        /// <summary>
+        /// 获取或设置目标联系人的电子邮件地址。
+        /// </summary>
         public string Email { get; set; }
+        /// <summary>
+        /// 获取或设置目标联系人是否为首选联系人。
+        /// </summary>
         public bool IsPreferred { get; set; }
     }
     /// <summary>
@@ -264,11 +576,29 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct NestedStructSource
     {
+        /// <summary>
+        /// 获取或设置嵌套结构体源的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置嵌套结构体源的名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置嵌套地址源。
+        /// </summary>
         public AddressSource Address { get; set; }
+        /// <summary>
+        /// 获取或设置嵌套联系人源。
+        /// </summary>
         public ContactSource Contact { get; set; }
+        /// <summary>
+        /// 获取或设置创建时间。
+        /// </summary>
         public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// 获取或设置启用状态。
+        /// </summary>
         public bool IsActive { get; set; }
     }
     /// <summary>
@@ -276,11 +606,29 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct NestedStructDestination
     {
+        /// <summary>
+        /// 获取或设置嵌套结构体目标的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置嵌套结构体目标的名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置嵌套地址目标。
+        /// </summary>
         public AddressDestination Address { get; set; }
+        /// <summary>
+        /// 获取或设置嵌套联系人目标。
+        /// </summary>
         public ContactDestination Contact { get; set; }
+        /// <summary>
+        /// 获取或设置创建时间。
+        /// </summary>
         public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// 获取或设置启用状态。
+        /// </summary>
         public bool IsActive { get; set; }
     }
     /// <summary>
@@ -288,8 +636,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct DeepNestedSource
     {
+        /// <summary>
+        /// 获取或设置深层嵌套源的一级标识。
+        /// </summary>
         public int Level1Id { get; set; }
+        /// <summary>
+        /// 获取或设置第二层嵌套源结构体。
+        /// </summary>
         public NestedStructSource Level2 { get; set; }
+        /// <summary>
+        /// 获取或设置描述文本。
+        /// </summary>
         public string Description { get; set; }
     }
     /// <summary>
@@ -297,8 +654,17 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct DeepNestedDestination
     {
+        /// <summary>
+        /// 获取或设置深层嵌套目标的一级标识。
+        /// </summary>
         public int Level1Id { get; set; }
+        /// <summary>
+        /// 获取或设置第二层嵌套目标结构体。
+        /// </summary>
         public NestedStructDestination Level2 { get; set; }
+        /// <summary>
+        /// 获取或设置描述文本。
+        /// </summary>
         public string Description { get; set; }
     }
     /// <summary>
@@ -306,9 +672,21 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct MixedNestedSource
     {
+        /// <summary>
+        /// 获取或设置混合嵌套源的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置可选地址；未提供地址时为 <see langword="null"/>。
+        /// </summary>
         public AddressSource? OptionalAddress { get; set; }
+        /// <summary>
+        /// 获取或设置联系人源。
+        /// </summary>
         public ContactSource Contact { get; set; }
+        /// <summary>
+        /// 获取或设置标签数组。
+        /// </summary>
         public string[] Tags { get; set; }
     }
     /// <summary>
@@ -316,9 +694,21 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public struct MixedNestedDestination
     {
+        /// <summary>
+        /// 获取或设置混合嵌套目标的标识。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置可选地址；未提供地址时为 <see langword="null"/>。
+        /// </summary>
         public AddressDestination? OptionalAddress { get; set; }
+        /// <summary>
+        /// 获取或设置联系人目标。
+        /// </summary>
         public ContactDestination Contact { get; set; }
+        /// <summary>
+        /// 获取或设置标签数组。
+        /// </summary>
         public string[] Tags { get; set; }
     }
     #endregion
@@ -826,9 +1216,21 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class TypeConversionSource
     {
+        /// <summary>
+        /// 获取或设置待映射的整数值。
+        /// </summary>
         public int IntValue { get; set; }
+        /// <summary>
+        /// 获取或设置待映射的字符串值。
+        /// </summary>
         public string StringValue { get; set; }
+        /// <summary>
+        /// 获取或设置待映射的日期时间值。
+        /// </summary>
         public DateTime DateValue { get; set; }
+        /// <summary>
+        /// 获取或设置待映射的布尔值。
+        /// </summary>
         public bool BoolValue { get; set; }
     }
     /// <summary>
@@ -836,9 +1238,21 @@ public class MapperHelperTest : TestBase
     /// </summary>
     public class TypeConversionDestination
     {
+        /// <summary>
+        /// 获取或设置转换得到的可空整数值。
+        /// </summary>
         public int? IntValue { get; set; }
+        /// <summary>
+        /// 获取或设置转换得到的字符串值。
+        /// </summary>
         public string StringValue { get; set; }
+        /// <summary>
+        /// 获取或设置转换得到的可空日期时间值。
+        /// </summary>
         public DateTime? DateValue { get; set; }
+        /// <summary>
+        /// 获取或设置转换得到的可空布尔值。
+        /// </summary>
         public bool? BoolValue { get; set; }
     }
     /// <summary>

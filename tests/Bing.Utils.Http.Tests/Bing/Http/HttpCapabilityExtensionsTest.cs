@@ -7,10 +7,10 @@ using Bing.Http.Clients;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// 验证可选 HTTP 能力扩展及其兼容边界。
-
 /// </summary>
 public class HttpCapabilityExtensionsTest
 {
@@ -34,10 +34,10 @@ public class HttpCapabilityExtensionsTest
         sends.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证抛出使用响应未使用发送再次。
-
     /// </summary>
     [Fact]
     public async Task UploadConfirmation_ThrowsWithResponseWithoutSendingAgain()
@@ -58,10 +58,10 @@ public class HttpCapabilityExtensionsTest
         sends.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证条件请求头匹配时报告资源未修改。
-
     /// </summary>
     [Fact]
     public async Task ConditionalRequest_SetsTypedHeadersAndReportsNotModified()
@@ -85,10 +85,10 @@ public class HttpCapabilityExtensionsTest
         result.IsNotModified.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝无效实体标签之前发送。
-
     /// </summary>
     [Fact]
     public void IfNoneMatch_RejectsInvalidEntityTagBeforeSending()
@@ -100,10 +100,10 @@ public class HttpCapabilityExtensionsTest
         Should.Throw<ArgumentException>(() => request.IfNoneMatch("invalid tag"));
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝格式错误的预期哈希值。
-
     /// </summary>
     [Fact]
     public void ValidateResumableDownloadSha256_RejectsMalformedExpectedHash()
@@ -115,10 +115,10 @@ public class HttpCapabilityExtensionsTest
         Should.Throw<ArgumentException>(() => request.ValidateResumableDownloadSha256("not-a-sha256"));
     }
 
+
+
     /// <summary>
-
     /// 验证构造响应结果时会复制响应头快照。
-
     /// </summary>
     [Fact]
     public void PublicResultTypes_CanBeConstructedAndCopyHeaderSnapshots()
@@ -162,10 +162,10 @@ public class HttpCapabilityExtensionsTest
             new HttpRequestCompletion(null, -1, TimeSpan.Zero, HttpRequestOutcome.Faulted, null));
     }
 
+
+
     /// <summary>
-
     /// 验证创建任意方法并保留响应。
-
     /// </summary>
     [Fact]
     public async Task RequestExtensions_CreateArbitraryMethodsAndPreserveResponse()
@@ -191,10 +191,10 @@ public class HttpCapabilityExtensionsTest
         patchHasContent.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证旧版实现不支持该能力时明确失败。
-
     /// </summary>
     [Fact]
     public void OptionalExtensions_FailClearlyForLegacyImplementations()
@@ -219,10 +219,10 @@ public class HttpCapabilityExtensionsTest
         Should.Throw<NotSupportedException>(() => request.GetJsonStreamAsync());
     }
 
+
+
     /// <summary>
-
     /// 验证复制响应头时保留不区分大小写的多值内容。
-
     /// </summary>
     [Fact]
     public void HttpResponseResult_CopiesCaseInsensitiveMultiValueHeaders()
@@ -242,10 +242,10 @@ public class HttpCapabilityExtensionsTest
         result.RawContent.ShouldBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证公开构造函数会防御性复制响应头并值。
-
     /// </summary>
     [Fact]
     public void HttpResponseResult_PublicConstructorDefensivelyCopiesHeadersAndValues()
@@ -274,10 +274,10 @@ public class HttpCapabilityExtensionsTest
             ((IList<string>)result.ContentHeaders["Content-Type"]).Add("extra"));
     }
 
+
+
     /// <summary>
-
     /// 验证 HEAD 或空正文跳过正文限制并执行成功回调。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_HeadNoContentAndEmptyBodySkipLimitsAndRunSuccessCallback()
@@ -311,10 +311,10 @@ public class HttpCapabilityExtensionsTest
         callbackCount.ShouldBe(3);
     }
 
+
+
     /// <summary>
-
     /// 验证读取结果时忽略声明长度并执行回调。
-
     /// </summary>
     /// <param name="head">测试输入值。</param>
     [Theory]
@@ -340,10 +340,10 @@ public class HttpCapabilityExtensionsTest
         completionCount.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证获取流跳过声明的长度并执行完成。
-
     /// </summary>
     /// <param name="head">测试输入值。</param>
     [Theory]
@@ -366,10 +366,10 @@ public class HttpCapabilityExtensionsTest
         completionCount.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证下载到跳过声明的长度并执行完成。
-
     /// </summary>
     /// <param name="head">测试输入值。</param>
     [Theory]
@@ -393,10 +393,10 @@ public class HttpCapabilityExtensionsTest
         completionCount.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证观察到请求地址根据到基址所有者。
-
     /// </summary>
     /// <param name="requestBaseAddress">测试输入值。</param>
     [Theory]
@@ -427,11 +427,13 @@ public class HttpCapabilityExtensionsTest
             before.OriginalString.ShouldBe("resource");
     }
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建带有冲突正文元数据的无正文语义响应样例。
     /// </summary>
+    /// <param name="head">是否构造 HEAD 请求的成功响应；为 false 时构造 204 响应。</param>
+    /// <returns>正文长度声明为 64、实际载荷为测试文本的响应，供验证无正文处理逻辑。</returns>
     private static HttpResponseMessage CreateNoBodyResponse(bool head)
     {
         var response = new HttpResponseMessage(head ? HttpStatusCode.OK : HttpStatusCode.NoContent)
@@ -442,10 +444,10 @@ public class HttpCapabilityExtensionsTest
         return response;
     }
 
+
+
     /// <summary>
-
     /// 验证原始正文是否显式启用并异常正文使用声明的字符集。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_RawContentIsOptInAndErrorBodyUsesDeclaredCharset()
@@ -469,10 +471,10 @@ public class HttpCapabilityExtensionsTest
         rawResult.RawContent.ShouldBe("café");
     }
 
+
+
     /// <summary>
-
     /// 验证仅含字节顺序标记的正文按空内容转换。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_BomOnlyBodyIsNonEmptyForConversion()
@@ -492,10 +494,10 @@ public class HttpCapabilityExtensionsTest
         result.RawContent.ShouldBe(string.Empty);
     }
 
+
+
     /// <summary>
-
     /// 验证根据 UTF-16 字节顺序标记和带引号的 ISO 字符集解码正文。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_DetectsUtf16BomAndQuotedIsoCharset()
@@ -523,10 +525,10 @@ public class HttpCapabilityExtensionsTest
         quotedCharset.RawContent.ShouldBe("café");
     }
 
+
+
     /// <summary>
-
     /// 验证无效字符集传播并释放正文。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_InvalidCharsetPropagatesAndDisposesContent()
@@ -542,10 +544,10 @@ public class HttpCapabilityExtensionsTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证空正文跳过转换期间获取结果转换空字符串。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_EmptyBodySkipsConversionWhileGetResultConvertsEmptyString()
@@ -566,10 +568,10 @@ public class HttpCapabilityExtensionsTest
         convertCalls.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证失败和完成回调均接收解码后的正文。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_FailAndCompleteCallbacksReceiveDecodedBody()
@@ -589,10 +591,10 @@ public class HttpCapabilityExtensionsTest
         completedContent.ShouldBe("rejected");
     }
 
+
+
     /// <summary>
-
     /// 验证限制准确响应字节上限。
-
     /// </summary>
     /// <param name="limit">测试输入值。</param>
     /// <param name="succeeds">测试输入值。</param>
@@ -617,10 +619,10 @@ public class HttpCapabilityExtensionsTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证正文读取失败时保留原始异常并释放正文。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_SourceReadFailurePreservesExceptionAndDisposesContent()
@@ -636,10 +638,10 @@ public class HttpCapabilityExtensionsTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证读取正文一次并释放响应正文。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_ReadsBodyOnceAndDisposesResponseContent()
@@ -657,10 +659,10 @@ public class HttpCapabilityExtensionsTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证快照响应头并释放正文时转换失败。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_SnapshotsHeadersAndDisposesContentWhenConversionFails()
@@ -684,10 +686,10 @@ public class HttpCapabilityExtensionsTest
         response.Headers.Add("X-Multi", "changed");
     }
 
+
+
     /// <summary>
-
     /// 验证转换异常取得优先于完成回调完成异常。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_ConversionErrorTakesPrecedenceOverOnCompleteError()
@@ -706,10 +708,10 @@ public class HttpCapabilityExtensionsTest
         error.ShouldBeOfType<System.Text.Json.JsonException>();
     }
 
+
+
     /// <summary>
-
     /// 验证解析 JSON 并执行转换回调。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_ConvertsJsonAndHonorsOnConvert()
@@ -730,10 +732,10 @@ public class HttpCapabilityExtensionsTest
         converted.Data["name"].ShouldBe("converted");
     }
 
+
+
     /// <summary>
-
     /// 验证超过响应上限释放正文。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_ExceedingResponseLimitDisposesContent()
@@ -750,10 +752,10 @@ public class HttpCapabilityExtensionsTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证取消期间正文读取释放响应流。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_CancelDuringBodyReadDisposesResponseStream()
@@ -773,10 +775,10 @@ public class HttpCapabilityExtensionsTest
         stream.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证On成功失败仍释放响应正文。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_OnSuccessFailureStillDisposesResponseContent()
@@ -793,10 +795,10 @@ public class HttpCapabilityExtensionsTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证On完成失败仍释放响应正文。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_OnCompleteFailureStillDisposesResponseContent()
@@ -813,10 +815,10 @@ public class HttpCapabilityExtensionsTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证响应回调运行期间拒绝发送新请求。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_SendBeforeRejectsWithoutRunningResponseCallbacks()
@@ -841,10 +843,10 @@ public class HttpCapabilityExtensionsTest
         callbacks.ShouldBe(0);
     }
 
+
+
     /// <summary>
-
     /// 验证返回元数据并实际写入量字节。
-
     /// </summary>
     [Fact]
     public async Task DownloadToWithResultAsync_ReturnsMetadataAndActualWrittenBytes()
@@ -874,10 +876,10 @@ public class HttpCapabilityExtensionsTest
         result.Headers["X-Trace"].ShouldBe(new[] { "one", "two" });
     }
 
+
+
     /// <summary>
-
     /// 验证 HTTP 失败响应仍返回元数据且不写入正文。
-
     /// </summary>
     [Fact]
     public async Task DownloadToWithResultAsync_HttpFailureReturnsMetadataWithoutWritingBody()
@@ -896,10 +898,10 @@ public class HttpCapabilityExtensionsTest
         destination.ToArray().ShouldBeEmpty();
     }
 
+
+
     /// <summary>
-
     /// 验证 HEAD 请求的正文长度未知时遵循正文规则。
-
     /// </summary>
     [Fact]
     public async Task DownloadToWithResultAsync_HeadNoContentAndUnknownLengthRespectBodyRules()
@@ -941,10 +943,10 @@ public class HttpCapabilityExtensionsTest
         unknownLengthDestination.ToArray().ShouldBe(Encoding.UTF8.GetBytes("body"));
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝On发送之后并保留目标所有权。
-
     /// </summary>
     [Fact]
     public void DownloadToWithResultAsync_RejectsOnSendAfterAndPreservesDestinationOwnership()
@@ -962,10 +964,10 @@ public class HttpCapabilityExtensionsTest
         destination.ToArray().ShouldBe(new byte[] { 1 });
     }
 
+
+
     /// <summary>
-
     /// 验证超限或取消时释放响应并保持目标流打开。
-
     /// </summary>
     [Fact]
     public async Task DownloadToWithResultAsync_LimitAndCancellationDisposeResponseButKeepDestinationOpen()
@@ -999,10 +1001,10 @@ public class HttpCapabilityExtensionsTest
         cancelDestination.Dispose();
     }
 
+
+
     /// <summary>
-
     /// 验证保留解析并业务回调异常。
-
     /// </summary>
     [Fact]
     public async Task ObserveCompletion_PreservesParsingAndBusinessCallbackErrors()
@@ -1033,10 +1035,10 @@ public class HttpCapabilityExtensionsTest
         callbackCompletion.Single().Exception.ShouldBeSameAs(callbackError);
     }
 
+
+
     /// <summary>
-
     /// 验证报告成功并重试尝试一次。
-
     /// </summary>
     [Fact]
     public async Task ObserveCompletion_ReportsSuccessAndRetryAttemptsOnce()
@@ -1064,10 +1066,10 @@ public class HttpCapabilityExtensionsTest
         completions[0].Exception.ShouldBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证观察器并异常处理程序失败时不变化请求结果。
-
     /// </summary>
     [Fact]
     public async Task ObserveCompletion_ObserverAndErrorHandlerFailuresDoNotChangeRequestResult()
@@ -1098,10 +1100,10 @@ public class HttpCapabilityExtensionsTest
         observedError.ShouldBeSameAs(observerError);
     }
 
+
+
     /// <summary>
-
     /// 验证发送失败保留异常并报告尝试。
-
     /// </summary>
     [Fact]
     public async Task ObserveCompletion_SendFailurePreservesExceptionAndReportsAttempt()
@@ -1130,10 +1132,10 @@ public class HttpCapabilityExtensionsTest
         completions.Single().Exception.ShouldBeSameAs(expectedError);
     }
 
+
+
     /// <summary>
-
     /// 验证报告 HTTP 失败并拒绝该请求。
-
     /// </summary>
     [Fact]
     public async Task ObserveCompletion_ReportsHttpFailureAndRejectedRequest()
@@ -1163,10 +1165,10 @@ public class HttpCapabilityExtensionsTest
         completions.Single().Exception.ShouldBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证分别报告取消和超时结果。
-
     /// </summary>
     [Fact]
     public async Task ObserveCompletion_ReportsCancellationAndTimeoutSeparately()
@@ -1209,10 +1211,10 @@ public class HttpCapabilityExtensionsTest
         timedOutCompletion.Single().Exception.ShouldBeAssignableTo<OperationCanceledException>();
     }
 
+
+
     /// <summary>
-
     /// 验证报告观察器异常未使用变化请求结果。
-
     /// </summary>
     [Fact]
     public async Task ObserveCompletion_ReportsObserverErrorWithoutChangingRequestResult()
@@ -1229,10 +1231,10 @@ public class HttpCapabilityExtensionsTest
         reportedErrors.ShouldBe(new[] { observerError });
     }
 
+
+
     /// <summary>
-
     /// 验证响应处理异常取得优先于完成回调完成异常。
-
     /// </summary>
     [Fact]
     public async Task GetResultAsync_ResponseProcessingErrorTakesPrecedenceOverOnCompleteError()
@@ -1251,10 +1253,10 @@ public class HttpCapabilityExtensionsTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证读取上限异常取得优先于完成回调完成异常。
-
     /// </summary>
     [Fact]
     public async Task GetStreamAsync_ReadLimitErrorTakesPrecedenceOverOnCompleteError()
@@ -1273,10 +1275,10 @@ public class HttpCapabilityExtensionsTest
         completed.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证写入异常取得优先于完成回调完成异常。
-
     /// </summary>
     [Fact]
     public async Task DownloadToAsync_WriteErrorTakesPrecedenceOverOnCompleteError()
@@ -1295,10 +1297,10 @@ public class HttpCapabilityExtensionsTest
         completed.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证取消取得优先于完成回调完成异常。
-
     /// </summary>
     [Fact]
     public async Task DownloadToAsync_CancellationTakesPrecedenceOverOnCompleteError()
@@ -1322,10 +1324,10 @@ public class HttpCapabilityExtensionsTest
         stream.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证响应头快照在响应修改和释放后仍保持不变。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_ReturnedHeaderSnapshotSurvivesResponseMutationAndDisposal()
@@ -1349,10 +1351,10 @@ public class HttpCapabilityExtensionsTest
             ((IList<string>)result.ContentHeaders["content-type"]).Add("changed"));
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝任一发送之后重载之前发送。
-
     /// </summary>
     /// <param name="withCancellation">测试输入值。</param>
     [Theory]
@@ -1376,10 +1378,10 @@ public class HttpCapabilityExtensionsTest
         sends.ShouldBe(0);
     }
 
+
+
     /// <summary>
-
     /// 验证执行按顺序并按相反顺序执行前后处理发送。
-
     /// </summary>
     [Fact]
     public async Task Interceptors_RunInOrderAndReverseOrderAroundSend()
@@ -1405,10 +1407,10 @@ public class HttpCapabilityExtensionsTest
         calls.ShouldBe(new[] { "first-before", "second-before", "send", "second-after", "first-after" });
     }
 
+
+
     /// <summary>
-
     /// 验证执行On发送失败并接收异常。
-
     /// </summary>
     [Fact]
     public async Task InterceptorAfter_RunsOnSendFailureAndReceivesException()
@@ -1429,10 +1431,10 @@ public class HttpCapabilityExtensionsTest
         observed.ShouldBeOfType<HttpRequestException>();
     }
 
+
+
     /// <summary>
-
     /// 验证每次重试都会执行相应操作。
-
     /// </summary>
     [Fact]
     public async Task InterceptorBefore_RunsForEveryRetryAttempt()
@@ -1466,10 +1468,10 @@ public class HttpCapabilityExtensionsTest
         signatures.ShouldBe(new[] { "1", "2" });
     }
 
+
+
     /// <summary>
-
     /// 验证共享项目跨重试过程并隔离独立执行次数。
-
     /// </summary>
     [Fact]
     public async Task Interceptors_ShareItemsAcrossRetriesAndIsolateSeparateExecutions()
@@ -1495,10 +1497,10 @@ public class HttpCapabilityExtensionsTest
         ReferenceEquals(contexts[0].Items, contexts[2].Items).ShouldBeFalse();
     }
 
+
+
     /// <summary>
-
     /// 验证仅逆序处理已进入的拦截器并是否不重试。
-
     /// </summary>
     [Fact]
     public async Task InterceptorBeforeFailure_OnlyUnwindsEnteredInterceptorsAndDoesNotRetry()
@@ -1522,10 +1524,10 @@ public class HttpCapabilityExtensionsTest
         sends.ShouldBe(0);
     }
 
+
+
     /// <summary>
-
     /// 验证清理失败时保留原始异常且不重试。
-
     /// </summary>
     [Fact]
     public async Task InterceptorBeforeFailure_PreservesOriginalErrorWhenCleanupFailsAndDoesNotRetry()
@@ -1552,10 +1554,10 @@ public class HttpCapabilityExtensionsTest
         sends.ShouldBe(0);
     }
 
+
+
     /// <summary>
-
     /// 验证继续逆序处理并发送失败取得优先级。
-
     /// </summary>
     [Fact]
     public async Task InterceptorAfterFailure_ContinuesUnwindAndSendFailureTakesPrecedence()
@@ -1571,10 +1573,10 @@ public class HttpCapabilityExtensionsTest
         events.ShouldBe(new[] { "first-before", "throwing-after", "first-after" });
     }
 
+
+
     /// <summary>
-
     /// 验证传播首次相反顺序失败并继续逆序处理。
-
     /// </summary>
     [Fact]
     public async Task InterceptorAfterFailures_PropagatesFirstReverseOrderFailureAndContinuesUnwind()
@@ -1601,10 +1603,10 @@ public class HttpCapabilityExtensionsTest
         });
     }
 
+
+
     /// <summary>
-
     /// 验证可重试响应不会触发自动重试。
-
     /// </summary>
     [Fact]
     public async Task InterceptorAfterFailure_DoesNotRetryRetryableResponse()
@@ -1628,10 +1630,10 @@ public class HttpCapabilityExtensionsTest
         sends.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证之后拦截器修改写入方法不能使当前尝试变为可重试。
-
     /// </summary>
     /// <param name="method">测试输入值。</param>
     /// <param name="sendThrows">测试输入值。</param>
@@ -1671,10 +1673,10 @@ public class HttpCapabilityExtensionsTest
         sends.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证新增拦截器在下一次执行时生效。
-
     /// </summary>
     [Fact]
     public async Task Interceptors_AddedDuringExecutionApplyStartingWithNextExecution()
@@ -1703,10 +1705,10 @@ public class HttpCapabilityExtensionsTest
         });
     }
 
+
+
     /// <summary>
-
     /// 验证执行之后并传播取消。
-
     /// </summary>
     [Fact]
     public async Task InterceptorCancellation_RunsAfterAndPropagatesCancellation()
@@ -1735,10 +1737,10 @@ public class HttpCapabilityExtensionsTest
         afterCalled.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝拦截器正文替换之前发送。
-
     /// </summary>
     [Fact]
     public async Task Retry_RejectsInterceptorBodyReplacementBeforeSending()
@@ -1762,10 +1764,10 @@ public class HttpCapabilityExtensionsTest
         replacement.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证释放替换请求正文。
-
     /// </summary>
     [Fact]
     public async Task InterceptorSendCancellation_DisposesReplacedRequestContent()
@@ -1790,10 +1792,10 @@ public class HttpCapabilityExtensionsTest
         replacement.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证替换请求正文释放每次之前正文。
-
     /// </summary>
     [Fact]
     public async Task InterceptorChain_ReplacingRequestBodyDisposesEachPreviousContent()
@@ -1819,10 +1821,10 @@ public class HttpCapabilityExtensionsTest
         final.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证之前失败释放替换请求正文。
-
     /// </summary>
     [Fact]
     public async Task InterceptorChain_BeforeFailureDisposesReplacedRequestContent()
@@ -1848,10 +1850,10 @@ public class HttpCapabilityExtensionsTest
         replacement.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证默认不对 PATCH、HEAD 和 OPTIONS 请求重试。
-
     /// </summary>
     [Fact]
     public async Task Retry_PatchIsExcludedByDefaultWhileHeadAndOptionsRetry()
@@ -1878,10 +1880,10 @@ public class HttpCapabilityExtensionsTest
         attemptsByMethod["OPTIONS"].ShouldBe(2);
     }
 
+
+
     /// <summary>
-
     /// 根据同步回调生成 HTTP 响应的消息处理器。
-
     /// </summary>
     private sealed class StubHandler : HttpMessageHandler
     {
@@ -1890,7 +1892,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> _send;
         /// <summary>
-        /// 初始化一个<see cref="StubHandler"/>类型的实例。
+        /// 初始化一个 <see cref="StubHandler"/> 类型的实例。
         /// </summary>
         /// <param name="send">根据请求生成响应的委托。</param>
         public StubHandler(Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> send) => _send = send;
@@ -1899,10 +1901,10 @@ public class HttpCapabilityExtensionsTest
             => Task.FromResult(_send(request, cancellationToken));
     }
 
+
+
     /// <summary>
-
     /// 根据异步回调生成 HTTP 响应的消息处理器。
-
     /// </summary>
     private sealed class AsyncStubHandler : HttpMessageHandler
     {
@@ -1911,7 +1913,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> _send;
         /// <summary>
-        /// 初始化一个<see cref="AsyncStubHandler"/>类型的实例。
+        /// 初始化一个 <see cref="AsyncStubHandler"/> 类型的实例。
         /// </summary>
         /// <param name="send">根据请求生成响应的委托。</param>
         public AsyncStubHandler(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> send) => _send = send;
@@ -1920,10 +1922,10 @@ public class HttpCapabilityExtensionsTest
             => _send(request, cancellationToken);
     }
 
+
+
     /// <summary>
-
     /// 通过 HttpClient 实现旧版 HTTP 客户端接口的适配器。
-
     /// </summary>
     private sealed class LegacyHttpClient : IHttpClient
     {
@@ -1932,7 +1934,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly HttpClient _client;
         /// <summary>
-        /// 初始化一个<see cref="LegacyHttpClient"/>类型的实例。
+        /// 初始化一个 <see cref="LegacyHttpClient"/> 类型的实例。
         /// </summary>
         /// <param name="client">用于发送测试请求的 HTTP 客户端。</param>
         public LegacyHttpClient(HttpClient client) => _client = client;
@@ -1971,10 +1973,10 @@ public class HttpCapabilityExtensionsTest
             => new HttpRequest<TResult>(null, _client, method, new Uri(_client.BaseAddress, url).ToString());
     }
 
+
+
     /// <summary>
-
     /// 提供旧版 HTTP 请求接口的测试实现。
-
     /// </summary>
     private sealed class LegacyHttpRequest : IHttpRequest<string>
     {
@@ -2068,10 +2070,10 @@ public class HttpCapabilityExtensionsTest
         public Task WriteAsync(string filePath, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
+
+
     /// <summary>
-
     /// 记录正文序列化次数和释放状态的 HTTP 内容。
-
     /// </summary>
     private sealed class CountingContent : HttpContent
     {
@@ -2080,16 +2082,16 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly byte[] _bytes;
         /// <summary>
-        /// 初始化一个<see cref="CountingContent"/>类型的实例。
+        /// 初始化一个 <see cref="CountingContent"/> 类型的实例。
         /// </summary>
         /// <param name="value">要作为正文返回的文本。</param>
         public CountingContent(string value) => _bytes = Encoding.UTF8.GetBytes(value);
         /// <summary>
-        /// 记录正文序列化次数。
+        /// 获取正文序列化操作的累计次数。
         /// </summary>
         public int SerializeCount { get; private set; }
         /// <summary>
-        /// 指示测试对象是否已释放。
+        /// 获取当前测试对象是否已被释放。
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <inheritdoc />
@@ -2112,10 +2114,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 创建读取时抛出指定异常的 HTTP 内容。
-
     /// </summary>
     private sealed class FailingReadContent : HttpContent
     {
@@ -2124,11 +2126,11 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly Exception _error;
         /// <summary>
-        /// 指示测试对象是否已释放。
+        /// 获取当前测试对象是否已被释放。
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <summary>
-        /// 初始化一个<see cref="FailingReadContent"/>类型的实例。
+        /// 初始化一个 <see cref="FailingReadContent"/> 类型的实例。
         /// </summary>
         /// <param name="error">测试期间抛出的异常。</param>
         public FailingReadContent(Exception error) => _error = error;
@@ -2152,10 +2154,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 每次读取都抛出指定异常的流。
-
     /// </summary>
     private sealed class ThrowingReadStream : Stream
     {
@@ -2164,7 +2166,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly Exception _error;
         /// <summary>
-        /// 初始化一个<see cref="ThrowingReadStream"/>类型的实例。
+        /// 初始化一个 <see cref="ThrowingReadStream"/> 类型的实例。
         /// </summary>
         /// <param name="error">测试期间抛出的异常。</param>
         public ThrowingReadStream(Exception error) => _error = error;
@@ -2193,10 +2195,10 @@ public class HttpCapabilityExtensionsTest
         public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
     }
 
+
+
     /// <summary>
-
     /// 发送字节正文但不报告其长度的 HTTP 内容。
-
     /// </summary>
     private sealed class UnknownLengthContent : HttpContent
     {
@@ -2205,7 +2207,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly byte[] _bytes;
         /// <summary>
-        /// 初始化一个<see cref="UnknownLengthContent"/>类型的实例。
+        /// 初始化一个 <see cref="UnknownLengthContent"/> 类型的实例。
         /// </summary>
         /// <param name="value">要作为正文返回的文本。</param>
         public UnknownLengthContent(string value) => _bytes = Encoding.UTF8.GetBytes(value);
@@ -2220,10 +2222,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 通知读取开始并支持取消测试的流。
-
     /// </summary>
     private sealed class CancellationStream : Stream
     {
@@ -2232,12 +2234,12 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly TaskCompletionSource<bool> _readStarted;
         /// <summary>
-        /// 初始化一个<see cref="CancellationStream"/>类型的实例。
+        /// 初始化一个 <see cref="CancellationStream"/> 类型的实例。
         /// </summary>
         /// <param name="readStarted">通知测试读取已开始的信号。</param>
         public CancellationStream(TaskCompletionSource<bool> readStarted) => _readStarted = readStarted;
         /// <summary>
-        /// 指示测试对象是否已释放。
+        /// 获取当前测试对象是否已被释放。
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <inheritdoc />
@@ -2275,10 +2277,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 在写入时抛出指定异常的内存流。
-
     /// </summary>
     private sealed class ThrowingDestinationStream : MemoryStream
     {
@@ -2287,17 +2289,17 @@ public class HttpCapabilityExtensionsTest
             => Task.FromException(new IOException("destination write failed"));
     }
 
+
+
     /// <summary>
-
     /// 不修改请求且不执行额外操作的拦截器。
-
     /// </summary>
     private sealed class NoopInterceptor : HttpRequestInterceptor { }
 
+
+
     /// <summary>
-
     /// 记录请求尝试次数并添加尝试签名头的拦截器。
-
     /// </summary>
     private sealed class AttemptInterceptor : HttpRequestInterceptor
     {
@@ -2306,7 +2308,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly IList<int> _attempts;
         /// <summary>
-        /// 初始化一个<see cref="AttemptInterceptor"/>类型的实例。
+        /// 初始化一个 <see cref="AttemptInterceptor"/> 类型的实例。
         /// </summary>
         /// <param name="attempts">记录的请求尝试次数。</param>
         public AttemptInterceptor(IList<int> attempts) => _attempts = attempts;
@@ -2319,10 +2321,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 通过请求上下文记录拦截器执行次数。
-
     /// </summary>
     private sealed class ItemsInterceptor : HttpRequestInterceptor
     {
@@ -2331,7 +2333,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly IList<HttpRequestInterceptorContext> _contexts;
         /// <summary>
-        /// 初始化一个<see cref="ItemsInterceptor"/>类型的实例。
+        /// 初始化一个 <see cref="ItemsInterceptor"/> 类型的实例。
         /// </summary>
         /// <param name="contexts">记录请求拦截上下文的列表。</param>
         public ItemsInterceptor(IList<HttpRequestInterceptorContext> contexts) => _contexts = contexts;
@@ -2346,10 +2348,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 按执行阶段记录拦截器调用顺序。
-
     /// </summary>
     private sealed class EventInterceptor : HttpRequestInterceptor
     {
@@ -2362,7 +2364,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly IList<string> _events;
         /// <summary>
-        /// 初始化一个<see cref="EventInterceptor"/>类型的实例。
+        /// 初始化一个 <see cref="EventInterceptor"/> 类型的实例。
         /// </summary>
         /// <param name="name">拦截器名称。</param>
         /// <param name="events">记录拦截器调用顺序的列表。</param>
@@ -2381,10 +2383,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 记录发送前调用后抛出异常的拦截器。
-
     /// </summary>
     private sealed class ThrowingBeforeInterceptor : HttpRequestInterceptor
     {
@@ -2393,7 +2395,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly IList<string> _events;
         /// <summary>
-        /// 初始化一个<see cref="ThrowingBeforeInterceptor"/>类型的实例。
+        /// 初始化一个 <see cref="ThrowingBeforeInterceptor"/> 类型的实例。
         /// </summary>
         /// <param name="events">记录拦截器调用顺序的列表。</param>
         public ThrowingBeforeInterceptor(IList<string> events) => _events = events;
@@ -2405,10 +2407,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 发送后记录调用并抛出异常的拦截器。
-
     /// </summary>
     private sealed class ThrowingAfterInterceptor : HttpRequestInterceptor
     {
@@ -2417,7 +2419,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly IList<string> _events;
         /// <summary>
-        /// 初始化一个<see cref="ThrowingAfterInterceptor"/>类型的实例。
+        /// 初始化一个 <see cref="ThrowingAfterInterceptor"/> 类型的实例。
         /// </summary>
         /// <param name="events">记录拦截器调用顺序的列表。</param>
         public ThrowingAfterInterceptor(IList<string> events) => _events = events;
@@ -2431,10 +2433,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 在请求发送前后调用指定回调的拦截器。
-
     /// </summary>
     private sealed class CallbackInterceptor : HttpRequestInterceptor
     {
@@ -2447,7 +2449,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly Action<HttpRequestInterceptorContext> _after;
         /// <summary>
-        /// 初始化一个<see cref="CallbackInterceptor"/>类型的实例。
+        /// 初始化一个 <see cref="CallbackInterceptor"/> 类型的实例。
         /// </summary>
         /// <param name="before">发送请求前执行的回调。</param>
         /// <param name="after">发送请求后执行的回调。</param>
@@ -2470,10 +2472,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 通过进入与释放信号协调拦截器注册时序。
-
     /// </summary>
     private sealed class RegistrationBarrierInterceptor : HttpRequestInterceptor
     {
@@ -2494,7 +2496,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private int _waitOnce;
         /// <summary>
-        /// 初始化一个<see cref="RegistrationBarrierInterceptor"/>类型的实例。
+        /// 初始化一个 <see cref="RegistrationBarrierInterceptor"/> 类型的实例。
         /// </summary>
         /// <param name="events">记录拦截器调用顺序的列表。</param>
         /// <param name="entered">通知测试已进入屏障的信号。</param>
@@ -2524,10 +2526,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 记录发送前后事件并维护测试签名头的拦截器。
-
     /// </summary>
     private sealed class RecordingInterceptor : HttpRequestInterceptor
     {
@@ -2540,7 +2542,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly IList<string> _calls;
         /// <summary>
-        /// 初始化一个<see cref="RecordingInterceptor"/>类型的实例。
+        /// 初始化一个 <see cref="RecordingInterceptor"/> 类型的实例。
         /// </summary>
         /// <param name="name">拦截器名称。</param>
         /// <param name="calls">记录拦截器调用顺序的列表。</param>
@@ -2563,10 +2565,10 @@ public class HttpCapabilityExtensionsTest
         }
     }
 
+
+
     /// <summary>
-
     /// 仅在发送后执行指定回调的拦截器。
-
     /// </summary>
     private sealed class HttpRequestInterceptorWithAfter : HttpRequestInterceptor
     {
@@ -2575,7 +2577,7 @@ public class HttpCapabilityExtensionsTest
         /// </summary>
         private readonly Action<HttpRequestInterceptorContext> _after;
         /// <summary>
-        /// 初始化一个<see cref="HttpRequestInterceptorWithAfter"/>类型的实例。
+        /// 初始化一个 <see cref="HttpRequestInterceptorWithAfter"/> 类型的实例。
         /// </summary>
         /// <param name="after">发送请求后执行的回调。</param>
         public HttpRequestInterceptorWithAfter(Action<HttpRequestInterceptorContext> after) => _after = after;

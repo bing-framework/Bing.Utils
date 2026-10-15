@@ -1,7 +1,7 @@
 namespace Bing.Date.Chinese;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="ChineseSolarTermsExtensions"/> 相关行为。
+/// 验证节气枚举扩展的中文与英文名称输出。
 /// </summary>
 [Trait("DateTimeUT", "ChineseDate.SolarTermsExtensions")]
 public class ChineseSolarTermsExtensionsTest
@@ -9,8 +9,11 @@ public class ChineseSolarTermsExtensionsTest
     #region GetName
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseSolarTermsExtensions.GetName"/> 在 `WithSimplifiedChinese` 场景下，结果为 `ReturnsSimplifiedName`。
+    /// 验证节气名称按简体中文输出。
     /// </summary>
+    /// <param name="term">待查询的节气枚举值。</param>
+    /// <param name="traditional">是否使用繁体中文。</param>
+    /// <param name="expected">预期节气名称。</param>
     [Theory]
     [InlineData(ChineseSolarTerms.BeginningOfSpring, false, "立春")]
     [InlineData(ChineseSolarTerms.TheWakingOfInsects, false, "惊蛰")]
@@ -24,8 +27,11 @@ public class ChineseSolarTermsExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseSolarTermsExtensions.GetName"/> 在 `WithTraditionalChinese` 场景下，结果为 `ReturnsTraditionalName`。
+    /// 验证节气名称按繁体中文输出。
     /// </summary>
+    /// <param name="term">待查询的节气枚举值。</param>
+    /// <param name="traditional">是否使用繁体中文。</param>
+    /// <param name="expected">预期节气名称。</param>
     [Theory]
     [InlineData(ChineseSolarTerms.TheWakingOfInsects, true, "驚蟄")]
     [InlineData(ChineseSolarTerms.QingmingFestival, true, "清明")]
@@ -35,7 +41,7 @@ public class ChineseSolarTermsExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseSolarTermsExtensions.GetName"/> 在 `DefaultParameter` 场景下，结果为 `UsesSimplifiedChinese`。
+    /// 验证节气名称默认使用简体中文。
     /// </summary>
     [Fact]
     public void GetName_DefaultParameter_UsesSimplifiedChinese()
@@ -51,8 +57,10 @@ public class ChineseSolarTermsExtensionsTest
     #region GetEnglishName
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseSolarTermsExtensions.GetEnglishName"/> 在 `ValidTerms` 场景下，结果为 `ReturnsCorrectEnglishName`。
+    /// 验证节气枚举返回对应英文名称。
     /// </summary>
+    /// <param name="term">待查询的节气枚举值。</param>
+    /// <param name="expected">预期英文节气名称。</param>
     [Theory]
     [InlineData(ChineseSolarTerms.BeginningOfSpring, "Beginning of Spring")]
     [InlineData(ChineseSolarTerms.VernalEquinox, "Vernal Equinox")]
@@ -65,7 +73,7 @@ public class ChineseSolarTermsExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseSolarTermsExtensions.GetEnglishName"/> 在 `DelegatesStaticHelper` 场景下，结果为 `ConsistentWithHelper`。
+    /// 验证英文名称扩展与静态帮助方法返回一致结果。
     /// </summary>
     [Fact]
     public void GetEnglishName_DelegatesStaticHelper_ConsistentWithHelper()

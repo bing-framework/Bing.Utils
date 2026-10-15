@@ -8,6 +8,10 @@ namespace Bing.Expressions;
 /// </summary>
 public class LambdasTest : TestBase
 {
+    /// <summary>
+    /// 初始化一个 <see cref="LambdasTest"/> 类型的实例。
+    /// </summary>
+    /// <param name="output">当前测试的输出助手。</param>
     public LambdasTest(ITestOutputHelper output) : base(output)
     {
     }
@@ -312,7 +316,7 @@ public class LambdasTest : TestBase
         Assert.NotEqual(Guid.Empty, Conv.ToGuid(value));
     }
     /// <summary>
-    /// 测试获取成员之 - Guid属性
+    /// 验证通过辅助方法提取捕获的 GUID 值。
     /// </summary>
     [Fact]
     public void Test_GetValue_Guid_Method()
@@ -320,6 +324,11 @@ public class LambdasTest : TestBase
         var id = Guid.NewGuid();
         Assert.NotEqual(Guid.Empty, Conv.ToGuid(GetGuidValue(id)));
     }
+    /// <summary>
+    /// 提取比较表达式中捕获的 GUID 值。
+    /// </summary>
+    /// <param name="id">表达式捕获的 GUID 值。</param>
+    /// <returns>提取出的 GUID 值。</returns>
     private object GetGuidValue(Guid id)
     {
         Expression<Func<Sample, bool>> expression = t => t.GuidValue == id;

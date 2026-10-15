@@ -49,6 +49,7 @@ public class IdSnowflakeTest
     /// <summary>
     /// 测试 - CreateSnowflakeId - 使用上下文ID
     /// </summary>
+    /// <param name="contextId">测试上下文中预先设置的雪花 ID。</param>
     [Theory]
     [InlineData("123456789")]
     [InlineData("987654321")]
@@ -74,6 +75,7 @@ public class IdSnowflakeTest
     /// <summary>
     /// 测试 - CreateSnowflakeId - 空白上下文ID时生成新ID
     /// </summary>
+    /// <param name="contextId">测试上下文中的空白 ID 值。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -176,6 +178,7 @@ public class IdSnowflakeTest
     /// <summary>
     /// 测试 - CreateSnowflakeIds - 批量生成ID
     /// </summary>
+    /// <param name="count">要生成的雪花 ID 数量。</param>
     [Theory]
     [InlineData(1)]
     [InlineData(10)]
@@ -197,6 +200,7 @@ public class IdSnowflakeTest
     /// <summary>
     /// 测试 - CreateSnowflakeIds - 参数验证
     /// </summary>
+    /// <param name="count">超出允许范围的 ID 数量。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(100001)]
@@ -210,6 +214,7 @@ public class IdSnowflakeTest
     /// <summary>
     /// 测试 - CreateSnowflakeIds - 边界值测试
     /// </summary>
+    /// <param name="count">要验证的边界数量。</param>
     [Theory]
     [InlineData(1)]
     [InlineData(100000)]

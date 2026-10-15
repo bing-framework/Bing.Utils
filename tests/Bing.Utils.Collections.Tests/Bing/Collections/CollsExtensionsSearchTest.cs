@@ -8,17 +8,28 @@ using Xunit;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：CollsExtensions.Search — BinarySearch 扩展方法系列
+/// 集合二分查找各重载的范围、映射和比较器测试。
 /// </summary>
 [Trait("CollUT", "CollsExtensions.Search")]
 public class CollsExtensionsSearchTest
 {
     // 辅助：有序整数列表用于测试
+    /// <summary>
+    /// 二分查找使用的升序整数列表。
+    /// </summary>
     private static readonly IList<int> SortedInts = new List<int> { 1, 3, 5, 7, 9, 11 };
 
     // 辅助类
+    /// <summary>
+    /// 二分查找键映射使用的测试记录。
+    /// </summary>
+    /// <param name="Id">排序和查找使用的标识符。</param>
+    /// <param name="Name">记录名称。</param>
     private record Item(int Id, string Name);
 
+    /// <summary>
+    /// 按标识符升序排列的测试记录列表。
+    /// </summary>
     private static readonly IList<Item> SortedItems = new List<Item>
     {
         new(10, "a"),
@@ -31,8 +42,10 @@ public class CollsExtensionsSearchTest
     #region BinarySearch(source, value) — 基础查找
 
     /// <summary>
-    /// 测试目的：BinarySearch 对有序集合中存在的元素应返回正确索引
+    /// 验证已有值的二分查找索引。
     /// </summary>
+    /// <param name="value">待查找值。</param>
+    /// <param name="expectedIndex">预期索引。</param>
     [Theory]
     [InlineData(1, 0)]
     [InlineData(5, 2)]
@@ -47,7 +60,7 @@ public class CollsExtensionsSearchTest
     }
 
     /// <summary>
-    /// 测试目的：BinarySearch 对不存在的值应返回负数（插入点的按位补）
+    /// 验证缺失值的二分查找结果为负数。
     /// </summary>
     [Fact]
     public void BinarySearch_MissingValue_ReturnsNegative()
@@ -64,7 +77,7 @@ public class CollsExtensionsSearchTest
     #region BinarySearch(source, map, value) — 带映射函数
 
     /// <summary>
-    /// 测试目的：BinarySearch 带映射函数应在投影后的有序集合中正确查找
+    /// 验证BinarySearch 带映射函数应在投影后的有序集合中正确查找
     /// </summary>
     [Fact]
     public void BinarySearch_WithMapFunc_FindsCorrectElement()
@@ -77,7 +90,7 @@ public class CollsExtensionsSearchTest
     }
 
     /// <summary>
-    /// 测试目的：BinarySearch 带映射函数对不存在的值应返回负数
+    /// 验证BinarySearch 带映射函数对不存在的值应返回负数
     /// </summary>
     [Fact]
     public void BinarySearch_WithMapFunc_MissingValue_ReturnsNegative()
@@ -94,7 +107,7 @@ public class CollsExtensionsSearchTest
     #region BinarySearch(source, index, length, value) — 带范围
 
     /// <summary>
-    /// 测试目的：BinarySearch 在指定范围内找到元素应返回正确索引
+    /// 验证BinarySearch 在指定范围内找到元素应返回正确索引
     /// </summary>
     [Fact]
     public void BinarySearch_WithRange_FindsInRange()
@@ -108,7 +121,7 @@ public class CollsExtensionsSearchTest
     }
 
     /// <summary>
-    /// 测试目的：BinarySearch 在指定范围内未找到应返回负数
+    /// 验证BinarySearch 在指定范围内未找到应返回负数
     /// </summary>
     [Fact]
     public void BinarySearch_WithRange_ValueOutsideRange_ReturnsNegative()
@@ -125,7 +138,7 @@ public class CollsExtensionsSearchTest
     #region BinarySearch(source, index, length, map, value) — 带范围和映射
 
     /// <summary>
-    /// 测试目的：BinarySearch 带范围和映射函数应在投影后的子集中正确查找
+    /// 验证BinarySearch 带范围和映射函数应在投影后的子集中正确查找
     /// </summary>
     [Fact]
     public void BinarySearch_WithRangeAndMap_FindsCorrectElement()
@@ -142,7 +155,7 @@ public class CollsExtensionsSearchTest
     #region BinarySearch(source, value, comparer) — 带比较器
 
     /// <summary>
-    /// 测试目的：BinarySearch 带自定义比较器应使用该比较器进行查找
+    /// 验证BinarySearch 带自定义比较器应使用该比较器进行查找
     /// </summary>
     [Fact]
     public void BinarySearch_WithComparer_FindsCorrectElement()
@@ -155,7 +168,7 @@ public class CollsExtensionsSearchTest
     }
 
     /// <summary>
-    /// 测试目的：BinarySearch 带自定义比较器对字符串列表应正确排序并查找
+    /// 验证指定字符串比较器的二分查找返回匹配索引。
     /// </summary>
     [Fact]
     public void BinarySearch_WithStringComparer_FindsElement()
@@ -175,7 +188,7 @@ public class CollsExtensionsSearchTest
     #region BinarySearch(source, map, value, comparer) — 带映射和比较器
 
     /// <summary>
-    /// 测试目的：BinarySearch 带映射函数和比较器应组合使用进行查找
+    /// 验证BinarySearch 带映射函数和比较器应组合使用进行查找
     /// </summary>
     [Fact]
     public void BinarySearch_WithMapAndComparer_FindsCorrectElement()
@@ -192,7 +205,7 @@ public class CollsExtensionsSearchTest
     #region BinarySearch(source, index, length, value, comparer) — 带范围和比较器
 
     /// <summary>
-    /// 测试目的：BinarySearch 带范围和比较器应在指定范围内正确查找
+    /// 验证BinarySearch 带范围和比较器应在指定范围内正确查找
     /// </summary>
     [Fact]
     public void BinarySearch_WithRangeAndComparer_FindsCorrectElement()
@@ -209,7 +222,7 @@ public class CollsExtensionsSearchTest
     #region BinarySearch(source, index, length, map, value, comparer) — 全参数重载
 
     /// <summary>
-    /// 测试目的：BinarySearch 全参数重载应在指定范围内结合映射和比较器正确查找
+    /// 验证BinarySearch 全参数重载应在指定范围内结合映射和比较器正确查找
     /// </summary>
     [Fact]
     public void BinarySearch_AllParams_FindsCorrectElement()

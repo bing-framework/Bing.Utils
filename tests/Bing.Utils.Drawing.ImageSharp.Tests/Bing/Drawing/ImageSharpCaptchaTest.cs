@@ -6,13 +6,16 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖验证码相关 API。
+/// 验证验证码文本生成、图像尺寸及参数边界。
 /// </summary>
 [Trait("Drawing", "ImageSharp.Captcha")]
 public class ImageSharpCaptchaTest
 {
     #region GetCaptchaCode
 
+    /// <summary>
+    /// 验证默认验证码为指定长度的数字字母串。
+    /// </summary>
     [Fact]
     public void GetCaptchaCode_ValidLength_ReturnsExpectedShape()
     {
@@ -21,6 +24,9 @@ public class ImageSharpCaptchaTest
         Regex.IsMatch(code, @"^[A-Za-z0-9]+$").ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证数字验证码仅包含数字并满足指定长度。
+    /// </summary>
     [Fact]
     public void GetCaptchaCode_NumberType_ReturnsDigitsOnly()
     {
@@ -29,6 +35,9 @@ public class ImageSharpCaptchaTest
         Regex.IsMatch(code, @"^\d+$").ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证中文验证码满足指定长度且不为空白。
+    /// </summary>
     [Fact]
     public void GetCaptchaCode_ChineseType_ReturnsNonEmpty()
     {
@@ -38,6 +47,9 @@ public class ImageSharpCaptchaTest
         code.ShouldNotBeNullOrWhiteSpace();
     }
 
+    /// <summary>
+    /// 验证验证码文本生成拒绝非正长度。
+    /// </summary>
     [Fact]
     public void GetCaptchaCode_InvalidLength_Throws()
     {
@@ -49,6 +61,9 @@ public class ImageSharpCaptchaTest
 
     #region CreateCaptchaImage
 
+    /// <summary>
+    /// 验证给定验证码文本可以生成非空且尺寸为正的图像。
+    /// </summary>
     [Fact]
     public void CreateCaptchaImage_ValidCode_ReturnsLoadableImage()
     {
@@ -58,6 +73,9 @@ public class ImageSharpCaptchaTest
         image.Height.ShouldBeGreaterThan(0);
     }
 
+    /// <summary>
+    /// 验证验证码图像生成同时输出指定长度的验证码文本。
+    /// </summary>
     [Fact]
     public void CreateCaptchaImage_WithLengthOutCode_ReturnsExpectedCodeLength()
     {
@@ -66,6 +84,9 @@ public class ImageSharpCaptchaTest
         image.ShouldNotBeNull();
     }
 
+    /// <summary>
+    /// 验证自定义字体尺寸决定验证码图像的宽高。
+    /// </summary>
     [Fact]
     public void CreateCaptchaImage_WithCustomOptions_RespectsSize()
     {
@@ -77,6 +98,9 @@ public class ImageSharpCaptchaTest
         image.Height.ShouldBe(45);
     }
 
+    /// <summary>
+    /// 验证关闭边框选项仍可生成验证码图像。
+    /// </summary>
     [Fact]
     public void CreateCaptchaImage_NoBorder_NoBorderPixels()
     {
@@ -85,6 +109,9 @@ public class ImageSharpCaptchaTest
         image.ShouldNotBeNull();
     }
 
+    /// <summary>
+    /// 验证验证码图像生成拒绝空字符串及空白文本。
+    /// </summary>
     [Fact]
     public void CreateCaptchaImage_EmptyCode_Throws()
     {
@@ -92,12 +119,18 @@ public class ImageSharpCaptchaTest
         Should.Throw<ArgumentNullException>(() => ImageSharpHelper.CreateCaptchaImage("  "));
     }
 
+    /// <summary>
+    /// 验证按长度生成验证码图像时拒绝零长度。
+    /// </summary>
     [Fact]
     public void CreateCaptchaImage_InvalidLength_Throws()
     {
         Should.Throw<ArgumentOutOfRangeException>(() => ImageSharpHelper.CreateCaptchaImage(0, out _));
     }
 
+    /// <summary>
+    /// 验证验证码图像可编码为非空 PNG 字节。
+    /// </summary>
     [Fact]
     public void CreateCaptchaImage_CanRoundTripToBytes()
     {

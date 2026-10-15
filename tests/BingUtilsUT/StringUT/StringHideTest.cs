@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符串指定区段的隐藏结果及空值处理。
+/// </summary>
 [Trait("StringUT", "Strings.Hide")]
 public class StringHideTest
 {

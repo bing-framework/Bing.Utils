@@ -6,10 +6,10 @@ namespace Bing;
 public class CharExtensionsTest
 {
     /// <summary>
-    /// 测试 - 将字符转换为字符串
+    /// 验证字符文本与固定区域性的标准转换结果一致。
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="expected"></param>
+    /// <param name="input">待转换字符。</param>
+    /// <param name="expected">预期文本。</param>
     [Theory]
     [InlineData('a', "a")]
     [InlineData('Z', "Z")]

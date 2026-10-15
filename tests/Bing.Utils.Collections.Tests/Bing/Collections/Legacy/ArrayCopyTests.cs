@@ -3,13 +3,13 @@ using Bing.Collections;
 namespace Bing.Collections.Legacy;
 
 /// <summary>
-/// 数组克隆
+/// 一至七维数组复制的兼容测试。
 /// </summary>
 [Trait("CollUT", "ArrayUT.Copy")]
 public class ArrayCopyTests
 {
     /// <summary>
-    /// 测试 - 克隆一个多维数组
+    /// 验证静态复制保留一至七维数组的全部元素。
     /// </summary>
     [Fact]
     public void Test_Arrays_CopyOneToSevenDimensionalArray()
@@ -48,7 +48,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// 测试 - 克隆一个多维数组【扩展方法】
+    /// 验证扩展复制保留一至七维数组的全部元素。
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_Arrays_CopyOneToSevenDimensionalArray()
@@ -87,7 +87,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// 测试 - 克隆一个多维数组并指定长度【扩展方法】
+    /// 验证按整数长度复制一至七维数组到目标数组。
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithIntLength()
@@ -142,7 +142,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// 测试 - 克隆一个多维数组指定长度以及索引【扩展方法】
+    /// 验证按整数索引和长度复制一至七维数组。
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithIntLengthAndIndex()
@@ -197,7 +197,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// 测试 - 克隆一个多维数组并指定长度【扩展方法】
+    /// 验证按长整数长度复制一至七维数组到目标数组。
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithLongLength()
@@ -252,7 +252,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// 测试 - 克隆一个多维数组指定长度以及索引【扩展方法】
+    /// 验证按长整数索引和长度复制一至七维数组。
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithLongLengthAndIndex()
@@ -307,7 +307,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// 测试 - 克隆一个多维数组保证完全成功【扩展方法】
+    /// 验证受约束复制保留一至七维数组的全部元素。
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithConstrained()
@@ -362,7 +362,7 @@ public class ArrayCopyTests
     }
 
     /// <summary>
-    /// 测试 - 块复制【扩展方法】
+    /// 验证字节元素数组复制保留一至七维数组的全部元素。
     /// </summary>
     [Fact]
     public void Test_ExtensionMethods_For_ArrayShortcut_CopyWithBlockT()

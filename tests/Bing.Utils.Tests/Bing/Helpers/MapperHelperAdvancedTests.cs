@@ -432,127 +432,313 @@ public class MapperHelperAdvancedTests
         result.Name.ShouldBe("legacy");
     }
 
+    /// <summary>
+    /// 用于验证字典值映射到多个目标属性类型的模型。
+    /// </summary>
     public sealed class DictionaryTarget
     {
+        /// <summary>
+        /// 获取或设置目标名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置目标年龄。
+        /// </summary>
         public int Age { get; set; }
+        /// <summary>
+        /// 获取或设置目标状态。
+        /// </summary>
         public DictionaryStatus Status { get; set; }
+        /// <summary>
+        /// 获取或设置目标标识。
+        /// </summary>
         public Guid Id { get; set; }
+        /// <summary>
+        /// 获取或设置目标地址。
+        /// </summary>
         public AddressTarget Address { get; set; }
     }
 
+    /// <summary>
+    /// 包含仅大小写不同属性名的字典映射目标。
+    /// </summary>
     public sealed class CaseDictionaryTarget
     {
+        /// <summary>
+        /// 获取或设置大写开头的名称属性。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置小写名称属性。
+        /// </summary>
         public string name { get; set; }
     }
 
+    /// <summary>
+    /// 字典映射测试使用的状态枚举。
+    /// </summary>
     public enum DictionaryStatus
     {
+        /// <summary>
+        /// 未知状态。
+        /// </summary>
         Unknown,
+        /// <summary>
+        /// 有效状态。
+        /// </summary>
         Active
     }
 
+    /// <summary>
+    /// 字典映射测试使用的地址模型。
+    /// </summary>
     public sealed class AddressTarget
     {
+        /// <summary>
+        /// 获取或设置城市名称。
+        /// </summary>
         public string City { get; set; }
+        /// <summary>
+        /// 获取或设置邮政编码。
+        /// </summary>
         public string ZipCode { get; set; }
     }
 
+    /// <summary>
+    /// 用于字段和属性映射测试的源模型。
+    /// </summary>
     private sealed class MapSource
     {
+        /// <summary>
+        /// 获取或设置源名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 源模型中的公开字段。
+        /// </summary>
         public int Count;
+        /// <summary>
+        /// 获取或设置可空语义测试值。
+        /// </summary>
         public string Optional { get; set; }
     }
 
+    /// <summary>
+    /// 用于字段和属性映射测试的目标模型。
+    /// </summary>
     private sealed class MapDestination
     {
+        /// <summary>
+        /// 映射得到的名称字段。
+        /// </summary>
         public string Name;
+        /// <summary>
+        /// 获取或设置映射得到的计数。
+        /// </summary>
         public int Count { get; set; }
+        /// <summary>
+        /// 获取或设置可空语义测试值。
+        /// </summary>
         public string Optional { get; set; }
     }
 
+    /// <summary>
+    /// 用于字符串到数值集合映射测试的源模型。
+    /// </summary>
     private sealed class ListSource
     {
+        /// <summary>
+        /// 获取或设置待转换的数字文本。
+        /// </summary>
         public string Number { get; set; }
     }
 
+    /// <summary>
+    /// 用于字符串到数值集合映射测试的目标模型。
+    /// </summary>
     private sealed class ListDestination
     {
+        /// <summary>
+        /// 获取或设置转换后的数值。
+        /// </summary>
         public int Number { get; set; }
     }
 
+    /// <summary>
+    /// 用于验证特殊目标值类型映射的模型。
+    /// </summary>
     private sealed class BoundaryTarget
     {
+        /// <summary>
+        /// 获取或设置可空整数。
+        /// </summary>
         public int? Optional { get; set; }
+        /// <summary>
+        /// 获取或设置带偏移量的日期时间。
+        /// </summary>
         public DateTimeOffset Offset { get; set; }
+        /// <summary>
+        /// 获取或设置持续时间。
+        /// </summary>
         public TimeSpan Duration { get; set; }
+        /// <summary>
+        /// 获取或设置整数数组。
+        /// </summary>
         public int[] Numbers { get; set; }
     }
 
+    /// <summary>
+    /// 用于验证转换失败路径的源模型。
+    /// </summary>
     private sealed class MapFailureSource
     {
+        /// <summary>
+        /// 获取或设置无法转换为目标数值的文本。
+        /// </summary>
         public string Number { get; set; }
+        /// <summary>
+        /// 获取或设置名称。
+        /// </summary>
         public string Name { get; set; }
     }
 
+    /// <summary>
+    /// 用于验证转换失败路径的目标模型。
+    /// </summary>
     private sealed class MapFailureDestination
     {
+        /// <summary>
+        /// 获取或设置待映射的数值。
+        /// </summary>
         public int Number { get; set; }
+        /// <summary>
+        /// 获取或设置名称。
+        /// </summary>
         public string Name { get; set; }
     }
 
+    /// <summary>
+    /// 包含索引器的映射源样例。
+    /// </summary>
     private sealed class IndexerSource
     {
+        /// <summary>
+        /// 获取或设置普通名称属性。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 返回指定索引的文本表示。
+        /// </summary>
+        /// <param name="index">要格式化的索引值。</param>
+        /// <returns>索引值的十进制文本。</returns>
         public string this[int index] => index.ToString();
     }
 
+    /// <summary>
+    /// 包含索引器的映射目标样例。
+    /// </summary>
     private sealed class IndexerDestination
     {
+        /// <summary>
+        /// 获取或设置普通名称属性。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 设置索引器值；该访问器用于确认映射时忽略索引器。
+        /// </summary>
+        /// <param name="index">索引器键。</param>
         public string this[int index] { set { } }
     }
 
+    /// <summary>
+    /// 包含大小写不同同名属性的映射源。
+    /// </summary>
     private sealed class CaseMapSource
     {
+        /// <summary>
+        /// 获取或设置大写开头的名称属性。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置小写名称属性。
+        /// </summary>
         public string name { get; set; }
     }
 
+    /// <summary>
+    /// 用于大小写映射测试的目标模型。
+    /// </summary>
     private sealed class CaseMapDestination
     {
+        /// <summary>
+        /// 获取或设置名称。
+        /// </summary>
         public string Name { get; set; }
     }
 
+    /// <summary>
+    /// 包含大小写歧义名称的映射目标。
+    /// </summary>
     private sealed class AmbiguousCaseMapDestination
     {
+        /// <summary>
+        /// 获取或设置全大写名称属性。
+        /// </summary>
         public string NAME { get; set; }
     }
 
+    /// <summary>
+    /// 读取属性时会抛出异常的映射源。
+    /// </summary>
     private sealed class ThrowingGetterMapSource
     {
+        /// <summary>
+        /// 读取时引发异常的属性。
+        /// </summary>
         public string Value => throw new InvalidOperationException("getter");
     }
 
+    /// <summary>
+    /// 用于映射访问器测试的源模型。
+    /// </summary>
     private sealed class AccessorMapSource
     {
+        /// <summary>
+        /// 获取或设置源文本值。
+        /// </summary>
         public string Value { get; set; }
     }
 
+    /// <summary>
+    /// 用于映射访问器测试的目标模型。
+    /// </summary>
     private sealed class AccessorMapDestination
     {
+        /// <summary>
+        /// 获取或设置目标文本值。
+        /// </summary>
         public string Value { get; set; }
     }
 
+    /// <summary>
+    /// 设置目标属性时会抛出异常的映射目标。
+    /// </summary>
     private sealed class ThrowingSetterMapDestination
     {
+        /// <summary>
+        /// 设置时引发异常的属性。
+        /// </summary>
         public string Value { set => throw new InvalidOperationException("setter"); }
     }
 
+    /// <summary>
+    /// 用于验证值类型目标映射限制的结构体。
+    /// </summary>
     private struct ValueDestination
     {
+        /// <summary>
+        /// 获取或设置目标数值。
+        /// </summary>
         public int Number { get; set; }
     }
 }

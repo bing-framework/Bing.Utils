@@ -1,14 +1,16 @@
 using Bing.Helpers;
 namespace Bing.Date;
 /// <summary>
-/// 日期时间导航测试 - 获取
+/// 验证日期所属季度及年内周序号。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.Get")]
 public class DateTimeNavigationGetTest
 {
     /// <summary>
-    /// 测试 - 获取指定日期所属季度
+    /// 验证各月份返回对应季度序号。
     /// </summary>
+    /// <param name="input">待计算季度的日期文本。</param>
+    /// <param name="result">预期季度序号。</param>
     [Theory]
     [InlineData("2023-01-01", 1)]
     [InlineData("2023-02-01", 1)]
@@ -28,8 +30,10 @@ public class DateTimeNavigationGetTest
         dt.GetQuarter().ShouldBe(result);
     }
     /// <summary>
-    /// 测试 - 获取指定日期是所在年份的第几周
+    /// 验证跨年附近日期的年内周序号。
     /// </summary>
+    /// <param name="input">待计算周序号的日期文本。</param>
+    /// <param name="result">预期年内周序号。</param>
     [Theory]
     [InlineData("2016-01-01", 1)]
     [InlineData("2016-01-03", 2)]

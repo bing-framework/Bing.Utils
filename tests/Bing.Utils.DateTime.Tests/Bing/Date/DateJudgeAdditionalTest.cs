@@ -1,13 +1,21 @@
 namespace Bing.Date;
 /// <summary>
-/// 测试类：覆盖 `DateJudgeAdditional` 相关行为。
+/// 验证日期有效范围、当天判定及工作日分类。
 /// </summary>
 [Trait("DateTimeUT", "DateJudge.Additional")]
 public class DateJudgeAdditionalTest
 {
     /// <summary>
-    /// 测试用例：验证 `IsValid` 在 `BoundaryDate` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证有效日期判定在上下边界附近的结果。
     /// </summary>
+    /// <param name="year">测试日期的年份。</param>
+    /// <param name="month">测试日期的月份。</param>
+    /// <param name="day">测试日期的日分量。</param>
+    /// <param name="hour">测试日期的小时分量。</param>
+    /// <param name="minute">测试日期的分钟分量。</param>
+    /// <param name="second">测试日期的秒分量。</param>
+    /// <param name="millisecond">测试日期的毫秒分量。</param>
+    /// <param name="expected">预期日期是否处于有效范围。</param>
     [Theory]
     [InlineData(1899, 12, 31, 23, 59, 59, 999, false)]
     [InlineData(1900, 1, 1, 0, 0, 0, 0, true)]
@@ -20,7 +28,7 @@ public class DateJudgeAdditionalTest
         DateJudge.IsValid(value).ShouldBe(expected);
     }
     /// <summary>
-    /// 测试用例：验证 `IsValid` 在 `DateTimeMaxValue` 场景下，结果为 `ReturnsFalse`。
+    /// 验证最大日期时间值当前不满足有效日期判定。
     /// </summary>
     [Fact]
     public void IsValid_DateTimeMaxValue_ReturnsFalse()
@@ -28,7 +36,7 @@ public class DateJudgeAdditionalTest
         DateJudge.IsValid(DateTime.MaxValue).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `IsToday` 在 `NullableNull` 场景下，结果为 `ReturnsFalse`。
+    /// 验证空日期与空时间点均不被识别为今天。
     /// </summary>
     [Fact]
     public void IsToday_NullableNull_ReturnsFalse()
@@ -39,7 +47,7 @@ public class DateJudgeAdditionalTest
         DateJudge.IsToday(dto).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `IsToday` 在 `TodayAndYesterday` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证当天判定能够区分今天与昨天。
     /// </summary>
     [Fact]
     public void IsToday_TodayAndYesterday_ReturnsExpectedResult()
@@ -50,7 +58,7 @@ public class DateJudgeAdditionalTest
         DateJudge.IsToday(yesterday).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `IsWeekendAndIsWeekday` 在 `SameDate` 场景下，结果为 `AreComplementary`。
+    /// 验证周末与工作日判定互为反向。
     /// </summary>
     [Fact]
     public void IsWeekendAndIsWeekday_SameDate_AreComplementary()

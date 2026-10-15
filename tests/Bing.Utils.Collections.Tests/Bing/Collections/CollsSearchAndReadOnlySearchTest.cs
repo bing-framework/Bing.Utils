@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 namespace Bing.Collections;
 /// <summary>
-/// 测试类：覆盖 `CollsSearchAndReadOnlySearch` 相关行为。
+/// 可写及只读列表二分查找的参数和结果契约测试。
 /// </summary>
 [Trait("CollectionsUT", "Colls.Search")]
 public class CollsSearchAndReadOnlySearchTest
 {
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `SortedNumbers` 场景下，结果为 `ReturnsMatchedIndex`。
+    /// 验证升序列表二分查找返回匹配索引。
     /// </summary>
     [Fact]
     public void BinarySearch_SortedNumbers_ReturnsMatchedIndex()
@@ -17,7 +17,7 @@ public class CollsSearchAndReadOnlySearchTest
         index.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `ValueNotFound` 场景下，结果为 `ReturnsComplementOfInsertionIndex`。
+    /// 验证未命中时返回插入索引的按位补数。
     /// </summary>
     [Fact]
     public void BinarySearch_ValueNotFound_ReturnsComplementOfInsertionIndex()
@@ -27,7 +27,7 @@ public class CollsSearchAndReadOnlySearchTest
         index.ShouldBe(~3);
     }
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `WithMapAndRange` 场景下，结果为 `ReturnsMatchedIndex`。
+    /// 验证指定范围内按投影键查找返回原列表索引。
     /// </summary>
     [Fact]
     public void BinarySearch_WithMapAndRange_ReturnsMatchedIndex()
@@ -43,7 +43,7 @@ public class CollsSearchAndReadOnlySearchTest
         index.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `ExtensionMethod` 场景下，结果为 `WorksAsWrapper`。
+    /// 验证二分查找扩展方法返回匹配索引。
     /// </summary>
     [Fact]
     public void BinarySearch_ExtensionMethod_WorksAsWrapper()
@@ -53,7 +53,7 @@ public class CollsSearchAndReadOnlySearchTest
         index.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `WithNullSourceOnShortcutOverload` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 验证当前简化重载对空源抛出空引用异常。
     /// </summary>
     [Fact]
     public void BinarySearch_WithNullSourceOnShortcutOverload_CurrentlyThrowsNullReferenceException()
@@ -62,7 +62,7 @@ public class CollsSearchAndReadOnlySearchTest
         Should.Throw<NullReferenceException>(() => Colls.BinarySearch(source, 1));
     }
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `WithNullSourceOnCoreOverload` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证核心重载拒绝空源并报告参数名。
     /// </summary>
     [Fact]
     public void BinarySearch_WithNullSourceOnCoreOverload_ThrowsArgumentNullException()
@@ -73,7 +73,7 @@ public class CollsSearchAndReadOnlySearchTest
         ex.ParamName.ShouldBe("source");
     }
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `WithNullMap` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证二分查找拒绝空映射函数并报告参数名。
     /// </summary>
     [Fact]
     public void BinarySearch_WithNullMap_ThrowsArgumentNullException()
@@ -84,7 +84,7 @@ public class CollsSearchAndReadOnlySearchTest
         ex.ParamName.ShouldBe("map");
     }
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `WithNullComparer` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证二分查找拒绝空比较器并报告参数名。
     /// </summary>
     [Fact]
     public void BinarySearch_WithNullComparer_ThrowsArgumentNullException()
@@ -95,8 +95,10 @@ public class CollsSearchAndReadOnlySearchTest
         ex.ParamName.ShouldBe("comparer");
     }
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `WithNegativeIndexOrLength` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证二分查找拒绝负起始索引或长度。
     /// </summary>
+    /// <param name="index">查找起始索引。</param>
+    /// <param name="length">查找范围长度。</param>
     [Theory]
     [InlineData(-1, 1)]
     [InlineData(0, -1)]
@@ -107,7 +109,7 @@ public class CollsSearchAndReadOnlySearchTest
             Colls.BinarySearch(source, index, length, x => x, 2, Comparer<int>.Default));
     }
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `WithIndexAndLengthBeyondSource` 场景下，结果为 `ThrowsInvalidOperationException`。
+    /// 验证二分查找拒绝超出源列表的范围。
     /// </summary>
     [Fact]
     public void BinarySearch_WithIndexAndLengthBeyondSource_ThrowsInvalidOperationException()
@@ -119,7 +121,7 @@ public class CollsSearchAndReadOnlySearchTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `LengthIsZero` 场景下，结果为 `ReturnsComplementOfStartIndex`。
+    /// 验证空范围返回起始索引的按位补数。
     /// </summary>
     [Fact]
     public void BinarySearch_LengthIsZero_ReturnsComplementOfStartIndex()
@@ -132,7 +134,7 @@ public class CollsSearchAndReadOnlySearchTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 在 `DescendingComparer` 场景下，结果为 `ReturnsMatchedIndex`。
+    /// 验证降序列表使用对应比较器查找。
     /// </summary>
     [Fact]
     public void BinarySearch_DescendingComparer_ReturnsMatchedIndex()
@@ -146,7 +148,7 @@ public class CollsSearchAndReadOnlySearchTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `BinarySearch` 扩展重载在 `NullSource` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 验证当前扩展重载对空源抛出空引用异常。
     /// </summary>
     [Fact]
     public void BinarySearch_ExtensionWithNullSource_CurrentlyThrowsNullReferenceException()
@@ -156,7 +158,7 @@ public class CollsSearchAndReadOnlySearchTest
         Should.Throw<NullReferenceException>(() => source.BinarySearch(1));
     }
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyBinarySearch` 在 `SortedNumbers` 场景下，结果为 `ReturnsMatchedIndex`。
+    /// 验证只读升序列表二分查找返回匹配索引。
     /// </summary>
     [Fact]
     public void ReadOnlyBinarySearch_SortedNumbers_ReturnsMatchedIndex()
@@ -166,7 +168,7 @@ public class CollsSearchAndReadOnlySearchTest
         index.ShouldBe(3);
     }
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyBinarySearch` 在 `ValueNotFound` 场景下，结果为 `ReturnsComplementOfInsertionIndex`。
+    /// 验证只读列表未命中时返回插入索引的按位补数。
     /// </summary>
     [Fact]
     public void ReadOnlyBinarySearch_ValueNotFound_ReturnsComplementOfInsertionIndex()
@@ -176,7 +178,7 @@ public class CollsSearchAndReadOnlySearchTest
         index.ShouldBe(~2);
     }
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyBinarySearch` 在 `WithNullSource` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证只读列表核心重载拒绝空源并报告参数名。
     /// </summary>
     [Fact]
     public void ReadOnlyBinarySearch_WithNullSource_ThrowsArgumentNullException()
@@ -188,7 +190,7 @@ public class CollsSearchAndReadOnlySearchTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyBinarySearch` 在 `ShortcutOverloadNullSource` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 验证只读列表当前简化重载对空源抛出空引用异常。
     /// </summary>
     [Fact]
     public void ReadOnlyBinarySearch_ShortcutOverloadNullSource_CurrentlyThrowsNullReferenceException()
@@ -199,7 +201,7 @@ public class CollsSearchAndReadOnlySearchTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyBinarySearch` 在 `NullMap` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证只读列表二分查找拒绝空映射函数并报告参数名。
     /// </summary>
     [Fact]
     public void ReadOnlyBinarySearch_NullMap_ThrowsArgumentNullException()
@@ -213,7 +215,7 @@ public class CollsSearchAndReadOnlySearchTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyBinarySearch` 在 `NullComparer` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证只读列表二分查找拒绝空比较器并报告参数名。
     /// </summary>
     [Fact]
     public void ReadOnlyBinarySearch_NullComparer_ThrowsArgumentNullException()
@@ -227,8 +229,10 @@ public class CollsSearchAndReadOnlySearchTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyBinarySearch` 在 `NegativeIndexOrLength` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证只读列表二分查找拒绝负起始索引或长度。
     /// </summary>
+    /// <param name="index">查找起始索引。</param>
+    /// <param name="length">查找范围长度。</param>
     [Theory]
     [InlineData(-1, 1)]
     [InlineData(0, -1)]
@@ -241,7 +245,7 @@ public class CollsSearchAndReadOnlySearchTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyBinarySearch` 在 `IndexAndLengthBeyondSource` 场景下，结果为 `ThrowsInvalidOperationException`。
+    /// 验证只读列表二分查找拒绝超出源列表的范围。
     /// </summary>
     [Fact]
     public void ReadOnlyBinarySearch_IndexAndLengthBeyondSource_ThrowsInvalidOperationException()
@@ -255,7 +259,7 @@ public class CollsSearchAndReadOnlySearchTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyBinarySearch` 在 `LengthIsZero` 场景下，结果为 `ReturnsComplementOfStartIndex`。
+    /// 验证只读列表空范围返回起始索引的按位补数。
     /// </summary>
     [Fact]
     public void ReadOnlyBinarySearch_LengthIsZero_ReturnsComplementOfStartIndex()
@@ -266,9 +270,18 @@ public class CollsSearchAndReadOnlySearchTest
 
         index.ShouldBe(~1);
     }
+    /// <summary>
+    /// 二分查找键映射使用的测试模型。
+    /// </summary>
     private sealed class SearchSample
     {
+        /// <summary>
+        /// 获取或设置排序和查找使用的标识符。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置测试模型名称。
+        /// </summary>
         public string Name { get; set; }
     }
 }

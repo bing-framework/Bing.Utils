@@ -1,24 +1,25 @@
 using Bing.Tests.Samples;
 namespace Bing.Reflection;
 /// <summary>
-/// 测试反射操作
+/// 验证反射描述、接口发现、成员访问及继承关系查询。
 /// </summary>
 public class ReflectionsTest : TestBase
 {
     /// <summary>
-    /// 测试样例
+    /// 类型判定测试共用的样例对象。
     /// </summary>
     private readonly Sample _sample;
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="ReflectionsTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">测试输出助手。</param>
     public ReflectionsTest(ITestOutputHelper output) : base(output)
     {
         _sample = new Sample();
     }
     #region GetDescription
     /// <summary>
-    /// 测试 - 获取类成员描述
+    /// 验证成员描述读取优先采用描述特性并对缺失成员返回空字符串。
     /// </summary>
     [Fact]
     public void Test_GetDescription()
@@ -29,7 +30,7 @@ public class ReflectionsTest : TestBase
         Assert.Equal("IntValue", Reflections.GetDescription<Sample>("IntValue"));
     }
     /// <summary>
-    /// 测试 - 获取类描述
+    /// 验证类型描述在未声明描述特性时回退到类型名称。
     /// </summary>
     [Fact]
     public void Test_GetDescription_Class()
@@ -40,7 +41,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region GetDisplayName
     /// <summary>
-    /// 测试 - 显示名
+    /// 验证显示名称读取使用显示名称特性并在缺失时返回空字符串。
     /// </summary>
     [Fact]
     public void Test_GetDisplayName()
@@ -51,7 +52,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region GetDisplayNameOrDescription
     /// <summary>
-    /// 测试 - 获取类描述或显示名
+    /// 验证显示名称与描述的组合读取结果。
     /// </summary>
     [Fact]
     public void Test_GetDescriptionOrDisplayName()
@@ -63,7 +64,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region FindImplementTypes
     /// <summary>
-    /// 测试 - 查找实现类型列表 - 测试类型中只有一个类实现IA接口
+    /// 验证查找仅有一个实现类的接口返回该实现类型。
     /// </summary>
     [Fact]
     public void Test_FindImplementTypes_1()
@@ -73,7 +74,7 @@ public class ReflectionsTest : TestBase
         Assert.Equal(typeof(A), types[0]);
     }
     /// <summary>
-    /// 测试 - 查找实现类型列表 - 抽象类和接口被排除
+    /// 验证接口实现类型查询排除抽象类与接口。
     /// </summary>
     [Fact]
     public void Test_FindImplementTypes_2()
@@ -84,7 +85,7 @@ public class ReflectionsTest : TestBase
         Assert.Equal(typeof(B), types[1]);
     }
     /// <summary>
-    /// 测试 - 查找实现类型列表 - 泛型实现 
+    /// 验证接口实现类型查询保留泛型类型定义。
     /// </summary>
     [Fact]
     public void Test_FindImplementTypes_3()
@@ -95,7 +96,7 @@ public class ReflectionsTest : TestBase
         Assert.Equal(typeof(D<>), types[1]);
     }
     /// <summary>
-    /// 测试 - 查找实现类型列表 - 泛型参数为E
+    /// 验证闭合泛型接口查询匹配对应实现类型。
     /// </summary>
     [Fact]
     public void Test_FindImplementTypes_4()
@@ -105,7 +106,7 @@ public class ReflectionsTest : TestBase
         Assert.Equal(typeof(E), types[0]);
     }
     /// <summary>
-    /// 测试 - 查找实现类型列表 - 泛型参数为空
+    /// 验证开放泛型接口查询包含普通实现与泛型实现。
     /// </summary>
     [Fact]
     public void Test_FindImplementTypes_5()
@@ -116,7 +117,7 @@ public class ReflectionsTest : TestBase
         Assert.Equal(typeof(F<>), types[1]);
     }
     /// <summary>
-    /// 测试 - 查找实现类型列表 - 测试并发
+    /// 验证并发接口实现类型查询返回各自预期结果。
     /// </summary>
     [Fact]
     public void Test_FindImplementTypes_6()
@@ -143,7 +144,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region GetDirectInterfaceTypes
     /// <summary>
-    /// 测试 - 获取直接接口列表
+    /// 验证直接接口查询返回未被其他接口继承的接口。
     /// </summary>
     [Fact]
     public void Test_GetDirectInterfaces()
@@ -154,7 +155,7 @@ public class ReflectionsTest : TestBase
         Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample5"));
     }
     /// <summary>
-    /// 测试 - 获取直接接口列表 - 一个基接口
+    /// 验证直接接口查询按单个基接口筛选。
     /// </summary>
     [Fact]
     public void Test_GetDirectInterfaces_2()
@@ -164,7 +165,7 @@ public class ReflectionsTest : TestBase
         Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample"));
     }
     /// <summary>
-    /// 测试 - 获取直接接口列表 - 两个基接口
+    /// 验证直接接口查询按多个基接口筛选。
     /// </summary>
     [Fact]
     public void Test_GetDirectInterfaces_3()
@@ -177,7 +178,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region GetInterfaceTypes
     /// <summary>
-    /// 测试 - 获取接口列表
+    /// 验证接口查询包含全部继承接口。
     /// </summary>
     [Fact]
     public void Test_GetInterfaces_1()
@@ -186,7 +187,7 @@ public class ReflectionsTest : TestBase
         Assert.Equal(5, interfaceTypes.Count);
     }
     /// <summary>
-    /// 测试 - 获取接口列表 - 一个基接口
+    /// 验证接口查询按单个基接口筛选并保留其派生接口。
     /// </summary>
     [Fact]
     public void Test_GetInterfaces_2()
@@ -197,7 +198,7 @@ public class ReflectionsTest : TestBase
         Assert.True(interfaceTypes.Exists(t => t.Name == "ITestSample2"));
     }
     /// <summary>
-    /// 测试 - 获取接口列表 - 两个基接口
+    /// 验证接口查询按多个基接口筛选。
     /// </summary>
     [Fact]
     public void Test_GetInterfaces_3()
@@ -208,7 +209,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region IsBool
     /// <summary>
-    /// 测试 - 是否布尔类型
+    /// 验证布尔类型及可空布尔成员被识别而枚举成员被排除。
     /// </summary>
     [Fact]
     public void Test_IsBool()
@@ -221,7 +222,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region IsEnum
     /// <summary>
-    /// 测试 - 是否枚举类型
+    /// 验证枚举及可空枚举成员被识别而布尔成员被排除。
     /// </summary>
     [Fact]
     public void Test_IsEnum()
@@ -235,7 +236,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region IsDate
     /// <summary>
-    /// 测试 - 是否日期类型
+    /// 验证日期及可空日期成员被识别而枚举成员被排除。
     /// </summary>
     [Fact]
     public void Test_IsDate()
@@ -248,7 +249,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region IsInt
     /// <summary>
-    /// 测试 - 是否整型
+    /// 验证短整数、整数和长整数及其可空成员均被识别。
     /// </summary>
     [Fact]
     public void Test_IsInt()
@@ -266,7 +267,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region IsNumber
     /// <summary>
-    /// 测试 - 是否数值类型
+    /// 验证整数与十进制数及其可空成员均被识别为数值。
     /// </summary>
     [Fact]
     public void Test_IsNumber()
@@ -287,7 +288,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region IsCollection
     /// <summary>
-    /// 测试 - 是否集合
+    /// 验证数组类型满足集合判定。
     /// </summary>
     [Fact]
     public void Test_IsCollection()
@@ -298,7 +299,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region IsGenericCollection
     /// <summary>
-    /// 测试 - 是否泛型集合
+    /// 验证字符串列表满足泛型集合判定。
     /// </summary>
     [Fact]
     public void Test_IsGenericCollection()
@@ -308,7 +309,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region GetPublicProperties
     /// <summary>
-    /// 测试 - 获取公共属性列表
+    /// 验证公共属性枚举返回对应名称与值。
     /// </summary>
     [Fact]
     public void Test_GetPublicProperties()
@@ -328,7 +329,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region GetTopBaseType
     /// <summary>
-    /// 测试 - 获取顶级基类
+    /// 验证空类型的顶级基类查询返回空。
     /// </summary>
     [Fact]
     public void Test_GetTopBaseType()
@@ -338,7 +339,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region GetElementType
     /// <summary>
-    /// 测试 - 获取元素类型
+    /// 验证普通类型的元素类型查询返回自身。
     /// </summary>
     [Fact]
     public void Test_GetElementType_1()
@@ -347,7 +348,7 @@ public class ReflectionsTest : TestBase
         Assert.Equal(typeof(Sample), Reflections.GetElementType(sample.GetType()));
     }
     /// <summary>
-    /// 测试 - 获取元素类型 - 数组
+    /// 验证数组的元素类型查询返回数组元素类型。
     /// </summary>
     [Fact]
     public void Test_GetElementType_2()
@@ -357,7 +358,7 @@ public class ReflectionsTest : TestBase
         Assert.Equal(typeof(Sample), Reflections.GetElementType(type));
     }
     /// <summary>
-    /// 测试 - 获取元素类型 - 集合
+    /// 验证泛型列表的元素类型查询返回集合元素类型。
     /// </summary>
     [Fact]
     public void Test_GetElementType_3()
@@ -369,7 +370,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region Get/Set PropertyValueByPath
     /// <summary>
-    /// 测试 - 通过指定对象的属性路径获取属性值
+    /// 验证普通、嵌套及带类型前缀的属性路径读取。
     /// </summary>
     [Fact]
     public void Test_GetPropertyValueByPath()
@@ -396,7 +397,7 @@ public class ReflectionsTest : TestBase
         Reflections.GetPropertyValueByPath(value, value.GetType(), "NotExists").ShouldBeNull();
     }
     /// <summary>
-    /// 测试 - 通过指定对象的属性路径设置属性值
+    /// 验证普通及嵌套属性路径写入后可读取更新值。
     /// </summary>
     [Fact]
     public void Test_SetPropertyValueByPath()
@@ -423,22 +424,46 @@ public class ReflectionsTest : TestBase
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Name").ShouldBe("test-children-set");
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Count").ShouldBe(90);
     }
+    /// <summary>
+    /// 提供属性路径读写测试的根对象。
+    /// </summary>
     class GetPropertyValueByPathTestClass
     {
+        /// <summary>
+        /// 获取或设置属性路径中的测试名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置属性路径中的测试计数。
+        /// </summary>
         public int Count { get; set; }
+        /// <summary>
+        /// 获取或设置属性路径中的测试时间。
+        /// </summary>
         public DateTime Time { get; set; }
+        /// <summary>
+        /// 获取或设置属性路径中的子对象。
+        /// </summary>
         public GetPropertyValueByPathTestChildrenClass Children { get; set; }
     }
+    /// <summary>
+    /// 提供属性路径读写测试的子对象。
+    /// </summary>
     class GetPropertyValueByPathTestChildrenClass
     {
+        /// <summary>
+        /// 获取或设置属性路径中的测试名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置属性路径中的测试计数。
+        /// </summary>
         public int Count { get; set; }
     }
     #endregion
     #region GetPublicConstantsRecursively
     /// <summary>
-    /// 测试 - 获取指定类型的所有公共常量值
+    /// 验证公共常量枚举返回类型自身的常量值。
     /// </summary>
     [Fact]
     public void Test_GetPublicConstantsRecursively()
@@ -449,7 +474,7 @@ public class ReflectionsTest : TestBase
         constants.ShouldContain(x => x == "DefaultBaseRoleName");
     }
     /// <summary>
-    /// 测试 - 获取指定类型的所有公共常量值 - 继承
+    /// 验证公共常量枚举包含继承的常量值。
     /// </summary>
     [Fact]
     public void Test_GetPublicConstantsRecursively_Inherit()
@@ -461,7 +486,7 @@ public class ReflectionsTest : TestBase
         constants.ShouldContain(x => x == "DefaultRoleName");
     }
     /// <summary>
-    /// 测试 - 获取指定类型的所有公共常量值 - 嵌套类型
+    /// 验证公共常量枚举递归发现嵌套权限类型中的常量值。
     /// </summary>
     [Fact]
     public void Test_GetPublicConstantsRecursively_NestedTypes()
@@ -473,7 +498,7 @@ public class ReflectionsTest : TestBase
     #endregion
     #region GetBaseClasses
     /// <summary>
-    /// 测试 - 获取指定类型的所有基类型 - 排除object对象
+    /// 验证基类枚举排除对象根类型并保留继承顺序。
     /// </summary>
     [Fact]
     public void Test_GetBaseClasses_Excluding_Object()
@@ -484,7 +509,7 @@ public class ReflectionsTest : TestBase
         baseClasses[1].ShouldBe(typeof(MyBaseClass2));
     }
     /// <summary>
-    /// 测试 - 获取指定类型的所有基类型 - 指定停止类型
+    /// 验证基类枚举在指定停止类型之前截断。
     /// </summary>
     [Fact]
     public void Test_GetBaseClasses_With_StoppingType()
@@ -493,48 +518,121 @@ public class ReflectionsTest : TestBase
         baseClasses.Length.ShouldBe(1);
         baseClasses[0].ShouldBe(typeof(MyBaseClass2));
     }
+    /// <summary>
+    /// 用于验证基类型枚举停止位置的抽象基类。
+    /// </summary>
     public abstract class MyBaseClass1
     {
     }
+    /// <summary>
+    /// 提供位于继承链中间的基类样例。
+    /// </summary>
     public class MyBaseClass2 : MyBaseClass1
     {
     }
+    /// <summary>
+    /// 提供用于枚举基类链的具体类型。
+    /// </summary>
     public class MyClass : MyBaseClass2
     {
     }
     #endregion
 }
+/// <summary>
+/// 提供含公共角色常量的基类样例。
+/// </summary>
 public class BaseRole
 {
+    /// <summary>
+    /// 用于验证基类常量发现的默认角色名称。
+    /// </summary>
     public const string BaseRoleName = "DefaultBaseRoleName";
 }
+/// <summary>
+/// 提供继承角色常量并声明自身常量的测试类型。
+/// </summary>
 public class Roles : BaseRole
 {
+    /// <summary>
+    /// 用于验证派生类常量发现的默认角色名称。
+    /// </summary>
     public const string RoleName = "DefaultRoleName";
 }
+/// <summary>
+/// 提供用于验证递归常量枚举的身份权限分组。
+/// </summary>
 public static class IdentityPermissions
 {
+    /// <summary>
+    /// 身份权限测试分组的名称前缀。
+    /// </summary>
     public const string GroupName = "AbpIdentity";
+    /// <summary>
+    /// 提供角色权限测试常量分组。
+    /// </summary>
     public static class Roles
     {
+        /// <summary>
+        /// 角色权限测试分组的默认键。
+        /// </summary>
         public const string Default = GroupName + ".Roles";
+        /// <summary>
+        /// 用于验证嵌套常量枚举的角色创建权限键。
+        /// </summary>
         public const string Create = Default + ".Create";
+        /// <summary>
+        /// 用于验证嵌套常量枚举的角色更新权限键。
+        /// </summary>
         public const string Update = Default + ".Update";
+        /// <summary>
+        /// 用于验证嵌套常量枚举的角色删除权限键。
+        /// </summary>
         public const string Delete = Default + ".Delete";
+        /// <summary>
+        /// 用于验证嵌套常量枚举的角色权限管理键。
+        /// </summary>
         public const string ManagePermissions = Default + ".ManagePermissions";
     }
+    /// <summary>
+    /// 提供用户权限测试常量分组。
+    /// </summary>
     public static class Users
     {
+        /// <summary>
+        /// 用户权限测试分组的默认键。
+        /// </summary>
         public const string Default = GroupName + ".Users";
+        /// <summary>
+        /// 用于验证嵌套常量枚举的用户创建权限键。
+        /// </summary>
         public const string Create = Default + ".Create";
+        /// <summary>
+        /// 用于验证嵌套常量枚举的用户更新权限键。
+        /// </summary>
         public const string Update = Default + ".Update";
+        /// <summary>
+        /// 用于验证嵌套常量枚举的用户删除权限键。
+        /// </summary>
         public const string Delete = Default + ".Delete";
+        /// <summary>
+        /// 用于验证嵌套常量枚举的用户权限管理键。
+        /// </summary>
         public const string ManagePermissions = Default + ".ManagePermissions";
     }
+    /// <summary>
+    /// 提供用户查询权限测试常量分组。
+    /// </summary>
     public static class UserLookup
     {
+        /// <summary>
+        /// 用户查询权限测试分组的默认键。
+        /// </summary>
         public const string Default = GroupName + ".UserLookup";
     }
+    /// <summary>
+    /// 列出身份权限分组及其嵌套权限常量。
+    /// </summary>
+    /// <returns>按测试约定顺序排列的全部权限键。</returns>
     public static string[] GetAll()
     {
         return

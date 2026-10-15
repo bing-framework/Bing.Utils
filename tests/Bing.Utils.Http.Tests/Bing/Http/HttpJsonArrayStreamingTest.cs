@@ -9,14 +9,12 @@ using Bing.Http.Clients;
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
 /// <summary>
-
-/// 验证 HttpJsonArrayStreamingTest 相关行为的测试。
-
+/// 验证 JSON 数组流式读取的解析、边界和资源释放行为。
 /// </summary>
 public class HttpJsonArrayStreamingTest
 {
     /// <summary>
-    /// 验证解析分块嵌套值并空数组。
+    /// 验证 JSON 数组流按项解析嵌套数据并处理空数组。
     /// </summary>
     [Fact]
     public async Task GetJsonArrayStreamAsync_ParsesChunkedNestedValuesAndEmptyArray()
@@ -45,9 +43,7 @@ public class HttpJsonArrayStreamingTest
     }
 
     /// <summary>
-
-    /// 验证产出首次项目之前正文正文末尾并释放提前停止时。
-
+    /// 验证在响应正文结束前产出首个数组项，并在提前停止时释放正文。
     /// </summary>
     [Fact]
     public async Task GetJsonArrayStreamAsync_YieldsFirstItemBeforeBodyEofAndDisposesOnEarlyStop()
@@ -74,13 +70,7 @@ public class HttpJsonArrayStreamingTest
 
 
     /// <summary>
-
-
-
-    /// 验证限制响应大小上限。
-
-
-
+    /// 验证响应正文超过配置上限时抛出大小限制异常。
     /// </summary>
     [Fact]
     public async Task GetJsonArrayStreamAsync_EnforcesResponseSizeLimit()
@@ -101,9 +91,7 @@ public class HttpJsonArrayStreamingTest
     }
 
     /// <summary>
-
-    /// 验证取消期间读取释放正文。
-
+    /// 验证读取过程中取消操作会释放响应正文。
     /// </summary>
     [Fact]
     public async Task GetJsonArrayStreamAsync_CancellationDuringReadDisposesBody()
@@ -128,9 +116,7 @@ public class HttpJsonArrayStreamingTest
     }
 
     /// <summary>
-
-    /// 验证拒绝无效尾部并是否不重试。
-
+    /// 验证拒绝无效 JSON 尾部，并且请求失败时不重试。
     /// </summary>
     [Fact]
     public async Task GetJsonArrayStreamAsync_RejectsInvalidTailAndDoesNotRetry()
@@ -180,9 +166,7 @@ public class HttpJsonArrayStreamingTest
     }
 
     /// <summary>
-
     /// 验证旧版请求不支持回调时会拒绝该操作。
-
     /// </summary>
     [Fact]
     public void GetJsonArrayStreamAsync_RejectsCallbacksAndLegacyRequests()
@@ -198,10 +182,10 @@ public class HttpJsonArrayStreamingTest
     }
 
     /// <summary>
-
-    /// 处理测试场景中的 JsonContent。
-
+    /// 创建 JSON 媒体类型的 HTTP 内容。
     /// </summary>
+    /// <param name="bytes">要作为 JSON 正文发送的 UTF-8 字节。</param>
+    /// <returns>内容类型为 application/json 的 HTTP 内容。</returns>
     private static HttpContent JsonContent(byte[] bytes)
     {
         var content = new ByteArrayContent(bytes);
@@ -210,18 +194,16 @@ public class HttpJsonArrayStreamingTest
     }
 
     /// <summary>
-
     /// 根据同步回调生成 HTTP 响应的消息处理器。
-
     /// </summary>
     private sealed class StubHandler : HttpMessageHandler
     {
         /// <summary>
-        /// 测试处理流程使用的委托。
+        /// 根据 HTTP 请求生成测试响应的委托。
         /// </summary>
         private readonly Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> _send;
         /// <summary>
-        /// 初始化一个<see cref="StubHandler"/>类型的实例。
+        /// 初始化一个 <see cref="StubHandler"/> 类型的实例。
         /// </summary>
         /// <param name="send">根据请求生成响应的委托。</param>
         public StubHandler(Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> send) => _send = send;
@@ -231,33 +213,38 @@ public class HttpJsonArrayStreamingTest
     }
 
     /// <summary>
-
     /// 表示 JSON 数组流测试中的数据项。
-
     /// </summary>
     public sealed class Item
     {
         /// <summary>
-        /// 保存测试数据对象的名称。
+        /// 获取或设置数组项的名称。
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// 保存测试数据对象的状态。
+        /// 获取或设置数组项的状态。
         /// </summary>
         public State State { get; set; }
     }
 
     /// <summary>
-
     /// 标识 JSON 数组流测试的数据状态。
-
     /// </summary>
-    public enum State { Unknown = 0, Ready = 7 }
+    public enum State
+    {
+        /// <summary>
+        /// 表示未指定状态。
+        /// </summary>
+        Unknown = 0,
+
+        /// <summary>
+        /// 表示数组项已就绪。
+        /// </summary>
+        Ready = 7
+    }
 
     /// <summary>
-
-    /// 记录正文序列化次数和释放状态的 HTTP 内容。
-
+    /// 保存测试响应正文并记录内容释放状态的 HTTP 内容。
     /// </summary>
     private sealed class TrackingContent : HttpContent
     {
@@ -270,7 +257,7 @@ public class HttpJsonArrayStreamingTest
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <summary>
-        /// 初始化一个<see cref="TrackingContent"/>类型的实例。
+        /// 初始化一个 <see cref="TrackingContent"/> 类型的实例。
         /// </summary>
         /// <param name="bytes">响应正文的字节数据。</param>
         public TrackingContent(byte[] bytes) => _bytes = bytes;
@@ -292,18 +279,16 @@ public class HttpJsonArrayStreamingTest
     }
 
     /// <summary>
-
     /// 先返回指定前缀再等待后续数据的流。
-
     /// </summary>
     private sealed class PrefixThenBlockingStream : Stream
     {
         /// <summary>
-        /// 流开头先返回的字节数据。
+        /// 存储流开始时返回的字节前缀。
         /// </summary>
         private readonly byte[] _prefix;
         /// <summary>
-        /// 测试期间记录的调用状态。
+        /// 记录已从前缀流返回的字节数。
         /// </summary>
         private int _offset;
         /// <summary>
@@ -311,9 +296,9 @@ public class HttpJsonArrayStreamingTest
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <summary>
-        /// 初始化一个<see cref="PrefixThenBlockingStream"/>类型的实例。
+        /// 初始化一个 <see cref="PrefixThenBlockingStream"/> 类型的实例。
         /// </summary>
-        /// <param name="prefix">流开头先返回的字节数据。</param>
+        /// <param name="prefix">存储流开始时返回的字节前缀。</param>
         public PrefixThenBlockingStream(byte[] prefix) => _prefix = prefix;
         /// <inheritdoc />
         public override bool CanRead => !IsDisposed;

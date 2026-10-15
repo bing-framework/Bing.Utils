@@ -1,12 +1,12 @@
 namespace Bing.Reflection;
 /// <summary>
-/// 测试类：覆盖 `AssemblyVisitAndTypeVisitGuard` 相关行为。
+/// 验证程序集版本读取及实例创建的空参数检查。
 /// </summary>
 [Trait("Bing.Reflection", "Guards")]
 public class AssemblyVisitAndTypeVisitGuardTest
 {
     /// <summary>
-    /// 测试用例：验证 `GetFileVersion` 在 `NullAssembly` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证读取文件版本时拒绝空程序集。
     /// </summary>
     [Fact]
     public void GetFileVersion_NullAssembly_ThrowsArgumentNullException()
@@ -15,7 +15,7 @@ public class AssemblyVisitAndTypeVisitGuardTest
         ex.ParamName.ShouldBe("assembly");
     }
     /// <summary>
-    /// 测试用例：验证 `GetProductVersion` 在 `NullAssembly` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证读取产品版本时拒绝空程序集。
     /// </summary>
     [Fact]
     public void GetProductVersion_NullAssembly_ThrowsArgumentNullException()
@@ -24,7 +24,7 @@ public class AssemblyVisitAndTypeVisitGuardTest
         ex.ParamName.ShouldBe("assembly");
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `NullType` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证非泛型实例创建入口拒绝空类型。
     /// </summary>
     [Fact]
     public void CreateInstance_NullType_ThrowsArgumentNullException()
@@ -33,7 +33,7 @@ public class AssemblyVisitAndTypeVisitGuardTest
         ex.ParamName.ShouldBe("type");
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstanceGeneric` 在 `NullType` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证泛型实例创建入口拒绝空类型。
     /// </summary>
     [Fact]
     public void CreateInstanceGeneric_NullType_ThrowsArgumentNullException()

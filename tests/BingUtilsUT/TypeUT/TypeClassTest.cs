@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证类型分类及类型关系辅助方法。
+/// </summary>
 [Trait("TypeUT", "TypeClass")]
 public class TypeClassTest
 {

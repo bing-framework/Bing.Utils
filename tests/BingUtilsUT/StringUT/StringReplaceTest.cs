@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符串替换的比较规则、匹配位置和递归替换行为。
+/// </summary>
 [Trait("StringUT", "Strings.Replace")]
 public class StringReplaceTest
 {

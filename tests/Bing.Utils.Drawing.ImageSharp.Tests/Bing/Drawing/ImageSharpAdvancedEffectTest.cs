@@ -5,13 +5,16 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖高级效果 API。
+/// 验证扭曲、腐蚀兼容效果及多尺寸 ICO 编码。
 /// </summary>
 [Trait("Drawing", "ImageSharp.Advanced")]
 public class ImageSharpAdvancedEffectTest
 {
     #region TwistImage
 
+    /// <summary>
+    /// 验证扭曲处理保持图像尺寸。
+    /// </summary>
     [Fact]
     public void TwistImage_ReturnsSameSize()
     {
@@ -21,12 +24,18 @@ public class ImageSharpAdvancedEffectTest
         result.Height.ShouldBe(8);
     }
 
+    /// <summary>
+    /// 验证扭曲处理拒绝空图像。
+    /// </summary>
     [Fact]
     public void TwistImage_NullImage_Throws()
     {
         Should.Throw<ArgumentNullException>(() => ImageSharpHelper.TwistImage(null!, true, 3, 0));
     }
 
+    /// <summary>
+    /// 验证零扭曲幅度时图像尺寸保持不变。
+    /// </summary>
     [Fact]
     public void TwistImage_ZeroMult_PreservesContent()
     {
@@ -40,6 +49,9 @@ public class ImageSharpAdvancedEffectTest
 
     #region SetErosionEffect
 
+    /// <summary>
+    /// 验证腐蚀兼容效果保持图像尺寸。
+    /// </summary>
     [Fact]
     public void SetErosionEffect_ReturnsSameSize()
     {
@@ -49,12 +61,18 @@ public class ImageSharpAdvancedEffectTest
         result.Height.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证腐蚀兼容效果拒绝空图像。
+    /// </summary>
     [Fact]
     public void SetErosionEffect_NullImage_Throws()
     {
         Should.Throw<ArgumentNullException>(() => ImageSharpHelper.SetErosionEffect(null!, 0, 0));
     }
 
+    /// <summary>
+    /// 验证指定正亮度时腐蚀兼容效果保持单像素尺寸。
+    /// </summary>
     [Fact]
     public void SetErosionEffect_PositiveBrightnessProducesBrighterImage()
     {
@@ -68,6 +86,9 @@ public class ImageSharpAdvancedEffectTest
 
     #region ToIcoStream
 
+    /// <summary>
+    /// 验证自定义两种尺寸的 ICO 流从起点开始且文件头标明两帧。
+    /// </summary>
     [Fact]
     public void ToIcoStream_ProducesValidIcoHeader()
     {
@@ -83,12 +104,18 @@ public class ImageSharpAdvancedEffectTest
         bytes[4].ShouldBe((byte)2); // 2 frames
     }
 
+    /// <summary>
+    /// 验证 ICO 编码拒绝空图像。
+    /// </summary>
     [Fact]
     public void ToIcoStream_NullImage_Throws()
     {
         Should.Throw<ArgumentNullException>(() => ImageSharpHelper.ToIcoStream(null!));
     }
 
+    /// <summary>
+    /// 验证默认 ICO 输出的文件头标明六帧。
+    /// </summary>
     [Fact]
     public void ToIcoStream_DefaultSizes_ProducesSixFrames()
     {
@@ -104,6 +131,13 @@ public class ImageSharpAdvancedEffectTest
 
     #region Helper
 
+    /// <summary>
+    /// 创建指定尺寸及填充颜色的高级效果测试图像。
+    /// </summary>
+    /// <param name="width">样例图像的宽度，单位为像素。</param>
+    /// <param name="height">样例图像的高度，单位为像素。</param>
+    /// <param name="fill">填充颜色；为 null 时使用红绿蓝通道均为 128 的灰色。</param>
+    /// <returns>指定尺寸的纯色图像，调用方负责释放。</returns>
     private static Image CreateTestImage(int width, int height, Color? fill = null)
     {
         var image = new Image<Rgba32>(width, height);

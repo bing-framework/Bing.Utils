@@ -7,15 +7,15 @@ using Bing.Http.Clients;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// 验证显式 HTTP 响应缓存接入扩展。
-
 /// </summary>
 public class HttpResponseCacheExtensionsTest
 {
     /// <summary>
-    /// 验证使用一个工厂并保留快照。
+    /// 验证缓存命中复用同一响应快照及实体标签，且不再次调用工厂。
     /// </summary>
     [Fact]
     public async Task ExecuteCached_UsesOneFactoryAndPreservesSnapshot()
@@ -39,10 +39,10 @@ public class HttpResponseCacheExtensionsTest
         second.Headers["ETag"].Single().ShouldBe("\"v1\"");
     }
 
+
+
     /// <summary>
-
-    /// 验证发送仅未命中时并支持显式认证显式启用。
-
+    /// 验证显式允许认证请求缓存后仅在未命中时发送请求。
     /// </summary>
     [Fact]
     public async Task GetCached_SendsOnlyOnMissAndSupportsExplicitAuthenticatedOptIn()
@@ -69,10 +69,10 @@ public class HttpResponseCacheExtensionsTest
         second.Data.ShouldBe("value");
     }
 
+
+
     /// <summary>
-
-    /// 验证拒绝认证请求未使用显式显式启用。
-
+    /// 验证未显式允许缓存认证请求时在发送前拒绝执行。
     /// </summary>
     [Fact]
     public async Task GetCached_RejectsAuthenticatedRequestWithoutExplicitOptIn()
@@ -91,11 +91,13 @@ public class HttpResponseCacheExtensionsTest
         sends.ShouldBe(0);
     }
 
+
+
     /// <summary>
-
-    /// 创建测试用 HTTP 响应。
-
+    /// 创建包含固定实体标签的字符串响应样例。
     /// </summary>
+    /// <param name="value">同时用作结果数据及原始正文的字符串。</param>
+    /// <returns>实体标签为 <c>v1</c> 的成功响应快照。</returns>
     private static HttpResponseResult<string> Response(string value)
         => new HttpResponseResult<string>(HttpStatusCode.OK,
             new Dictionary<string, IReadOnlyList<string>>
@@ -104,10 +106,10 @@ public class HttpResponseCacheExtensionsTest
             },
             new Dictionary<string, IReadOnlyList<string>>(), value, value);
 
+
+
     /// <summary>
-
     /// 根据同步回调生成 HTTP 响应的消息处理器。
-
     /// </summary>
     private sealed class StubHandler : HttpMessageHandler
     {
@@ -116,10 +118,10 @@ public class HttpResponseCacheExtensionsTest
         /// </summary>
         private readonly Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> _send;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="StubHandler"/>类型的实例。
-
+        /// 初始化一个 <see cref="StubHandler"/> 类型的实例。
         /// </summary>
         /// <param name="send">根据请求生成响应的委托。</param>
         public StubHandler(Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> send)

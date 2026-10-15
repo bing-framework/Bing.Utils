@@ -2,18 +2,21 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 namespace Bing.Net.NetworkInformation;
 /// <summary>
-/// 网络接口管理器单元测试
+/// 验证真实网络接口查询、地址筛选、连通性与监控行为。
 /// </summary>
 [Trait("Bing.Net", "NetworkInterfaceManager")]
 public class NetworkInterfaceManagerTest : TestBase
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// 初始化一个 <see cref="NetworkInterfaceManagerTest"/> 类型的实例。
+    /// </summary>
+    /// <param name="output">当前测试使用的输出助手。</param>
     public NetworkInterfaceManagerTest(ITestOutputHelper output) : base(output)
     {
     }
     #region GetIpByInterface 测试
     /// <summary>
-    /// 测试 - GetIpByInterface - 获取以太网接口IP地址
+    /// 验证以太网地址查询返回 IPv4 地址或空字符串。
     /// </summary>
     [Fact]
     public void GetIpByInterface_EthernetType_ReturnsValidIpOrEmpty()
@@ -37,7 +40,7 @@ public class NetworkInterfaceManagerTest : TestBase
         }
     }
     /// <summary>
-    /// 测试 - GetIpByInterface - 获取无线接口IP地址
+    /// 验证无线网络地址查询返回 IPv4 地址或空字符串。
     /// </summary>
     [Fact]
     public void GetIpByInterface_WirelessType_ReturnsValidIpOrEmpty()
@@ -59,7 +62,7 @@ public class NetworkInterfaceManagerTest : TestBase
         }
     }
     /// <summary>
-    /// 测试 - GetIpByInterface - 回环接口类型
+    /// 验证回环接口类型查询返回空字符串。
     /// </summary>
     [Fact]
     public void GetIpByInterface_LoopbackType_ReturnsEmpty()
@@ -74,7 +77,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region GetNetworkInterfaces 测试
     /// <summary>
-    /// 测试 - GetNetworkInterfaces - 获取网络接口信息
+    /// 验证网络接口查询返回有效的活动接口信息。
     /// </summary>
     [Fact]
     public void GetNetworkInterfaces_ReturnsValidInterfaces()
@@ -112,7 +115,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region GetNetworkInterfaceByName 测试
     /// <summary>
-    /// 测试 - GetNetworkInterfaceByName - 按名称查找接口
+    /// 验证按现有接口名称查找返回对应接口。
     /// </summary>
     [Fact]
     public void GetNetworkInterfaceByName_FindsCorrectInterface()
@@ -133,8 +136,9 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"按名称查找接口 '{firstInterface.Name}' 成功");
     }
     /// <summary>
-    /// 测试 - GetNetworkInterfaceByName - 无效接口名称
+    /// 验证无效或不存在的接口名称返回空。
     /// </summary>
+    /// <param name="invalidName">用于验证查找失败的接口名称。</param>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
@@ -149,7 +153,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"无效接口名称 '{invalidName}' 正确返回null");
     }
     /// <summary>
-    /// 测试 - GetNetworkInterfaceByName - 大小写不敏感
+    /// 验证接口名称查找忽略大小写。
     /// </summary>
     [Fact]
     public void GetNetworkInterfaceByName_CaseInsensitive_FindsInterface()
@@ -183,7 +187,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region GetNetworkInterfaceByIp 测试
     /// <summary>
-    /// 测试 - GetNetworkInterfaceByIp - 通过有效IP地址查找接口
+    /// 验证按现有地址查找返回包含该地址的接口。
     /// </summary>
     [Fact]
     public void GetNetworkInterfaceByIp_ValidIpAddress_FindsCorrectInterface()
@@ -206,8 +210,9 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"通过IP地址 '{testIp}' 找到接口: {foundInterface.Name}");
     }
     /// <summary>
-    /// 测试 - GetNetworkInterfaceByIp - 无效IP地址
+    /// 验证无效 IP 地址查询返回空。
     /// </summary>
+    /// <param name="invalidIp">用于验证查找失败的 IP 地址文本。</param>
     [Theory]
     [InlineData("")]
     [InlineData(null)]
@@ -223,7 +228,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"无效IP地址 '{invalidIp}' 正确返回null");
     }
     /// <summary>
-    /// 测试 - GetNetworkInterfaceByIp - 不存在的IP地址
+    /// 验证未匹配到网络接口的 IP 地址查询返回空。
     /// </summary>
     [Fact]
     public void GetNetworkInterfaceByIp_NonExistentIpAddress_ReturnsNull()
@@ -239,7 +244,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region GetPrimaryIpAddress 测试
     /// <summary>
-    /// 测试 - GetPrimaryIpAddress - 获取主要IP地址
+    /// 验证主要地址查询结果为有效 IPv4 地址或非本地 IPv6 地址。
     /// </summary>
     [Fact]
     public void GetPrimaryIpAddress_ReturnsValidIp()
@@ -285,7 +290,7 @@ public class NetworkInterfaceManagerTest : TestBase
         }
     }
     /// <summary>
-    /// 测试 - GetPrimaryIpAddress - IPv6回退机制验证
+    /// 验证主要地址按协议偏好选择并在缺少首选协议时回退。
     /// </summary>
     [Fact]
     public void GetPrimaryIpAddress_IPv6Fallback_WorksCorrectly()
@@ -342,7 +347,7 @@ public class NetworkInterfaceManagerTest : TestBase
         }
     }
     /// <summary>
-    /// 测试 - GetPrimaryIpAddress - 空网络环境处理
+    /// 验证当前网络环境下主要地址查询不会抛出异常且结果非空引用。
     /// </summary>
     [Fact]
     public void GetPrimaryIpAddress_NoNetworkInterfaces_ReturnsEmpty()
@@ -359,7 +364,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"异常处理测试完成 - IPv4: '{ipv4Result}', IPv6: '{ipv6Result}'");
     }
     /// <summary>
-    /// 测试 - GetPrimaryIpAddress - 性能测试
+    /// 验证二十次主要地址查询在五秒内完成。
     /// </summary>
     [Fact]
     public void GetPrimaryIpAddress_Performance_CompletesQuickly()
@@ -377,7 +382,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"性能测试: 20次调用耗时 {sw.ElapsedMilliseconds}ms");
     }
     /// <summary>
-    /// 测试 - GetPrimaryIpAddress - 一致性验证
+    /// 验证连续主要地址查询返回一致结果。
     /// </summary>
     [Fact]
     public void GetPrimaryIpAddress_Consistency_ReturnsSameResultsOnMultipleCalls()
@@ -402,7 +407,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"一致性测试通过 - IPv4: '{firstResult.IPv4}', IPv6: '{firstResult.IPv6}'");
     }
     /// <summary>
-    /// 测试 - GetPrimaryIpAddress - 无活动接口时返回空字符串
+    /// 验证当前网络环境下两种协议偏好的查询结果均非空引用。
     /// </summary>
     [Fact]
     public void GetPrimaryIpAddress_NoActiveInterfaces_ReturnsEmpty()
@@ -417,7 +422,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"GetPrimaryIpAddress 测试完成 - IPv4: '{ipv4}', IPv6: '{ipv6}'");
     }
     /// <summary>
-    /// 测试 - GetPrimaryIpAddress - IPv6链路本地地址处理
+    /// 验证 IPv6 首选查询排除链路本地地址并允许回退到 IPv4。
     /// </summary>
     [Fact]
     public void GetPrimaryIpAddress_IPv6LinkLocal_HandledCorrectly()
@@ -455,7 +460,7 @@ public class NetworkInterfaceManagerTest : TestBase
         }
     }
     /// <summary>
-    /// 测试 - GetPrimaryIpAddress - IPv6环境特殊情况处理
+    /// 验证主要地址查询适应当前系统的 IPv6 地址分布。
     /// </summary>
     [Fact]
     public void GetPrimaryIpAddress_IPv6Environment_HandlesSpecialCases()
@@ -531,7 +536,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region GetActiveNetworkInterfaces 测试
     /// <summary>
-    /// 测试 - GetActiveNetworkInterfaces - 获取活动接口
+    /// 验证活动接口具有网关与地址且按速度降序排列。
     /// </summary>
     [Fact]
     public void GetActiveNetworkInterfaces_ReturnsInterfacesWithGateway()
@@ -566,7 +571,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region IsConnectedToInternetAsync 测试
     /// <summary>
-    /// 测试 - IsConnectedToInternetAsync - 互联网连接检查
+    /// 验证互联网连通性查询能够返回布尔结果。
     /// </summary>
     [Fact]
     public async Task IsConnectedToInternetAsync_ChecksConnectivity()
@@ -580,7 +585,7 @@ public class NetworkInterfaceManagerTest : TestBase
         isConnected.ShouldBeOfType<bool>();
     }
     /// <summary>
-    /// 测试 - IsConnectedToInternetAsync - 超时设置
+    /// 验证互联网连通性查询在设定超时的允许余量内完成。
     /// </summary>
     [Fact]
     public async Task IsConnectedToInternetAsync_WithTimeout_CompletesWithinTime()
@@ -599,7 +604,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region GetAllIPv4Addresses 测试
     /// <summary>
-    /// 测试 - GetAllIPv4Addresses - 获取所有IPv4地址
+    /// 验证默认 IPv4 地址枚举排除回环并返回有效地址。
     /// </summary>
     [Fact]
     public void GetAllIPv4Addresses_ReturnsValidAddresses()
@@ -623,7 +628,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"IPv4地址: {string.Join(", ", addresses)}");
     }
     /// <summary>
-    /// 测试 - GetAllIPv4Addresses - 包含回环地址选项
+    /// 验证包含回环选项不会减少 IPv4 地址数量。
     /// </summary>
     [Fact]
     public void GetAllIPv4Addresses_IncludeLoopback_ReturnsLoopbackAddress()
@@ -647,7 +652,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region GetAllIPv6Addresses 测试
     /// <summary>
-    /// 测试 - GetAllIPv6Addresses - 获取所有IPv6地址（默认排除）
+    /// 验证默认 IPv6 地址枚举排除回环和链路本地地址。
     /// </summary>
     [Fact]
     public void GetAllIPv6Addresses_DefaultExclusions_ReturnsFilteredAddresses()
@@ -668,7 +673,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"IPv6地址（排除回环和链路本地）: {string.Join(", ", addresses)}");
     }
     /// <summary>
-    /// 测试 - GetAllIPv6Addresses - 包含回环地址
+    /// 验证包含回环选项不会减少 IPv6 地址数量。
     /// </summary>
     [Fact]
     public void GetAllIPv6Addresses_IncludeLoopback_ReturnsLoopbackAddress()
@@ -688,7 +693,7 @@ public class NetworkInterfaceManagerTest : TestBase
         addressesIncludeLoopback.Count.ShouldBeGreaterThanOrEqualTo(addressesExcludeLoopback.Count);
     }
     /// <summary>
-    /// 测试 - GetAllIPv6Addresses - 包含链路本地地址
+    /// 验证包含链路本地选项不会减少 IPv6 地址数量。
     /// </summary>
     [Fact]
     public void GetAllIPv6Addresses_IncludeLinkLocal_ReturnsLinkLocalAddresses()
@@ -710,8 +715,10 @@ public class NetworkInterfaceManagerTest : TestBase
         addressesIncludeLinkLocal.Count.ShouldBeGreaterThanOrEqualTo(addressesExcludeLinkLocal.Count);
     }
     /// <summary>
-    /// 测试 - GetAllIPv6Addresses - 所有选项组合
+    /// 验证 IPv6 地址枚举遵循回环及链路本地筛选选项。
     /// </summary>
+    /// <param name="excludeLoopback">是否排除 IPv6 回环地址。</param>
+    /// <param name="excludeLinkLocal">是否排除 IPv6 链路本地地址。</param>
     [Theory]
     [InlineData(true, true)]   // 排除回环和链路本地
     [InlineData(true, false)]  // 排除回环，包含链路本地
@@ -739,7 +746,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"选项(排除回环={excludeLoopback}, 排除链路本地={excludeLinkLocal}): {addresses.Count} 个地址");
     }
     /// <summary>
-    /// 测试 - GetAllIPv6Addresses - 链路本地地址过滤验证
+    /// 验证链路本地地址过滤结果及地址数量变化。
     /// </summary>
     [Fact]
     public void GetAllIPv6Addresses_LinkLocalFiltering_WorksAsExpected()
@@ -779,7 +786,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region RefreshNetworkInterfaces 测试
     /// <summary>
-    /// 测试 - RefreshNetworkInterfaces - 刷新网络接口信息
+    /// 验证刷新后的接口信息与当前网络状态一致。
     /// </summary>
     [Fact]
     public void RefreshNetworkInterfaces_ReturnsUpdatedInterfaces()
@@ -817,8 +824,10 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region IsPortListening 测试
     /// <summary>
-    /// 测试 - IsPortListening - 端口监听检查
+    /// 验证常用端口监听查询返回布尔结果。
     /// </summary>
+    /// <param name="port">需要查询的测试端口号。</param>
+    /// <param name="protocol">需要查询的传输协议。</param>
     [Theory]
     [InlineData(80, ProtocolType.Tcp)]   // HTTP
     [InlineData(443, ProtocolType.Tcp)]  // HTTPS
@@ -832,7 +841,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"端口 {port}/{protocol} 监听状态: {isListening}");
     }
     /// <summary>
-    /// 测试 - IsPortListening - 无效协议类型
+    /// 验证不支持的 ICMP 协议查询返回否定结果。
     /// </summary>
     [Fact]
     public void IsPortListening_InvalidProtocol_ReturnsFalse()
@@ -844,8 +853,9 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine("ICMP协议检查正确返回false");
     }
     /// <summary>
-    /// 测试 - IsPortListening - 边界端口号
+    /// 验证边界端口的 TCP 与 UDP 监听查询正常返回。
     /// </summary>
+    /// <param name="port">需要查询的边界端口号。</param>
     [Theory]
     [InlineData(1)]      // 最小端口
     [InlineData(65535)]  // 最大端口
@@ -862,7 +872,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region GetNetworkStatistics 测试
     /// <summary>
-    /// 测试 - GetNetworkStatistics - 获取网络统计信息
+    /// 验证网络统计非负且总量等于发送与接收之和。
     /// </summary>
     [Fact]
     public void GetNetworkStatistics_ReturnsValidStatistics()
@@ -885,7 +895,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"总数据包: {stats.TotalPackets:N0} 个");
     }
     /// <summary>
-    /// 测试 - GetNetworkStatistics - 多次调用一致性
+    /// 验证连续网络统计累计值不减少且接口数量保持一致。
     /// </summary>
     [Fact]
     public void GetNetworkStatistics_MultipleCalls_ShowsIncreasingValues()
@@ -911,7 +921,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region TestNetworkQualityAsync 测试
     /// <summary>
-    /// 测试 - TestNetworkQualityAsync - 网络质量测试
+    /// 验证网络质量结果的成功率、丢包率与延迟数据。
     /// </summary>
     [Fact]
     public async Task TestNetworkQualityAsync_ReturnsQualityInfo()
@@ -940,8 +950,9 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"网络质量测试结果: {quality}");
     }
     /// <summary>
-    /// 测试 - TestNetworkQualityAsync - 不同重试次数
+    /// 验证不同重试次数的质量查询返回合法成功率。
     /// </summary>
+    /// <param name="retryCount">网络质量测试使用的重试次数。</param>
     [Theory]
     [InlineData(1)]
     [InlineData(3)]
@@ -960,7 +971,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region PingAsync 测试
     /// <summary>
-    /// 测试 - PingAsync - Ping测试
+    /// 验证 Ping 的包计数、丢包率及往返时间数据。
     /// </summary>
     [Fact]
     public async Task PingAsync_ReturnsValidResult()
@@ -997,8 +1008,9 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"Ping测试结果: {result}");
     }
     /// <summary>
-    /// 测试 - PingAsync - 不同目标主机
+    /// 验证不同目标的 Ping 结果保留目标名称与发送计数。
     /// </summary>
+    /// <param name="target">待探测的 IP 地址或主机名称。</param>
     [Theory]
     [InlineData("8.8.8.8")]        // Google DNS
     [InlineData("1.1.1.1")]        // Cloudflare DNS
@@ -1015,7 +1027,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"Ping {target}: 发送={result.PacketsSent}, 接收={result.PacketsReceived}, 平均延迟={result.AverageRoundtripTime}ms");
     }
     /// <summary>
-    /// 测试 - PingAsync - 无效目标主机
+    /// 验证无法解析的目标返回零接收包与完全丢包结果。
     /// </summary>
     [Fact]
     public async Task PingAsync_InvalidTarget_ReturnsZeroSuccess()
@@ -1034,7 +1046,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region StartNetworkMonitoring 测试
     /// <summary>
-    /// 测试 - StartNetworkMonitoring - 网络监控
+    /// 验证网络监控能够启动、取消并提供有效变化数据。
     /// </summary>
     [Fact]
     public async Task StartNetworkMonitoring_CanStartAndStop()
@@ -1072,7 +1084,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"监控运行完成，检测到 {changeCount} 次变化");
     }
     /// <summary>
-    /// 测试 - StartNetworkMonitoring - 监控间隔设置
+    /// 验证指定检查间隔的网络监控能够取消。
     /// </summary>
     [Fact]
     public async Task StartNetworkMonitoring_DifferentIntervals_WorksCorrectly()
@@ -1097,7 +1109,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"监控间隔测试: 运行{sw.ElapsedMilliseconds}ms, 回调{callCount}次");
     }
     /// <summary>
-    /// 测试 - StartNetworkMonitoring - 空回调处理
+    /// 验证空回调的网络监控能够启动并取消。
     /// </summary>
     [Fact]
     public async Task StartNetworkMonitoring_NullCallback_DoesNotThrow()
@@ -1112,7 +1124,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region DetectNetworkChanges 间接测试
     /// <summary>
-    /// 测试 - DetectNetworkChanges - 通过监控间接测试
+    /// 验证网络变化检测使用的接口快照包含完整地址集合。
     /// </summary>
     [Fact]
     public void DetectNetworkChanges_ThroughMonitoring_WorksCorrectly()
@@ -1139,7 +1151,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region 性能测试
     /// <summary>
-    /// 测试 - 性能测试
+    /// 验证六十次网络查询在七秒内完成。
     /// </summary>
     [Fact]
     public void NetworkOperations_Performance_CompletesWithinReasonableTime()
@@ -1160,7 +1172,7 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine($"性能测试: 60次网络操作耗时 {sw.ElapsedMilliseconds}ms");
     }
     /// <summary>
-    /// 测试 - 并发访问安全性
+    /// 验证五个并发网络查询任务均无异常完成。
     /// </summary>
     [Fact]
     public async Task NetworkOperations_ConcurrentAccess_ThreadSafe()
@@ -1207,7 +1219,7 @@ public class NetworkInterfaceManagerTest : TestBase
     #endregion
     #region 边界条件和异常处理测试
     /// <summary>
-    /// 测试 - 异常处理 - 网络操作异常恢复
+    /// 验证常用网络查询与刷新操作不会向外抛出异常。
     /// </summary>
     [Fact]
     public void NetworkOperations_ExceptionHandling_GracefulRecovery()
@@ -1225,8 +1237,9 @@ public class NetworkInterfaceManagerTest : TestBase
         Output.WriteLine("异常处理测试通过 - 所有方法都有适当的异常处理");
     }
     /// <summary>
-    /// 测试 - 边界条件 - 极端参数值
+    /// 验证极端端口值的监听查询不会抛出异常。
     /// </summary>
+    /// <param name="port">用于验证边界处理的端口数值。</param>
     [Theory]
     [InlineData(-1)]
     [InlineData(0)]
@@ -1244,7 +1257,7 @@ public class NetworkInterfaceManagerTest : TestBase
     }
     #endregion
     /// <summary>
-    /// 测试 - IPv6地址类型分类和统计
+    /// 验证主要 IPv6 地址排除按前缀分类出的链路本地地址。
     /// </summary>
     [Fact]
     public void IPv6AddressTypes_Classification_WorksCorrectly()

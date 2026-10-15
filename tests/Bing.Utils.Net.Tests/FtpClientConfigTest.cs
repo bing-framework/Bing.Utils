@@ -1,14 +1,14 @@
 namespace Bing.Net.FTP;
 
 /// <summary>
-/// FtpClientConfig 单元测试
+/// 验证 FTP 客户端配置的默认值、属性赋值和代理创建行为。
 /// </summary>
 public class FtpClientConfigTest
 {
     #region 默认值验证
 
     /// <summary>
-    /// 测试目的：验证 FtpClientConfig 默认端口为 21
+    /// 验证默认控制连接端口为 21。
     /// </summary>
     [Fact]
     public void DefaultPort_Is21()
@@ -21,7 +21,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证连接超时默认为 100000 毫秒
+    /// 验证默认连接超时为 100000 毫秒。
     /// </summary>
     [Fact]
     public void DefaultTimeout_Is100000()
@@ -34,7 +34,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证读写超时默认为 300000 毫秒
+    /// 验证默认读写超时为 300000 毫秒。
     /// </summary>
     [Fact]
     public void DefaultReadWriteTimeout_Is300000()
@@ -47,7 +47,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证远程目录默认为 "/"
+    /// 验证默认远程目录为根目录 `/`。
     /// </summary>
     [Fact]
     public void DefaultRemoteDirectory_IsRootSlash()
@@ -60,7 +60,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证字符集默认为 UTF-8
+    /// 验证默认字符集名称为 UTF-8。
     /// </summary>
     [Fact]
     public void DefaultCharsetName_IsUtf8()
@@ -73,7 +73,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证默认不启用 SSL
+    /// 验证默认未启用 SSL。
     /// </summary>
     [Fact]
     public void DefaultEnableSsl_IsFalse()
@@ -86,7 +86,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证默认使用二进制模式
+    /// 验证默认使用二进制传输模式。
     /// </summary>
     [Fact]
     public void DefaultUseBinary_IsTrue()
@@ -99,7 +99,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证默认使用被动模式
+    /// 验证默认使用被动连接模式。
     /// </summary>
     [Fact]
     public void DefaultUsePassive_IsTrue()
@@ -112,7 +112,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证默认 KeepAlive 为 true
+    /// 验证默认启用连接保持。
     /// </summary>
     [Fact]
     public void DefaultKeepAlive_IsTrue()
@@ -125,7 +125,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证默认加密类型为 None
+    /// 验证默认加密类型为 <see cref="EncryptionType.None"/>。
     /// </summary>
     [Fact]
     public void DefaultEncryptionType_IsNone()
@@ -142,7 +142,7 @@ public class FtpClientConfigTest
     #region 属性设置
 
     /// <summary>
-    /// 测试目的：验证配置属性可以被设置并读取
+    /// 验证主机、端口、凭据和加密模式可通过配置对象读回。
     /// </summary>
     [Fact]
     public void SetProperties_CanBeReadBack()
@@ -170,7 +170,7 @@ public class FtpClientConfigTest
     #region GetProxy
 
     /// <summary>
-    /// 测试目的：验证未设置代理时 GetProxy 返回 null
+    /// 验证未配置代理主机时不创建代理对象。
     /// </summary>
     [Fact]
     public void GetProxy_WhenProxyHostIsEmpty_ReturnsNull()
@@ -186,7 +186,7 @@ public class FtpClientConfigTest
     }
 
     /// <summary>
-    /// 测试目的：验证设置代理主机后 GetProxy 返回非 null
+    /// 验证配置代理主机和端口后可创建代理对象。
     /// </summary>
     [Fact]
     public void GetProxy_WhenProxyHostSet_ReturnsNonNull()
@@ -209,12 +209,12 @@ public class FtpClientConfigTest
 }
 
 /// <summary>
-/// FtpClientException 单元测试
+/// 验证 FTP 客户端异常的消息、内部异常和基类行为。
 /// </summary>
 public class FtpClientExceptionTest
 {
     /// <summary>
-    /// 测试目的：验证构造函数正确设置 Message
+    /// 验证异常构造函数保留传入的消息。
     /// </summary>
     [Fact]
     public void Constructor_WithMessage_SetsMessage()
@@ -228,7 +228,7 @@ public class FtpClientExceptionTest
     }
 
     /// <summary>
-    /// 测试目的：验证传入 null 消息时 Message 为空字符串
+    /// 验证传入 null 消息时异常消息为空字符串。
     /// </summary>
     [Fact]
     public void Constructor_NullMessage_MessageIsEmpty()
@@ -241,7 +241,7 @@ public class FtpClientExceptionTest
     }
 
     /// <summary>
-    /// 测试目的：验证构造函数可以包装内部异常
+    /// 验证异常构造函数保留传入的内部异常。
     /// </summary>
     [Fact]
     public void Constructor_WithInnerException_SetsInnerException()
@@ -258,7 +258,7 @@ public class FtpClientExceptionTest
     }
 
     /// <summary>
-    /// 测试目的：验证 FtpClientException 继承自 Exception
+    /// 验证 FTP 客户端异常可作为标准 <see cref="Exception"/> 使用。
     /// </summary>
     [Fact]
     public void FtpClientException_IsException()
@@ -272,13 +272,15 @@ public class FtpClientExceptionTest
 }
 
 /// <summary>
-/// EncryptionType 枚举 单元测试
+/// 验证 <see cref="EncryptionType"/> 成员的数值和数量。
 /// </summary>
 public class EncryptionTypeTest
 {
     /// <summary>
-    /// 测试目的：验证枚举值的整数编码正确
+    /// 验证加密类型成员使用预期的整数值。
     /// </summary>
+    /// <param name="type">要检查的加密类型。</param>
+    /// <param name="expected">预期的枚举整数值。</param>
     [Theory]
     [InlineData(EncryptionType.None, 0)]
     [InlineData(EncryptionType.Implicit, 1)]
@@ -290,7 +292,7 @@ public class EncryptionTypeTest
     }
 
     /// <summary>
-    /// 测试目的：验证枚举包含三个值
+    /// 验证加密类型当前包含三个成员。
     /// </summary>
     [Fact]
     public void EncryptionType_HasThreeValues()

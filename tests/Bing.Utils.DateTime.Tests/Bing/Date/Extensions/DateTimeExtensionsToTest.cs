@@ -2,18 +2,21 @@ using Bing.Tests;
 using NodaTime;
 namespace Bing.Date.Extensions;
 /// <summary>
-/// 日期时间 扩展 转换 测试
+/// 日期时间种类、NodaTime 类型和字节数组转换测试。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.To")]
 public class DateTimeExtensionsToTest : TestBase
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// 初始化一个 <see cref="DateTimeExtensionsToTest"/> 类型的实例。
+    /// </summary>
+    /// <param name="output">测试输出辅助器。</param>
     public DateTimeExtensionsToTest(ITestOutputHelper output) : base(output)
     {
     }
     #region ToUtc
     /// <summary>
-    /// 测试 - ToUtc - 转换本地时间为UTC时间格式
+    /// 验证标记为 UTC 时保留原日期时间分量。
     /// </summary>
     [Fact]
     public void ToUtc_ConvertLocalToUtc_SetsKindToUtc()
@@ -32,7 +35,7 @@ public class DateTimeExtensionsToTest : TestBase
         utcTime.Second.ShouldBe(localTime.Second);
     }
     /// <summary>
-    /// 测试 - ToUtc - 保留原始时间值不变
+    /// 验证标记为 UTC 时保留原时间文本。
     /// </summary>
     [Fact]
     public void ToUtc_PreservesTimeValue()
@@ -45,8 +48,9 @@ public class DateTimeExtensionsToTest : TestBase
         utcTime.ToString("yyyy-MM-dd HH:mm:ss").ShouldBe(originalTime.ToString("yyyy-MM-dd HH:mm:ss"));
     }
     /// <summary>
-    /// 测试 - ToUtc - 不同Kind类型的转换
+    /// 验证不同日期时间种类均可重新标记为 UTC。
     /// </summary>
+    /// <param name="kind">源日期时间种类。</param>
     [Theory]
     [InlineData(DateTimeKind.Local)]
     [InlineData(DateTimeKind.Unspecified)]
@@ -63,7 +67,7 @@ public class DateTimeExtensionsToTest : TestBase
     #endregion
     #region ToCst
     /// <summary>
-    /// 测试 - ToCst - 返回正确的中国标准时间
+    /// 验证中国标准时间转换结果的种类为未指定。
     /// </summary>
     [Fact]
     public void ToCst_ReturnsChineseStandardTime()
@@ -81,7 +85,7 @@ public class DateTimeExtensionsToTest : TestBase
     #endregion
     #region ToEpochTimeSpan
     /// <summary>
-    /// 测试 - ToEpochTimeSpan - 计算与Unix纪元的时间差
+    /// 验证计算指定 UTC 日期与 Unix 纪元的时间差。
     /// </summary>
     [Fact]
     public void ToEpochTimeSpan_CalculatesCorrectTimespan()
@@ -97,7 +101,7 @@ public class DateTimeExtensionsToTest : TestBase
         actualSpan.TotalHours.ShouldBe(expectedSpan.TotalHours);
     }
     /// <summary>
-    /// 测试 - ToEpochTimeSpan - 对Unix纪元前的日期计算负值
+    /// 验证纪元之前的日期产生负时间差。
     /// </summary>
     [Fact]
     public void ToEpochTimeSpan_BeforeEpoch_ReturnsNegativeTimespan()
@@ -112,7 +116,7 @@ public class DateTimeExtensionsToTest : TestBase
     #endregion
     #region ToLocalDateTime
     /// <summary>
-    /// 测试 - ToLocalDateTime - 转换为NodaTime LocalDateTime
+    /// 验证转换为 NodaTime 本地日期时间时保留各分量。
     /// </summary>
     [Fact]
     public void ToLocalDateTime_ConvertToNodaTimeLocalDateTime()
@@ -133,7 +137,7 @@ public class DateTimeExtensionsToTest : TestBase
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - ToLocalDateTime - 边界值测试
+    /// 验证最小和接近最大日期可转换为 NodaTime 本地日期时间。
     /// </summary>
     [Fact]
     public void ToLocalDateTime_EdgeCases()
@@ -158,7 +162,7 @@ public class DateTimeExtensionsToTest : TestBase
     #endregion
     #region ToLocalDate
     /// <summary>
-    /// 测试 - ToLocalDate - 转换为NodaTime LocalDate
+    /// 验证转换为 NodaTime 本地日期时保留年月日。
     /// </summary>
     [Fact]
     public void ToLocalDate_ConvertToNodaTimeLocalDate()
@@ -175,7 +179,7 @@ public class DateTimeExtensionsToTest : TestBase
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - ToLocalDate - 时间部分被忽略
+    /// 验证转换为 NodaTime 本地日期时忽略时间部分。
     /// </summary>
     [Fact]
     public void ToLocalDate_IgnoresTimeComponent()
@@ -192,7 +196,7 @@ public class DateTimeExtensionsToTest : TestBase
     #endregion
     #region ToNodaLocalTime
     /// <summary>
-    /// 测试 - ToNodaLocalTime - 转换为NodaTime LocalTime
+    /// 验证转换为 NodaTime 本地时间时保留毫秒精度。
     /// </summary>
     [Fact]
     public void ToNodaLocalTime_ConvertToNodaTimeLocalTime()
@@ -210,7 +214,7 @@ public class DateTimeExtensionsToTest : TestBase
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - ToNodaLocalTime - 日期部分被忽略
+    /// 验证转换为 NodaTime 本地时间时忽略日期部分。
     /// </summary>
     [Fact]
     public void ToNodaLocalTime_IgnoresDateComponent()
@@ -227,7 +231,7 @@ public class DateTimeExtensionsToTest : TestBase
     #endregion
     #region ToBytes
     /// <summary>
-    /// 测试 - ToBytes - 成功转换日期时间为字节数组
+    /// 验证日期时间编码为八字节二进制表示。
     /// </summary>
     [Fact]
     public void ToBytes_ReturnsCorrectBytes()
@@ -243,7 +247,7 @@ public class DateTimeExtensionsToTest : TestBase
         actualBytes.ShouldBe(expectedBytes);
     }
     /// <summary>
-    /// 测试 - ToBytes - 最小日期值转换
+    /// 验证日期最小值的二进制编码。
     /// </summary>
     [Fact]
     public void ToBytes_MinValue_ReturnsCorrectBytes()
@@ -258,7 +262,7 @@ public class DateTimeExtensionsToTest : TestBase
         actualBytes.ShouldBe(expectedBytes);
     }
     /// <summary>
-    /// 测试 - ToBytes - 最大日期值转换
+    /// 验证日期最大值的二进制编码。
     /// </summary>
     [Fact]
     public void ToBytes_MaxValue_ReturnsCorrectBytes()
@@ -273,8 +277,9 @@ public class DateTimeExtensionsToTest : TestBase
         actualBytes.ShouldBe(expectedBytes);
     }
     /// <summary>
-    /// 测试 - ToBytes - 不同Kind属性的日期时间转换
+    /// 验证不同日期时间种类的二进制编码均可还原。
     /// </summary>
+    /// <param name="kind">待编码的日期时间种类。</param>
     [Theory]
     [InlineData(DateTimeKind.Utc)]
     [InlineData(DateTimeKind.Local)]
@@ -294,7 +299,7 @@ public class DateTimeExtensionsToTest : TestBase
         restoredDate.Kind.ShouldBe(kind);
     }
     /// <summary>
-    /// 测试 - ToBytes - 验证转换的可逆性
+    /// 验证日期时间及其种类可通过字节数组往返还原。
     /// </summary>
     [Fact]
     public void ToBytes_IsReversible()

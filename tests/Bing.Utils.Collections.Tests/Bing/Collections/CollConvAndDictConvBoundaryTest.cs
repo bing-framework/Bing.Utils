@@ -4,13 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 namespace Bing.Collections;
 /// <summary>
-/// 测试类：覆盖 `CollConvAndDictConvBoundary` 相关行为。
+/// 集合与字典转换的空值、快照和排序契约测试。
 /// </summary>
 [Trait("CollectionsUT", "CollConvAndDictConv")]
 public class CollConvAndDictConvBoundaryTest
 {
     /// <summary>
-    /// 测试用例：验证 `ToEnumerable` 在 `NullEnumerator` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证枚举器转换拒绝空引用并报告参数名。
     /// </summary>
     [Fact]
     public void ToEnumerable_NullEnumerator_ThrowsArgumentNullException()
@@ -20,7 +20,7 @@ public class CollConvAndDictConvBoundaryTest
         ex.ParamName.ShouldBe("enumerator");
     }
     /// <summary>
-    /// 测试用例：验证 `ToEnumerableAfter` 在 `EnumeratorNotStarted` 场景下，结果为 `CurrentlyThrowsInvalidOperationException`。
+    /// 验证尚未开始的枚举器不能从当前位置转换。
     /// </summary>
     [Fact]
     public void ToEnumerableAfter_EnumeratorNotStarted_CurrentlyThrowsInvalidOperationException()
@@ -29,7 +29,7 @@ public class CollConvAndDictConvBoundaryTest
         Should.Throw<InvalidOperationException>(() => CollConv.ToEnumerableAfter(enumerator).ToArray());
     }
     /// <summary>
-    /// 测试用例：验证 `AsOptionals` 在 `NullSource` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证可选值序列转换拒绝空源并报告参数名。
     /// </summary>
     [Fact]
     public void AsOptionals_NullSource_ThrowsArgumentNullException()
@@ -39,7 +39,7 @@ public class CollConvAndDictConvBoundaryTest
         ex.ParamName.ShouldBe("source");
     }
     /// <summary>
-    /// 测试用例：验证 `AsEnumerableProxy` 在 `NullSource` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证可枚举代理转换拒绝空源并报告参数名。
     /// </summary>
     [Fact]
     public void AsEnumerableProxy_NullSource_ThrowsArgumentNullException()
@@ -49,7 +49,7 @@ public class CollConvAndDictConvBoundaryTest
         ex.ParamName.ShouldBe("enumerable");
     }
     /// <summary>
-    /// 测试用例：验证 `AsEnumerableProxy` 在 `ValidSource` 场景下，结果为 `EnumeratesAllItems`。
+    /// 验证可枚举代理保留全部源元素。
     /// </summary>
     [Fact]
     public void AsEnumerableProxy_ValidSource_EnumeratesAllItems()
@@ -59,7 +59,7 @@ public class CollConvAndDictConvBoundaryTest
         proxy.ToArray().ShouldBe(new[] { 1, 2, 3 });
     }
     /// <summary>
-    /// 测试用例：验证 `AsNullWhenEmpty` 在 `NullSource` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 验证当前实现对空源引用抛出空引用异常。
     /// </summary>
     [Fact]
     public void AsNullWhenEmpty_NullSource_CurrentlyThrowsNullReferenceException()
@@ -68,7 +68,7 @@ public class CollConvAndDictConvBoundaryTest
         Should.Throw<NullReferenceException>(() => CollConv.AsNullWhenEmpty(source));
     }
     /// <summary>
-    /// 测试用例：验证 `AsNullWhenEmpty` 在 `NonEmptySource` 场景下，结果为 `ReturnsSingleUseEnumerable`。
+    /// 验证非空转换结果只能完整枚举一次。
     /// </summary>
     [Fact]
     public void AsNullWhenEmpty_NonEmptySource_ReturnsSingleUseEnumerable()
@@ -80,7 +80,7 @@ public class CollConvAndDictConvBoundaryTest
         Should.Throw<InvalidOperationException>(() => result.ToArray());
     }
     /// <summary>
-    /// 测试用例：验证 `ShortcutToList` 在 `WithNullPredicate` 场景下，结果为 `ReturnsAllItems`。
+    /// 验证列表转换的空谓词保留全部元素。
     /// </summary>
     [Fact]
     public void ShortcutToList_WithNullPredicate_ReturnsAllItems()
@@ -89,7 +89,7 @@ public class CollConvAndDictConvBoundaryTest
         result.ShouldBe(new[] { 1, 2, 3 });
     }
     /// <summary>
-    /// 测试用例：验证 `DictConvCast` 在 `WithNullSource` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证字典投影转换拒绝空源并报告参数名。
     /// </summary>
     [Fact]
     public void DictConvCast_WithNullSource_ThrowsArgumentNullException()
@@ -99,7 +99,7 @@ public class CollConvAndDictConvBoundaryTest
         ex.ParamName.ShouldBe("source");
     }
     /// <summary>
-    /// 测试用例：验证 `DictConvCast` 在 `ReturnsLiveProjectionOfSource` 场景下的行为。
+    /// 验证字典投影反映源字典后续追加的数据。
     /// </summary>
     [Fact]
     public void DictConvCast_ReturnsLiveProjectionOfSource()
@@ -111,7 +111,7 @@ public class CollConvAndDictConvBoundaryTest
         casted["b"].ShouldBe("2");
     }
     /// <summary>
-    /// 测试用例：验证 `DictConvToDictionary` 在 `HashtableNull` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 验证当前哈希表转换对空引用抛出空引用异常。
     /// </summary>
     [Fact]
     public void DictConvToDictionary_HashtableNull_CurrentlyThrowsNullReferenceException()
@@ -120,7 +120,7 @@ public class CollConvAndDictConvBoundaryTest
         Should.Throw<NullReferenceException>(() => DictConv.ToDictionary<string, int>(table));
     }
     /// <summary>
-    /// 测试用例：验证 `DictConvToDictionary` 在 `WithNullComparer` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证字典转换拒绝空比较器并报告参数名。
     /// </summary>
     [Fact]
     public void DictConvToDictionary_WithNullComparer_ThrowsArgumentNullException()
@@ -130,8 +130,9 @@ public class CollConvAndDictConvBoundaryTest
         ex.ParamName.ShouldBe("equalityComparer");
     }
     /// <summary>
-    /// 测试用例：验证 `DictConvToTuple` 在 `WithNullSource` 场景下，结果为 `CurrentBehaviorDependsOnTargetFramework`。
+    /// 验证空字典转换为元组时按目标框架抛出对应异常。
     /// </summary>
+    /// <remarks>.NET 6 及以上版本抛出空引用异常；其他目标框架抛出参数空值异常并报告源参数名。</remarks>
     [Fact]
     public void DictConvToTuple_WithNullSource_CurrentBehaviorDependsOnTargetFramework()
     {
@@ -144,7 +145,7 @@ public class CollConvAndDictConvBoundaryTest
 #endif
     }
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyDictConv` 在 `ToDictionaryByKeySelector` 场景下，结果为 `ReturnsExpectedReadOnlyDictionary`。
+    /// 验证按键选择器创建只读字典。
     /// </summary>
     [Fact]
     public void ReadOnlyDictConv_ToDictionaryByKeySelector_ReturnsExpectedReadOnlyDictionary()
@@ -157,7 +158,7 @@ public class CollConvAndDictConvBoundaryTest
         result.ShouldBeOfType<ReadOnlyDictionary<char, string>>();
     }
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyDictConv` 在 `ToDictionaryWithNullKeySelector` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证只读字典转换拒绝空键选择器并报告参数名。
     /// </summary>
     [Fact]
     public void ReadOnlyDictConv_ToDictionaryWithNullKeySelector_ThrowsArgumentNullException()
@@ -168,7 +169,7 @@ public class CollConvAndDictConvBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `DictConv.ToDictionary(Hashtable)` 在 `ValidHashtable` 场景下，结果为 `ReturnsTypedSnapshot`。
+    /// 验证哈希表转换生成强类型字典快照。
     /// </summary>
     [Fact]
     public void DictConvToDictionary_ValidHashtable_ReturnsTypedSnapshot()
@@ -188,7 +189,7 @@ public class CollConvAndDictConvBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `DictConv.ToDictionary(Hashtable)` 在 `InvalidKeyCast` 场景下，结果为 `ThrowsInvalidCastException`。
+    /// 验证哈希表键类型不兼容时抛出转换异常。
     /// </summary>
     [Fact]
     public void DictConvToDictionary_HashtableInvalidKeyCast_ThrowsInvalidCastException()
@@ -202,7 +203,7 @@ public class CollConvAndDictConvBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `DictConv.ToDictionary(IEnumerable)` 在 `DuplicateKeys` 场景下，结果为 `ThrowsArgumentException`。
+    /// 验证重复键的键值对序列不能转换为字典。
     /// </summary>
     [Fact]
     public void DictConvToDictionary_KeyValueWithDuplicateKeys_ThrowsArgumentException()
@@ -217,7 +218,7 @@ public class CollConvAndDictConvBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `DictConv.ToDictionary(IEnumerable, comparer)` 在 `CaseInsensitiveComparer` 场景下，结果为 `UsesComparerForLookup`。
+    /// 验证转换字典使用指定比较器且不受源列表后续追加影响。
     /// </summary>
     [Fact]
     public void DictConvToDictionary_WithComparer_UsesComparerForLookup()
@@ -237,7 +238,7 @@ public class CollConvAndDictConvBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `DictConv.ToTuple` 在 `ValidSource` 场景下，结果为 `ReturnsAllPairs`。
+    /// 验证字典键值对全部转换为元组。
     /// </summary>
     [Fact]
     public void DictConvToTuple_ValidSource_ReturnsAllPairs()
@@ -256,7 +257,7 @@ public class CollConvAndDictConvBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `DictConv.ToSortedArrayByValue` 在 `Descending` 场景下，结果为 `ReturnsDescendingByValue`。
+    /// 验证按字典值降序生成键值对数组。
     /// </summary>
     [Fact]
     public void DictConvToSortedArrayByValue_Descending_ReturnsDescendingByValue()
@@ -274,7 +275,7 @@ public class CollConvAndDictConvBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `DictConv.ToSortedArrayByKey` 在 `UnorderedKeys` 场景下，结果为 `ReturnsAscendingByKey`。
+    /// 验证按字典键升序生成键值对数组。
     /// </summary>
     [Fact]
     public void DictConvToSortedArrayByKey_UnorderedKeys_ReturnsAscendingByKey()

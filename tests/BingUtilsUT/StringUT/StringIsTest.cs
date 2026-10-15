@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符串格式、字符组成和常见文本场景的判定。
+/// </summary>
 [Trait("StringUT", "Strings.Is")]
 public class StringIsTest
 {

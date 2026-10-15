@@ -5,15 +5,15 @@ using Bing.Http;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// 分片调度器的并发、重试、取消和跳过测试。
-
 /// </summary>
 public class HttpDownloadSegmentSchedulerTest
 {
     /// <summary>
-    /// 验证遵循并发并完成乱序。
+    /// 验证分片乱序完成时遵循指定并发数并标记全部完成。
     /// </summary>
     [Fact]
     public async Task DownloadAsync_RespectsConcurrencyAndCompletesOutOfOrder()
@@ -44,10 +44,10 @@ public class HttpDownloadSegmentSchedulerTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
-    /// 验证重试失败操作分段。
-
+    /// 验证失败分片在重试后成功并记录三次尝试。
     /// </summary>
     [Fact]
     public async Task DownloadAsync_RetriesFailedSegment()
@@ -69,10 +69,10 @@ public class HttpDownloadSegmentSchedulerTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
-    /// 验证保持失败分段未完成。
-
+    /// 验证重试耗尽的分片保持未完成且不生成目标文件。
     /// </summary>
     [Fact]
     public async Task DownloadAsync_LeavesFailedSegmentIncomplete()
@@ -90,10 +90,10 @@ public class HttpDownloadSegmentSchedulerTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
-    /// 验证取消停止工作线程。
-
+    /// 验证取消令牌停止等待中的分片下载操作。
     /// </summary>
     [Fact]
     public async Task DownloadAsync_CancellationStopsWorkers()
@@ -118,10 +118,10 @@ public class HttpDownloadSegmentSchedulerTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
-    /// 验证跳过已完成分段。
-
+    /// 验证调度器跳过状态中已完成的分片。
     /// </summary>
     [Fact]
     public async Task DownloadAsync_SkipsCompletedSegments()
@@ -145,10 +145,10 @@ public class HttpDownloadSegmentSchedulerTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
-    /// 验证报告完成字节一次并总数长度。
-
+    /// 验证每个分片完成后报告累计字节数及完整正文长度。
     /// </summary>
     [Fact]
     public async Task DownloadAsync_ReportsCompletedBytesOnceAndTotalLength()
@@ -168,10 +168,10 @@ public class HttpDownloadSegmentSchedulerTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
-    /// 验证报告仅最终失败之后重试。
-
+    /// 验证重试耗尽后仅报告一次最终失败及总尝试次数。
     /// </summary>
     [Fact]
     public async Task DownloadAsync_ReportsOnlyFinalFailureAfterRetries()
@@ -192,10 +192,10 @@ public class HttpDownloadSegmentSchedulerTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
-    /// 验证进度观察器失败传播未使用重试。
-
+    /// 验证进度观察器异常直接传播且不重试分片。
     /// </summary>
     [Fact]
     public async Task DownloadAsync_ProgressObserverFailurePropagatesWithoutRetry()
@@ -218,11 +218,14 @@ public class HttpDownloadSegmentSchedulerTest
         finally { Delete(root); }
     }
 
+
+
     /// <summary>
-
-    /// 处理测试场景中的 State。
-
+    /// 创建按分片大小规划的下载状态样例。
     /// </summary>
+    /// <param name="totalLength">待下载正文的总字节数。</param>
+    /// <param name="segmentSize">每个完整分片的字节数。</param>
+    /// <returns>按指定分片大小规划的初始下载状态。</returns>
     private static HttpDownloadSegmentsState State(long totalLength, long segmentSize)
         => new HttpDownloadSegmentsState
         {
@@ -232,11 +235,12 @@ public class HttpDownloadSegmentSchedulerTest
                 new HttpDownloadSegmentState { Start = range.Start, End = range.End }).ToList()
         };
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建用于分片调度测试的独立临时目录。
     /// </summary>
+    /// <returns>已创建的唯一临时目录完整路径。</returns>
     private static string CreateDirectory()
     {
         var path = Path.Combine(Path.GetTempPath(), "bing-http-segment-scheduler-" + Guid.NewGuid().ToString("N"));
@@ -244,11 +248,12 @@ public class HttpDownloadSegmentSchedulerTest
         return path;
     }
 
+
+
     /// <summary>
-
-    /// 清理测试生成的临时资源。
-
+    /// 递归删除测试创建的临时目录。
     /// </summary>
+    /// <param name="path">待清理的目录完整路径；目录不存在时不执行操作。</param>
     private static void Delete(string path)
     {
         if (Directory.Exists(path)) Directory.Delete(path, true);

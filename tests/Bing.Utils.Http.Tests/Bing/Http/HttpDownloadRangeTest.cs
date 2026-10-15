@@ -4,15 +4,15 @@ using Bing.Http;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// HTTP 分片范围规划和响应边界验证测试。
-
 /// </summary>
 public class HttpDownloadRangeTest
 {
     /// <summary>
-    /// 验证覆盖范围不会与已有正文重叠。
+    /// 验证规划的分片无重叠地覆盖完整正文且可生成范围头。
     /// </summary>
     [Fact]
     public void Create_CoversBodyWithoutOverlap()
@@ -29,10 +29,10 @@ public class HttpDownloadRangeTest
         ranges[0].ToHeaderValue().ShouldBe("bytes=0-3");
     }
 
+
+
     /// <summary>
-
-    /// 验证校验参数并处理空正文。
-
+    /// 验证空正文生成空计划，并拒绝负长度及非正分片大小。
     /// </summary>
     [Fact]
     public void Create_ValidatesArgumentsAndHandlesEmptyBody()
@@ -42,10 +42,10 @@ public class HttpDownloadRangeTest
         Should.Throw<ArgumentOutOfRangeException>(() => HttpDownloadRangePlanner.Create(1, 0));
     }
 
+
+
     /// <summary>
-
-    /// 验证拒绝不匹配范围或长度。
-
+    /// 验证接受匹配的范围响应，并拒绝范围、总长度不匹配或缺失范围头。
     /// </summary>
     [Fact]
     public void ValidateResponse_RejectsMismatchedRangeOrLength()

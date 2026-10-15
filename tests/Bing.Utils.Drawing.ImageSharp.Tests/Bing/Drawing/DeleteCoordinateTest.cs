@@ -1,13 +1,16 @@
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖 DeleteCoordinate 元数据清理功能。
+/// 验证图像坐标元数据清理的格式兼容、流所有权及输入边界。
 /// </summary>
 [Trait("Drawing", "DeleteCoordinate")]
 public class DeleteCoordinateTest
 {
     #region JPEG 测试
 
+    /// <summary>
+    /// 验证清理无 EXIF 的 JPEG 后仍保留 JPEG 文件头。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_JpegBytes_RemovesGpsIfPresent()
     {
@@ -22,6 +25,9 @@ public class DeleteCoordinateTest
         result[1].ShouldBe((byte)0xD8);
     }
 
+    /// <summary>
+    /// 验证清理无 EXIF 的 JPEG 不改变字节内容。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_JpegNoExif_IsIdempotent()
     {
@@ -36,6 +42,9 @@ public class DeleteCoordinateTest
 
     #region PNG 测试
 
+    /// <summary>
+    /// 验证清理无 EXIF 的 PNG 后仍保留 PNG 文件头。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_PngBytes_RemovesExifChunkIfPresent()
     {
@@ -49,6 +58,9 @@ public class DeleteCoordinateTest
         result[1].ShouldBe((byte)0x50);
     }
 
+    /// <summary>
+    /// 验证清理无 EXIF 的 PNG 不改变字节内容。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_PngNoExif_IsIdempotent()
     {
@@ -62,6 +74,9 @@ public class DeleteCoordinateTest
 
     #region Stream 测试
 
+    /// <summary>
+    /// 验证清理调用方提供的输入流后该流仍可读取。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_Stream_DoesNotDisposeCallerOwnedStream()
     {
@@ -74,6 +89,9 @@ public class DeleteCoordinateTest
         result.ShouldNotBeNull();
     }
 
+    /// <summary>
+    /// 验证清理结果写入输出流并保留 JPEG 文件头。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_StreamToStream_WritesToOutput()
     {
@@ -93,18 +111,27 @@ public class DeleteCoordinateTest
 
     #region 异常测试
 
+    /// <summary>
+    /// 验证坐标元数据清理拒绝空字节数组。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_NullBytes_Throws()
     {
         Should.Throw<ArgumentNullException>(() => ImageSharpHelper.DeleteCoordinate((byte[])null!));
     }
 
+    /// <summary>
+    /// 验证坐标元数据清理拒绝空输入流。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_NullInputStream_Throws()
     {
         Should.Throw<ArgumentNullException>(() => ImageSharpHelper.DeleteCoordinate((Stream)null!));
     }
 
+    /// <summary>
+    /// 验证配置为抛出异常时拒绝不支持的图像格式。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_UnsupportedFormat_ThrowBehavior_Throws()
     {
@@ -113,6 +140,9 @@ public class DeleteCoordinateTest
         Should.Throw<NotSupportedException>(() => ImageSharpHelper.DeleteCoordinate(unsupported, options));
     }
 
+    /// <summary>
+    /// 验证透传策略原样返回不支持格式的字节内容。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_UnsupportedFormat_PassThrough_ReturnsOriginal()
     {
@@ -126,6 +156,9 @@ public class DeleteCoordinateTest
 
     #region 保留像素内容
 
+    /// <summary>
+    /// 验证清理后的 JPEG 可重新加载且尺寸保持不变。
+    /// </summary>
     [Fact]
     public void DeleteCoordinate_PreservesPixelContent()
     {
@@ -150,8 +183,9 @@ public class DeleteCoordinateTest
     #region 辅助方法
 
     /// <summary>
-    /// 创建最小合法 JPEG（无 EXIF）
+    /// 创建无 EXIF 的二乘二白色 JPEG 样例。
     /// </summary>
+    /// <returns>白色 JPEG 图像的编码字节。</returns>
     private static byte[] CreateMinimalJpeg()
     {
         // SOI + APP0 (JFIF) + DQT + SOF0 + DHT + SOS + 一行 MCU 数据 + EOI
@@ -165,8 +199,9 @@ public class DeleteCoordinateTest
     }
 
     /// <summary>
-    /// 创建最小合法 PNG（无 eXIf chunk）
+    /// 创建无 EXIF 数据块的二乘二白色 PNG 样例。
     /// </summary>
+    /// <returns>白色 PNG 图像的编码字节。</returns>
     private static byte[] CreateMinimalPng()
     {
         var image = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(2, 2);

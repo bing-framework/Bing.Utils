@@ -45,6 +45,7 @@ public class TimeRegressionTest : IDisposable
     /// <summary>
     /// 测试数据：并发上下文隔离的代表时间样本（覆盖不同 DateTimeKind）。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetParallelIsolationCases()
     {
         yield return new object[]

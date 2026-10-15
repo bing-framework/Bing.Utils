@@ -16,8 +16,9 @@ namespace Bing.Security.Cryptography;
 public class AesGcmStreamEncryptionTests
 {
     /// <summary>
-    /// 测试目的：空流、多块数据和不可 Seek 输入应能够往返，且不关闭调用方流。
+    /// 验证空流、多块数据及不可定位流均可往返，且调用方流保持打开。
     /// </summary>
+    /// <param name="length">要往返处理的输入数据长度（字节）。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -43,7 +44,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：新写入流必须使用 BSS2，且默认解密入口必须拒绝已删除兼容支持的 BSS1 流。
+    /// 验证加密使用 BSS2 格式，且解密拒绝 BSS1 格式。
     /// </summary>
     [Fact]
     public async Task DecryptAsync_WhenStreamUsesBss1_ShouldRejectUnsupportedFormat()
@@ -69,7 +70,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：使用同一主密钥加密多个文件时，BSS2 必须生成不同的文件盐和 Nonce 前缀。
+    /// 验证重复使用主密钥加密时，每个 BSS2 文件具有不同盐和 Nonce 前缀。
     /// </summary>
     [Fact]
     public async Task EncryptAsync_WhenMasterKeyIsReused_ShouldUseDistinctFileSaltAndNoncePrefix()
@@ -88,8 +89,9 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：BSS2 读写不得假定单次 ReadAsync 可以填满请求缓冲区。
+    /// 验证加密和解密均能处理短读流。
     /// </summary>
+    /// <param name="maximumReadLength">每次读取最多返回的字节数。</param>
     [Theory]
     [InlineData(1)]
     [InlineData(7)]
@@ -112,7 +114,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：密文、终止标签和完整数据块遭到篡改、截断或删除时必须拒绝解密。
+    /// 验证篡改、截断或删除密文数据时拒绝解密。
     /// </summary>
     [Fact]
     public async Task DecryptAsync_WhenCiphertextIntegrityIsViolated_ShouldThrowCryptographicException()
@@ -142,7 +144,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：BSS2 必须拒绝重排、重复、插入数据记录，以及缺少或重复终止记录的密文。
+    /// 验证解密拒绝重排、重复、插入记录以及终止记录异常的密文。
     /// </summary>
     [Fact]
     public async Task DecryptAsync_WhenRecordsAreReorderedDuplicatedOrTerminatedIncorrectly_ShouldRejectStream()
@@ -175,7 +177,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：BSS2 必须认证终止记录、格式头、盐和 Nonce 前缀，并拒绝无效块长度与尾随数据。
+    /// 验证格式头、盐、Nonce 前缀及终止记录的认证，并拒绝无效块长度和尾随数据。
     /// </summary>
     [Fact]
     public async Task DecryptAsync_WhenProtocolFieldsAreTampered_ShouldRejectStream()
@@ -214,7 +216,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：BSS2 必须拒绝不支持的版本、算法和密钥派生函数。
+    /// 验证解密拒绝不支持的格式版本、算法和密钥派生函数。
     /// </summary>
     [Theory]
     [InlineData(4)]
@@ -235,7 +237,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：流 API 允许在后续认证失败前写出已经独立认证的数据块。
+    /// 验证后续记录认证失败前，已认证的数据块仍会写入目标流。
     /// </summary>
     [Fact]
     public async Task DecryptAsync_WhenLaterRecordAuthenticationFails_ShouldOnlyExposeAuthenticatedPrefix()
@@ -259,7 +261,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：文件加密仅在全部成功后替换目标文件，取消时不得破坏已有目标文件。
+    /// 验证文件加密成功后替换目标文件，取消时保留原目标内容。
     /// </summary>
     [Fact]
     public async Task EncryptFileAsync_WhenSuccessfulOrCancelled_ShouldReplaceDestinationAtomically()
@@ -297,7 +299,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 测试目的：错误密钥和已取消操作不得返回明文。
+    /// 验证错误密钥和取消操作均不会写出明文。
     /// </summary>
     [Fact]
     public async Task EncryptAndDecryptAsync_WhenKeyIsWrongOrCancelled_ShouldRejectOperation()
@@ -323,7 +325,7 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 使用指定密钥加密测试数据。
+    /// 使用指定 AES 密钥加密测试明文。
     /// </summary>
     /// <param name="plaintext">测试明文。</param>
     /// <param name="key">AES-256 密钥。</param>
@@ -337,11 +339,10 @@ public class AesGcmStreamEncryptionTests
     }
 
     /// <summary>
-    /// 使用指定密钥解密测试密文。
+    /// 使用指定 AES 密钥解密测试密文。
     /// </summary>
     /// <param name="ciphertext">认证密文。</param>
     /// <param name="key">AES-256 密钥。</param>
-    /// <returns>表示异步解密操作的任务。</returns>
     private static async Task DecryptAsync(byte[] ciphertext, byte[] key)
     {
         using var input = new MemoryStream(ciphertext);
@@ -349,8 +350,16 @@ public class AesGcmStreamEncryptionTests
         await AesGcmStreamEncryption.DecryptAsync(input, output, key);
     }
 
+    /// <summary>
+    /// BSS2 固定格式头的长度，单位为字节。
+    /// </summary>
     private const int HeaderLength = 52;
 
+    /// <summary>
+    /// 获取 BSS2 密文中终止记录的起始偏移量。
+    /// </summary>
+    /// <param name="ciphertext">包含格式头及记录的 BSS2 密文。</param>
+    /// <returns>终止记录在密文中的字节偏移量。</returns>
     private static int GetFinalRecordOffset(byte[] ciphertext)
     {
         var offset = HeaderLength;
@@ -359,6 +368,12 @@ public class AesGcmStreamEncryptionTests
         return offset;
     }
 
+    /// <summary>
+    /// 从密文指定偏移处提取一条完整记录。
+    /// </summary>
+    /// <param name="ciphertext">包含记录的密文。</param>
+    /// <param name="offset">记录起始位置的字节偏移量。</param>
+    /// <returns>记录类型字节、记录头、数据和认证标签组成的字节序列。</returns>
     private static byte[] GetRecord(byte[] ciphertext, int offset)
     {
         var recordType = ciphertext[offset];
@@ -372,6 +387,11 @@ public class AesGcmStreamEncryptionTests
         throw new InvalidDataException("测试密文包含未知记录类型。 ");
     }
 
+    /// <summary>
+    /// 按给定顺序连接多个内存片段。
+    /// </summary>
+    /// <param name="parts">要连接的内存片段。</param>
+    /// <returns>按输入顺序拼接后的字节数组。</returns>
     private static byte[] Combine(params ReadOnlyMemory<byte>[] parts)
     {
         var length = parts.Sum(part => part.Length);
@@ -401,9 +421,11 @@ public class AesGcmStreamEncryptionTests
         private readonly int _maximumReadLength;
 
         /// <summary>
-        /// 初始化不支持定位的只读内存流。
+        /// 初始化一个 <see cref="NonSeekableReadStream"/> 类型的实例。
         /// </summary>
-        /// <param name="data">只读数据。</param>
+        /// <param name="data">作为流内容的数据。</param>
+        /// <param name="maximumReadLength">每次读取允许返回的最大字节数，必须大于零。</param>
+        /// <remarks>省略此参数时单次读取不额外受限。</remarks>
         public NonSeekableReadStream(byte[] data, int maximumReadLength = int.MaxValue)
         {
             if (maximumReadLength <= 0)

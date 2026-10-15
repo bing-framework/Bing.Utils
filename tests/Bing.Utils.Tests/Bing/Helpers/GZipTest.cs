@@ -5,6 +5,10 @@ namespace Bing.Helpers;
 /// </summary>
 public class GZipTest : TestBase
 {
+    /// <summary>
+    /// 初始化一个 <see cref="GZipTest"/> 类型的实例。
+    /// </summary>
+    /// <param name="output">xUnit 测试输出助手。</param>
     public GZipTest(ITestOutputHelper output) : base(output)
     {
     }

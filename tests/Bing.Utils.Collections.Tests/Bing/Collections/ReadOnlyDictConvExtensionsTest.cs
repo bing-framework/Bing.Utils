@@ -8,7 +8,7 @@ using Xunit;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：ReadOnlyDictConvExtensions 只读字典转换扩展方法（AsReadOnlyDictionary 系列）
+/// 键值对和元素序列转换为只读字典的扩展测试。
 /// </summary>
 [Trait("CollUT", "ReadOnlyDictConvExtensions")]
 public class ReadOnlyDictConvExtensionsTest
@@ -16,7 +16,7 @@ public class ReadOnlyDictConvExtensionsTest
     #region AsReadOnlyDictionary(IEnumerable<KVP>) — 从 KVP 集合转换
 
     /// <summary>
-    /// 测试目的：从 KVP 集合转换为只读字典应包含所有键值对
+    /// 验证从 KVP 集合转换为只读字典应包含所有键值对
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_FromKvpEnumerable_ContainsAllPairs()
@@ -40,7 +40,7 @@ public class ReadOnlyDictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：从 KVP 集合转换后应返回 IReadOnlyDictionary 接口类型
+    /// 验证从 KVP 集合转换后应返回 IReadOnlyDictionary 接口类型
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_FromKvpEnumerable_ReturnsReadOnlyInterface()
@@ -56,7 +56,7 @@ public class ReadOnlyDictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：从 null KVP 集合转换应抛出 ArgumentNullException
+    /// 验证从 null KVP 集合转换应抛出 ArgumentNullException
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_NullKvpSource_ThrowsArgumentNullException()
@@ -73,7 +73,7 @@ public class ReadOnlyDictConvExtensionsTest
     #region AsReadOnlyDictionary(IEnumerable<KVP>, comparer) — 带比较器
 
     /// <summary>
-    /// 测试目的：带比较器的版本应使用该比较器进行键比较（忽略大小写）
+    /// 验证带比较器的版本应使用该比较器进行键比较（忽略大小写）
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_WithComparer_UsesComparer()
@@ -98,7 +98,7 @@ public class ReadOnlyDictConvExtensionsTest
     #region AsReadOnlyDictionary(IEnumerable<TValue>, keySelector) — 值集合转换（按键选择器）
 
     /// <summary>
-    /// 测试目的：通过键选择器从值集合创建只读字典应正确映射
+    /// 验证通过键选择器从值集合创建只读字典应正确映射
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_WithKeySelector_MapsCorrectly()
@@ -116,7 +116,7 @@ public class ReadOnlyDictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：通过键选择器从空集合转换应返回空只读字典
+    /// 验证通过键选择器从空集合转换应返回空只读字典
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_WithKeySelector_EmptySource_ReturnsEmpty()
@@ -129,7 +129,7 @@ public class ReadOnlyDictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：通过键选择器且 keySelector 为 null 时应抛出 ArgumentNullException
+    /// 验证通过键选择器且 keySelector 为 null 时应抛出 ArgumentNullException
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_WithNullKeySelector_ThrowsArgumentNullException()
@@ -147,7 +147,7 @@ public class ReadOnlyDictConvExtensionsTest
     #region AsReadOnlyDictionary(IEnumerable<TValue>, keySelector, comparer) — 带键选择器和比较器
 
     /// <summary>
-    /// 测试目的：带键选择器和比较器版本应结合使用两者
+    /// 验证带键选择器和比较器版本应结合使用两者
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_WithKeySelectorAndComparer_Works()
@@ -168,7 +168,7 @@ public class ReadOnlyDictConvExtensionsTest
     #region AsReadOnlyDictionary(IEnumerable<TSource>, keySelector, elementSelector) — 带元素选择器
 
     /// <summary>
-    /// 测试目的：带键选择器和元素选择器版本应对每个元素分别投影键和值
+    /// 验证带键选择器和元素选择器版本应对每个元素分别投影键和值
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_WithKeyAndElementSelector_ProjectsBoth()
@@ -186,7 +186,7 @@ public class ReadOnlyDictConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：带全部参数的版本（keySelector, elementSelector, comparer）应正确工作
+    /// 验证键选择器、值选择器和比较器共同构造只读字典。
     /// </summary>
     [Fact]
     public void AsReadOnlyDictionary_AllParams_ReturnsCorrectReadOnlyDict()

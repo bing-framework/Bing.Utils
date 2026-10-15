@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证日期和时间类型识别及其可空形式。
+/// </summary>
 [Trait("TypeUT", "TypeIs.DateTimeType")]
 public class TypeIsDateTimeTest
 {

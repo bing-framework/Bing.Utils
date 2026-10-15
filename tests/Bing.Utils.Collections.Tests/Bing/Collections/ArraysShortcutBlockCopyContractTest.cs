@@ -1,13 +1,13 @@
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：覆盖 ArraysShortcutExtensions.BlockCopy 的边界与契约行为。
+/// 数组按字节块复制的类型契约测试。
 /// </summary>
 [Trait("CollectionsUT", "ArraysShortcut.BlockCopy")]
 public class ArraysShortcutBlockCopyContractTest
 {
     /// <summary>
-    /// 测试用例：BlockCopy 在基础值类型数组上应按字节拷贝指定长度。
+    /// 验证基本值类型数组按指定字节数复制。
     /// </summary>
     [Fact]
     public void BlockCopy_PrimitiveArrays_CopiesRequestedBytes()
@@ -21,7 +21,7 @@ public class ArraysShortcutBlockCopyContractTest
     }
 
     /// <summary>
-    /// 测试用例：BlockCopy 在引用类型数组上应抛出 ArgumentException。
+    /// 验证引用类型数组不能执行字节块复制。
     /// </summary>
     [Fact]
     public void BlockCopy_ReferenceTypeArrays_ThrowsArgumentException()

@@ -2,15 +2,33 @@ using Bing.Text.Splitters;
 
 namespace BingUtilsUT.SplitterUT;
 
+/// <summary>
+/// 验证分隔符、正则表达式和空白规则下的字符串序列及列表分割。
+/// </summary>
 public class SplitterTest
 {
+    /// <summary>
+    /// 提供逗号分隔、空片段和带空白片段的输入样例。
+    /// </summary>
     private static class OriginalStrings
     {
+        /// <summary>
+        /// 获取不含空片段的逗号分隔字符串。
+        /// </summary>
         public static string NormalString => "a,b,c,d,e";
+        /// <summary>
+        /// 获取包含连续分隔符的字符串。
+        /// </summary>
         public static string IncludeNullString => "a,,b,,,c,d,e";
+        /// <summary>
+        /// 获取分隔字段周围带空格的字符串。
+        /// </summary>
         public static string IncludeWhiteSpaceString => "a, b ,c,d,e";
     }
 
+    /// <summary>
+    /// 验证逗号分隔字符串可转换为序列。
+    /// </summary>
     [Fact]
     public void Test_StringToEnumerable()
     {
@@ -27,6 +45,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证序列分割可保留或省略空字符串片段。
+    /// </summary>
     [Fact]
     public void Test_StringToEnumerable_IncludeNull()
     {
@@ -56,6 +77,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证序列分割支持字符串分隔模式。
+    /// </summary>
     [Fact]
     public void Test_StringToEnumerable_From_StringPattern()
     {
@@ -73,6 +97,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证序列分割支持正则表达式分隔模式。
+    /// </summary>
     [Fact]
     public void Test_StringToEnumerable_From_RegexPattern()
     {
@@ -90,6 +117,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证序列分割遵守结果数量上限。
+    /// </summary>
     [Fact]
     public void Test_StringToEnumerable_With_Limit()
     {
@@ -104,6 +134,9 @@ public class SplitterTest
         list[2].ShouldBe("c");
     }
 
+    /// <summary>
+    /// 验证序列分割可修剪片段两端的空白。
+    /// </summary>
     [Fact]
     public void Test_StringToEnumerable_With_Trim()
     {
@@ -130,6 +163,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证序列分割可按自定义规则修剪片段。
+    /// </summary>
     [Fact]
     public void Test_StringToEnumerable_With_CustomTrim()
     {
@@ -156,6 +192,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证逗号分隔字符串可转换为列表。
+    /// </summary>
     [Fact]
     public void Test_StringToList()
     {
@@ -169,6 +208,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证列表分割可保留或省略空字符串片段。
+    /// </summary>
     [Fact]
     public void Test_StringToList_IncludeNull()
     {
@@ -194,6 +236,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证列表分割支持字符串分隔模式。
+    /// </summary>
     [Fact]
     public void Test_StringToList_From_StringPattern()
     {
@@ -209,6 +254,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证列表分割支持正则表达式分隔模式。
+    /// </summary>
     [Fact]
     public void Test_StringToList_From_RegexPattern()
     {
@@ -224,6 +272,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证列表分割遵守结果数量上限。
+    /// </summary>
     [Fact]
     public void Test_StringToList_With_Limit()
     {
@@ -235,6 +286,9 @@ public class SplitterTest
         list[2].ShouldBe("c");
     }
 
+    /// <summary>
+    /// 验证列表分割可修剪片段两端的空白。
+    /// </summary>
     [Fact]
     public void Test_StringToList_With_Trim()
     {
@@ -257,6 +311,9 @@ public class SplitterTest
         list[4].ShouldBe("e");
     }
 
+    /// <summary>
+    /// 验证列表分割可按自定义规则修剪片段。
+    /// </summary>
     [Fact]
     public void Test_StringToList_With_CustomTrim()
     {

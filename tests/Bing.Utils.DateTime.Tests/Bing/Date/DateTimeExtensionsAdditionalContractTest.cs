@@ -3,14 +3,16 @@ using NodaTime;
 namespace Bing.Date;
 
 /// <summary>
-/// 测试类：补充 DateTimeExtensions 的核心边界与契约行为。
+/// 日期时间扩展的运算、时段和边界契约测试。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.Additional")]
 public class DateTimeExtensionsAdditionalContractTest
 {
     /// <summary>
-    /// 测试用例：AddWeeks 在正负偏移场景应按 7 天步进。
+    /// 验证周偏移按七天步进。
     /// </summary>
+    /// <param name="weeks">偏移周数。</param>
+    /// <param name="expected">预期日期。</param>
     [Theory]
     [InlineData(2, "2024-01-29")]
     [InlineData(-2, "2024-01-01")]
@@ -25,8 +27,10 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：AddQuarters 在跨年与负偏移场景应按 3 个月步进。
+    /// 验证季度偏移按三个月步进并支持跨年。
     /// </summary>
+    /// <param name="quarters">偏移季度数。</param>
+    /// <param name="expected">预期日期。</param>
     [Theory]
     [InlineData(1, "2024-05-29")]
     [InlineData(-1, "2023-11-29")]
@@ -41,7 +45,7 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：AddDuration 应按 Duration 精确偏移日期时间。
+    /// 验证按 NodaTime 时长偏移日期时间。
     /// </summary>
     [Fact]
     public void AddDuration_WithNodaDuration_ReturnsExpectedDateTime()
@@ -55,8 +59,11 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：GetMonthDiff 在不同日期组合下应符合当前实现规则。
+    /// 验证整月差按日期顺序和日部分计算。
     /// </summary>
+    /// <param name="left">第一个日期。</param>
+    /// <param name="right">第二个日期。</param>
+    /// <param name="expected">预期月差。</param>
     [Theory]
     [InlineData("2023-01-15", "2023-05-10", 4)]
     [InlineData("2023-01-10", "2023-05-15", 5)]
@@ -72,7 +79,7 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：GetTotalMonthDiff 在含小数月差场景应返回可预期结果。
+    /// 验证包含不足整月部分的月差计算。
     /// </summary>
     [Fact]
     public void GetTotalMonthDiff_WithPartialMonth_ReturnsExpectedPrecision()
@@ -86,7 +93,7 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：IsBetween 在包含与不包含边界时应返回不同结果。
+    /// 验证区间判断遵循是否包含边界的设置。
     /// </summary>
     [Fact]
     public void IsBetween_BoundaryToggle_ReturnsExpected()
@@ -100,8 +107,10 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：IsMorning 在边界小时应返回预期结果。
+    /// 验证上午时段的小时边界。
     /// </summary>
+    /// <param name="hour">待判断的小时。</param>
+    /// <param name="expected">预期判断结果。</param>
     [Theory]
     [InlineData(5, false)]
     [InlineData(6, true)]
@@ -115,8 +124,10 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：IsAfternoon 在边界小时应返回预期结果。
+    /// 验证下午时段的小时边界。
     /// </summary>
+    /// <param name="hour">待判断的小时。</param>
+    /// <param name="expected">预期判断结果。</param>
     [Theory]
     [InlineData(11, false)]
     [InlineData(12, true)]
@@ -130,8 +141,10 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：IsDusk 在边界小时应返回预期结果。
+    /// 验证傍晚时段的小时边界。
     /// </summary>
+    /// <param name="hour">待判断的小时。</param>
+    /// <param name="expected">预期判断结果。</param>
     [Theory]
     [InlineData(15, false)]
     [InlineData(16, true)]
@@ -145,8 +158,10 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：IsEvening 在跨零点时段应返回预期结果。
+    /// 验证晚间时段的小时边界。
     /// </summary>
+    /// <param name="hour">待判断的小时。</param>
+    /// <param name="expected">预期判断结果。</param>
     [Theory]
     [InlineData(23, true)]
     [InlineData(2, true)]
@@ -159,8 +174,11 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：IsAM 与 IsPM 在 12 点边界应返回互斥结果。
+    /// 验证午前和午后以十二点为分界。
     /// </summary>
+    /// <param name="hour">待判断的小时。</param>
+    /// <param name="expectedAm">预期午前判断结果。</param>
+    /// <param name="expectedPm">预期午后判断结果。</param>
     [Theory]
     [InlineData(11, true, false)]
     [InlineData(12, false, true)]
@@ -174,7 +192,7 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：IsDateEqual 与 IsTimeEqual 应分别只比较日期与时间部分。
+    /// 验证日期相等和时间相等分别只比较对应部分。
     /// </summary>
     [Fact]
     public void IsDateEqualAndIsTimeEqual_DifferentDateAndTimeParts_ReturnsExpected()
@@ -190,7 +208,7 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：Beginning/End 子日精度方法应保留 Kind 且返回正确边界值。
+    /// 验证秒、分和小时的起止边界保留日期时间种类。
     /// </summary>
     [Fact]
     public void BeginningAndEnd_SubDayPrecision_ShouldKeepKindAndExpectedValue()
@@ -206,7 +224,7 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：DaysInMonth/DaysInYear 在闰年与平年应返回正确天数。
+    /// 验证闰年和平年的月份与全年天数。
     /// </summary>
     [Fact]
     public void DaysInMonthAndDaysInYear_LeapAndCommonYear_ReturnsExpected()
@@ -221,8 +239,10 @@ public class DateTimeExtensionsAdditionalContractTest
     }
 
     /// <summary>
-    /// 测试用例：GetQuarterEnum 对四个季度月份应映射到正确枚举值。
+    /// 验证月份映射到对应季度。
     /// </summary>
+    /// <param name="month">待判断的月份。</param>
+    /// <param name="expected">预期季度。</param>
     [Theory]
     [InlineData(1, Quarter.Q1)]
     [InlineData(4, Quarter.Q2)]

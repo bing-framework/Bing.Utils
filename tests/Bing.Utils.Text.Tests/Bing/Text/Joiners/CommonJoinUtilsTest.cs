@@ -4,7 +4,7 @@ using Bing.Text.Joiners;
 namespace Bing.Text;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="CommonJoinUtils"/> 的 JoinToString 两个重载。
+/// 通用连接工具的条件、替代值和索引重载测试。
 /// </summary>
 [Trait("TextUT", "CommonJoinUtils")]
 public class CommonJoinUtilsTest
@@ -12,8 +12,7 @@ public class CommonJoinUtilsTest
     #region JoinToString (Func<T, bool> predicate)
 
     /// <summary>
-    /// 测试用例：验证 <see cref="CommonJoinUtils.JoinToString{T,TContainer}"/> 在
-    /// `NullList` 场景下，结果为 `ContainerUnchanged`。
+    /// 验证空源列表不会追加文本。
     /// </summary>
     [Fact]
     public void JoinToString_NullList_ContainerUnchanged()
@@ -25,8 +24,7 @@ public class CommonJoinUtilsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="CommonJoinUtils.JoinToString{T,TContainer}"/> 在
-    /// `AllItemsPass` 场景下，结果为 `AllItemsJoined`。
+    /// 验证所有元素通过筛选时按分隔符连接。
     /// </summary>
     [Fact]
     public void JoinToString_AllItemsPass_AllItemsJoined()
@@ -39,8 +37,7 @@ public class CommonJoinUtilsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="CommonJoinUtils.JoinToString{T,TContainer}"/> 在
-    /// `SomeItemsFiltered` 场景下，结果为 `OnlyPassingItemsJoined`。
+    /// 验证仅连接通过筛选的元素。
     /// </summary>
     [Fact]
     public void JoinToString_SomeItemsFiltered_OnlyPassingItemsJoined()
@@ -53,8 +50,7 @@ public class CommonJoinUtilsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="CommonJoinUtils.JoinToString{T,TContainer}"/> 在
-    /// `WithReplaceFunc` 场景下，结果为 `ReplacedItemIncluded`。
+    /// 验证未通过筛选的元素使用替代值参与连接。
     /// </summary>
     [Fact]
     public void JoinToString_WithReplaceFunc_ReplacedItemIncluded()
@@ -70,8 +66,7 @@ public class CommonJoinUtilsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="CommonJoinUtils.JoinToString{T,TContainer}"/> 在
-    /// `EmptyList` 场景下，结果为 `ContainerUnchanged`。
+    /// 验证空列表不会追加文本。
     /// </summary>
     [Fact]
     public void JoinToString_EmptyList_ContainerUnchanged()
@@ -83,8 +78,7 @@ public class CommonJoinUtilsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="CommonJoinUtils.JoinToString{T,TContainer}"/> 在
-    /// `NullPredicate` 场景下（predicate=null），结果为 `AllItemsIncluded`。
+    /// 验证空谓词连接全部元素。
     /// </summary>
     [Fact]
     public void JoinToString_NullPredicate_AllItemsIncluded()
@@ -101,8 +95,7 @@ public class CommonJoinUtilsTest
     #region JoinToString (Func<T, int, bool> predicate with index)
 
     /// <summary>
-    /// 测试用例：验证带索引版本的 <see cref="CommonJoinUtils.JoinToString{T,TContainer}"/>
-    /// 在 `AllItemsPass` 场景下，结果为 `AllItemsJoined`。
+    /// 验证带索引重载按分隔符连接全部元素。
     /// </summary>
     [Fact]
     public void JoinToStringWithIndex_AllItemsPass_AllItemsJoined()
@@ -115,8 +108,7 @@ public class CommonJoinUtilsTest
     }
 
     /// <summary>
-    /// 测试用例：验证带索引版本的 <see cref="CommonJoinUtils.JoinToString{T,TContainer}"/>
-    /// 在 `FilterByIndex` 场景下，结果为 `OnlyEvenIndexJoined`。
+    /// 验证带索引谓词只连接偶数索引元素。
     /// </summary>
     [Fact]
     public void JoinToStringWithIndex_FilterByIndex_OnlyEvenIndexJoined()
@@ -129,8 +121,7 @@ public class CommonJoinUtilsTest
     }
 
     /// <summary>
-    /// 测试用例：验证带索引版本的 <see cref="CommonJoinUtils.JoinToString{T,TContainer}"/>
-    /// 在 `WithIndexedReplace` 场景下，结果为 `ReplacedByIndex`。
+    /// 验证带索引替代函数替换未通过筛选的元素。
     /// </summary>
     [Fact]
     public void JoinToStringWithIndex_WithIndexedReplace_ReplacedByIndex()
@@ -146,7 +137,7 @@ public class CommonJoinUtilsTest
     }
 
     /// <summary>
-    /// 测试用例：验证带索引版本在 `NullList` 场景下，结果为 `ContainerUnchanged`。
+    /// 验证带索引重载的空源列表不会追加文本。
     /// </summary>
     [Fact]
     public void JoinToStringWithIndex_NullList_ContainerUnchanged()

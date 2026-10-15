@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证常见 CLR 数值类型的识别结果。
+/// </summary>
 [Trait("TypeUT", "TypeIs.NumericType")]
 public class TypeIsNumericTypeTest
 {

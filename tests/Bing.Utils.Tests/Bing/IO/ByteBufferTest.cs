@@ -1,5 +1,8 @@
 namespace Bing.IO;
 
+/// <summary>
+/// 验证字节缓冲区的分配及整数读写。
+/// </summary>
 public class ByteBufferTest
 {
     /// <summary>

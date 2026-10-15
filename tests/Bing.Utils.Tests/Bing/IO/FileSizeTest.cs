@@ -6,8 +6,11 @@ public class FileSizeTest
 {
     #region 构造函数测试
     /// <summary>
-    /// 测试 - FileSize构造函数 - 正确计算不同单位的字节大小
+    /// 验证构造函数将指定单位的大小转换为字节数。
     /// </summary>
+    /// <param name="size">输入单位下的大小数值。</param>
+    /// <param name="unit">文件大小单位。</param>
+    /// <param name="expectedBytes">预期的字节数。</param>
     [Theory]
     [InlineData(1, FileSizeUnit.Byte, 1)]
     [InlineData(1, FileSizeUnit.K, 1024)]
@@ -46,8 +49,10 @@ public class FileSizeTest
     #endregion
     #region 工厂方法测试
     /// <summary>
-    /// 测试 - FromBytes工厂方法 - 正确创建实例
+    /// 验证字节数工厂保存输入大小。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expectedSize">预期的字节大小。</param>
     [Theory]
     [InlineData(0, 0)]
     [InlineData(1024, 1024)]
@@ -70,8 +75,10 @@ public class FileSizeTest
             .ParamName.ShouldBe("bytes");
     }
     /// <summary>
-    /// 测试 - Parse方法 - 正确解析字符串
+    /// 验证有效文件大小文本解析为预期字节数。
     /// </summary>
+    /// <param name="sizeString">待解析的文件大小文本。</param>
+    /// <param name="expectedBytes">预期的字节数。</param>
     [Theory]
     [InlineData("1024 B", 1024)]
     [InlineData("1.5 KB", 1536)]
@@ -85,8 +92,9 @@ public class FileSizeTest
         fileSize.Size.ShouldBe(expectedBytes);
     }
     /// <summary>
-    /// 测试 - Parse方法 - 无效字符串应抛出异常
+    /// 验证文件大小解析拒绝无效文本。
     /// </summary>
+    /// <param name="invalidString">格式无效的文件大小文本。</param>
     [Theory]
     [InlineData("invalid")]
     [InlineData("")]
@@ -98,8 +106,11 @@ public class FileSizeTest
         Should.Throw<ArgumentException>(() => FileSize.Parse(invalidString));
     }
     /// <summary>
-    /// 测试 - TryParse方法 - 正确解析有效字符串
+    /// 验证文件大小尝试解析的标记及结果字节数。
     /// </summary>
+    /// <param name="input">待解析的文件大小文本。</param>
+    /// <param name="expectedSuccess">预期的解析成功标记。</param>
+    /// <param name="expectedBytes">预期的字节数。</param>
     [Theory]
     [InlineData("1.5 KB", true, 1536)]
     [InlineData("2 MB", true, 2097152)]
@@ -116,8 +127,10 @@ public class FileSizeTest
     #endregion
     #region 单位转换测试
     /// <summary>
-    /// 测试 - GetLongSize - 返回正确的字节大小
+    /// 验证长整数大小读取保留原始字节数。
     /// </summary>
+    /// <param name="inputSize">输入的字节大小。</param>
+    /// <param name="expectedSize">预期的字节大小。</param>
     [Theory]
     [InlineData(1024, 1024)]
     [InlineData(0, 0)]
@@ -132,8 +145,12 @@ public class FileSizeTest
         result.ShouldBe(expectedSize);
     }
     /// <summary>
-    /// 测试 - GetSize通用方法 - 返回指定单位的正确大小
+    /// 验证字节数按指定单位和精度转换。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="unit">文件大小单位。</param>
+    /// <param name="precision">保留的小数位数。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(1536, FileSizeUnit.K, 2, 1.5)]
     [InlineData(2097152, FileSizeUnit.M, 1, 2.0)]
@@ -148,8 +165,10 @@ public class FileSizeTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - GetSizeByK - 返回正确的KB大小
+    /// 验证字节数转换为 KB 大小。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expectedKB">预期的 KB 大小。</param>
     [Theory]
     [InlineData(0, 0)]
     [InlineData(512, 0.5)]
@@ -166,8 +185,10 @@ public class FileSizeTest
         result.ShouldBe(expectedKB);
     }
     /// <summary>
-    /// 测试 - GetSizeByM - 返回正确的MB大小
+    /// 验证字节数转换为 MB 大小。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expectedMB">预期的 MB 大小。</param>
     [Theory]
     [InlineData(0, 0)]
     [InlineData(1024 * 1024, 1.0)]
@@ -183,8 +204,10 @@ public class FileSizeTest
         result.ShouldBe(expectedMB);
     }
     /// <summary>
-    /// 测试 - GetSizeByG - 返回正确的GB大小
+    /// 验证字节数转换为 GB 大小。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expectedGB">预期的 GB 大小。</param>
     [Theory]
     [InlineData(0, 0)]
     [InlineData(1024L * 1024L * 1024L, 1.0)]
@@ -199,8 +222,10 @@ public class FileSizeTest
         result.ShouldBe(expectedGB);
     }
     /// <summary>
-    /// 测试 - GetSizeByT - 返回正确的TB大小
+    /// 验证字节数转换为 TB 大小。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expectedTB">预期的 TB 大小。</param>
     [Theory]
     [InlineData(0, 0)]
     [InlineData(1024L * 1024L * 1024L * 1024L, 1.0)]
@@ -215,8 +240,10 @@ public class FileSizeTest
         result.ShouldBe(expectedTB);
     }
     /// <summary>
-    /// 测试 - GetSizeByP - 返回正确的PB大小
+    /// 验证字节数转换为 PB 大小。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expectedPB">预期的 PB 大小。</param>
     [Theory]
     [InlineData(0, 0)]
     [InlineData(1024L * 1024L * 1024L * 1024L * 1024L, 1.0)]
@@ -233,8 +260,11 @@ public class FileSizeTest
     #endregion
     #region GetOptimalUnit 测试
     /// <summary>
-    /// 测试 - GetOptimalUnit - 返回最适合的单位
+    /// 验证最佳单位选择及对应的单位数值。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expectedValue">预期的单位数值。</param>
+    /// <param name="expectedUnit">预期的文件大小单位。</param>
     [Theory]
     [InlineData(100, 100.0, FileSizeUnit.Byte)]
     [InlineData(1024, 1.0, FileSizeUnit.K)]
@@ -256,8 +286,12 @@ public class FileSizeTest
     #endregion
     #region ToString 测试
     /// <summary>
-    /// 测试 - ToString方法重载 - 返回正确格式
+    /// 验证按指定单位和精度输出文件大小。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="unit">文件大小单位。</param>
+    /// <param name="precision">保留的小数位数。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(1024, FileSizeUnit.K, 2, "1 KB")]
     [InlineData(1536, FileSizeUnit.K, 1, "1.5 KB")]
@@ -272,8 +306,10 @@ public class FileSizeTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - ToString默认方法 - 自动选择最佳单位
+    /// 验证文件大小自动选择单位输出文本。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(1, "1 B")]
     [InlineData(1024, "1 KB")]
@@ -335,8 +371,11 @@ public class FileSizeTest
         Should.Throw<ArgumentOutOfRangeException>(() => size1 - size2);
     }
     /// <summary>
-    /// 测试 - 乘法运算符 - 正确计算结果
+    /// 验证文件大小按倍数相乘后的字节数。
     /// </summary>
+    /// <param name="originalBytes">运算前的字节数。</param>
+    /// <param name="multiplier">相乘的倍数。</param>
+    /// <param name="expectedBytes">预期的字节数。</param>
     [Theory]
     [InlineData(1024, 2.0, 2048)]
     [InlineData(1024, 0.5, 512)]
@@ -362,8 +401,11 @@ public class FileSizeTest
         Should.Throw<ArgumentOutOfRangeException>(() => fileSize * -1.0);
     }
     /// <summary>
-    /// 测试 - 除法运算符 - 正确计算结果
+    /// 验证文件大小按除数相除后的字节数。
     /// </summary>
+    /// <param name="originalBytes">运算前的字节数。</param>
+    /// <param name="divisor">相除的除数。</param>
+    /// <param name="expectedBytes">预期的字节数。</param>
     [Theory]
     [InlineData(1024, 2.0, 512)]
     [InlineData(1024, 0.5, 2048)]
@@ -391,8 +433,9 @@ public class FileSizeTest
     #endregion
     #region 类型转换测试
     /// <summary>
-    /// 测试 - 隐式转换 - 从长整型转换为FileSize
+    /// 验证长整数隐式转换为文件大小后保留字节数。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(1024)]
@@ -405,8 +448,9 @@ public class FileSizeTest
         fileSize.Size.ShouldBe(bytes);
     }
     /// <summary>
-    /// 测试 - 显式转换 - 从FileSize转换为长整型
+    /// 验证文件大小显式转换为长整数后保留字节数。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(1024)]
@@ -451,8 +495,11 @@ public class FileSizeTest
         (fileSize1 != fileSize2).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试 - CompareTo - 返回正确的比较结果
+    /// 验证文件大小比较结果的符号。
     /// </summary>
+    /// <param name="size1">第一个字节大小。</param>
+    /// <param name="size2">第二个字节大小。</param>
+    /// <param name="expectedSign">预期的比较结果符号。</param>
     [Theory]
     [InlineData(1024, 2048, -1)] // 小于
     [InlineData(2048, 1024, 1)]  // 大于

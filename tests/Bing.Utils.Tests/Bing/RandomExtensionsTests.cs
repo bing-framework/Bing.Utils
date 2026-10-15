@@ -1,16 +1,21 @@
 namespace Bing.Utils.Tests.Bing;
 
 /// <summary>
-/// RandomExtensions 扩展测试 — NextBool / NextEnum / NextBytes / NextInt / NextLong /
-/// NextFloat / NextDouble / NextDateTime / OneOf / NormalDouble / NormalFloat
+/// 伪随机数扩展的取值范围、选取和分布测试。
 /// </summary>
 [Trait("Bing", "RandomExtensions")]
 public class RandomExtensionsTests
 {
+    /// <summary>
+    /// 使用固定种子的伪随机数生成器。
+    /// </summary>
     private readonly Random _rng = new Random(42); // 固定种子保证确定性
 
     #region NextBool
 
+    /// <summary>
+    /// 验证无参数布尔采样返回布尔值。
+    /// </summary>
     [Fact]
     public void NextBool_NoParam_ReturnsBoolValue()
     {
@@ -18,6 +23,10 @@ public class RandomExtensionsTests
         (value == true || value == false).ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证概率为零或一时的布尔采样边界。
+    /// </summary>
+    /// <param name="probability">返回真值的概率。</param>
     [Theory]
     [InlineData(0.0)]
     [InlineData(1.0)]
@@ -31,6 +40,9 @@ public class RandomExtensionsTests
             result.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证固定种子下半概率布尔采样的真值数量位于容差内。
+    /// </summary>
     [Fact]
     public void NextBool_Probability0_5_ProducesReasonableDistribution()
     {
@@ -44,6 +56,9 @@ public class RandomExtensionsTests
 
     #region NextEnum
 
+    /// <summary>
+    /// 验证枚举采样结果为已定义的星期成员。
+    /// </summary>
     [Fact]
     public void NextEnum_ValidEnumType_ReturnsDefinedMember()
     {
@@ -52,6 +67,9 @@ public class RandomExtensionsTests
         Enum.IsDefined(typeof(DayOfWeek), value).ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证非枚举类型不能进行枚举采样。
+    /// </summary>
     [Fact]
     public void NextEnum_NonEnumType_ThrowsInvalidOperationException()
     {
@@ -63,6 +81,9 @@ public class RandomExtensionsTests
 
     #region NextBytes
 
+    /// <summary>
+    /// 验证随机字节数组具有指定长度。
+    /// </summary>
     [Fact]
     public void NextBytes_ReturnsCorrectLength()
     {
@@ -70,6 +91,9 @@ public class RandomExtensionsTests
         bytes.Length.ShouldBe(10);
     }
 
+    /// <summary>
+    /// 验证零长度随机字节数组为空。
+    /// </summary>
     [Fact]
     public void NextBytes_ZeroLength_ReturnsEmptyArray()
     {
@@ -81,6 +105,9 @@ public class RandomExtensionsTests
 
     #region NextUInt16 / NextInt16
 
+    /// <summary>
+    /// 验证无符号短整数采样位于类型范围内。
+    /// </summary>
     [Fact]
     public void NextUInt16_ReturnsUShortValue()
     {
@@ -89,6 +116,9 @@ public class RandomExtensionsTests
         (value >= ushort.MinValue && value <= ushort.MaxValue).ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证有符号短整数采样位于类型范围内。
+    /// </summary>
     [Fact]
     public void NextInt16_ReturnsShortValue()
     {
@@ -101,6 +131,9 @@ public class RandomExtensionsTests
 
     #region NextLong
 
+    /// <summary>
+    /// 验证无参数长整数采样非负。
+    /// </summary>
     [Fact]
     public void NextLong_NoParam_ReturnsNonNegative()
     {
@@ -109,6 +142,9 @@ public class RandomExtensionsTests
         value.ShouldBeGreaterThanOrEqualTo(0L);
     }
 
+    /// <summary>
+    /// 验证指定上限的长整数采样位于断言范围内。
+    /// </summary>
     [Fact]
     public void NextLong_WithMax_ReturnsWithinRange()
     {
@@ -117,6 +153,9 @@ public class RandomExtensionsTests
         value.ShouldBeInRange(0L, 100L);
     }
 
+    /// <summary>
+    /// 验证指定上下限的长整数采样位于断言范围内。
+    /// </summary>
     [Fact]
     public void NextLong_WithMinMax_ReturnsWithinRange()
     {
@@ -129,6 +168,9 @@ public class RandomExtensionsTests
 
     #region NextFloat
 
+    /// <summary>
+    /// 验证指定上限的单精度采样位于断言范围内。
+    /// </summary>
     [Fact]
     public void NextFloat_WithMax_ReturnsWithinRange()
     {
@@ -137,6 +179,9 @@ public class RandomExtensionsTests
         value.ShouldBeInRange(0f, 100f);
     }
 
+    /// <summary>
+    /// 验证指定上下限的单精度采样位于断言范围内。
+    /// </summary>
     [Fact]
     public void NextFloat_WithMinMax_ReturnsWithinRange()
     {
@@ -149,6 +194,9 @@ public class RandomExtensionsTests
 
     #region NextDouble
 
+    /// <summary>
+    /// 验证指定上限的双精度采样位于断言范围内。
+    /// </summary>
     [Fact]
     public void NextDouble_WithMax_ReturnsWithinRange()
     {
@@ -157,6 +205,9 @@ public class RandomExtensionsTests
         value.ShouldBeInRange(0.0, 100.0);
     }
 
+    /// <summary>
+    /// 验证指定上下限的双精度采样位于断言范围内。
+    /// </summary>
     [Fact]
     public void NextDouble_WithMinMax_ReturnsWithinRange()
     {
@@ -169,6 +220,9 @@ public class RandomExtensionsTests
 
     #region NextDateTime
 
+    /// <summary>
+    /// 验证无参数日期采样位于日期类型范围内。
+    /// </summary>
     [Fact]
     public void NextDateTime_NoParam_ReturnsValidDateTime()
     {
@@ -177,6 +231,9 @@ public class RandomExtensionsTests
         (dt >= DateTime.MinValue && dt <= DateTime.MaxValue).ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证日期采样位于指定日期范围内。
+    /// </summary>
     [Fact]
     public void NextDateTime_WithRange_ReturnsWithinRange()
     {
@@ -191,6 +248,9 @@ public class RandomExtensionsTests
 
     #region OneOf
 
+    /// <summary>
+    /// 验证随机选取结果来自给定候选集合。
+    /// </summary>
     [Fact]
     public void OneOf_SelectsFromGivenValues()
     {
@@ -200,6 +260,9 @@ public class RandomExtensionsTests
         options.ShouldContain(result);
     }
 
+    /// <summary>
+    /// 验证单一候选始终被选中。
+    /// </summary>
     [Fact]
     public void OneOf_SingleValue_ReturnsThatValue()
     {
@@ -211,6 +274,9 @@ public class RandomExtensionsTests
 
     #region NormalDouble / NormalFloat
 
+    /// <summary>
+    /// 验证双精度正态采样结果为有限数值。
+    /// </summary>
     [Fact]
     public void NormalDouble_NoParam_ReturnsFiniteValue()
     {
@@ -220,6 +286,9 @@ public class RandomExtensionsTests
         double.IsInfinity(value).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证固定种子下双精度正态样本均值位于容差内。
+    /// </summary>
     [Fact]
     public void NormalDouble_WithMeanAndDeviation_CenteredAroundMean()
     {
@@ -230,6 +299,9 @@ public class RandomExtensionsTests
         avg.ShouldBeInRange(98.0, 102.0);
     }
 
+    /// <summary>
+    /// 验证单精度正态采样结果为有限数值。
+    /// </summary>
     [Fact]
     public void NormalFloat_NoParam_ReturnsFiniteValue()
     {
@@ -239,6 +311,9 @@ public class RandomExtensionsTests
         float.IsInfinity(value).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证固定种子下单精度正态样本均值位于容差内。
+    /// </summary>
     [Fact]
     public void NormalFloat_WithMeanAndDeviation_CenteredAroundMean()
     {

@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证空值与空字符串之间的规整转换。
+/// </summary>
 [Trait("StringUT", "Strings.Empty")]
 public class StringEmptyTest
 {

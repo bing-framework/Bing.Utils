@@ -4,13 +4,13 @@ using System.Collections.Generic;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：覆盖 `ReadOnlyDicts` 相关行为。
+/// 只读字典默认值、级联查找和空字典契约测试。
 /// </summary>
 [Trait("CollectionsUT", "ReadOnlyDicts.Contract")]
 public class ReadOnlyDictsContractTest
 {
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefault` 在 `NullDictionary` 场景下，结果为 `ReturnsDefaultValue`。
+    /// 验证空字典返回指定默认值。
     /// </summary>
     [Fact]
     public void GetValueOrDefault_NullDictionary_ReturnsDefaultValue()
@@ -23,7 +23,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefault` 在 `NullDictionaryWithoutExplicitDefault` 场景下，结果为 `ReturnsTypeDefault`。
+    /// 验证空字典未指定默认值时返回类型默认值。
     /// </summary>
     [Fact]
     public void GetValueOrDefault_NullDictionaryWithoutExplicitDefault_ReturnsTypeDefault()
@@ -36,7 +36,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefault` 在 `NullDictionaryWithCalculator` 场景下，结果为 `InvokesCalculatorAndReturnsValue`。
+    /// 验证空字典调用默认值工厂一次并返回计算值。
     /// </summary>
     [Fact]
     public void GetValueOrDefault_NullDictionaryWithCalculator_InvokesCalculatorAndReturnsValue()
@@ -56,7 +56,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefault` 在 `MissingKeyWithCalculator` 场景下，结果为 `InvokesCalculatorOnce`。
+    /// 验证缺失键调用默认值工厂一次。
     /// </summary>
     [Fact]
     public void GetValueOrDefault_MissingKeyWithCalculator_InvokesCalculatorOnce()
@@ -78,7 +78,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefault` 在 `ExistingKeyWithCalculator` 场景下，结果为 `DoesNotInvokeCalculator`。
+    /// 验证已有键返回原值且不调用默认值工厂。
     /// </summary>
     [Fact]
     public void GetValueOrDefault_ExistingKeyWithCalculator_DoesNotInvokeCalculator()
@@ -100,7 +100,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefault` 在 `MissingKeyAndNullCalculator` 场景下，结果为 `ReturnsTypeDefault`。
+    /// 验证缺失键且工厂为空时返回类型默认值。
     /// </summary>
     [Fact]
     public void GetValueOrDefault_MissingKeyAndNullCalculator_ReturnsTypeDefault()
@@ -113,7 +113,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefaultCascading` 在 `NullCollection` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证级联查找拒绝空字典集合并报告参数名。
     /// </summary>
     [Fact]
     public void GetValueOrDefaultCascading_NullCollection_ThrowsArgumentNullException()
@@ -127,7 +127,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefaultCascading` 在 `MissingKey` 场景下，结果为 `ReturnsProvidedDefaultValue`。
+    /// 验证级联查找未命中时返回指定默认值。
     /// </summary>
     [Fact]
     public void GetValueOrDefaultCascading_MissingKey_ReturnsProvidedDefaultValue()
@@ -141,7 +141,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefaultCascading` 在 `MissingKeyAndNoExplicitDefault` 场景下，结果为 `ReturnsTypeDefault`。
+    /// 验证级联查找未命中且未指定默认值时返回类型默认值。
     /// </summary>
     [Fact]
     public void GetValueOrDefaultCascading_MissingKeyAndNoExplicitDefault_ReturnsTypeDefault()
@@ -154,7 +154,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `TryGetValueCascading` 在 `MultipleDictionaries` 场景下，结果为 `ReturnsFirstMatchedValue`。
+    /// 验证级联查找返回首个匹配的值。
     /// </summary>
     [Fact]
     public void TryGetValueCascading_MultipleDictionaries_ReturnsFirstMatchedValue()
@@ -169,7 +169,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `TryGetValueCascading` 在 `MissingKey` 场景下，结果为 `ReturnsFalseAndDefault`。
+    /// 验证级联查找未命中时返回失败及类型默认值。
     /// </summary>
     [Fact]
     public void TryGetValueCascading_MissingKey_ReturnsFalseAndDefault()
@@ -184,7 +184,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `TryGetValueCascading` 在 `CollectionContainsNullDictionary` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 验证当前级联查找遍历到空字典时抛出空引用异常。
     /// </summary>
     [Fact]
     public void TryGetValueCascading_CollectionContainsNullDictionary_CurrentlyThrowsNullReferenceException()
@@ -200,7 +200,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `TryGetValueCascading` 在 `HitBeforeNullDictionary` 场景下，结果为 `ShortCircuitsAndReturnsMatchedValue`。
+    /// 验证级联查找命中后停止遍历并跳过后续空字典。
     /// </summary>
     [Fact]
     public void TryGetValueCascading_HitBeforeNullDictionary_ShortCircuitsAndReturnsMatchedValue()
@@ -219,7 +219,7 @@ public class ReadOnlyDictsContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `Empty` 在 `ReadonlyContract` 场景下，结果为 `ReturnsReadOnlyDictionaryAndBlocksWrites`。
+    /// 验证空字典只读且拒绝写入。
     /// </summary>
     [Fact]
     public void Empty_ReadonlyContract_ReturnsReadOnlyDictionaryAndBlocksWrites()

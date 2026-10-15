@@ -107,6 +107,10 @@ public class ColorConverterTest
         color.B.ShouldBe((byte)128);
     }
 
+    /// <summary>
+    /// 提供十六进制颜色格式及其预期 ARGB 分量。
+    /// </summary>
+    /// <returns>颜色文本和预期通道值组成的测试数据。</returns>
     public static IEnumerable<object[]> GetHexColorCases()
     {
         yield return new object[] { "#112233", (byte)0xFF, (byte)0x11, (byte)0x22, (byte)0x33 };
@@ -114,6 +118,10 @@ public class ColorConverterTest
         yield return new object[] { "#abc", (byte)0xFF, (byte)0xAA, (byte)0xBB, (byte)0xCC };
     }
 
+    /// <summary>
+    /// 提供 CSS 命名颜色及其预期颜色值。
+    /// </summary>
+    /// <returns>颜色名称和预期颜色组成的测试数据。</returns>
     public static IEnumerable<object[]> GetNamedColorCases()
     {
         yield return new object[] { "blue", Color.Blue };

@@ -51,6 +51,7 @@ public class ObjectIdTest
     /// <summary>
     /// 测试 - 字节数组构造函数 - 无效长度抛出异常
     /// </summary>
+    /// <param name="length">要创建的字节数组长度。</param>
     [Theory]
     [InlineData(11)]
     [InlineData(13)]
@@ -152,6 +153,7 @@ public class ObjectIdTest
     /// <summary>
     /// 测试 - 字符串构造函数 - 无效长度抛出异常
     /// </summary>
+    /// <param name="invalidString">长度不符合 ObjectId 要求的字符串。</param>
     [Theory]
     [InlineData("")]
     [InlineData("123")]
@@ -247,6 +249,7 @@ public class ObjectIdTest
     /// <summary>
     /// 测试 - Parse - 无效长度抛出异常
     /// </summary>
+    /// <param name="invalidString">长度不符合 ObjectId 要求的字符串。</param>
     [Theory]
     [InlineData("")]
     [InlineData("123")]
@@ -274,6 +277,7 @@ public class ObjectIdTest
     /// <summary>
     /// 测试 - TryParse - 无效字符串解析失败
     /// </summary>
+    /// <param name="invalidString">无法解析为 ObjectId 的字符串。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]

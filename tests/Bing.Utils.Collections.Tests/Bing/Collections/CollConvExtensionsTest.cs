@@ -8,7 +8,7 @@ using Xunit;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：CollConvExtensions 集合转换扩展方法（IEnumerator→IEnumerable、索引序列、有序数组、HashSet）
+/// 枚举器、索引序列、排序数组和哈希集合转换测试。
 /// </summary>
 [Trait("CollUT", "CollConvExtensions")]
 public class CollConvExtensionsTest
@@ -16,7 +16,7 @@ public class CollConvExtensionsTest
     #region ToEnumerable — IEnumerator 转 IEnumerable
 
     /// <summary>
-    /// 测试目的：ToEnumerable 应将 IEnumerator 转换为可枚举集合并返回所有元素
+    /// 验证ToEnumerable 应将 IEnumerator 转换为可枚举集合并返回所有元素
     /// </summary>
     [Fact]
     public void ToEnumerable_ValidEnumerator_ReturnsAllElements()
@@ -32,7 +32,7 @@ public class CollConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToEnumerable 对 null 枚举器应抛出 ArgumentNullException
+    /// 验证ToEnumerable 对 null 枚举器应抛出 ArgumentNullException
     /// </summary>
     [Fact]
     public void ToEnumerable_NullEnumerator_ThrowsArgumentNullException()
@@ -49,7 +49,7 @@ public class CollConvExtensionsTest
     #region ToEnumerableAfter — 从当前位置起转换
 
     /// <summary>
-    /// 测试目的：ToEnumerableAfter 应从枚举器当前位置（已 MoveNext）开始枚举剩余元素
+    /// 验证从当前位置转换的结果非空且包含当前元素。
     /// </summary>
     [Fact]
     public void ToEnumerableAfter_EnumeratorAdvanced_ReturnsRemainingElements()
@@ -72,7 +72,7 @@ public class CollConvExtensionsTest
     #region ToIndexedSequence — 带索引序列
 
     /// <summary>
-    /// 测试目的：ToIndexedSequence 应为每个元素附上从 0 开始的索引
+    /// 验证ToIndexedSequence 应为每个元素附上从 0 开始的索引
     /// </summary>
     [Fact]
     public void ToIndexedSequence_SimpleList_AddsCorrectIndices()
@@ -94,7 +94,7 @@ public class CollConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToIndexedSequence 对空集合应返回空序列
+    /// 验证ToIndexedSequence 对空集合应返回空序列
     /// </summary>
     [Fact]
     public void ToIndexedSequence_EmptyList_ReturnsEmpty()
@@ -107,7 +107,7 @@ public class CollConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToIndexedSequence 对 null 应抛出 ArgumentNullException
+    /// 验证ToIndexedSequence 对 null 应抛出 ArgumentNullException
     /// </summary>
     [Fact]
     public void ToIndexedSequence_NullSource_ThrowsArgumentNullException()
@@ -124,7 +124,7 @@ public class CollConvExtensionsTest
     #region ToSortedArray — 有序数组
 
     /// <summary>
-    /// 测试目的：ToSortedArray() 对实现 IComparable&lt;T&gt; 的类型应升序排列
+    /// 验证ToSortedArray() 对实现 IComparable&lt;T&gt; 的类型应升序排列
     /// </summary>
     [Fact]
     public void ToSortedArray_WithoutComparer_SortsAscending()
@@ -140,7 +140,7 @@ public class CollConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToSortedArray(Comparison) 应按照提供的比较函数排列
+    /// 验证ToSortedArray(Comparison) 应按照提供的比较函数排列
     /// </summary>
     [Fact]
     public void ToSortedArray_WithComparison_SortsDescending()
@@ -156,7 +156,7 @@ public class CollConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToSortedArray 对单元素集合应返回该元素
+    /// 验证ToSortedArray 对单元素集合应返回该元素
     /// </summary>
     [Fact]
     public void ToSortedArray_SingleElement_ReturnsSingleElement()
@@ -173,7 +173,7 @@ public class CollConvExtensionsTest
     #region ToHashSet — HashSet 转换
 
     /// <summary>
-    /// 测试目的：ToHashSet(ignoreDup=false) 对含重复元素的集合应创建 HashSet（自然去重）
+    /// 验证未要求预先去重时生成包含全部不同元素的哈希集合。
     /// </summary>
     [Fact]
     public void ToHashSet_WithoutIgnoreDup_CreatesHashSet()
@@ -190,7 +190,7 @@ public class CollConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToHashSet(ignoreDup=true) 应去除重复元素后创建 HashSet
+    /// 验证ToHashSet(ignoreDup=true) 应去除重复元素后创建 HashSet
     /// </summary>
     [Fact]
     public void ToHashSet_IgnoreDup_RemovesDuplicates()
@@ -209,7 +209,7 @@ public class CollConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToHashSet(keyFunc) 应按投影键创建 HashSet&lt;TKey&gt;
+    /// 验证ToHashSet(keyFunc) 应按投影键创建 HashSet&lt;TKey&gt;
     /// </summary>
     [Fact]
     public void ToHashSet_WithKeyFunc_ProjectsToKeys()
@@ -225,7 +225,7 @@ public class CollConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToHashSet(keyFunc) 对 null keyFunc 应抛出 ArgumentNullException
+    /// 验证ToHashSet(keyFunc) 对 null keyFunc 应抛出 ArgumentNullException
     /// </summary>
     [Fact]
     public void ToHashSet_NullKeyFunc_ThrowsArgumentNullException()
@@ -243,7 +243,7 @@ public class CollConvExtensionsTest
     #region ToHashSetIgnoringDuplicates — 忽略重复转换
 
     /// <summary>
-    /// 测试目的：ToHashSetIgnoringDuplicates 应去除重复项后创建 HashSet
+    /// 验证ToHashSetIgnoringDuplicates 应去除重复项后创建 HashSet
     /// </summary>
     [Fact]
     public void ToHashSetIgnoringDuplicates_WithDuplicates_RemovesAll()
@@ -259,7 +259,7 @@ public class CollConvExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ToHashSetIgnoringDuplicates 对无重复集合应原样返回
+    /// 验证无重复元素转换后保留原元素数量。
     /// </summary>
     [Fact]
     public void ToHashSetIgnoringDuplicates_NoDuplicates_ReturnsAll()

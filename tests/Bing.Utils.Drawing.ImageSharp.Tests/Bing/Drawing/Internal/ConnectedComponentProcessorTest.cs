@@ -1,11 +1,14 @@
 namespace Bing.Drawing.Internal;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="ConnectedComponentProcessor"/> 纯算法。
+/// 验证前景连通域标记及同灰度区域填充。
 /// </summary>
 [Trait("Drawing", "Shared.ConnectedComponentProcessor")]
 public class ConnectedComponentProcessorTest
 {
+    /// <summary>
+    /// 验证单个前景像素形成一个包含正确坐标的连通域。
+    /// </summary>
     [Fact]
     public void LabelConnectedComponents_SingleForeground_ReturnsOneComponent()
     {
@@ -21,6 +24,9 @@ public class ConnectedComponentProcessorTest
         components[0][0].Y.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证由背景隔开的前景像素分别形成连通域。
+    /// </summary>
     [Fact]
     public void LabelConnectedComponents_TwoSeparateGroups_ReturnsTwoComponents()
     {
@@ -35,6 +41,9 @@ public class ConnectedComponentProcessorTest
         components[1].Count.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证相连的四个前景像素形成同一连通域。
+    /// </summary>
     [Fact]
     public void LabelConnectedComponents_ConnectedRegion_ReturnsCorrectSize()
     {
@@ -49,6 +58,9 @@ public class ConnectedComponentProcessorTest
         components[0].Count.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证区域填充返回四个坐标并只替换相连前景。
+    /// </summary>
     [Fact]
     public void FloodFillReplace_FillsConnectedRegion()
     {
@@ -65,6 +77,9 @@ public class ConnectedComponentProcessorTest
         bin[2, 0].ShouldBe((byte)255); // not touched
     }
 
+    /// <summary>
+    /// 验证仅对角相邻的同色像素不会被同一次区域填充替换。
+    /// </summary>
     [Fact]
     public void FloodFillReplace_DifferentGray_DoesNotFill()
     {

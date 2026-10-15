@@ -16,10 +16,17 @@ namespace Bing.Expressions;
 public class LambdaExtensionsTests
 {
     // 辅助：创建 Sample 参数表达式
+    /// <summary>
+    /// 创建样例类型的测试参数表达式。
+    /// </summary>
+    /// <returns>名称为 t 的样例参数表达式。</returns>
     private static ParameterExpression Param() => Expression.Parameter(typeof(Sample), "t");
 
     // ── Property ──────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证属性名生成对应的成员访问表达式。
+    /// </summary>
     [Fact]
     public void Property_SimplePropertyName_ReturnsMemberExpression()
     {
@@ -29,6 +36,9 @@ public class LambdaExtensionsTests
         ((MemberExpression)expr).Member.Name.ShouldBe("StringValue");
     }
 
+    /// <summary>
+    /// 验证嵌套属性路径生成末级属性的访问表达式。
+    /// </summary>
     [Fact]
     public void Property_NestedPropertyName_ReturnsMemberExpressionForLeaf()
     {
@@ -39,6 +49,9 @@ public class LambdaExtensionsTests
         ((MemberExpression)expr).Member.Name.ShouldBe("StringValue");
     }
 
+    /// <summary>
+    /// 验证成员信息生成对应的属性访问表达式。
+    /// </summary>
     [Fact]
     public void Property_MemberInfo_ReturnsMemberAccess()
     {
@@ -51,6 +64,9 @@ public class LambdaExtensionsTests
 
     // ── And (untyped) ─────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证两个空表达式合取后返回空值。
+    /// </summary>
     [Fact]
     public void And_BothNull_ReturnsNull()
     {
@@ -60,6 +76,9 @@ public class LambdaExtensionsTests
         result.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 验证左表达式为空时合取返回右表达式。
+    /// </summary>
     [Fact]
     public void And_LeftNull_ReturnsRight()
     {
@@ -68,6 +87,9 @@ public class LambdaExtensionsTests
         left.And(right).ShouldBe(right);
     }
 
+    /// <summary>
+    /// 验证右表达式为空时合取返回左表达式。
+    /// </summary>
     [Fact]
     public void And_RightNull_ReturnsLeft()
     {
@@ -76,6 +98,9 @@ public class LambdaExtensionsTests
         left.And(right).ShouldBe(left);
     }
 
+    /// <summary>
+    /// 验证合取表达式仅接受同时满足两个条件的值。
+    /// </summary>
     [Fact]
     public void And_BothNonNull_CompilesAndFilters()
     {
@@ -92,6 +117,9 @@ public class LambdaExtensionsTests
 
     // ── And (typed Expression<Func<T, bool>>) ─────────────────────────────────
 
+    /// <summary>
+    /// 验证泛型合取在左侧为空时返回右表达式。
+    /// </summary>
     [Fact]
     public void And_TypedExpression_LeftNull_ReturnsRight()
     {
@@ -100,6 +128,9 @@ public class LambdaExtensionsTests
         left.And(right).ShouldBe(right);
     }
 
+    /// <summary>
+    /// 验证泛型合取在右侧为空时返回左表达式。
+    /// </summary>
     [Fact]
     public void And_TypedExpression_RightNull_ReturnsLeft()
     {
@@ -108,6 +139,9 @@ public class LambdaExtensionsTests
         left.And(right).ShouldBe(left);
     }
 
+    /// <summary>
+    /// 验证泛型合取仅接受同时满足两个条件的值。
+    /// </summary>
     [Fact]
     public void And_TypedExpression_BothNonNull_CombinesCorrectly()
     {
@@ -122,6 +156,9 @@ public class LambdaExtensionsTests
 
     // ── AndIf (untyped) ───────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证条件为真时合取两个表达式。
+    /// </summary>
     [Fact]
     public void AndIf_ConditionTrue_CombinesExpressions()
     {
@@ -135,6 +172,9 @@ public class LambdaExtensionsTests
         lambda(new Sample { IntValue = 0 }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证条件为假时保留左表达式。
+    /// </summary>
     [Fact]
     public void AndIf_ConditionFalse_ReturnsLeftOnly()
     {
@@ -148,6 +188,9 @@ public class LambdaExtensionsTests
 
     // ── AndIf (typed) ─────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证泛型条件合取在条件为真时组合两个表达式。
+    /// </summary>
     [Fact]
     public void AndIf_TypedExpression_ConditionTrue_CombinesExpressions()
     {
@@ -159,6 +202,9 @@ public class LambdaExtensionsTests
         combined(new Sample { IntValue = 0 }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证泛型条件合取在条件为假时保留左表达式。
+    /// </summary>
     [Fact]
     public void AndIf_TypedExpression_ConditionFalse_ReturnsLeft()
     {
@@ -169,6 +215,9 @@ public class LambdaExtensionsTests
 
     // ── Or (untyped) ──────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证左表达式为空时析取返回右表达式。
+    /// </summary>
     [Fact]
     public void Or_LeftNull_ReturnsRight()
     {
@@ -177,6 +226,9 @@ public class LambdaExtensionsTests
         left.Or(right).ShouldBe(right);
     }
 
+    /// <summary>
+    /// 验证右表达式为空时析取返回左表达式。
+    /// </summary>
     [Fact]
     public void Or_RightNull_ReturnsLeft()
     {
@@ -185,6 +237,9 @@ public class LambdaExtensionsTests
         left.Or(right).ShouldBe(left);
     }
 
+    /// <summary>
+    /// 验证析取表达式接受满足任一条件的值。
+    /// </summary>
     [Fact]
     public void Or_BothNonNull_CompilesOrElse()
     {
@@ -201,6 +256,9 @@ public class LambdaExtensionsTests
 
     // ── Or (typed) ────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证泛型析取接受满足任一条件的值。
+    /// </summary>
     [Fact]
     public void Or_TypedExpression_BothNonNull_CombinesCorrectly()
     {
@@ -215,6 +273,9 @@ public class LambdaExtensionsTests
 
     // ── OrIf (untyped) ────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证条件为真时析取两个表达式。
+    /// </summary>
     [Fact]
     public void OrIf_ConditionTrue_CombinesExpressions()
     {
@@ -228,6 +289,9 @@ public class LambdaExtensionsTests
         lambda(new Sample { IntValue = 10 }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证条件为假时保留左表达式。
+    /// </summary>
     [Fact]
     public void OrIf_ConditionFalse_ReturnsLeftOnly()
     {
@@ -239,6 +303,9 @@ public class LambdaExtensionsTests
 
     // ── OrIf (typed) ──────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证泛型条件析取在条件为真时组合两个表达式。
+    /// </summary>
     [Fact]
     public void OrIf_TypedExpression_ConditionTrue_CombinesExpressions()
     {
@@ -250,6 +317,9 @@ public class LambdaExtensionsTests
         compiled(new Sample { IntValue = 10 }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证泛型条件析取在条件为假时保留左表达式。
+    /// </summary>
     [Fact]
     public void OrIf_TypedExpression_ConditionFalse_ReturnsLeft()
     {
@@ -260,6 +330,9 @@ public class LambdaExtensionsTests
 
     // ── Value<T> ──────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证从比较表达式中提取字符串常量。
+    /// </summary>
     [Fact]
     public void Value_ExpressionWithStringConstant_ReturnsConstant()
     {
@@ -269,6 +342,9 @@ public class LambdaExtensionsTests
 
     // ── Equal ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证字符串属性相等表达式匹配相同文本。
+    /// </summary>
     [Fact]
     public void Equal_StringProperty_MatchesTrueCase()
     {
@@ -280,6 +356,9 @@ public class LambdaExtensionsTests
         lambda(new Sample { StringValue = "World" }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证两个表达式生成相等比较节点。
+    /// </summary>
     [Fact]
     public void Equal_TwoExpressions_CreatesEqualNode()
     {
@@ -291,6 +370,9 @@ public class LambdaExtensionsTests
 
     // ── NotEqual ──────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证字符串属性不等表达式匹配不同文本。
+    /// </summary>
     [Fact]
     public void NotEqual_StringProperty_WorksCorrectly()
     {
@@ -304,6 +386,9 @@ public class LambdaExtensionsTests
 
     // ── Greater ───────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证整数属性大于表达式排除边界及较小值。
+    /// </summary>
     [Fact]
     public void Greater_IntProperty_WorksCorrectly()
     {
@@ -318,6 +403,9 @@ public class LambdaExtensionsTests
 
     // ── GreaterEqual ──────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证整数属性大于等于表达式包含边界。
+    /// </summary>
     [Fact]
     public void GreaterEqual_IntProperty_IncludesBoundary()
     {
@@ -332,6 +420,9 @@ public class LambdaExtensionsTests
 
     // ── Less ──────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证整数属性小于表达式排除边界及较大值。
+    /// </summary>
     [Fact]
     public void Less_IntProperty_WorksCorrectly()
     {
@@ -346,6 +437,9 @@ public class LambdaExtensionsTests
 
     // ── LessEqual ─────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证整数属性小于等于表达式包含边界。
+    /// </summary>
     [Fact]
     public void LessEqual_IntProperty_IncludesBoundary()
     {
@@ -360,6 +454,9 @@ public class LambdaExtensionsTests
 
     // ── StartsWith ────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证字符串属性的前缀匹配表达式。
+    /// </summary>
     [Fact]
     public void StartsWith_MatchingPrefix_ReturnsTrue()
     {
@@ -373,6 +470,9 @@ public class LambdaExtensionsTests
 
     // ── EndsWith ──────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证字符串属性的后缀匹配表达式。
+    /// </summary>
     [Fact]
     public void EndsWith_MatchingSuffix_ReturnsTrue()
     {
@@ -386,6 +486,9 @@ public class LambdaExtensionsTests
 
     // ── Contains ──────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证字符串属性的子串匹配表达式。
+    /// </summary>
     [Fact]
     public void Contains_SubstringMatch_ReturnsTrue()
     {
@@ -399,6 +502,9 @@ public class LambdaExtensionsTests
 
     // ── Operation ─────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证相等操作符生成对应的比较表达式。
+    /// </summary>
     [Fact]
     public void Operation_Equal_DispatchesCorrectly()
     {
@@ -410,6 +516,9 @@ public class LambdaExtensionsTests
         lambda(new Sample { IntValue = 0 }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证不等操作符生成对应的比较表达式。
+    /// </summary>
     [Fact]
     public void Operation_NotEqual_DispatchesCorrectly()
     {
@@ -421,6 +530,9 @@ public class LambdaExtensionsTests
         lambda(new Sample { IntValue = 42 }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证大于操作符生成对应的比较表达式。
+    /// </summary>
     [Fact]
     public void Operation_Greater_DispatchesCorrectly()
     {
@@ -432,6 +544,9 @@ public class LambdaExtensionsTests
         lambda(new Sample { IntValue = 10 }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证前缀操作符生成对应的字符串匹配表达式。
+    /// </summary>
     [Fact]
     public void Operation_Starts_DispatchesCorrectly()
     {
@@ -443,6 +558,9 @@ public class LambdaExtensionsTests
         lambda(new Sample { StringValue = "World" }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证包含操作符生成对应的字符串匹配表达式。
+    /// </summary>
     [Fact]
     public void Operation_Contains_DispatchesCorrectly()
     {
@@ -454,6 +572,9 @@ public class LambdaExtensionsTests
         lambda(new Sample { StringValue = "World" }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证表达式值重载拒绝不支持的操作符。
+    /// </summary>
     [Fact]
     public void Operation_WithExpressionValue_UnsupportedOperator_Throws()
     {
@@ -467,11 +588,22 @@ public class LambdaExtensionsTests
     // ── Call ──────────────────────────────────────────────────────────────────
 
     // 辅助类：单一重载方法，避免 AmbiguousMatchException
+    /// <summary>
+    /// 提供方法调用表达式测试使用的问候对象。
+    /// </summary>
     private class Greeter
     {
+        /// <summary>
+        /// 生成带指定名称的问候文本。
+        /// </summary>
+        /// <param name="name">问候对象的名称。</param>
+        /// <returns>包含名称的问候文本。</returns>
         public string Greet(string name) => "Hello, " + name;
     }
 
+    /// <summary>
+    /// 验证按名称创建的无参数方法调用可以编译执行。
+    /// </summary>
     [Fact]
     public void Call_MethodByName_CreatesCallExpression()
     {
@@ -482,6 +614,9 @@ public class LambdaExtensionsTests
         lambda("hello").ShouldBe("HELLO");
     }
 
+    /// <summary>
+    /// 验证对象参数值传入生成的方法调用表达式。
+    /// </summary>
     [Fact]
     public void Call_WithObjectValues_CreatesCallExpression()
     {
@@ -495,6 +630,9 @@ public class LambdaExtensionsTests
 
     // ── ToLambda ──────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证表达式体转换为可编译执行的 Lambda 表达式。
+    /// </summary>
     [Fact]
     public void ToLambda_ValidBody_ReturnsCompiledLambda()
     {
@@ -504,6 +642,9 @@ public class LambdaExtensionsTests
         lambda(5).ShouldBe(6);
     }
 
+    /// <summary>
+    /// 验证空表达式体转换为 Lambda 后返回空值。
+    /// </summary>
     [Fact]
     public void ToLambda_NullBody_ReturnsNull()
     {
@@ -513,6 +654,9 @@ public class LambdaExtensionsTests
 
     // ── ToPredicate ───────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证真常量转换为返回真的谓词。
+    /// </summary>
     [Fact]
     public void ToPredicate_ConstantTrue_ReturnsAlwaysTruePredicate()
     {
@@ -521,6 +665,9 @@ public class LambdaExtensionsTests
         pred(new Sample()).ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证假常量转换为返回假的谓词。
+    /// </summary>
     [Fact]
     public void ToPredicate_ConstantFalse_ReturnsAlwaysFalsePredicate()
     {
@@ -541,6 +688,9 @@ public class ExpressionExtensionsPropertyInfoTests
 {
     // ── GetPropertyInfo<T, TProperty>(expression) ─────────────────────────────
 
+    /// <summary>
+    /// 验证从字符串属性表达式提取名称和属性类型。
+    /// </summary>
     [Fact]
     public void GetPropertyInfo_StringProperty_ReturnsCorrectPropertyInfo()
     {
@@ -550,6 +700,9 @@ public class ExpressionExtensionsPropertyInfoTests
         info.PropertyType.ShouldBe(typeof(string));
     }
 
+    /// <summary>
+    /// 验证从整数属性表达式提取名称和属性类型。
+    /// </summary>
     [Fact]
     public void GetPropertyInfo_IntProperty_ReturnsCorrectPropertyInfo()
     {
@@ -559,6 +712,9 @@ public class ExpressionExtensionsPropertyInfoTests
         info.PropertyType.ShouldBe(typeof(int));
     }
 
+    /// <summary>
+    /// 验证装箱转换不影响属性信息提取。
+    /// </summary>
     [Fact]
     public void GetPropertyInfo_ObjectTypedExpression_HandlesConvertNode()
     {
@@ -568,6 +724,9 @@ public class ExpressionExtensionsPropertyInfoTests
         info.Name.ShouldBe("IntValue");
     }
 
+    /// <summary>
+    /// 验证属性信息提取拒绝空表达式。
+    /// </summary>
     [Fact]
     public void GetPropertyInfo_NullExpression_ThrowsArgumentNullException()
     {
@@ -575,6 +734,9 @@ public class ExpressionExtensionsPropertyInfoTests
         Should.Throw<ArgumentNullException>(() => expr.GetPropertyInfo());
     }
 
+    /// <summary>
+    /// 验证属性信息提取拒绝方法调用表达式。
+    /// </summary>
     [Fact]
     public void GetPropertyInfo_NonPropertyExpression_ThrowsArgumentException()
     {
@@ -585,6 +747,9 @@ public class ExpressionExtensionsPropertyInfoTests
 
     // ── GetPropertyInfo<T, TProperty>(source, expression) ────────────────────
 
+    /// <summary>
+    /// 验证从对象及属性选择器提取属性信息。
+    /// </summary>
     [Fact]
     public void GetPropertyInfo_WithSource_ReturnsCorrectPropertyInfo()
     {
@@ -595,6 +760,9 @@ public class ExpressionExtensionsPropertyInfoTests
 
     // ── GetPropertyInfos<T>(source, params expressions) ───────────────────────
 
+    /// <summary>
+    /// 验证批量提取按输入顺序返回多个属性信息。
+    /// </summary>
     [Fact]
     public void GetPropertyInfos_MultipleProperties_ReturnsAllInfos()
     {
@@ -608,6 +776,9 @@ public class ExpressionExtensionsPropertyInfoTests
         infos[1].Name.ShouldBe("IntValue");
     }
 
+    /// <summary>
+    /// 验证批量属性信息提取拒绝空源对象。
+    /// </summary>
     [Fact]
     public void GetPropertyInfos_NullSource_ThrowsArgumentNullException()
     {
@@ -616,6 +787,9 @@ public class ExpressionExtensionsPropertyInfoTests
             sample.GetPropertyInfos(t => t.StringValue).ToList());
     }
 
+    /// <summary>
+    /// 验证批量属性信息提取拒绝空表达式集合。
+    /// </summary>
     [Fact]
     public void GetPropertyInfos_NullExpressions_ThrowsArgumentNullException()
     {
@@ -627,6 +801,9 @@ public class ExpressionExtensionsPropertyInfoTests
 
     // ── CreateGetPropertyExpression ───────────────────────────────────────────
 
+    /// <summary>
+    /// 验证属性信息生成对应的成员访问表达式。
+    /// </summary>
     [Fact]
     public void CreateGetPropertyExpression_ValidProperty_ReturnsMemberExpression()
     {
@@ -636,6 +813,9 @@ public class ExpressionExtensionsPropertyInfoTests
         expr.Member.Name.ShouldBe("StringValue");
     }
 
+    /// <summary>
+    /// 验证属性访问表达式拒绝不匹配的参数类型。
+    /// </summary>
     [Fact]
     public void CreateGetPropertyExpression_WithMismatchedParameterType_Throws()
     {
@@ -645,6 +825,9 @@ public class ExpressionExtensionsPropertyInfoTests
             () => propInfo.CreateGetPropertyExpression(wrongParam));
     }
 
+    /// <summary>
+    /// 验证属性访问表达式创建拒绝空属性信息。
+    /// </summary>
     [Fact]
     public void CreateGetPropertyExpression_NullPropertyInfo_Throws()
     {
@@ -656,6 +839,9 @@ public class ExpressionExtensionsPropertyInfoTests
 
     // ── CreateGetPropertyLambdaExpression<T, TProperty> ──────────────────────
 
+    /// <summary>
+    /// 验证字符串属性访问 Lambda 返回实例属性值。
+    /// </summary>
     [Fact]
     public void CreateGetPropertyLambdaExpression_StringProperty_CompilesCorrectly()
     {
@@ -665,6 +851,9 @@ public class ExpressionExtensionsPropertyInfoTests
         lambda(sample).ShouldBe("TestLambda");
     }
 
+    /// <summary>
+    /// 验证整数属性访问 Lambda 返回实例属性值。
+    /// </summary>
     [Fact]
     public void CreateGetPropertyLambdaExpression_IntProperty_CompilesCorrectly()
     {
@@ -686,6 +875,9 @@ public class PredicateExpressionBuilderTests
 {
     // ── ToLambda 空构建器 ──────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证空谓词构建器返回空 Lambda。
+    /// </summary>
     [Fact]
     public void ToLambda_EmptyBuilder_ReturnsNull()
     {
@@ -696,6 +888,9 @@ public class PredicateExpressionBuilderTests
 
     // ── GetParameter ──────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证谓词构建器提供实体类型的参数表达式。
+    /// </summary>
     [Fact]
     public void GetParameter_ReturnsParameterExpression()
     {
@@ -707,6 +902,9 @@ public class PredicateExpressionBuilderTests
 
     // ── Append (expression + Operator + object value) ────────────────────────
 
+    /// <summary>
+    /// 验证构建器按相等条件筛选属性值。
+    /// </summary>
     [Fact]
     public void Append_SingleEqualCondition_FiltersCorrectly()
     {
@@ -718,6 +916,9 @@ public class PredicateExpressionBuilderTests
         predicate(new Sample { StringValue = "Other" }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证构建器按大于条件筛选属性值。
+    /// </summary>
     [Fact]
     public void Append_GreaterCondition_FiltersCorrectly()
     {
@@ -729,6 +930,9 @@ public class PredicateExpressionBuilderTests
         predicate(new Sample { IntValue = 5 }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证构建器使用合取组合连续追加的条件。
+    /// </summary>
     [Fact]
     public void Append_TwoConditions_CombinesWithAnd()
     {
@@ -744,6 +948,9 @@ public class PredicateExpressionBuilderTests
 
     // ── Append (string property + Operator + object value) ───────────────────
 
+    /// <summary>
+    /// 验证构建器通过属性名追加相等条件。
+    /// </summary>
     [Fact]
     public void Append_StringPropertyName_FiltersCorrectly()
     {
@@ -755,6 +962,9 @@ public class PredicateExpressionBuilderTests
         predicate(new Sample { StringValue = "World" }).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证构建器通过包含操作符筛选字符串。
+    /// </summary>
     [Fact]
     public void Append_ContainsOperator_FiltersCorrectly()
     {
@@ -768,6 +978,9 @@ public class PredicateExpressionBuilderTests
 
     // ── Clear ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证清空构建器后不再返回谓词。
+    /// </summary>
     [Fact]
     public void Clear_AfterAppend_ResetsToNull()
     {
@@ -779,6 +992,9 @@ public class PredicateExpressionBuilderTests
 
     // ── Append (expression + Operator + Expression value) ────────────────────
 
+    /// <summary>
+    /// 验证构建器接受表达式值并包含比较边界。
+    /// </summary>
     [Fact]
     public void Append_WithExpressionValue_FiltersCorrectly()
     {

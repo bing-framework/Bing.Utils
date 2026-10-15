@@ -5,12 +5,13 @@ namespace Bing.Helpers;
 public class XmlTest : TestBase
 {
     /// <summary>
-    /// Xml操作
+    /// 此测试实例使用的 XML 操作对象。
     /// </summary>
     private readonly Xml _xml;
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="XmlTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">xUnit 测试输出助手。</param>
     public XmlTest(ITestOutputHelper output) : base(output)
     {
         _xml = new Xml();

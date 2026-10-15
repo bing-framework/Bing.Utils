@@ -7,8 +7,9 @@ namespace Bing.Helpers;
 public class ConvTest : TestBase
 {
     /// <summary>
-    /// 初始化一个<see cref="ConvTest"/>类型的实例
+    /// 初始化一个 <see cref="ConvTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">xUnit 测试输出助手。</param>
     public ConvTest(ITestOutputHelper output) : base(output)
     {
     }
@@ -413,9 +414,22 @@ public class ConvTest : TestBase
         Assert.False(Conv.ToBool(false));
     }
     /// <summary>
-    /// 测试 - 转换为布尔型（枚举类型输入）
+    /// 用于验证枚举值到布尔值转换的样例。
     /// </summary>
-    private enum TestEnum { None = 0, Yes = 1 }
+    private enum TestEnum
+    {
+        /// <summary>
+        /// 对应零值和 <see langword="false"/>。
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// 对应非零值和 <see langword="true"/>。
+        /// </summary>
+        Yes = 1
+    }
+    /// <summary>
+    /// 验证枚举零值转换为 <see langword="false"/>，非零值转换为 <see langword="true"/>。
+    /// </summary>
     [Fact]
     public void Test_ToBool_EnumInput_ReturnsExpected()
     {

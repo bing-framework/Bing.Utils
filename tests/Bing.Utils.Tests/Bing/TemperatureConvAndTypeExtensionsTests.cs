@@ -17,18 +17,27 @@ public class TemperatureConvTests
 {
     // ── 摄氏度 → 华氏度 ───────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证零摄氏度转换为三十二华氏度。
+    /// </summary>
     [Fact]
     public void DegreesCelsiusToFahrenheit_Zero_Returns32()
     {
         TemperatureConv.DegreesCelsiusToFahrenheit(0).ShouldBe(32m);
     }
 
+    /// <summary>
+    /// 验证一百摄氏度转换为二百一十二华氏度。
+    /// </summary>
     [Fact]
     public void DegreesCelsiusToFahrenheit_HundredDegrees_Returns212()
     {
         TemperatureConv.DegreesCelsiusToFahrenheit(100).ShouldBe(212m);
     }
 
+    /// <summary>
+    /// 验证负四十度在摄氏和华氏标度下数值相同。
+    /// </summary>
     [Fact]
     public void DegreesCelsiusToFahrenheit_Negative40_ReturnsMinus40()
     {
@@ -38,12 +47,18 @@ public class TemperatureConvTests
 
     // ── 摄氏度 → 开氏度 ───────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证当前实现将零摄氏度转换为二百七十三点一六开尔文。
+    /// </summary>
     [Fact]
     public void DegreesCelsiusToThermodynamicTemperature_Zero_Returns273Point16()
     {
         TemperatureConv.DegreesCelsiusToThermodynamicTemperature(0).ShouldBe(273.16m);
     }
 
+    /// <summary>
+    /// 验证当前实现将一百摄氏度转换为三百七十三点一六开尔文。
+    /// </summary>
     [Fact]
     public void DegreesCelsiusToThermodynamicTemperature_100_Returns373Point16()
     {
@@ -52,12 +67,18 @@ public class TemperatureConvTests
 
     // ── 华氏度 → 摄氏度 ───────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证三十二华氏度转换为零摄氏度。
+    /// </summary>
     [Fact]
     public void FahrenheitToDegreesCelsius_32_ReturnsZero()
     {
         TemperatureConv.FahrenheitToDegreesCelsius(32).ShouldBe(0m);
     }
 
+    /// <summary>
+    /// 验证二百一十二华氏度转换为一百摄氏度。
+    /// </summary>
     [Fact]
     public void FahrenheitToDegreesCelsius_212_Returns100()
     {
@@ -66,6 +87,9 @@ public class TemperatureConvTests
 
     // ── 华氏度 → 开氏度 ───────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证当前实现将三十二华氏度转换为二百七十三点一六开尔文。
+    /// </summary>
     [Fact]
     public void FahrenheitToThermodynamicTemperature_32_Returns273Point16()
     {
@@ -74,12 +98,18 @@ public class TemperatureConvTests
 
     // ── 开氏度 → 摄氏度 ───────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证当前实现将二百七十三点一六开尔文转换为零摄氏度。
+    /// </summary>
     [Fact]
     public void ThermodynamicTemperatureToDegreesCelsius_273Point16_ReturnsZero()
     {
         TemperatureConv.ThermodynamicTemperatureToDegreesCelsius(273.16m).ShouldBe(0m);
     }
 
+    /// <summary>
+    /// 验证当前实现将三百七十三点一六开尔文转换为一百摄氏度。
+    /// </summary>
     [Fact]
     public void ThermodynamicTemperatureToDegreesCelsius_373Point16_Returns100()
     {
@@ -88,6 +118,9 @@ public class TemperatureConvTests
 
     // ── 开氏度 → 华氏度 ───────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证当前实现将二百七十三点一六开尔文转换为三十二华氏度。
+    /// </summary>
     [Fact]
     public void ThermodynamicTemperatureToFahrenheit_273Point16_Returns32()
     {
@@ -96,6 +129,10 @@ public class TemperatureConvTests
 
     // ── 往返转换验证 ──────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证摄氏与华氏往返转换保留原值。
+    /// </summary>
+    /// <param name="celsius">摄氏温度。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(25)]
@@ -108,6 +145,10 @@ public class TemperatureConvTests
         backCelsius.ShouldBe((decimal)celsius, $"Round-trip failed for {celsius}°C");
     }
 
+    /// <summary>
+    /// 验证摄氏与热力学温度往返转换保留原值。
+    /// </summary>
+    /// <param name="celsius">摄氏温度。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(50)]
@@ -125,17 +166,28 @@ public class TemperatureConvTests
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// <summary>
-/// 测试 <see cref="TypeExtensions"/> 扩展方法：
-/// GetFullNameWithAssemblyName / IsAssignableTo / GetBaseClasses
+/// 类型名称、可赋值性和基类链扩展测试。
 /// </summary>
 public class TypeExtensionsTests
 {
+    /// <summary>
+    /// 基类链测试的根基类。
+    /// </summary>
     private class BaseA { }
+    /// <summary>
+    /// 基类链测试的中间派生类。
+    /// </summary>
     private class DerivedB : BaseA { }
+    /// <summary>
+    /// 基类链测试的末级派生类。
+    /// </summary>
     private class DerivedC : DerivedB { }
 
     // ── GetFullNameWithAssemblyName ────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证完整类型名称包含字符串类型名。
+    /// </summary>
     [Fact]
     public void GetFullNameWithAssemblyName_String_ContainsTypeName()
     {
@@ -143,6 +195,9 @@ public class TypeExtensionsTests
         result.ShouldContain("System.String");
     }
 
+    /// <summary>
+    /// 验证带程序集的类型名称包含分隔逗号。
+    /// </summary>
     [Fact]
     public void GetFullNameWithAssemblyName_ContainsAssemblyName()
     {
@@ -150,6 +205,9 @@ public class TypeExtensionsTests
         result.ShouldContain(",");  // "System.String, mscorlib" or "System.Private.CoreLib" etc.
     }
 
+    /// <summary>
+    /// 验证获取完整类型名称时拒绝空类型。
+    /// </summary>
     [Fact]
     public void GetFullNameWithAssemblyName_NullType_ThrowsArgumentNullException()
     {
@@ -158,24 +216,36 @@ public class TypeExtensionsTests
 
     // ── IsAssignableTo<T> ─────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证字符串可赋值给非泛型可枚举接口。
+    /// </summary>
     [Fact]
     public void IsAssignableTo_Generic_StringToIEnumerable_ReturnsTrue()
     {
         typeof(string).IsAssignableTo<IEnumerable>().ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证整数类型不能赋值给非泛型可枚举接口。
+    /// </summary>
     [Fact]
     public void IsAssignableTo_Generic_IntToIEnumerable_ReturnsFalse()
     {
         typeof(int).IsAssignableTo<IEnumerable>().ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证派生类型可赋值给泛型指定的基类。
+    /// </summary>
     [Fact]
     public void IsAssignableTo_Generic_DerivedToBase_ReturnsTrue()
     {
         typeof(DerivedB).IsAssignableTo<BaseA>().ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证类型可赋值给自身。
+    /// </summary>
     [Fact]
     public void IsAssignableTo_Generic_SameType_ReturnsTrue()
     {
@@ -184,12 +254,18 @@ public class TypeExtensionsTests
 
     // ── IsAssignableTo(Type) ──────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证多级派生类型可赋值给指定基类。
+    /// </summary>
     [Fact]
     public void IsAssignableTo_Type_DerivedToBase_ReturnsTrue()
     {
         typeof(DerivedC).IsAssignableTo(typeof(BaseA)).ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证不相关类型之间不可赋值。
+    /// </summary>
     [Fact]
     public void IsAssignableTo_Type_UnrelatedTypes_ReturnsFalse()
     {
@@ -198,6 +274,9 @@ public class TypeExtensionsTests
 
     // ── GetBaseClasses(includeObject) ─────────────────────────────────────────
 
+    /// <summary>
+    /// 验证包含对象类型配置会枚举对象基类。
+    /// </summary>
     [Fact]
     public void GetBaseClasses_IncludeObject_ContainsObject()
     {
@@ -205,6 +284,9 @@ public class TypeExtensionsTests
         bases.ShouldContain(typeof(object));
     }
 
+    /// <summary>
+    /// 验证排除对象类型配置不枚举对象基类。
+    /// </summary>
     [Fact]
     public void GetBaseClasses_ExcludeObject_DoesNotContainObject()
     {
@@ -212,6 +294,9 @@ public class TypeExtensionsTests
         bases.ShouldNotContain(typeof(object));
     }
 
+    /// <summary>
+    /// 验证基类链包含中间派生类和根基类。
+    /// </summary>
     [Fact]
     public void GetBaseClasses_DerivedC_ContainsChain()
     {
@@ -222,6 +307,9 @@ public class TypeExtensionsTests
 
     // ── GetBaseClasses(stoppingType) ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证基类枚举不会越过指定停止类型。
+    /// </summary>
     [Fact]
     public void GetBaseClasses_WithStoppingType_StopsBeforeStopping()
     {
@@ -230,6 +318,9 @@ public class TypeExtensionsTests
         bases.ShouldNotContain(typeof(BaseA));
     }
 
+    /// <summary>
+    /// 验证基类枚举包含中间类型且排除自身及停止类型。
+    /// </summary>
     [Fact]
     public void GetBaseClasses_WithStoppingType_IncludesIntermediateTypes()
     {
@@ -251,22 +342,34 @@ public class TypeExtensionsTests
 /// </summary>
 public class UrlParameterFormatTests
 {
+    /// <summary>
+    /// URL 参数格式化测试使用的格式化器。
+    /// </summary>
     private readonly IParameterFormat _fmt = UrlParameterFormat.Instance;
 
     // ── Format ────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证参数键和值以等号连接。
+    /// </summary>
     [Fact]
     public void Format_Key_Value_ReturnKeyEqualsValue()
     {
         _fmt.Format("name", "Alice").ShouldBe("name=Alice");
     }
 
+    /// <summary>
+    /// 验证数值参数转换为文本后格式化。
+    /// </summary>
     [Fact]
     public void Format_NumericValue_ConvertedToString()
     {
         _fmt.Format("age", 30).ShouldBe("age=30");
     }
 
+    /// <summary>
+    /// 验证空参数键保留等号和值。
+    /// </summary>
     [Fact]
     public void Format_EmptyKey_ReturnsEqualsWithValue()
     {
@@ -275,36 +378,54 @@ public class UrlParameterFormatTests
 
     // ── Join ──────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证两个参数以连接符拼接。
+    /// </summary>
     [Fact]
     public void Join_TwoParameters_ConnectedWithAmpersand()
     {
         _fmt.Join("a=1", "b=2").ShouldBe("a=1&b=2");
     }
 
+    /// <summary>
+    /// 验证左侧为空文本时保留右侧参数。
+    /// </summary>
     [Fact]
     public void Join_LeftEmpty_ReturnsRight()
     {
         _fmt.Join("", "b=2").ShouldBe("b=2");
     }
 
+    /// <summary>
+    /// 验证右侧为空文本时保留左侧参数。
+    /// </summary>
     [Fact]
     public void Join_RightEmpty_ReturnsLeft()
     {
         _fmt.Join("a=1", "").ShouldBe("a=1");
     }
 
+    /// <summary>
+    /// 验证左侧为空引用时保留右侧参数。
+    /// </summary>
     [Fact]
     public void Join_LeftNull_ReturnsRight()
     {
         _fmt.Join(null, "b=2").ShouldBe("b=2");
     }
 
+    /// <summary>
+    /// 验证右侧为空引用时保留左侧参数。
+    /// </summary>
     [Fact]
     public void Join_RightNull_ReturnsLeft()
     {
         _fmt.Join("a=1", null).ShouldBe("a=1");
     }
 
+    /// <summary>
+    /// 验证两个空文本参数连接为空文本。
+    /// </summary>
     [Fact]
     public void Join_BothEmpty_ReturnsEmpty()
     {
@@ -312,6 +433,9 @@ public class UrlParameterFormatTests
         _fmt.Join("", "").ShouldBe("");
     }
 
+    /// <summary>
+    /// 验证连续拼接三个参数生成查询文本。
+    /// </summary>
     [Fact]
     public void Join_ThreeChained_BuildsQueryString()
     {
@@ -321,6 +445,9 @@ public class UrlParameterFormatTests
 
     // ── Instance is singleton ─────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证 URL 参数格式化器复用单例。
+    /// </summary>
     [Fact]
     public void Instance_IsSameReference()
     {

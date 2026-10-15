@@ -4,10 +4,10 @@ using Bing.Http;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// 断点续传侧车清理的生命周期和并发安全测试。
-
 /// </summary>
 public class HttpResumableDownloadMaintenanceTest
 {
@@ -50,10 +50,10 @@ public class HttpResumableDownloadMaintenanceTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证跳过活动的下载锁。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_SkipsActiveDownloadLock()
@@ -81,10 +81,10 @@ public class HttpResumableDownloadMaintenanceTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证清理嵌套状态文件时默认只清理顶层目录。
-
     /// </summary>
     [Fact]
     public async Task CleanupRecursiveAsync_RemovesNestedSidecars_WhileDefaultCleanupStaysTopLevel()
@@ -123,10 +123,10 @@ public class HttpResumableDownloadMaintenanceTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证使用注入的文件系统，且删除失败不计入移除数量。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_UsesInjectedFileSystemAndKeepsFailedDeleteUncounted()
@@ -149,10 +149,10 @@ public class HttpResumableDownloadMaintenanceTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证枚举操作异常会向上传播。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_PropagatesInjectedEnumerationFailure()
@@ -167,10 +167,10 @@ public class HttpResumableDownloadMaintenanceTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证文件存在性检查失败时向上传播异常。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_PropagatesInjectedFileExistenceFailure()
@@ -190,10 +190,10 @@ public class HttpResumableDownloadMaintenanceTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证保留被锁定的临时文件且不计入删除失败数。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_KeepsLockedTemporaryFileAndDoesNotCountFailedDelete()
@@ -215,10 +215,10 @@ public class HttpResumableDownloadMaintenanceTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证取得目标锁后重新读取临时文件状态。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_RereadsTemporaryFilesAfterTakingTargetLock()
@@ -254,10 +254,10 @@ public class HttpResumableDownloadMaintenanceTest
         finally { Directory.Delete(directory, true); }
     }
 
+
+
     /// <summary>
-
     /// 验证遵循取消请求并处理目录缺失。
-
     /// </summary>
     [Fact]
     public async Task CleanupAsync_HonorsCancellationAndMissingDirectory()
@@ -271,11 +271,12 @@ public class HttpResumableDownloadMaintenanceTest
             HttpResumableDownloadMaintenance.CleanupAsync(directory, TimeSpan.Zero, cancellation.Token));
     }
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建用于续传文件清理测试的独立临时目录。
     /// </summary>
+    /// <returns>已创建的唯一临时目录完整路径。</returns>
     private static string CreateDirectory()
     {
         var path = Path.Combine(Path.GetTempPath(), "bing-resume-cleanup-" + Guid.NewGuid().ToString("N"));
@@ -283,23 +284,23 @@ public class HttpResumableDownloadMaintenanceTest
         return path;
     }
 
+
+
     /// <summary>
-
     /// 为续传下载维护测试提供可控的文件系统实现。
-
     /// </summary>
     private sealed class TestFileSystem : IResumableDownloadFileSystem
     {
         /// <summary>
-        /// 控制测试文件系统的删除结果。
+        /// 获取或设置是否模拟文件删除失败且不执行删除。
         /// </summary>
         public bool FailDeletes { get; set; }
         /// <summary>
-        /// 控制测试文件系统的枚举结果。
+        /// 获取或设置是否在文件枚举时抛出模拟的 I/O 异常。
         /// </summary>
         public bool FailEnumeration { get; set; }
         /// <summary>
-        /// 控制测试文件系统的存在性检查结果。
+        /// 获取或设置是否在文件存在性检查时抛出模拟的 I/O 异常。
         /// </summary>
         public bool FailFileExists { get; set; }
 

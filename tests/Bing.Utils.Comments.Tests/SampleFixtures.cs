@@ -1,7 +1,7 @@
 namespace Bing.Utils.Comments.Tests;
 
 /// <summary>
-/// 用于测试枚举注释的辅助枚举
+/// 为枚举注释读取测试提供颜色成员及其描述特性样例。
 /// </summary>
 public enum SampleColor
 {

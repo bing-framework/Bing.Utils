@@ -1,14 +1,14 @@
 namespace Bing.Utils.Comments.Tests;
 
 /// <summary>
-/// CsCommentReader 单元测试
+/// 验证注释读取器的参数守卫、成员分发和枚举回退行为。
 /// </summary>
 public class CsCommentReaderTest
 {
     #region Create(MemberInfo) — 参数守卫
 
     /// <summary>
-    /// 测试目的：验证传入 null 时抛出 ArgumentNullException（类型重载）
+    /// 验证类型参数为 null 时抛出参数异常。
     /// </summary>
     [Fact]
     public void Create_Type_NullArgument_ThrowsArgumentNullException()
@@ -18,7 +18,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证传入 null 时抛出 ArgumentNullException（方法重载）
+    /// 验证方法参数为 null 时抛出参数异常。
     /// </summary>
     [Fact]
     public void Create_Method_NullArgument_ThrowsArgumentNullException()
@@ -28,7 +28,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证传入 null 时抛出 ArgumentNullException（属性重载）
+    /// 验证属性参数为 null 时抛出参数异常。
     /// </summary>
     [Fact]
     public void Create_Property_NullArgument_ThrowsArgumentNullException()
@@ -38,7 +38,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证传入 null 时抛出 ArgumentNullException（字段重载）
+    /// 验证字段参数为 null 时抛出参数异常。
     /// </summary>
     [Fact]
     public void Create_Field_NullArgument_ThrowsArgumentNullException()
@@ -48,7 +48,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证传入 null 时抛出 ArgumentNullException（MemberInfo 重载）
+    /// 验证成员参数为 null 时抛出参数异常。
     /// </summary>
     [Fact]
     public void Create_MemberInfo_NullArgument_ThrowsArgumentNullException()
@@ -62,7 +62,7 @@ public class CsCommentReaderTest
     #region CsComments.Empty 静态对象
 
     /// <summary>
-    /// 测试目的：验证 CsComments.Empty 的所有属性均为默认空值
+    /// 验证空注释对象的文本属性为空且集合属性已初始化。
     /// </summary>
     [Fact]
     public void CsComments_Empty_AllPropertiesAreNull()
@@ -81,7 +81,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证 CsComments.Empty 每次返回同一实例（单例）
+    /// 验证空注释对象由静态属性复用同一实例。
     /// </summary>
     [Fact]
     public void CsComments_Empty_ReturnsSameInstance()
@@ -95,7 +95,7 @@ public class CsCommentReaderTest
     #region CsCommentsParam.Empty 静态对象
 
     /// <summary>
-    /// 测试目的：验证 CsCommentsParam.Empty.ToString() 返回空字符串
+    /// 验证空参数注释的文本格式为空字符串。
     /// </summary>
     [Fact]
     public void CsCommentsParam_Empty_ToStringReturnsEmpty()
@@ -114,8 +114,9 @@ public class CsCommentReaderTest
     #region CsCommentsParamCollection 索引器
 
     /// <summary>
-    /// 测试目的：验证参数集合对 null/空 key 返回 null
+    /// 验证参数集合使用 null 或空键查询时返回 null。
     /// </summary>
+    /// <param name="key">要查询的参数名称。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -132,7 +133,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证 @ 前缀 key 会被自动去掉前缀后查找
+    /// 验证参数集合查询时会移除参数名中的 `@` 前缀。
     /// </summary>
     [Fact]
     public void CsCommentsParamCollection_AtPrefixKey_StripsAtSign()
@@ -150,7 +151,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证不存在的 key 返回 null
+    /// 验证参数集合查询不存在的名称时返回 null。
     /// </summary>
     [Fact]
     public void CsCommentsParamCollection_UnknownKey_ReturnsNull()
@@ -170,7 +171,7 @@ public class CsCommentReaderTest
     #region CreateEnumComment — 守卫测试
 
     /// <summary>
-    /// 测试目的：验证对非枚举类型调用 CreateEnumComment 抛出 ArgumentOutOfRangeException
+    /// 验证非枚举类型不能传入枚举注释读取方法。
     /// </summary>
     [Fact]
     public void CreateEnumComment_NonEnumType_ThrowsArgumentOutOfRangeException()
@@ -181,7 +182,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证对 null 枚举类型调用 CreateEnumComment 抛出 ArgumentNullException
+    /// 验证枚举类型参数为 null 时抛出参数异常。
     /// </summary>
     [Fact]
     public void CreateEnumComment_NullType_ThrowsArgumentNullException()
@@ -192,7 +193,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证 CreateEnumComment 对枚举能返回字典（含所有枚举值作为 key）
+    /// 验证枚举注释读取结果包含每个枚举成员。
     /// </summary>
     [Fact]
     public void CreateEnumComment_ValidEnum_ReturnsDictionaryWithAllValues()
@@ -208,7 +209,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证 CreateEnumComment 对有 DescriptionAttribute 的字段优先返回描述
+    /// 验证 XML 注释缺失时优先使用成员的 <see cref="DescriptionAttribute"/> 文案。
     /// </summary>
     [Fact]
     public void CreateEnumComment_FieldWithDescription_UsesDescriptionAttributeValue()
@@ -221,7 +222,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证 CreateEnumComment 对无 Description、无 XML 的字段返回成员名称
+    /// 验证成员没有描述特性和 XML 注释时回退到成员名称。
     /// </summary>
     [Fact]
     public void CreateEnumComment_FieldWithoutDescription_FallsBackToName()
@@ -238,7 +239,7 @@ public class CsCommentReaderTest
     #region Create(Type) — XML 注释读取
 
     /// <summary>
-    /// 测试目的：验证对有 XML 文档的类型能读取 Summary（Bing.Utils.Comments 自身）
+    /// 验证读取器可取得类型的 XML 摘要。
     /// </summary>
     [Fact]
     public void Create_Type_WithXmlDoc_ReturnsSummaryNotNull()
@@ -255,7 +256,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证 Create(MethodInfo) 通过 MemberInfo 重载正常分发
+    /// 验证方法信息通过成员重载分发后可正常读取。
     /// </summary>
     [Fact]
     public void Create_MemberInfo_Method_DispatchesCorrectly()
@@ -273,7 +274,7 @@ public class CsCommentReaderTest
     }
 
     /// <summary>
-    /// 测试目的：验证对不支持的 MemberTypes 抛出 NotSupportedException
+    /// 验证嵌套类型成员可通过成员重载正常处理。
     /// </summary>
     [Fact]
     public void Create_MemberInfo_UnsupportedType_ThrowsNotSupportedException()

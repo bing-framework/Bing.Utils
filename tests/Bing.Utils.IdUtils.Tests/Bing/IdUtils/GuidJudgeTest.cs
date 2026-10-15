@@ -28,6 +28,7 @@ public class GuidJudgeTest
     /// <summary>
     /// 测试用例：验证 `IsValid` 在 `ValidInputs` 场景下，结果为 `ShouldReturnTrue`。
     /// </summary>
+    /// <param name="input">有效格式的 GUID 字符串。</param>
     [Theory]
     [InlineData("6F9619FF-8B86-D011-B42D-00CF4FC964FF")]
     [InlineData("{6F9619FF-8B86-D011-B42D-00CF4FC964FF}")]
@@ -39,6 +40,7 @@ public class GuidJudgeTest
     /// <summary>
     /// 测试用例：验证 `IsValid` 在 `InvalidInputs` 场景下，结果为 `ShouldReturnFalse`。
     /// </summary>
+    /// <param name="input">无效格式或空白 GUID 字符串。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]

@@ -4,14 +4,16 @@ using Microsoft.Extensions.Primitives;
 namespace Bing.Http;
 
 /// <summary>
-/// 测试类：`HttpRequestExtensions` 扩展方法测试
+/// 验证 ASP.NET Core 请求参数读取、内容类型及客户端识别扩展。
 /// </summary>
 [Trait("Bing.Http", "HttpRequestExtensions")]
 public class HttpRequestExtensionsTest
 {
     /// <summary>
-    /// 测试辅助方法：创建 `HttpRequest`，并允许通过回调配置请求上下文
+    /// 创建可由回调配置的测试 HTTP 请求。
     /// </summary>
+    /// <param name="setup">配置请求的回调；为 null 时保留默认请求上下文。</param>
+    /// <returns>由新的默认 HTTP 上下文创建的请求。</returns>
     private static HttpRequest CreateRequest(Action<HttpRequest> setup = null)
     {
         var context = new DefaultHttpContext();
@@ -21,7 +23,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`GetAbsoluteUri` 应拼接 Scheme/Host/PathBase/Path/Query 为完整地址
+    /// <c>GetAbsoluteUri</c> 应拼接 Scheme/Host/PathBase/Path/Query 为完整地址
     /// </summary>
     [Fact]
     public void GetAbsoluteUri_ShouldReturnExpectedUri()
@@ -39,7 +41,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Query<T>` 在查询字符串包含目标键且可转换时，应返回转换后的值
+    /// 验证查询参数可转换时返回指定类型的值。
     /// </summary>
     [Fact]
     public void Query_ShouldReturnConvertedValue()
@@ -50,7 +52,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Query<T>` 在查询字符串缺少目标键时，应返回默认值
+    /// 验证目标查询参数缺失时返回默认值。
     /// </summary>
     [Fact]
     public void Query_ShouldReturnDefault_WhenKeyNotExists()
@@ -61,7 +63,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Query<T>` 在值无法转换时，应抛出 `FormatException`
+    /// 验证查询参数无法转换时抛出格式异常。
     /// </summary>
     [Fact]
     public void Query_ShouldThrowFormatException_WhenValueInvalid()
@@ -72,7 +74,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Form<T>` 在表单包含目标键且可转换时，应返回转换后的值
+    /// 验证表单参数可转换时返回指定类型的值。
     /// </summary>
     [Fact]
     public void Form_ShouldReturnConvertedValue()
@@ -90,7 +92,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Form<T>` 在表单缺少目标键时，应返回默认值
+    /// 验证目标表单参数缺失时返回默认值。
     /// </summary>
     [Fact]
     public void Form_ShouldReturnDefault_WhenKeyNotExists()
@@ -108,7 +110,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Form<T>` 在表单值无法转换时，应抛出 `FormatException`
+    /// 验证表单参数无法转换时抛出格式异常。
     /// </summary>
     [Fact]
     public void Form_ShouldThrowFormatException_WhenValueInvalid()
@@ -126,7 +128,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Params` 同时存在 Query/Form 时，应优先返回 Query 值
+    /// <c>Params</c> 同时存在 Query/Form 时，应优先返回 Query 值
     /// </summary>
     [Fact]
     public void Params_ShouldPreferQueryValue()
@@ -145,7 +147,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Params` 在 Query 缺失时，应回退读取 Form 值
+    /// <c>Params</c> 在 Query 缺失时，应回退读取 Form 值
     /// </summary>
     [Fact]
     public void Params_ShouldReturnFormValue_WhenQueryMissing()
@@ -163,7 +165,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`Params` 在 Query/Form 都不存在目标键时，应返回 `null`
+    /// <c>Params</c> 在 Query/Form 都不存在目标键时，应返回 <c>null</c>
     /// </summary>
     [Fact]
     public void Params_ShouldReturnNull_WhenNotFound()
@@ -174,7 +176,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsAjaxRequest` 在存在 `X-Requested-With=XMLHttpRequest` 头时应返回 `true`
+    /// <c>IsAjaxRequest</c> 在存在 <c>X-Requested-With=XMLHttpRequest</c> 头时应返回 <c>true</c>
     /// </summary>
     [Fact]
     public void IsAjaxRequest_ShouldReturnTrue_WhenHeaderExists()
@@ -185,7 +187,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsAjaxRequest` 在 `ContentType` 为 JSON 时应返回 `true`
+    /// <c>IsAjaxRequest</c> 在 <c>ContentType</c> 为 JSON 时应返回 <c>true</c>
     /// </summary>
     [Fact]
     public void IsAjaxRequest_ShouldReturnTrue_WhenContentTypeIsJson()
@@ -196,7 +198,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsAjaxRequest` 在请求对象为 `null` 时应抛出 `ArgumentNullException(request)`
+    /// <c>IsAjaxRequest</c> 在请求对象为 <c>null</c> 时应抛出 <c>ArgumentNullException(request)</c>
     /// </summary>
     [Fact]
     public void IsAjaxRequest_ShouldThrowArgumentNullException_WhenRequestIsNull()
@@ -208,7 +210,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsJsonContentType` 在 `Content-Type` 头包含 JSON 时应返回 `true`
+    /// <c>IsJsonContentType</c> 在 <c>Content-Type</c> 头包含 JSON 时应返回 <c>true</c>
     /// </summary>
     [Fact]
     public void IsJsonContentType_ShouldReturnTrue_WhenContentTypeHeaderIsJson()
@@ -219,7 +221,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsJsonContentType` 在 `Accept` 头包含 JSON 时应返回 `true`
+    /// <c>IsJsonContentType</c> 在 <c>Accept</c> 头包含 JSON 时应返回 <c>true</c>
     /// </summary>
     [Fact]
     public void IsJsonContentType_ShouldReturnTrue_WhenAcceptHeaderIsJson()
@@ -230,7 +232,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsJsonContentType` 在 JSON 相关请求头都缺失时应返回 `false`
+    /// <c>IsJsonContentType</c> 在 JSON 相关请求头都缺失时应返回 <c>false</c>
     /// </summary>
     [Fact]
     public void IsJsonContentType_ShouldReturnFalse_WhenJsonHeadersMissing()
@@ -241,7 +243,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsJsonContentType` 在请求对象为 `null` 时应抛出 `ArgumentNullException(request)`
+    /// <c>IsJsonContentType</c> 在请求对象为 <c>null</c> 时应抛出 <c>ArgumentNullException(request)</c>
     /// </summary>
     [Fact]
     public void IsJsonContentType_ShouldThrowArgumentNullException_WhenRequestIsNull()
@@ -253,7 +255,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`UserAgent` 应返回 `User-Agent` 请求头值
+    /// <c>UserAgent</c> 应返回 <c>User-Agent</c> 请求头值
     /// </summary>
     [Fact]
     public void UserAgent_ShouldReturnHeaderValue()
@@ -264,7 +266,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsMobileBrowser` 在移动端 User-Agent 下应返回 `true`
+    /// <c>IsMobileBrowser</c> 在移动端 User-Agent 下应返回 <c>true</c>
     /// </summary>
     [Fact]
     public void IsMobileBrowser_ShouldReturnTrue_WhenUserAgentIsMobile()
@@ -277,7 +279,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：`IsMobileBrowser` 在桌面端 User-Agent 下应返回 `false`
+    /// <c>IsMobileBrowser</c> 在桌面端 User-Agent 下应返回 <c>false</c>
     /// </summary>
     [Fact]
     public void IsMobileBrowser_ShouldReturnFalse_WhenUserAgentIsDesktop()
@@ -301,8 +303,9 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 验证短 User-Agent 与移动浏览器特征匹配时仍返回 false。
+    /// 验证长度不足四个字符的 User-Agent 即使命中特征也不识别为移动浏览器。
     /// </summary>
+    /// <param name="userAgent">与移动浏览器特征匹配但长度不足的客户端标识样例。</param>
     [Theory]
     [InlineData("psp")]
     [InlineData("xda")]

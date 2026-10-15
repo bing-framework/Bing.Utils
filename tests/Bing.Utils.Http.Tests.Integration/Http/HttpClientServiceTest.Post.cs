@@ -4,12 +4,12 @@ using Bing.IO;
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
-/// Http客户端测试 - Post操作
+/// 验证 POST 请求的内容绑定、客户响应与文件上传。
 /// </summary>
 public partial class HttpClientServiceTest
 {
     /// <summary>
-    /// 测试 - Post调用 - 返回字符串结果
+    /// 验证 POST 请求提交客户编码并读取文本响应。
     /// </summary>
     [Fact]
     public async Task Test_Post_1()
@@ -20,7 +20,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - Post调用 - 返回泛型结果
+    /// 验证 POST 请求提交客户数据并反序列化回显对象。
     /// </summary>
     [Fact]
     public async Task Test_Post_2()
@@ -31,7 +31,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - Post调用 -使用Content方法传递参数 - 键值对
+    /// 验证按键值对设置的请求内容绑定为客户编码。
     /// </summary>
     [Fact]
     public async Task Test_Post_Content_1()
@@ -41,7 +41,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - Post调用 -使用Content方法传递参数 - 字典
+    /// 验证按字典设置的请求内容绑定为客户编码。
     /// </summary>
     [Fact]
     public async Task Test_Post_Content_2()
@@ -52,7 +52,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - Post调用 -使用Content方法传递参数 - 对象
+    /// 验证按对象设置的请求内容绑定为客户编码。
     /// </summary>
     [Fact]
     public async Task Test_Post_Content_3()
@@ -63,7 +63,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - Post调用 - 上传文件 - 文件路径
+    /// 验证按文件路径上传时保留文件名与字段名。
     /// </summary>
     [Fact]
     public async Task Test_Post_FileContent_1()
@@ -74,7 +74,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - Post调用 - 上传文件 - 文件流
+    /// 验证按流上传时使用指定文件名与字段名。
     /// </summary>
     [Fact]
     public async Task Test_Post_FileContent_2()
@@ -86,7 +86,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - Post调用 - 上传文件 - 多文件上传
+    /// 验证文件路径与文件流可在同一请求中上传。
     /// </summary>
     [Fact]
     public async Task Test_Post_FileContent_3()
@@ -101,7 +101,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - Post调用 - 上传文件 - 发送参数
+    /// 验证文件上传可同时发送普通内容参数。
     /// </summary>
     [Fact]
     public async Task Test_Post_FileContent_4()

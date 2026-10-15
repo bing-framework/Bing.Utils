@@ -6,8 +6,9 @@ namespace Bing.Threading;
 public class SemaphoreSlimExtensionsTest
 {
     /// <summary>
-    /// 测试 - 锁定
+    /// 验证信号量锁定的超时、持有与释放行为。
     /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task Test_LockAsync()
     {

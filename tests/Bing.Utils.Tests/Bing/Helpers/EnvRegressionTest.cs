@@ -45,6 +45,7 @@ public class EnvRegressionTest
     /// <summary>
     /// 测试数据：SetDevelopment 不覆盖既有环境变量的代表场景。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetSetDevelopmentNoOverrideCases()
     {
         yield return new object[] { "Staging", null, "Staging", null };
@@ -52,6 +53,11 @@ public class EnvRegressionTest
         yield return new object[] { "Testing", "Staging", "Testing", "Staging" };
     }
 
+    /// <summary>
+    /// 根据给定值设置或移除进程级环境变量。
+    /// </summary>
+    /// <param name="name">环境变量名称。</param>
+    /// <param name="value">环境变量值；为 <see langword="null"/> 时移除该变量。</param>
     private static void SetOrRemoveProcessVariable(string name, string value)
     {
         if (value == null)
@@ -60,6 +66,11 @@ public class EnvRegressionTest
             Env.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.Process);
     }
 
+    /// <summary>
+    /// 恢复指定环境变量的原始进程级值。
+    /// </summary>
+    /// <param name="name">环境变量名称。</param>
+    /// <param name="value">原始环境变量值；为 <see langword="null"/> 时移除该变量。</param>
     private static void RestoreVariable(string name, string value)
     {
         if (value == null)

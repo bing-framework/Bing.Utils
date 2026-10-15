@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符串裁剪、前后缀判断、索引查询和编码行为。
+/// </summary>
 [Trait("StringUT", "Strings.Shortcut")]
 public class StringShortcutTest
 {

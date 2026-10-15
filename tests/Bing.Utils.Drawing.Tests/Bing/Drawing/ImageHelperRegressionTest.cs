@@ -54,6 +54,10 @@ public class ImageHelperRegressionTest
         restored.Height.ShouldBe(bitmap.Height);
     }
 
+    /// <summary>
+    /// 创建包含四种基准颜色的 2×2 测试位图。
+    /// </summary>
+    /// <returns>包含红、绿、蓝、白像素的位图。</returns>
     private static Bitmap CreateBitmap()
     {
         var bitmap = new Bitmap(2, 2);

@@ -1,13 +1,13 @@
 namespace Bing.Date;
 
 /// <summary>
-/// 测试类：覆盖 `DateTimeExtensions` 的工作日、区间、年龄与舍入行为。
+/// 验证工作日偏移、年龄、日期区间及时间舍入。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.BusinessAndRound")]
 public class DateTimeExtensionsBusinessAndRoundTest
 {
     /// <summary>
-    /// 测试用例：验证 `AddBusinessDays` 在 `FridayAddOneBusinessDay` 场景下，结果为 `ReturnsNextMonday`。
+    /// 验证周五增加一个工作日后到达下周一。
     /// </summary>
     [Fact]
     public void AddBusinessDays_FridayAddOneBusinessDay_ReturnsNextMonday()
@@ -20,7 +20,7 @@ public class DateTimeExtensionsBusinessAndRoundTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `AddBusinessDays` 在 `MondayMinusOneBusinessDay` 场景下，结果为 `ReturnsPreviousFriday`。
+    /// 验证周一减去一个工作日后到达上周五。
     /// </summary>
     [Fact]
     public void AddBusinessDays_MondayMinusOneBusinessDay_ReturnsPreviousFriday()
@@ -33,7 +33,7 @@ public class DateTimeExtensionsBusinessAndRoundTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `AddBusinessDays` 在 `ZeroDays` 场景下，结果为 `ReturnsSameDate`。
+    /// 验证零工作日偏移保留原日期。
     /// </summary>
     [Fact]
     public void AddBusinessDays_ZeroDays_ReturnsSameDate()
@@ -46,7 +46,7 @@ public class DateTimeExtensionsBusinessAndRoundTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ToCalculateAge` 在 `ReferenceDateBeforeBirthday` 场景下，结果为 `SubtractsOneYear`。
+    /// 验证参考日期早于当年生日时年龄减一。
     /// </summary>
     [Fact]
     public void ToCalculateAge_ReferenceDateBeforeBirthday_SubtractsOneYear()
@@ -60,7 +60,7 @@ public class DateTimeExtensionsBusinessAndRoundTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `IsDateBetweenWithBoundary` 在 `NullableMinMax` 场景下，结果为 `ReturnsExpectedByBoundaryRules`。
+    /// 验证可空日期区间允许缺省边界且包含上限日期。
     /// </summary>
     [Fact]
     public void IsDateBetweenWithBoundary_NullableMinMax_ReturnsExpectedByBoundaryRules()
@@ -74,8 +74,11 @@ public class DateTimeExtensionsBusinessAndRoundTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `Round` 在 `SecondBoundary` 场景下，结果为 `RoundsByMillisecondsAndPreservesKind`。
+    /// 验证按秒舍入以五百毫秒为边界并保留时间种类。
     /// </summary>
+    /// <param name="millisecond">舍入前的毫秒分量。</param>
+    /// <param name="expectedMinute">预期舍入后的分钟分量。</param>
+    /// <param name="expectedSecond">预期舍入后的秒分量。</param>
     [Theory]
     [InlineData(499, 30, 15)]
     [InlineData(500, 30, 16)]
@@ -91,7 +94,7 @@ public class DateTimeExtensionsBusinessAndRoundTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `Round` 在 `InvalidRoundTo` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证舍入拒绝未定义的目标单位。
     /// </summary>
     [Fact]
     public void Round_InvalidRoundTo_ThrowsArgumentOutOfRangeException()

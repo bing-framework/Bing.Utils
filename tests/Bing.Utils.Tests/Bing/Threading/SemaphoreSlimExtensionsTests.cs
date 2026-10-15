@@ -12,6 +12,10 @@ public class SemaphoreSlimExtensionsTests
     // LockAsync（无参）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证异步锁定作用域内持有信号量且退出后释放。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_NoArgs_HoldsLockInsideScope()
     {
@@ -23,6 +27,10 @@ public class SemaphoreSlimExtensionsTests
         sem.CurrentCount.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证释放异步锁定对象归还信号量计数。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_Dispose_ReleasesLock()
     {
@@ -37,6 +45,10 @@ public class SemaphoreSlimExtensionsTests
     // LockAsync（CancellationToken）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证异步锁定接受未取消的令牌。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_WithCancellationToken_AcquiresLock()
     {
@@ -52,6 +64,10 @@ public class SemaphoreSlimExtensionsTests
     // LockAsync（millisecondsTimeout）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证信号量可用时在毫秒超时内获取锁。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_MillisecondsTimeout_AcquiresWhenAvailable()
     {
@@ -63,6 +79,10 @@ public class SemaphoreSlimExtensionsTests
         sem.CurrentCount.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证毫秒超时内未获取信号量时抛出超时异常。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_MillisecondsTimeout_ThrowsWhenNotAcquired()
     {
@@ -79,6 +99,10 @@ public class SemaphoreSlimExtensionsTests
     // LockAsync（TimeSpan）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证信号量可用时在时间间隔超时内获取锁。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_TimeSpan_AcquiresWhenAvailable()
     {
@@ -90,6 +114,10 @@ public class SemaphoreSlimExtensionsTests
         sem.CurrentCount.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证时间间隔超时内未获取信号量时抛出超时异常。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_TimeSpan_ThrowsWhenNotAcquired()
     {
@@ -106,6 +134,9 @@ public class SemaphoreSlimExtensionsTests
     // Lock（无参，同步版本）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证同步锁定作用域内持有信号量且退出后释放。
+    /// </summary>
     [Fact]
     public void Lock_NoArgs_HoldsLockInsideScope()
     {
@@ -117,6 +148,9 @@ public class SemaphoreSlimExtensionsTests
         sem.CurrentCount.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证释放同步锁定对象归还信号量计数。
+    /// </summary>
     [Fact]
     public void Lock_Dispose_ReleasesLock()
     {
@@ -131,6 +165,9 @@ public class SemaphoreSlimExtensionsTests
     // Lock（CancellationToken）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证同步锁定接受未取消的令牌。
+    /// </summary>
     [Fact]
     public void Lock_WithCancellationToken_AcquiresLock()
     {
@@ -146,6 +183,9 @@ public class SemaphoreSlimExtensionsTests
     // Lock（millisecondsTimeout）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证同步毫秒等待超时后抛出超时异常。
+    /// </summary>
     [Fact]
     public void Lock_MillisecondsTimeout_ThrowsWhenNotAcquired()
     {
@@ -159,6 +199,9 @@ public class SemaphoreSlimExtensionsTests
     // Lock（TimeSpan）
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证同步时间间隔等待超时后抛出超时异常。
+    /// </summary>
     [Fact]
     public void Lock_TimeSpan_ThrowsWhenNotAcquired()
     {

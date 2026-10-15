@@ -17,6 +17,9 @@ public class TaskCompletionSourceExtensionsTests
 {
     // ── 参数校验 ───────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证任务完成状态复制拒绝空完成源。
+    /// </summary>
     [Fact]
     public void TryCompleteFromCompletedTask_NullSource_ThrowsArgumentNullException()
     {
@@ -25,6 +28,9 @@ public class TaskCompletionSourceExtensionsTests
         Should.Throw<ArgumentNullException>(() => tcs.TryCompleteFromCompletedTask(completedTask));
     }
 
+    /// <summary>
+    /// 验证任务完成状态复制拒绝空任务。
+    /// </summary>
     [Fact]
     public void TryCompleteFromCompletedTask_NullTask_ThrowsArgumentNullException()
     {
@@ -32,6 +38,9 @@ public class TaskCompletionSourceExtensionsTests
         Should.Throw<ArgumentNullException>(() => tcs.TryCompleteFromCompletedTask(null!));
     }
 
+    /// <summary>
+    /// 验证任务完成状态复制拒绝未完成的任务。
+    /// </summary>
     [Fact]
     public void TryCompleteFromCompletedTask_IncompleteTask_ThrowsArgumentException()
     {
@@ -42,6 +51,9 @@ public class TaskCompletionSourceExtensionsTests
 
     // ── RanToCompletion ────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证成功任务的结果复制到完成源。
+    /// </summary>
     [Fact]
     public void TryCompleteFromCompletedTask_RanToCompletion_SetsResult()
     {
@@ -52,6 +64,9 @@ public class TaskCompletionSourceExtensionsTests
         tcs.Task.Result.ShouldBe(42);
     }
 
+    /// <summary>
+    /// 验证已完成的完成源拒绝再次设置结果。
+    /// </summary>
     [Fact]
     public void TryCompleteFromCompletedTask_AlreadySet_ReturnsFalse()
     {
@@ -64,6 +79,9 @@ public class TaskCompletionSourceExtensionsTests
 
     // ── Faulted ────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证失败任务的异常状态复制到完成源。
+    /// </summary>
     [Fact]
     public void TryCompleteFromCompletedTask_Faulted_SetsException()
     {
@@ -77,6 +95,9 @@ public class TaskCompletionSourceExtensionsTests
 
     // ── Canceled ───────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证已取消任务的取消状态复制到完成源。
+    /// </summary>
     [Fact]
     public void TryCompleteFromCompletedTask_Canceled_SetsCanceled()
     {
@@ -98,6 +119,10 @@ public class TaskCompletionSourceExtensionsTests
 /// </summary>
 public class ValueTaskExtensionsTests
 {
+    /// <summary>
+    /// 验证无结果 ValueTask 通过 NoSync 正常完成。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task NoSync_ValueTask_CompletesSuccessfully()
     {
@@ -106,6 +131,10 @@ public class ValueTaskExtensionsTests
         // 未抛出异常即为通过
     }
 
+    /// <summary>
+    /// 验证泛型 ValueTask 通过 NoSync 返回原结果。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task NoSync_ValueTaskOfT_ReturnsCorrectValue()
     {
@@ -114,6 +143,10 @@ public class ValueTaskExtensionsTests
         result.ShouldBe(42);
     }
 
+    /// <summary>
+    /// 验证已完成的无结果 ValueTask 通过 NoSync 正常完成。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task NoSync_ValueTask_AlreadyCompleted_Works()
     {
@@ -122,6 +155,10 @@ public class ValueTaskExtensionsTests
         await vt.NoSync();
     }
 
+    /// <summary>
+    /// 验证已完成的泛型 ValueTask 通过 NoSync 返回原结果。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task NoSync_ValueTaskOfT_AlreadyCompleted_ReturnsValue()
     {
@@ -142,6 +179,9 @@ public class LockExtensionsTests
 {
     // ── LockAndRun (object source) ────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证加锁执行方法调用指定操作。
+    /// </summary>
     [Fact]
     public void LockAndRun_ExecutesAction()
     {
@@ -151,6 +191,9 @@ public class LockExtensionsTests
         executed.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证连续加锁执行累加到预期计数。
+    /// </summary>
     [Fact]
     public void LockAndRun_MutatesSharedState_UnderLock()
     {
@@ -164,6 +207,9 @@ public class LockExtensionsTests
 
     // ── LockAndRun<T> (typed source) ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证加锁执行将源对象传入操作。
+    /// </summary>
     [Fact]
     public void LockAndRun_TypedSource_PassesSourceToAction()
     {
@@ -174,6 +220,9 @@ public class LockExtensionsTests
 
     // ── LockAndReturn (object source) ─────────────────────────────────────────
 
+    /// <summary>
+    /// 验证加锁计算返回委托结果。
+    /// </summary>
     [Fact]
     public void LockAndReturn_ReturnsValueFromFunc()
     {
@@ -182,6 +231,9 @@ public class LockExtensionsTests
         result.ShouldBe(42);
     }
 
+    /// <summary>
+    /// 验证加锁计算返回预期计算值。
+    /// </summary>
     [Fact]
     public void LockAndReturn_CalculatesInsideLock()
     {
@@ -193,6 +245,9 @@ public class LockExtensionsTests
 
     // ── LockAndReturn<T, TResult> (typed source) ──────────────────────────────
 
+    /// <summary>
+    /// 验证加锁计算将源对象传入函数。
+    /// </summary>
     [Fact]
     public void LockAndReturn_TypedSource_PassesSourceToFunc()
     {
@@ -201,6 +256,9 @@ public class LockExtensionsTests
         count.ShouldBe(3);
     }
 
+    /// <summary>
+    /// 验证加锁计算返回源集合的求和结果。
+    /// </summary>
     [Fact]
     public void LockAndReturn_TypedSource_ReturnsComputedValue()
     {
@@ -222,6 +280,9 @@ public class TaskExtensionsContinueTests
 {
     // ── 参数校验 ───────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证同步延续注册拒绝空任务。
+    /// </summary>
     [Fact]
     public void ContinueWithSynchronously_NullTask_ThrowsArgumentNullException()
     {
@@ -230,6 +291,9 @@ public class TaskExtensionsContinueTests
             task.ContinueWithSynchronously(_ => { }));
     }
 
+    /// <summary>
+    /// 验证同步延续注册拒绝空操作。
+    /// </summary>
     [Fact]
     public void ContinueWithSynchronously_NullAction_ThrowsArgumentNullException()
     {
@@ -240,6 +304,10 @@ public class TaskExtensionsContinueTests
 
     // ── ContinueWithSynchronously(Action<Task>) ───────────────────────────────
 
+    /// <summary>
+    /// 验证无结果任务执行延续操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task ContinueWithSynchronously_ActionTask_ExecutesContinuation()
     {
@@ -251,6 +319,10 @@ public class TaskExtensionsContinueTests
 
     // ── ContinueWithSynchronously(Action<Task, object>) ──────────────────────
 
+    /// <summary>
+    /// 验证无结果任务将状态传入延续操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task ContinueWithSynchronously_ActionWithState_PassesState()
     {
@@ -263,6 +335,10 @@ public class TaskExtensionsContinueTests
 
     // ── ContinueWithSynchronously(Func<Task, TResult>) ───────────────────────
 
+    /// <summary>
+    /// 验证无结果任务的延续函数返回计算值。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task ContinueWithSynchronously_FuncTask_ReturnsValue()
     {
@@ -273,6 +349,10 @@ public class TaskExtensionsContinueTests
 
     // ── ContinueWithSynchronously(Func<Task, object, TResult>) ───────────────
 
+    /// <summary>
+    /// 验证无结果任务的延续函数接收状态并返回计算值。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task ContinueWithSynchronously_FuncWithState_PassesStateAndReturnsValue()
     {
@@ -284,6 +364,10 @@ public class TaskExtensionsContinueTests
 
     // ── ContinueWithSynchronously(Action<Task<TResult>>) ─────────────────────
 
+    /// <summary>
+    /// 验证泛型任务将结果提供给延续操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task ContinueWithSynchronously_ActionOnTypedTask_ExecutesContinuation()
     {
@@ -295,6 +379,10 @@ public class TaskExtensionsContinueTests
 
     // ── ContinueWithSynchronously(Action<Task<TResult>, object>) ─────────────
 
+    /// <summary>
+    /// 验证泛型任务将状态传入延续操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task ContinueWithSynchronously_ActionOnTypedTaskWithState_PassesState()
     {
@@ -307,6 +395,10 @@ public class TaskExtensionsContinueTests
 
     // ── ContinueWithSynchronously<TResult, TNewResult> ───────────────────────
 
+    /// <summary>
+    /// 验证泛型任务的延续函数转换原结果。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task ContinueWithSynchronously_FuncOnTypedTask_TransformsResult()
     {
@@ -315,6 +407,10 @@ public class TaskExtensionsContinueTests
         result.ShouldBe(10);
     }
 
+    /// <summary>
+    /// 验证泛型任务的延续函数使用状态转换原结果。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task ContinueWithSynchronously_FuncOnTypedTaskWithState_TransformsResult()
     {
@@ -326,6 +422,9 @@ public class TaskExtensionsContinueTests
 
     // ── ToCancellationTokenSource ─────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证取消源转换拒绝空任务。
+    /// </summary>
     [Fact]
     public void ToCancellationTokenSource_NullTask_ThrowsArgumentNullException()
     {
@@ -333,6 +432,10 @@ public class TaskExtensionsContinueTests
         Should.Throw<ArgumentNullException>(() => task.ToCancellationTokenSource());
     }
 
+    /// <summary>
+    /// 验证任务完成后关联的取消源收到取消请求。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task ToCancellationTokenSource_WhenTaskCompletes_CancelsCts()
     {
@@ -357,6 +460,9 @@ public class TaskFactoryExtensionsTests
 {
     // ── 参数校验 ───────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证延迟任务创建拒绝空任务工厂。
+    /// </summary>
     [Fact]
     public void StartDelayedTask_NullFactory_ThrowsArgumentNullException()
     {
@@ -365,6 +471,9 @@ public class TaskFactoryExtensionsTests
             factory.StartDelayedTask(0, () => { }));
     }
 
+    /// <summary>
+    /// 验证延迟任务创建拒绝负延迟。
+    /// </summary>
     [Fact]
     public void StartDelayedTask_NegativeDelay_ThrowsArgumentOutOfRangeException()
     {
@@ -372,6 +481,9 @@ public class TaskFactoryExtensionsTests
             Task.Factory.StartDelayedTask(-1, () => { }));
     }
 
+    /// <summary>
+    /// 验证延迟任务创建拒绝空操作。
+    /// </summary>
     [Fact]
     public void StartDelayedTask_NullAction_ThrowsArgumentNullException()
     {
@@ -381,6 +493,10 @@ public class TaskFactoryExtensionsTests
 
     // ── 正常执行 ────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证零延迟任务执行指定操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task StartDelayedTask_ZeroDelay_ExecutesAction()
     {
@@ -389,6 +505,10 @@ public class TaskFactoryExtensionsTests
         executed.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证短延迟任务执行指定操作。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task StartDelayedTask_SmallDelay_ExecutesActionAfterDelay()
     {

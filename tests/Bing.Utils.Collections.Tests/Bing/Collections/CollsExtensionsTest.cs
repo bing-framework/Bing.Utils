@@ -9,7 +9,7 @@ using Xunit;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：CollsExtensions 集合工具扩展方法（查询/操作系列）
+/// 集合条件判断、查找、去重和追加扩展测试。
 /// </summary>
 [Trait("CollUT", "CollsExtensions")]
 public class CollsExtensionsTest
@@ -17,7 +17,7 @@ public class CollsExtensionsTest
     #region BeContainedIn — 元素包含判断
 
     /// <summary>
-    /// 测试目的：BeContainedIn(params T[]) 在元素存在于数组时应返回 true
+    /// 验证BeContainedIn(params T[]) 在元素存在于数组时应返回 true
     /// </summary>
     [Fact]
     public void BeContainedIn_ParamsArray_ItemPresent_ReturnsTrue()
@@ -30,7 +30,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：BeContainedIn(params T[]) 在元素不在数组中时应返回 false
+    /// 验证BeContainedIn(params T[]) 在元素不在数组中时应返回 false
     /// </summary>
     [Fact]
     public void BeContainedIn_ParamsArray_ItemAbsent_ReturnsFalse()
@@ -43,7 +43,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：BeContainedIn(IEnumerable&lt;T&gt;) 在集合中存在该元素时应返回 true
+    /// 验证BeContainedIn(IEnumerable&lt;T&gt;) 在集合中存在该元素时应返回 true
     /// </summary>
     [Fact]
     public void BeContainedIn_Enumerable_ItemPresent_ReturnsTrue()
@@ -59,7 +59,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：BeContainedIn(IEnumerable&lt;T&gt;) 在集合中不存在该元素时应返回 false
+    /// 验证BeContainedIn(IEnumerable&lt;T&gt;) 在集合中不存在该元素时应返回 false
     /// </summary>
     [Fact]
     public void BeContainedIn_Enumerable_ItemAbsent_ReturnsFalse()
@@ -75,7 +75,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：BeContainedIn 对空集合应始终返回 false
+    /// 验证BeContainedIn 对空集合应始终返回 false
     /// </summary>
     [Fact]
     public void BeContainedIn_EmptyCollection_ReturnsFalse()
@@ -92,7 +92,7 @@ public class CollsExtensionsTest
     #region Contains — 条件包含判断
 
     /// <summary>
-    /// 测试目的：Contains(Expression) 在集合中有满足条件的元素时应返回 true
+    /// 验证Contains(Expression) 在集合中有满足条件的元素时应返回 true
     /// </summary>
     [Fact]
     public void Contains_WithCondition_MatchFound_ReturnsTrue()
@@ -108,7 +108,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：Contains(Expression) 在集合中没有满足条件的元素时应返回 false
+    /// 验证Contains(Expression) 在集合中没有满足条件的元素时应返回 false
     /// </summary>
     [Fact]
     public void Contains_WithCondition_NoMatch_ReturnsFalse()
@@ -128,7 +128,7 @@ public class CollsExtensionsTest
     #region ContainsAtLeast — 最少数量判断
 
     /// <summary>
-    /// 测试目的：ContainsAtLeast(count) 当集合元素数量 &gt;= count 时应返回 true
+    /// 验证ContainsAtLeast(count) 当集合元素数量 &gt;= count 时应返回 true
     /// </summary>
     [Fact]
     public void ContainsAtLeast_Collection_EnoughElements_ReturnsTrue()
@@ -144,7 +144,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ContainsAtLeast(count) 当集合元素数量 &lt; count 时应返回 false
+    /// 验证ContainsAtLeast(count) 当集合元素数量 &lt; count 时应返回 false
     /// </summary>
     [Fact]
     public void ContainsAtLeast_Collection_NotEnoughElements_ReturnsFalse()
@@ -160,7 +160,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ContainsAtLeast(condition, count) 当满足条件的元素数量 &gt;= count 时应返回 true
+    /// 验证ContainsAtLeast(condition, count) 当满足条件的元素数量 &gt;= count 时应返回 true
     /// </summary>
     [Fact]
     public void ContainsAtLeast_WithCondition_EnoughMatches_ReturnsTrue()
@@ -176,7 +176,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：ContainsAtLeast(condition, count) 当满足条件的元素数量 &lt; count 时应返回 false
+    /// 验证ContainsAtLeast(condition, count) 当满足条件的元素数量 &lt; count 时应返回 false
     /// </summary>
     [Fact]
     public void ContainsAtLeast_WithCondition_NotEnoughMatches_ReturnsFalse()
@@ -196,7 +196,7 @@ public class CollsExtensionsTest
     #region IndexOf — 索引查找
 
     /// <summary>
-    /// 测试目的：IndexOf 应返回元素在集合中的正确索引
+    /// 验证IndexOf 应返回元素在集合中的正确索引
     /// </summary>
     [Fact]
     public void IndexOf_ItemPresent_ReturnsCorrectIndex()
@@ -212,7 +212,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：IndexOf 对集合中第一个元素应返回 0
+    /// 验证IndexOf 对集合中第一个元素应返回 0
     /// </summary>
     [Fact]
     public void IndexOf_FirstItem_ReturnsZero()
@@ -228,7 +228,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：IndexOf 对不存在的元素应返回 -1
+    /// 验证IndexOf 对不存在的元素应返回 -1
     /// </summary>
     [Fact]
     public void IndexOf_ItemAbsent_ReturnsMinusOne()
@@ -244,7 +244,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：IndexOf 使用自定义相等比较器时应正确工作
+    /// 验证索引查找遵循忽略大小写比较器。
     /// </summary>
     [Fact]
     public void IndexOf_WithEqualityComparer_ReturnsCorrectIndex()
@@ -264,7 +264,7 @@ public class CollsExtensionsTest
     #region UniqueCount — 不重复计数
 
     /// <summary>
-    /// 测试目的：UniqueCount 应返回集合中不重复元素的数量
+    /// 验证UniqueCount 应返回集合中不重复元素的数量
     /// </summary>
     [Fact]
     public void UniqueCount_WithDuplicates_ReturnsDistinctCount()
@@ -280,7 +280,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：UniqueCount 对无重复集合应返回集合本身的元素数量
+    /// 验证UniqueCount 对无重复集合应返回集合本身的元素数量
     /// </summary>
     [Fact]
     public void UniqueCount_NoDuplicates_ReturnsOriginalCount()
@@ -296,7 +296,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：UniqueCount&lt;T, TResult&gt;(valCalculator) 应按投影值计算不重复数量
+    /// 验证UniqueCount&lt;T, TResult&gt;(valCalculator) 应按投影值计算不重复数量
     /// </summary>
     [Fact]
     public void UniqueCount_WithProjection_ReturnsUniqueProjectedCount()
@@ -312,7 +312,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：UniqueCount 对空集合应返回 0
+    /// 验证UniqueCount 对空集合应返回 0
     /// </summary>
     [Fact]
     public void UniqueCount_EmptyCollection_ReturnsZero()
@@ -329,7 +329,7 @@ public class CollsExtensionsTest
     #region AddIf — 条件添加
 
     /// <summary>
-    /// 测试目的：AddIf(value, true) 应将值添加到集合
+    /// 验证AddIf(value, true) 应将值添加到集合
     /// </summary>
     [Fact]
     public void AddIf_FlagTrue_AddsValue()
@@ -346,7 +346,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：AddIf(value, false) 不应将值添加到集合
+    /// 验证AddIf(value, false) 不应将值添加到集合
     /// </summary>
     [Fact]
     public void AddIf_FlagFalse_DoesNotAdd()
@@ -363,7 +363,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：AddIfNotNull 在值不为 null 时应添加到集合
+    /// 验证AddIfNotNull 在值不为 null 时应添加到集合
     /// </summary>
     [Fact]
     public void AddIfNotNull_NonNullValue_AddsValue()
@@ -380,7 +380,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：AddIfNotNull 在值为 null 时不应添加到集合
+    /// 验证AddIfNotNull 在值为 null 时不应添加到集合
     /// </summary>
     [Fact]
     public void AddIfNotNull_NullValue_DoesNotAdd()
@@ -400,7 +400,7 @@ public class CollsExtensionsTest
     #region RemoveDuplicates — 去重
 
     /// <summary>
-    /// 测试目的：RemoveDuplicates 应移除集合中的重复项
+    /// 验证RemoveDuplicates 应移除集合中的重复项
     /// </summary>
     [Fact]
     public void RemoveDuplicates_WithDuplicates_ReturnsUniqueItems()
@@ -416,7 +416,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：RemoveDuplicatesIgnoreCase 应忽略大小写移除重复字符串
+    /// 验证RemoveDuplicatesIgnoreCase 应忽略大小写移除重复字符串
     /// </summary>
     [Fact]
     public void RemoveDuplicatesIgnoreCase_MixedCase_RemovesDuplicates()
@@ -436,7 +436,7 @@ public class CollsExtensionsTest
     #region RemoveIf — 条件移除
 
     /// <summary>
-    /// 测试目的：RemoveIf 应移除满足条件的元素
+    /// 验证RemoveIf 应移除满足条件的元素
     /// </summary>
     [Fact]
     public void RemoveIf_WithCondition_RemovesMatchingItems()
@@ -456,7 +456,7 @@ public class CollsExtensionsTest
     #region Merge — 集合合并
 
     /// <summary>
-    /// 测试目的：Merge 应将两个集合合并为一个
+    /// 验证Merge 应将两个集合合并为一个
     /// </summary>
     [Fact]
     public void Merge_TwoCollections_ReturnsAllElements()
@@ -473,7 +473,7 @@ public class CollsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：Merge(limit) 应限制从 right 集合中取出的元素数量（limit 是对 right 的上限）
+    /// 验证Merge(limit) 应限制从 right 集合中取出的元素数量（limit 是对 right 的上限）
     /// </summary>
     [Fact]
     public void Merge_WithLimit_LimitsFromRightCount()
@@ -495,7 +495,7 @@ public class CollsExtensionsTest
     #region OrderByRandom — 随机排序（仅验证行为不变性）
 
     /// <summary>
-    /// 测试目的：OrderByRandom 结果应包含与原集合相同数量的元素
+    /// 验证OrderByRandom 结果应包含与原集合相同数量的元素
     /// </summary>
     [Fact]
     public void OrderByRandom_ReturnsAllElements()

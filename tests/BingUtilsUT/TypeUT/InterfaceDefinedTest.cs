@@ -1,14 +1,35 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证类型是否实现指定接口。
+/// </summary>
 [Trait("TypeUT", "InterfaceDefined")]
 public class InterfaceDefinedTest
 {
+    /// <summary>
+    /// 获取实现多个接口的待测类型。
+    /// </summary>
     public Type ModelType = typeof(NormalInterfaceClass<string>);
+    /// <summary>
+    /// 获取待验证的第一个接口类型。
+    /// </summary>
     public Type InterfaceOne = typeof(IModelOne);
+    /// <summary>
+    /// 获取待验证的第二个接口类型。
+    /// </summary>
     public Type InterfaceTwo = typeof(IModelTwo);
+    /// <summary>
+    /// 获取待验证的泛型接口类型。
+    /// </summary>
     public Type InterfaceThree = typeof(IModelThree<string>);
+    /// <summary>
+    /// 获取待测类型未实现的接口类型。
+    /// </summary>
     public Type InterfaceFour = typeof(IModelFour);
+    /// <summary>
+    /// 获取非接口类型的对照值。
+    /// </summary>
     public Type NotInterface = typeof(int);
     /// <summary>
     /// 测试 - 基于类型的接口定义

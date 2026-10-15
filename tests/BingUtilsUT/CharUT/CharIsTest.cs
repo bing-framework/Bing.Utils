@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.CharUT;
 
+/// <summary>
+/// 验证字符空白判断对常见空白字符和 Unicode 空白的识别。
+/// </summary>
 [Trait("CharUT", "Char.Is")]
 public class CharIsTest
 {

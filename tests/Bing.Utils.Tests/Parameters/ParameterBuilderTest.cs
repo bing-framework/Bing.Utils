@@ -2,21 +2,22 @@ using Bing.Tests.Samples;
 using Bing.Utils.Parameters;
 namespace Bing.Utils.Tests.Parameters;
 /// <summary>
-/// 参数生成器测试
+/// 验证参数生成器对不同值类型的格式化行为。
 /// </summary>
 public class ParameterBuilderTest
 {
     /// <summary>
-    /// 参数生成器
+    /// 保存当前测试使用的参数生成器实例。
     /// </summary>
     private readonly ParameterBuilder _builder;
     /// <summary>
-    /// 初始化一个<see cref="ParameterBuilderTest"/>类型的实例
+    /// 初始化一个 <see cref="ParameterBuilderTest"/> 类型的实例。
     /// </summary>
     public ParameterBuilderTest() => _builder = new ParameterBuilder();
     /// <summary>
-    /// 测试 - 验证key为空
+    /// 验证键为空时不生成参数。
     /// </summary>
+    /// <param name="key">待添加的参数键。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -26,8 +27,9 @@ public class ParameterBuilderTest
         Assert.Empty(_builder.Add(key, "b").Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 验证value为空
+    /// 验证值为空时不生成参数。
     /// </summary>
+    /// <param name="value">待添加的参数值。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -37,7 +39,7 @@ public class ParameterBuilderTest
         Assert.Empty(_builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 去除键两端空格
+    /// 验证格式化前会去除键两端的空格。
     /// </summary>
     [Fact]
     public void Test_Add_TrimKey()
@@ -45,7 +47,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:1", _builder.Add(" a ", "1").Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 去除值两端空格
+    /// 验证格式化前会去除值两端的空格。
     /// </summary>
     [Fact]
     public void Test_Add_TrimValue()
@@ -53,7 +55,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:1", _builder.Add("a", " 1 ").Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加字符串参数
+    /// 验证字符串参数的格式化结果。
     /// </summary>
     [Fact]
     public void Test_Add_String()
@@ -61,7 +63,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:1", _builder.Add("a", "1").Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加2个字符串参数
+    /// 验证多个字符串参数按格式化器规则连接。
     /// </summary>
     [Fact]
     public void Test_Add_String_2()
@@ -69,7 +71,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:1|b:2", _builder.Add("a", " 1").Add("b ", "2 ").Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加日期参数
+    /// 验证日期时间参数按格式化器规则输出。
     /// </summary>
     [Fact]
     public void Test_Add_DateTime()
@@ -78,7 +80,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:2000-10-10 10:10:10", _builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加日期参数 - 可空
+    /// 验证有值的可空日期时间参数正常输出。
     /// </summary>
     [Fact]
     public void Test_Add_DateTime_Nullable()
@@ -87,7 +89,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:2000-10-10 10:10:10", _builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加日期参数 - 可空 - 传入null
+    /// 验证空可空日期时间参数不生成内容。
     /// </summary>
     [Fact]
     public void Test_Add_DateTime_Nullable_Null()
@@ -96,7 +98,7 @@ public class ParameterBuilderTest
         Assert.Empty(_builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加整型参数
+    /// 验证整数参数按格式化器规则输出。
     /// </summary>
     [Fact]
     public void Test_Add_Int()
@@ -105,7 +107,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:1", _builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加整型参数 - 可空
+    /// 验证有值的可空整数参数正常输出。
     /// </summary>
     [Fact]
     public void Test_Add_Int_Nullable()
@@ -114,7 +116,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:1", _builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加整型参数 - 可空 - 传入null
+    /// 验证空可空整数参数不生成内容。
     /// </summary>
     [Fact]
     public void Test_Add_Int_Nullable_Null()
@@ -123,7 +125,7 @@ public class ParameterBuilderTest
         Assert.Empty(_builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加布尔参数
+    /// 验证布尔参数按格式化器规则输出。
     /// </summary>
     [Fact]
     public void Test_Add_Bool()
@@ -132,7 +134,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:true", _builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加布尔参数 - 可空
+    /// 验证有值的可空布尔参数正常输出。
     /// </summary>
     [Fact]
     public void Test_Add_Bool_Nullable()
@@ -141,7 +143,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:false", _builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 添加布尔参数 - 可空 - 传入null
+    /// 验证空可空布尔参数不生成内容。
     /// </summary>
     [Fact]
     public void Test_Add_Bool_Nullable_Null()
@@ -150,7 +152,7 @@ public class ParameterBuilderTest
         Assert.Empty(_builder.Add("a", value).Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 已添加参数则覆盖
+    /// 验证重复键会使用后添加的值。
     /// </summary>
     [Fact]
     public void Test_Add_Exist()
@@ -158,7 +160,7 @@ public class ParameterBuilderTest
         Assert.Equal("a:2", _builder.Add("a", "1").Add("a", "2").Result(new ParameterFormatterSample()));
     }
     /// <summary>
-    /// 测试 - 转换为json
+    /// 验证参数集合可转换为 JSON 对象。
     /// </summary>
     [Fact]
     public void Test_ToJson()

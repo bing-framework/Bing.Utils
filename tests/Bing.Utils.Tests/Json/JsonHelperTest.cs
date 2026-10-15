@@ -5,14 +5,18 @@ using Bing.Utils.Json.Converters;
 using Newtonsoft.Json;
 namespace Bing.Utils.Tests.Json;
 /// <summary>
-/// Json测试
+/// 验证 JSON 序列化与反序列化行为。
 /// </summary>
 public class JsonHelperTest : TestBase
 {
+    /// <summary>
+    /// JSON 空日期转换测试使用的基准日期。
+    /// </summary>
     private static readonly DateTime DefaultDate = new(1900, 1, 1);
     /// <summary>
-    /// 初始化一个<see cref="TestBase"/>类型的实例
+    /// 初始化一个 <see cref="JsonHelperTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">用于输出测试诊断信息的辅助对象。</param>
     public JsonHelperTest(ITestOutputHelper output) : base(output)
     {
     }
@@ -130,7 +134,7 @@ public class JsonHelperTest : TestBase
         Assert.Equal(DefaultDate, sample.OptionalTime);
     }
     /// <summary>
-    /// 测试 - JSON 中为正常日期字符串时，能够正确反序列化为 DateTime 对象
+    /// 验证空格分隔的日期时间字符串可正常反序列化。
     /// </summary>
     [Fact]
     public void Deserialize_NormalDate_ShouldParseCorrectly()
@@ -143,7 +147,7 @@ public class JsonHelperTest : TestBase
         Assert.Equal(expected, dto.OptionalTime);
     }
     /// <summary>
-    /// 测试 - JSON 中为正常日期字符串时，能够正确反序列化为 DateTime 对象
+    /// 验证 ISO 日期时间字符串可正常反序列化。
     /// </summary>
     [Fact]
     public void Deserialize_NormalDate_ShouldParseCorrectly_1()
@@ -156,7 +160,7 @@ public class JsonHelperTest : TestBase
         Assert.Equal(expected, dto.OptionalTime);
     }
     /// <summary>
-    /// 测试 - JSON 中为正常日期字符串时，能够正确反序列化为 DateTime 对象
+    /// 验证基准日期字符串会转换为基准日期。
     /// </summary>
     [Fact]
     public void Deserialize_NormalDate_ShouldParseCorrectly_2()
@@ -169,7 +173,7 @@ public class JsonHelperTest : TestBase
         Assert.Equal(DefaultDate, dto.OptionalTime);
     }
     /// <summary>
-    /// 测试 - JSON 中为正常日期字符串时，能够正确反序列化为 DateTime 对象
+    /// 验证可空日期为 null 时会转换为基准日期。
     /// </summary>
     [Fact]
     public void Deserialize_NormalDate_ShouldParseCorrectly_3()
@@ -198,10 +202,19 @@ public class JsonHelperTest : TestBase
         Assert.Equal(DefaultDate, deserialized.ConfirmTime);
         Assert.Equal(DefaultDate, deserialized.OptionalTime);
     }
+    /// <summary>
+    /// 提供 JSON 日期转换器测试用的数据模型。
+    /// </summary>
     private class JsonDateTimeSample
     {
+        /// <summary>
+        /// 获取或设置必填日期时间；JSON null 会转换为基准日期。
+        /// </summary>
         [JsonConverter(typeof(DateTimeNullTo1900Converter))]
         public DateTime ConfirmTime { get; set; }
+        /// <summary>
+        /// 获取或设置可空日期时间；JSON null 会转换为基准日期。
+        /// </summary>
         [JsonConverter(typeof(DateTimeNullTo1900Converter))]
         public DateTime? OptionalTime { get; set; }
     }

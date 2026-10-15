@@ -12,6 +12,9 @@ public class DictionaryExtensionsAdditionalTests
     // ContainsAnyKey / ContainsAllKey
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证候选键至少一个存在时返回肯定结果。
+    /// </summary>
     [Fact]
     public void ContainsAnyKey_AnyKeyPresent_ReturnsTrue()
     {
@@ -19,6 +22,9 @@ public class DictionaryExtensionsAdditionalTests
         dict.ContainsAnyKey("a", "z").ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证候选键均不存在时返回否定结果。
+    /// </summary>
     [Fact]
     public void ContainsAnyKey_NoKeyPresent_ReturnsFalse()
     {
@@ -26,6 +32,9 @@ public class DictionaryExtensionsAdditionalTests
         dict.ContainsAnyKey("x", "y").ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证全部候选键存在时返回肯定结果。
+    /// </summary>
     [Fact]
     public void ContainsAllKey_AllKeysPresent_ReturnsTrue()
     {
@@ -33,6 +42,9 @@ public class DictionaryExtensionsAdditionalTests
         dict.ContainsAllKey("a", "b").ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证缺少任一候选键时返回否定结果。
+    /// </summary>
     [Fact]
     public void ContainsAllKey_OneKeyMissing_ReturnsFalse()
     {
@@ -44,6 +56,9 @@ public class DictionaryExtensionsAdditionalTests
     // GetKey / GetOrDefault
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证按字典值查找对应键。
+    /// </summary>
     [Fact]
     public void GetKey_ValueExists_ReturnsCorrectKey()
     {
@@ -51,6 +66,9 @@ public class DictionaryExtensionsAdditionalTests
         dict.GetKey(42).ShouldBe("x");
     }
 
+    /// <summary>
+    /// 验证不存在的字典值返回默认键。
+    /// </summary>
     [Fact]
     public void GetKey_ValueNotFound_ReturnsDefault()
     {
@@ -58,6 +76,9 @@ public class DictionaryExtensionsAdditionalTests
         dict.GetKey(99).ShouldBeNull();
     }
 
+    /// <summary>
+    /// 验证已有键返回保存值。
+    /// </summary>
     [Fact]
     public void GetOrDefault_KeyExists_ReturnsValue()
     {
@@ -65,6 +86,9 @@ public class DictionaryExtensionsAdditionalTests
         dict.GetOrDefault("k").ShouldBe(7);
     }
 
+    /// <summary>
+    /// 验证缺失键返回指定默认值。
+    /// </summary>
     [Fact]
     public void GetOrDefault_KeyMissing_ReturnsDefaultValue()
     {
@@ -72,6 +96,9 @@ public class DictionaryExtensionsAdditionalTests
         dict.GetOrDefault("missing", 99).ShouldBe(99);
     }
 
+    /// <summary>
+    /// 验证缺失键未指定默认值时返回类型默认值。
+    /// </summary>
     [Fact]
     public void GetOrDefault_KeyMissing_NoDefaultSpecified_ReturnsTypeDefault()
     {
@@ -83,6 +110,9 @@ public class DictionaryExtensionsAdditionalTests
     // ToSortedDictionary
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证转换字典后的首尾键符合升序。
+    /// </summary>
     [Fact]
     public void ToSortedDictionary_ReturnsSortedByKey()
     {
@@ -92,6 +122,9 @@ public class DictionaryExtensionsAdditionalTests
         sorted.Keys.Last().ShouldBe("c");
     }
 
+    /// <summary>
+    /// 验证指定比较器的字典转换返回非空结果。
+    /// </summary>
     [Fact]
     public void ToSortedDictionary_WithComparer_AppliesComparer()
     {
@@ -104,6 +137,9 @@ public class DictionaryExtensionsAdditionalTests
     // ToNameValueCollection
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证字典转换为名称值集合后保留键值。
+    /// </summary>
     [Fact]
     public void ToNameValueCollection_FromDictionary_ReturnsCorrectCollection()
     {
@@ -114,10 +150,16 @@ public class DictionaryExtensionsAdditionalTests
         nvc["city"].ShouldBe("Beijing");
     }
 
+    /// <summary>
+    /// 验证空字典转换为名称值集合时返回空引用。
+    /// </summary>
     [Fact]
     public void ToNameValueCollection_NullDictionary_ReturnsNull() =>
         ((IDictionary<string, string>)null!).ToNameValueCollection().ShouldBeNull();
 
+    /// <summary>
+    /// 验证键值对序列转换为名称值集合后保留指定键值。
+    /// </summary>
     [Fact]
     public void ToNameValueCollection_FromKvpEnumerable_ReturnsCorrectCollection()
     {
@@ -130,6 +172,9 @@ public class DictionaryExtensionsAdditionalTests
         nvc["a"].ShouldBe("1");
     }
 
+    /// <summary>
+    /// 验证空键值对序列转换为名称值集合时返回空引用。
+    /// </summary>
     [Fact]
     public void ToNameValueCollection_FromKvpEnumerable_NullInput_ReturnsNull() =>
         ((IEnumerable<KeyValuePair<string, string>>)null!).ToNameValueCollection().ShouldBeNull();
@@ -138,6 +183,9 @@ public class DictionaryExtensionsAdditionalTests
     // ToDynamic / ToDictionary (from KVP)
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证字典键值转换为可动态访问的属性。
+    /// </summary>
     [Fact]
     public void ToDynamic_ReturnsExpandoWithProperties()
     {
@@ -147,6 +195,9 @@ public class DictionaryExtensionsAdditionalTests
         ((int)result.Age).ShouldBe(30);
     }
 
+    /// <summary>
+    /// 验证键值对序列转换为字典后保留键值。
+    /// </summary>
     [Fact]
     public void ToDictionary_FromKvpEnumerable_ReturnsCorrectDictionary()
     {
@@ -160,6 +211,9 @@ public class DictionaryExtensionsAdditionalTests
     // ToQueryString (from KVP enumerable)
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证查询文本包含各键值参数。
+    /// </summary>
     [Fact]
     public void ToQueryString_KvpEnumerable_BuildsCorrectQueryString()
     {
@@ -173,16 +227,22 @@ public class DictionaryExtensionsAdditionalTests
         qs.ShouldContain("age=30");
     }
 
+    /// <summary>
+    /// 验证空序列的查询文本为空。
+    /// </summary>
     [Fact]
     public void ToQueryString_NullInput_ReturnsEmpty() =>
         ((IEnumerable<KeyValuePair<string, string>>)null!).ToQueryString().ShouldBe(string.Empty);
 
+    /// <summary>
+    /// 验证空列表的查询文本为空。
+    /// </summary>
     [Fact]
     public void ToQueryString_EmptyList_ReturnsEmpty() =>
         new List<KeyValuePair<string, string>>().ToQueryString().ShouldBe("");
 
     /// <summary>
-    /// 测试目的：集合查询字符串入口应编码空格与特殊字符并保留空键。
+    /// 验证集合查询字符串入口应编码空格与特殊字符并保留空键。
     /// </summary>
     [Fact]
     public void ToQueryString_KvpEnumerableWithSpecialValues_UsesEncodedSharedImplementation()
@@ -205,6 +265,9 @@ public class DictionaryExtensionsAdditionalTests
     // ToDataTable (from IDictionary<string, object>)
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证字典转换的数据表包含对应列。
+    /// </summary>
     [Fact]
     public void ToDataTable_FromDictionary_ContainsColumns()
     {
@@ -214,6 +277,9 @@ public class DictionaryExtensionsAdditionalTests
         table.Columns.Contains("Name").ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证数据表转换拒绝空字典。
+    /// </summary>
     [Fact]
     public void ToDataTable_NullDictionary_ThrowsArgumentNullException() =>
         Should.Throw<ArgumentNullException>(() =>

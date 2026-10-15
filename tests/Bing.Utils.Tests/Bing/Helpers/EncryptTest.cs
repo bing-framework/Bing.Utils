@@ -8,8 +8,9 @@ namespace Bing.Helpers;
 public class EncryptTest : TestBase
 {
     /// <summary>
-    /// 初始化一个<see cref="EncryptTest"/>类型的实例
+    /// 初始化一个 <see cref="EncryptTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">xUnit 测试输出助手。</param>
     public EncryptTest(ITestOutputHelper output) : base(output)
     {
     }
@@ -125,11 +126,11 @@ public class EncryptTest : TestBase
         Assert.Equal(result, Encrypt.Rsa2Sign(input, key, Encoding.UTF8));
     }
     /// <summary>
-    /// RSA私钥
+    /// 用于 RSA 签名测试的固定私钥，仅供测试使用。
     /// </summary>
     public const string RsaKey = "MIIEogIBAAKCAQEAuLbs8Jugb3qhzDu4rvMqQ8n1RS8TQCpJ3+Cg9qR/RgMcpBx8+0tUiYkfOOnzxGlBuIwGF7Hqyho2E1ICNoIeNY4GkUhxBk7/wz4M6/tbfKSmWp1PAi9gVOxT0Io1kNBAV0it+uiDA176qk2tIKPxQ7UBPRB6qVELHuM7Y9AVoOQbHe56+rEoTiRo13NTx01yg0xiZDzS5gAe/vu+rDAKBczm7ZQ0A4U//modw1/rV+GKiqJ8CIDHe7a8oW2rthDNTZ2C/CHug4QMEmhaNazvhzjyAE1rfvYLF0o92qEfkip3IQRJnFM4rrr9QvWjkSPO7sPu5rMyE4oeUZHJ8luhIwIDAQABAoIBAGE8ytaO1pJY+DvPZJWUpLcy5c8ZzQSGPoWAdrvgNK/ii31JEfIn4cTVTn5jilPnJRXFgJ+QpYzm53icP1X6gXSn44UvoXA0vidFzv+bProK4xfon+MCla+fCTBK0Y/+USChvhTLucxYf5SPd4grRaLi8lf3CNuBMl18OZN9wyUCicgcqOp2mwi46daqqqvNLJwzmiKVCMb82JKEVShkmRDp8+ST7imwtXypUzLnwRt00xobiO8Gi1B1jYE4xM0hmkVgEHHLMGUOlfECH/VcWFLRkwosM3P6PYwb/mfBiDrIzN2mbueKZxMZureUqll9uLWRwPEvTosqc+tl+a4jCkECgYEA784SWiUGoSBDuKu9wm2D5Almz0gZavMv15cYsTfbu6UzsLcIRLEqLG1Rv9bFnwR39Gd1Cl3JAKDlxhs8qxJhy5zi0TJUowF9/QAg7TgBkGZVU4p+6SKF4mPKKsC4tnpENM+FnylncpCjFs45+MNruUIq1OVkcfxGBaBxDB/SM6kCgYEAxTBozzAyfH+9HHNisCQ2x7iNWEuaydY39V8vAlGPRZSbbo8OoV3wlidZm2wAhRybUCg7wefdbMAJlH8Uq/HnwuwanEkMO4IH/t5WI/MKk4Wc55iwC1abqQZrAxNCfjG+fShr2AZHO1jTj4oyd3BuQFTQBdRtiB+g8ibrGYG1resCgYA/sJ2TL45JMQaLf6GQiAGliRGzL9UAYMJuIgU+3DUR61iFMLeTdvJahlZV+zbVexxY3zlonWwLLLCaIxXD4cfziiF7qkBsYrMRhP05w8w2i9dRrtDyHmcsr5A8Np9YZ7TByfQVR6vf86Y9IlynQ0/TDk3N6Xb6BySZzfj4XWM4sQKBgBKeW4cUme+/b++7xVm0UafR+SaZHOhp3abBcgLaCJkdSv/Jaiw6XnkPBhryu6nV5aRP6DSK3BFkoILw7Na/ZI63FFwlWY5U3MRn4eJLFHiRaRtFA3pOlywCeyAzNVgNAlt28ZfYH+munWs0NUepyf8xAuNKB32O3vd+TTx/TtQ5AoGAGgD1Rc2hTopjXI8P5K1wuEMrvUp2uo0apguHu2uzIUpFyQYgjp80hBsqDj6e22R0LDzQTPrj8i+KvLZ4Xu8iCCQrUMqOvE6oZbQ7ukJ+wZebLOnrI6/AzD/zza3LZMXt/lKFgbaiYFLOSPEwxg+VBxxe10aQ3ddp5NuBDjQXJW0=";
     /// <summary>
-    /// RSA公钥
+    /// 与 <see cref="RsaKey"/> 配对、用于 RSA 验证测试的固定公钥。
     /// </summary>
     public const string RsaPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuLbs8Jugb3qhzDu4rvMqQ8n1RS8TQCpJ3+Cg9qR/RgMcpBx8+0tUiYkfOOnzxGlBuIwGF7Hqyho2E1ICNoIeNY4GkUhxBk7/wz4M6/tbfKSmWp1PAi9gVOxT0Io1kNBAV0it+uiDA176qk2tIKPxQ7UBPRB6qVELHuM7Y9AVoOQbHe56+rEoTiRo13NTx01yg0xiZDzS5gAe/vu+rDAKBczm7ZQ0A4U//modw1/rV+GKiqJ8CIDHe7a8oW2rthDNTZ2C/CHug4QMEmhaNazvhzjyAE1rfvYLF0o92qEfkip3IQRJnFM4rrr9QvWjkSPO7sPu5rMyE4oeUZHJ8luhIwIDAQAB";
     /// <summary>
@@ -259,6 +260,8 @@ public class EncryptTest : TestBase
     /// <summary>
     /// 测试HMACSHA384加密
     /// </summary>
+    /// <param name="input">待计算摘要的输入文本。</param>
+    /// <param name="result">预期的 HMAC-SHA384 十六进制摘要。</param>
     [Theory]
     [InlineData(null, "")]
     [InlineData("", "")]

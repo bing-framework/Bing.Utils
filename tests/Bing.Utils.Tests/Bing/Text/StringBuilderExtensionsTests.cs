@@ -18,6 +18,9 @@ public class StringBuilderExtensionsTests
     //  SubString
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证 StringBuilder 为空时截取操作抛出参数空异常。
+    /// </summary>
     [Fact]
     public void SubString_NullStringBuilder_ThrowsArgumentNullException()
     {
@@ -25,6 +28,9 @@ public class StringBuilderExtensionsTests
         Should.Throw<ArgumentNullException>(() => sb.SubString(0, 3));
     }
 
+    /// <summary>
+    /// 验证按指定起点和长度截取子字符串。
+    /// </summary>
     [Fact]
     public void SubString_NormalRange_ReturnsSubstring()
     {
@@ -32,6 +38,9 @@ public class StringBuilderExtensionsTests
         sb.SubString(7, 5).ShouldBe("World");
     }
 
+    /// <summary>
+    /// 验证从起始位置截取会返回字符串前缀。
+    /// </summary>
     [Fact]
     public void SubString_StartAtZero_ReturnsPrefix()
     {
@@ -39,6 +48,9 @@ public class StringBuilderExtensionsTests
         sb.SubString(0, 3).ShouldBe("ABC");
     }
 
+    /// <summary>
+    /// 验证截取范围覆盖全部内容时返回原字符串。
+    /// </summary>
     [Fact]
     public void SubString_FullLength_ReturnsEntireString()
     {
@@ -46,6 +58,9 @@ public class StringBuilderExtensionsTests
         sb.SubString(0, 4).ShouldBe("Test");
     }
 
+    /// <summary>
+    /// 验证截取范围超出内容长度时抛出索引越界异常。
+    /// </summary>
     [Fact]
     public void SubString_ExceedsLength_ThrowsIndexOutOfRangeException()
     {
@@ -53,6 +68,9 @@ public class StringBuilderExtensionsTests
         Should.Throw<IndexOutOfRangeException>(() => sb.SubString(0, 10));
     }
 
+    /// <summary>
+    /// 验证截取长度为零时返回空字符串。
+    /// </summary>
     [Fact]
     public void SubString_LengthZero_ReturnsEmptyString()
     {
@@ -64,6 +82,9 @@ public class StringBuilderExtensionsTests
     //  TrimStart (空格)
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证默认 TrimStart 会移除前导空格。
+    /// </summary>
     [Fact]
     public void TrimStart_Default_RemovesLeadingSpaces()
     {
@@ -71,6 +92,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart().ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证没有前导空格时默认 TrimStart 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimStart_Default_NoLeadingSpaces_Unchanged()
     {
@@ -78,6 +102,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart().ToString().ShouldBe("Hello   ");
     }
 
+    /// <summary>
+    /// 验证空 StringBuilder 调用默认 TrimStart 后仍为空。
+    /// </summary>
     [Fact]
     public void TrimStart_Default_EmptyStringBuilder_Unchanged()
     {
@@ -85,6 +112,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart().ToString().ShouldBe(string.Empty);
     }
 
+    /// <summary>
+    /// 验证 StringBuilder 为空时 TrimStart 抛出参数空异常。
+    /// </summary>
     [Fact]
     public void TrimStart_Null_ThrowsArgumentNullException()
     {
@@ -96,6 +126,9 @@ public class StringBuilderExtensionsTests
     //  TrimStart (char)
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证 TrimStart 会移除指定的连续前导字符。
+    /// </summary>
     [Fact]
     public void TrimStart_Char_RemovesLeadingCharacter()
     {
@@ -103,6 +136,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart('*').ToString().ShouldBe("Hello***");
     }
 
+    /// <summary>
+    /// 验证空 StringBuilder 调用字符版 TrimStart 后仍为空。
+    /// </summary>
     [Fact]
     public void TrimStart_Char_EmptyStringBuilder_Unchanged()
     {
@@ -110,6 +146,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart('x').ToString().ShouldBe(string.Empty);
     }
 
+    /// <summary>
+    /// 验证首字符不匹配时字符版 TrimStart 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimStart_Char_NoMatchAtStart_Unchanged()
     {
@@ -121,6 +160,9 @@ public class StringBuilderExtensionsTests
     //  TrimStart (char[])
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证字符数组版 TrimStart 会移除匹配的前导字符。
+    /// </summary>
     [Fact]
     public void TrimStart_CharArray_RemovesMatchingLeadingChars()
     {
@@ -128,6 +170,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart(new[] { '-' }).ToString().ShouldBe("Hello---");
     }
 
+    /// <summary>
+    /// 验证字符数组为空时 TrimStart 抛出参数空异常。
+    /// </summary>
     [Fact]
     public void TrimStart_CharArray_Null_ThrowsArgumentNullException()
     {
@@ -139,6 +184,9 @@ public class StringBuilderExtensionsTests
     //  TrimStart (string)
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证字符串版 TrimStart 会移除重复的前导片段。
+    /// </summary>
     [Fact]
     public void TrimStart_String_RemovesLeadingOccurrences()
     {
@@ -146,6 +194,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart("abc").ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证移除片段为空时字符串版 TrimStart 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimStart_String_NullStr_Unchanged()
     {
@@ -153,6 +204,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart((string)null!).ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证移除片段为空字符串时 TrimStart 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimStart_String_EmptyStr_Unchanged()
     {
@@ -160,6 +214,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart(string.Empty).ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证移除片段长于内容时 TrimStart 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimStart_String_LongerThanSb_Unchanged()
     {
@@ -167,6 +224,9 @@ public class StringBuilderExtensionsTests
         sb.TrimStart("Hello World").ToString().ShouldBe("Hi");
     }
 
+    /// <summary>
+    /// 验证前导内容不匹配时字符串版 TrimStart 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimStart_String_NoMatch_Unchanged()
     {
@@ -178,6 +238,9 @@ public class StringBuilderExtensionsTests
     //  TrimEnd (空格)
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证默认 TrimEnd 会移除尾随空格。
+    /// </summary>
     [Fact]
     public void TrimEnd_Default_RemovesTrailingSpaces()
     {
@@ -185,6 +248,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd().ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证没有尾随空格时默认 TrimEnd 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimEnd_Default_NoTrailingSpaces_Unchanged()
     {
@@ -192,6 +258,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd().ToString().ShouldBe("   Hello");
     }
 
+    /// <summary>
+    /// 验证空 StringBuilder 调用默认 TrimEnd 后仍为空。
+    /// </summary>
     [Fact]
     public void TrimEnd_Default_EmptyStringBuilder_Unchanged()
     {
@@ -199,6 +268,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd().ToString().ShouldBe(string.Empty);
     }
 
+    /// <summary>
+    /// 验证 StringBuilder 为空时 TrimEnd 抛出参数空异常。
+    /// </summary>
     [Fact]
     public void TrimEnd_Null_ThrowsArgumentNullException()
     {
@@ -210,6 +282,9 @@ public class StringBuilderExtensionsTests
     //  TrimEnd (char)
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证 TrimEnd 会移除指定的连续尾随字符。
+    /// </summary>
     [Fact]
     public void TrimEnd_Char_RemovesTrailingCharacter()
     {
@@ -217,6 +292,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd('*').ToString().ShouldBe("***Hello");
     }
 
+    /// <summary>
+    /// 验证空 StringBuilder 调用字符版 TrimEnd 后仍为空。
+    /// </summary>
     [Fact]
     public void TrimEnd_Char_EmptyStringBuilder_Unchanged()
     {
@@ -224,6 +302,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd('x').ToString().ShouldBe(string.Empty);
     }
 
+    /// <summary>
+    /// 验证末尾字符不匹配时字符版 TrimEnd 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimEnd_Char_NoMatchAtEnd_Unchanged()
     {
@@ -235,6 +316,9 @@ public class StringBuilderExtensionsTests
     //  TrimEnd (char[])
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证字符数组版 TrimEnd 会移除匹配的尾随字符。
+    /// </summary>
     [Fact]
     public void TrimEnd_CharArray_RemovesMatchingTrailingChars()
     {
@@ -242,6 +326,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd(new[] { '-' }).ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证字符数组为空时 TrimEnd 抛出参数空异常。
+    /// </summary>
     [Fact]
     public void TrimEnd_CharArray_Null_ThrowsArgumentNullException()
     {
@@ -253,6 +340,9 @@ public class StringBuilderExtensionsTests
     //  TrimEnd (string)
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证字符串版 TrimEnd 会移除重复的尾随片段。
+    /// </summary>
     [Fact]
     public void TrimEnd_String_RemovesTrailingOccurrences()
     {
@@ -260,6 +350,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd("abc").ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证移除片段为空时字符串版 TrimEnd 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimEnd_String_NullStr_Unchanged()
     {
@@ -267,6 +360,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd((string)null!).ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证移除片段为空字符串时 TrimEnd 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimEnd_String_EmptyStr_Unchanged()
     {
@@ -274,6 +370,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd(string.Empty).ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证移除片段长于内容时 TrimEnd 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimEnd_String_LongerThanSb_Unchanged()
     {
@@ -281,6 +380,9 @@ public class StringBuilderExtensionsTests
         sb.TrimEnd("Hello World").ToString().ShouldBe("Hi");
     }
 
+    /// <summary>
+    /// 验证尾随内容不匹配时字符串版 TrimEnd 不修改内容。
+    /// </summary>
     [Fact]
     public void TrimEnd_String_NoMatch_Unchanged()
     {
@@ -292,6 +394,9 @@ public class StringBuilderExtensionsTests
     //  Trim (去除两端空格)
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证 Trim 会同时移除两端空格。
+    /// </summary>
     [Fact]
     public void Trim_RemovesBothEnds()
     {
@@ -299,6 +404,9 @@ public class StringBuilderExtensionsTests
         sb.Trim().ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证空 StringBuilder 调用 Trim 后仍为空。
+    /// </summary>
     [Fact]
     public void Trim_EmptyStringBuilder_Unchanged()
     {
@@ -306,6 +414,9 @@ public class StringBuilderExtensionsTests
         sb.Trim().ToString().ShouldBe(string.Empty);
     }
 
+    /// <summary>
+    /// 验证仅含空格的内容调用 Trim 后返回空字符串。
+    /// </summary>
     [Fact]
     public void Trim_OnlySpaces_ReturnsEmptyString()
     {
@@ -313,6 +424,9 @@ public class StringBuilderExtensionsTests
         sb.Trim().ToString().ShouldBe(string.Empty);
     }
 
+    /// <summary>
+    /// 验证不含空白字符时 Trim 不修改内容。
+    /// </summary>
     [Fact]
     public void Trim_NoWhitespace_Unchanged()
     {
@@ -320,6 +434,9 @@ public class StringBuilderExtensionsTests
         sb.Trim().ToString().ShouldBe("NoSpaces");
     }
 
+    /// <summary>
+    /// 验证 StringBuilder 为空时 Trim 抛出参数空异常。
+    /// </summary>
     [Fact]
     public void Trim_NullStringBuilder_ThrowsArgumentNullException()
     {
@@ -331,6 +448,9 @@ public class StringBuilderExtensionsTests
     //  综合：TrimStart + TrimEnd 组合
     // ════════════════════════════════════════════════════════════════
 
+    /// <summary>
+    /// 验证依次移除指定前后缀后保留中间内容。
+    /// </summary>
     [Fact]
     public void TrimStartAndEnd_String_RemovesBothEndsCorrectly()
     {
@@ -338,6 +458,11 @@ public class StringBuilderExtensionsTests
         sb.TrimStart('-').TrimEnd('-').ToString().ShouldBe("Hello");
     }
 
+    /// <summary>
+    /// 验证不同输入调用 Trim 后得到预期结果。
+    /// </summary>
+    /// <param name="input">待处理的字符串。</param>
+    /// <param name="expected">预期的修剪结果。</param>
     [Theory]
     [InlineData("  abc  ", "abc")]
     [InlineData("abc  ", "abc")]

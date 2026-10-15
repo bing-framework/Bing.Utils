@@ -7,19 +7,20 @@ namespace Bing.Helpers;
 public class SerializeTest : IDisposable
 {
     /// <summary>
-    /// 测试目录
+    /// 此实例创建并在释放时删除的临时序列化测试目录。
     /// </summary>
     private readonly string _testDirectory;
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="SerializeTest"/> 类型的实例。
     /// </summary>
+    /// <remarks>构造时会在系统临时目录下创建独立的测试目录。</remarks>
     public SerializeTest()
     {
         _testDirectory = Path.Combine(Path.GetTempPath(), $"SerializeTest_{Guid.NewGuid():N}");
         Directory.CreateDirectory(_testDirectory);
     }
     /// <summary>
-    /// 释放资源
+    /// 删除此实例创建的临时测试目录。
     /// </summary>
     public void Dispose()
     {
@@ -27,11 +28,23 @@ public class SerializeTest : IDisposable
             Directory.Delete(_testDirectory, true);
     }
     #region 结构体序列化测试
+    /// <summary>
+    /// 按顺序布局进行字节往返测试的值类型样例。
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct TestStruct
     {
+        /// <summary>
+        /// 整数样例值。
+        /// </summary>
         public int IntValue;
+        /// <summary>
+        /// 浮点样例值。
+        /// </summary>
         public double DoubleValue;
+        /// <summary>
+        /// 布尔样例值。
+        /// </summary>
         public bool BoolValue;
     }
     /// <summary>
@@ -148,19 +161,34 @@ public class SerializeTest : IDisposable
     #endregion
     #region 二进制序列化测试
 #pragma warning disable CS0618
+    /// <summary>
+    /// 用于验证旧式二进制序列化的可序列化样例类型。
+    /// </summary>
     [Serializable]
     public class TestSerializableClass
     {
+        /// <summary>
+        /// 获取或设置样例名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置样例数值。
+        /// </summary>
         public int Value { get; set; }
+        /// <summary>
+        /// 获取或设置样例时间。
+        /// </summary>
         public DateTime Date { get; set; }
     }
-    /// <summary>
-    /// 仅在已启用 BinaryFormatter 兼容开关的 net8.0 测试宿主中执行历史兼容测试。
-    /// </summary>
 #if NET8_0
+    /// <summary>
+    /// 当前目标启用兼容开关时不跳过历史二进制序列化测试。
+    /// </summary>
     private const string LegacyBinarySkipReason = null;
 #else
+    /// <summary>
+    /// 当前目标框架未启用 BinaryFormatter 历史兼容运行时开关时的跳过原因。
+    /// </summary>
     private const string LegacyBinarySkipReason = "当前目标框架未启用 BinaryFormatter 历史兼容运行时开关。";
 #endif
 
@@ -314,11 +342,23 @@ public class SerializeTest : IDisposable
 #pragma warning restore CS0618
     #endregion
     #region XML序列化测试
+    /// <summary>
+    /// 用于验证 XML 序列化往返的样例类型。
+    /// </summary>
     [Serializable]
     public class XmlTestClass
     {
+        /// <summary>
+        /// 获取或设置样例名称。
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 获取或设置样例数值。
+        /// </summary>
         public int Value { get; set; }
+        /// <summary>
+        /// 获取或设置样例时间。
+        /// </summary>
         public DateTime Date { get; set; }
     }
     /// <summary>

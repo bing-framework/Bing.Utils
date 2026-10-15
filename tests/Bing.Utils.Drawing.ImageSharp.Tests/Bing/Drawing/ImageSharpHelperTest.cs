@@ -5,12 +5,12 @@ using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 namespace Bing.Drawing;
 /// <summary>
-/// 测试类：覆盖 `ImageSharpHelper` 相关行为。
+/// 验证图像加载编码、尺寸变换、透明度及像素效果。
 /// </summary>
 public class ImageSharpHelperTest
 {
     /// <summary>
-    /// 测试用例：验证验证码文本 API 返回去歧义数字字母串。
+    /// 验证验证码文本 API 返回去歧义数字字母串。
     /// </summary>
     [Fact]
     public void GetCaptchaCode_ValidLength_ReturnsExpectedShape()
@@ -22,7 +22,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证验证码文本 API 在非法长度下抛出异常。
+    /// 验证验证码文本 API 在非法长度下抛出异常。
     /// </summary>
     [Fact]
     public void GetCaptchaCode_InvalidLength_ThrowsArgumentOutOfRangeException()
@@ -32,7 +32,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ToBytes` 在 `And_FromBytes` 场景下，结果为 `RoundTrip`。
+    /// 验证 PNG 图像经字节编码及解码后保持尺寸。
     /// </summary>
     [Fact]
     public void ToBytes_And_FromBytes_RoundTrip()
@@ -46,7 +46,7 @@ public class ImageSharpHelperTest
         restored.Height.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `ToBase64String` 在 `And_FromBase64String` 场景下，结果为 `RoundTrip`。
+    /// 验证 PNG 图像经 Base64 编码及解码后保持尺寸。
     /// </summary>
     [Fact]
     public void ToBase64String_And_FromBase64String_RoundTrip()
@@ -60,7 +60,7 @@ public class ImageSharpHelperTest
         restored.Height.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `ToDataUrl` 在 `And_FromDataUrl` 场景下，结果为 `RoundTrip`。
+    /// 验证 PNG 图像经 Data URL 编码及解码后保持尺寸。
     /// </summary>
     [Fact]
     public void ToDataUrl_And_FromDataUrl_RoundTrip()
@@ -75,7 +75,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证内存中新建图片的默认输出格式为 PNG。
+    /// 验证内存中新建图片的默认输出格式为 PNG。
     /// </summary>
     [Fact]
     public void ToDataUrl_DefaultFormat_ForInMemoryImage_UsesPng()
@@ -88,7 +88,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证已加载 JPEG 图片在派生新图像后默认输出仍保持 JPEG。
+    /// 验证已加载 JPEG 图片在派生新图像后默认输出仍保持 JPEG。
     /// </summary>
     [Fact]
     public void ToDataUrl_DefaultFormat_ForDerivedImage_PreservesTrackedJpeg()
@@ -103,7 +103,7 @@ public class ImageSharpHelperTest
         dataUrl.ShouldStartWith("data:image/jpeg;base64,");
     }
     /// <summary>
-    /// 测试用例：验证 `FromBytes` 在 `Null` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像字节解码拒绝空数组，并标明参数名。
     /// </summary>
     [Fact]
     public void FromBytes_Null_ThrowsArgumentNullException()
@@ -112,7 +112,7 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("bytes");
     }
     /// <summary>
-    /// 测试用例：验证 `ToBytes` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证图像字节编码拒绝空图像，并标明参数名。
     /// </summary>
     [Fact]
     public void ToBytes_NullImage_ThrowsArgumentNullException()
@@ -121,7 +121,7 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("image");
     }
     /// <summary>
-    /// 测试用例：验证 `ToBase64String` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证 Base64 图像编码拒绝空图像，并标明参数名。
     /// </summary>
     [Fact]
     public void ToBase64String_NullImage_ThrowsArgumentNullException()
@@ -130,7 +130,7 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("image");
     }
     /// <summary>
-    /// 测试用例：验证 `ToDataUrl` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证 Data URL 图像编码拒绝空图像，并标明参数名。
     /// </summary>
     [Fact]
     public void ToDataUrl_NullImage_ThrowsArgumentNullException()
@@ -139,7 +139,7 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("image");
     }
     /// <summary>
-    /// 测试用例：验证 `FromBase64String` 在 `InvalidValue` 场景下，结果为 `ReturnsNull`。
+    /// 验证非法 Base64 文本返回空图像结果。
     /// </summary>
     [Fact]
     public void FromBase64String_InvalidValue_ReturnsNull()
@@ -148,7 +148,7 @@ public class ImageSharpHelperTest
         restored.ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `FromDataUrl` 在 `InvalidFormat` 场景下，结果为 `ReturnsNull`。
+    /// 验证格式错误的 Data URL 返回空图像结果。
     /// </summary>
     [Fact]
     public void FromDataUrl_InvalidFormat_ReturnsNull()
@@ -157,7 +157,7 @@ public class ImageSharpHelperTest
         restored.ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `FromFile` 在 `And_FromFileGeneric` 场景下，结果为 `LoadExpectedImage`。
+    /// 验证普通及泛型文件加载均恢复原始图像尺寸。
     /// </summary>
     [Fact]
     public void FromFile_And_FromFileGeneric_LoadExpectedImage()
@@ -185,7 +185,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `FromStream` 会从当前位置读取并保持调用方流可用。
+    /// 验证 FromStream 会从当前位置读取并保持调用方流可用。
     /// </summary>
     [Fact]
     public void FromStream_WithOffsetPayload_LoadsExpectedImageAndKeepsStreamOpen()
@@ -207,7 +207,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证泛型 `FromStream` 会从当前位置读取并保持调用方流可用。
+    /// 验证泛型 FromStream 会从当前位置读取并保持调用方流可用。
     /// </summary>
     [Fact]
     public void FromStreamGeneric_WithOffsetPayload_LoadsExpectedImageAndKeepsStreamOpen()
@@ -228,7 +228,7 @@ public class ImageSharpHelperTest
         stream.Position.ShouldBe(stream.Length);
     }
     /// <summary>
-    /// 测试用例：验证 `SetOpacity` 在 `OutOfRange` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证透明度设置拒绝零至一范围外的系数，并标明参数名。
     /// </summary>
     [Fact]
     public void SetOpacity_OutOfRange_ThrowsArgumentOutOfRangeException()
@@ -240,7 +240,7 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("opacity");
     }
     /// <summary>
-    /// 测试用例：验证 `SetOpacity` 在 `ValidOpacity` 场景下，结果为 `ReturnsNewImageWithLowerAlpha`。
+    /// 验证降低透明度生成同尺寸的新图像且降低 Alpha 通道值。
     /// </summary>
     [Fact]
     public void SetOpacity_ValidOpacity_ReturnsNewImageWithLowerAlpha()
@@ -256,7 +256,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证透明度会按原始 Alpha 比例缩放。
+    /// 验证透明度会按原始 Alpha 比例缩放。
     /// </summary>
     [Fact]
     public void SetOpacity_PartiallyTransparentPixel_MultipliesExistingAlpha()
@@ -269,7 +269,7 @@ public class ImageSharpHelperTest
         resultRgba[0, 0].A.ShouldBe((byte)64);
     }
     /// <summary>
-    /// 测试用例：验证 `SetOpacity` 在 `NullImage` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证透明度设置拒绝空图像，并标明参数名。
     /// </summary>
     [Fact]
     public void SetOpacity_NullImage_ThrowsArgumentNullException()
@@ -279,7 +279,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证图片信息 API 返回正确的 MIME 和扩展名。
+    /// 验证图片信息 API 返回正确的 MIME 和扩展名。
     /// </summary>
     [Fact]
     public void GetMimeType_And_GetImageExtension_PngLoadedImage_ReturnExpectedValues()
@@ -294,7 +294,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证透明图片会被识别为包含 Alpha。
+    /// 验证透明图片会被识别为包含 Alpha。
     /// </summary>
     [Fact]
     public void HasAlpha_TransparentImage_ReturnsTrue()
@@ -306,7 +306,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证保持宽高比缩放时返回新图像且尺寸符合预期。
+    /// 验证保持宽高比缩放时返回新图像且尺寸符合预期。
     /// </summary>
     [Fact]
     public void Resize_KeepAspectRatio_ReturnsExpectedSize()
@@ -322,7 +322,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证禁止放大时保留原始尺寸。
+    /// 验证禁止放大时保留原始尺寸。
     /// </summary>
     [Fact]
     public void Resize_AllowEnlargeFalse_DoesNotGrowImage()
@@ -336,7 +336,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证越界裁剪会按边界收缩。
+    /// 验证越界裁剪会按边界收缩。
     /// </summary>
     [Fact]
     public void Crop_OutOfBoundsRectangle_ClampsToImageBounds()
@@ -349,7 +349,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证旋转 90 度后宽高互换。
+    /// 验证旋转 90 度后宽高互换。
     /// </summary>
     [Fact]
     public void Rotate_90_SwapsDimensions()
@@ -362,7 +362,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证水平翻转会镜像像素位置。
+    /// 验证水平翻转会镜像像素位置。
     /// </summary>
     [Fact]
     public void FlipHorizontal_MirrorsPixels()
@@ -379,7 +379,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证 JPEG 质量重载会影响输出大小。
+    /// 验证 JPEG 质量重载会影响输出大小。
     /// </summary>
     [Fact]
     public void ToBytes_JpegQualityOverload_LowQualitySmallerThanHighQuality()
@@ -393,7 +393,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证非法 JPEG 质量参数会抛出异常。
+    /// 验证非法 JPEG 质量参数会抛出异常。
     /// </summary>
     [Fact]
     public void ToBytes_InvalidJpegQuality_ThrowsArgumentOutOfRangeException()
@@ -407,7 +407,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证非 JPEG 显式质量参数也遵循统一范围校验。
+    /// 验证非 JPEG 显式质量参数也遵循统一范围校验。
     /// </summary>
     [Fact]
     public void ToBytes_InvalidPngQuality_ThrowsArgumentOutOfRangeException()
@@ -421,7 +421,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证近似匹配像素会被替换为目标颜色。
+    /// 验证近似匹配像素会被替换为目标颜色。
     /// </summary>
     [Fact]
     public void ReplaceColor_MatchingPixel_ReplacesColor()
@@ -437,7 +437,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证黑白效果保留 Alpha。
+    /// 验证黑白效果保留 Alpha。
     /// </summary>
     [Fact]
     public void SetBlackWhiteEffect_PreservesAlpha()
@@ -453,7 +453,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证双色调效果在黑色源像素下返回颜色A。
+    /// 验证双色调效果在黑色源像素下返回颜色A。
     /// </summary>
     [Fact]
     public void SetDuotoneEffect_BlackPixel_ReturnsColorA()
@@ -469,7 +469,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证亮度 0 会得到全黑图像。
+    /// 验证亮度 0 会得到全黑图像。
     /// </summary>
     [Fact]
     public void SetBrightness_AmountZero_ReturnsBlackPixels()
@@ -487,7 +487,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证对比度 0 会得到中灰图像。
+    /// 验证对比度 0 会得到中灰图像。
     /// </summary>
     [Fact]
     public void SetContrast_AmountZero_ReturnsMidGrayPixels()
@@ -504,7 +504,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证饱和度 0 会得到灰度像素。
+    /// 验证饱和度 0 会得到灰度像素。
     /// </summary>
     [Fact]
     public void SetSaturation_AmountZero_ReturnsGrayscalePixels()
@@ -520,7 +520,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证应用单位矩阵不会改变像素。
+    /// 验证应用单位矩阵不会改变像素。
     /// </summary>
     [Fact]
     public void ApplyColorMatrix_IdentityMatrix_ReturnsUnchangedPixels()
@@ -547,7 +547,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证颜色 API 的边界参数会抛出异常。
+    /// 验证颜色 API 的边界参数会抛出异常。
     /// </summary>
     [Fact]
     public void ColorApis_InvalidParameters_Throw()
@@ -569,7 +569,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证柔化边缘会降低边缘 Alpha，同时保留中心区域。
+    /// 验证柔化边缘会降低边缘 Alpha，同时保留中心区域。
     /// </summary>
     [Fact]
     public void SoftEdge_PositiveRadius_SoftensBorderAlpha()
@@ -585,7 +585,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证半径为 0 时返回内容不变的新图像。
+    /// 验证半径为 0 时返回内容不变的新图像。
     /// </summary>
     [Fact]
     public void SoftEdge_ZeroRadius_ReturnsUnchangedClone()
@@ -603,7 +603,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证负半径会抛出异常。
+    /// 验证负半径会抛出异常。
     /// </summary>
     [Fact]
     public void SoftEdge_NegativeRadius_ThrowsArgumentOutOfRangeException()
@@ -615,7 +615,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证柔化卷积会把亮点扩散到邻近像素。
+    /// 验证柔化卷积会把亮点扩散到邻近像素。
     /// </summary>
     [Fact]
     public void Soften_SingleBrightPixel_SpreadsToNeighbors()
@@ -634,7 +634,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证锐化卷积对纯色图像保持不变。
+    /// 验证锐化卷积对纯色图像保持不变。
     /// </summary>
     [Fact]
     public void Sharpen_UniformImage_PreservesPixels()
@@ -648,7 +648,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证浮雕卷积对纯色图像产生中灰效果。
+    /// 验证浮雕卷积对纯色图像产生中灰效果。
     /// </summary>
     [Fact]
     public void Emboss_UniformImage_ReturnsMidGrayLikePixels()
@@ -665,7 +665,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证雾化效果按局部前向采样生成新图像。
+    /// 验证雾化效果按局部前向采样生成新图像。
     /// </summary>
     [Fact]
     public void Atomizing_PatternImage_SamplesFromForwardNeighborhood()
@@ -690,7 +690,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证雾化效果 API 在空图片下抛出异常。
+    /// 验证雾化效果 API 在空图片下抛出异常。
     /// </summary>
     [Fact]
     public void Atomizing_NullImage_Throw()
@@ -700,7 +700,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证图片水印会按目标区域缩放并覆盖原图。
+    /// 验证水印缩放后覆盖指定区域且不改变源图像。
     /// </summary>
     [Fact]
     public void AddImageWatermark_FullOpacity_AppliesScaledOverlay()
@@ -719,7 +719,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证透明度为 0 时返回内容不变的新图像。
+    /// 验证透明度为 0 时返回内容不变的新图像。
     /// </summary>
     [Fact]
     public void AddImageWatermark_ZeroOpacity_ReturnsUnchangedClone()
@@ -736,7 +736,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证图片水印 API 的异常参数。
+    /// 验证图片水印 API 的异常参数。
     /// </summary>
     [Fact]
     public void AddImageWatermark_InvalidArguments_Throw()
@@ -755,7 +755,7 @@ public class ImageSharpHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证卷积效果 API 在空图片下抛出异常。
+    /// 验证卷积效果 API 在空图片下抛出异常。
     /// </summary>
     [Fact]
     public void ConvolutionApis_NullImage_Throw()
@@ -768,6 +768,10 @@ public class ImageSharpHelperTest
             .ParamName.ShouldBe("image");
     }
 
+    /// <summary>
+    /// 创建包含红、绿、蓝及白色像素的二乘二图像。
+    /// </summary>
+    /// <returns>用于加载及编码测试的 RGBA 图像，调用方负责释放。</returns>
     private static Image<Rgba32> CreateSampleImage()
     {
         var image = new Image<Rgba32>(2, 2);
@@ -778,6 +782,12 @@ public class ImageSharpHelperTest
         return image;
     }
 
+    /// <summary>
+    /// 创建颜色随坐标变化的确定性图像。
+    /// </summary>
+    /// <param name="width">图像宽度，单位为像素。</param>
+    /// <param name="height">图像高度，单位为像素。</param>
+    /// <returns>指定尺寸的不透明 RGBA 图像，调用方负责释放。</returns>
     private static Image<Rgba32> CreatePatternImage(int width, int height)
     {
         var image = new Image<Rgba32>(width, height);
@@ -791,6 +801,12 @@ public class ImageSharpHelperTest
         return image;
     }
 
+    /// <summary>
+    /// 使用固定随机种子创建彩色噪声图像以比较编码质量。
+    /// </summary>
+    /// <param name="width">图像宽度，单位为像素。</param>
+    /// <param name="height">图像高度，单位为像素。</param>
+    /// <returns>像素数据可重复的不透明 RGBA 图像，调用方负责释放。</returns>
     private static Image<Rgba32> CreateNoiseImage(int width, int height)
     {
         var image = new Image<Rgba32>(width, height);
@@ -805,6 +821,13 @@ public class ImageSharpHelperTest
         return image;
     }
 
+    /// <summary>
+    /// 创建填充指定 RGBA 像素的纯色图像。
+    /// </summary>
+    /// <param name="width">图像宽度，单位为像素。</param>
+    /// <param name="height">图像高度，单位为像素。</param>
+    /// <param name="color">填充图像的颜色及透明度。</param>
+    /// <returns>指定尺寸的纯色图像，调用方负责释放。</returns>
     private static Image<Rgba32> CreateSolidImage(int width, int height, Rgba32 color)
     {
         var image = new Image<Rgba32>(width, height);

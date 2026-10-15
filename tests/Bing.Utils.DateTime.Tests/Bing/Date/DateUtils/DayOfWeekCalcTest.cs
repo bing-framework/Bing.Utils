@@ -2,11 +2,17 @@ using System.Linq;
 using NodaTime;
 namespace Bing.Date.DateUtils;
 /// <summary>
-/// 星期计算测试
+/// 星期偏移、循环间隔和区间枚举测试。
 /// </summary>
 [Trait("DateTimeUT", "DayOfWeek.Calc")]
 public class DayOfWeekCalcTest
 {
+    /// <summary>
+    /// 验证星期按正负天数循环偏移。
+    /// </summary>
+    /// <param name="source">起始星期。</param>
+    /// <param name="days">偏移天数。</param>
+    /// <param name="expected">预期星期。</param>
     [Theory]
     [InlineData(DayOfWeek.Monday, 1, DayOfWeek.Tuesday)]
     [InlineData(DayOfWeek.Monday, 5, DayOfWeek.Saturday)]
@@ -38,7 +44,7 @@ public class DayOfWeekCalcTest
         Assert.Equal(expected, result);
     }
     /// <summary>
-    /// 测试 - DaysBetween - 计算相同星期几间隔天数为0
+    /// 验证相同星期的间隔为零。
     /// </summary>
     [Fact]
     public void DaysBetween_SameDayOfWeek_ReturnsZero()
@@ -51,8 +57,11 @@ public class DayOfWeekCalcTest
         result.ShouldBe(0);
     }
     /// <summary>
-    /// 测试 - DaysBetween - 计算常规星期几间隔
+    /// 验证按正向星期顺序计算间隔天数。
     /// </summary>
+    /// <param name="start">起始星期。</param>
+    /// <param name="end">结束星期。</param>
+    /// <param name="expectedDays">预期间隔天数。</param>
     [Theory]
     [InlineData(DayOfWeek.Monday, DayOfWeek.Wednesday, 2)]
     [InlineData(DayOfWeek.Wednesday, DayOfWeek.Friday, 2)]
@@ -65,8 +74,11 @@ public class DayOfWeekCalcTest
         result.ShouldBe(expectedDays);
     }
     /// <summary>
-    /// 测试 - DaysBetween - 计算跨周的星期几间隔
+    /// 验证跨周计算正向间隔天数。
     /// </summary>
+    /// <param name="start">起始星期。</param>
+    /// <param name="end">结束星期。</param>
+    /// <param name="expectedDays">预期间隔天数。</param>
     [Theory]
     [InlineData(DayOfWeek.Wednesday, DayOfWeek.Monday, 5)]
     [InlineData(DayOfWeek.Sunday, DayOfWeek.Saturday, 6)]
@@ -79,8 +91,11 @@ public class DayOfWeekCalcTest
         result.ShouldBe(expectedDays);
     }
     /// <summary>
-    /// 测试 - DaysBetween - 计算ISO星期几间隔
+    /// 验证 ISO 星期的正向间隔天数。
     /// </summary>
+    /// <param name="start">起始星期。</param>
+    /// <param name="end">结束星期。</param>
+    /// <param name="expectedDays">预期间隔天数。</param>
     [Theory]
     [InlineData(IsoDayOfWeek.Monday, IsoDayOfWeek.Wednesday, 2)]
     [InlineData(IsoDayOfWeek.Saturday, IsoDayOfWeek.Monday, 2)]
@@ -92,8 +107,10 @@ public class DayOfWeekCalcTest
         result.ShouldBe(expectedDays);
     }
     /// <summary>
-    /// 测试 - DaysBetween - 当ISO星期几为None时返回0
+    /// 验证包含未指定 ISO 星期的间隔为零。
     /// </summary>
+    /// <param name="start">起始 ISO 星期。</param>
+    /// <param name="end">结束 ISO 星期。</param>
     [Theory]
     [InlineData(IsoDayOfWeek.None, IsoDayOfWeek.Monday)]
     [InlineData(IsoDayOfWeek.Monday, IsoDayOfWeek.None)]
@@ -106,7 +123,7 @@ public class DayOfWeekCalcTest
         result.ShouldBe(0);
     }
     /// <summary>
-    /// 测试 - TryDaysBetween - 常规星期几计算成功
+    /// 验证普通星期的间隔计算成功。
     /// </summary>
     [Fact]
     public void TryDaysBetween_NormalDayOfWeek_ReturnsTrue()
@@ -121,7 +138,7 @@ public class DayOfWeekCalcTest
         days.ShouldBe(3);
     }
     /// <summary>
-    /// 测试 - TryDaysBetween - 常规ISO星期几计算成功
+    /// 验证 ISO 星期的间隔计算成功。
     /// </summary>
     [Fact]
     public void TryDaysBetween_NormalIsoDayOfWeek_ReturnsTrue()
@@ -136,8 +153,10 @@ public class DayOfWeekCalcTest
         days.ShouldBe(3);
     }
     /// <summary>
-    /// 测试 - TryDaysBetween - ISO星期几为None时计算失败
+    /// 验证包含未指定 ISO 星期时间隔计算失败。
     /// </summary>
+    /// <param name="start">起始 ISO 星期。</param>
+    /// <param name="end">结束 ISO 星期。</param>
     [Theory]
     [InlineData(IsoDayOfWeek.None, IsoDayOfWeek.Monday)]
     [InlineData(IsoDayOfWeek.Monday, IsoDayOfWeek.None)]
@@ -151,8 +170,11 @@ public class DayOfWeekCalcTest
         days.ShouldBe(0);
     }
     /// <summary>
-    /// 测试 - AddDays - 添加正数天数
+    /// 验证正数天数偏移后的星期。
     /// </summary>
+    /// <param name="start">起始星期。</param>
+    /// <param name="daysToAdd">偏移天数。</param>
+    /// <param name="expected">预期星期。</param>
     [Theory]
     [InlineData(DayOfWeek.Monday, 2, DayOfWeek.Wednesday)]
     [InlineData(DayOfWeek.Friday, 3, DayOfWeek.Monday)]
@@ -165,8 +187,11 @@ public class DayOfWeekCalcTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - AddDays - 添加负数天数
+    /// 验证负数天数偏移后的星期。
     /// </summary>
+    /// <param name="start">起始星期。</param>
+    /// <param name="daysToAdd">偏移天数。</param>
+    /// <param name="expected">预期星期。</param>
     [Theory]
     [InlineData(DayOfWeek.Wednesday, -2, DayOfWeek.Monday)]
     [InlineData(DayOfWeek.Monday, -1, DayOfWeek.Sunday)]
@@ -179,7 +204,7 @@ public class DayOfWeekCalcTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - GetDaysBetween - 获取相同星期几
+    /// 验证相同起止星期的区间只包含该星期。
     /// </summary>
     [Fact]
     public void GetDaysBetween_SameDayOfWeek_ReturnsSingleDay()
@@ -193,7 +218,7 @@ public class DayOfWeekCalcTest
         result.ShouldContain(day);
     }
     /// <summary>
-    /// 测试 - GetDaysBetween - 获取不包含边界的星期几
+    /// 验证不含边界的星期区间只枚举中间日期。
     /// </summary>
     [Fact]
     public void GetDaysBetween_WithoutBoundary_ReturnsOnlyMiddleDays()
@@ -212,7 +237,7 @@ public class DayOfWeekCalcTest
         result.ShouldNotContain(end);
     }
     /// <summary>
-    /// 测试 - GetDaysBetween - 获取包含边界的星期几
+    /// 验证包含边界的星期区间枚举起止及中间日期。
     /// </summary>
     [Fact]
     public void GetDaysBetween_WithBoundary_ReturnsAllDays()

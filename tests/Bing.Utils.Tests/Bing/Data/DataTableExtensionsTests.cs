@@ -6,8 +6,7 @@ using Xunit;
 namespace Bing.Utils.Tests.Bing.Data;
 
 /// <summary>
-/// DataTableExtensions — ToList / HasRows
-/// DataTableHelper    — ToDataTable / CreateTable
+/// 数据表行判断、对象映射及列结构创建测试。
 /// </summary>
 public class DataTableExtensionsTests
 {
@@ -15,6 +14,9 @@ public class DataTableExtensionsTests
     // HasRows
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证空数据表没有数据行。
+    /// </summary>
     [Fact]
     public void HasRows_EmptyTable_ReturnsFalse()
     {
@@ -22,6 +24,9 @@ public class DataTableExtensionsTests
         dt.HasRows().ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证包含数据行的数据表返回肯定结果。
+    /// </summary>
     [Fact]
     public void HasRows_TableWithRows_ReturnsTrue()
     {
@@ -35,12 +40,26 @@ public class DataTableExtensionsTests
     // ToList<T>
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 数据表与对象映射使用的人员模型。
+    /// </summary>
     private sealed class Person
     {
+        /// <summary>
+        /// 获取或设置人员标识符。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置人员姓名。
+        /// </summary>
         public string Name { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// 根据人员数据行创建测试数据表。
+    /// </summary>
+    /// <param name="rows">人员标识符和姓名组成的数据行。</param>
+    /// <returns>包含人员标识符和姓名列的数据表。</returns>
     private static DataTable BuildPersonTable(params (int id, string name)[] rows)
     {
         var dt = new DataTable();
@@ -51,6 +70,9 @@ public class DataTableExtensionsTests
         return dt;
     }
 
+    /// <summary>
+    /// 验证空数据表引用转换为非空的空列表。
+    /// </summary>
     [Fact]
     public void ToList_NullDataTable_ReturnsEmptyList()
     {
@@ -59,6 +81,9 @@ public class DataTableExtensionsTests
         list.ShouldBeEmpty();
     }
 
+    /// <summary>
+    /// 验证空数据表转换为空列表。
+    /// </summary>
     [Fact]
     public void ToList_EmptyDataTable_ReturnsEmptyList()
     {
@@ -67,6 +92,9 @@ public class DataTableExtensionsTests
         list.ShouldBeEmpty();
     }
 
+    /// <summary>
+    /// 验证单行数据映射为属性值一致的对象。
+    /// </summary>
     [Fact]
     public void ToList_SingleRow_ReturnsMappedObject()
     {
@@ -77,6 +105,9 @@ public class DataTableExtensionsTests
         list[0].Name.ShouldBe("Alice");
     }
 
+    /// <summary>
+    /// 验证多行数据转换后保留行数和指定字段值。
+    /// </summary>
     [Fact]
     public void ToList_MultipleRows_ReturnsAllMappedObjects()
     {
@@ -90,6 +121,9 @@ public class DataTableExtensionsTests
     // DataTableHelper — CreateTable / CreateDataTable
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证根据列名创建具有对应列的数据表。
+    /// </summary>
     [Fact]
     public void CreateTable_ValidColumns_ReturnsTableWithColumns()
     {
@@ -99,6 +133,9 @@ public class DataTableExtensionsTests
         dt.Columns["Name"].ShouldNotBeNull();
     }
 
+    /// <summary>
+    /// 验证空列名列表创建数据表时返回空引用。
+    /// </summary>
     [Fact]
     public void CreateTable_EmptyList_ReturnsNull()
     {
@@ -106,6 +143,9 @@ public class DataTableExtensionsTests
         dt.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 验证未指定类型的列默认为字符串。
+    /// </summary>
     [Fact]
     public void CreateDataTable_SimpleNames_AddsStringColumns()
     {
@@ -114,6 +154,9 @@ public class DataTableExtensionsTests
         dt.Columns["col1"].DataType.ShouldBe(typeof(string));
     }
 
+    /// <summary>
+    /// 验证带类型的列定义采用对应数据类型。
+    /// </summary>
     [Fact]
     public void CreateDataTable_TypedNames_AddsCorrectTypes()
     {
@@ -126,6 +169,9 @@ public class DataTableExtensionsTests
     // DataTableHelper — ToDataTable<T>
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证空对象列表生成保留属性列的空数据表。
+    /// </summary>
     [Fact]
     public void ToDataTable_EmptyList_ReturnsTableWithColumns()
     {
@@ -135,6 +181,9 @@ public class DataTableExtensionsTests
         dt.Rows.Count.ShouldBe(0);
     }
 
+    /// <summary>
+    /// 验证对象集合转换后保留行数和指定字段值。
+    /// </summary>
     [Fact]
     public void ToDataTable_WithItems_ReturnsCorrectRows()
     {

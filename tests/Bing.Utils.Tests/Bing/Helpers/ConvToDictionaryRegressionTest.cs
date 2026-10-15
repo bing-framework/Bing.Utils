@@ -53,20 +53,33 @@ public class ConvToDictionaryRegressionTest
     /// <summary>
     /// 测试数据：`useDisplayName` 开关对应的预期键名
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetUseDisplayNameCases()
     {
         yield return new object[] { true, "描述名", "显示名" };
         yield return new object[] { false, nameof(ToDictionarySample.DescriptionValue), nameof(ToDictionarySample.DisplayValue) };
     }
 
+    /// <summary>
+    /// 用于验证字典键按名称特性选择规则生成的样例。
+    /// </summary>
     private sealed class ToDictionarySample
     {
+        /// <summary>
+        /// 获取或初始化带有描述名的样例值。
+        /// </summary>
         [Description("描述名")]
         public string DescriptionValue { get; init; }
 
+        /// <summary>
+        /// 获取或初始化带有显示名的样例值。
+        /// </summary>
         [DisplayName("显示名")]
         public string DisplayValue { get; init; }
 
+        /// <summary>
+        /// 获取或初始化未配置名称特性的样例值。
+        /// </summary>
         public int PlainValue { get; init; }
     }
 }

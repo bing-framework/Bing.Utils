@@ -1,13 +1,13 @@
 using System.Globalization;
 namespace Bing.Date;
 /// <summary>
-/// 测试类：覆盖 `DateTimeSpanCore` 相关行为。
+/// 日期时间跨度的运算、比较和解析测试。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeSpan.Core")]
 public class DateTimeSpanCoreTest
 {
     /// <summary>
-    /// 测试用例：验证 `Constructor` 在 `WithAllParts` 场景下，结果为 `SetsProperties`。
+    /// 验证构造函数保存年、月和时间跨度分量。
     /// </summary>
     [Fact]
     public void Constructor_WithAllParts_SetsProperties()
@@ -18,7 +18,7 @@ public class DateTimeSpanCoreTest
         span.TimeSpan.ShouldBe(TimeSpan.FromHours(3));
     }
     /// <summary>
-    /// 测试用例：验证 `ImplicitCastToTimeSpan` 在 `IncludesYearsAndMonthsAsDayOffsets` 场景下的行为。
+    /// 验证转换时按每年三百六十五天、每月三十天折算。
     /// </summary>
     [Fact]
     public void ImplicitCastToTimeSpan_IncludesYearsAndMonthsAsDayOffsets()
@@ -28,7 +28,7 @@ public class DateTimeSpanCoreTest
         timeSpan.ShouldBe(TimeSpan.FromDays(365 + 60).Add(TimeSpan.FromHours(3)));
     }
     /// <summary>
-    /// 测试用例：验证 `AddAndSubtract` 在 `WithDateTimeSpan` 场景下，结果为 `ReturnsExpected`。
+    /// 验证日期时间跨度逐分量相加减。
     /// </summary>
     [Fact]
     public void AddAndSubtract_WithDateTimeSpan_ReturnsExpected()
@@ -43,7 +43,7 @@ public class DateTimeSpanCoreTest
         subtracted.ShouldBe(left);
     }
     /// <summary>
-    /// 测试用例：验证 `AddAndSubtract` 在 `WithTimeSpan` 场景下，结果为 `ReturnsExpected`。
+    /// 验证时间跨度的加减保留月份分量。
     /// </summary>
     [Fact]
     public void AddAndSubtract_WithTimeSpan_ReturnsExpected()
@@ -56,7 +56,7 @@ public class DateTimeSpanCoreTest
         subtracted.ShouldBe(span);
     }
     /// <summary>
-    /// 测试用例：验证 `UnaryMinus` 在 `CurrentBehavior` 场景下，结果为 `DropsYearsAndMonths`。
+    /// 验证取负时将全部分量折算为时间跨度。
     /// </summary>
     [Fact]
     public void UnaryMinus_CurrentBehavior_DropsYearsAndMonths()
@@ -68,7 +68,7 @@ public class DateTimeSpanCoreTest
         negated.TimeSpan.ShouldBe(-((TimeSpan)span));
     }
     /// <summary>
-    /// 测试用例：验证 `CompareOperators` 在 `WithTimeSpan` 场景下，结果为 `ReturnExpected`。
+    /// 验证大小比较及与时间跨度的相等判断。
     /// </summary>
     [Fact]
     public void CompareOperators_WithTimeSpan_ReturnExpected()
@@ -83,7 +83,7 @@ public class DateTimeSpanCoreTest
         (shortSpan != TimeSpan.FromHours(2)).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `CompareTo` 在 `WithInvalidObject` 场景下，结果为 `ThrowsArgumentException`。
+    /// 验证不兼容的比较对象被拒绝并报告参数名。
     /// </summary>
     [Fact]
     public void CompareTo_WithInvalidObject_ThrowsArgumentException()
@@ -93,7 +93,7 @@ public class DateTimeSpanCoreTest
         ex.ParamName.ShouldBe("value");
     }
     /// <summary>
-    /// 测试用例：验证 `Clone` 在 `ReturnsEquivalentCopy` 场景下的行为。
+    /// 验证克隆结果与原值相等且哈希码一致。
     /// </summary>
     [Fact]
     public void Clone_ReturnsEquivalentCopy()
@@ -104,7 +104,7 @@ public class DateTimeSpanCoreTest
         clone.GetHashCode().ShouldBe(span.GetHashCode());
     }
     /// <summary>
-    /// 测试用例：验证 `TryParse` 在 `ValidAndInvalidInput` 场景下，结果为 `ReturnsExpected`。
+    /// 验证时间跨度解析的成功结果及失败默认值。
     /// </summary>
     [Fact]
     public void TryParse_ValidAndInvalidInput_ReturnsExpected()
@@ -117,7 +117,7 @@ public class DateTimeSpanCoreTest
         failValue.ShouldBe(default(DateTimeSpan));
     }
     /// <summary>
-    /// 测试用例：验证 `TryParseExact` 在 `WithSingleAndMultipleFormats` 场景下，结果为 `ReturnsExpected`。
+    /// 验证按单个和多个格式精确解析时间跨度。
     /// </summary>
     [Fact]
     public void TryParseExact_WithSingleAndMultipleFormats_ReturnsExpected()
@@ -131,7 +131,7 @@ public class DateTimeSpanCoreTest
         multipleValue.TimeSpan.ShouldBe(TimeSpan.FromHours(1).Add(TimeSpan.FromMinutes(2)).Add(TimeSpan.FromSeconds(3)));
     }
     /// <summary>
-    /// 测试用例：验证 `NumberExtensions` 在 `CurrentBehavior` 场景下，结果为 `YearsPluralMapsToMonths`。
+    /// 验证当前复数年份扩展映射到月份分量。
     /// </summary>
     [Fact]
     public void NumberExtensions_CurrentBehavior_YearsPluralMapsToMonths()
@@ -144,7 +144,7 @@ public class DateTimeSpanCoreTest
         singularYear.Months.ShouldBe(0);
     }
     /// <summary>
-    /// 测试用例：验证 `BeforeAndFrom` 在 `WithExplicitDateTime` 场景下，结果为 `ReturnExpected`。
+    /// 验证以日期时间为基准向前和向后偏移。
     /// </summary>
     [Fact]
     public void BeforeAndFrom_WithExplicitDateTime_ReturnExpected()
@@ -157,7 +157,7 @@ public class DateTimeSpanCoreTest
         from.ShouldBe(new DateTime(2025, 7, 13, 12, 0, 0, DateTimeKind.Unspecified));
     }
     /// <summary>
-    /// 测试用例：验证 `BeforeAndFrom` 在 `WithExplicitDateTimeOffset` 场景下，结果为 `ReturnExpected`。
+    /// 验证以带偏移日期时间为基准向前和向后偏移。
     /// </summary>
     [Fact]
     public void BeforeAndFrom_WithExplicitDateTimeOffset_ReturnExpected()

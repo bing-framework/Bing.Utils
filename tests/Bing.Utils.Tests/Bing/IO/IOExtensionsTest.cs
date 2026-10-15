@@ -5,6 +5,9 @@ namespace Bing.IO;
 public class IOExtensionsTest
 {
     #region MemoryStream
+    /// <summary>
+    /// 验证内存流按指定编码转换为文本。
+    /// </summary>
     [Fact]
     public void AsString_Should_Return_String_From_MemoryStream()
     {
@@ -17,6 +20,9 @@ public class IOExtensionsTest
         // Assert
         Assert.Equal(input, result);
     }
+    /// <summary>
+    /// 验证内存流按默认编码转换为文本。
+    /// </summary>
     [Fact]
     public void AsString_Should_Use_Default_Encoding_When_None_Provided()
     {
@@ -28,6 +34,9 @@ public class IOExtensionsTest
         // Assert
         Assert.Equal(input, result);
     }
+    /// <summary>
+    /// 验证流转文本拒绝空内存流。
+    /// </summary>
     [Fact]
     public void AsString_Should_Throw_Exception_When_Stream_Is_Null()
     {
@@ -36,6 +45,9 @@ public class IOExtensionsTest
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ms.AsString());
     }
+    /// <summary>
+    /// 验证文本按指定编码写入内存流。
+    /// </summary>
     [Fact]
     public void FromString_Should_Write_String_To_MemoryStream()
     {
@@ -49,6 +61,9 @@ public class IOExtensionsTest
         var result = encoding.GetString(ms.ToArray());
         Assert.Equal(input, result);
     }
+    /// <summary>
+    /// 验证非追加写入替换内存流已有内容。
+    /// </summary>
     [Fact]
     public void FromString_Should_Clear_Stream_When_Append_Is_False()
     {
@@ -63,6 +78,9 @@ public class IOExtensionsTest
         var result = encoding.GetString(ms.ToArray());
         Assert.Equal(input, result);
     }
+    /// <summary>
+    /// 验证追加写入保留内存流已有内容。
+    /// </summary>
     [Fact]
     public void FromString_Should_Append_To_Existing_Content()
     {
@@ -78,6 +96,9 @@ public class IOExtensionsTest
         var result = encoding.GetString(ms.ToArray());
         Assert.Equal(initialContent + input, result);
     }
+    /// <summary>
+    /// 验证文本写入拒绝空内存流。
+    /// </summary>
     [Fact]
     public void FromString_Should_Throw_Exception_When_Stream_Is_Null()
     {
@@ -87,6 +108,9 @@ public class IOExtensionsTest
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ms.FromString(input));
     }
+    /// <summary>
+    /// 验证内存流写入拒绝空文本。
+    /// </summary>
     [Fact]
     public void FromString_Should_Throw_Exception_When_Input_Is_Null()
     {
@@ -95,6 +119,9 @@ public class IOExtensionsTest
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => ms.FromString(null));
     }
+    /// <summary>
+    /// 验证文本写入拒绝只读内存流。
+    /// </summary>
     [Fact]
     public void FromString_Should_Throw_Exception_When_Stream_Is_Not_Writable()
     {

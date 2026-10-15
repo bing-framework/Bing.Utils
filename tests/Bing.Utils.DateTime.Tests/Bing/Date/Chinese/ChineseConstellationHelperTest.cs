@@ -1,7 +1,7 @@
 namespace Bing.Date.Chinese;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="ChineseConstellationHelper"/> 相关行为。
+/// 验证二十八星宿的参考日期、周期及简繁体输出。
 /// </summary>
 [Trait("DateTimeUT", "ChineseDate.Constellation")]
 public class ChineseConstellationHelperTest
@@ -9,8 +9,7 @@ public class ChineseConstellationHelperTest
     #region Get - Simplified
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseConstellationHelper.Get"/> 在 `ReferenceDay` 场景下，结果为 `ReturnsFirstConstellation`。
-    /// 参考日 2007-09-13 为"角木蛟"
+    /// 验证参考日期对应首个星宿角木蛟。
     /// </summary>
     [Fact]
     public void Get_ReferenceDay_ReturnsFirstConstellation()
@@ -20,7 +19,7 @@ public class ChineseConstellationHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseConstellationHelper.Get"/> 在 `ReferenceDayPlusOne` 场景下，结果为 `ReturnsSecondConstellation`。
+    /// 验证参考日期后一天对应亢金龙。
     /// </summary>
     [Fact]
     public void Get_ReferenceDayPlusOne_ReturnsSecondConstellation()
@@ -30,8 +29,7 @@ public class ChineseConstellationHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseConstellationHelper.Get"/> 在 `OffsetOf27` 场景下，结果为 `ReturnsLastConstellation`。
-    /// 偏移 27 天循环到第28宿"轸水蚓"
+    /// 验证偏移二十七天对应周期末尾星宿。
     /// </summary>
     [Fact]
     public void Get_OffsetOf27_ReturnsLastConstellationInCycle()
@@ -41,8 +39,7 @@ public class ChineseConstellationHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseConstellationHelper.Get"/> 在 `OffsetOf28` 场景下，结果为 `CyclesBackToFirst`。
-    /// 偏移 28 天后循环回到"角木蛟"
+    /// 验证偏移二十八天后回到周期起点。
     /// </summary>
     [Fact]
     public void Get_OffsetOf28_CyclesBackToFirst()
@@ -52,8 +49,11 @@ public class ChineseConstellationHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseConstellationHelper.Get"/> 在 `KnownDate` 场景下，结果为 `ReturnsNonEmpty`。
+    /// 验证常用日期返回非空星宿名称。
     /// </summary>
+    /// <param name="year">待查询日期的公历年份。</param>
+    /// <param name="month">待查询日期的公历月份。</param>
+    /// <param name="day">待查询日期的公历日分量。</param>
     [Theory]
     [InlineData(2023, 1, 1)]
     [InlineData(2023, 6, 15)]
@@ -69,8 +69,7 @@ public class ChineseConstellationHelperTest
     #region Get - Traditional
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseConstellationHelper.Get"/> 在 `TraditionalCharacters` 场景下，结果为 `ReturnsTraditionalName`。
-    /// 繁体字版本——牛金牛 与简体相同，取 虛日鼠（虚=虛）
+    /// 验证简体与繁体星宿查询均返回非空名称。
     /// </summary>
     [Fact]
     public void Get_TraditionalCharacters_ReturnsTraditionalVariant()
@@ -85,7 +84,7 @@ public class ChineseConstellationHelperTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="ChineseConstellationHelper.Get"/> 在 `DefaultParameter` 场景下，结果为 `UsesSimplified`。
+    /// 验证星宿查询默认使用简体中文。
     /// </summary>
     [Fact]
     public void Get_DefaultParameter_UsesSimplifiedCharacters()

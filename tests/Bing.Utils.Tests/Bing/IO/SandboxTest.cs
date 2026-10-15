@@ -5,11 +5,15 @@ namespace Bing.IO;
 public class SandboxTest : TestBase
 {
     /// <summary>
-    /// 初始化一个<see cref="SandboxTest"/>类型的实例
+    /// 初始化一个 <see cref="SandboxTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">当前测试的输出助手。</param>
     public SandboxTest(ITestOutputHelper output) : base(output)
     {
     }
+    /// <summary>
+    /// 验证默认沙箱名称采用预定义前缀。
+    /// </summary>
     [Fact]
     public void Test_DefaultSandboxShouldUseDefaultPrefix()
     {
@@ -19,6 +23,9 @@ public class SandboxTest : TestBase
         Sandbox.DefaultPrefix.ShouldBe("Sandbox-");
         sandbox.Name.ShouldStartWith(Sandbox.DefaultPrefix);
     }
+    /// <summary>
+    /// 验证沙箱内路径组合到沙箱根目录。
+    /// </summary>
     [Fact]
     public void Test_SandboxShouldResolvePaths()
     {
@@ -29,6 +36,9 @@ public class SandboxTest : TestBase
         Output.WriteLine(path);
         path.ShouldBe(Path.Join(sandbox.FullPath, "some/path"));
     }
+    /// <summary>
+    /// 验证沙箱创建指定的多级目录。
+    /// </summary>
     [Fact]
     public void Test_SandboxShouldCreateDirectories()
     {
@@ -39,6 +49,9 @@ public class SandboxTest : TestBase
         Output.WriteLine(path);
         Directory.Exists(path).ShouldBeTrue();
     }
+    /// <summary>
+    /// 验证沙箱创建指定的文件。
+    /// </summary>
     [Fact]
     public void Test_SandboxShouldCreateFiles()
     {
@@ -49,6 +62,9 @@ public class SandboxTest : TestBase
         Output.WriteLine(path);
         File.Exists(path).ShouldBeTrue();
     }
+    /// <summary>
+    /// 验证沙箱创建含指定文本的文件。
+    /// </summary>
     [Fact]
     public void Test_SandboxShouldCreateFilesWithText()
     {

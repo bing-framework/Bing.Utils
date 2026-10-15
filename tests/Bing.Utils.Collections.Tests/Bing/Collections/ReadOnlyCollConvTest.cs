@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 namespace Bing.Collections;
 /// <summary>
-/// 测试类：覆盖 `ReadOnlyCollConv` 相关行为。
+/// 只读集合快照和列表适配器测试。
 /// </summary>
 [Trait("CollectionsUT", "ReadOnlyCollConv")]
 public class ReadOnlyCollConvTest
 {
     /// <summary>
-    /// 测试用例：验证 `AsReadOnly` 在 `NullSource` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证创建只读集合时拒绝空源序列并报告参数名。
     /// </summary>
     [Fact]
     public void AsReadOnly_NullSource_ThrowsArgumentNullException()
@@ -18,7 +18,7 @@ public class ReadOnlyCollConvTest
         ex.ParamName.ShouldBe("source");
     }
     /// <summary>
-    /// 测试用例：验证 `AsReadOnly` 在 `ValidSource` 场景下，结果为 `ReturnsSnapshotCollection`。
+    /// 验证只读集合是独立于源列表后续修改的快照。
     /// </summary>
     [Fact]
     public void AsReadOnly_ValidSource_ReturnsSnapshotCollection()
@@ -31,7 +31,7 @@ public class ReadOnlyCollConvTest
         readOnly.ShouldBe(new[] { 1, 2, 3 });
     }
     /// <summary>
-    /// 测试用例：验证 `AsList` 在 `NullSource` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证列表适配拒绝空的只读列表并报告参数名。
     /// </summary>
     [Fact]
     public void AsList_NullSource_ThrowsArgumentNullException()
@@ -41,7 +41,7 @@ public class ReadOnlyCollConvTest
         ex.ParamName.ShouldBe("list");
     }
     /// <summary>
-    /// 测试用例：验证 `AsList` 在 `ReadOnlySource` 场景下，结果为 `ModificationApisThrowNotSupportedException`。
+    /// 验证只读列表适配器支持读取并拒绝修改。
     /// </summary>
     [Fact]
     public void AsList_ReadOnlySource_ModificationApisThrowNotSupportedException()
@@ -56,7 +56,7 @@ public class ReadOnlyCollConvTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `AsList` 在 `BackingListMutated` 场景下，结果为 `ReflectsLatestUnderlyingData`。
+    /// 验证列表适配器反映底层列表的后续修改。
     /// </summary>
     [Fact]
     public void AsList_BackingListMutated_ReflectsLatestUnderlyingData()
@@ -73,7 +73,7 @@ public class ReadOnlyCollConvTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `AsList` 在 `MissingItemIndexOf` 场景下，结果为 `ReturnsMinusOne`。
+    /// 验证不存在元素的索引为负一。
     /// </summary>
     [Fact]
     public void AsList_MissingItemIndexOf_ReturnsMinusOne()
@@ -87,7 +87,7 @@ public class ReadOnlyCollConvTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `AsList` 在 `ContainsNullItem` 场景下，结果为 `ReturnsTrue`。
+    /// 验证列表适配器能查找到空元素。
     /// </summary>
     [Fact]
     public void AsList_ContainsNullItem_ReturnsTrue()

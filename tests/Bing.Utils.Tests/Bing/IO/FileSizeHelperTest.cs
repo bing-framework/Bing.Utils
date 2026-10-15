@@ -6,8 +6,10 @@ public class FileSizeHelperTest
 {
     #region 最佳单位选择测试
     /// <summary>
-    /// 测试 - GetBestUnit - 获取最佳单位
+    /// 验证字节数选择预期的最佳单位。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(512L, FileSizeUnit.Byte)]
     [InlineData(1024L, FileSizeUnit.K)]
@@ -24,8 +26,10 @@ public class FileSizeHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - GetBestUnit - 边界值测试
+    /// 验证单位边界附近的字节数选择最佳单位。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(1023L, FileSizeUnit.Byte)]    // 小于1KB
     [InlineData(1025L, FileSizeUnit.K)]       // 稍大于1KB
@@ -51,8 +55,11 @@ public class FileSizeHelperTest
     #endregion
     #region 格式化测试
     /// <summary>
-    /// 测试 - AutoFormat - 自动格式化
+    /// 验证字节数自动选择单位并格式化。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="precision">保留的小数位数。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(0L, 2, "0 B")]
     [InlineData(512L, 2, "512 B")]
@@ -68,8 +75,11 @@ public class FileSizeHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - AutoFormat - 复杂边界值
+    /// 验证边界字节数按精度自动格式化。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="precision">保留的小数位数。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(1023L, 0, "1023 B")]
     [InlineData(1025L, 1, "1 KB")]
@@ -85,8 +95,11 @@ public class FileSizeHelperTest
     #endregion
     #region 解析测试
     /// <summary>
-    /// 测试 - TryParseSize - 解析文件大小字符串
+    /// 验证文件大小解析的成功标记及字节数。
     /// </summary>
+    /// <param name="input">待解析的文件大小文本。</param>
+    /// <param name="expectedSuccess">预期的解析成功标记。</param>
+    /// <param name="expectedBytes">预期的字节数。</param>
     [Theory]
     [InlineData("1.5 KB", true, 1536L)]
     [InlineData("2 MB", true, 2097152L)]
@@ -107,8 +120,11 @@ public class FileSizeHelperTest
         bytes.ShouldBe(expectedBytes);
     }
     /// <summary>
-    /// 测试 - TryParseSize - 大小写不敏感
+    /// 验证单位大小写不影响文件大小解析。
     /// </summary>
+    /// <param name="input">待解析的文件大小文本。</param>
+    /// <param name="expectedSuccess">预期的解析成功标记。</param>
+    /// <param name="expectedBytes">预期的字节数。</param>
     [Theory]
     [InlineData("1.5 kb", true, 1536L)]
     [InlineData("2 mb", true, 2097152L)]
@@ -125,8 +141,9 @@ public class FileSizeHelperTest
         bytes.ShouldBe(expectedBytes);
     }
     /// <summary>
-    /// 测试 - TryParseSize - 无效格式
+    /// 验证无效文件大小文本解析失败并返回零字节。
     /// </summary>
+    /// <param name="input">待解析的文件大小文本。</param>
     [Theory]
     [InlineData("1.5 KB MB")]  // 多个单位
     [InlineData("abc KB")]     // 无效数值
@@ -145,8 +162,11 @@ public class FileSizeHelperTest
         bytes.ShouldBe(0L);
     }
     /// <summary>
-    /// 测试 - TryParseSize - 多个空格应该能正常解析
+    /// 验证单位间空白不影响文件大小解析。
     /// </summary>
+    /// <param name="input">待解析的文件大小文本。</param>
+    /// <param name="expectedSuccess">预期的解析成功标记。</param>
+    /// <param name="expectedBytes">预期的字节数。</param>
     [Theory]
     [InlineData("1.5KB", true, 1536L)]        // 无空格
     [InlineData("1.5 KB", true, 1536L)]       // 单个空格
@@ -162,8 +182,9 @@ public class FileSizeHelperTest
         bytes.ShouldBe(expectedBytes);
     }
     /// <summary>
-    /// 测试 - TryParseSize - 负数处理
+    /// 验证带正负号的文件大小文本解析失败。
     /// </summary>
+    /// <param name="input">待解析的文件大小文本。</param>
     [Theory]
     [InlineData("-1.5 KB")]    // 负数（正则可能匹配，但ConvertToBytes会失败）
     [InlineData("+1.5 KB")]    // 正号（正则不支持）
@@ -176,8 +197,11 @@ public class FileSizeHelperTest
         bytes.ShouldBe(0L);
     }
     /// <summary>
-    /// 测试 - TryParseSize - 边界数值格式
+    /// 验证边界数值格式的解析标记及字节数。
     /// </summary>
+    /// <param name="input">待解析的文件大小文本。</param>
+    /// <param name="expectedSuccess">预期的解析成功标记。</param>
+    /// <param name="expectedBytes">预期的字节数。</param>
     [Theory]
     [InlineData("0 KB", true, 0L)]           // 零值
     [InlineData("0.0 KB", true, 0L)]         // 零值小数
@@ -195,8 +219,10 @@ public class FileSizeHelperTest
         bytes.ShouldBe(expectedBytes);
     }
     /// <summary>
-    /// 测试 - ParseSize - 解析有效字符串
+    /// 验证有效文件大小文本解析为预期字节数。
     /// </summary>
+    /// <param name="sizeString">待解析的文件大小文本。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData("1.5 KB", 1536L)]
     [InlineData("2 MB", 2097152L)]
@@ -209,8 +235,9 @@ public class FileSizeHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - ParseSize - 无效字符串应抛出异常
+    /// 验证严格解析拒绝无效的文件大小文本。
     /// </summary>
+    /// <param name="invalidString">格式无效的文件大小文本。</param>
     [Theory]
     [InlineData("invalid")]
     [InlineData("")]
@@ -255,8 +282,10 @@ public class FileSizeHelperTest
         descriptions.Length.ShouldBe(6);
     }
     /// <summary>
-    /// 测试 - IsValidUnitString - 验证单位字符串
+    /// 验证单位文本的有效性判断。
     /// </summary>
+    /// <param name="unitString">待检查的单位文本。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData("B", true)]
     [InlineData("KB", true)]
@@ -274,8 +303,11 @@ public class FileSizeHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - TryGetUnitFromString - 从字符串获取枚举值
+    /// 验证单位文本的解析标记及成功后的单位值。
     /// </summary>
+    /// <param name="unitString">待检查的单位文本。</param>
+    /// <param name="expectedSuccess">预期的解析成功标记。</param>
+    /// <param name="expectedUnit">预期的文件大小单位。</param>
     [Theory]
     [InlineData("B", true, FileSizeUnit.Byte)]
     [InlineData("KB", true, FileSizeUnit.K)]
@@ -310,8 +342,11 @@ public class FileSizeHelperTest
     #endregion
     #region 兼容性和集成测试
     /// <summary>
-    /// 测试 - 精度处理
+    /// 验证自动格式化按指定精度输出文件大小。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="precision">保留的小数位数。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(1536L, 0, "2 KB")]
     [InlineData(1536L, 1, "1.5 KB")]
@@ -342,8 +377,9 @@ public class FileSizeHelperTest
         formatted.ShouldBe("1.5 MB");
     }
     /// <summary>
-    /// 测试 - 解析和格式化往返一致性
+    /// 验证文件大小解析及格式化后保留字节数。
     /// </summary>
+    /// <param name="originalString">用于往返转换的文件大小文本。</param>
     [Theory]
     [InlineData("1.5 KB")]
     [InlineData("2 MB")]
@@ -363,8 +399,10 @@ public class FileSizeHelperTest
     #endregion
     #region 性能和边界测试
     /// <summary>
-    /// 测试 - 大数值处理
+    /// 验证大字节数选择预期单位。
     /// </summary>
+    /// <param name="bytes">待处理的字节数。</param>
+    /// <param name="expectedUnit">预期的文件大小单位。</param>
     [Theory]
     [InlineData(long.MaxValue, FileSizeUnit.P)]
     [InlineData(long.MaxValue / 2, FileSizeUnit.P)]
@@ -392,8 +430,9 @@ public class FileSizeHelperTest
         converted.ShouldBe(0.0);
     }
     /// <summary>
-    /// 测试 - 国际化数值格式兼容性
+    /// 验证文件大小解析支持点号且拒绝逗号小数分隔符。
     /// </summary>
+    /// <param name="input">待解析的文件大小文本。</param>
     [Theory]
     [InlineData("1.5 KB")]    // 英文小数点
     [InlineData("1,5 KB")]    // 某些地区使用逗号作为小数分隔符，但我们的实现应该只支持点号

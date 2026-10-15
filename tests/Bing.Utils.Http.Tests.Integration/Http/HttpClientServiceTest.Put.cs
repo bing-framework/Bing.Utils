@@ -4,12 +4,12 @@ using Bing.Extensions;
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
-/// Http客户端测试 - Put操作
+/// 验证 PUT 请求的客户数据绑定与日期响应转换。
 /// </summary>
 public partial class HttpClientServiceTest
 {
     /// <summary>
-    /// 测试 - 调用Put操作方法 - 返回字符串结果
+    /// 验证 PUT 请求提交客户编码并读取文本响应。
     /// </summary>
     [Fact]
     public async Task Test_Put_1()
@@ -20,7 +20,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Put方法 - 返回泛型结果
+    /// 验证 PUT 请求回显路由标识、客户编码与出生日期。
     /// </summary>
     [Fact]
     public async Task Test_Put_2()

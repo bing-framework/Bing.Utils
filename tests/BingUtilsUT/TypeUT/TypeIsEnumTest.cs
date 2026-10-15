@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证枚举类型识别及相关类型边界。
+/// </summary>
 [Trait("TypeUT", "TypeIs.EnumType")]
 public class TypeIsEnumTest
 {

@@ -25,7 +25,7 @@ public class EnvBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试用例：`GetEnvironmentVariable<T>` 在名称非法时返回默认值，不抛异常。
+    /// 测试用例：`GetEnvironmentVariable&lt;T&gt;` 在名称非法时返回默认值，不抛异常。
     /// </summary>
     [Theory]
     [MemberData(nameof(GetInvalidVariableNames))]
@@ -145,7 +145,7 @@ public class EnvBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试用例：`GetEnvironmentVariable<T>` 在转换失败时，当前实现返回类型默认值（而非调用方传入默认值）。
+    /// 测试用例：`GetEnvironmentVariable&lt;T&gt;` 转换失败时返回类型默认值。
     /// </summary>
     [Fact]
     public void GetEnvironmentVariable_Generic_WhenConversionFails_CurrentlyReturnsTypeDefault()
@@ -190,6 +190,10 @@ public class EnvBoundaryContractTest
         }
     }
 
+    /// <summary>
+    /// 提供无效环境变量名的边界输入。
+    /// </summary>
+    /// <returns>包含空值、空白和换行名称的测试数据。</returns>
     public static IEnumerable<object[]> GetInvalidVariableNames()
     {
         yield return new object[] { null };
@@ -199,6 +203,10 @@ public class EnvBoundaryContractTest
         yield return new object[] { "\r\n" };
     }
 
+    /// <summary>
+    /// 提供应原样传递的空值和空白输入。
+    /// </summary>
+    /// <returns>待验证的原始输入测试数据。</returns>
     public static IEnumerable<object[]> GetRawPassThroughInputs()
     {
         yield return new object[] { null };
@@ -206,6 +214,10 @@ public class EnvBoundaryContractTest
         yield return new object[] { "   " };
     }
 
+    /// <summary>
+    /// 提供环境变量对象值转换的输入及其文本结果。
+    /// </summary>
+    /// <returns>对象值与预期环境变量文本组成的测试数据。</returns>
     public static IEnumerable<object[]> GetObjectValuesForEnvironmentVariableCases()
     {
         yield return new object[] { true, bool.TrueString };
@@ -214,5 +226,9 @@ public class EnvBoundaryContractTest
         yield return new object[] { 'A', "A" };
     }
 
+    /// <summary>
+    /// 创建唯一的边界测试环境变量名。
+    /// </summary>
+    /// <returns>带有随机标识的测试环境变量名。</returns>
     private static string CreateVarName() => $"BING_ENV_BOUNDARY_{Guid.NewGuid():N}";
 }

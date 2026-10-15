@@ -146,6 +146,7 @@ public class AmountUnitConvBoundaryContractTest
     /// <summary>
     /// 测试数据：SumYuanAmounts 的“逐项截断后再求和”契约样例
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetSumYuanAmountsPerItemTruncationCases()
     {
         yield return new object[] { new[] { 0.019m, 0.019m }, 0.02m };
@@ -156,6 +157,7 @@ public class AmountUnitConvBoundaryContractTest
     /// <summary>
     /// 测试数据：SumFenAmounts 求和与输入不变性样例
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetSumFenAmountsCases()
     {
         yield return new object[] { new[] { 1, 2, 3, -1 }, 5L };
@@ -166,6 +168,7 @@ public class AmountUnitConvBoundaryContractTest
     /// <summary>
     /// 测试数据：当前线程文化影响 ToN2String(culture:null) 的样例
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetCurrentCultureN2Cases()
     {
         yield return new object[] { "fr-FR", 1234.56m };
@@ -176,6 +179,7 @@ public class AmountUnitConvBoundaryContractTest
     /// <summary>
     /// 测试数据：minValue > maxValue 的非法金额区间
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetInvalidRangeCases()
     {
         yield return new object[] { 10m, 100m, 0m };
@@ -186,6 +190,7 @@ public class AmountUnitConvBoundaryContractTest
     /// <summary>
     /// 测试数据：ToYuan 与 ToFenLong 的往返转换样例
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetRoundTripFenCases()
     {
         yield return new object[] { 0L };
@@ -198,6 +203,7 @@ public class AmountUnitConvBoundaryContractTest
     /// <summary>
     /// 测试数据：ToFen(decimal?) 的空值与边界样例
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetNullableToFenCases()
     {
         yield return new object[] { null, 0 };

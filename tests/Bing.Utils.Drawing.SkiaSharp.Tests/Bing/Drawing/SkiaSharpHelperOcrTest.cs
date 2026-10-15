@@ -3,13 +3,16 @@ using SkiaSharp;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖 OCR 预处理 API。
+/// 验证 OCR 预处理中的灰度、二值化、前景加深和投影结果。
 /// </summary>
 [Trait("Drawing", "SkiaSharp.Ocr")]
 public class SkiaSharpHelperOcrTest
 {
     #region ToGrayArray2D
 
+    /// <summary>
+    /// 验证灰度数组的两个维度分别对应图像宽度和高度。
+    /// </summary>
     [Fact]
     public void ToGrayArray2D_ReturnsCorrectDimensions()
     {
@@ -19,6 +22,9 @@ public class SkiaSharpHelperOcrTest
         gray.GetLength(1).ShouldBe(3);
     }
 
+    /// <summary>
+    /// 验证白色像素转换为灰度值 255。
+    /// </summary>
     [Fact]
     public void ToGrayArray2D_WhiteImage_Returns255()
     {
@@ -27,6 +33,9 @@ public class SkiaSharpHelperOcrTest
         gray[0, 0].ShouldBe((byte)255);
     }
 
+    /// <summary>
+    /// 验证黑色像素转换为灰度值 0。
+    /// </summary>
     [Fact]
     public void ToGrayArray2D_BlackImage_Returns0()
     {
@@ -35,6 +44,9 @@ public class SkiaSharpHelperOcrTest
         gray[0, 0].ShouldBe((byte)0);
     }
 
+    /// <summary>
+    /// 验证空图像会导致灰度数组转换抛出空参数异常。
+    /// </summary>
     [Fact]
     public void ToGrayArray2D_NullImage_Throws()
     {
@@ -45,6 +57,9 @@ public class SkiaSharpHelperOcrTest
 
     #region ToBinaryArray2D
 
+    /// <summary>
+    /// 验证白色像素在阈值 128 下被归为背景值 255。
+    /// </summary>
     [Fact]
     public void ToBinaryArray2D_WhiteImage_ReturnsAllBackground()
     {
@@ -54,6 +69,9 @@ public class SkiaSharpHelperOcrTest
         bin[1, 1].ShouldBe((byte)255);
     }
 
+    /// <summary>
+    /// 验证黑色像素在阈值 128 下被归为前景值 0。
+    /// </summary>
     [Fact]
     public void ToBinaryArray2D_BlackImage_ReturnsAllForeground()
     {
@@ -67,6 +85,9 @@ public class SkiaSharpHelperOcrTest
 
     #region Binaryzation
 
+    /// <summary>
+    /// 验证二值化结果可用图像对象读取并保持原尺寸。
+    /// </summary>
     [Fact]
     public void Binaryzation_ReturnsLoadableImage()
     {
@@ -76,6 +97,9 @@ public class SkiaSharpHelperOcrTest
         result.Height.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证空图像会导致二值化抛出空参数异常。
+    /// </summary>
     [Fact]
     public void Binaryzation_NullImage_Throws()
     {
@@ -86,6 +110,9 @@ public class SkiaSharpHelperOcrTest
 
     #region DeepenForeground
 
+    /// <summary>
+    /// 验证低于阈值的暗色前景像素被加深为黑色。
+    /// </summary>
     [Fact]
     public void DeepenForeground_DarkPixels_BecomeBlack()
     {
@@ -96,6 +123,9 @@ public class SkiaSharpHelperOcrTest
         pixel.Red.ShouldBe((byte)0);
     }
 
+    /// <summary>
+    /// 验证高于阈值的亮色像素保持原值。
+    /// </summary>
     [Fact]
     public void DeepenForeground_BrightPixels_Preserved()
     {
@@ -109,6 +139,9 @@ public class SkiaSharpHelperOcrTest
 
     #region CreateImageFromGrayArray
 
+    /// <summary>
+    /// 验证由灰度数组创建的图像尺寸与数组维度一致。
+    /// </summary>
     [Fact]
     public void CreateImageFromGrayArray_CreatesCorrectSize()
     {
@@ -119,6 +152,9 @@ public class SkiaSharpHelperOcrTest
         image.Dispose();
     }
 
+    /// <summary>
+    /// 验证空灰度数组会导致图像创建抛出空参数异常。
+    /// </summary>
     [Fact]
     public void CreateImageFromGrayArray_NullArray_Throws()
     {
@@ -129,6 +165,9 @@ public class SkiaSharpHelperOcrTest
 
     #region Projection
 
+    /// <summary>
+    /// 验证黑色图像的垂直投影为每列累计前景像素。
+    /// </summary>
     [Fact]
     public void GetVerticalProjection_BlackImage_AllNonZero()
     {
@@ -140,6 +179,9 @@ public class SkiaSharpHelperOcrTest
         proj[2].ShouldBeGreaterThan(0);
     }
 
+    /// <summary>
+    /// 验证白色图像的水平投影各行累计值均为 0。
+    /// </summary>
     [Fact]
     public void GetHorizontalProjection_WhiteImage_AllZero()
     {
@@ -155,6 +197,9 @@ public class SkiaSharpHelperOcrTest
 
     #region ClearBorder / AddBorder / TrimToContent
 
+    /// <summary>
+    /// 验证内容裁剪会去除黑色区域外围的白色边框。
+    /// </summary>
     [Fact]
     public void TrimToContent_BlackCenter_CropsWhiteBorder()
     {
@@ -177,6 +222,13 @@ public class SkiaSharpHelperOcrTest
 
     #region Helper
 
+    /// <summary>
+    /// 创建指定尺寸和填充颜色的测试图像。
+    /// </summary>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <param name="fill">可选填充颜色；省略时使用中灰色。</param>
+    /// <returns>由指定颜色填充的图像。</returns>
     private static SKImage CreateTestImage(int width, int height, SKColor? fill = null)
     {
         using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);

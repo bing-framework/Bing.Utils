@@ -6,7 +6,7 @@ namespace Bing.Date;
 public class TimeFormatterTest
 {
     /// <summary>
-    /// 测试 - Format(DateTime) 方法
+    /// 验证默认日期时间格式包含年月日和时分秒。
     /// </summary>
     [Fact]
     public void Test_Format_DateTime_Default()
@@ -19,7 +19,7 @@ public class TimeFormatterTest
         Assert.Equal("2025-06-18 17:20:01", result);
     }
     /// <summary>
-    /// 测试 - Format(DateTime, TimeFormatType) 方法
+    /// 验证指定格式类型输出对应日期和时间文本。
     /// </summary>
     [Fact]
     public void Test_Format_DateTime_WithFormatType()
@@ -34,7 +34,7 @@ public class TimeFormatterTest
         Assert.Equal("2025_06_18", TimeFormatter.Format(dateTime, TimeFormatType.UnderlineDate));
     }
     /// <summary>
-    /// 测试 - Format(DateTime, TimeFormatType, CultureInfo) 方法
+    /// 验证指定区域性时仍采用固定日期时间格式。
     /// </summary>
     [Fact]
     public void Test_Format_DateTime_WithFormatTypeAndCulture()
@@ -48,7 +48,7 @@ public class TimeFormatterTest
         Assert.Equal("2025-06-18 17:20:01", result);
     }
     /// <summary>
-    /// 测试 - Format(DateTime?) 方法 - 有值的情况
+    /// 验证有值的可空日期时间按默认格式输出。
     /// </summary>
     [Fact]
     public void Test_Format_NullableDateTime_WithValue()
@@ -61,7 +61,7 @@ public class TimeFormatterTest
         Assert.Equal("2025-06-18 17:20:01", result);
     }
     /// <summary>
-    /// 测试 - Format(DateTime?) 方法 - null 的情况
+    /// 验证空日期时间输出空文本。
     /// </summary>
     [Fact]
     public void Test_Format_NullableDateTime_Null()
@@ -74,7 +74,7 @@ public class TimeFormatterTest
         Assert.Equal(string.Empty, result);
     }
     /// <summary>
-    /// 测试 - Format(DateTime?, TimeFormatType) 方法
+    /// 验证可空日期时间按指定格式输出并处理空值。
     /// </summary>
     [Fact]
     public void Test_Format_NullableDateTime_WithFormatType()
@@ -86,7 +86,7 @@ public class TimeFormatterTest
         Assert.Equal(string.Empty, TimeFormatter.Format((DateTime?)null, TimeFormatType.NormDate));
     }
     /// <summary>
-    /// 测试 - Format(DateTime?, TimeFormatType, CultureInfo) 方法
+    /// 验证带区域性的可空日期时间格式化支持有值和空值。
     /// </summary>
     [Fact]
     public void Test_Format_NullableDateTime_WithFormatTypeAndCulture()
@@ -99,7 +99,7 @@ public class TimeFormatterTest
         Assert.Equal(string.Empty, TimeFormatter.Format((DateTime?)null, TimeFormatType.NormDateTime, culture));
     }
     /// <summary>
-    /// 测试 - Now() 方法
+    /// 验证当前日期时间文本符合默认格式。
     /// </summary>
     [Fact]
     public void Test_Now()
@@ -110,7 +110,7 @@ public class TimeFormatterTest
         Assert.Matches(@"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$", result);
     }
     /// <summary>
-    /// 测试 - Now(TimeFormatType) 方法
+    /// 验证当前日期时间按指定格式输出对应形状的文本。
     /// </summary>
     [Fact]
     public void Test_Now_WithFormatType()
@@ -121,7 +121,7 @@ public class TimeFormatterTest
         Assert.Matches(@"^\d{8}$", TimeFormatter.Now(TimeFormatType.PureDate));
     }
     /// <summary>
-    /// 测试 - Now(TimeFormatType, CultureInfo) 方法
+    /// 验证指定区域性的当前时间文本符合默认格式。
     /// </summary>
     [Fact]
     public void Test_Now_WithFormatTypeAndCulture()
@@ -132,7 +132,7 @@ public class TimeFormatterTest
         Assert.Matches(@"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$", TimeFormatter.Now(TimeFormatType.NormDateTime, culture));
     }
     /// <summary>
-    /// 测试 - Register 方法
+    /// 验证注册的日期格式替换对应格式类型的输出。
     /// </summary>
     [Fact]
     public void Test_Register()
@@ -156,8 +156,9 @@ public class TimeFormatterTest
         }
     }
     /// <summary>
-    /// 测试 - Register 方法 - 参数异常
+    /// 验证格式注册拒绝空白格式文本并报告参数名。
     /// </summary>
+    /// <param name="pattern">无效格式文本。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -170,7 +171,7 @@ public class TimeFormatterTest
         Assert.Equal("pattern", exception.ParamName);
     }
     /// <summary>
-    /// 测试 - GetPattern 方法
+    /// 验证常用格式类型映射到对应格式文本。
     /// </summary>
     [Fact]
     public void Test_GetPattern()
@@ -182,7 +183,7 @@ public class TimeFormatterTest
         Assert.Equal("yyyyMMdd", TimeFormatter.GetPattern(TimeFormatType.PureDate));
     }
     /// <summary>
-    /// 测试 - TryParsePattern 方法 - 成功情况
+    /// 验证已知格式文本解析为对应格式类型。
     /// </summary>
     [Fact]
     public void Test_TryParsePattern_Success()
@@ -196,7 +197,7 @@ public class TimeFormatterTest
         Assert.Equal(TimeFormatType.NormDate, type);
     }
     /// <summary>
-    /// 测试 - TryParsePattern 方法 - 不区分大小写
+    /// 验证格式文本的解析忽略大小写。
     /// </summary>
     [Fact]
     public void Test_TryParsePattern_CaseInsensitive()
@@ -210,7 +211,7 @@ public class TimeFormatterTest
         Assert.Equal(TimeFormatType.NormDate, type);
     }
     /// <summary>
-    /// 测试 - TryParsePattern 方法 - 失败情况
+    /// 验证未知格式文本解析失败且返回默认类型。
     /// </summary>
     [Fact]
     public void Test_TryParsePattern_Failure()
@@ -224,7 +225,7 @@ public class TimeFormatterTest
         Assert.Equal(default(TimeFormatType), type);
     }
     /// <summary>
-    /// 测试特殊时间格式类型
+    /// 验证毫秒、分钟、年月和年份等格式类型的输出。
     /// </summary>
     [Fact]
     public void Test_SpecialFormatTypes()
@@ -250,7 +251,7 @@ public class TimeFormatterTest
         Assert.Equal("2025", TimeFormatter.Format(dateTime, TimeFormatType.PureYear));
     }
     /// <summary>
-    /// 测试不同区域文化下的格式化
+    /// 验证固定格式文本在不同区域性下保持一致。
     /// </summary>
     [Fact]
     public void Test_DifferentCultures()

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Bing.Collections;
 /// <summary>
-/// 测试类：覆盖 `CollJudge` 相关行为。
+/// 集合空值、数量及数量下限判断测试。
 /// </summary>
 [Trait("CollectionsUT", "CollJudge")]
 public class CollJudgeTest
 {
     /// <summary>
-    /// 测试用例：验证 `IsNullOrEmpty` 在 `EnumerableScenarios` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证非泛型序列的空值和空序列判断。
     /// </summary>
     [Fact]
     public void IsNullOrEmpty_EnumerableScenarios_ReturnsExpectedResult()
@@ -22,7 +22,7 @@ public class CollJudgeTest
         CollJudge.IsNullOrEmpty(valueEnumerable).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `IsNullOrEmpty` 在 `GenericEnumerableScenarios` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证泛型序列的空值和空序列判断。
     /// </summary>
     [Fact]
     public void IsNullOrEmpty_GenericEnumerableScenarios_ReturnsExpectedResult()
@@ -35,7 +35,7 @@ public class CollJudgeTest
         CollJudge.IsNullOrEmpty(valueEnumerable).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `IsSameCount` 在 `ICollectionScenarios` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证集合数量比较及空值处理。
     /// </summary>
     [Fact]
     public void IsSameCount_ICollectionScenarios_ReturnsExpectedResult()
@@ -51,7 +51,7 @@ public class CollJudgeTest
         left.IsSameCount(right).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `IsSameCount` 在 `IQueryableScenarios` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证可查询序列的数量比较及空值处理。
     /// </summary>
     [Fact]
     public void IsSameCount_IQueryableScenarios_ReturnsExpectedResult()
@@ -67,8 +67,10 @@ public class CollJudgeTest
         left.IsSameCount(right).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `ContainsAtLeast` 在 `ICollection` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证集合是否达到指定数量下限。
     /// </summary>
+    /// <param name="count">数量下限。</param>
+    /// <param name="expected">预期判断结果。</param>
     [Theory]
     [InlineData(0, true)]
     [InlineData(2, true)]
@@ -80,7 +82,7 @@ public class CollJudgeTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试用例：验证 `ContainsAtLeast` 在 `NullCollection` 场景下，结果为 `ReturnsFalse`。
+    /// 验证空集合引用不能满足数量下限。
     /// </summary>
     [Fact]
     public void ContainsAtLeast_NullCollection_ReturnsFalse()
@@ -89,8 +91,10 @@ public class CollJudgeTest
         CollJudge.ContainsAtLeast(collection, 1).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `ContainsAtLeast` 在 `IQueryable` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证可查询序列是否达到指定数量下限。
     /// </summary>
+    /// <param name="count">数量下限。</param>
+    /// <param name="expected">预期判断结果。</param>
     [Theory]
     [InlineData(0, true)]
     [InlineData(2, true)]
@@ -102,7 +106,7 @@ public class CollJudgeTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试用例：验证 `ContainsEqualCount` 在 `IQueryableScenarios` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证可查询序列的数量相等判断及空值处理。
     /// </summary>
     [Fact]
     public void ContainsEqualCount_IQueryableScenarios_ReturnsExpectedResult()

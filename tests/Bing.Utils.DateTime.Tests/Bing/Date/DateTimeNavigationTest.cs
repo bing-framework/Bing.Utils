@@ -1,11 +1,17 @@
 using System.Globalization;
 namespace Bing.Date;
 /// <summary>
-/// 日期时间导航测试
+/// 验证日期时间偏移、边界及相邻日期导航。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.Navigation")]
 public class DateTimeNavigationTest
 {
+    /// <summary>
+    /// 验证日期偏移按指定单位计算。
+    /// </summary>
+    /// <param name="style">日期偏移单位。</param>
+    /// <param name="offset">以指定日期单位计算的偏移量。</param>
+    /// <param name="expected">预期偏移后的日期时间文本。</param>
     [Theory]
     [InlineData(DateOffsetStyles.Day, 1, "2024-01-16 10:20:30")]
     [InlineData(DateOffsetStyles.Week, 1, "2024-01-22 10:20:30")]
@@ -18,6 +24,9 @@ public class DateTimeNavigationTest
         var result = date.OffsetBy(offset, style);
         result.ShouldBe(DateTime.Parse(expected));
     }
+    /// <summary>
+    /// 验证未定义日期偏移单位当前按天处理。
+    /// </summary>
     [Fact]
     public void OffsetBy_UnknownDateOffsetStyle_DefaultsToDay()
     {
@@ -25,6 +34,12 @@ public class DateTimeNavigationTest
         var result = date.OffsetBy(2, (DateOffsetStyles)999);
         result.ShouldBe(new DateTime(2024, 1, 17, 10, 20, 30));
     }
+    /// <summary>
+    /// 验证时间偏移按指定单位计算。
+    /// </summary>
+    /// <param name="style">时间偏移单位。</param>
+    /// <param name="offset">以指定时间单位计算的偏移量。</param>
+    /// <param name="expected">预期偏移后的日期时间文本。</param>
     [Theory]
     [InlineData(TimeOffsetStyles.Millisecond, 1, "2024-01-15 10:20:30.124")]
     [InlineData(TimeOffsetStyles.Second, 1, "2024-01-15 10:20:31.123")]
@@ -36,6 +51,9 @@ public class DateTimeNavigationTest
         var result = date.OffsetBy(offset, style);
         result.ShouldBe(DateTime.Parse(expected));
     }
+    /// <summary>
+    /// 验证日边界计算保留日期与时间种类。
+    /// </summary>
     [Fact]
     public void BeginningAndEndOfDay_PreserveDateAndKind()
     {
@@ -45,6 +63,9 @@ public class DateTimeNavigationTest
         begin.ShouldBe(new DateTime(2024, 3, 12, 0, 0, 0, 0, DateTimeKind.Utc));
         end.ShouldBe(new DateTime(2024, 3, 12, 23, 59, 59, 999, DateTimeKind.Utc));
     }
+    /// <summary>
+    /// 验证日边界按给定小时偏移进行算术调整。
+    /// </summary>
     [Fact]
     public void BeginningAndEndOfDay_WithTimeZoneOffset_AddsOffsetHours()
     {
@@ -54,6 +75,9 @@ public class DateTimeNavigationTest
         begin.ShouldBe(new DateTime(2024, 3, 12, 8, 0, 0, 0, DateTimeKind.Unspecified));
         end.ShouldBe(new DateTime(2024, 3, 12, 18, 59, 59, 999, DateTimeKind.Unspecified));
     }
+    /// <summary>
+    /// 验证周边界遵循指定区域性的每周首日。
+    /// </summary>
     [Fact]
     public void FirstAndLastDayOfWeek_WithCulture_UseCultureFirstDay()
     {
@@ -69,6 +93,9 @@ public class DateTimeNavigationTest
         cnFirst.ShouldBe(new DateTime(2024, 1, 1));
         cnLast.ShouldBe(new DateTime(2024, 1, 7));
     }
+    /// <summary>
+    /// 验证月边界与季度边界包含闰年二月的正确日期。
+    /// </summary>
     [Fact]
     public void FirstAndLastDayOfMonthAndQuarter_ReturnExpectedDates()
     {
@@ -78,6 +105,9 @@ public class DateTimeNavigationTest
         date.FirstDayOfQuarter().ShouldBe(new DateTime(2024, 1, 1));
         date.LastDayOfQuarter().ShouldBe(new DateTime(2024, 3, 31));
     }
+    /// <summary>
+    /// 验证年、季度、月、周及日的前后导航结果。
+    /// </summary>
     [Fact]
     public void NextAndPreviousHelpers_ReturnExpectedDates()
     {
@@ -95,6 +125,9 @@ public class DateTimeNavigationTest
         date.Tomorrow().ShouldBe(new DateTime(2024, 1, 16));
         date.Yesterday().ShouldBe(new DateTime(2024, 1, 14));
     }
+    /// <summary>
+    /// 验证指定星期的前后日期导航。
+    /// </summary>
     [Fact]
     public void NextDayOfWeekAndPreviousDayOfWeek_ReturnExpectedDates()
     {

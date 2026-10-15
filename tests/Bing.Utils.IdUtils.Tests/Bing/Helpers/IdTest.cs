@@ -399,6 +399,7 @@ public class IdTest : IDisposable
     /// <summary>
     /// 测试 - CreateString - 空白上下文Id时使用生成函数
     /// </summary>
+    /// <param name="emptyValue">测试上下文中配置的空白字符串 ID。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]

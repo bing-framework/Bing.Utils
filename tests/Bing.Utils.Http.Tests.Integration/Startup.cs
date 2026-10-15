@@ -16,13 +16,14 @@ using Xunit.DependencyInjection.Logging;
 namespace Bing.Utils.Http.Tests.Integration;
 
 /// <summary>
-/// 启动配置
+/// 配置集成测试使用的测试主机、HTTP 客户端及日志。
 /// </summary>
 public class Startup
 {
     /// <summary>
-    /// 配置主机
+    /// 配置使用内存测试服务器的控制器请求管道。
     /// </summary>
+    /// <param name="hostBuilder">集成测试使用的主机构建器。</param>
     public void ConfigureHost(IHostBuilder hostBuilder)
     {
         hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
@@ -42,15 +43,18 @@ public class Startup
     }
 
     /// <summary>
-    /// 进程退出时释放日志实例，用于解决Seq无法写入的问题
+    /// 提供进程退出事件的空处理程序。
     /// </summary>
+    /// <param name="sender">事件发送方。</param>
+    /// <param name="e">进程退出事件参数。</param>
     private void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
     }
 
     /// <summary>
-    /// 配置服务
+    /// 注册控制器、日期转换器及使用测试服务器的 HTTP 客户端。
     /// </summary>
+    /// <param name="services">集成测试使用的服务集合。</param>
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
@@ -69,8 +73,9 @@ public class Startup
     }
 
     /// <summary>
-    /// 注册Http上下文访问器
+    /// 注册并设置测试使用的 HTTP 上下文访问器。
     /// </summary>
+    /// <param name="services">接收上下文访问器注册的服务集合。</param>
     private void RegisterHttpContextAccessor(IServiceCollection services)
     {
         var httpContextAccessor = new HttpContextAccessor();
@@ -79,8 +84,10 @@ public class Startup
     }
 
     /// <summary>
-    /// 配置日志提供程序
+    /// 将日志输出转发到当前 xUnit 测试。
     /// </summary>
+    /// <param name="loggerFactory">用于添加测试日志提供程序的日志工厂。</param>
+    /// <param name="accessor">当前测试输出助手的访问器。</param>
     public void Configure(ILoggerFactory loggerFactory, ITestOutputHelperAccessor accessor)
     {
         loggerFactory.AddProvider(new XunitTestOutputLoggerProvider(accessor, (s, logLevel) => logLevel >= LogLevel.Trace));

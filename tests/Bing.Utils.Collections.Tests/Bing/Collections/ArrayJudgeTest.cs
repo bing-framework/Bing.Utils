@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 namespace Bing.Collections;
 /// <summary>
-/// 测试类：覆盖 `ArrayJudge` 相关行为。
+/// 数组索引边界和维度校验测试。
 /// </summary>
 [Trait("CollectionsUT", "ArrayJudge")]
 public class ArrayJudgeTest
 {
     /// <summary>
-    /// 测试用例：验证 `IsIndexInRange` 在 `OneDimensionalArray` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证一维数组的索引范围判断。
     /// </summary>
+    /// <param name="index">待判断索引。</param>
+    /// <param name="expected">预期判断结果。</param>
     [Theory]
     [InlineData(-1, false)]
     [InlineData(0, true)]
@@ -21,7 +23,7 @@ public class ArrayJudgeTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试用例：验证 `IsIndexInRange` 在 `MultiDimensionalArrayWithLowerBound` 场景下，结果为 `ReturnsExpectedResult`。
+    /// 验证带非零下界的多维数组按指定维度判断索引。
     /// </summary>
     [Fact]
     public void IsIndexInRange_MultiDimensionalArrayWithLowerBound_ReturnsExpectedResult()
@@ -33,8 +35,9 @@ public class ArrayJudgeTest
         ArrayJudge.IsIndexInRange(array, 4, 1).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `IsIndexInRange` 在 `InvalidDimension` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证无效维度被拒绝并报告参数名。
     /// </summary>
+    /// <param name="dimension">无效的维度序号。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]

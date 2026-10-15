@@ -3,13 +3,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 namespace Bing.Collections;
 /// <summary>
-/// 测试类：覆盖 `DictsAndCollConv` 相关行为。
+/// 字典更新、级联查找和集合转换测试。
 /// </summary>
 [Trait("CollectionsUT", "DictsAndCollConv")]
 public class DictsAndCollConvTest
 {
     /// <summary>
-    /// 测试用例：验证 `AddValueOrUpdate` 在 `WhenKeyExists` 场景下，结果为 `ShouldUpdate`。
+    /// 验证已有字典键通过更新工厂修改值。
     /// </summary>
     [Fact]
     public void AddValueOrUpdate_WhenKeyExists_ShouldUpdate()
@@ -19,7 +19,7 @@ public class DictsAndCollConvTest
         dict["a"].ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `AddValueIfNotExist` 在 `WhenMissing` 场景下，结果为 `ShouldAdd`。
+    /// 验证缺失的字典键通过工厂添加值。
     /// </summary>
     [Fact]
     public void AddValueIfNotExist_WhenMissing_ShouldAdd()
@@ -29,7 +29,7 @@ public class DictsAndCollConvTest
         dict["a"].ShouldBe(3);
     }
     /// <summary>
-    /// 测试用例：验证 `GetValueOrDefaultCascading` 在 `WhenNullCollection` 场景下，结果为 `ShouldThrow`。
+    /// 验证级联默认值查找拒绝空字典集合。
     /// </summary>
     [Fact]
     public void GetValueOrDefaultCascading_WhenNullCollection_ShouldThrow()
@@ -38,7 +38,7 @@ public class DictsAndCollConvTest
             Dicts.GetValueOrDefaultCascading<string, int>(null!, "a", -1));
     }
     /// <summary>
-    /// 测试用例：验证 `GetValueOrAdd` 在 `WhenMissing` 场景下，结果为 `ShouldCreateOnce`。
+    /// 验证缺失字典值只创建一次并供后续查询复用。
     /// </summary>
     [Fact]
     public void GetValueOrAdd_WhenMissing_ShouldCreateOnce()
@@ -60,7 +60,7 @@ public class DictsAndCollConvTest
         callCount.ShouldBe(1);
     }
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyDicts` 在 `Empty` 场景下，结果为 `ShouldReturnSingleton`。
+    /// 验证相同类型的空只读字典复用单例。
     /// </summary>
     [Fact]
     public void ReadOnlyDicts_Empty_ShouldReturnSingleton()
@@ -71,7 +71,7 @@ public class DictsAndCollConvTest
         ReferenceEquals(d1, d2).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyDicts` 在 `GetValueOrDefault` 场景下，结果为 `ShouldReturnDefaultWhenMissing`。
+    /// 验证缺失键返回指定默认值。
     /// </summary>
     [Fact]
     public void ReadOnlyDicts_GetValueOrDefault_ShouldReturnDefaultWhenMissing()
@@ -81,7 +81,7 @@ public class DictsAndCollConvTest
         ReadOnlyDicts.GetValueOrDefault(dict, "missing", 9).ShouldBe(9);
     }
     /// <summary>
-    /// 测试用例：验证 `ReadOnlyDicts` 在 `TryGetValueCascading` 场景下，结果为 `ShouldResolveFirstMatch`。
+    /// 验证级联查找返回首个匹配字典的值。
     /// </summary>
     [Fact]
     public void ReadOnlyDicts_TryGetValueCascading_ShouldResolveFirstMatch()
@@ -93,7 +93,7 @@ public class DictsAndCollConvTest
         value.ShouldBe(1);
     }
     /// <summary>
-    /// 测试用例：验证 `CollConv` 在 `ToIndexedSequence` 场景下，结果为 `ShouldReturnExpectedIndex`。
+    /// 验证索引序列包含从零开始的索引和值。
     /// </summary>
     [Fact]
     public void CollConv_ToIndexedSequence_ShouldReturnExpectedIndex()
@@ -106,7 +106,7 @@ public class DictsAndCollConvTest
         indexed[1].Value.ShouldBe("y");
     }
     /// <summary>
-    /// 测试用例：验证 `CollConv` 在 `ToEnumerableAfter` 场景下，结果为 `ShouldContinueFromCurrent`。
+    /// 验证从枚举器当前位置开始转换时包含当前元素。
     /// </summary>
     [Fact]
     public void CollConv_ToEnumerableAfter_ShouldContinueFromCurrent()
@@ -117,7 +117,7 @@ public class DictsAndCollConvTest
         values.ShouldBe(new[] { 10, 20, 30 });
     }
     /// <summary>
-    /// 测试用例：验证 `CollConv` 在 `AsNullWhenEmpty` 场景下，结果为 `ShouldReturnNullForEmpty`。
+    /// 验证空序列转换为空引用。
     /// </summary>
     [Fact]
     public void CollConv_AsNullWhenEmpty_ShouldReturnNullForEmpty()
@@ -126,7 +126,7 @@ public class DictsAndCollConvTest
         result.ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `CollConv` 在 `AsNullWhenEmpty` 场景下，结果为 `ShouldReturnEnumerableForNonEmpty`。
+    /// 验证非空序列保留全部元素。
     /// </summary>
     [Fact]
     public void CollConv_AsNullWhenEmpty_ShouldReturnEnumerableForNonEmpty()
@@ -136,7 +136,7 @@ public class DictsAndCollConvTest
         result!.ToArray().ShouldBe(new[] { 1, 2, 3 });
     }
     /// <summary>
-    /// 测试用例：验证 `CollConvShortcut` 在 `ToList_WithPredicate` 场景下，结果为 `ShouldFilter`。
+    /// 验证带谓词的列表转换筛选匹配元素。
     /// </summary>
     [Fact]
     public void CollConvShortcut_ToList_WithPredicate_ShouldFilter()

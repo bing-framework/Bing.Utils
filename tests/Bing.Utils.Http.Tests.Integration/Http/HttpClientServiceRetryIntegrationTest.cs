@@ -7,23 +7,27 @@ using Microsoft.Extensions.Hosting;
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
-/// Http客户端测试 - 重试协作链路
+/// 验证 HTTP 客户端与委托处理器协作完成服务器错误重试。
 /// </summary>
 [Trait("Bing.Http", "HttpClientService.RetryIntegration")]
 public class HttpClientServiceRetryIntegrationTest
 {
+    /// <summary>
+    /// 承载重试测试端点的测试主机。
+    /// </summary>
     private readonly IHost _host;
 
     /// <summary>
-    /// 初始化测试类
+    /// 初始化一个 <see cref="HttpClientServiceRetryIntegrationTest"/> 类型的实例。
     /// </summary>
+    /// <param name="host">承载集成测试端点的主机。</param>
     public HttpClientServiceRetryIntegrationTest(IHost host)
     {
         _host = host;
     }
 
     /// <summary>
-    /// 测试 - 通过真实DelegatingHandler重试链路实现500后重试成功
+    /// 验证服务器首次返回错误后重试一次并得到成功结果。
     /// </summary>
     [Fact]
     public async Task Test_Get_RetryHandler_RetriesAndSucceeds_1()
@@ -47,19 +51,30 @@ public class HttpClientServiceRetryIntegrationTest
     }
 
     /// <summary>
-    /// 仅用于集成测试的简单重试处理器：当响应为5xx时重试
+    /// 在服务器返回 5xx 时按次数限制重试的测试处理器。
     /// </summary>
     private sealed class RetryOnServerErrorHandler : DelegatingHandler
     {
+        /// <summary>
+        /// 首次发送失败后允许的最大重试次数。
+        /// </summary>
         private readonly int _maxRetryCount;
 
+        /// <summary>
+        /// 初始化一个 <see cref="RetryOnServerErrorHandler"/> 类型的实例。
+        /// </summary>
+        /// <param name="maxRetryCount">首次发送失败后允许的最大重试次数。</param>
         public RetryOnServerErrorHandler(int maxRetryCount)
         {
             _maxRetryCount = maxRetryCount;
         }
 
+        /// <summary>
+        /// 获取或设置处理器累计发送请求的次数。
+        /// </summary>
         public int SendCount { get; private set; }
 
+        /// <inheritdoc />
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var original = request;
@@ -74,6 +89,11 @@ public class HttpClientServiceRetryIntegrationTest
             }
         }
 
+        /// <summary>
+        /// 复制请求方法、地址、版本及请求头以用于无正文重试。
+        /// </summary>
+        /// <param name="request">待复制的原始请求。</param>
+        /// <returns>不包含请求正文的新请求实例。</returns>
         private static HttpRequestMessage CloneRequestWithoutBody(HttpRequestMessage request)
         {
             var clone = new HttpRequestMessage(request.Method, request.RequestUri);

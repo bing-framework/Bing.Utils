@@ -7,7 +7,7 @@ using Xunit;
 namespace Bing.Text;
 
 /// <summary>
-/// 测试类：StringProwessExtensions 字符串扩展方法（Join/Split 系列）
+/// 字符串连接、按索引分割及类型化分割扩展测试。
 /// </summary>
 [Trait("TextUT", "StringProwessExtensions")]
 public class StringProwessExtensionsTest
@@ -15,8 +15,11 @@ public class StringProwessExtensionsTest
     #region JoinStringFor
 
     /// <summary>
-    /// 测试目的：JoinStringFor 应将集合元素以给定分隔符连接成字符串
+    /// 验证使用指定分隔符连接集合元素。
     /// </summary>
+    /// <param name="separator">连接分隔符。</param>
+    /// <param name="items">待连接元素。</param>
+    /// <param name="expected">预期连接文本。</param>
     [Theory]
     [InlineData(",", new[] { "a", "b", "c" }, "a,b,c")]
     [InlineData("-", new[] { "x", "y" }, "x-y")]
@@ -32,7 +35,7 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：对空集合调用 JoinStringFor 应返回空字符串
+    /// 验证对空集合调用 JoinStringFor 应返回空字符串
     /// </summary>
     [Fact]
     public void JoinStringFor_EmptyList_ReturnsEmptyString()
@@ -45,7 +48,7 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinStringFor 对整数集合（泛型）应正常转换并连接
+    /// 验证JoinStringFor 对整数集合（泛型）应正常转换并连接
     /// </summary>
     [Fact]
     public void JoinStringFor_IntCollection_JoinsCorrectly()
@@ -65,8 +68,12 @@ public class StringProwessExtensionsTest
     #region SplitByIndex
 
     /// <summary>
-    /// 测试目的：正常索引下 SplitByIndex 应在指定位置（1-based）分割字符串
+    /// 验证按从一开始的索引分割字符串。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="index">分割位置。</param>
+    /// <param name="expectedFirst">预期前半段。</param>
+    /// <param name="expectedSecond">预期后半段。</param>
     [Theory]
     [InlineData("abcdef", 3, "ab", "cdef")]
     [InlineData("abcdef", 4, "abc", "def")]
@@ -82,7 +89,7 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：对空字符串调用 SplitByIndex 应返回两个空字符串
+    /// 验证对空字符串调用 SplitByIndex 应返回两个空字符串
     /// </summary>
     [Fact]
     public void SplitByIndex_EmptyString_ReturnsBothEmpty()
@@ -96,8 +103,10 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：索引超过或等于字符串长度时，整个字符串在 Item1，Item2 为空
+    /// 验证索引达到或超过长度时全部文本保留在前半段。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="index">分割位置。</param>
     [Theory]
     [InlineData("hello", 5)]
     [InlineData("hello", 100)]
@@ -112,8 +121,10 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：索引为 0 或负数时，Item1 为空，Item2 为整个字符串
+    /// 验证非正索引时全部文本保留在后半段。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="index">分割位置。</param>
     [Theory]
     [InlineData("hello", 0)]
     [InlineData("hello", -1)]
@@ -132,7 +143,7 @@ public class StringProwessExtensionsTest
     #region SplitTyped<T>
 
     /// <summary>
-    /// 测试目的：SplitTyped&lt;int&gt;(char) 应按字符分隔符分割并转换为整数数组
+    /// 验证SplitTyped&lt;int&gt;(char) 应按字符分隔符分割并转换为整数数组
     /// </summary>
     [Fact]
     public void SplitTyped_CharDelimiter_Int_ReturnsIntArray()
@@ -145,7 +156,7 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：SplitTyped&lt;string&gt;(char) 应按字符分隔符分割并返回字符串数组
+    /// 验证SplitTyped&lt;string&gt;(char) 应按字符分隔符分割并返回字符串数组
     /// </summary>
     [Fact]
     public void SplitTyped_CharDelimiter_String_ReturnsStringArray()
@@ -158,7 +169,7 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：SplitTyped&lt;int&gt;(string) 应按字符串分隔符分割并转换为整数数组
+    /// 验证SplitTyped&lt;int&gt;(string) 应按字符串分隔符分割并转换为整数数组
     /// </summary>
     [Fact]
     public void SplitTyped_StringDelimiter_Int_ReturnsIntArray()
@@ -171,7 +182,7 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：SplitTyped 对空字符串应返回空数组
+    /// 验证SplitTyped 对空字符串应返回空数组
     /// </summary>
     [Fact]
     public void SplitTyped_EmptyString_ReturnsEmptyArray()
@@ -184,7 +195,7 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：SplitTyped 对纯空白字符串应返回空数组
+    /// 验证SplitTyped 对纯空白字符串应返回空数组
     /// </summary>
     [Fact]
     public void SplitTyped_WhitespaceString_ReturnsEmptyArray()
@@ -197,7 +208,7 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：SplitTyped 应跳过连续分隔符产生的空项（RemoveEmptyEntries）
+    /// 验证SplitTyped 应跳过连续分隔符产生的空项（RemoveEmptyEntries）
     /// </summary>
     [Fact]
     public void SplitTyped_ConsecutiveDelimiters_SkipsEmpty()
@@ -210,7 +221,7 @@ public class StringProwessExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：单个元素字符串 SplitTyped 应返回包含该元素的数组
+    /// 验证单个元素字符串 SplitTyped 应返回包含该元素的数组
     /// </summary>
     [Fact]
     public void SplitTyped_SingleElement_ReturnsSingleItemArray()

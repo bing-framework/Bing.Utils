@@ -3,16 +3,13 @@ using Microsoft.AspNetCore.Http;
 namespace Bing.Http;
 
 /// <summary>
-/// HttpResponse 扩展测试。
+/// 验证 HTTP 响应的缓存控制头设置及已有值保留行为。
 /// </summary>
 [Trait("Bing.Http", "HttpResponseExtensions")]
-/// <summary>
-/// 验证 HttpResponseExtensionsTest 相关行为的测试。
-/// </summary>
 public class HttpResponseExtensionsTest
 {
     /// <summary>
-    /// 验证应设置缓存控制时响应头是否缺少。
+    /// 验证缺少缓存控制头时写入指定的最大缓存秒数。
     /// </summary>
     [Fact]
     public void SetCache_ShouldSetCacheControl_WhenHeaderIsMissing()
@@ -24,10 +21,10 @@ public class HttpResponseExtensionsTest
         response.Headers["Cache-Control"].ToString().ShouldBe("max-age=60");
     }
 
+
+
     /// <summary>
-
-    /// 验证需要设置缓存控制和 Pragma 时补齐响应头。
-
+    /// 验证禁用缓存时补齐缓存控制头及 Pragma 头。
     /// </summary>
     [Fact]
     public void SetNoCache_ShouldSetCacheControlAndPragma_WhenHeadersAreMissing()
@@ -40,10 +37,10 @@ public class HttpResponseExtensionsTest
         response.Headers["Pragma"].ToString().ShouldBe("no-cache");
     }
 
+
+
     /// <summary>
-
-    /// 验证应保留现有响应头。
-
+    /// 验证设置或禁用缓存均不覆盖已有缓存响应头。
     /// </summary>
     [Fact]
     public void SetCacheAndSetNoCache_ShouldPreserveExistingHeaders()

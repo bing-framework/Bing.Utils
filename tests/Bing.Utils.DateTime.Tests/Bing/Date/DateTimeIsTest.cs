@@ -2,15 +2,17 @@ using System.Collections.Generic;
 using Bing.Helpers;
 namespace Bing.Date;
 /// <summary>
-/// 日期时间判断测试
+/// 日期时间时段、闰年及同一日期范围判断测试。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.Is")]
 public class DateTimeIsTest
 {
     #region IsEarlyMorning
     /// <summary>
-    /// 测试 - 是否清晨
+    /// 验证清晨时段以六点为结束边界。
     /// </summary>
+    /// <param name="input">待判断的日期时间文本。</param>
+    /// <param name="result">预期判断结果。</param>
     [Theory]
     [InlineData("2024-01-12 00:00:00", true)]
     [InlineData("2024-01-12 02:00:00", true)]
@@ -27,8 +29,10 @@ public class DateTimeIsTest
     #endregion
     #region IsLeapYear
     /// <summary>
-    /// 测试 - 是否闰年
+    /// 验证日期所属年份的闰年判断。
     /// </summary>
+    /// <param name="input">待判断的日期文本。</param>
+    /// <param name="result">预期判断结果。</param>
     [Theory]
     [InlineData("2004-01-01", true)]
     [InlineData("2008-01-01", true)]
@@ -47,14 +51,21 @@ public class DateTimeIsTest
     #endregion
     #region IsSameDay(是否为同一天)
     /// <summary>
-    /// 测试 - 判断是否同一天
+    /// 验证同一天判断及空值处理。
     /// </summary>
+    /// <param name="date">第一个日期。</param>
+    /// <param name="compareDate">第二个日期。</param>
+    /// <param name="result">预期判断结果。</param>
     [Theory]
     [MemberData(nameof(IsSameDayValues))]
     public void Test_IsSameDay(DateTime? date, DateTime? compareDate, bool result)
     {
         Assert.Equal(result, DateJudge.IsSameDay(date, compareDate));
     }
+    /// <summary>
+    /// 获取同一天判断的测试数据。
+    /// </summary>
+    /// <returns>日期对及其预期判断结果。</returns>
     public static List<object[]> IsSameDayValues =>
     [
         [DateTime.Parse("2020-01-04 05:34:55"), DateTime.Parse("2020-01-04 00:00:00"), true],
@@ -70,14 +81,22 @@ public class DateTimeIsTest
     #endregion
     #region IsSameWeek(是否为同一周)
     /// <summary>
-    /// 测试 - 判断是否同一周
+    /// 验证按指定周首日判断同一周判断及空值处理。
     /// </summary>
+    /// <param name="date">第一个日期。</param>
+    /// <param name="compareDate">第二个日期。</param>
+    /// <param name="firstDayOfWeek">每周首日。</param>
+    /// <param name="result">预期判断结果。</param>
     [Theory]
     [MemberData(nameof(IsSameWeekValues))]
     public void Test_IsSameWeek(DateTime? date, DateTime? compareDate, DayOfWeek firstDayOfWeek, bool result)
     {
         Assert.Equal(result, DateJudge.IsSameWeek(date, compareDate, firstDayOfWeek));
     }
+    /// <summary>
+    /// 获取同一周判断的测试数据。
+    /// </summary>
+    /// <returns>日期对、周首日及其预期判断结果。</returns>
     public static List<object[]> IsSameWeekValues =>
     [
         [DateTime.Parse("2021-09-05 05:34:55"), DateTime.Parse("2021-09-05 00:00:00"), DayOfWeek.Monday, true],
@@ -95,14 +114,21 @@ public class DateTimeIsTest
     #endregion
     #region IsSameMonth(是否为同一月)
     /// <summary>
-    /// 测试 - 判断是否为同一月
+    /// 验证同一年月判断及空值处理。
     /// </summary>
+    /// <param name="date">第一个日期。</param>
+    /// <param name="compareDate">第二个日期。</param>
+    /// <param name="result">预期判断结果。</param>
     [Theory]
     [MemberData(nameof(IsSameMonthValues))]
     public void Test_IsSameMonth(DateTime? date, DateTime? compareDate, bool result)
     {
         Assert.Equal(result, DateJudge.IsSameMonth(date, compareDate));
     }
+    /// <summary>
+    /// 获取同一年月判断的测试数据。
+    /// </summary>
+    /// <returns>日期对及其预期判断结果。</returns>
     public static List<object[]> IsSameMonthValues =>
     [
         [DateTime.Parse("2020-01-04 05:34:55"), DateTime.Parse("2020-01-05 00:00:00"), true],
@@ -116,14 +142,21 @@ public class DateTimeIsTest
     #endregion
     #region IsSameYear(是否为同一年)
     /// <summary>
-    /// 测试 - 判断是否为同一年
+    /// 验证同一年判断及空值处理。
     /// </summary>
+    /// <param name="date">第一个日期。</param>
+    /// <param name="compareDate">第二个日期。</param>
+    /// <param name="result">预期判断结果。</param>
     [Theory]
     [MemberData(nameof(IsSameYearValues))]
     public void Test_IsSameYear(DateTime? date, DateTime? compareDate, bool result)
     {
         Assert.Equal(result, DateJudge.IsSameYear(date, compareDate));
     }
+    /// <summary>
+    /// 获取同一年判断的测试数据。
+    /// </summary>
+    /// <returns>日期对及其预期判断结果。</returns>
     public static List<object[]> IsSameYearValues =>
     [
         [DateTime.Parse("2020-01-04 05:34:55"), DateTime.Parse("2020-01-05 00:00:00"), true],

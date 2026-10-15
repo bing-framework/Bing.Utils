@@ -8,7 +8,7 @@ namespace Bing;
 public class ItemTest
 {
     /// <summary>
-    /// 测试用例：默认构造函数创建的实例，其可空/引用属性应保持默认值
+    /// 验证默认构造函数创建的实例，其可空/引用属性应保持默认值
     /// </summary>
     [Fact]
     public void Constructor_DefaultCtor_PropertiesKeepDefaultValues()
@@ -23,7 +23,7 @@ public class ItemTest
     }
 
     /// <summary>
-    /// 测试用例：带参构造函数应按输入赋值，包括可选参数
+    /// 验证带参构造函数应按输入赋值，包括可选参数
     /// </summary>
     [Fact]
     public void Constructor_WithArguments_AssignsAllProperties()
@@ -40,7 +40,7 @@ public class ItemTest
     }
 
     /// <summary>
-    /// 测试用例：带参构造函数在可选参数缺省时应保留对应属性为空
+    /// 验证带参构造函数在可选参数缺省时应保留对应属性为空
     /// </summary>
     [Fact]
     public void Constructor_WithRequiredArgumentsOnly_OptionalPropertiesRemainNull()
@@ -55,8 +55,11 @@ public class ItemTest
     }
 
     /// <summary>
-    /// 测试用例：`CompareTo` 在不同文本顺序场景下应返回符合比较约定的符号值
+    /// 验证条目文本比较结果的正负符号。
     /// </summary>
+    /// <param name="leftText">左侧条目文本。</param>
+    /// <param name="rightText">右侧条目文本。</param>
+    /// <param name="expectedSign">预期比较结果符号。</param>
     [Theory]
     [InlineData("a", "b", -1)]
     [InlineData("b", "a", 1)]
@@ -75,7 +78,7 @@ public class ItemTest
     }
 
     /// <summary>
-    /// 测试用例：`CompareTo` 传入 `null` 时，当前实现会因访问 `other.Text` 抛出空引用异常
+    /// 验证`CompareTo` 传入 `null` 时，当前实现会因访问 `other.Text` 抛出空引用异常
     /// </summary>
     [Fact]
     public void CompareTo_WhenOtherIsNull_ThrowsNullReferenceException()
@@ -86,7 +89,7 @@ public class ItemTest
     }
 
     /// <summary>
-    /// 测试用例：`Item` 类型应声明 `DataContract` 序列化契约特性
+    /// 验证`Item` 类型应声明 `DataContract` 序列化契约特性
     /// </summary>
     [Fact]
     public void Type_Metadata_ShouldContainDataContractAttribute()
@@ -97,8 +100,9 @@ public class ItemTest
     }
 
     /// <summary>
-    /// 测试用例：关键属性应声明 `DataMember(EmitDefaultValue = false)` 以避免默认值输出
+    /// 验证关键属性声明不输出默认值的数据成员特性。
     /// </summary>
+    /// <param name="propertyName">待检查的属性名。</param>
     [Theory]
     [InlineData(nameof(Item.Text))]
     [InlineData(nameof(Item.Value))]

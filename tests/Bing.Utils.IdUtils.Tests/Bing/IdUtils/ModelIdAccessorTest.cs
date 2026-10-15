@@ -23,6 +23,7 @@ public class ModelIdAccessorTest
     /// <summary>
     /// 测试 - 带初始索引的构造函数 - 正确设置初始值
     /// </summary>
+    /// <param name="initialIndex">用于初始化访问器的起始索引。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -39,6 +40,7 @@ public class ModelIdAccessorTest
     /// <summary>
     /// 测试 - 带初始索引的构造函数 - 负数参数验证
     /// </summary>
+    /// <param name="invalidIndex">小于零的起始索引。</param>
     [Theory]
     [InlineData(-1)]
     [InlineData(-100)]
@@ -99,6 +101,7 @@ public class ModelIdAccessorTest
     /// <summary>
     /// 测试 - ResetIndex - 重置索引值
     /// </summary>
+    /// <param name="newIndex">要设置的新索引。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(500)]
@@ -119,6 +122,7 @@ public class ModelIdAccessorTest
     /// <summary>
     /// 测试 - ResetIndex - 负数参数验证
     /// </summary>
+    /// <param name="invalidIndex">小于零的索引。</param>
     [Theory]
     [InlineData(-1)]
     [InlineData(-100)]
@@ -205,6 +209,7 @@ public class ModelIdAccessorTest
     /// <summary>
     /// 测试 - GenerateCompositeId - 带前缀生成
     /// </summary>
+    /// <param name="prefix">组合 ID 使用的前缀。</param>
     [Theory]
     [InlineData("ORDER")]
     [InlineData("BATCH")]

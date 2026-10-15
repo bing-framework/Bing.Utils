@@ -260,6 +260,7 @@ public class CultureTest : TestBase
     /// <summary>
     /// 测试 - Use - 无效文化名称抛出异常
     /// </summary>
+    /// <param name="invalidCulture">无效的文化名称。</param>
     [Theory]
     [InlineData("invalid-culture")]
     //[InlineData("xx-YY")]
@@ -344,6 +345,7 @@ public class CultureTest : TestBase
     /// <summary>
     /// 测试 - IsValidCultureCode - 无效的文化代码
     /// </summary>
+    /// <param name="cultureCode">无效的文化代码文本。</param>
     [Theory]
     [InlineData("invalid")]
     //[InlineData("xx-YY")]
@@ -414,6 +416,7 @@ public class CultureTest : TestBase
     /// <summary>
     /// 测试 - GetBaseCultureName - 无效文化名称抛出异常
     /// </summary>
+    /// <param name="invalidCulture">无效的文化名称。</param>
     [Theory]
     [InlineData("invalid")]
     //[InlineData("xx-YY")]

@@ -131,8 +131,7 @@ public class FileInfoExtensionsTests : IDisposable
 }
 
 /// <summary>
-/// 测试 <see cref="StreamExtensions"/>
-/// (ToFile / ContentsEqual / GetMd5)
+/// 验证流扩展的文件写入、内容比较和摘要计算行为。
 /// </summary>
 public class StreamExtensionsTests : IDisposable
 {

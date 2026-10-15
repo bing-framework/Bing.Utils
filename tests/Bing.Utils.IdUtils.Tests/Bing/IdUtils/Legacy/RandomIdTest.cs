@@ -6,12 +6,13 @@ namespace Bing.IdUtils.Legacy;
 public class RandomIdTest
 {
     /// <summary>
-    /// 测试输出帮助类
+    /// 获取当前测试的输出助手。
     /// </summary>
     protected ITestOutputHelper Output { get; }
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="RandomIdTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">当前测试的输出助手。</param>
     public RandomIdTest(ITestOutputHelper output)
     {
         Output = output;

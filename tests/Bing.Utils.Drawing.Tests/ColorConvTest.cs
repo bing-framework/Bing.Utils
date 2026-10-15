@@ -4,13 +4,16 @@ using Bing.Conversions;
 namespace Bing.Conversions;
 
 /// <summary>
-/// 颜色转换测试
+/// 验证 RGB 与 HSB 颜色表示之间的转换结果。
 /// </summary>
 public class ColorConvTest
 {
     /// <summary>
-    /// 测试目的：验证 RgbToHsb 转换的正确性 - 基本颜色
+    /// 验证基本颜色的 RGB 分量可转换为有效 HSB 值。
     /// </summary>
+    /// <param name="r">颜色的红色分量。</param>
+    /// <param name="g">颜色的绿色分量。</param>
+    /// <param name="b">颜色的蓝色分量。</param>
     [Theory]
     [InlineData(255, 0, 0)]     // 红色
     [InlineData(0, 255, 0)]     // 绿色
@@ -53,8 +56,13 @@ public class ColorConvTest
     }
 
     /// <summary>
-    /// 测试目的：验证 RgbToHsb 对白色和黑色的特殊处理
+    /// 验证白色和黑色转换后的色相与饱和度。
     /// </summary>
+    /// <param name="r">颜色的红色分量。</param>
+    /// <param name="g">颜色的绿色分量。</param>
+    /// <param name="b">颜色的蓝色分量。</param>
+    /// <param name="expectedSaturation">预期的饱和度。</param>
+    /// <param name="expectedHue">预期的色相。</param>
     [Theory]
     [InlineData(255, 255, 255, 0, 0)] // 白色：饱和度=0
     [InlineData(0, 0, 0, 0, 0)]       // 黑色：饱和度=0
@@ -72,8 +80,11 @@ public class ColorConvTest
     }
 
     /// <summary>
-    /// 测试目的：验证 HsbToRgb 转换的正确性 - 零饱和度
+    /// 验证零饱和度的 HSB 值转换为灰度颜色。
     /// </summary>
+    /// <param name="hue">颜色的色相。</param>
+    /// <param name="saturation">颜色的饱和度。</param>
+    /// <param name="value">颜色的明度。</param>
     [Theory]
     [InlineData(0, 0, 0)]       // 黑色
     [InlineData(0, 0, 0.5)]     // 灰色
@@ -109,8 +120,11 @@ public class ColorConvTest
     }
 
     /// <summary>
-    /// 测试目的：验证 HsbToRgb 边界值处理
+    /// 验证边界及中间 HSB 值可转换为有效 RGB 颜色。
     /// </summary>
+    /// <param name="hue">颜色的色相。</param>
+    /// <param name="saturation">颜色的饱和度。</param>
+    /// <param name="value">颜色的明度。</param>
     [Theory]
     [InlineData(0, 0, 0)]       // 最小值
     [InlineData(360, 1, 1)]     // 最大值
@@ -128,8 +142,11 @@ public class ColorConvTest
     }
 
     /// <summary>
-    /// 测试目的：验证 RgbToHsb 和 HsbToRgb 的往返转换一致性
+    /// 验证基本 RGB 颜色经过 HSB 往返转换后保持不变。
     /// </summary>
+    /// <param name="r">原始颜色的红色分量。</param>
+    /// <param name="g">原始颜色的绿色分量。</param>
+    /// <param name="b">原始颜色的蓝色分量。</param>
     [Theory]
     [InlineData(255, 0, 0)]     // 红色
     [InlineData(0, 255, 0)]     // 绿色
@@ -153,8 +170,9 @@ public class ColorConvTest
     }
 
     /// <summary>
-    /// 测试目的：验证 HsbToRgb 对不同色相的处理
+    /// 验证不同色相可转换为有效颜色，且至少一个通道接近边界值。
     /// </summary>
+    /// <param name="hue">要转换的色相。</param>
     [Theory]
     [InlineData(0)]     // 红色
     [InlineData(60)]    // 黄色

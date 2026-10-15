@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符串中数字数量及其下限判断。
+/// </summary>
 [Trait("StringUT", "Strings.Has")]
 public class StringHasTest
 {

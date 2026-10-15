@@ -1,20 +1,20 @@
 using Bing.Utils.Parameters;
 namespace Bing.Utils.Tests.Parameters;
 /// <summary>
-/// Url参数生成器测试
+/// 验证 URL 参数生成器的解析、排序和拼接行为。
 /// </summary>
 public class UrlParameterBuilderTest
 {
     /// <summary>
-    /// Url参数生成器
+    /// 保存当前测试使用的 URL 参数生成器实例。
     /// </summary>
     private UrlParameterBuilder _builder;
     /// <summary>
-    /// 初始化一个<see cref="UrlParameterBuilderTest"/>类型的实例
+    /// 初始化一个 <see cref="UrlParameterBuilderTest"/> 类型的实例。
     /// </summary>
     public UrlParameterBuilderTest() => _builder = new UrlParameterBuilder();
     /// <summary>
-    /// 测试 - 默认值
+    /// 验证新建生成器不包含参数。
     /// </summary>
     [Fact]
     public void Test_Default()
@@ -22,7 +22,7 @@ public class UrlParameterBuilderTest
         Assert.Empty(_builder.Result());
     }
     /// <summary>
-    /// 测试 - 加载Url
+    /// 验证不含等号的片段不会生成参数。
     /// </summary>
     [Fact]
     public void Test_LoadUrl_1()
@@ -31,7 +31,7 @@ public class UrlParameterBuilderTest
         Assert.Equal(0, _builder.GetDictionary().Count);
     }
     /// <summary>
-    /// 测试 - 加载Url
+    /// 验证解析单个键值对。
     /// </summary>
     [Fact]
     public void Test_LoadUrl_2()
@@ -40,7 +40,7 @@ public class UrlParameterBuilderTest
         Assert.Equal(1, _builder.GetDictionary().Count);
     }
     /// <summary>
-    /// 测试 - 加载Url
+    /// 验证解析多个键值对。
     /// </summary>
     [Fact]
     public void Test_LoadUrl_3()
@@ -49,7 +49,7 @@ public class UrlParameterBuilderTest
         Assert.Equal(2, _builder.GetDictionary().Count);
     }
     /// <summary>
-    /// 测试 - 加载Url
+    /// 验证忽略没有值的参数。
     /// </summary>
     [Fact]
     public void Test_LoadUrl_4()
@@ -58,7 +58,7 @@ public class UrlParameterBuilderTest
         Assert.Equal(1, _builder.GetDictionary().Count);
     }
     /// <summary>
-    /// 测试 - 加载Url
+    /// 验证忽略空值参数。
     /// </summary>
     [Fact]
     public void Test_LoadUrl_5()
@@ -67,7 +67,7 @@ public class UrlParameterBuilderTest
         Assert.Equal(1, _builder.GetDictionary().Count);
     }
     /// <summary>
-    /// 测试 - 加载Url
+    /// 验证从完整 URL 解析参数并支持按键排序。
     /// </summary>
     [Fact]
     public void Test_LoadUrl_6()
@@ -77,7 +77,7 @@ public class UrlParameterBuilderTest
         Assert.Equal("a=1&b=2&c=3", _builder.Result(true));
     }
     /// <summary>
-    /// 测试 - 加载Url
+    /// 验证解析带空格的 URL 查询参数。
     /// </summary>
     [Fact]
     public void Test_LoadUrl_7()
@@ -86,7 +86,7 @@ public class UrlParameterBuilderTest
         Assert.Equal("a=1&b=2", _builder.Result(true));
     }
     /// <summary>
-    /// 测试 - 添加参数
+    /// 验证连续添加参数并生成查询字符串。
     /// </summary>
     [Fact]
     public void Test_Add_1()
@@ -95,7 +95,7 @@ public class UrlParameterBuilderTest
         Assert.Equal("a=b&c=d", _builder.Add("c", "d").Result());
     }
     /// <summary>
-    /// 测试 - 添加参数 - 测试空格
+    /// 验证添加参数时会清理键和值两端的空格。
     /// </summary>
     [Fact]
     public void Test_Add_2()
@@ -103,7 +103,7 @@ public class UrlParameterBuilderTest
         Assert.Equal("b=2&a=1", _builder.Add(" b ", " 2 ").Add(" a ", " 1 ").Result());
     }
     /// <summary>
-    /// 测试 - 添加参数 - 测试排序
+    /// 验证查询字符串可按键排序。
     /// </summary>
     [Fact]
     public void Test_Result_Sort()
@@ -111,8 +111,10 @@ public class UrlParameterBuilderTest
         Assert.Equal("a=1&b=2", _builder.Add("b", "2").Add("a", "1").Result(true));
     }
     /// <summary>
-    /// 测试 - 连接Url
+    /// 将参数拼接到已有查询字符串中。
     /// </summary>
+    /// <param name="url">待拼接查询参数的 URL。</param>
+    /// <param name="result">预期拼接结果。</param>
     [Theory]
     [InlineData("http://test.com", "http://test.com?a=1&b=2")]
     [InlineData("http://test.com?", "http://test.com?a=1&b=2")]

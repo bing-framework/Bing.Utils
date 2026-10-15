@@ -1,6 +1,9 @@
 using Bing.Collections;
 namespace BingUtilsUT.ConvUT;
 
+/// <summary>
+/// 验证字典与键值对字符串之间的转换结果。
+/// </summary>
 [Trait("ConvUT", "Dict")]
 public class DictConvTest
 {

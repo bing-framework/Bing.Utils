@@ -7,14 +7,13 @@ using Xunit;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="EnumerableProxy{T}"/> 相关行为。
+/// 可枚举代理的枚举、查询及源数据联动测试。
 /// </summary>
 [Trait("Collections", "EnumerableProxy")]
 public class EnumerableProxyTest
 {
     /// <summary>
-    /// 测试用例：验证 <see cref="EnumerableProxy{T}"/> 在 `NullEnumerable` 场景下，
-    /// 结果为 `ThrowsArgumentNullException`。
+    /// 验证构造代理时拒绝空序列。
     /// </summary>
     [Fact]
     public void Constructor_NullEnumerable_ThrowsArgumentNullException()
@@ -23,8 +22,7 @@ public class EnumerableProxyTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="EnumerableProxy{T}.GetEnumerator"/> 在 `ValidEnumerable`
-    /// 场景下，结果为 `ReturnsAllItems`。
+    /// 验证泛型枚举按顺序返回全部源元素。
     /// </summary>
     [Fact]
     public void GetEnumerator_ValidList_ReturnsAllItems()
@@ -35,8 +33,7 @@ public class EnumerableProxyTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="EnumerableProxy{T}"/> 在 `EmptyEnumerable` 场景下，
-    /// 结果为 `ReturnsEmptySequence`。
+    /// 验证空源列表的枚举结果为空。
     /// </summary>
     [Fact]
     public void GetEnumerator_EmptyList_ReturnsEmptySequence()
@@ -47,7 +44,7 @@ public class EnumerableProxyTest
     }
 
     /// <summary>
-    /// 测试用例：验证非泛型 <see cref="IEnumerable.GetEnumerator"/> 可正常枚举。
+    /// 验证非泛型枚举按顺序返回全部源元素。
     /// </summary>
     [Fact]
     public void NonGenericGetEnumerator_ReturnsItems()
@@ -62,7 +59,7 @@ public class EnumerableProxyTest
     }
 
     /// <summary>
-    /// 测试用例：验证 LINQ 操作（Count/Where）可通过代理正常使用。
+    /// 验证代理支持 LINQ 计数和筛选。
     /// </summary>
     [Fact]
     public void LinqOperations_WorksCorrectly()
@@ -74,7 +71,7 @@ public class EnumerableProxyTest
     }
 
     /// <summary>
-    /// 测试用例：验证代理对修改后的源集合保持实时反映。
+    /// 验证代理反映源列表后续追加的元素。
     /// </summary>
     [Fact]
     public void GetEnumerator_ReflectsSourceChanges()

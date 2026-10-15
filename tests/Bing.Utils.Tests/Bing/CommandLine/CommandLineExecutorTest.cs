@@ -5,7 +5,7 @@ namespace Bing.CommandLine;
 public class CommandLineExecutorTest
 {
     /// <summary>
-    /// 测试 - 设置命令参数 - 1个参数
+    /// 验证单个参数追加到命令调试文本。
     /// </summary>
     [Fact]
     public void Test_Arguments_1()
@@ -14,7 +14,7 @@ public class CommandLineExecutorTest
         command.GetDebugText().ShouldBe("dapr run");
     }
     /// <summary>
-    /// 测试 - 设置命令参数 - 多个参数
+    /// 验证可变参数按输入顺序追加到命令调试文本。
     /// </summary>
     [Fact]
     public void Test_Arguments_2()
@@ -23,7 +23,7 @@ public class CommandLineExecutorTest
         command.GetDebugText().ShouldBe("dapr run --app-id 80");
     }
     /// <summary>
-    /// 测试 - 设置命令参数 - 数组参数
+    /// 验证列表参数按输入顺序追加到命令调试文本。
     /// </summary>
     [Fact]
     public void Test_Arguments_3()
@@ -38,7 +38,7 @@ public class CommandLineExecutorTest
         command.GetDebugText().ShouldBe("dapr run --app-id 80");
     }
     /// <summary>
-    /// 测试 - 设置命令参数 - 多次调用Arguments
+    /// 验证多次配置参数会累积追加。
     /// </summary>
     [Fact]
     public void Test_Arguments_4()
@@ -51,7 +51,7 @@ public class CommandLineExecutorTest
         command.GetDebugText().ShouldBe("dapr run --app-id 80");
     }
     /// <summary>
-    /// 测试 - 根据条件设置命令参数
+    /// 验证条件为假时不追加命令参数。
     /// </summary>
     [Fact]
     public void Test_ArgumentsIf()

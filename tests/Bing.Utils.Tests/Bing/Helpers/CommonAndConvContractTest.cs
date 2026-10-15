@@ -68,7 +68,7 @@ public class CommonAndConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：`ToDictionary(IEnumerable<KeyValuePair<,>>)` 返回的新字典应与源集合解耦
+    /// 测试用例：`ToDictionary` 对键值对序列返回的新字典应与源集合解耦。
     /// </summary>
     [Fact]
     public void ToDictionary_KeyValueEnumerableInput_ReturnedDictionaryIsDetachedFromSource()
@@ -91,6 +91,7 @@ public class CommonAndConvContractTest
     /// <summary>
     /// 测试数据：`JoinPath` 的输入数组样例（均用于验证不变性契约）
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetJoinPathInputCases()
     {
         yield return new object[] { new[] { "api", "v1", "users" } };
@@ -98,14 +99,26 @@ public class CommonAndConvContractTest
         yield return new object[] { new[] { "root", "child-item", "leaf.txt" } };
     }
 
+    /// <summary>
+    /// 用于验证对象属性保持不变的转换样例。
+    /// </summary>
     private sealed class ConvObjectSample
     {
+        /// <summary>
+        /// 获取或设置样例名称。
+        /// </summary>
         [Description("名称")]
         public string Name { get; set; }
 
+        /// <summary>
+        /// 获取或设置样例数量。
+        /// </summary>
         [DisplayName("数量")]
         public int Count { get; set; }
 
+        /// <summary>
+        /// 获取或设置样例字符串集合。
+        /// </summary>
         public List<string> Items { get; set; }
     }
 }

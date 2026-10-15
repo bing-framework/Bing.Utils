@@ -7,12 +7,12 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：ImageSharp 真实处理链路集成测试
+/// 验证图像文件读写、处理及编码转换的完整链路。
 /// </summary>
 public class ImageSharpHelperIntegrationTest
 {
     /// <summary>
-    /// 测试用例：读取-处理-输出完整链路在临时目录中可稳定执行并清理
+    /// 验证图像读取、透明度处理、Data URL 转换及文件输出的完整链路。
     /// </summary>
     [Fact]
     public void ProcessingPipeline_ReadProcessWrite_RoundTripAndCleanup()
@@ -44,7 +44,7 @@ public class ImageSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 测试用例：不同输出格式应生成对应文件签名
+    /// 验证 PNG 和 JPEG 编码输出各自的文件签名。
     /// </summary>
     [Fact]
     public void OutputFormat_PngAndJpeg_HaveExpectedMagicBytes()
@@ -66,7 +66,7 @@ public class ImageSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 测试用例：非法文件内容与非法流应按契约返回空结果
+    /// 验证非图像内容的文件和流均返回空加载结果。
     /// </summary>
     [Fact]
     public void InvalidInput_FileAndStream_ReturnNull()
@@ -83,6 +83,12 @@ public class ImageSharpHelperIntegrationTest
         fromStream.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 创建颜色随坐标变化的图像以验证处理链路。
+    /// </summary>
+    /// <param name="width">图像宽度，单位为像素。</param>
+    /// <param name="height">图像高度，单位为像素。</param>
+    /// <returns>指定尺寸的不透明 RGBA 图像，调用方负责释放。</returns>
     private static Image<Rgba32> CreatePatternImage(int width, int height)
     {
         var image = new Image<Rgba32>(width, height);
@@ -96,16 +102,28 @@ public class ImageSharpHelperIntegrationTest
         return image;
     }
 
+    /// <summary>
+    /// 提供测试期间创建及清理的独立临时目录。
+    /// </summary>
     private sealed class TempDirectory : IDisposable
     {
+        /// <summary>
+        /// 初始化一个 <see cref="TempDirectory"/> 类型的实例。
+        /// </summary>
+        /// <param name="prefix">临时目录名称的前缀。</param>
         public TempDirectory(string prefix)
         {
             Path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"{prefix}-{Guid.NewGuid():N}");
             Directory.CreateDirectory(Path);
         }
 
+        /// <summary>
+        /// 获取当前测试临时目录的完整路径。
+        /// </summary>
         public string Path { get; }
 
+        /// <inheritdoc />
+        /// <remarks>尝试递归删除临时目录；忽略清理异常以免覆盖测试结果。</remarks>
         public void Dispose()
         {
             try

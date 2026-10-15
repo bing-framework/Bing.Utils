@@ -7,13 +7,13 @@ namespace Bing.Reflection;
 #if NET6_0_OR_GREATER
 
 /// <summary>
-/// 测试类：覆盖 `TypeVisit.CreateDynamicType` 的动态类型生成契约。
+/// 验证动态类型的缓存、属性访问及构造参数绑定。
 /// </summary>
 [Trait("Bing.Reflection", "TypeVisit.DynamicType")]
 public class TypeVisitDynamicTypeTest
 {
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `SameProperties` 场景下，结果为 `ReturnsCachedSameType`。
+    /// 验证相同属性模式复用缓存中的动态类型。
     /// </summary>
     [Fact]
     public void CreateDynamicType_SameProperties_ReturnsCachedSameType()
@@ -33,7 +33,7 @@ public class TypeVisitDynamicTypeTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `SetAndGetPropertyValue` 场景下，结果为 `SupportsPropertyReadWrite`。
+    /// 验证生成类型继承动态基类且支持属性读写。
     /// </summary>
     [Fact]
     public void CreateDynamicType_SetAndGetPropertyValue_SupportsPropertyReadWrite()
@@ -57,7 +57,7 @@ public class TypeVisitDynamicTypeTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `ParameterizedConstructor` 场景下，结果为 `BindsArgumentsByPropertyOrder`。
+    /// 验证动态类型构造参数按属性声明顺序绑定。
     /// </summary>
     [Fact]
     public void CreateDynamicType_ParameterizedConstructor_BindsArgumentsByPropertyOrder()
@@ -76,7 +76,7 @@ public class TypeVisitDynamicTypeTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `NullProperties` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证空属性模式触发参数空异常。
     /// </summary>
     [Fact]
     public void CreateDynamicType_NullProperties_ThrowsArgumentNullException()

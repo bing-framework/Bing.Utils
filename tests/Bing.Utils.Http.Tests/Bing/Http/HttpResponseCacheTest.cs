@@ -4,10 +4,10 @@ using Bing.Http.Caching;
 
 namespace Bing.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// HTTP 响应缓存的显式启用、TTL 和并发一致性测试。
-
 /// </summary>
 public class HttpResponseCacheTest
 {
@@ -30,10 +30,10 @@ public class HttpResponseCacheTest
         statistics.Misses.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证并发调用方共用同一个进行中的回源操作。
-
     /// </summary>
     [Fact]
     public async Task GetOrCreate_SharesOneInFlightFactoryForConcurrentCallers()
@@ -57,10 +57,10 @@ public class HttpResponseCacheTest
         (await cache.GetAsync("orders:1")).ShouldBeSameAs(responses[0]);
     }
 
+
+
     /// <summary>
-
     /// 验证认证请求需要显式启用缓存。
-
     /// </summary>
     [Fact]
     public async Task AuthenticatedRequestRequiresExplicitOptIn()
@@ -77,10 +77,10 @@ public class HttpResponseCacheTest
         response.Data.ShouldBe("private");
     }
 
+
+
     /// <summary>
-
     /// 验证无效键并生存时间失败之前缓存。
-
     /// </summary>
     [Fact]
     public async Task InvalidKeyAndTtlFailBeforeCaching()
@@ -91,10 +91,10 @@ public class HttpResponseCacheTest
             cache.SetAsync("orders:1", Response("value"), TimeSpan.Zero));
     }
 
+
+
     /// <summary>
-
     /// 验证容量不足时先淘汰过期项，再淘汰最近最少使用项。
-
     /// </summary>
     [Fact]
     public async Task CapacityEvictsExpiredThenLeastRecentlyUsedEntry()
@@ -112,10 +112,10 @@ public class HttpResponseCacheTest
         (await cache.GetAsync("latest")).ShouldNotBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证缓存容量必须为正数。
-
     /// </summary>
     [Fact]
     public void CapacityMustBePositive()
@@ -124,10 +124,10 @@ public class HttpResponseCacheTest
             new InMemoryHttpResponseCache<string>(new HttpResponseCacheOptions { MaxEntries = 0 }));
     }
 
+
+
     /// <summary>
-
     /// 验证字节容量不足时淘汰旧缓存项并拒绝过大的缓存项。
-
     /// </summary>
     [Fact]
     public async Task ByteCapacityEvictsOldEntriesAndRejectsOversizedEntry()
@@ -146,10 +146,10 @@ public class HttpResponseCacheTest
         (await cache.GetAsync("large")).ShouldBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证移除缓存项后可为后续项释放字节容量。
-
     /// </summary>
     [Fact]
     public async Task RemoveAsync_ReleasesByteCapacityForTheNextEntry()
@@ -168,10 +168,10 @@ public class HttpResponseCacheTest
         (await cache.GetAsync("new")).ShouldNotBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证移除缓存项后重置已用字节容量。
-
     /// </summary>
     [Fact]
     public async Task ClearAsync_RemovesEntriesAndResetsByteCapacity()
@@ -188,10 +188,10 @@ public class HttpResponseCacheTest
         (await cache.GetAsync("new")).ShouldNotBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证是否安全期间写入方执行。
-
     /// </summary>
     [Fact]
     public async Task ClearAsync_IsSafeWhileWritersRun()
@@ -212,10 +212,10 @@ public class HttpResponseCacheTest
         await Task.WhenAll(writers.Append(clear));
     }
 
+
+
     /// <summary>
-
     /// 验证是否不正在运行的回源操作不重复发布工厂。
-
     /// </summary>
     [Fact]
     public async Task ClearAsync_DoesNotRepublishAnAlreadyRunningFactory()
@@ -237,10 +237,10 @@ public class HttpResponseCacheTest
         (await cache.GetAsync("epoch")).ShouldBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证按字节限制容量时要求有效的大小估算器。
-
     /// </summary>
     [Fact]
     public async Task ByteCapacityRequiresValidEstimator()
@@ -256,10 +256,10 @@ public class HttpResponseCacheTest
             cache.SetAsync("negative", Response("value"), TimeSpan.FromMinutes(1)));
     }
 
+
+
     /// <summary>
-
     /// 验证移除按前缀使用序号匹配并返回数量。
-
     /// </summary>
     [Fact]
     public async Task RemoveByPrefixUsesOrdinalMatchingAndReturnsCount()
@@ -275,10 +275,10 @@ public class HttpResponseCacheTest
         Should.Throw<ArgumentException>(() => cache.RemoveByPrefix(""));
     }
 
+
+
     /// <summary>
-
     /// 验证移除按前缀是否安全期间其他任务读取并写入。
-
     /// </summary>
     [Fact]
     public async Task RemoveByPrefixIsSafeWhileOtherTasksReadAndWrite()
@@ -296,11 +296,13 @@ public class HttpResponseCacheTest
         cache.RemoveByPrefix("orders:").ShouldBeGreaterThanOrEqualTo(0);
     }
 
+
+
     /// <summary>
-
-    /// 创建测试用 HTTP 响应。
-
+    /// 创建包含固定实体标签的字符串响应样例。
     /// </summary>
+    /// <param name="value">同时用作结果数据及原始正文的字符串。</param>
+    /// <returns>实体标签为 <c>v1</c> 的成功响应快照。</returns>
     private static HttpResponseResult<string> Response(string value)
         => new HttpResponseResult<string>(HttpStatusCode.OK,
             new Dictionary<string, IReadOnlyList<string>>

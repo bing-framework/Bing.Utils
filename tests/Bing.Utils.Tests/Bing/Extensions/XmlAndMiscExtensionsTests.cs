@@ -399,7 +399,7 @@ public class IdentityExtensionsTests
 // ──────────────────────────────────────────────────────────────────────────────
 
 /// <summary>
-/// 测试 <see cref="ObjectExtensions.ExpressionCopy{T}"/> 表达式浅拷贝
+/// 验证表达式浅拷贝会复制属性值并保留引用成员共享。
 /// </summary>
 public class ExpressionCopierTests
 {

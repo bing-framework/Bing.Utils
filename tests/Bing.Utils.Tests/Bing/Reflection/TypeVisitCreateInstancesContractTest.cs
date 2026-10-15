@@ -1,12 +1,12 @@
 namespace Bing.Reflection;
 /// <summary>
-/// 测试类：覆盖 `TypeVisitCreateInstancesContract` 相关行为。
+/// 验证实例创建重载的参数匹配及动态类型缓存。
 /// </summary>
 [Trait("Bing.Reflection", "TypeVisit.CreateInstance.Contract")]
 public class TypeVisitCreateInstancesContractTest
 {
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `TypeOverload_NullType` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证按类型创建实例时拒绝空类型。
     /// </summary>
     [Fact]
     public void CreateInstance_TypeOverload_NullType_ThrowsArgumentNullException()
@@ -15,7 +15,7 @@ public class TypeVisitCreateInstancesContractTest
         ex.ParamName.ShouldBe("type");
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `GenericTypeOverload_NullType` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证泛型类型入口拒绝空类型。
     /// </summary>
     [Fact]
     public void CreateInstance_GenericTypeOverload_NullType_ThrowsArgumentNullException()
@@ -24,7 +24,7 @@ public class TypeVisitCreateInstancesContractTest
         ex.ParamName.ShouldBe("type");
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `NoMatchingConstructor` 场景下，结果为 `CurrentBehaviorReturnsNull`。
+    /// 验证没有匹配构造函数时当前返回空。
     /// </summary>
     [Fact]
     public void CreateInstance_NoMatchingConstructor_CurrentBehaviorReturnsNull()
@@ -33,7 +33,7 @@ public class TypeVisitCreateInstancesContractTest
         instance.ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `WithMatchingConstructor` 场景下，结果为 `ReturnsCreatedObject`。
+    /// 验证匹配构造函数后正确初始化名称和年龄。
     /// </summary>
     [Fact]
     public void CreateInstance_WithMatchingConstructor_ReturnsCreatedObject()
@@ -44,7 +44,7 @@ public class TypeVisitCreateInstancesContractTest
         instance.Age.ShouldBe(18);
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `GenericOverload_WithArgs` 场景下，结果为 `ReturnsTypedInstance`。
+    /// 验证泛型入口按参数创建强类型实例。
     /// </summary>
     [Fact]
     public void CreateInstance_GenericOverload_WithArgs_ReturnsTypedInstance()
@@ -55,7 +55,7 @@ public class TypeVisitCreateInstancesContractTest
         instance.Age.ShouldBe(20);
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `GenericWithTypeOverload_WithArgs` 场景下，结果为 `ReturnsTypedInstance`。
+    /// 验证同时指定泛型与运行时类型时按参数创建强类型实例。
     /// </summary>
     [Fact]
     public void CreateInstance_GenericWithTypeOverload_WithArgs_ReturnsTypedInstance()
@@ -67,7 +67,7 @@ public class TypeVisitCreateInstancesContractTest
     }
 #if NET6_0_OR_GREATER
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `DynamicValuesNull` 场景下，结果为 `CurrentBehaviorThrowsArgumentNullException`。
+    /// 验证空动态属性值字典当前触发参数空异常。
     /// </summary>
     [Fact]
     public void CreateInstance_DynamicValuesNull_CurrentBehaviorThrowsArgumentNullException()
@@ -76,7 +76,7 @@ public class TypeVisitCreateInstancesContractTest
         ex.ParamName.ShouldBe("source");
     }
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `SamePropertySchema` 场景下，结果为 `ReturnsSameCachedType`。
+    /// 验证相同属性模式复用缓存中的动态类型。
     /// </summary>
     [Fact]
     public void CreateDynamicType_SamePropertySchema_ReturnsSameCachedType()
@@ -96,7 +96,7 @@ public class TypeVisitCreateInstancesContractTest
         type1.ShouldBe(type2);
     }
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `NullProperties` 场景下，结果为 `CurrentBehaviorThrowsArgumentNullException`。
+    /// 验证空动态属性模式当前触发参数空异常。
     /// </summary>
     [Fact]
     public void CreateDynamicType_NullProperties_CurrentBehaviorThrowsArgumentNullException()
@@ -105,17 +105,34 @@ public class TypeVisitCreateInstancesContractTest
         ex.ParamName.ShouldBe("source");
     }
 #endif
+    /// <summary>
+    /// 提供无参与双参数构造函数的实例创建样例。
+    /// </summary>
     private sealed class Sample
     {
+        /// <summary>
+        /// 初始化一个 <see cref="Sample"/> 类型的实例。
+        /// </summary>
         public Sample()
         {
         }
+        /// <summary>
+        /// 初始化一个 <see cref="Sample"/> 类型的实例。
+        /// </summary>
+        /// <param name="name">测试名称。</param>
+        /// <param name="age">测试年龄。</param>
         public Sample(string name, int age)
         {
             Name = name;
             Age = age;
         }
+        /// <summary>
+        /// 获取构造函数传入的测试名称。
+        /// </summary>
         public string Name { get; }
+        /// <summary>
+        /// 获取构造函数传入的测试年龄。
+        /// </summary>
         public int Age { get; }
     }
 }

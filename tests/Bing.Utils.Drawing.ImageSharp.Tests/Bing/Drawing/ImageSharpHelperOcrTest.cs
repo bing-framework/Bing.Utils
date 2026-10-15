@@ -4,13 +4,16 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖 OCR 预处理 API。
+/// 验证 OCR 图像预处理的灰度、二值化、前景加深及投影。
 /// </summary>
 [Trait("Drawing", "ImageSharp.Ocr")]
 public class ImageSharpHelperOcrTest
 {
     #region ToGrayArray2D
 
+    /// <summary>
+    /// 验证灰度矩阵的两个维度对应图像宽高。
+    /// </summary>
     [Fact]
     public void ToGrayArray2D_ReturnsCorrectDimensions()
     {
@@ -20,6 +23,9 @@ public class ImageSharpHelperOcrTest
         gray.GetLength(1).ShouldBe(3);
     }
 
+    /// <summary>
+    /// 验证白色像素转为灰度值 255。
+    /// </summary>
     [Fact]
     public void ToGrayArray2D_WhiteImage_Returns255()
     {
@@ -28,6 +34,9 @@ public class ImageSharpHelperOcrTest
         gray[0, 0].ShouldBe((byte)255);
     }
 
+    /// <summary>
+    /// 验证黑色像素转为灰度值零。
+    /// </summary>
     [Fact]
     public void ToGrayArray2D_BlackImage_Returns0()
     {
@@ -36,6 +45,9 @@ public class ImageSharpHelperOcrTest
         gray[0, 0].ShouldBe((byte)0);
     }
 
+    /// <summary>
+    /// 验证灰度矩阵转换拒绝空图像。
+    /// </summary>
     [Fact]
     public void ToGrayArray2D_NullImage_Throws()
     {
@@ -46,6 +58,9 @@ public class ImageSharpHelperOcrTest
 
     #region ToBinaryArray2D
 
+    /// <summary>
+    /// 验证白色图像的二值矩阵采样点均为背景值 255。
+    /// </summary>
     [Fact]
     public void ToBinaryArray2D_WhiteImage_ReturnsAllBackground()
     {
@@ -55,6 +70,9 @@ public class ImageSharpHelperOcrTest
         bin[1, 1].ShouldBe((byte)255);
     }
 
+    /// <summary>
+    /// 验证黑色图像的二值矩阵采样点均为前景值零。
+    /// </summary>
     [Fact]
     public void ToBinaryArray2D_BlackImage_ReturnsAllForeground()
     {
@@ -68,6 +86,9 @@ public class ImageSharpHelperOcrTest
 
     #region Binaryzation
 
+    /// <summary>
+    /// 验证二值化处理保持图像尺寸。
+    /// </summary>
     [Fact]
     public void Binaryzation_ReturnsLoadableImage()
     {
@@ -77,6 +98,9 @@ public class ImageSharpHelperOcrTest
         result.Height.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证二值化处理拒绝空图像。
+    /// </summary>
     [Fact]
     public void Binaryzation_NullImage_Throws()
     {
@@ -87,6 +111,9 @@ public class ImageSharpHelperOcrTest
 
     #region DeepenForeground
 
+    /// <summary>
+    /// 验证低于阈值的暗色像素被加深为黑色。
+    /// </summary>
     [Fact]
     public void DeepenForeground_DarkPixels_BecomeBlack()
     {
@@ -98,6 +125,9 @@ public class ImageSharpHelperOcrTest
         pixel.B.ShouldBe((byte)0);
     }
 
+    /// <summary>
+    /// 验证高于阈值的亮色像素保留原始红色通道值。
+    /// </summary>
     [Fact]
     public void DeepenForeground_BrightPixels_Preserved()
     {
@@ -111,6 +141,9 @@ public class ImageSharpHelperOcrTest
 
     #region CreateImageFromGrayArray
 
+    /// <summary>
+    /// 验证灰度矩阵生成图像的尺寸与矩阵维度一致。
+    /// </summary>
     [Fact]
     public void CreateImageFromGrayArray_CreatesCorrectSize()
     {
@@ -120,6 +153,9 @@ public class ImageSharpHelperOcrTest
         image.Height.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证灰度图像生成拒绝空矩阵。
+    /// </summary>
     [Fact]
     public void CreateImageFromGrayArray_NullArray_Throws()
     {
@@ -130,6 +166,9 @@ public class ImageSharpHelperOcrTest
 
     #region Projection
 
+    /// <summary>
+    /// 验证黑色图像每列的前景投影计数为正。
+    /// </summary>
     [Fact]
     public void GetVerticalProjection_BlackImage_AllNonZero()
     {
@@ -141,6 +180,9 @@ public class ImageSharpHelperOcrTest
         proj[2].ShouldBeGreaterThan(0);
     }
 
+    /// <summary>
+    /// 验证白色图像每行的前景投影计数为零。
+    /// </summary>
     [Fact]
     public void GetHorizontalProjection_WhiteImage_AllZero()
     {
@@ -156,6 +198,13 @@ public class ImageSharpHelperOcrTest
 
     #region Helper
 
+    /// <summary>
+    /// 创建指定尺寸及填充颜色的 OCR 测试图像。
+    /// </summary>
+    /// <param name="width">样例图像的宽度，单位为像素。</param>
+    /// <param name="height">样例图像的高度，单位为像素。</param>
+    /// <param name="fill">填充颜色；为 null 时使用红绿蓝通道均为 128 的灰色。</param>
+    /// <returns>指定尺寸的纯色图像，调用方负责释放。</returns>
     private static Image CreateTestImage(int width, int height, Color? fill = null)
     {
         var image = new Image<Rgba32>(width, height);

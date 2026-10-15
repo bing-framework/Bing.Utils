@@ -69,8 +69,9 @@ public class StreamHelperTest
         actualBytes.ShouldBe(expectedBytes);
     }
     /// <summary>
-    /// 测试 - GenerateStreamFromString - 使用指定编码
+    /// 验证文本按指定 Unicode 编码转换为流字节。
     /// </summary>
+    /// <param name="content">待写入流的文本。</param>
     [Theory]
     [InlineData("Hello World")]
     [InlineData("测试中文")]
@@ -140,8 +141,9 @@ public class StreamHelperTest
         result.Position.ShouldBe(0);
     }
     /// <summary>
-    /// 测试 - GenerateStreamFromString - 多字节字符处理
+    /// 验证多字节文本转换为 UTF-8 流并可往返读取。
     /// </summary>
+    /// <param name="content">包含多字节字符的文本。</param>
     [Theory]
     [InlineData("🚀 Emoji test")]
     [InlineData("𝓗𝓮𝓵𝓵𝓸 Unicode")]
@@ -162,8 +164,9 @@ public class StreamHelperTest
         readContent.ShouldBe(content);
     }
     /// <summary>
-    /// 测试 - GenerateStreamFromString - 特殊字符处理
+    /// 验证特殊字符按 UTF-8 编码保留为流字节。
     /// </summary>
+    /// <param name="content">包含特殊字符的文本。</param>
     [Theory]
     [InlineData("\n")]
     [InlineData("\r\n")]

@@ -184,6 +184,7 @@ public class IdGuidTest : IDisposable
     /// <summary>
     /// 测试 - CreateSimpleGuid - 空白 Id 值时使用生成函数
     /// </summary>
+    /// <param name="emptyValue">测试上下文中配置的 Id 值。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -294,6 +295,7 @@ public class IdGuidTest : IDisposable
     /// <summary>
     /// 测试 - CreateGuid - 空白 Id 值时使用生成函数
     /// </summary>
+    /// <param name="emptyValue">测试上下文中配置的 Id 值。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -362,6 +364,7 @@ public class IdGuidTest : IDisposable
     /// <summary>
     /// 测试 - CreateGuid - 设置不同格式的 Guid 字符串
     /// </summary>
+    /// <param name="guidString">待转换的 GUID 字符串。</param>
     [Theory]
     [InlineData("12345678-1234-1234-1234-123456789abc")]
     [InlineData("{12345678-1234-1234-1234-123456789abc}")]

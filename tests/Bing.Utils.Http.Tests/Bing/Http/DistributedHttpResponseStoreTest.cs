@@ -6,10 +6,10 @@ using Bing.Http.Caching;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// 共享 HTTP 响应快照存储契约的进程内适配器测试。
-
 /// </summary>
 public class DistributedHttpResponseStoreTest
 {
@@ -37,10 +37,10 @@ public class DistributedHttpResponseStoreTest
         second.RawContent.ShouldBe("body");
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝认证请求未使用显式显式启用。
-
     /// </summary>
     [Fact]
     public async Task GetCached_RejectsAuthenticatedRequestWithoutExplicitOptIn()
@@ -53,12 +53,12 @@ public class DistributedHttpResponseStoreTest
     }
 
 
+
+
+
+
     /// <summary>
-
-
     /// 验证设置获取并比较并设置使用不透明版本。
-
-
     /// </summary>
     [Fact]
     public async Task SetGetAndCompareAndSetUseOpaqueVersions()
@@ -73,10 +73,10 @@ public class DistributedHttpResponseStoreTest
         (await store.GetAsync("orders:1")).Body.ShouldBe(new byte[] { 2 });
     }
 
+
+
     /// <summary>
-
     /// 验证过期时间并按版本移除是否强制执行。
-
     /// </summary>
     [Fact]
     public async Task ExpirationAndVersionedRemovalAreEnforced()
@@ -89,10 +89,10 @@ public class DistributedHttpResponseStoreTest
         (await store.RemoveAsync("orders:1", stored.Version)).ShouldBeFalse();
     }
 
+
+
     /// <summary>
-
     /// 验证快照数据是否已复制并取消是否遵循。
-
     /// </summary>
     [Fact]
     public async Task SnapshotDataIsCopiedAndCancellationIsHonored()
@@ -114,10 +114,10 @@ public class DistributedHttpResponseStoreTest
         (await store.RemoveAsync("orders:1", stored.Version)).ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证缓存执行会使用租约存储协调并发未命中请求。
-
     /// </summary>
     [Fact]
     public async Task ExecuteCachedCoordinatesConcurrentMissesWithTheLeaseStore()
@@ -146,10 +146,10 @@ public class DistributedHttpResponseStoreTest
         results[1].Data.ShouldBe(new byte[] { 7 });
     }
 
+
+
     /// <summary>
-
     /// 验证内存中租约过期并可以再次取得。
-
     /// </summary>
     [Fact]
     public async Task InMemoryLeaseExpiresAndCanBeAcquiredAgain()
@@ -164,10 +164,10 @@ public class DistributedHttpResponseStoreTest
         await second.ReleaseAsync();
     }
 
+
+
     /// <summary>
-
     /// 验证缓存执行不会隐藏租约释放失败。
-
     /// </summary>
     [Fact]
     public async Task ExecuteCachedDoesNotHideLeaseReleaseFailure()
@@ -178,10 +178,10 @@ public class DistributedHttpResponseStoreTest
             () => Task.FromResult(SnapshotResponse("value"))));
     }
 
+
+
     /// <summary>
-
     /// 验证快照读取失败时缓存执行仍会调用回源工厂。
-
     /// </summary>
     [Fact]
     public async Task ExecuteCachedPropagatesSnapshotReadFailureBeforeFactory()
@@ -199,10 +199,10 @@ public class DistributedHttpResponseStoreTest
         calls.ShouldBe(0);
     }
 
+
+
     /// <summary>
-
     /// 验证回源工厂失败后会释放租约，并允许下一个调用方取得租约。
-
     /// </summary>
     [Fact]
     public async Task ExecuteCachedReleasesLeaseWhenFactoryFailsAndNextCallerTakesOver()
@@ -228,10 +228,10 @@ public class DistributedHttpResponseStoreTest
         result.RawContent.ShouldBe("recovered");
     }
 
+
+
     /// <summary>
-
     /// 验证租约超时后回退读取缓存，且不会永久等待。
-
     /// </summary>
     [Fact]
     public async Task ExecuteCachedLeaseTimeoutFallsBackWithoutPermanentWait()
@@ -247,10 +247,10 @@ public class DistributedHttpResponseStoreTest
         result.RawContent.ShouldBe("fallback");
     }
 
+
+
     /// <summary>
-
     /// 验证取消缓存执行会停止等待租约。
-
     /// </summary>
     [Fact]
     public async Task ExecuteCachedCancellationStopsLeaseWait()
@@ -269,10 +269,10 @@ public class DistributedHttpResponseStoreTest
         calls.ShouldBe(0);
     }
 
+
+
     /// <summary>
-
     /// 验证多个节点共用一个租约并发布快照。
-
     /// </summary>
     [Fact]
     public async Task IndependentNodesShareOneLeaseAndPublishedSnapshot()
@@ -302,10 +302,10 @@ public class DistributedHttpResponseStoreTest
         (await secondNode.GetAsync("orders:cross-node")).RawContent.ShouldBe("published-by-first-node");
     }
 
+
+
     /// <summary>
-
     /// 验证独立节点取得超时之后租约持有方失败。
-
     /// </summary>
     [Fact]
     public async Task IndependentNodeTakesOverAfterLeaseHolderFails()
@@ -339,10 +339,10 @@ public class DistributedHttpResponseStoreTest
         (await firstNode.GetAsync("orders:takeover")).RawContent.ShouldBe("published-by-second-node");
     }
 
+
+
     /// <summary>
-
     /// 验证独立节点可取得过期租约，且不会永久阻塞。
-
     /// </summary>
     [Fact]
     public async Task IndependentNodeCanTakeOverExpiredLeaseWithoutPermanentBlocking()
@@ -362,10 +362,10 @@ public class DistributedHttpResponseStoreTest
         result.RawContent.ShouldBe("after-expiry");
     }
 
+
+
     /// <summary>
-
     /// 验证独立节点保留键并版本相互隔离。
-
     /// </summary>
     [Fact]
     public async Task IndependentNodesKeepKeysAndVersionsIsolated()
@@ -382,10 +382,10 @@ public class DistributedHttpResponseStoreTest
         (await secondNode.GetAsync("orders:missing")).ShouldBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证命名空间失效状态共享并隐藏旧快照。
-
     /// </summary>
     [Fact]
     public async Task NamespaceInvalidationIsSharedAndHidesOldSnapshots()
@@ -415,10 +415,10 @@ public class DistributedHttpResponseStoreTest
         refreshed.RawContent.ShouldBe("after");
     }
 
+
+
     /// <summary>
-
     /// 验证命名空间租约键不串行化不同命名空间。
-
     /// </summary>
     [Fact]
     public async Task NamespaceLeaseKeysDoNotSerializeDifferentNamespaces()
@@ -444,10 +444,10 @@ public class DistributedHttpResponseStoreTest
         results.Select(item => item.RawContent).ShouldBe(new[] { "namespace-a", "namespace-b" });
     }
 
+
+
     /// <summary>
-
     /// 验证清理命名空间时移除旧版本并保留当前快照。
-
     /// </summary>
     [Fact]
     public async Task NamespaceCleanupRemovesOldVersionsAndRetainsCurrentSnapshot()
@@ -465,10 +465,10 @@ public class DistributedHttpResponseStoreTest
         current.RawContent.ShouldBe("current");
     }
 
+
+
     /// <summary>
-
     /// 验证多个节点可以并发失效并清理共享命名空间。
-
     /// </summary>
     [Fact]
     public async Task IndependentNodesCanInvalidateAndCleanupSharedNamespaceConcurrently()
@@ -490,38 +490,44 @@ public class DistributedHttpResponseStoreTest
             .RawContent.ShouldBe("current");
     }
 
+
+
     /// <summary>
-
     /// 创建测试用分布式响应快照。
-
     /// </summary>
+    /// <param name="value">用于选择字节载荷的标识；为 <c>one</c> 时载荷为 1，否则为 2。</param>
+    /// <returns>包含选定单字节正文的成功响应快照。</returns>
     private static DistributedHttpResponseSnapshot Snapshot(string value)
         => Snapshot(new byte[] { value == "one" ? (byte)1 : (byte)2 });
 
+
+
     /// <summary>
-
     /// 创建测试用分布式响应快照。
-
     /// </summary>
+    /// <param name="body">快照保存的字节正文。</param>
+    /// <returns>包含指定正文且无响应头的成功响应快照。</returns>
     private static DistributedHttpResponseSnapshot Snapshot(byte[] body)
         => new DistributedHttpResponseSnapshot(HttpStatusCode.OK,
             new Dictionary<string, IReadOnlyList<string>>(),
             new Dictionary<string, IReadOnlyList<string>>(), body);
 
+
+
     /// <summary>
-
-    /// 创建测试用分布式响应快照。
-
+    /// 创建包含固定字节数据及指定原始正文的响应样例。
     /// </summary>
+    /// <param name="value">响应的原始字符串正文。</param>
+    /// <returns>数据为单字节且状态为成功的响应结果。</returns>
     private static HttpResponseResult<byte[]> SnapshotResponse(string value)
         => new HttpResponseResult<byte[]>(HttpStatusCode.OK,
             new Dictionary<string, IReadOnlyList<string>>(),
             new Dictionary<string, IReadOnlyList<string>>(), new byte[] { 1 }, value);
 
+
+
     /// <summary>
-
     /// 使用内存存储处理缓存操作并模拟租约释放失败的存储。
-
     /// </summary>
     private sealed class ThrowingLeaseStore : IDistributedHttpResponseStore, IDistributedHttpResponseLeaseStore
     {
@@ -555,10 +561,10 @@ public class DistributedHttpResponseStoreTest
             => Task.FromResult<IDistributedHttpResponseLease>(new ThrowingLease());
     }
 
+
+
     /// <summary>
-
     /// 在释放操作中返回异常的测试租约。
-
     /// </summary>
     private sealed class ThrowingLease : IDistributedHttpResponseLease
     {
@@ -567,10 +573,10 @@ public class DistributedHttpResponseStoreTest
             => Task.FromException(new InvalidOperationException("injected lease release failure"));
     }
 
+
+
     /// <summary>
-
     /// 可按测试标志模拟读失败或租约不可用的分布式存储。
-
     /// </summary>
     private sealed class FaultInjectionStore : IDistributedHttpResponseStore, IDistributedHttpResponseLeaseStore
     {
@@ -579,14 +585,14 @@ public class DistributedHttpResponseStoreTest
         /// </summary>
         private readonly InMemoryDistributedHttpResponseStore _store = new InMemoryDistributedHttpResponseStore();
 
+
+
         /// <summary>
-
-        /// 控制读取操作是否抛出异常。
-
+        /// 获取或设置是否在读取快照时抛出模拟的 I/O 异常。
         /// </summary>
         public bool ThrowOnRead { get; set; }
         /// <summary>
-        /// 控制测试存储是否提供租约。
+        /// 获取或设置是否模拟无法取得租约的状态。
         /// </summary>
         public bool LeaseUnavailable { get; set; }
 
@@ -621,27 +627,27 @@ public class DistributedHttpResponseStoreTest
         }
     }
 
+
+
     /// <summary>
-
     /// 保存多个测试存储节点共享的快照、租约和命名空间版本。
-
     /// </summary>
     private sealed class SharedDistributedState
     {
         /// <summary>
-        /// 同步测试节点对共享状态的访问。
+        /// 获取同步多个测试节点共享状态访问的锁对象。
         /// </summary>
         public object Gate { get; } = new object();
         /// <summary>
-        /// 保存共享响应快照及其过期时间。
+        /// 获取保存共享响应快照及过期时间的字典。
         /// </summary>
         public Dictionary<string, SharedEntry> Entries { get; } = new Dictionary<string, SharedEntry>(StringComparer.Ordinal);
         /// <summary>
-        /// 保存共享租约及其过期时间。
+        /// 获取保存共享租约持有者及过期时间的字典。
         /// </summary>
         public Dictionary<string, SharedLeaseEntry> Leases { get; } = new Dictionary<string, SharedLeaseEntry>(StringComparer.Ordinal);
         /// <summary>
-        /// 记录各命名空间的当前版本。
+        /// 获取记录各命名空间当前版本号的字典。
         /// </summary>
         public Dictionary<string, long> NamespaceVersions { get; } = new Dictionary<string, long>(StringComparer.Ordinal);
         /// <summary>
@@ -650,23 +656,23 @@ public class DistributedHttpResponseStoreTest
         public long Version;
     }
 
+
+
     /// <summary>
-
     /// 基于共享状态实现响应快照、租约和命名空间版本存取。
-
     /// </summary>
     private sealed class SharedNodeStore : IDistributedHttpResponseStore, IDistributedHttpResponseLeaseStore,
         IDistributedHttpResponseNamespaceStore
     {
         /// <summary>
-        /// 测试中使用的存储状态。
+        /// 保存当前存储节点访问的共享快照、租约及版本状态。
         /// </summary>
         private readonly SharedDistributedState _state;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="SharedNodeStore"/>类型的实例。
-
+        /// 初始化一个 <see cref="SharedNodeStore"/> 类型的实例。
         /// </summary>
         /// <param name="state">共享的分布式存储状态。</param>
         public SharedNodeStore(SharedDistributedState state) => _state = state;
@@ -793,11 +799,14 @@ public class DistributedHttpResponseStoreTest
             }
         }
 
+
+
         /// <summary>
-
         /// 读取测试存储中当前有效的快照。
-
         /// </summary>
+        /// <param name="key">待查询的共享存储键。</param>
+        /// <returns>当前快照；条目不存在或已过期时返回 null。</returns>
+        /// <remarks>发现过期条目时将其从共享字典移除；调用方应持有共享状态锁。</remarks>
         private DistributedHttpResponseSnapshot GetCurrent(string key)
         {
             if (!_state.Entries.TryGetValue(key, out var entry)) return null;
@@ -809,96 +818,101 @@ public class DistributedHttpResponseStoreTest
             return entry.Snapshot;
         }
 
+
+
         /// <summary>
-
         /// 复制测试使用的响应快照。
-
         /// </summary>
+        /// <param name="snapshot">要复制的源响应快照。</param>
+        /// <returns>保留源版本号的独立快照。</returns>
         private static DistributedHttpResponseSnapshot Clone(DistributedHttpResponseSnapshot snapshot)
             => CloneWithVersion(snapshot, snapshot.Version);
 
+
+
         /// <summary>
-
         /// 复制测试使用的响应快照。
-
         /// </summary>
+        /// <param name="snapshot">要复制的源响应快照。</param>
+        /// <param name="version">赋予副本的版本标识。</param>
+        /// <returns>包含指定版本号的独立快照。</returns>
         private static DistributedHttpResponseSnapshot CloneWithVersion(DistributedHttpResponseSnapshot snapshot, string version)
             => new DistributedHttpResponseSnapshot(snapshot.StatusCode, snapshot.Headers,
                 snapshot.ContentHeaders, snapshot.Body, snapshot.RawContent, version);
     }
 
+
+
     /// <summary>
-
     /// 保存响应快照及其过期时间的记录。
-
     /// </summary>
     private sealed class SharedEntry
     {
         /// <summary>
-        /// 初始化一个<see cref="SharedEntry"/>类型的实例。
+        /// 初始化一个 <see cref="SharedEntry"/> 类型的实例。
         /// </summary>
         /// <param name="snapshot">要存储的 HTTP 响应快照。</param>
         /// <param name="expiresAt">条目或租约的过期时间。</param>
         public SharedEntry(DistributedHttpResponseSnapshot snapshot, DateTimeOffset expiresAt)
         { Snapshot = snapshot; ExpiresAt = expiresAt; }
         /// <summary>
-        /// 保存租约关联的响应快照。
+        /// 获取当前缓存条目保存的响应快照。
         /// </summary>
         public DistributedHttpResponseSnapshot Snapshot { get; }
         /// <summary>
-        /// 记录条目或租约的过期时间。
+        /// 获取当前缓存条目的过期时刻。
         /// </summary>
         public DateTimeOffset ExpiresAt { get; }
     }
 
+
+
     /// <summary>
-
     /// 保存租约持有者标识及过期时间的记录。
-
     /// </summary>
     private sealed class SharedLeaseEntry
     {
         /// <summary>
-        /// 初始化一个<see cref="SharedLeaseEntry"/>类型的实例。
+        /// 初始化一个 <see cref="SharedLeaseEntry"/> 类型的实例。
         /// </summary>
         /// <param name="token">租约持有者标识。</param>
         /// <param name="expiresAt">条目或租约的过期时间。</param>
         public SharedLeaseEntry(string token, DateTimeOffset expiresAt)
         { Token = token; ExpiresAt = expiresAt; }
         /// <summary>
-        /// 标识当前租约持有者。
+        /// 获取用于区分当前租约持有者的标识。
         /// </summary>
         public string Token { get; }
         /// <summary>
-        /// 记录条目或租约的过期时间。
+        /// 获取当前租约的过期时刻。
         /// </summary>
         public DateTimeOffset ExpiresAt { get; }
     }
 
+
+
     /// <summary>
-
     /// 释放共享状态中由当前持有者登记的租约。
-
     /// </summary>
     private sealed class SharedLease : IDistributedHttpResponseLease
     {
         /// <summary>
-        /// 测试中使用的存储状态。
+        /// 保存释放租约时需要校验及修改的共享状态。
         /// </summary>
         private readonly SharedDistributedState _state;
         /// <summary>
-        /// 测试数据使用的标识值。
+        /// 标识当前租约在共享租约字典中的存储键。
         /// </summary>
         private readonly string _key;
         /// <summary>
-        /// 测试数据使用的标识值。
+        /// 标识当前持有者，释放时用于防止删除后续持有者的租约。
         /// </summary>
         private readonly string _token;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="SharedLease"/>类型的实例。
-
+        /// 初始化一个 <see cref="SharedLease"/> 类型的实例。
         /// </summary>
         /// <param name="state">共享的分布式存储状态。</param>
         /// <param name="key">租约对应的存储键。</param>

@@ -8,7 +8,10 @@ namespace Bing.Collections;
 [Trait("CollUT", "Colls")]
 public class EnumerableExtensionsTest : TestBase
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// 初始化一个 <see cref="EnumerableExtensionsTest"/> 类型的实例。
+    /// </summary>
+    /// <param name="output">测试输出辅助器。</param>
     public EnumerableExtensionsTest(ITestOutputHelper output) : base(output)
     {
     }
@@ -158,8 +161,9 @@ public class EnumerableExtensionsTest : TestBase
         Output.WriteLine($"当源集合为null时抛出异常: {exception.Message}");
     }
     /// <summary>
-    /// 测试 - 分块大小小于等于0时应抛出异常
+    /// 验证非正分块大小被拒绝并报告参数名。
     /// </summary>
+    /// <param name="chunkSize">无效分块大小。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
@@ -209,11 +213,11 @@ public class EnumerableExtensionsTest : TestBase
     private class TestItem
     {
         /// <summary>
-        /// 标识
+        /// 获取或设置测试项标识符。
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// 名称
+        /// 获取或设置测试项名称。
         /// </summary>
         public string Name { get; set; }
     }

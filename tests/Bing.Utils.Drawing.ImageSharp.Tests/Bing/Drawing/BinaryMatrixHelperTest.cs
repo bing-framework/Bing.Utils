@@ -3,13 +3,16 @@ using Bing.Drawing;
 namespace Bing.Conversions;
 
 /// <summary>
-/// 测试类：覆盖 BinaryMatrixHelper 公共矩阵兼容层。
+/// 验证二维灰度矩阵的转换、边框处理、复制及区域填充。
 /// </summary>
 [Trait("Drawing", "BinaryMatrixHelper")]
 public class BinaryMatrixHelperTest
 {
     #region FromFlatArray / ToFlatArray
 
+    /// <summary>
+    /// 验证一维缓冲区按行映射为指定宽高的二维矩阵。
+    /// </summary>
     [Fact]
     public void FromFlatArray_ValidInput_ReturnsCorrectShape()
     {
@@ -26,6 +29,9 @@ public class BinaryMatrixHelperTest
         matrix[2, 1].ShouldBe((byte)6);
     }
 
+    /// <summary>
+    /// 验证二维矩阵按行优先顺序展开。
+    /// </summary>
     [Fact]
     public void ToFlatArray_ValidInput_ReturnsRowMajor()
     {
@@ -38,6 +44,9 @@ public class BinaryMatrixHelperTest
         flat.ShouldBe(new byte[] { 1, 2, 3, 4, 5, 6 });
     }
 
+    /// <summary>
+    /// 验证一维缓冲区与二维矩阵往返转换保留数据。
+    /// </summary>
     [Fact]
     public void RoundTrip_FlatToMatrixToFlat_ReturnsSame()
     {
@@ -48,24 +57,36 @@ public class BinaryMatrixHelperTest
         roundTripped.ShouldBe(original);
     }
 
+    /// <summary>
+    /// 验证缓冲区长度与矩阵尺寸不匹配时拒绝转换。
+    /// </summary>
     [Fact]
     public void FromFlatArray_WrongSize_ThrowsArgumentException()
     {
         Should.Throw<ArgumentException>(() => BinaryMatrixHelper.FromFlatArray(new byte[5], 2, 2));
     }
 
+    /// <summary>
+    /// 验证二维矩阵转换拒绝空缓冲区。
+    /// </summary>
     [Fact]
     public void FromFlatArray_NullBuffer_Throws()
     {
         Should.Throw<ArgumentNullException>(() => BinaryMatrixHelper.FromFlatArray(null!, 2, 2));
     }
 
+    /// <summary>
+    /// 验证二维矩阵转换拒绝零宽度。
+    /// </summary>
     [Fact]
     public void FromFlatArray_ZeroWidth_Throws()
     {
         Should.Throw<ArgumentOutOfRangeException>(() => BinaryMatrixHelper.FromFlatArray(new byte[0], 0, 1));
     }
 
+    /// <summary>
+    /// 验证矩阵展开拒绝空矩阵。
+    /// </summary>
     [Fact]
     public void ToFlatArray_NullMatrix_Throws()
     {
@@ -76,6 +97,9 @@ public class BinaryMatrixHelperTest
 
     #region ClearBorder
 
+    /// <summary>
+    /// 验证边缘像素被置为白色且内部像素保持原值。
+    /// </summary>
     [Fact]
     public void ClearBorder_RemovesBorderPixels()
     {
@@ -100,6 +124,9 @@ public class BinaryMatrixHelperTest
 
     #region AddBorder
 
+    /// <summary>
+    /// 验证添加白色边框扩展矩阵并正确偏移原始内容。
+    /// </summary>
     [Fact]
     public void AddBorder_IncreasesSize()
     {
@@ -123,6 +150,9 @@ public class BinaryMatrixHelperTest
 
     #region Clone
 
+    /// <summary>
+    /// 验证按起点和尺寸提取子矩阵的像素内容。
+    /// </summary>
     [Fact]
     public void Clone_ExtractsSubMatrix()
     {
@@ -144,6 +174,9 @@ public class BinaryMatrixHelperTest
 
     #region DrawTo
 
+    /// <summary>
+    /// 验证源矩阵按指定偏移复制到目标且不覆盖其他位置。
+    /// </summary>
     [Fact]
     public void DrawTo_CopiesSourceToTarget()
     {
@@ -162,6 +195,9 @@ public class BinaryMatrixHelperTest
         target[0, 0].ShouldBe((byte)0); // 未覆盖区域
     }
 
+    /// <summary>
+    /// 验证目标剩余区域不足以容纳源矩阵时拒绝绘制。
+    /// </summary>
     [Fact]
     public void DrawTo_OutOfBounds_Throws()
     {
@@ -175,6 +211,9 @@ public class BinaryMatrixHelperTest
 
     #region FloodFill
 
+    /// <summary>
+    /// 验证填充同灰度连通区域且保留不相连的像素。
+    /// </summary>
     [Fact]
     public void FloodFill_FillsConnectedRegion()
     {
@@ -196,6 +235,9 @@ public class BinaryMatrixHelperTest
 
     #region ToCodeString
 
+    /// <summary>
+    /// 验证启用换行时矩阵编码包含回车换行符。
+    /// </summary>
     [Fact]
     public void ToCodeString_BreakLine_IncludesLineBreaks()
     {
@@ -208,6 +250,9 @@ public class BinaryMatrixHelperTest
         code.ShouldContain("\r\n");
     }
 
+    /// <summary>
+    /// 验证禁用换行时矩阵编码为对应像素数的单行字符串。
+    /// </summary>
     [Fact]
     public void ToCodeString_NoBreakLine_SingleLine()
     {
@@ -221,6 +266,9 @@ public class BinaryMatrixHelperTest
         code.Length.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证矩阵编码将低于阈值的前景记为一、背景记为零。
+    /// </summary>
     [Fact]
     public void ToCodeString_ForegroundIs1_BackgroundIs0()
     {

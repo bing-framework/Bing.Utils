@@ -25,8 +25,9 @@ public class TimeStampTest
         timeStamp.ToTimestamp().ShouldBe(actualTime.Ticks);
     }
     /// <summary>
-    /// 测试 - 时间戳构造函数 - 有效时间戳
+    /// 验证有效刻度值用于构造时间戳后保持不变。
     /// </summary>
+    /// <param name="timestamp">有效的日期时间刻度值。</param>
     [Theory]
     [InlineData(0L)]
     [InlineData(621355968000000000L)] // Unix epoch in .NET ticks
@@ -40,8 +41,9 @@ public class TimeStampTest
         timeStamp.ToDateTime().Ticks.ShouldBe(timestamp);
     }
     /// <summary>
-    /// 测试 - 时间戳构造函数 - 无效时间戳
+    /// 验证构造函数拒绝负刻度值。
     /// </summary>
+    /// <param name="invalidTimestamp">无效的负刻度值。</param>
     [Theory]
     [InlineData(-1L)]
     [InlineData(long.MinValue)]
@@ -52,8 +54,9 @@ public class TimeStampTest
             .ParamName.ShouldBe("timestamp");
     }
     /// <summary>
-    /// 测试 - DateTime构造函数 - 各种时间值
+    /// 验证日期时间构造的时间戳保存原始日期时间及刻度值。
     /// </summary>
+    /// <param name="dateTimeString">待构造时间戳的日期时间文本。</param>
     [Theory]
     [InlineData("2024-01-01 00:00:00")]
     [InlineData("2024-12-31 23:59:59")]
@@ -229,8 +232,12 @@ public class TimeStampTest
         timeSpan.ShouldBe(TimeSpan.FromMinutes(30));
     }
     /// <summary>
-    /// 测试 - Add - 添加时间间隔
+    /// 验证时间戳加上指定时间间隔。
     /// </summary>
+    /// <param name="days">时间间隔的天数。</param>
+    /// <param name="hours">时间间隔的小时数。</param>
+    /// <param name="minutes">时间间隔的分钟数。</param>
+    /// <param name="milliseconds">时间间隔的毫秒数。</param>
     [Theory]
     [InlineData(1, 0, 0, 0)] // 1 day
     [InlineData(0, 2, 0, 0)] // 2 hours
@@ -281,8 +288,10 @@ public class TimeStampTest
         result.ShouldBe("2024-06-15 14:30:45.123");
     }
     /// <summary>
-    /// 测试 - ToString - 自定义格式
+    /// 验证时间戳按指定格式输出日期时间。
     /// </summary>
+    /// <param name="format">日期时间格式。</param>
+    /// <param name="expected">预期的日期时间文本。</param>
     [Theory]
     [InlineData("yyyy-MM-dd", "2024-06-15")]
     [InlineData("HH:mm:ss", "14:30:45")]
@@ -478,7 +487,7 @@ public class TimeStampTest
     #endregion
     #region 兼容性测试
     /// <summary>
-    /// 测试 - NowTimeStamp - 过时属性兼容性
+    /// 验证兼容委托返回当前本地时间的刻度值。
     /// </summary>
     [Fact]
     public void NowTimeStamp_ObsoleteProperty_StillWorksCorrectly()
@@ -495,7 +504,7 @@ public class TimeStampTest
         timestamp.ShouldBeLessThanOrEqualTo(afterCall);
     }
     /// <summary>
-    /// 测试 - UtcNowTimeStamp - 过时属性兼容性
+    /// 验证兼容委托返回当前 UTC 时间的刻度值。
     /// </summary>
     [Fact]
     public void UtcNowTimeStamp_ObsoleteProperty_StillWorksCorrectly()

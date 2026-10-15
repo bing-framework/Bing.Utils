@@ -1,13 +1,13 @@
 using NodaTime;
 namespace Bing.Conversions;
 /// <summary>
-/// 测试类：覆盖 `ConvertersAndNodaExtensions` 相关行为。
+/// 验证星期数值转换及时间间隔到日期时间的转换。
 /// </summary>
 [Trait("DateTimeUT", "ConversionsAndNodaExtensions")]
 public class ConvertersAndNodaExtensionsTest
 {
     /// <summary>
-    /// 测试用例：验证 `DayOfWeekConv` 在 `ToInt32` 场景下，结果为 `ShouldUseExpectedOffset`。
+    /// 验证星期数值转换应用指定的起始偏移。
     /// </summary>
     [Fact]
     public void DayOfWeekConv_ToInt32_ShouldUseExpectedOffset()
@@ -18,7 +18,7 @@ public class ConvertersAndNodaExtensionsTest
         DayOfWeek.Wednesday.CastToInt32(10).ShouldBe(13);
     }
     /// <summary>
-    /// 测试用例：验证 `TimeSpanConv` 在 `ToDateTime` 场景下，结果为 `ShouldConvertByTicks`。
+    /// 验证时间间隔按时钟周期数转换为日期时间。
     /// </summary>
     [Fact]
     public void TimeSpanConv_ToDateTime_ShouldConvertByTicks()
@@ -28,7 +28,7 @@ public class ConvertersAndNodaExtensionsTest
         dt.Ticks.ShouldBe(ts.Ticks);
     }
     /// <summary>
-    /// 测试用例：验证 `TimeSpanConv` 在 `ToDateTime_Negative` 场景下，结果为 `ShouldThrow`。
+    /// 验证负时间间隔无法转换为日期时间。
     /// </summary>
     [Fact]
     public void TimeSpanConv_ToDateTime_Negative_ShouldThrow()
@@ -36,7 +36,7 @@ public class ConvertersAndNodaExtensionsTest
         Should.Throw<ArgumentOutOfRangeException>(() => TimeSpanConv.ToDateTime(TimeSpan.FromTicks(-1)));
     }
     /// <summary>
-    /// 测试用例：验证 `TimeSpanConvExtensions` 在 `CastToDateTime` 场景下，结果为 `ShouldDelegate`。
+    /// 验证时间间隔转换扩展保留时钟周期数。
     /// </summary>
     [Fact]
     public void TimeSpanConvExtensions_CastToDateTime_ShouldDelegate()

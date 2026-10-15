@@ -35,6 +35,7 @@ public class ConvToRmbRegressionTest
     /// <summary>
     /// 测试数据：无法转换为人民币金额的文本输入
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetInvalidTextInputs()
     {
         yield return new object[] { string.Empty };

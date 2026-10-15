@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证从字符串中提取数字、字母及其组合。
+/// </summary>
 [Trait("StringUT", "Strings.Get")]
 public class StringsGettingTest
 {

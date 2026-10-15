@@ -5,7 +5,7 @@ using Xunit;
 namespace Bing.Text.Similarity;
 
 /// <summary>
-/// 测试类：StringSimilarity 字符串相似度计算与 StringSimilarityTypes 枚举
+/// 字符串相似度类型、评分和枚举值测试。
 /// </summary>
 [Trait("TextUT", "StringSimilarity")]
 public class StringSimilarityTest
@@ -13,8 +13,10 @@ public class StringSimilarityTest
     #region EvaluateSimilarity(string, string) → StringSimilarityTypes
 
     /// <summary>
-    /// 测试目的：完全相同的字符串（大小写不敏感）应返回 Same
+    /// 验证忽略大小写的相同文本被判为相同。
     /// </summary>
+    /// <param name="text">待比较文本。</param>
+    /// <param name="comparison">比较文本。</param>
     [Theory]
     [InlineData("hello", "hello")]
     [InlineData("Hello", "hello")]
@@ -29,7 +31,7 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：空字符串与空字符串相比较应返回 Same
+    /// 验证空字符串与空字符串相比较应返回 Same
     /// </summary>
     [Fact]
     public void EvaluateSimilarityType_BothEmpty_ReturnsSame()
@@ -42,7 +44,7 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：text 比 comparison 长且前缀相同时，应返回 MayorLong
+    /// 验证text 比 comparison 长且前缀相同时，应返回 MayorLong
     /// </summary>
     [Fact]
     public void EvaluateSimilarityType_TextLongerSamePrefix_ReturnsMayorLong()
@@ -56,7 +58,7 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：text 比 comparison 短且前缀相同时，应返回 MinorLong
+    /// 验证text 比 comparison 短且前缀相同时，应返回 MinorLong
     /// </summary>
     [Fact]
     public void EvaluateSimilarityType_TextShorterSamePrefix_ReturnsMinorLong()
@@ -70,8 +72,10 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：内容差异较大的等长字符串应返回 Any
+    /// 验证明显不同的等长文本被判为无特定相似类型。
     /// </summary>
+    /// <param name="text">待比较文本。</param>
+    /// <param name="comparison">比较文本。</param>
     [Theory]
     [InlineData("hello", "world")]
     [InlineData("abc", "xyz")]
@@ -90,8 +94,10 @@ public class StringSimilarityTest
     #region EvaluateSimilarity(string, string, double) → double
 
     /// <summary>
-    /// 测试目的：完全相同的字符串（大小写不敏感）相似度评分应为 1.0
+    /// 验证忽略大小写的相同文本相似度为一。
     /// </summary>
+    /// <param name="text">待比较文本。</param>
+    /// <param name="comparison">比较文本。</param>
     [Theory]
     [InlineData("hello", "hello")]
     [InlineData("abc", "ABC")]
@@ -106,7 +112,7 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：text 较短且前缀与 comparison 相同时，评分应为 0.75
+    /// 验证text 较短且前缀与 comparison 相同时，评分应为 0.75
     /// </summary>
     [Fact]
     public void EvaluateSimilarityScore_ShorterTextSamePrefix_Returns075()
@@ -120,7 +126,7 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：text 较长且前缀与 comparison 相同时，评分应为 0.75
+    /// 验证text 较长且前缀与 comparison 相同时，评分应为 0.75
     /// </summary>
     [Fact]
     public void EvaluateSimilarityScore_LongerTextSamePrefix_Returns075()
@@ -134,7 +140,7 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：diffFound >= MAX_DIF_TOLERADAS(2) 时，应立即返回 0.0
+    /// 验证diffFound >= MAX_DIF_TOLERADAS(2) 时，应立即返回 0.0
     /// </summary>
     [Fact]
     public void EvaluateSimilarityScore_DiffFoundExceedsThreshold_ReturnsZero()
@@ -147,8 +153,10 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：任何返回的评分必须在 [0.0, 1.0] 范围内
+    /// 验证各组文本的相似度评分位于零至一之间。
     /// </summary>
+    /// <param name="text">待比较文本。</param>
+    /// <param name="comparison">比较文本。</param>
     [Theory]
     [InlineData("abc", "abc")]
     [InlineData("hello", "helloworld")]
@@ -165,7 +173,7 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：只有一个字符差异时，评分应高于 0.8（容忍范围内）
+    /// 验证单字符差异的所选文本评分至少为零点八。
     /// </summary>
     [Fact]
     public void EvaluateSimilarityScore_OneCharDiff_ReturnsHighScore()
@@ -178,7 +186,7 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：两个字符差异时，评分应在合理范围内（>= 0.5）
+    /// 验证所选不同文本的评分位于零至一之间。
     /// </summary>
     [Fact]
     public void EvaluateSimilarityScore_TwoCharDiff_ReturnsReasonableScore()
@@ -192,7 +200,7 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：大小写差异在 RemoveWhiteSpace 处理后视为相同时应返回 1.0
+    /// 验证完全相同文本的相似度评分为一。
     /// </summary>
     [Fact]
     public void EvaluateSimilarityScore_WhitespaceIgnored_EqualsAfterRemoval()
@@ -210,7 +218,7 @@ public class StringSimilarityTest
     #region StringSimilarityTypes 枚举值验证
 
     /// <summary>
-    /// 测试目的：StringSimilarityTypes 枚举应包含 4 个值
+    /// 验证StringSimilarityTypes 枚举应包含 4 个值
     /// </summary>
     [Fact]
     public void StringSimilarityTypes_EnumCount_IsFour()
@@ -223,8 +231,10 @@ public class StringSimilarityTest
     }
 
     /// <summary>
-    /// 测试目的：StringSimilarityTypes 枚举各值的整数表示应符合预期
+    /// 验证相似度枚举值的整数表示。
     /// </summary>
+    /// <param name="type">相似度枚举值。</param>
+    /// <param name="expected">预期整数值。</param>
     [Theory]
     [InlineData(StringSimilarityTypes.Any, 0)]
     [InlineData(StringSimilarityTypes.Same, 1)]

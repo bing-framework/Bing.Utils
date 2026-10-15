@@ -5,12 +5,12 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="ImageSharpHelper"/> 的 Phase 0 回归契约。
+/// 验证图像 Data URL 解析的媒体类型兼容行为。
 /// </summary>
 public class ImageSharpHelperRegressionTest
 {
     /// <summary>
-    /// 测试用例：验证通用 image mime 且大小写混合的 Data URL 可以被解析。
+    /// 验证媒体类型大小写混合且与载荷格式不同时仍可加载图像。
     /// </summary>
     [Fact]
     public void FromDataUrl_GenericMimeWithMixedCase_ReturnsImage()
@@ -26,6 +26,10 @@ public class ImageSharpHelperRegressionTest
         restored.Height.ShouldBe(source.Height);
     }
 
+    /// <summary>
+    /// 创建包含红、绿、蓝及白色像素的二乘二图像。
+    /// </summary>
+    /// <returns>用于编码解析测试的 RGBA 图像，调用方负责释放。</returns>
     private static Image<Rgba32> CreateSampleImage()
     {
         var image = new Image<Rgba32>(2, 2);

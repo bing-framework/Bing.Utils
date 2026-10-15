@@ -77,6 +77,10 @@ public class StringByteExtensionsBoundaryTest
         input.ShouldBe("Hello-中文");
     }
 
+    /// <summary>
+    /// 获取编码扩展与对应 Encoding 实例的测试用例。
+    /// </summary>
+    /// <returns>包含输入文本、转换器和编码实例的测试用例。</returns>
     public static IEnumerable<object[]> GetEncodingConverters()
     {
         const string unicodeInput = "Hello-中文";
@@ -90,6 +94,10 @@ public class StringByteExtensionsBoundaryTest
         yield return new object[] { unicodeInput, (Func<string, byte[]>)StringExtensions.ToUnicodeBytes, Encoding.Unicode };
     }
 
+    /// <summary>
+    /// 获取用于 null 和空字符串边界测试的编码转换器。
+    /// </summary>
+    /// <returns>待验证的字符串到字节数组转换器。</returns>
     public static IEnumerable<object[]> GetConverterOnlyCases()
     {
         yield return new object[] { (Func<string, byte[]>)StringExtensions.ToUtf8Bytes };

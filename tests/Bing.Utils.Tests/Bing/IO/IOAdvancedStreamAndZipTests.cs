@@ -17,6 +17,9 @@ namespace Bing.Utils.Tests.Bing.IO;
 [Trait("Bing.IO", "FileDescriptor")]
 public class FileDescriptorTests
 {
+    /// <summary>
+    /// 验证默认文件描述信息的可选属性为空。
+    /// </summary>
     [Fact]
     public void DefaultConstructor_CreatesEmptyInstance()
     {
@@ -27,6 +30,9 @@ public class FileDescriptorTests
         fd.Md5.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 验证文件名构造函数保存名称并提取扩展名。
+    /// </summary>
     [Fact]
     public void Constructor_WithNameOnly_SetsNameAndExtension()
     {
@@ -35,6 +41,9 @@ public class FileDescriptorTests
         fd.Extension.ShouldBe("pdf");
     }
 
+    /// <summary>
+    /// 验证带大小的构造函数保存文件名。
+    /// </summary>
     [Fact]
     public void Constructor_WithNameAndSize_SetsSizeCorrectly()
     {
@@ -42,24 +51,36 @@ public class FileDescriptorTests
         fd.Name.ShouldBe("data.csv");
     }
 
+    /// <summary>
+    /// 验证文件描述构造函数拒绝空文件名。
+    /// </summary>
     [Fact]
     public void Constructor_NullName_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => new FileDescriptor(null));
     }
 
+    /// <summary>
+    /// 验证文件描述构造函数拒绝空白文件名。
+    /// </summary>
     [Fact]
     public void Constructor_WhitespaceName_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => new FileDescriptor("   "));
     }
 
+    /// <summary>
+    /// 验证文件描述构造函数拒绝空文本文件名。
+    /// </summary>
     [Fact]
     public void Constructor_EmptyName_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => new FileDescriptor(""));
     }
 
+    /// <summary>
+    /// 验证不含点号的文件名没有扩展名。
+    /// </summary>
     [Fact]
     public void Constructor_FileWithNoExtension_ExtensionIsEmpty()
     {
@@ -67,6 +88,9 @@ public class FileDescriptorTests
         fd.Extension.ShouldBe(string.Empty);
     }
 
+    /// <summary>
+    /// 验证点号开头的文件名提取点号后的扩展名。
+    /// </summary>
     [Fact]
     public void Constructor_DotFileNameOnly_ExtensionIsEmpty()
     {
@@ -74,6 +98,9 @@ public class FileDescriptorTests
         fd.Extension.ShouldBe("gitignore");
     }
 
+    /// <summary>
+    /// 验证构造后可以设置目录名、存储名和 MD5。
+    /// </summary>
     [Fact]
     public void Properties_CanBeSetAfterConstruction()
     {
@@ -98,9 +125,18 @@ public class FileDescriptorTests
 [Trait("Bing.IO", "ZipHelper")]
 public class ZipHelperTests : IDisposable
 {
+    /// <summary>
+    /// 压缩测试使用的临时源目录。
+    /// </summary>
     private readonly string _testDir;
+    /// <summary>
+    /// 压缩测试使用的临时压缩文件路径。
+    /// </summary>
     private readonly string _zipPath;
 
+    /// <summary>
+    /// 初始化一个 <see cref="ZipHelperTests"/> 类型的实例。
+    /// </summary>
     public ZipHelperTests()
     {
         _testDir = Path.Combine(Path.GetTempPath(), $"ZipHelperTests_{Guid.NewGuid():N}");
@@ -108,6 +144,7 @@ public class ZipHelperTests : IDisposable
         _zipPath = Path.Combine(Path.GetTempPath(), $"ZipHelperTests_{Guid.NewGuid():N}.zip");
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         if (Directory.Exists(_testDir)) Directory.Delete(_testDir, true);
@@ -119,30 +156,45 @@ public class ZipHelperTests : IDisposable
 
     // ── Zip guard clauses ──
 
+    /// <summary>
+    /// 验证压缩操作拒绝空源目录。
+    /// </summary>
     [Fact]
     public void Zip_NullFolderPath_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ZipHelper.Zip(null, _zipPath));
     }
 
+    /// <summary>
+    /// 验证压缩操作拒绝空文本源目录。
+    /// </summary>
     [Fact]
     public void Zip_EmptyFolderPath_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ZipHelper.Zip("", _zipPath));
     }
 
+    /// <summary>
+    /// 验证压缩操作拒绝空目标压缩文件路径。
+    /// </summary>
     [Fact]
     public void Zip_NullZipPath_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ZipHelper.Zip(_testDir, null));
     }
 
+    /// <summary>
+    /// 验证压缩操作拒绝空文本目标压缩文件路径。
+    /// </summary>
     [Fact]
     public void Zip_EmptyZipPath_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ZipHelper.Zip(_testDir, ""));
     }
 
+    /// <summary>
+    /// 验证压缩操作拒绝不存在的源目录。
+    /// </summary>
     [Fact]
     public void Zip_NonExistentFolder_ThrowsDirectoryNotFoundException()
     {
@@ -152,30 +204,45 @@ public class ZipHelperTests : IDisposable
 
     // ── UnZip guard clauses ──
 
+    /// <summary>
+    /// 验证解压操作拒绝空压缩文件路径。
+    /// </summary>
     [Fact]
     public void UnZip_NullZipPath_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ZipHelper.UnZip(null, _testDir));
     }
 
+    /// <summary>
+    /// 验证解压操作拒绝空文本压缩文件路径。
+    /// </summary>
     [Fact]
     public void UnZip_EmptyZipPath_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ZipHelper.UnZip("", _testDir));
     }
 
+    /// <summary>
+    /// 验证解压操作拒绝空目标目录。
+    /// </summary>
     [Fact]
     public void UnZip_NullFolderPath_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ZipHelper.UnZip(_zipPath, null));
     }
 
+    /// <summary>
+    /// 验证解压操作拒绝空文本目标目录。
+    /// </summary>
     [Fact]
     public void UnZip_EmptyFolderPath_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ZipHelper.UnZip(_zipPath, ""));
     }
 
+    /// <summary>
+    /// 验证解压操作拒绝不存在的压缩文件。
+    /// </summary>
     [Fact]
     public void UnZip_NonExistentZipFile_ThrowsFileNotFoundException()
     {
@@ -185,6 +252,9 @@ public class ZipHelperTests : IDisposable
 
     // ── Roundtrip ──
 
+    /// <summary>
+    /// 验证目录压缩及解压后保留文件内容。
+    /// </summary>
     [Fact]
     public void Zip_And_UnZip_Roundtrip_PreservesFileContent()
     {
@@ -217,6 +287,9 @@ public class ZipHelperTests : IDisposable
 [Trait("Bing.IO", "LargeMemoryStream")]
 public class LargeMemoryStreamTests
 {
+    /// <summary>
+    /// 验证新建大型内存流可读。
+    /// </summary>
     [Fact]
     public void CanRead_IsTrue()
     {
@@ -224,6 +297,9 @@ public class LargeMemoryStreamTests
         stream.CanRead.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证新建大型内存流可定位。
+    /// </summary>
     [Fact]
     public void CanSeek_IsTrue()
     {
@@ -231,6 +307,9 @@ public class LargeMemoryStreamTests
         stream.CanSeek.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证新建大型内存流可写。
+    /// </summary>
     [Fact]
     public void CanWrite_IsTrue()
     {
@@ -238,6 +317,9 @@ public class LargeMemoryStreamTests
         stream.CanWrite.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证新建大型内存流长度为零。
+    /// </summary>
     [Fact]
     public void InitialLength_IsZero()
     {
@@ -245,6 +327,9 @@ public class LargeMemoryStreamTests
         stream.Length.ShouldBe(0L);
     }
 
+    /// <summary>
+    /// 验证新建大型内存流的位置为零。
+    /// </summary>
     [Fact]
     public void InitialPosition_IsZero()
     {
@@ -252,6 +337,9 @@ public class LargeMemoryStreamTests
         stream.Position.ShouldBe(0L);
     }
 
+    /// <summary>
+    /// 验证大型内存流写入后更新长度和位置。
+    /// </summary>
     [Fact]
     public void Write_UpdatesLengthAndPosition()
     {
@@ -262,6 +350,9 @@ public class LargeMemoryStreamTests
         stream.Position.ShouldBe(5L);
     }
 
+    /// <summary>
+    /// 验证大型内存流写入后可读回原始字节。
+    /// </summary>
     [Fact]
     public void Write_ThenRead_ReturnsCorrectData()
     {
@@ -278,6 +369,9 @@ public class LargeMemoryStreamTests
         buffer.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证大型内存流按起点偏移设置位置。
+    /// </summary>
     [Fact]
     public void Seek_Begin_SetsPositionCorrectly()
     {
@@ -289,6 +383,9 @@ public class LargeMemoryStreamTests
         stream.Position.ShouldBe(10L);
     }
 
+    /// <summary>
+    /// 验证大型内存流按当前位置偏移设置位置。
+    /// </summary>
     [Fact]
     public void Seek_Current_SetsPositionCorrectly()
     {
@@ -301,6 +398,9 @@ public class LargeMemoryStreamTests
         stream.Position.ShouldBe(15L);
     }
 
+    /// <summary>
+    /// 验证大型内存流定位到末尾。
+    /// </summary>
     [Fact]
     public void Seek_End_SetsPositionCorrectly()
     {
@@ -312,6 +412,9 @@ public class LargeMemoryStreamTests
         stream.Position.ShouldBe(100L);
     }
 
+    /// <summary>
+    /// 验证大型内存流可以截断到较短长度。
+    /// </summary>
     [Fact]
     public void SetLength_TruncatesStream()
     {
@@ -323,6 +426,9 @@ public class LargeMemoryStreamTests
         stream.Length.ShouldBe(10L);
     }
 
+    /// <summary>
+    /// 验证大型内存流长度归零后清空内容。
+    /// </summary>
     [Fact]
     public void SetLength_Zero_ClearsStream()
     {
@@ -334,6 +440,9 @@ public class LargeMemoryStreamTests
         stream.Length.ShouldBe(0L);
     }
 
+    /// <summary>
+    /// 验证大型内存流拒绝负长度。
+    /// </summary>
     [Fact]
     public void SetLength_Negative_Throws()
     {
@@ -341,6 +450,9 @@ public class LargeMemoryStreamTests
         Should.Throw<InvalidOperationException>(() => stream.SetLength(-1));
     }
 
+    /// <summary>
+    /// 验证大型内存流拒绝超出长度的位置。
+    /// </summary>
     [Fact]
     public void Position_BeyondLength_Throws()
     {
@@ -351,6 +463,9 @@ public class LargeMemoryStreamTests
         Should.Throw<InvalidOperationException>(() => stream.Position = 20);
     }
 
+    /// <summary>
+    /// 验证大型内存流拒绝负位置。
+    /// </summary>
     [Fact]
     public void Position_Negative_Throws()
     {
@@ -358,6 +473,9 @@ public class LargeMemoryStreamTests
         Should.Throw<InvalidOperationException>(() => stream.Position = -1);
     }
 
+    /// <summary>
+    /// 验证活动的大型内存流刷新时不抛出异常。
+    /// </summary>
     [Fact]
     public void Flush_OnActive_Stream_DoesNotThrow()
     {
@@ -365,6 +483,9 @@ public class LargeMemoryStreamTests
         Should.NotThrow(() => stream.Flush());
     }
 
+    /// <summary>
+    /// 验证大型内存流释放后拒绝刷新。
+    /// </summary>
     [Fact]
     public void Dispose_ThenFlush_ThrowsObjectDisposedException()
     {
@@ -373,6 +494,9 @@ public class LargeMemoryStreamTests
         Should.Throw<ObjectDisposedException>(() => stream.Flush());
     }
 
+    /// <summary>
+    /// 验证大型内存流释放后拒绝写入。
+    /// </summary>
     [Fact]
     public void Dispose_ThenWrite_ThrowsObjectDisposedException()
     {
@@ -381,6 +505,9 @@ public class LargeMemoryStreamTests
         Should.Throw<ObjectDisposedException>(() => stream.Write(new byte[1], 0, 1));
     }
 
+    /// <summary>
+    /// 验证大型内存流按顺序保留多次写入的字节。
+    /// </summary>
     [Fact]
     public void Write_MultipleChunks_ReadBackCorrectly()
     {
@@ -396,6 +523,9 @@ public class LargeMemoryStreamTests
         buffer.ShouldBe(new byte[] { 1, 2, 3, 4, 5, 6 });
     }
 
+    /// <summary>
+    /// 验证大型内存流写入后提供非空跨度。
+    /// </summary>
     [Fact]
     public void GetSpan_ReturnsNonEmpty_AfterWrite()
     {
@@ -405,6 +535,9 @@ public class LargeMemoryStreamTests
         span.Length.ShouldBeGreaterThan(0);
     }
 
+    /// <summary>
+    /// 验证大型内存流写入后提供非空内存。
+    /// </summary>
     [Fact]
     public void GetMemory_ReturnsNonEmpty_AfterWrite()
     {
@@ -425,6 +558,9 @@ public class LargeMemoryStreamTests
 [Trait("Bing.IO", "PooledMemoryStream")]
 public class PooledMemoryStreamTests
 {
+    /// <summary>
+    /// 验证新建池化内存流可读。
+    /// </summary>
     [Fact]
     public void CanRead_IsTrue()
     {
@@ -432,6 +568,9 @@ public class PooledMemoryStreamTests
         stream.CanRead.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证新建池化内存流可定位。
+    /// </summary>
     [Fact]
     public void CanSeek_IsTrue()
     {
@@ -439,6 +578,9 @@ public class PooledMemoryStreamTests
         stream.CanSeek.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证新建池化内存流可写。
+    /// </summary>
     [Fact]
     public void CanWrite_IsTrue()
     {
@@ -446,6 +588,9 @@ public class PooledMemoryStreamTests
         stream.CanWrite.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证新建池化内存流长度为零。
+    /// </summary>
     [Fact]
     public void InitialLength_IsZero()
     {
@@ -453,6 +598,9 @@ public class PooledMemoryStreamTests
         stream.Length.ShouldBe(0L);
     }
 
+    /// <summary>
+    /// 验证池化内存流从字节数组初始化长度和内容。
+    /// </summary>
     [Fact]
     public void Constructor_FromByteArray_SetsLengthAndContent()
     {
@@ -464,6 +612,9 @@ public class PooledMemoryStreamTests
         buf.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证池化内存流写入后可读回原始字节。
+    /// </summary>
     [Fact]
     public void Write_ThenRead_RoundTrip()
     {
@@ -477,6 +628,9 @@ public class PooledMemoryStreamTests
         buf.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证池化内存流写入后更新长度和位置。
+    /// </summary>
     [Fact]
     public void Write_UpdatesLengthAndPosition()
     {
@@ -486,6 +640,9 @@ public class PooledMemoryStreamTests
         stream.Position.ShouldBe(10L);
     }
 
+    /// <summary>
+    /// 验证池化内存流按起点偏移设置位置。
+    /// </summary>
     [Fact]
     public void Seek_Begin_SetsPosition()
     {
@@ -495,6 +652,9 @@ public class PooledMemoryStreamTests
         stream.Position.ShouldBe(5L);
     }
 
+    /// <summary>
+    /// 验证池化内存流按当前位置偏移设置位置。
+    /// </summary>
     [Fact]
     public void Seek_Current_SetsPosition()
     {
@@ -505,6 +665,9 @@ public class PooledMemoryStreamTests
         stream.Position.ShouldBe(10L);
     }
 
+    /// <summary>
+    /// 验证池化内存流定位到末尾。
+    /// </summary>
     [Fact]
     public void Seek_End_SetsPositionAtEnd()
     {
@@ -514,6 +677,9 @@ public class PooledMemoryStreamTests
         stream.Position.ShouldBe(20L);
     }
 
+    /// <summary>
+    /// 验证池化内存流可以截断到较短长度。
+    /// </summary>
     [Fact]
     public void SetLength_TruncatesStream()
     {
@@ -523,6 +689,9 @@ public class PooledMemoryStreamTests
         stream.Length.ShouldBe(10L);
     }
 
+    /// <summary>
+    /// 验证池化内存流拒绝负长度。
+    /// </summary>
     [Fact]
     public void SetLength_Negative_Throws()
     {
@@ -530,6 +699,9 @@ public class PooledMemoryStreamTests
         Should.Throw<ArgumentOutOfRangeException>(() => stream.SetLength(-1));
     }
 
+    /// <summary>
+    /// 验证池化内存流转换为原始字节数组。
+    /// </summary>
     [Fact]
     public void ToArray_ReturnsCorrectBytes()
     {
@@ -539,6 +711,9 @@ public class PooledMemoryStreamTests
         result.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证池化内存流返回预期缓冲区字节。
+    /// </summary>
     [Fact]
     public void GetBuffer_ReturnsCorrectBytes()
     {
@@ -548,6 +723,9 @@ public class PooledMemoryStreamTests
         buf.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证池化内存流跨度的长度及指定位置字节。
+    /// </summary>
     [Fact]
     public void GetSpan_ReturnsCorrectContent()
     {
@@ -559,6 +737,9 @@ public class PooledMemoryStreamTests
         span[2].ShouldBe((byte)33);
     }
 
+    /// <summary>
+    /// 验证池化内存流内存的长度及首字节。
+    /// </summary>
     [Fact]
     public void GetMemory_ReturnsCorrectContent()
     {
@@ -569,6 +750,9 @@ public class PooledMemoryStreamTests
         mem.Span[0].ShouldBe((byte)100);
     }
 
+    /// <summary>
+    /// 验证池化内存流数组段的元素数量。
+    /// </summary>
     [Fact]
     public void ToArraySegment_ReturnsCorrectContent()
     {
@@ -578,6 +762,9 @@ public class PooledMemoryStreamTests
         seg.Count.ShouldBe(3);
     }
 
+    /// <summary>
+    /// 验证池化内存流内容复制到目标流。
+    /// </summary>
     [Fact]
     public void WriteTo_CopiesContentToAnotherStream()
     {
@@ -588,6 +775,9 @@ public class PooledMemoryStreamTests
         dst.ToArray().ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证池化内存流复制拒绝空目标流。
+    /// </summary>
     [Fact]
     public void WriteTo_NullStream_Throws()
     {
@@ -595,6 +785,9 @@ public class PooledMemoryStreamTests
         Should.Throw<ArgumentNullException>(() => stream.WriteTo(null));
     }
 
+    /// <summary>
+    /// 验证池化内存流按顺序枚举全部字节。
+    /// </summary>
     [Fact]
     public void GetEnumerator_EnumeratesAllBytes()
     {
@@ -604,6 +797,9 @@ public class PooledMemoryStreamTests
         list.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证活动的池化内存流刷新时不抛出异常。
+    /// </summary>
     [Fact]
     public void Flush_OnActive_Stream_DoesNotThrow()
     {
@@ -611,6 +807,9 @@ public class PooledMemoryStreamTests
         Should.NotThrow(() => stream.Flush());
     }
 
+    /// <summary>
+    /// 验证池化内存流释放后拒绝刷新。
+    /// </summary>
     [Fact]
     public void Dispose_ThenFlush_ThrowsObjectDisposedException()
     {
@@ -619,6 +818,9 @@ public class PooledMemoryStreamTests
         Should.Throw<ObjectDisposedException>(() => stream.Flush());
     }
 
+    /// <summary>
+    /// 验证池化内存流释放后拒绝写入。
+    /// </summary>
     [Fact]
     public void Dispose_ThenWrite_ThrowsObjectDisposedException()
     {
@@ -627,6 +829,9 @@ public class PooledMemoryStreamTests
         Should.Throw<ObjectDisposedException>(() => stream.Write(new byte[1], 0, 1));
     }
 
+    /// <summary>
+    /// 验证池化内存流写入后的容量覆盖内容长度。
+    /// </summary>
     [Fact]
     public void Capacity_IsGreaterOrEqualToLength_AfterWrite()
     {
@@ -635,6 +840,9 @@ public class PooledMemoryStreamTests
         stream.Capacity.ShouldBeGreaterThanOrEqualTo(stream.Length);
     }
 
+    /// <summary>
+    /// 验证池化内存流可使用自定义数组池并写入。
+    /// </summary>
     [Fact]
     public void Constructor_WithCustomArrayPool_Works()
     {

@@ -23,6 +23,7 @@ public class CheckRegressionTest
     /// <summary>
     /// 测试数据：NotNull 参数名回归场景。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetNotNullParamNameCases()
     {
         yield return new object[] { "userId" };

@@ -1,12 +1,12 @@
 namespace Bing.Reflection;
 /// <summary>
-/// 测试类：覆盖 `TypesAndTypeJudge` 相关行为。
+/// 验证类型默认值、可空类型、元组及泛型实现判定。
 /// </summary>
 [Trait("Bing.Reflection", "TypesAndTypeJudge")]
 public class TypesAndTypeJudgeTest
 {
     /// <summary>
-    /// 测试用例：验证 `DefaultValue` 在 `GenericValueType` 场景下，结果为 `ReturnsTypeDefault`。
+    /// 验证泛型默认值入口返回整数零值。
     /// </summary>
     [Fact]
     public void DefaultValue_GenericValueType_ReturnsTypeDefault()
@@ -15,7 +15,7 @@ public class TypesAndTypeJudgeTest
         result.ShouldBe(0);
     }
     /// <summary>
-    /// 测试用例：验证 `DefaultValue` 在 `ByType_ReferenceType` 场景下，结果为 `ReturnsNull`。
+    /// 验证引用类型的默认值为空。
     /// </summary>
     [Fact]
     public void DefaultValue_ByType_ReferenceType_ReturnsNull()
@@ -24,7 +24,7 @@ public class TypesAndTypeJudgeTest
         result.ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `DefaultValue` 在 `ByType_NullType` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 验证空类型的默认值查询当前抛出空引用异常。
     /// </summary>
     [Fact]
     public void DefaultValue_ByType_NullType_CurrentlyThrowsNullReferenceException()
@@ -32,7 +32,7 @@ public class TypesAndTypeJudgeTest
         Should.Throw<NullReferenceException>(() => Types.DefaultValue((Type)null));
     }
     /// <summary>
-    /// 测试用例：验证 `IsDefaultValue` 在 `GenericAndObjectOverloads` 场景下，结果为 `ReturnExpected`。
+    /// 验证泛型与对象重载均识别默认值及非默认值。
     /// </summary>
     [Fact]
     public void IsDefaultValue_GenericAndObjectOverloads_ReturnExpected()
@@ -44,7 +44,7 @@ public class TypesAndTypeJudgeTest
         Types.IsDefaultValue((object)null).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `Of` 在 `GenericWithUnderlyingOption` 场景下，结果为 `UnwrapsNullable`。
+    /// 验证类型选项决定保留可空包装或返回底层类型。
     /// </summary>
     [Fact]
     public void Of_GenericWithUnderlyingOption_UnwrapsNullable()
@@ -55,7 +55,7 @@ public class TypesAndTypeJudgeTest
         underlyingType.ShouldBe(typeof(int));
     }
     /// <summary>
-    /// 测试用例：验证 `Of` 在 `ObjectArray_WithNullItems` 场景下，结果为 `FiltersNullsAndReturnsOwnerTypes`。
+    /// 验证对象数组的类型提取过滤空元素并保留顺序。
     /// </summary>
     [Fact]
     public void Of_ObjectArray_WithNullItems_FiltersNullsAndReturnsOwnerTypes()
@@ -65,7 +65,7 @@ public class TypesAndTypeJudgeTest
         types.ShouldBe([typeof(int), typeof(string)]);
     }
     /// <summary>
-    /// 测试用例：验证 `Of` 在 `ObjectArray_NullArray` 场景下，结果为 `ReturnsNull`。
+    /// 验证空对象数组的类型提取结果为空。
     /// </summary>
     [Fact]
     public void Of_ObjectArray_NullArray_ReturnsNull()
@@ -73,7 +73,7 @@ public class TypesAndTypeJudgeTest
         Types.Of(null).ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `IsTupleType` 在 `WithTupleAndValueTuple` 场景下，结果为 `ReturnsTrue`。
+    /// 验证引用元组与值元组均满足元组类型判定。
     /// </summary>
     [Fact]
     public void IsTupleType_WithTupleAndValueTuple_ReturnsTrue()
@@ -82,7 +82,7 @@ public class TypesAndTypeJudgeTest
         Types.IsTupleType(typeof((int, string))).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `IsValueTupleType` 在 `WithTupleAndValueTuple` 场景下，结果为 `ReturnsExpected`。
+    /// 验证仅值元组满足值元组类型判定。
     /// </summary>
     [Fact]
     public void IsValueTupleType_WithTupleAndValueTuple_ReturnsExpected()
@@ -91,7 +91,7 @@ public class TypesAndTypeJudgeTest
         Types.IsValueTupleType(typeof((int, string))).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `IsNumericType` 在 `WithNullableAndIgnoreNullableOption` 场景下，结果为 `ReturnsExpected`。
+    /// 验证可空整数仅在忽略可空包装时满足数值判定。
     /// </summary>
     [Fact]
     public void IsNumericType_WithNullableAndIgnoreNullableOption_ReturnsExpected()
@@ -100,7 +100,7 @@ public class TypesAndTypeJudgeTest
         Types.IsNumericType(typeof(int?), TypeIsOptions.IgnoreNullable).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `IsNumericType` 在 `ObjectValueContainingInt` 场景下，结果为 `CurrentlyUsesCompileTimeType`。
+    /// 验证对象值重载当前使用静态对象类型进行数值判定。
     /// </summary>
     [Fact]
     public void IsNumericType_ObjectValueContainingInt_CurrentlyUsesCompileTimeType()
@@ -109,7 +109,7 @@ public class TypesAndTypeJudgeTest
         Types.IsNumericType(value).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `IsCollectionType` 在 `NullValueWithIgnoreNullable` 场景下，结果为 `ReturnsTypeBasedResult`。
+    /// 验证空集合值在忽略可空选项下按声明类型识别。
     /// </summary>
     [Fact]
     public void IsCollectionType_NullValueWithIgnoreNullable_ReturnsTypeBasedResult()
@@ -119,7 +119,7 @@ public class TypesAndTypeJudgeTest
         Types.IsCollectionType(value, TypeIsOptions.IgnoreNullable).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `TypeJudge` 在 `IsEnumType_WithNullableOption` 场景下，结果为 `ReturnsExpected`。
+    /// 验证可空枚举的识别受可空选项控制。
     /// </summary>
     [Fact]
     public void TypeJudge_IsEnumType_WithNullableOption_ReturnsExpected()
@@ -128,7 +128,7 @@ public class TypesAndTypeJudgeTest
         TypeJudge.IsEnumType<TestEnum?>(mayNullable: true).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `TypeJudge` 在 `IsNullableType_NullInput` 场景下，结果为 `ReturnsFalse`。
+    /// 验证空类型不满足可空类型判定。
     /// </summary>
     [Fact]
     public void TypeJudge_IsNullableType_NullInput_ReturnsFalse()
@@ -136,7 +136,7 @@ public class TypesAndTypeJudgeTest
         TypeJudge.IsNullableType((Type)null).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `TypeJudge` 在 `IsGenericImplementation_NullArguments` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证泛型实现判定分别拒绝空类型与空泛型定义。
     /// </summary>
     [Fact]
     public void TypeJudge_IsGenericImplementation_NullArguments_ThrowsArgumentNullException()
@@ -145,7 +145,7 @@ public class TypesAndTypeJudgeTest
         Should.Throw<ArgumentNullException>(() => TypeJudge.IsGenericImplementation(typeof(List<int>), null)).ParamName.ShouldBe("genericType");
     }
     /// <summary>
-    /// 测试用例：验证 `TypeJudge` 在 `IsGenericImplementation_NonGenericTypeDefinition` 场景下，结果为 `ReturnsFalse`。
+    /// 验证非泛型接口不满足泛型定义匹配要求。
     /// </summary>
     [Fact]
     public void TypeJudge_IsGenericImplementation_NonGenericTypeDefinition_ReturnsFalse()
@@ -153,7 +153,7 @@ public class TypesAndTypeJudgeTest
         TypeJudge.IsGenericImplementation(typeof(List<int>), typeof(IEnumerable)).ShouldBeFalse();
     }
     /// <summary>
-    /// 测试用例：验证 `TypeJudge` 在 `IsGenericImplementation_InterfaceAndBaseClass` 场景下，结果为 `ReturnsTrue`。
+    /// 验证能够识别泛型接口实现及泛型基类继承。
     /// </summary>
     [Fact]
     public void TypeJudge_IsGenericImplementation_InterfaceAndBaseClass_ReturnsTrue()
@@ -162,7 +162,7 @@ public class TypesAndTypeJudgeTest
         TypeJudge.IsGenericImplementation(typeof(DerivedGeneric), typeof(BaseGeneric<>)).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `Types` 在 `IsGenericImplementation_WrapperMethod` 场景下，结果为 `CurrentlyRequiresOpenGenericAndReturnsFalseForClosedGeneric`。
+    /// 验证泛型实现查询当前接受开放泛型定义而不接受闭合类型。
     /// </summary>
     [Fact]
     public void Types_IsGenericImplementation_WrapperMethod_CurrentlyRequiresOpenGenericAndReturnsFalseForClosedGeneric()
@@ -170,13 +170,26 @@ public class TypesAndTypeJudgeTest
         Types.IsGenericImplementation(typeof(List<int>), typeof(IEnumerable<>)).ShouldBeTrue();
         Types.IsGenericImplementation<DerivedGeneric, BaseGeneric<int>>().ShouldBeFalse();
     }
+    /// <summary>
+    /// 提供可空枚举类型判定的测试枚举。
+    /// </summary>
     private enum TestEnum
     {
+        /// <summary>
+        /// 用于可空枚举判定的测试值。
+        /// </summary>
         A = 1
     }
+    /// <summary>
+    /// 提供泛型继承判定的基类样例。
+    /// </summary>
+    /// <typeparam name="T">用于形成泛型基类的测试类型。</typeparam>
     private class BaseGeneric<T>
     {
     }
+    /// <summary>
+    /// 提供继承闭合泛型基类的测试类型。
+    /// </summary>
     private class DerivedGeneric : BaseGeneric<int>
     {
     }

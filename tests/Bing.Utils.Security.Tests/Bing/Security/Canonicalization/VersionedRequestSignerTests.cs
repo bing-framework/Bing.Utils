@@ -6,8 +6,14 @@ using Shouldly;
 using Xunit;
 namespace Bing.Security.Canonicalization;
 
+/// <summary>
+/// 验证带版本封套的 RSA 请求签名和 PEM 密钥导入行为。
+/// </summary>
 public class VersionedRequestSignerTests
 {
+    /// <summary>
+    /// 验证签名绑定规范化参数、协议标识和算法标识，且调用方仍拥有密钥。
+    /// </summary>
     [Fact]
     public void SignAndVerify_ShouldBindProtocolAndParameters_WithoutOwningKey()
     {
@@ -26,6 +32,10 @@ public class VersionedRequestSignerTests
         key.SignData(new byte[] { 1 }, HashAlgorithmName.SHA256, RSASignaturePadding.Pss).Length.ShouldBe(256);
     }
 
+    /// <summary>
+    /// 验证格式无效或版本不支持的签名封套返回 <see langword="false"/>。
+    /// </summary>
+    /// <param name="signature">要验证的版本化签名封套。</param>
     [Theory]
     [InlineData("")]
     [InlineData("BRS2.RSA-PSS-SHA256.AA==")]
@@ -36,6 +46,9 @@ public class VersionedRequestSignerTests
         VersionedRequestSigner.Verify(Array.Empty<CanonicalParameter>(), signature, key).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证弱 RSA 密钥及空参数会被签名和验证入口拒绝。
+    /// </summary>
     [Fact]
     public void SignAndVerify_InvalidConfiguration_ShouldThrow()
     {
@@ -47,6 +60,9 @@ public class VersionedRequestSignerTests
         Should.Throw<ArgumentNullException>(() => VersionedRequestSigner.Verify(Array.Empty<CanonicalParameter>(), null, key));
     }
 
+    /// <summary>
+    /// 验证 RSA 验签对无效签名返回 <see langword="false"/>，对无效密钥抛出参数异常。
+    /// </summary>
     [Fact]
     public void RsaVerify_InvalidSignature_ShouldReturnFalse_ButInvalidKeyShouldThrow()
     {
@@ -55,6 +71,9 @@ public class VersionedRequestSignerTests
         Should.Throw<ArgumentException>(() => RsaSignature.Verify(new byte[] { 1 }, new byte[] { 0 }, "invalid"));
     }
 
+    /// <summary>
+    /// 验证 PEM 导入拒绝混合用途或多个对象，并保留导入私钥的签名能力。
+    /// </summary>
     [Fact]
     public void PemImport_ShouldRejectMixedPurpose_AndKeepPrivateKeyUsable()
     {

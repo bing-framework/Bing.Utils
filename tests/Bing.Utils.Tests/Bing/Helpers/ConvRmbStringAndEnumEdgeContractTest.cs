@@ -127,6 +127,7 @@ public class ConvRmbStringAndEnumEdgeContractTest
     /// <summary>
     /// 测试数据：`ToRMB` 无法解析的非数字字符串
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetNonNumericRmbInputs()
     {
         yield return new object[] { "not-a-number" };
@@ -137,6 +138,7 @@ public class ConvRmbStringAndEnumEdgeContractTest
     /// <summary>
     /// 测试数据：空白包裹数字字符串与纯数字字符串对照组
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetWhitespaceWrappedNumericCases()
     {
         yield return new object[] { "10.23", "  10.23  " };
@@ -144,19 +146,46 @@ public class ConvRmbStringAndEnumEdgeContractTest
         yield return new object[] { "-100", "  -100  " };
     }
 
+    /// <summary>
+    /// 表示人民币文本转换测试使用的样例状态。
+    /// </summary>
     public enum SampleState
     {
+        /// <summary>
+        /// 未设置状态。
+        /// </summary>
         None = 0,
+        /// <summary>
+        /// 已打开状态。
+        /// </summary>
         Opened = 1,
+        /// <summary>
+        /// 已关闭状态。
+        /// </summary>
         Closed = 2
     }
 
+    /// <summary>
+    /// 指定枚举和泛型边界测试使用的组合权限。
+    /// </summary>
     [Flags]
     public enum SampleFlags
     {
+        /// <summary>
+        /// 未授予权限。
+        /// </summary>
         None = 0,
+        /// <summary>
+        /// 读取权限。
+        /// </summary>
         Read = 1,
+        /// <summary>
+        /// 写入权限。
+        /// </summary>
         Write = 2,
+        /// <summary>
+        /// 执行权限。
+        /// </summary>
         Execute = 4
     }
 }

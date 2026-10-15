@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证布尔类型识别及其可空形式。
+/// </summary>
 [Trait("TypeUT", "TypeIs.BooleanType")]
 public class TypeIsBooleanTest
 {

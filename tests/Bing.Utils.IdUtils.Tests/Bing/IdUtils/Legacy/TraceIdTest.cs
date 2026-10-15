@@ -6,12 +6,13 @@ namespace Bing.IdUtils.Legacy;
 public class TraceIdTest
 {
     /// <summary>
-    /// 测试输出帮助类
+    /// 获取当前测试的输出助手。
     /// </summary>
     protected ITestOutputHelper Output { get; }
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="TraceIdTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">当前测试的输出助手。</param>
     public TraceIdTest(ITestOutputHelper output)
     {
         Output = output;

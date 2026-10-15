@@ -199,6 +199,12 @@ public class FormattedStringValueExtractorTest
         FormattedStringValueExtractor.IsMatch("User jxb does not exist.", "User {0} does not exist.", out var values).ShouldBe(true);
         values[0].ShouldBe("jxb");
     }
+    /// <summary>
+    /// 验证提取结果与预期名称和值一致。
+    /// </summary>
+    /// <param name="str">待匹配的原始字符串。</param>
+    /// <param name="format">包含占位符的格式字符串。</param>
+    /// <param name="expectedPairs">预期提取到的名称和值。</param>
     private static void Test_Matched_Internal(string str, string format, params NameValue[] expectedPairs)
     {
         var result = FormattedStringValueExtractor.Extract(str, format);
@@ -217,6 +223,11 @@ public class FormattedStringValueExtractorTest
             actualMatch.Value.ShouldBe(expectedPair.Value);
         }
     }
+    /// <summary>
+    /// 验证不匹配时不会产生匹配结果。
+    /// </summary>
+    /// <param name="str">待匹配的原始字符串。</param>
+    /// <param name="format">用于匹配的格式字符串。</param>
     private void Test_Not_Matched_Internal(string str, string format)
     {
         var result = FormattedStringValueExtractor.Extract(str, format);

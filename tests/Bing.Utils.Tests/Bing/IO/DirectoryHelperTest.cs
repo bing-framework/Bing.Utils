@@ -18,8 +18,9 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// </summary>
     private readonly List<string> _createdFiles;
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="DirectoryHelperTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">当前测试的输出助手。</param>
     public DirectoryHelperTest(ITestOutputHelper output) : base(output)
     {
         _testRootPath = Path.Combine(Path.GetTempPath(), "DirectoryHelperTest", Guid.NewGuid().ToString());
@@ -29,9 +30,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
         Directory.CreateDirectory(_testRootPath);
         _createdDirectories.Add(_testRootPath);
     }
-    /// <summary>
-    /// 释放资源
-    /// </summary>
+    /// <inheritdoc />
     public void Dispose()
     {
         // 清理测试创建的文件和目录
@@ -122,6 +121,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - CreateDirectory - 空路径抛出异常
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -182,6 +182,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - CreateIfNotExists - 空字符串返回null
     /// </summary>
+    /// <param name="directory">待检查的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -270,6 +271,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - DeleteIfExists - 空路径返回false
     /// </summary>
+    /// <param name="directory">待检查的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -363,6 +365,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - ChangeCurrentDirectory - 空路径抛出异常
     /// </summary>
+    /// <param name="targetDirectory">待切换到的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -442,6 +445,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - GetFiles - 空路径抛出异常
     /// </summary>
+    /// <param name="directoryPath">待操作的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -522,6 +526,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - GetDirectories - 空路径抛出异常
     /// </summary>
+    /// <param name="directoryPath">待操作的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -604,6 +609,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - IsEmptyDirectory - 空路径抛出异常
     /// </summary>
+    /// <param name="folderPath">待检查的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -653,6 +659,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - IsOverdueDirectory - 空路径抛出异常
     /// </summary>
+    /// <param name="folderPath">待检查的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -667,6 +674,8 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - GetDirectoryPath - 获取目录路径
     /// </summary>
+    /// <param name="input">输入的目录路径。</param>
+    /// <param name="expected">预期的处理结果。</param>
     [Theory]
     [InlineData("C:\\Users\\A\\", "C:/Users/A/")]
     [InlineData("C:/Users/A/", "C:/Users/A/")]
@@ -683,6 +692,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - GetDirectoryPath - 空路径返回空字符串
     /// </summary>
+    /// <param name="path">待检查的路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -751,8 +761,9 @@ public class DirectoryHelperTest : TestBase, IDisposable
         Should.Throw<DirectoryNotFoundException>(() => DirectoryHelper.Copy(sourcePath, targetPath));
     }
     /// <summary>
-    /// 测试 - Copy - 空源路径抛出异常
+    /// 验证目录复制拒绝空源路径。
     /// </summary>
+    /// <param name="sourcePath">无效的源目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -850,7 +861,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     #endregion
     #region TryClearOverdueFolder 测试
     /// <summary>
-    /// 测试 - TryClearOverdueFolder - 清理过期文件夹
+    /// 验证尝试清理新建目录时返回成功。
     /// </summary>
     [Fact]
     public void TryClearOverdueFolder_ValidDirectory_ReturnsTrue()
@@ -898,6 +909,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - SetAttributes - 空路径抛出异常
     /// </summary>
+    /// <param name="directory">待检查的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -989,6 +1001,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - GetDirectorySize - 空路径抛出异常
     /// </summary>
+    /// <param name="directoryPath">待操作的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -1074,6 +1087,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - Move - 空源路径抛出异常
     /// </summary>
+    /// <param name="sourcePath">待操作的源目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -1088,6 +1102,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - Move - 空目标路径抛出异常
     /// </summary>
+    /// <param name="destinationPath">待移动到的目标目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -1147,6 +1162,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - GetFileCount - 空路径抛出异常
     /// </summary>
+    /// <param name="directoryPath">待操作的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -1202,6 +1218,7 @@ public class DirectoryHelperTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - GetDirectoryCount - 空路径抛出异常
     /// </summary>
+    /// <param name="directoryPath">待操作的目录路径。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]

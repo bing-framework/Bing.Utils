@@ -19,6 +19,9 @@ public class BinaryDigitReaderTests
     //  Span-based — ReadInt16 / ReadUInt16
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证从小端字节跨度读取16 位有符号整数。
+    /// </summary>
     [Fact]
     public void ReadInt16_Span_ReturnsCorrectValue()
     {
@@ -27,6 +30,9 @@ public class BinaryDigitReaderTests
         BinaryDigitReader.ReadInt16(buf).ShouldBe((short)0x0102);
     }
 
+    /// <summary>
+    /// 验证从小端字节跨度读取16 位无符号整数。
+    /// </summary>
     [Fact]
     public void ReadUInt16_Span_ReturnsCorrectValue()
     {
@@ -38,6 +44,9 @@ public class BinaryDigitReaderTests
     //  Span-based — ReadInt32 / ReadUInt32
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证从小端字节跨度读取32 位有符号整数。
+    /// </summary>
     [Fact]
     public void ReadInt32_Span_ReturnsCorrectValue()
     {
@@ -45,6 +54,9 @@ public class BinaryDigitReaderTests
         BinaryDigitReader.ReadInt32(buf).ShouldBe(0x12345678);
     }
 
+    /// <summary>
+    /// 验证从小端字节跨度读取32 位无符号整数。
+    /// </summary>
     [Fact]
     public void ReadUInt32_Span_ReturnsCorrectValue()
     {
@@ -52,6 +64,9 @@ public class BinaryDigitReaderTests
         BinaryDigitReader.ReadUInt32(buf).ShouldBe(0xDEADBEEFU);
     }
 
+    /// <summary>
+    /// 验证全零跨度读取为整数零。
+    /// </summary>
     [Fact]
     public void ReadInt32_Span_Zero_ReturnsZero()
     {
@@ -63,6 +78,9 @@ public class BinaryDigitReaderTests
     //  Span-based — ReadInt64 / ReadUInt64
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证从小端字节跨度读取64 位有符号整数。
+    /// </summary>
     [Fact]
     public void ReadInt64_Span_ReturnsCorrectValue()
     {
@@ -71,6 +89,9 @@ public class BinaryDigitReaderTests
         BinaryDigitReader.ReadInt64(buf).ShouldBe(0x0102030405060708L);
     }
 
+    /// <summary>
+    /// 验证从小端字节跨度读取64 位无符号整数。
+    /// </summary>
     [Fact]
     public void ReadUInt64_Span_ReturnsCorrectValue()
     {
@@ -82,6 +103,9 @@ public class BinaryDigitReaderTests
     //  byte[]-based — ReadInt16 / ReadUInt16
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证从数组指定偏移读取16 位有符号整数。
+    /// </summary>
     [Fact]
     public void ReadInt16_ByteArray_ReturnsCorrectValue()
     {
@@ -89,6 +113,9 @@ public class BinaryDigitReaderTests
         BinaryDigitReader.ReadInt16(buf, 2).ShouldBe((short)0x0102);
     }
 
+    /// <summary>
+    /// 验证从数组指定偏移读取16 位无符号整数。
+    /// </summary>
     [Fact]
     public void ReadUInt16_ByteArray_AtPosition_ReturnsCorrectValue()
     {
@@ -100,6 +127,9 @@ public class BinaryDigitReaderTests
     //  byte[]-based — ReadInt32 / ReadUInt32
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证从数组指定偏移读取32 位有符号整数。
+    /// </summary>
     [Fact]
     public void ReadInt32_ByteArray_AtPosition_ReturnsCorrectValue()
     {
@@ -107,6 +137,9 @@ public class BinaryDigitReaderTests
         BinaryDigitReader.ReadInt32(buf, 1).ShouldBe(0x12345678);
     }
 
+    /// <summary>
+    /// 验证从数组指定偏移读取32 位无符号整数。
+    /// </summary>
     [Fact]
     public void ReadUInt32_ByteArray_AtPosition_ReturnsCorrectValue()
     {
@@ -118,6 +151,9 @@ public class BinaryDigitReaderTests
     //  byte[]-based — ReadInt64 / ReadUInt64
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证从数组指定偏移读取64 位有符号整数。
+    /// </summary>
     [Fact]
     public void ReadInt64_ByteArray_AtPosition_ReturnsCorrectValue()
     {
@@ -127,6 +163,9 @@ public class BinaryDigitReaderTests
         BinaryDigitReader.ReadInt64(buf, 1).ShouldBe(0x0102030405060708L);
     }
 
+    /// <summary>
+    /// 验证从数组指定偏移读取64 位无符号整数。
+    /// </summary>
     [Fact]
     public void ReadUInt64_ByteArray_AtPosition_ReturnsCorrectValue()
     {
@@ -148,6 +187,9 @@ public class BinaryDigitWriterTests
     //  Span-based 写入后读回 (roundtrip)
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证16 位有符号整数写入字节跨度后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_Short_Span_Roundtrip()
     {
@@ -156,6 +198,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadInt16(buf).ShouldBe((short)0x1234);
     }
 
+    /// <summary>
+    /// 验证16 位无符号整数写入字节跨度后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_UShort_Span_Roundtrip()
     {
@@ -164,6 +209,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadUInt16(buf).ShouldBe((ushort)0xABCD);
     }
 
+    /// <summary>
+    /// 验证32 位有符号整数写入字节跨度后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_Int_Span_Roundtrip()
     {
@@ -172,6 +220,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadInt32(buf).ShouldBe(0x12345678);
     }
 
+    /// <summary>
+    /// 验证32 位无符号整数写入字节跨度后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_UInt_Span_Roundtrip()
     {
@@ -180,6 +231,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadUInt32(buf).ShouldBe(0xDEADBEEFU);
     }
 
+    /// <summary>
+    /// 验证64 位有符号整数写入字节跨度后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_Long_Span_Roundtrip()
     {
@@ -188,6 +242,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadInt64(buf).ShouldBe(0x0102030405060708L);
     }
 
+    /// <summary>
+    /// 验证64 位无符号整数写入字节跨度后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_ULong_Span_Roundtrip()
     {
@@ -196,6 +253,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadUInt64(buf).ShouldBe(ulong.MaxValue);
     }
 
+    /// <summary>
+    /// 验证长整数零写入跨度后读回零。
+    /// </summary>
     [Fact]
     public void Write_Long_Span_Zero_Roundtrip()
     {
@@ -208,6 +268,9 @@ public class BinaryDigitWriterTests
     //  byte[]-based 写入后读回 (roundtrip)
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证16 位有符号整数写入数组指定偏移后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_Short_ByteArray_Roundtrip()
     {
@@ -216,6 +279,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadInt16(buf, 1).ShouldBe((short)0x1234);
     }
 
+    /// <summary>
+    /// 验证16 位无符号整数写入数组指定偏移后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_UShort_ByteArray_Roundtrip()
     {
@@ -224,6 +290,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadUInt16(buf, 1).ShouldBe((ushort)0xABCD);
     }
 
+    /// <summary>
+    /// 验证32 位有符号整数写入数组指定偏移后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_Int_ByteArray_Roundtrip()
     {
@@ -232,6 +301,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadInt32(buf, 2).ShouldBe(0x12345678);
     }
 
+    /// <summary>
+    /// 验证32 位无符号整数写入数组指定偏移后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_UInt_ByteArray_Roundtrip()
     {
@@ -240,6 +312,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadUInt32(buf, 1).ShouldBe(0xDEADBEEFU);
     }
 
+    /// <summary>
+    /// 验证64 位有符号整数写入数组指定偏移后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_Long_ByteArray_Roundtrip()
     {
@@ -248,6 +323,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadInt64(buf, 1).ShouldBe(0x0102030405060708L);
     }
 
+    /// <summary>
+    /// 验证64 位无符号整数写入数组指定偏移后可读回原值。
+    /// </summary>
     [Fact]
     public void Write_ULong_ByteArray_Roundtrip()
     {
@@ -256,6 +334,9 @@ public class BinaryDigitWriterTests
         BinaryDigitReader.ReadUInt64(buf, 0).ShouldBe(ulong.MaxValue);
     }
 
+    /// <summary>
+    /// 验证短整数以小端顺序写入数组。
+    /// </summary>
     [Fact]
     public void Write_Short_ByteArray_WritesToCorrectBytes()
     {
@@ -266,6 +347,9 @@ public class BinaryDigitWriterTests
         buf[1].ShouldBe((byte)0x02);
     }
 
+    /// <summary>
+    /// 验证整数以小端顺序写入数组。
+    /// </summary>
     [Fact]
     public void Write_Int_ByteArray_WritesToCorrectBytes()
     {
@@ -289,6 +373,9 @@ public class BinaryDigitSwapperTests
     //  SwapInt16 / SwapUInt16
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证16 位有符号整数按预期交换字节顺序。
+    /// </summary>
     [Fact]
     public void SwapInt16_KnownValue_ReturnsSwapped()
     {
@@ -296,18 +383,27 @@ public class BinaryDigitSwapperTests
         BinaryDigitSwapper.SwapInt16(0x0102).ShouldBe((short)0x0201);
     }
 
+    /// <summary>
+    /// 验证16 位无符号整数按预期交换字节顺序。
+    /// </summary>
     [Fact]
     public void SwapUInt16_KnownValue_ReturnsSwapped()
     {
         BinaryDigitSwapper.SwapUInt16(0x0102).ShouldBe((ushort)0x0201);
     }
 
+    /// <summary>
+    /// 验证16 位有符号整数零值交换字节顺序后仍为零。
+    /// </summary>
     [Fact]
     public void SwapInt16_Zero_ReturnsZero()
     {
         BinaryDigitSwapper.SwapInt16(0).ShouldBe((short)0);
     }
 
+    /// <summary>
+    /// 验证16 位有符号整数交换两次字节顺序后恢复原值。
+    /// </summary>
     [Fact]
     public void SwapInt16_SwapTwice_ReturnsOriginal()
     {
@@ -315,6 +411,9 @@ public class BinaryDigitSwapperTests
         BinaryDigitSwapper.SwapInt16(BinaryDigitSwapper.SwapInt16(original)).ShouldBe(original);
     }
 
+    /// <summary>
+    /// 验证16 位无符号整数交换两次字节顺序后恢复原值。
+    /// </summary>
     [Fact]
     public void SwapUInt16_SwapTwice_ReturnsOriginal()
     {
@@ -326,6 +425,9 @@ public class BinaryDigitSwapperTests
     //  SwapInt32 / SwapUInt32
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证32 位有符号整数交换两次字节顺序后恢复原值。
+    /// </summary>
     [Fact]
     public void SwapInt32_SwapTwice_ReturnsOriginal()
     {
@@ -333,6 +435,9 @@ public class BinaryDigitSwapperTests
         BinaryDigitSwapper.SwapInt32(BinaryDigitSwapper.SwapInt32(original)).ShouldBe(original);
     }
 
+    /// <summary>
+    /// 验证32 位无符号整数交换两次字节顺序后恢复原值。
+    /// </summary>
     [Fact]
     public void SwapUInt32_SwapTwice_ReturnsOriginal()
     {
@@ -340,12 +445,18 @@ public class BinaryDigitSwapperTests
         BinaryDigitSwapper.SwapUInt32(BinaryDigitSwapper.SwapUInt32(original)).ShouldBe(original);
     }
 
+    /// <summary>
+    /// 验证32 位有符号整数零值交换字节顺序后仍为零。
+    /// </summary>
     [Fact]
     public void SwapInt32_Zero_ReturnsZero()
     {
         BinaryDigitSwapper.SwapInt32(0).ShouldBe(0);
     }
 
+    /// <summary>
+    /// 验证32 位无符号整数零值交换字节顺序后仍为零。
+    /// </summary>
     [Fact]
     public void SwapUInt32_Zero_ReturnsZero()
     {
@@ -356,6 +467,9 @@ public class BinaryDigitSwapperTests
     //  SwapInt64 / SwapUInt64
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证64 位有符号整数交换两次字节顺序后恢复原值。
+    /// </summary>
     [Fact]
     public void SwapInt64_SwapTwice_ReturnsOriginal()
     {
@@ -363,6 +477,9 @@ public class BinaryDigitSwapperTests
         BinaryDigitSwapper.SwapInt64(BinaryDigitSwapper.SwapInt64(original)).ShouldBe(original);
     }
 
+    /// <summary>
+    /// 验证64 位无符号整数交换两次字节顺序后恢复原值。
+    /// </summary>
     [Fact]
     public void SwapUInt64_SwapTwice_ReturnsOriginal()
     {
@@ -370,12 +487,18 @@ public class BinaryDigitSwapperTests
         BinaryDigitSwapper.SwapUInt64(BinaryDigitSwapper.SwapUInt64(original)).ShouldBe(original);
     }
 
+    /// <summary>
+    /// 验证64 位有符号整数零值交换字节顺序后仍为零。
+    /// </summary>
     [Fact]
     public void SwapInt64_Zero_ReturnsZero()
     {
         BinaryDigitSwapper.SwapInt64(0L).ShouldBe(0L);
     }
 
+    /// <summary>
+    /// 验证64 位无符号整数零值交换字节顺序后仍为零。
+    /// </summary>
     [Fact]
     public void SwapUInt64_Zero_ReturnsZero()
     {
@@ -386,6 +509,9 @@ public class BinaryDigitSwapperTests
     //  综合：Int 与 UInt swap 结果一致性
     // ──────────────────────────────────────────
 
+    /// <summary>
+    /// 验证有符号和无符号短整数交换后具有相同位模式。
+    /// </summary>
     [Fact]
     public void SwapInt16_And_SwapUInt16_ProduceSameBitPattern()
     {
@@ -405,19 +531,29 @@ public class BinaryDigitSwapperTests
 [Trait("Bing.IO", "FileStreamExtensions")]
 public class FileStreamExtensionsTests : IDisposable
 {
+    /// <summary>
+    /// 逐行读取测试使用的临时文件路径。
+    /// </summary>
     private readonly string _tempFile;
 
+    /// <summary>
+    /// 初始化一个 <see cref="FileStreamExtensionsTests"/> 类型的实例。
+    /// </summary>
     public FileStreamExtensionsTests()
     {
         _tempFile = Path.Combine(Path.GetTempPath(), $"BingTest_{Guid.NewGuid():N}.txt");
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         if (File.Exists(_tempFile))
             File.Delete(_tempFile);
     }
 
+    /// <summary>
+    /// 验证单行文件读取为一个文本行。
+    /// </summary>
     [Fact]
     public void ReadAllLines_SingleLine_ReturnsSingleLine()
     {
@@ -428,6 +564,9 @@ public class FileStreamExtensionsTests : IDisposable
         lines[0].ShouldBe("hello");
     }
 
+    /// <summary>
+    /// 验证多行文件按顺序读取全部文本行。
+    /// </summary>
     [Fact]
     public void ReadAllLines_MultipleLines_ReturnsAllLines()
     {
@@ -440,6 +579,9 @@ public class FileStreamExtensionsTests : IDisposable
         lines[2].ShouldBe("line3");
     }
 
+    /// <summary>
+    /// 验证空文件读取为空行集合。
+    /// </summary>
     [Fact]
     public void ReadAllLines_EmptyFile_ReturnsEmptyList()
     {
@@ -449,6 +591,9 @@ public class FileStreamExtensionsTests : IDisposable
         lines.ShouldBeEmpty();
     }
 
+    /// <summary>
+    /// 验证指定读取后关闭时文件流已释放。
+    /// </summary>
     [Fact]
     public void ReadAllLines_WithCloseAfterTrue_ClosesStream()
     {
@@ -460,6 +605,9 @@ public class FileStreamExtensionsTests : IDisposable
         Should.Throw<ObjectDisposedException>(() => { var _ = fs.Length; });
     }
 
+    /// <summary>
+    /// 验证按 UTF-8 逐行读取中文文件内容。
+    /// </summary>
     [Fact]
     public void ReadAllLines_ChineseContent_DecodesCorrectly()
     {

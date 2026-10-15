@@ -182,44 +182,79 @@ public class CheckAndConvEdgeContractTest
     /// <summary>
     /// 测试数据：Check.NotNullOrEmpty(字典) 当前会抛出 FormatException 的输入。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetDictionaryInputsForCurrentFormatExceptionCases()
     {
         yield return new object[] { new Dictionary<string, int>() };
         yield return new object[] { new Dictionary<string, int> { ["A"] = 1 } };
     }
 
+    /// <summary>
+    /// 用于验证泛型断言帮助方法能够创建带消息的指定异常。
+    /// </summary>
     private sealed class CustomMessageException : Exception
     {
+        /// <summary>
+        /// 初始化一个 <see cref="CustomMessageException"/> 类型的实例。
+        /// </summary>
+        /// <param name="message">异常消息。</param>
         public CustomMessageException(string message) : base(message)
         {
         }
     }
 
+    /// <summary>
+    /// 用于验证泛型断言帮助方法对无消息构造函数的处理。
+    /// </summary>
     private sealed class CustomNoMessageCtorException : Exception
     {
+        /// <summary>
+        /// 初始化一个 <see cref="CustomNoMessageCtorException"/> 类型的实例。
+        /// </summary>
         public CustomNoMessageCtorException()
         {
         }
     }
 
+    /// <summary>
+    /// 包含重复描述名、用于验证字典键冲突的样例。
+    /// </summary>
     private sealed class DuplicateDisplayNameSample
     {
+        /// <summary>
+        /// 获取或设置第一个样例值。
+        /// </summary>
         [Description("重复键")]
         public string First { get; set; }
 
+        /// <summary>
+        /// 获取或设置第二个样例值。
+        /// </summary>
         [Description("重复键")]
         public string Second { get; set; }
     }
 
+    /// <summary>
+    /// 同时声明描述名和显示名的转换样例。
+    /// </summary>
     private sealed class DescriptionAndDisplayNameSample
     {
+        /// <summary>
+        /// 获取或设置用于名称转换的值。
+        /// </summary>
         [Description("描述名")]
         [DisplayName("显示名")]
         public string Name { get; set; }
     }
 
+    /// <summary>
+    /// 仅声明显示名的转换样例。
+    /// </summary>
     private sealed class DisplayNameOnlySample
     {
+        /// <summary>
+        /// 获取或设置用于名称转换的值。
+        /// </summary>
         [DisplayName("显示名称")]
         public string Name { get; set; }
     }

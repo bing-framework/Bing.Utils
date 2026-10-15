@@ -1,23 +1,50 @@
 namespace Bing.Utils.Net.Tests.Integration;
 
 /// <summary>
-/// FTP 客户端集成测试
+/// 验证 FTP 客户端与受控 FTP 服务的文件、目录和流操作。
 /// </summary>
 [Trait("Category", "Integration")]
 public class FtpClientIntegrationTest
 {
+    /// <summary>
+    /// 测试资源目录中 FTP 上传用文件的相对路径。
+    /// </summary>
     private const string TestFilesPath = "Resources/TestFiles";
+    /// <summary>
+    /// 测试专用本地工作目录的相对路径。
+    /// </summary>
     private const string ActiveFilePath = "Resources/ActiveTestFolder";
+    /// <summary>
+    /// FTP 文件操作测试使用的第一个资源文件名。
+    /// </summary>
     private const string TestFile1 = "Text.txt";
+    /// <summary>
+    /// FTP 文件操作测试使用的第二个资源文件名。
+    /// </summary>
     private const string TestFile2 = "测试文件1.txt";
+    /// <summary>
+    /// 上传测试使用的远程工作目录名。
+    /// </summary>
     private const string TestFolder1 = "TestSubFolder";
+    /// <summary>
+    /// 目录创建测试使用的远程目录名。
+    /// </summary>
     private const string TestFolder3 = "TestSubFolder4";
+    /// <summary>
+    /// 下载文件在本地工作目录下的子目录名。
+    /// </summary>
     private const string TestDownloadFolder = "DownloadFolder";
+    /// <summary>
+    /// 用于执行集成测试 FTP 操作的客户端。
+    /// </summary>
     private readonly IFtpClient _client;
+    /// <summary>
+    /// 保存测试期间使用的本地工作目录信息。
+    /// </summary>
     private readonly DirectoryInfo _activeFolder;
 
     /// <summary>
-    /// 初始化 FTP 集成测试
+    /// 初始化一个 <see cref="FtpClientIntegrationTest"/> 类型的实例。
     /// </summary>
     public FtpClientIntegrationTest()
     {
@@ -27,13 +54,18 @@ public class FtpClientIntegrationTest
         _activeFolder = new DirectoryInfo(GetTestFilePath(ActiveFilePath));
     }
 
+    /// <summary>
+    /// 将测试资源路径片段合并为基目录下的完整路径。
+    /// </summary>
+    /// <param name="paths">依次组成相对路径的目录或文件名片段。</param>
+    /// <returns>相对于应用程序基目录的完整路径。</returns>
     private static string GetTestFilePath(params string[] paths)
     {
         return Path.Combine(AppContext.BaseDirectory, Path.Combine(paths));
     }
 
     /// <summary>
-    /// 测试目的：验证客户端可以连接到受控 FTP 服务。
+    /// 验证客户端可以连接到受控 FTP 服务。
     /// </summary>
     [FtpIntegrationFact]
     public void Connect_WhenConfigurationIsValid_ShouldConnect()
@@ -44,8 +76,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以上传并删除文件。
+    /// 验证可以上传并删除文件。
     /// </summary>
+    /// <param name="fileName">要上传的测试资源文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -59,8 +92,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以在工作目录中上传文件。
+    /// 验证可以在工作目录中上传文件。
     /// </summary>
+    /// <param name="fileName">要上传的测试资源文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -75,8 +109,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以在工作目录中上传流。
+    /// 验证可以在工作目录中上传流。
     /// </summary>
+    /// <param name="fileName">要通过流上传的测试资源文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -92,8 +127,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以在工作目录中上传字节数组。
+    /// 验证可以在工作目录中上传字节数组。
     /// </summary>
+    /// <param name="fileName">要读取并上传的测试资源文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -109,7 +145,7 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以批量上传文件。
+    /// 验证可以批量上传文件。
     /// </summary>
     [FtpIntegrationFact]
     public void UploadFiles_WhenMultipleFilesProvided_ShouldUploadAndDeleteDirectory()
@@ -122,7 +158,7 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以上传目录。
+    /// 验证可以上传目录。
     /// </summary>
     [FtpIntegrationFact]
     public void UploadDirectory_WhenDirectoryExists_ShouldUploadAndDeleteDirectory()
@@ -136,8 +172,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以下载文件。
+    /// 验证可以下载文件。
     /// </summary>
+    /// <param name="fileName">要下载的远程文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -153,8 +190,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以下载为字节数组。
+    /// 验证可以下载为字节数组。
     /// </summary>
+    /// <param name="fileName">要下载为字节数组的远程文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -172,7 +210,7 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以批量下载文件。
+    /// 验证可以批量下载文件。
     /// </summary>
     [FtpIntegrationFact]
     public void DownloadFiles_WhenRemoteFilesExist_ShouldDownloadAndDeleteDirectory()
@@ -186,7 +224,7 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以下载目录。
+    /// 验证可以下载目录。
     /// </summary>
     [FtpIntegrationFact]
     public void DownloadDirectory_WhenRemoteDirectoryExists_ShouldDownloadAndDeleteDirectory()
@@ -199,8 +237,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以删除文件。
+    /// 验证可以删除文件。
     /// </summary>
+    /// <param name="fileName">要删除的远程文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -212,8 +251,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以重命名文件。
+    /// 验证可以重命名文件。
     /// </summary>
+    /// <param name="fileName">要重命名的远程文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -226,8 +266,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以复制文件。
+    /// 验证可以复制文件。
     /// </summary>
+    /// <param name="fileName">要复制的远程文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -241,8 +282,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以移动文件。
+    /// 验证可以移动文件。
     /// </summary>
+    /// <param name="fileName">要移动的远程文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -256,8 +298,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以识别已上传的文件。
+    /// 验证可以识别已上传的文件。
     /// </summary>
+    /// <param name="fileName">要检查是否存在的远程文件名。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFile1)]
     [InlineData(TestFile2)]
@@ -270,8 +313,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以创建目录。
+    /// 验证可以创建目录。
     /// </summary>
+    /// <param name="path">要创建并删除的远程目录路径。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFolder1)]
     [InlineData(TestFolder3)]
@@ -284,8 +328,9 @@ public class FtpClientIntegrationTest
     }
 
     /// <summary>
-    /// 测试目的：验证可以删除目录。
+    /// 验证可以删除目录。
     /// </summary>
+    /// <param name="path">要创建后再删除的远程目录路径。</param>
     [FtpIntegrationTheory]
     [InlineData(TestFolder1)]
     [InlineData(TestFolder3)]

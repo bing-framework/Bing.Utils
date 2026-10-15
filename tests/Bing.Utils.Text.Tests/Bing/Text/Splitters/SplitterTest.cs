@@ -6,7 +6,7 @@ using Shouldly;
 namespace Bing.Text;
 
 /// <summary>
-/// 测试类：Splitter 字符串分割器的各工厂方法、配置链与终结方法
+/// 字符串分割器的分隔符、过滤、裁剪和键值解析测试。
 /// </summary>
 [Trait("TextUT", "Splitter")]
 public class SplitterTest
@@ -14,8 +14,11 @@ public class SplitterTest
     #region On(char) / On(string) — 基础分割
 
     /// <summary>
-    /// 测试目的：单字符分隔符下 SplitToList 应正确切割并返回所有片段
+    /// 验证按字符分隔符切分文本。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="separator">字符分隔符。</param>
+    /// <param name="expected">预期分割片段。</param>
     [Theory]
     [InlineData("a,b,c", ',', new[] { "a", "b", "c" })]
     [InlineData("x|y|z", '|', new[] { "x", "y", "z" })]
@@ -30,8 +33,11 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：字符串分隔符（多字符）下 SplitToList 应正确切割
+    /// 验证按多字符分隔符切分文本。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="separator">字符串分隔符。</param>
+    /// <param name="expected">预期分割片段。</param>
     [Theory]
     [InlineData("a::b::c", "::", new[] { "a", "b", "c" })]
     [InlineData("foo---bar", "---", new[] { "foo", "bar" })]
@@ -45,8 +51,9 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：空字符串输入时 SplitToList 应返回空集合
+    /// 验证空文本和纯空白文本分割为空列表。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
@@ -60,7 +67,7 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：SplitToArray 应返回与 SplitToList 内容相同的字符串数组
+    /// 验证SplitToArray 应返回与 SplitToList 内容相同的字符串数组
     /// </summary>
     [Fact]
     public void SplitToArray_ResultMatchesSplitToList()
@@ -81,8 +88,10 @@ public class SplitterTest
     #region OmitEmptyStrings
 
     /// <summary>
-    /// 测试目的：启用 OmitEmptyStrings 后，相邻分隔符产生的空串应被过滤
+    /// 验证省略空字符串配置过滤相邻及边界分隔符产生的空片段。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="expected">预期分割片段。</param>
     [Theory]
     [InlineData("a,,b", new[] { "a", "b" })]
     [InlineData(",a,b,", new[] { "a", "b" })]
@@ -97,7 +106,7 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：未启用 OmitEmptyStrings 时，相邻分隔符产生的空串应保留
+    /// 验证未启用 OmitEmptyStrings 时，相邻分隔符产生的空串应保留
     /// </summary>
     [Fact]
     public void WithoutOmitEmptyStrings_PreservesEmptySegments()
@@ -115,8 +124,10 @@ public class SplitterTest
     #region TrimResults
 
     /// <summary>
-    /// 测试目的：启用 TrimResults 后，每个片段的前后空白应被裁剪
+    /// 验证裁剪配置移除片段两端空白。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="expected">预期分割片段。</param>
     [Theory]
     [InlineData(" a , b , c ", new[] { "a", "b", "c" })]
     [InlineData("  hello  ,  world  ", new[] { "hello", "world" })]
@@ -130,7 +141,7 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：自定义 TrimResults 函数（转大写）应对每个片段应用该函数
+    /// 验证自定义 TrimResults 函数（转大写）应对每个片段应用该函数
     /// </summary>
     [Fact]
     public void TrimResults_WithCustomFunc_AppliesFuncToEachSegment()
@@ -147,8 +158,11 @@ public class SplitterTest
     #region Limit
 
     /// <summary>
-    /// 测试目的：非正则模式下 Limit(n) 应只返回前 n 个切割片段
+    /// 验证非正则分割只返回数量上限内的片段。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="limit">片段数量上限。</param>
+    /// <param name="expected">预期分割片段。</param>
     [Theory]
     [InlineData("a,b,c,d", 2, new[] { "a", "b" })]
     [InlineData("a,b,c,d", 3, new[] { "a", "b", "c" })]
@@ -163,7 +177,7 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：正则模式下 Limit(n) 静默无效，应返回全部切割片段（已知行为，文档缺陷）
+    /// 验证当前正则分割忽略片段数量上限。
     /// </summary>
     [Fact]
     public void Limit_InRegexMode_IsIgnoredSilently()
@@ -182,8 +196,11 @@ public class SplitterTest
     #region OnPattern (正则字符串模式)
 
     /// <summary>
-    /// 测试目的：使用正则字符串模式时，应按正则规则切割
+    /// 验证按正则表达式字符串切分文本。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="pattern">分割正则表达式。</param>
+    /// <param name="expected">预期分割片段。</param>
     [Theory]
     [InlineData("a  b   c", @"\s+", new[] { "a", "b", "c" })]
     [InlineData("a1b2c", @"\d+", new[] { "a", "b", "c" })]
@@ -197,7 +214,7 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：使用 Regex 对象模式时，应按正则规则切割
+    /// 验证使用 Regex 对象模式时，应按正则规则切割
     /// </summary>
     [Fact]
     public void On_WithRegexObject_SplitsCorrectly()
@@ -217,8 +234,11 @@ public class SplitterTest
     #region FixedLength
 
     /// <summary>
-    /// 测试目的：按固定长度切割字符串，应返回等长片段（末段允许更短）
+    /// 验证按固定长度分割时末段可短于指定长度。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
+    /// <param name="length">每段长度。</param>
+    /// <param name="expected">预期分割片段。</param>
     [Theory]
     [InlineData("abcdef", 2, new[] { "ab", "cd", "ef" })]
     [InlineData("abcde", 2, new[] { "ab", "cd", "e" })]
@@ -233,8 +253,9 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：固定长度为负数时应抛出 ArgumentOutOfRangeException
+    /// 验证负的固定分割长度触发参数越界异常。
     /// </summary>
+    /// <param name="length">无效分割长度。</param>
     [Theory]
     [InlineData(-1)]
     [InlineData(-100)]
@@ -249,7 +270,7 @@ public class SplitterTest
     #region MapSplitter (WithKeyValueSeparator)
 
     /// <summary>
-    /// 测试目的：使用键值分隔符后 SplitToDictionary 应正确解析 key=value 格式字符串
+    /// 验证使用键值分隔符后 SplitToDictionary 应正确解析 key=value 格式字符串
     /// </summary>
     [Fact]
     public void WithKeyValueSeparator_SplitToDictionary_ParsesKeyValuePairs()
@@ -265,7 +286,7 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：键值分隔符为字符串形式时，SplitToDictionary 同样能正确解析
+    /// 验证键值分隔符为字符串形式时，SplitToDictionary 同样能正确解析
     /// </summary>
     [Fact]
     public void WithKeyValueSeparator_StringSeparator_ParsesKeyValuePairs()
@@ -279,8 +300,9 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：空字符串输入时 MapSplitter.SplitToDictionary 应返回空字典
+    /// 验证空文本和纯空白文本解析为空字典。
     /// </summary>
+    /// <param name="input">待分割文本。</param>
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
@@ -298,7 +320,7 @@ public class SplitterTest
     #region OmitEmptyStrings + TrimResults 组合
 
     /// <summary>
-    /// 测试目的：同时启用 OmitEmptyStrings 和 TrimResults，应既过滤空串又裁剪空白
+    /// 验证同时启用 OmitEmptyStrings 和 TrimResults，应既过滤空串又裁剪空白
     /// </summary>
     [Fact]
     public void OmitEmptyStrings_And_TrimResults_Together_WorkCorrectly()

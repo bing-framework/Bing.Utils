@@ -11,8 +11,9 @@ public partial class StrTest : TestBase
     private Str Builder { get; }
 
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="StrTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">xUnit 测试输出助手。</param>
     public StrTest(ITestOutputHelper output) : base(output)
     {
         Builder = new Str();

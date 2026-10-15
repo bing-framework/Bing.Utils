@@ -12,18 +12,27 @@ public class AsyncSemaphoreTests
     // 构造函数守卫
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证异步信号量拒绝零初始计数。
+    /// </summary>
     [Fact]
     public void Constructor_ZeroCount_ThrowsArgumentOutOfRangeException()
     {
         Should.Throw<ArgumentOutOfRangeException>(() => new AsyncSemaphore(0));
     }
 
+    /// <summary>
+    /// 验证异步信号量拒绝负初始计数。
+    /// </summary>
     [Fact]
     public void Constructor_NegativeCount_ThrowsArgumentOutOfRangeException()
     {
         Should.Throw<ArgumentOutOfRangeException>(() => new AsyncSemaphore(-1));
     }
 
+    /// <summary>
+    /// 验证异步信号量接受正初始计数。
+    /// </summary>
     [Fact]
     public void Constructor_PositiveCount_DoesNotThrow()
     {
@@ -34,6 +43,9 @@ public class AsyncSemaphoreTests
     // WaitAsync
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证信号量可用时等待任务立即完成。
+    /// </summary>
     [Fact]
     public void WaitAsync_WhenAvailable_ReturnsCompletedTask()
     {
@@ -42,6 +54,9 @@ public class AsyncSemaphoreTests
         task.IsCompleted.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证信号量耗尽后等待任务保持未完成。
+    /// </summary>
     [Fact]
     public void WaitAsync_WhenUnavailable_ReturnsPendingTask()
     {
@@ -51,6 +66,9 @@ public class AsyncSemaphoreTests
         second.IsCompleted.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证计数为二的信号量仅允许前两次等待立即完成。
+    /// </summary>
     [Fact]
     public void WaitAsync_InitialCount2_AllowsTwoWaits()
     {
@@ -67,6 +85,10 @@ public class AsyncSemaphoreTests
     // Release
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证释放信号量使待处理的等待任务完成。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task Release_WithPendingWaiter_CompletesWaiter()
     {
@@ -79,6 +101,9 @@ public class AsyncSemaphoreTests
         waiter.IsCompleted.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证没有等待者时释放信号量不抛出异常。
+    /// </summary>
     [Fact]
     public void Release_NoWaiter_DoesNotThrow()
     {
@@ -87,6 +112,10 @@ public class AsyncSemaphoreTests
         Should.NotThrow(() => sem.Release());
     }
 
+    /// <summary>
+    /// 验证计数耗尽后释放信号量唤醒下一等待者。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task WaitAndRelease_MultipleRounds_Work()
     {
@@ -110,6 +139,10 @@ public class AsyncLockTests
     // LockAsync
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证首次获取异步锁立即完成。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_FirstCall_CompletesImmediately()
     {
@@ -120,6 +153,10 @@ public class AsyncLockTests
         releaser.Dispose();
     }
 
+    /// <summary>
+    /// 验证释放异步锁后待处理的获取操作完成。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_Dispose_AllowsSecondLock()
     {
@@ -134,6 +171,10 @@ public class AsyncLockTests
         r2.Dispose();
     }
 
+    /// <summary>
+    /// 验证异步锁保护的并发计数得到预期结果。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task LockAsync_SerializesAccess_CountIsCorrect()
     {
@@ -152,6 +193,10 @@ public class AsyncLockTests
     // Releaser.Dispose
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证异步锁释放器重复释放不抛出异常。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task Releaser_Dispose_CalledTwice_DoesNotThrow()
     {

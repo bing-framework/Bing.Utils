@@ -20,7 +20,7 @@ namespace Bing.Utils.Security.Gm.Tests.Bing.Security.Gm;
 public class GmCryptographyTests
 {
     /// <summary>
-    /// 测试目的：SM3 应匹配 GM/T 0004 对 ASCII abc 的标准测试向量，HMAC-SM3 应保持确定性。
+    /// 验证 SM3 的标准摘要向量以及 HMAC-SM3 的确定性和摘要长度。
     /// </summary>
     [Fact]
     public void Sm3_WhenKnownInputIsHashed_ShouldMatchStandardVector()
@@ -41,7 +41,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：SM4-GCM 应认证附加数据，并在密文或标签遭篡改时拒绝解密。
+    /// 验证 SM4-GCM 正常解密，并在附加数据或认证标签不匹配时拒绝解密。
     /// </summary>
     [Fact]
     public void Sm4Gcm_WhenPayloadIsTampered_ShouldRejectDecryption()
@@ -67,7 +67,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：BSM1 负载必须可往返解析，且公开字段不暴露可修改数组。
+    /// 验证 BSM1 负载可往返解析，且导出的密文字节不会修改内部数据。
     /// </summary>
     [Fact]
     public void Sm4GcmPayload_WhenEncodedAndExposedAsReadOnlyMemory_ShouldRemainVersionedAndImmutable()
@@ -95,7 +95,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：SM2 PEM 密钥应支持 C1C3C2 加密和使用默认或自定义用户标识的 SM2withSM3 签名。
+    /// 验证 PEM 密钥支持 C1C3C2 加解密以及默认和自定义用户标识签名。
     /// </summary>
     [Fact]
     public void Sm2_WhenPemKeysAreGenerated_ShouldEncryptAndSign()
@@ -120,7 +120,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：GM/T 0003 附录 A.2 的固定签名和 C1C3C2 密文应能被验证和解密，保证实现符合公开标准向量。
+    /// 验证 GM/T 0003 附录 A.2 的固定签名和密文向量。
     /// </summary>
     [Fact]
     public void Sm2_WhenGmt0003AppendixA2VectorIsProvided_ShouldVerifyAndDecrypt()
@@ -150,7 +150,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：SM2 PEM 必须使用标准 PKCS#8 与 SPKI 标签，且导入时只能包含一个对应对象。
+    /// 验证 SM2 密钥 PEM 使用标准标签，并拒绝包含多个对象的输入。
     /// </summary>
     [Fact]
     public void Sm2_WhenPemContainsUnexpectedOrMultipleObjects_ShouldRejectIt()
@@ -170,7 +170,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：SM2 公钥和私钥 PEM 的 Base64 内容损坏时，所有入口都应以参数错误拒绝，而不是将密钥错误伪装成验签失败。
+    /// 验证加密、解密、签名和验签入口均拒绝格式错误的 PEM 密钥。
     /// </summary>
     [Fact]
     public void Sm2_WhenPemBase64IsMalformed_ShouldThrowArgumentException()
@@ -196,7 +196,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：语法正确但使用 P-256 曲线的 PKCS#8 和 SPKI PEM 必须被 SM2 入口拒绝，避免跨曲线密钥被错误接受。
+    /// 验证 SM2 入口拒绝使用 P-256 曲线编码的 PEM 密钥。
     /// </summary>
     [Fact]
     public void Sm2_WhenPemUsesNonSm2Curve_ShouldThrowArgumentException()
@@ -225,7 +225,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：SM2 密钥、加密和签名组件应使用同一标准 PEM 契约协同工作。
+    /// 验证密钥生成、加解密和签名组件使用同一 PEM 密钥对协同工作。
     /// </summary>
     [Fact]
     public void Sm2Components_WhenUsingSharedPemKeys_ShouldInteroperate()
@@ -246,7 +246,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：SM2 解密必须拒绝被篡改、截断或使用错误私钥的 C1C3C2 密文。
+    /// 验证 SM2 解密拒绝被篡改、截断或使用错误私钥的密文。
     /// </summary>
     [Fact]
     public void Sm2Encryption_WhenCiphertextIsInvalid_ShouldRejectDecryption()
@@ -272,7 +272,7 @@ public class GmCryptographyTests
     }
 
     /// <summary>
-    /// 测试目的：SM2 签名组件应拒绝不符合 ENTL 范围的用户标识，并将畸形 DER 签名报告为验证失败。
+    /// 验证签名组件拒绝无效长度的用户标识，并将畸形 DER 签名判定为无效。
     /// </summary>
     [Fact]
     public void Sm2Signature_WhenUserIdIsOutsideEntlRangeOrSignatureIsMalformed_ShouldRejectInput()
@@ -300,6 +300,10 @@ public class GmCryptographyTests
     /// <summary>
     /// 将标准测试向量中的私钥标量和公钥坐标封装为库对外支持的 PKCS#8 与 SPKI PEM。
     /// </summary>
+    /// <param name="privateKey">以十六进制表示的私钥标量。</param>
+    /// <param name="publicKeyX">以十六进制表示的公钥 X 坐标。</param>
+    /// <param name="publicKeyY">以十六进制表示的公钥 Y 坐标。</param>
+    /// <returns>由 SPKI 公钥 PEM 和 PKCS#8 私钥 PEM 组成的元组。</returns>
     private static (string PublicKeyPem, string PrivateKeyPem) CreatePemKeyPair(string privateKey, string publicKeyX, string publicKeyY)
     {
         var parameters = GMNamedCurves.GetByName("sm2p256v1");
@@ -314,6 +318,9 @@ public class GmCryptographyTests
     /// <summary>
     /// 将 32 字节 r 和 s 组件封装为固定长度 DER SM2 签名。
     /// </summary>
+    /// <param name="r">以十六进制表示的 32 字节签名 r 分量。</param>
+    /// <param name="s">以十六进制表示的 32 字节签名 s 分量。</param>
+    /// <returns>编码后的 DER 签名字节。</returns>
     private static byte[] CreateDerSignature(string r, string s)
     {
         var rBytes = HexEncoding.Decode(r);
@@ -333,6 +340,9 @@ public class GmCryptographyTests
     /// <summary>
     /// 编码单个 PEM 对象。
     /// </summary>
+    /// <param name="type">PEM 对象类型标签。</param>
+    /// <param name="encoded">要写入 PEM 的 DER 编码字节。</param>
+    /// <returns>包含 PEM 头、内容和尾的文本。</returns>
     private static string WritePem(string type, byte[] encoded)
     {
         using var writer = new StringWriter();

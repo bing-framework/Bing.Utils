@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证姓名、证件、联系方式、地址及凭据的脱敏结果。
+/// </summary>
 [Trait("StringUT", "Strings.Desensitized")]
 public class StringDesensitizedTest
 {

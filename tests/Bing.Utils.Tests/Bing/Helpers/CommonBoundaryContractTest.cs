@@ -38,7 +38,7 @@ public class CommonBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试用例：`RetryExecute` 在 `maxRetries<0` 时应抛出 `ArgumentOutOfRangeException(maxRetries)`
+    /// 测试用例：`RetryExecute` 在最大重试次数小于零时抛出参数异常。
     /// </summary>
     [Theory]
     [InlineData(-1)]
@@ -75,6 +75,7 @@ public class CommonBoundaryContractTest
     /// <summary>
     /// 测试数据：非正延迟边界值
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetNonPositiveDelayCases()
     {
         yield return new object[] { TimeSpan.Zero };

@@ -512,6 +512,7 @@ public class AmountUnitConvTest : TestBase
     /// <summary>
     /// 测试数据：ToN2String 文化格式输入。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetToN2StringCultureCases()
     {
         yield return new object[] { 1234.56m, "en-US" };
@@ -522,6 +523,7 @@ public class AmountUnitConvTest : TestBase
     /// <summary>
     /// 测试数据：ToFen(decimal?) 的 null/边界/代表值输入。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetToFenNullableCases()
     {
         yield return new object[] { (decimal?)null, 0 };
@@ -533,6 +535,7 @@ public class AmountUnitConvTest : TestBase
     /// <summary>
     /// 测试数据：ToFenLong(decimal?) 的 null/边界/代表值输入。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetToFenLongNullableCases()
     {
         yield return new object[] { (decimal?)null, 0L };
@@ -542,6 +545,7 @@ public class AmountUnitConvTest : TestBase
     /// <summary>
     /// 测试数据：SumFenAmounts 边界与代表值集合。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetSumFenAmountsCases()
     {
         yield return new object[] { null, 0L };
@@ -558,6 +562,7 @@ public class AmountUnitConvTest : TestBase
     /// <summary>
     /// 测试数据：SumYuanAmounts 边界与代表值集合。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetSumYuanAmountsCases()
     {
         yield return new object[] { null, 0m };
@@ -573,6 +578,7 @@ public class AmountUnitConvTest : TestBase
     /// <summary>
     /// 测试数据：IsValidAmount 自定义合法区间场景。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetIsValidAmountCustomRangeCases()
     {
         yield return new object[] { 50m, 0m, 100m, true };
@@ -584,6 +590,7 @@ public class AmountUnitConvTest : TestBase
     /// <summary>
     /// 测试数据：IsValidAmount 非法区间（minValue > maxValue）场景。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetIsValidAmountInvalidRangeCases()
     {
         yield return new object[] { 0m, 10m, 0m };

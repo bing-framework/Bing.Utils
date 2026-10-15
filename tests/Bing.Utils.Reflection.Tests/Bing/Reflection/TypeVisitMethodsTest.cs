@@ -6,19 +6,31 @@ namespace Bing.Reflection.Tests;
 
 // ─── 测试辅助类型 ─────────────────────────────────────────────────────────────
 
-/// <summary>基类：含有虚方法和普通方法</summary>
+/// <summary>
+/// 用于验证方法可见性和重写关系的基类样例。
+/// </summary>
 public class MethodTestBase
 {
-    /// <summary>虚方法（public）</summary>
+    /// <summary>
+    /// 返回用于识别方法重写结果的文本。
+    /// </summary>
+    /// <returns>标识当前实现的文本；基类返回 <c>base</c>。</returns>
     public virtual string VirtualMethod() => "base";
 
-    /// <summary>普通 public 方法（non-virtual）</summary>
+    /// <summary>
+    /// 返回用于识别普通公开方法的文本。
+    /// </summary>
+    /// <returns>固定文本 <c>normal</c>。</returns>
     public string NormalMethod() => "normal";
 
-    /// <summary>受保护的虚方法</summary>
+    /// <summary>
+    /// 提供用于验证受保护虚方法可见性的空操作。
+    /// </summary>
     protected virtual void ProtectedVirtual() { }
 
-    /// <summary>私有方法（invisible）</summary>
+    /// <summary>
+    /// 提供用于验证私有方法可见性的空操作。
+    /// </summary>
     private void PrivateMethod() { }
 }
 
@@ -136,7 +148,7 @@ public class TypeVisitMethodsTest
     #region IsVisibleAndVirtual
 
     /// <summary>
-    /// 测试用例：验证 <see cref="TypeVisit.IsVisibleAndVirtual"/> 在 `PublicVirtualMethod` 场景下，结果为 `ReturnsTrue`。
+    /// 验证公开虚方法被判定为可见且虚方法。
     /// </summary>
     [Fact]
     public void IsVisibleAndVirtual_PublicVirtualMethod_ReturnsTrue()
@@ -146,7 +158,7 @@ public class TypeVisitMethodsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="TypeVisit.IsVisibleAndVirtual"/> 在 `NonVirtualMethod` 场景下，结果为 `ReturnsFalse`。
+    /// 验证非虚方法不会被判定为可见虚方法。
     /// </summary>
     [Fact]
     public void IsVisibleAndVirtual_NonVirtualMethod_ReturnsFalse()
@@ -156,7 +168,7 @@ public class TypeVisitMethodsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="TypeVisit.IsVisibleAndVirtual"/> 在 `NullMethod` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证传入空 MethodInfo 时抛出参数空异常。
     /// </summary>
     [Fact]
     public void IsVisibleAndVirtual_NullMethod_ThrowsArgumentNullException()
@@ -166,7 +178,7 @@ public class TypeVisitMethodsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="TypeMetaVisitExtensions.IsVisibleAndVirtual"/> 在 `ExtensionOnPublicVirtual` 场景下，结果为 `ReturnsTrue`。
+    /// 验证 MethodInfo 扩展方法与静态可见虚方法检查结果一致。
     /// </summary>
     [Fact]
     public void IsVisibleAndVirtual_ExtensionMethod_ConsistentWithStaticCall()

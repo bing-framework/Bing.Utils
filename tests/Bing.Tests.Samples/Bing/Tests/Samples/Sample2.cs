@@ -5,62 +5,62 @@ using System.ComponentModel.DataAnnotations;
 namespace Bing.Tests.Samples
 {
     /// <summary>
-    /// 测试样例2
+    /// 用于验证属性元数据读取及嵌套对象映射的测试样例。
     /// </summary>
     [DisplayName("测试样例2")]
     public class Sample2
     {
         /// <summary>
-        /// 描述
+        /// 获取或设置带有描述特性的样例文本。
         /// </summary>
         [Description("描述")]
         public string Description { get; set; }
 
         /// <summary>
-        /// 显示名
+        /// 获取或设置带有显示名称特性的样例文本。
         /// </summary>
         [DisplayName("显示名")]
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// 显示名2
+        /// 获取或设置通过显示特性声明描述的样例文本。
         /// </summary>
         [Display(Description = "显示名2")]
         public string DisplayName2 { get; set; }
 
         /// <summary>
-        /// 显示描述
+        /// 获取或设置用于读取显示描述的样例文本。
         /// </summary>
         [Display(Description = "显示描述")]
         public string Display { get; set; }
 
         /// <summary>
-        /// string值
+        /// 获取或设置样例字符串值。
         /// </summary>
         public string StringValue { get; set; }
 
         /// <summary>
-        /// int值
+        /// 获取或设置样例整数值。
         /// </summary>
         public int IntValue { get; set; }
 
         /// <summary>
-        /// bool值
+        /// 获取或设置样例布尔值。
         /// </summary>
         public bool BoolValue { get; set; }
 
         /// <summary>
-        /// 可空bool值
+        /// 获取或设置可空的样例布尔值。
         /// </summary>
         public bool? NullableBoolValue { get; set; }
 
         /// <summary>
-        /// 导航属性
+        /// 获取或设置用于嵌套对象映射的样例。
         /// </summary>
         public Sample3 Test3 { get; set; }
 
         /// <summary>
-        /// 导航属性
+        /// 获取或设置用于集合映射的嵌套样例列表。
         /// </summary>
         public List<Sample3> TestList { get; set; }
     }

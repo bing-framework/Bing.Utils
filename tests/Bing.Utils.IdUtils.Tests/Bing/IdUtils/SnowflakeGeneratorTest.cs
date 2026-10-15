@@ -8,6 +8,7 @@ public class SnowflakeGeneratorTest
     /// <summary>
     /// 测试用例：验证 `Create` 在 `TwitterStyleInvalidWorkerId` 场景下，结果为 `ThrowsArgumentException`。
     /// </summary>
+    /// <param name="workerId">超出 Twitter 样式允许范围的工作节点 ID。</param>
     [Theory]
     [InlineData(-1)]
     [InlineData(32)]
@@ -18,6 +19,7 @@ public class SnowflakeGeneratorTest
     /// <summary>
     /// 测试用例：验证 `Create` 在 `TwitterStyleInvalidDataCenterId` 场景下，结果为 `ThrowsArgumentException`。
     /// </summary>
+    /// <param name="dataCenterId">超出 Twitter 样式允许范围的数据中心 ID。</param>
     [Theory]
     [InlineData(-1)]
     [InlineData(32)]
@@ -28,6 +30,7 @@ public class SnowflakeGeneratorTest
     /// <summary>
     /// 测试用例：验证 `Create` 在 `SeataStyleInvalidWorkerId` 场景下，结果为 `ThrowsArgumentException`。
     /// </summary>
+    /// <param name="workerId">超出 Seata 样式允许范围的工作节点 ID。</param>
     [Theory]
     [InlineData(-1)]
     [InlineData(1024)]

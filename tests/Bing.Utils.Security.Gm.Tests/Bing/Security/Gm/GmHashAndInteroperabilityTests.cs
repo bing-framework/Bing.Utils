@@ -11,10 +11,13 @@ using TextEncoding = System.Text.Encoding;
 namespace Bing.Security.Gm;
 
 /// <summary>
-/// SM3、HMAC-SM3 与 SM4-GCM 互操作测试。
+/// 验证 SM3、HMAC-SM3 与 SM4-GCM 的标准向量和互操作行为。
 /// </summary>
 public class GmHashAndInteroperabilityTests
 {
+    /// <summary>
+    /// 验证流式 SM3 与 HMAC-SM3 结果匹配一次性计算及其编码形式。
+    /// </summary>
     [Fact]
     public async Task Sm3AndHmacSm3_StreamApis_ShouldMatchOneShotApis()
     {
@@ -34,6 +37,9 @@ public class GmHashAndInteroperabilityTests
         HmacSm3.ComputeBase64(key, data).ShouldBe(Convert.ToBase64String(hmac));
     }
 
+    /// <summary>
+    /// 验证 HMAC-SM3 的 IETF 测试向量。
+    /// </summary>
     [Fact]
     public void HmacSm3_WhenIetfVectorIsProvided_ShouldMatch()
     {
@@ -44,6 +50,9 @@ public class GmHashAndInteroperabilityTests
         HmacSm3.ComputeHex(key, data).ShouldBe("dc813339153491ad81477754eb3df00dbb3cc3e6a69f9cacce737db7e61342ff");
     }
 
+    /// <summary>
+    /// 验证 SM4-GCM 可使用 RFC 8998 测试向量解密密文。
+    /// </summary>
     [Fact]
     public void Sm4Gcm_WhenRfc8998VectorIsProvided_ShouldDecrypt()
     {
@@ -59,6 +68,9 @@ public class GmHashAndInteroperabilityTests
         Sm4GcmEncryption.Decrypt(payload, key, aad).ShouldBe(plaintext);
     }
 
+    /// <summary>
+    /// 验证预先取消令牌会终止 SM3 与 HMAC-SM3 异步流计算。
+    /// </summary>
     [Fact]
     public async Task Sm3AndHmacSm3_WhenCancelled_ShouldStop()
     {

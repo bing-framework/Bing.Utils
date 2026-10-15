@@ -1,18 +1,21 @@
 using Bing.Tests;
 namespace Bing.Date.DateUtils;
 /// <summary>
-/// 时间日期计算器 测试
+/// 日期时间单位偏移和星期定位测试。
 /// </summary>
 [Trait("DateTimeUT", "DateTime.Calc")]
 public class DateTimeCalcTest : TestBase
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// 初始化一个 <see cref="DateTimeCalcTest"/> 类型的实例。
+    /// </summary>
+    /// <param name="output">测试输出辅助器。</param>
     public DateTimeCalcTest(ITestOutputHelper output) : base(output)
     {
     }
     #region OffsetByMillisecond
     /// <summary>
-    /// 测试 - OffsetByMillisecond - 正确进行毫秒偏移
+    /// 验证按毫秒进行正向和负向偏移。
     /// </summary>
     [Fact]
     public void OffsetByMillisecond_CorrectlyOffsetsTime()
@@ -31,7 +34,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetBySeconds
     /// <summary>
-    /// 测试 - OffsetBySeconds - 正确进行秒偏移
+    /// 验证按秒进行正向和负向偏移。
     /// </summary>
     [Fact]
     public void OffsetBySeconds_CorrectlyOffsetsTime()
@@ -50,7 +53,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByMinutes
     /// <summary>
-    /// 测试 - OffsetByMinutes - 正确进行分钟偏移
+    /// 验证按分钟进行正向和负向偏移。
     /// </summary>
     [Fact]
     public void OffsetByMinutes_CorrectlyOffsetsTime()
@@ -69,7 +72,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByHours
     /// <summary>
-    /// 测试 - OffsetByHours - 正确进行小时偏移
+    /// 验证按小时进行正向和负向偏移。
     /// </summary>
     [Fact]
     public void OffsetByHours_CorrectlyOffsetsTime()
@@ -88,7 +91,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByDays
     /// <summary>
-    /// 测试 - OffsetByDays - 正确进行天数偏移
+    /// 验证按天进行正向和负向偏移。
     /// </summary>
     [Fact]
     public void OffsetByDays_CorrectlyOffsetsDate()
@@ -107,7 +110,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByWeek
     /// <summary>
-    /// 测试 - OffsetByWeek - 成功获取特定星期几
+    /// 验证定位月内指定序号的星期日期。
     /// </summary>
     [Fact]
     public void OffsetByWeek_ReturnsCorrectDate()
@@ -121,7 +124,7 @@ public class DateTimeCalcTest : TestBase
         result.DayOfWeek.ShouldBe(DayOfWeek.Tuesday);
     }
     /// <summary>
-    /// 测试 - OffsetByWeek - 超出范围返回MinValue
+    /// 验证月内不存在指定星期日期时返回日期最小值。
     /// </summary>
     [Fact]
     public void OffsetByWeek_OutOfRange_ReturnsMinValue()
@@ -132,7 +135,7 @@ public class DateTimeCalcTest : TestBase
         result.ShouldBe(DateTime.MinValue);
     }
     /// <summary>
-    /// 测试 - OffsetByWeek - 无效参数抛出异常
+    /// 验证无效的月内星期序号触发参数异常。
     /// </summary>
     [Fact]
     public void OffsetByWeek_InvalidWeekAtMonth_ThrowsArgumentException()
@@ -143,7 +146,7 @@ public class DateTimeCalcTest : TestBase
         Should.Throw<ArgumentException>(() => DateTimeCalc.OffsetByWeek(2023, 1, 6, DayOfWeek.Monday));
     }
     /// <summary>
-    /// 测试 - TryOffsetByWeek - 成功获取特定星期几
+    /// 验证有效星期定位返回成功及对应日期。
     /// </summary>
     [Fact]
     public void TryOffsetByWeek_SuccessfulCase_ReturnsTrue()
@@ -157,7 +160,7 @@ public class DateTimeCalcTest : TestBase
         result.ShouldBe(new DateTime(2023, 1, 10));
     }
     /// <summary>
-    /// 测试 - TryOffsetByWeek - 超出范围返回False
+    /// 验证不存在的星期定位返回失败及日期最小值。
     /// </summary>
     [Fact]
     public void TryOffsetByWeek_OutOfRange_ReturnsFalse()
@@ -173,7 +176,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByWeeks
     /// <summary>
-    /// 测试 - OffsetByWeeks - 正确进行周数偏移
+    /// 验证按整周偏移并保持星期值。
     /// </summary>
     [Fact]
     public void OffsetByWeeks_CorrectlyOffsetsDate()
@@ -194,7 +197,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByWeekBefore / OffsetByWeekAfter
     /// <summary>
-    /// 测试 - OffsetByWeekBefore - 正确获取上一个指定星期几
+    /// 验证定位严格早于源日期的指定星期。
     /// </summary>
     [Fact]
     public void OffsetByWeekBefore_ReturnsCorrectDate()
@@ -213,7 +216,7 @@ public class DateTimeCalcTest : TestBase
         result2.DayOfWeek.ShouldBe(DayOfWeek.Sunday);
     }
     /// <summary>
-    /// 测试 - OffsetByWeekAfter - 正确获取下一个指定星期几
+    /// 验证定位严格晚于源日期的指定星期。
     /// </summary>
     [Fact]
     public void OffsetByWeekAfter_ReturnsCorrectDate()
@@ -234,8 +237,11 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetOfDayOfWeek
     /// <summary>
-    /// 测试 - OffsetOfDayOfWeek - 正确偏移到指定星期几
+    /// 验证按周偏移定位指定星期的日期。
     /// </summary>
+    /// <param name="dayOfWeek">目标星期。</param>
+    /// <param name="weekOffset">周偏移量。</param>
+    /// <param name="expectedDate">预期日期文本。</param>
     [Theory]
     [InlineData(DayOfWeek.Monday, 1, "2023-01-16")] // 下一个周一
     [InlineData(DayOfWeek.Friday, 1, "2023-01-20")] // 下一个周五
@@ -258,7 +264,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByMonths
     /// <summary>
-    /// 测试 - OffsetByMonths - 绝对偏移模式
+    /// 验证绝对月份偏移与标准月份加法一致。
     /// </summary>
     [Fact]
     public void OffsetByMonths_AbsoluteMode_CorrectlyOffsetsDate()
@@ -275,7 +281,7 @@ public class DateTimeCalcTest : TestBase
         result2.ShouldBe(dt.AddMonths(-3));
     }
     /// <summary>
-    /// 测试 - OffsetByMonths - 相对偏移模式处理月份天数差异
+    /// 验证相对月份偏移将不存在的日期收敛到月末。
     /// </summary>
     [Fact]
     public void OffsetByMonths_RelativelyMode_HandlesMonthBoundaries()
@@ -294,7 +300,7 @@ public class DateTimeCalcTest : TestBase
         result2.ShouldBe(new DateTime(2023, 2, 28));
     }
     /// <summary>
-    /// 测试 - OffsetByMonths - 处理年份跨越
+    /// 验证月份偏移支持向前和向后跨年。
     /// </summary>
     [Fact]
     public void OffsetByMonths_HandlesYearBoundaries()
@@ -313,7 +319,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByQuarters
     /// <summary>
-    /// 测试 - OffsetByQuarters - 正确进行季度偏移
+    /// 验证季度偏移及目标月份的月末处理。
     /// </summary>
     [Fact]
     public void OffsetByQuarters_CorrectlyOffsetsDate()
@@ -338,7 +344,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByYears
     /// <summary>
-    /// 测试 - OffsetByYears - 正确进行年份偏移
+    /// 验证绝对和相对模式下的年份偏移。
     /// </summary>
     [Fact]
     public void OffsetByYears_CorrectlyOffsetsDate()
@@ -355,7 +361,7 @@ public class DateTimeCalcTest : TestBase
         result2.ShouldBe(new DateTime(2021, 1, 15));
     }
     /// <summary>
-    /// 测试 - OffsetByYears - 处理闰年日期
+    /// 验证闰日偏移到平年时收敛到二月末。
     /// </summary>
     [Fact]
     public void OffsetByYears_HandlesLeapYears()
@@ -370,7 +376,7 @@ public class DateTimeCalcTest : TestBase
     #endregion
     #region OffsetByDuration
     /// <summary>
-    /// 测试 - OffsetByDuration - 正确应用持续时间偏移
+    /// 验证按 NodaTime 持续时间偏移日期时间。
     /// </summary>
     [Fact]
     public void OffsetByDuration_CorrectlyOffsetsDate()

@@ -10,8 +10,10 @@ namespace Bing.Security.Authentication;
 public class HmacTests
 {
     /// <summary>
-    /// 测试目的：HMAC SHA-2 实现应匹配 RFC 4231 第一组测试向量。
+    /// 使用 RFC 4231 第一组测试向量验证 HMAC SHA-2 计算结果。
     /// </summary>
+    /// <param name="algorithm">要计算 HMAC 的 SHA-2 算法。</param>
+    /// <param name="expected">第一组测试向量的预期十六进制摘要。</param>
     [Theory]
     [InlineData(HmacAlgorithmType.Sha256, "b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7")]
     [InlineData(HmacAlgorithmType.Sha384, "afd03944d84895626b0825f4ab46907f15f9dadbe4101ec682aa034c7cebc59cfaea9ea9076ede7f4af152e8b2fa9cb6")]

@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证通过反射创建接口实现实例的结果。
+/// </summary>
 [Trait("TypeUT", "TypeVisit.CreateInstance")]
 public class CreateInterfaceTest
 {

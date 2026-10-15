@@ -1,27 +1,78 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证反射读取 Description 或 Display 元数据的优先级和回退行为。
+/// </summary>
 [Trait("TypeUT", "TypeReflections.GetDescriptionOrDisplay")]
 public class DescriptionOrDisplayNameTest
 {
+    /// <summary>
+    /// 获取提供 Description 值的样例类型。
+    /// </summary>
     public Type EntryOne = typeof(NormalDescriptionClass);
+    /// <summary>
+    /// 获取以 Display 元数据提供描述回退值的样例类型。
+    /// </summary>
     public Type EntryTwo = typeof(NormalDescriptionOrClass);
+    /// <summary>
+    /// 获取以 Display 元数据提供显示回退值的样例类型。
+    /// </summary>
     public Type EntryThree = typeof(NormalDisplayNameOrClass);
+    /// <summary>
+    /// 获取用于测试继承描述回退值的包装类型。
+    /// </summary>
     public Type Wrapper = typeof(NormalDescriptionWrapper);
+    /// <summary>
+    /// 获取第一个属性的反射信息。
+    /// </summary>
     public PropertyInfo PropertyOne;
+    /// <summary>
+    /// 获取第二个属性的反射信息。
+    /// </summary>
     public PropertyInfo PropertyTwo;
+    /// <summary>
+    /// 获取第三个属性的反射信息。
+    /// </summary>
     public PropertyInfo PropertyThree;
+    /// <summary>
+    /// 获取第一个字段的反射信息。
+    /// </summary>
     public FieldInfo FieldOne;
+    /// <summary>
+    /// 获取第二个字段的反射信息。
+    /// </summary>
     public FieldInfo FieldTwo;
+    /// <summary>
+    /// 获取第三个字段的反射信息。
+    /// </summary>
     public FieldInfo FieldThree;
+    /// <summary>
+    /// 获取第一个方法的反射信息。
+    /// </summary>
     public MethodInfo MethodOne;
+    /// <summary>
+    /// 获取第二个方法的反射信息。
+    /// </summary>
     public MethodInfo MethodTwo;
+    /// <summary>
+    /// 获取第三个方法的反射信息。
+    /// </summary>
     public MethodInfo MethodThree;
+    /// <summary>
+    /// 获取第一个方法参数的反射信息。
+    /// </summary>
     public ParameterInfo ParameterOne;
+    /// <summary>
+    /// 获取第二个方法参数的反射信息。
+    /// </summary>
     public ParameterInfo ParameterTwo;
+    /// <summary>
+    /// 获取第三个方法参数的反射信息。
+    /// </summary>
     public ParameterInfo ParameterThree;
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="DescriptionOrDisplayNameTest"/> 类型的实例。
     /// </summary>
     public DescriptionOrDisplayNameTest()
     {

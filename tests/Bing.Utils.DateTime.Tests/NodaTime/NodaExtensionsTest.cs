@@ -1,12 +1,12 @@
 namespace NodaTime;
 /// <summary>
-/// 测试类：覆盖 `NodaExtensions` 相关行为。
+/// 验证时间间隔与 NodaTime 时长、周期之间的转换。
 /// </summary>
 [Trait("DateTimeUT", "NodaExtensions")]
 public class NodaExtensionsTest
 {
     /// <summary>
-    /// 测试用例：验证 `NodaDurationExtensions` 在 `AsDuration` 场景下，结果为 `ShouldConvertFromTimeSpan`。
+    /// 验证时间间隔转换为时长后保持原值。
     /// </summary>
     [Fact]
     public void NodaDurationExtensions_AsDuration_ShouldConvertFromTimeSpan()
@@ -16,7 +16,7 @@ public class NodaExtensionsTest
         duration.ToTimeSpan().ShouldBe(ts);
     }
     /// <summary>
-    /// 测试用例：验证 `NodaDurationExtensions` 在 `AsDurationOfWeeks` 场景下，结果为 `ShouldConvert`。
+    /// 验证周数转换为对应天数的时长。
     /// </summary>
     [Fact]
     public void NodaDurationExtensions_AsDurationOfWeeks_ShouldConvert()
@@ -25,7 +25,7 @@ public class NodaExtensionsTest
         duration.ToTimeSpan().ShouldBe(TimeSpan.FromDays(14));
     }
     /// <summary>
-    /// 测试用例：验证 `NodaPeriodExtensions` 在 `AsPeriodAndBack` 场景下，结果为 `ShouldKeepTicks`。
+    /// 验证时间间隔与周期、时长互转时保留时钟周期数。
     /// </summary>
     [Fact]
     public void NodaPeriodExtensions_AsPeriodAndBack_ShouldKeepTicks()
@@ -37,7 +37,7 @@ public class NodaExtensionsTest
         period.AsDuration().ToTimeSpan().Ticks.ShouldBe(ts.Ticks);
     }
     /// <summary>
-    /// 测试用例：验证 `NodaPeriodExtensions` 在 `PeriodFactories` 场景下，结果为 `ShouldProduceExpectedValues`。
+    /// 验证季度、年及秒数工厂设置对应周期分量。
     /// </summary>
     [Fact]
     public void NodaPeriodExtensions_PeriodFactories_ShouldProduceExpectedValues()

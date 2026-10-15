@@ -11,6 +11,9 @@ public class TryActionTests
     // Try.Invoke (no-arg)
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证操作执行成功后返回成功状态。
+    /// </summary>
     [Fact]
     public void Invoke_ActionSucceeds_ReturnsSuccessAction()
     {
@@ -21,6 +24,9 @@ public class TryActionTests
         result.IsFailure.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证操作抛出异常后返回失败状态及异常。
+    /// </summary>
     [Fact]
     public void Invoke_ActionThrows_ReturnsFailureAction()
     {
@@ -30,6 +36,9 @@ public class TryActionTests
         result.Exception.ShouldNotBeNull();
     }
 
+    /// <summary>
+    /// 验证空操作返回失败状态。
+    /// </summary>
     [Fact]
     public void Invoke_NullAction_ThrowsOrReturnsFailure()
     {
@@ -42,6 +51,9 @@ public class TryActionTests
     // Try.Invoke<T> (single-arg)
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证带参数操作接收输入并返回成功状态。
+    /// </summary>
     [Fact]
     public void Invoke_WithArg_ActionSucceeds_ReturnsSuccess()
     {
@@ -51,6 +63,9 @@ public class TryActionTests
         captured.ShouldBe(42);
     }
 
+    /// <summary>
+    /// 验证带参数操作失败时保留原异常消息。
+    /// </summary>
     [Fact]
     public void Invoke_WithArg_ActionThrows_ReturnsFailure()
     {
@@ -59,6 +74,9 @@ public class TryActionTests
         result.Exception.InnerException!.Message.ShouldBe("fail");
     }
 
+    /// <summary>
+    /// 验证双参数操作接收输入并返回成功状态。
+    /// </summary>
     [Fact]
     public void Invoke_WithTwoArgs_ActionSucceeds_ReturnsSuccess()
     {
@@ -72,6 +90,9 @@ public class TryActionTests
     // SuccessAction.Exception / Cause
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证成功操作结果不包含异常。
+    /// </summary>
     [Fact]
     public void SuccessAction_Exception_IsDefault()
     {
@@ -79,6 +100,9 @@ public class TryActionTests
         result.Exception.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 验证成功操作结果的失败原因为空文本。
+    /// </summary>
     [Fact]
     public void SuccessAction_Cause_IsEmpty()
     {
@@ -90,6 +114,9 @@ public class TryActionTests
     // FailureAction.Exception / Cause
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证失败操作结果包装原异常。
+    /// </summary>
     [Fact]
     public void FailureAction_Exception_ContainsOriginal()
     {
@@ -98,6 +125,9 @@ public class TryActionTests
         result.Exception.InnerException.ShouldBeOfType<ArgumentException>();
     }
 
+    /// <summary>
+    /// 验证失败操作结果保留指定原因。
+    /// </summary>
     [Fact]
     public void FailureAction_WithCause_CauseIsPreserved()
     {
@@ -109,6 +139,9 @@ public class TryActionTests
     // SuccessAction.Recover → returns self
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证成功结果恢复后仍返回原实例。
+    /// </summary>
     [Fact]
     public void SuccessAction_Recover_ReturnsSelf()
     {
@@ -118,6 +151,9 @@ public class TryActionTests
         recovered.ShouldBeSameAs(result);
     }
 
+    /// <summary>
+    /// 验证成功结果经结果恢复后仍为成功状态。
+    /// </summary>
     [Fact]
     public void SuccessAction_RecoverWith_ReturnsSelf()
     {
@@ -130,6 +166,9 @@ public class TryActionTests
     // FailureAction.Recover → wraps recovery in new Try.Invoke
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证失败结果经成功恢复后转为成功状态。
+    /// </summary>
     [Fact]
     public void FailureAction_Recover_RecoverySucceeds_ReturnsSuccessAction()
     {
@@ -138,6 +177,9 @@ public class TryActionTests
         recovered.IsSuccess.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证恢复操作抛出异常后返回失败状态。
+    /// </summary>
     [Fact]
     public void FailureAction_Recover_RecoveryThrows_ReturnsNewFailure()
     {
@@ -146,6 +188,9 @@ public class TryActionTests
         recovered.IsFailure.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证失败结果采用成功的恢复结果。
+    /// </summary>
     [Fact]
     public void FailureAction_RecoverWith_RecoverySucceeds_ReturnsSuccess()
     {
@@ -154,6 +199,9 @@ public class TryActionTests
         recovered.IsSuccess.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证结果恢复委托抛出异常后返回失败状态。
+    /// </summary>
     [Fact]
     public void FailureAction_RecoverWith_RecoveryThrows_ReturnsFailure()
     {
@@ -166,6 +214,9 @@ public class TryActionTests
     // SuccessAction.Tap
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证成功结果调用成功回调。
+    /// </summary>
     [Fact]
     public void SuccessAction_Tap_InvokesSuccessCallback()
     {
@@ -175,6 +226,9 @@ public class TryActionTests
         called.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证成功结果不调用失败回调。
+    /// </summary>
     [Fact]
     public void SuccessAction_Tap_DoesNotInvokeFailureCallback()
     {
@@ -184,6 +238,9 @@ public class TryActionTests
         failureCalled.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证成功结果执行回调后返回原实例。
+    /// </summary>
     [Fact]
     public void SuccessAction_Tap_ReturnsSelf()
     {
@@ -196,6 +253,9 @@ public class TryActionTests
     // FailureAction.Tap
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证失败结果调用失败回调。
+    /// </summary>
     [Fact]
     public void FailureAction_Tap_InvokesFailureCallback()
     {
@@ -205,6 +265,9 @@ public class TryActionTests
         called.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证失败结果不调用成功回调。
+    /// </summary>
     [Fact]
     public void FailureAction_Tap_DoesNotInvokeSuccessCallback()
     {
@@ -218,6 +281,9 @@ public class TryActionTests
     // Deconstruct
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证成功结果解构为成功标记和空异常。
+    /// </summary>
     [Fact]
     public void SuccessAction_Deconstruct_IsSuccessTrue_ExceptionNull()
     {
@@ -227,6 +293,9 @@ public class TryActionTests
         exception.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 验证失败结果解构为失败标记和非空异常。
+    /// </summary>
     [Fact]
     public void FailureAction_Deconstruct_IsSuccessFalse_ExceptionNotNull()
     {

@@ -4,12 +4,12 @@ using Bing.Helpers;
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
-/// Http客户端测试 - 缺陷回归场景
+/// 验证发送后回调及路径文件名上传的回归行为。
 /// </summary>
 public partial class HttpClientServiceTest
 {
     /// <summary>
-    /// 测试用例：仅配置 OnSendAfter 时，请求应正常发送并返回自定义结果
+    /// 验证仅配置发送后回调时仍可发送请求并包装响应。
     /// </summary>
     [Fact]
     [Trait("Category", "Regression")]
@@ -32,7 +32,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试用例：FileContent 传入文件路径时，应使用真实路径文件名参与上传
+    /// 验证按路径上传时使用路径中的实际文件名。
     /// </summary>
     [Fact]
     [Trait("Category", "Regression")]

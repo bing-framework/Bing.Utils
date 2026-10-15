@@ -5,7 +5,7 @@ namespace Bing.Threading;
 public class OneTimeRunnerTest
 {
     /// <summary>
-    /// 测试 - 当运行的操作在第一次调用时成功执行，但在后续调用时被忽略。
+    /// 验证一次性运行器仅在首次调用时执行操作。
     /// </summary>
     [Fact]
     public void Test_Run_ActionExecutedOnce_SuccessfulOnFirstCall_IgnoredOnSubsequentCalls()
@@ -23,7 +23,7 @@ public class OneTimeRunnerTest
         Assert.Equal(1, executionCount);
     }
     /// <summary>
-    /// 测试 - 运行的操作在多线程环境下也只执行一次。
+    /// 验证一次性运行器在并发调用时仅执行一次操作。
     /// </summary>
     [Fact]
     public void Test_Run_MultipleThreads_ActionExecutedOnce()

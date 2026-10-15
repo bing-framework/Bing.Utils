@@ -1,14 +1,14 @@
 namespace Bing.IO;
 
 /// <summary>
-/// 测试类：PathHelper 回归测试
+/// 验证路径辅助方法创建目录后的状态刷新。
 /// </summary>
 [Trait("Category", "Regression")]
 [Trait("Risk", "High")]
 public class PathHelperRegressionTest
 {
     /// <summary>
-    /// 测试用例：EnsureDirectoryExists 创建目录后应返回 Exists=true 的 DirectoryInfo
+    /// 验证EnsureDirectoryExists 创建目录后应返回 Exists=true 的 DirectoryInfo
     /// </summary>
     [Fact]
     [Trait("DefectPattern", "IO.PathHelper.DirectoryInfoCache")]

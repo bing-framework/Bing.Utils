@@ -1,13 +1,13 @@
 namespace Bing.Date;
 
 /// <summary>
-/// 测试类：覆盖 `ToCst` 的时间来源与输出契约行为。
+/// 验证中国标准时间转换当前使用时钟而非输入日期的行为。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.ToCst.Contract")]
 public class DateTimeToCstContractTest
 {
     /// <summary>
-    /// 测试用例：验证 `ToCst` 在 `AnyInputDateTime` 场景下，结果为 `UsesCurrentClockInsteadOfInput`。
+    /// 验证不同输入日期当前均返回接近的中国标准时间。
     /// </summary>
     [Fact]
     public void ToCst_AnyInputDateTime_UsesCurrentClockInsteadOfInput()
@@ -24,7 +24,7 @@ public class DateTimeToCstContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `ToCst` 在 `UtcNowBaseline` 场景下，结果为 `ApproximatelyUtcPlusEightHours`。
+    /// 验证当前中国标准时间约等于 UTC 时钟加八小时。
     /// </summary>
     [Fact]
     public void ToCst_UtcNowBaseline_ApproximatelyUtcPlusEightHours()

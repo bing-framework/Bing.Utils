@@ -4,12 +4,12 @@ using System.Text;
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
-/// Http client integration tests - advanced scenarios
+/// 验证授权令牌、请求回调及字节响应读取。
 /// </summary>
 public partial class HttpClientServiceTest
 {
     /// <summary>
-    /// Test - BearerToken header injection
+    /// 验证承载令牌按 Bearer 格式写入授权请求头。
     /// </summary>
     [Fact]
     public async Task Test_Get_BearerToken_1()
@@ -19,7 +19,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// Test - success callback
+    /// 验证成功回调接收与请求结果相同的内容。
     /// </summary>
     [Fact]
     public async Task Test_Get_OnSuccess_1()
@@ -34,7 +34,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// Test - fail and complete callbacks
+    /// 验证不存在的端点触发失败与完成回调并返回空结果。
     /// </summary>
     [Fact]
     public async Task Test_Get_OnFail_OnComplete_1()
@@ -59,7 +59,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// Test - send before can cancel request
+    /// 验证发送前回调返回否定值时终止请求并返回空结果。
     /// </summary>
     [Fact]
     public async Task Test_Get_OnSendBefore_Cancel_1()
@@ -78,7 +78,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// Test - send after works without send before callback
+    /// 验证仅配置发送后回调即可返回自定义结果。
     /// </summary>
     [Fact]
     public async Task Test_Get_OnSendAfter_WithoutSendBefore_1()
@@ -91,7 +91,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// Test - get byte stream
+    /// 验证响应字节内容按 UTF-8 解码为成功文本。
     /// </summary>
     [Fact]
     public async Task Test_GetStream_1()

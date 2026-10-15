@@ -3,15 +3,15 @@ using Bing.Http;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// HTTP 分片状态格式、覆盖校验和原子保存测试。
-
 /// </summary>
 public class HttpDownloadSegmentStateTest
 {
     /// <summary>
-    /// 验证保留已校验的状态。
+    /// 验证状态保存及加载保留正文长度、分片数量和已写入字节数。
     /// </summary>
     [Fact]
     public async Task SaveAndLoad_PreservesValidatedState()
@@ -30,10 +30,10 @@ public class HttpDownloadSegmentStateTest
         finally { Delete(Path.GetDirectoryName(path)); }
     }
 
+
+
     /// <summary>
-
-    /// 验证拒绝重叠缺失和越界范围。
-
+    /// 验证状态校验拒绝范围重叠、覆盖缺口及越界分片。
     /// </summary>
     [Fact]
     public void Validate_RejectsOverlapMissingAndOutOfBoundsRanges()
@@ -48,10 +48,10 @@ public class HttpDownloadSegmentStateTest
             new HttpDownloadSegmentState { Start = 0, End = 10 })));
     }
 
+
+
     /// <summary>
-
-    /// 验证拒绝后续版本并无效完成。
-
+    /// 验证状态校验拒绝未来格式版本及写入长度不足的完成标记。
     /// </summary>
     [Fact]
     public void Validate_RejectsFutureVersionAndInvalidCompletion()
@@ -64,10 +64,10 @@ public class HttpDownloadSegmentStateTest
         Should.Throw<InvalidDataException>(() => HttpDownloadSegmentStateStore.Validate(incomplete));
     }
 
+
+
     /// <summary>
-
-    /// 验证接受匹配范围并拒绝不同分段大小。
-
+    /// 验证分片计划校验接受匹配范围并拒绝不同分片大小。
     /// </summary>
     [Fact]
     public void ValidatePlan_AcceptsMatchingRangesAndRejectsDifferentSegmentSize()
@@ -81,10 +81,10 @@ public class HttpDownloadSegmentStateTest
         Should.Throw<InvalidDataException>(() => HttpDownloadSegmentStateStore.ValidatePlan(matching, 3));
     }
 
+
+
     /// <summary>
-
-    /// 验证拒绝非正数分段大小。
-
+    /// 验证分片计划校验拒绝零或负分片大小。
     /// </summary>
     [Fact]
     public void ValidatePlan_RejectsNonPositiveSegmentSize()
@@ -95,10 +95,10 @@ public class HttpDownloadSegmentStateTest
         Should.Throw<ArgumentOutOfRangeException>(() => HttpDownloadSegmentStateStore.ValidatePlan(state, -1));
     }
 
+
+
     /// <summary>
-
-    /// 验证取消保持现有状态未修改。
-
+    /// 验证取消保存不会改写已有下载状态。
     /// </summary>
     [Fact]
     public async Task SaveAsync_CancellationLeavesExistingStateUntouched()
@@ -118,11 +118,14 @@ public class HttpDownloadSegmentStateTest
         finally { Delete(Path.GetDirectoryName(path)); }
     }
 
+
+
     /// <summary>
-
-    /// 处理测试场景中的 State。
-
+    /// 创建包含指定分片的下载状态样例。
     /// </summary>
+    /// <param name="totalLength">待下载正文的总字节数。</param>
+    /// <param name="segments">按范围组织的分片状态样例。</param>
+    /// <returns>使用当前格式版本并包含指定分片的下载状态。</returns>
     private static HttpDownloadSegmentsState State(long totalLength, params HttpDownloadSegmentState[] segments)
         => new HttpDownloadSegmentsState
         {
@@ -131,11 +134,12 @@ public class HttpDownloadSegmentStateTest
             Segments = segments.ToList()
         };
 
+
+
     /// <summary>
-
-    /// 清理测试生成的临时资源。
-
+    /// 递归删除状态文件测试创建的临时目录。
     /// </summary>
+    /// <param name="directory">待清理的目录；为 null、空字符串或不存在时不执行操作。</param>
     private static void Delete(string directory)
     {
         if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory)) Directory.Delete(directory, true);

@@ -1,13 +1,13 @@
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
-/// Http客户端测试 - Delete操作
+/// 验证 DELETE 请求的文本与客户对象响应。
 /// </summary>
 public partial class HttpClientServiceTest
 {
 
     /// <summary>
-    /// 测试 - 调用Delete操作方法 - 返回字符串结果
+    /// 验证 DELETE 请求返回路由标识的文本回显。
     /// </summary>
     [Fact]
     public async Task Test_Delete_1()
@@ -17,7 +17,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Put方法 - 返回泛型结果
+    /// 验证 DELETE 请求反序列化返回的客户编码。
     /// </summary>
     [Fact]
     public async Task Test_Delete_2()

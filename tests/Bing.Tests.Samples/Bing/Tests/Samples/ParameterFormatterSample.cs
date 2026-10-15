@@ -3,18 +3,16 @@ using Bing.Utils.Parameters.Formats;
 namespace Bing.Tests.Samples
 {
     /// <summary>
-    /// 参数格式化器样例
+    /// 使用固定分隔符验证参数格式化和连接的样例。
     /// </summary>
     public class ParameterFormatterSample : ParameterFormatBase
     {
-        /// <summary>
-        /// 格式化分割符
-        /// </summary>
+        /// <inheritdoc />
+        /// <remarks>此样例使用冒号分隔参数名和值。</remarks>
         protected override string FormatSeparator => ":";
 
-        /// <summary>
-        /// 连接符
-        /// </summary>
+        /// <inheritdoc />
+        /// <remarks>此样例使用竖线连接参数。</remarks>
         protected override string JoinSeparator => "|";
     }
 }

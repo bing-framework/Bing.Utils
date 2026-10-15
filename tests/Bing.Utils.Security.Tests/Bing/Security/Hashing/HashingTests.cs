@@ -14,8 +14,10 @@ namespace Bing.Security.Hashing;
 public class HashingTests
 {
     /// <summary>
-    /// 测试目的：SHA-2 实现应匹配 abc 的公开标准测试向量。
+    /// 使用 SHA-2 标准测试向量验证 abc 的十六进制摘要。
     /// </summary>
+    /// <param name="algorithm">要使用的 SHA-2 算法。</param>
+    /// <param name="expected">对应算法的预期十六进制摘要。</param>
     [Theory]
     [InlineData(HashAlgorithmType.Sha256, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")]
     [InlineData(HashAlgorithmType.Sha384, "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7")]

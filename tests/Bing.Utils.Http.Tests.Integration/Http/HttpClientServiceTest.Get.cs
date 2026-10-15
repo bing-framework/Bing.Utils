@@ -3,20 +3,21 @@ using Bing.Http;
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
-/// Http客户端测试 - Get操作
+/// 验证 GET 请求的响应读取、参数绑定与请求元数据传递。
 /// </summary>
 public partial class HttpClientServiceTest
 {
     #region 测试初始化
 
     /// <summary>
-    /// Http客户端
+    /// 通过测试服务器发送集成测试请求的客户端。
     /// </summary>
     private readonly IHttpClient _client;
 
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="HttpClientServiceTest"/> 类型的实例。
     /// </summary>
+    /// <param name="client">集成测试使用的 HTTP 客户端。</param>
     public HttpClientServiceTest(IHttpClient client)
     {
         _client = client;
@@ -27,7 +28,7 @@ public partial class HttpClientServiceTest
     #region 基础测试
 
     /// <summary>
-    /// 测试 - 调用Get方法
+    /// 验证 GET 请求返回成功文本。
     /// </summary>
     [Fact]
     public async Task Test_Get_1()
@@ -37,7 +38,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 传递id
+    /// 验证 GET 请求传递路由标识并读取回显结果。
     /// </summary>
     [Fact]
     public async Task Test_Get_2()
@@ -47,7 +48,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 返回对象
+    /// 验证带查询对象的 GET 请求反序列化客户列表。
     /// </summary>
     [Fact]
     public async Task Test_Get_3()
@@ -64,7 +65,7 @@ public partial class HttpClientServiceTest
     #region Header
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 设置请求头
+    /// 验证按名称设置的授权请求头到达服务端。
     /// </summary>
     [Fact]
     public async Task Test_Get_Header_1()
@@ -74,7 +75,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 设置请求头 - 传入字典
+    /// 验证请求头字典中的授权值到达服务端。
     /// </summary>
     [Fact]
     public async Task Test_Get_Header_2()
@@ -89,7 +90,7 @@ public partial class HttpClientServiceTest
     #region QueryString
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 发送query参数 - 硬编码
+    /// 验证地址中直接声明的查询参数到达服务端。
     /// </summary>
     [Fact]
     public async Task Test_Get_QueryString_1()
@@ -99,7 +100,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 发送query参数
+    /// 验证逐项添加的查询参数到达服务端。
     /// </summary>
     [Fact]
     public async Task Test_Get_QueryString_2()
@@ -109,7 +110,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 发送query参数 - 部分硬编码
+    /// 验证显式查询参数与地址中的已有参数组合发送。
     /// </summary>
     [Fact]
     public async Task Test_Get_QueryString_3()
@@ -119,7 +120,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 发送query参数 - 传入字典
+    /// 验证查询参数字典被正确绑定。
     /// </summary>
     [Fact]
     public async Task Test_Get_QueryString_4()
@@ -130,7 +131,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 发送query参数 - 传入对象
+    /// 验证对象属性转换为查询参数并被正确绑定。
     /// </summary>
     [Fact]
     public async Task Test_Get_QueryString_5()
@@ -141,7 +142,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 发送query参数 - 使用Get重载方法传入参数
+    /// 验证 GET 重载中的查询对象被正确绑定。
     /// </summary>
     [Fact]
     public async Task Test_Get_QueryString_6()
@@ -156,7 +157,7 @@ public partial class HttpClientServiceTest
     #region Cookie
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 设置cookie - 1个参数
+    /// 验证单个 Cookie 随请求发送。
     /// </summary>
     [Fact]
     public async Task Test_Get_Cookie_1()
@@ -166,7 +167,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 调用Get方法 - 设置cookie - 1个参数
+    /// 验证连续设置的两个 Cookie 均随请求发送。
     /// </summary>
     [Fact]
     public async Task Test_Get_Cookie_2()

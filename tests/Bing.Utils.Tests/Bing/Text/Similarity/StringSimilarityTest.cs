@@ -1,5 +1,8 @@
 namespace Bing.Text.Similarity;
 
+/// <summary>
+/// 验证字符串相似度数值及分类结果。
+/// </summary>
 [Trait("StringUT", "Strings.StringSimilarity")]
 public class StringSimilarityTest
 {

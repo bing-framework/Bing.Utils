@@ -8,7 +8,7 @@ namespace Bing.Utils.Tests.Bing.Collections;
 public class DistributeRoundRobinTest
 {
     /// <summary>
-    /// 测试目的：多容器分配应按容器顺序轮询，并保持源元素相对顺序。
+    /// 验证多容器分配应按容器顺序轮询，并保持源元素相对顺序。
     /// </summary>
     [Fact]
     public void DistributeRoundRobin_MultipleKeys_DistributesInRoundRobinOrder()
@@ -28,7 +28,7 @@ public class DistributeRoundRobinTest
     }
 
     /// <summary>
-    /// 测试目的：空源集合应保留所有容器及其空列表。
+    /// 验证空源集合应保留所有容器及其空列表。
     /// </summary>
     [Fact]
     public void DistributeRoundRobin_EmptySource_ReturnsAllKeysWithEmptyLists()
@@ -46,7 +46,7 @@ public class DistributeRoundRobinTest
     }
 
     /// <summary>
-    /// 测试目的：单容器应接收所有元素。
+    /// 验证单容器应接收所有元素。
     /// </summary>
     [Fact]
     public void DistributeRoundRobin_SingleKey_AssignsAllItemsToOnlyBucket()
@@ -62,7 +62,7 @@ public class DistributeRoundRobinTest
     }
 
     /// <summary>
-    /// 测试目的：空容器、重复容器和空引用参数应抛出明确异常。
+    /// 验证空容器、重复容器和空引用参数应抛出明确异常。
     /// </summary>
     [Fact]
     public void DistributeRoundRobin_InvalidInput_ThrowsExpectedExceptions()
@@ -80,7 +80,7 @@ public class DistributeRoundRobinTest
     }
 
     /// <summary>
-    /// 测试目的：元素数量差最多为一，且容器键仅枚举一次。
+    /// 验证元素数量差最多为一，且容器键仅枚举一次。
     /// </summary>
     [Fact]
     public void DistributeRoundRobin_OneTimeKeyEnumerable_BalancesBucketCounts()

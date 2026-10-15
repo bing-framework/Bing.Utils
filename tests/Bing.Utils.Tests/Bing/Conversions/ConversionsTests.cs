@@ -10,18 +10,27 @@ public class ConversionsTests
 {
     #region AnyRadixConvert — BinToXxx
 
+    /// <summary>
+    /// 验证二进制文本转换为八进制文本。
+    /// </summary>
     [Fact]
     public void BinToOct_ValidBinary_ReturnsOctal()
     {
         AnyRadixConvert.BinToOct("101110").ShouldBe("56");
     }
 
+    /// <summary>
+    /// 验证二进制文本转换为十进制数值。
+    /// </summary>
     [Fact]
     public void BinToDec_ValidBinary_ReturnsDecimal()
     {
         AnyRadixConvert.BinToDec("101110").ShouldBe(46);
     }
 
+    /// <summary>
+    /// 验证二进制文本转换为十六进制文本。
+    /// </summary>
     [Fact]
     public void BinToHex_ValidBinary_ReturnsHex()
     {
@@ -32,18 +41,27 @@ public class ConversionsTests
 
     #region AnyRadixConvert — OctToXxx
 
+    /// <summary>
+    /// 验证八进制文本转换为二进制文本。
+    /// </summary>
     [Fact]
     public void OctToBin_ValidOctal_ReturnsBinary()
     {
         AnyRadixConvert.OctToBin("140").ShouldBe("1100000");
     }
 
+    /// <summary>
+    /// 验证八进制文本转换为十进制数值。
+    /// </summary>
     [Fact]
     public void OctToDec_ValidOctal_ReturnsDecimal()
     {
         AnyRadixConvert.OctToDec("140").ShouldBe(96);
     }
 
+    /// <summary>
+    /// 验证八进制文本转换为十六进制文本。
+    /// </summary>
     [Fact]
     public void OctToHex_ValidOctal_ReturnsHex()
     {
@@ -54,54 +72,81 @@ public class ConversionsTests
 
     #region AnyRadixConvert — DecToXxx
 
+    /// <summary>
+    /// 验证字节数值转换为二进制文本。
+    /// </summary>
     [Fact]
     public void DecToBin_ByteInput_ReturnsBinary()
     {
         AnyRadixConvert.DecToBin((byte)46).ShouldBe("101110");
     }
 
+    /// <summary>
+    /// 验证十进制文本转换为二进制文本。
+    /// </summary>
     [Fact]
     public void DecToBin_StringInput_ReturnsBinary()
     {
         AnyRadixConvert.DecToBin("46").ShouldBe("101110");
     }
 
+    /// <summary>
+    /// 验证字节数值转换为八进制文本。
+    /// </summary>
     [Fact]
     public void DecToOct_ByteInput_ReturnsOctal()
     {
         AnyRadixConvert.DecToOct((byte)128).ShouldBe("200");
     }
 
+    /// <summary>
+    /// 验证十进制文本转换为八进制文本。
+    /// </summary>
     [Fact]
     public void DecToOct_StringInput_ReturnsOctal()
     {
         AnyRadixConvert.DecToOct("128").ShouldBe("200");
     }
 
+    /// <summary>
+    /// 验证字节数值转换为十六进制文本。
+    /// </summary>
     [Fact]
     public void DecToHex_ByteInput_ReturnsHex()
     {
         AnyRadixConvert.DecToHex((byte)128).ShouldBe("80");
     }
 
+    /// <summary>
+    /// 验证十进制文本转换为十六进制文本。
+    /// </summary>
     [Fact]
     public void DecToHex_StringInput_ReturnsHex()
     {
         AnyRadixConvert.DecToHex("46").ShouldBe("2E");
     }
 
+    /// <summary>
+    /// 验证十六进制文本按指定长度左侧补零。
+    /// </summary>
     [Fact]
     public void DecToHex_WithFormatLength_PadsLeft()
     {
         AnyRadixConvert.DecToHex("46", 4).ShouldBe("002E");
     }
 
+    /// <summary>
+    /// 验证高低字节按顺序组成十六进制文本。
+    /// </summary>
     [Fact]
     public void DecToHex_HighLowByte_ReturnsCombined()
     {
         AnyRadixConvert.DecToHex((byte)65, (byte)66).ShouldBe("4142");
     }
 
+    /// <summary>
+    /// 验证字节数组转换为以空格分隔的十六进制文本。
+    /// </summary>
     [Fact]
     public void DecBytesToLongHex_ByteArray_ReturnsSeparatedHex()
     {
@@ -113,24 +158,36 @@ public class ConversionsTests
 
     #region AnyRadixConvert — HexToXxx
 
+    /// <summary>
+    /// 验证十六进制文本转换为二进制文本。
+    /// </summary>
     [Fact]
     public void HexToBin_ValidHex_ReturnsBinary()
     {
         AnyRadixConvert.HexToBin("2E").ShouldBe("101110");
     }
 
+    /// <summary>
+    /// 验证十六进制文本转换为八进制文本。
+    /// </summary>
     [Fact]
     public void HexToOct_ValidHex_ReturnsOctal()
     {
         AnyRadixConvert.HexToOct("2E").ShouldBe("56");
     }
 
+    /// <summary>
+    /// 验证十六进制文本转换为十进制文本。
+    /// </summary>
     [Fact]
     public void HexToDec_ValidHex_ReturnsDecimal()
     {
         AnyRadixConvert.HexToDec("2E").ShouldBe("46");
     }
 
+    /// <summary>
+    /// 验证 ASCII 字符转换为对应的十六进制文本。
+    /// </summary>
     [Fact]
     public void LettersToHex_AsciiString_ReturnsHexWithSpaces()
     {
@@ -139,6 +196,9 @@ public class ConversionsTests
         result.ShouldBe("41");
     }
 
+    /// <summary>
+    /// 验证十六进制文本转换为对应的 ASCII 字符。
+    /// </summary>
     [Fact]
     public void HexToLetters_ValidHex_ReturnsString()
     {
@@ -146,6 +206,9 @@ public class ConversionsTests
         result.ShouldBe("A");
     }
 
+    /// <summary>
+    /// 验证连续十六进制文本解码为字节数组。
+    /// </summary>
     [Fact]
     public void LongHexToDecBytes_ValidHex_ReturnsByteArray()
     {
@@ -158,12 +221,18 @@ public class ConversionsTests
 
     #region AnyRadixConvert — X2X
 
+    /// <summary>
+    /// 验证指定源进制和目标进制的二进制转十进制转换。
+    /// </summary>
     [Fact]
     public void X2X_BinaryToDecimal_ReturnsCorrect()
     {
         AnyRadixConvert.X2X("101110", 2, 10).ShouldBe("46");
     }
 
+    /// <summary>
+    /// 验证指定源进制和目标进制的十进制转十六进制转换。
+    /// </summary>
     [Fact]
     public void X2X_DecimalToHex_ReturnsCorrect()
     {
@@ -174,6 +243,9 @@ public class ConversionsTests
 
     #region Bin.Reverse
 
+    /// <summary>
+    /// 验证相同的八字符分组反转后文本保持一致。
+    /// </summary>
     [Fact]
     public void Bin_Reverse_ReversesGroupsOf8()
     {
@@ -187,18 +259,27 @@ public class ConversionsTests
 
     #region Hex
 
+    /// <summary>
+    /// 验证单个字节编码为大写十六进制文本。
+    /// </summary>
     [Fact]
     public void Hex_ToString_Byte_ReturnsUpperHex()
     {
         Hex.ToString((byte)128).ShouldBe("80");
     }
 
+    /// <summary>
+    /// 验证字节数组编码为连续十六进制文本。
+    /// </summary>
     [Fact]
     public void Hex_ToString_ByteArray_ReturnsConcatenatedHex()
     {
         Hex.ToString(new byte[] { 65, 66, 67 }).ShouldBe("414243");
     }
 
+    /// <summary>
+    /// 验证十六进制文本解码为对应字节数组。
+    /// </summary>
     [Fact]
     public void Hex_ToBytes_ValidHex_ReturnsByteArray()
     {
@@ -206,6 +287,9 @@ public class ConversionsTests
         bytes.ShouldBe(new byte[] { 65, 66, 67 });
     }
 
+    /// <summary>
+    /// 验证奇数长度十六进制文本补齐后解码。
+    /// </summary>
     [Fact]
     public void Hex_ToBytes_OddLength_PadsLeft()
     {
@@ -213,12 +297,18 @@ public class ConversionsTests
         bytes[0].ShouldBe((byte)15);
     }
 
+    /// <summary>
+    /// 验证空十六进制引用解码为单个零字节。
+    /// </summary>
     [Fact]
     public void Hex_ToBytes_Null_ReturnsZeroByte()
     {
         Hex.ToBytes(null).ShouldBe(new byte[] { 0 });
     }
 
+    /// <summary>
+    /// 验证十六进制反转交换字节顺序。
+    /// </summary>
     [Fact]
     public void Hex_Reverse_TwoByteString_SwapsBytes()
     {
@@ -226,12 +316,18 @@ public class ConversionsTests
         Hex.Reverse("4142").ShouldBe("4241");
     }
 
+    /// <summary>
+    /// 验证字节数组扩展生成连续十六进制文本。
+    /// </summary>
     [Fact]
     public void HexExtensions_CastToHexString_ReturnsConcatenatedHex()
     {
         new byte[] { 65, 66, 67 }.CastToHexString().ShouldBe("414243");
     }
 
+    /// <summary>
+    /// 验证十六进制文本扩展解码为字节数组。
+    /// </summary>
     [Fact]
     public void HexExtensions_CastToHexBytes_ReturnsBytes()
     {
@@ -242,18 +338,27 @@ public class ConversionsTests
 
     #region AsciiConv
 
+    /// <summary>
+    /// 验证 ASCII 字节数组解码为文本。
+    /// </summary>
     [Fact]
     public void AsciiConv_BytesToAsciiString_ReturnsString()
     {
         AsciiConv.BytesToAsciiString(new byte[] { 65, 66, 67 }).ShouldBe("ABC");
     }
 
+    /// <summary>
+    /// 验证 ASCII 文本编码为字节数组。
+    /// </summary>
     [Fact]
     public void AsciiConv_AsciiStringToBytes_ReturnsByteArray()
     {
         AsciiConv.AsciiStringToBytes("ABC").ShouldBe(new byte[] { 65, 66, 67 });
     }
 
+    /// <summary>
+    /// 验证 ASCII 编解码保留原文本。
+    /// </summary>
     [Fact]
     public void AsciiConv_RoundTrip_PreservesOriginal()
     {
@@ -266,6 +371,9 @@ public class ConversionsTests
 
     #region BaseConv — Base32
 
+    /// <summary>
+    /// 验证 Base32 编解码保留原字节数组。
+    /// </summary>
     [Fact]
     public void BaseConv_ToBase32_FromBase32_RoundTrip()
     {
@@ -276,6 +384,9 @@ public class ConversionsTests
         decoded.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证 Base32 编解码保留原文本。
+    /// </summary>
     [Fact]
     public void BaseConv_ToBase32String_FromBase32String_RoundTrip()
     {
@@ -290,6 +401,9 @@ public class ConversionsTests
 
     #region BaseConv — ZBase32
 
+    /// <summary>
+    /// 验证 ZBase32 编解码保留原字节数组。
+    /// </summary>
     [Fact]
     public void BaseConv_ToZBase32_FromZBase32_RoundTrip()
     {
@@ -300,6 +414,9 @@ public class ConversionsTests
         decoded.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证 ZBase32 编解码保留原文本。
+    /// </summary>
     [Fact]
     public void BaseConv_ToZBase32String_FromZBase32String_RoundTrip()
     {
@@ -313,6 +430,9 @@ public class ConversionsTests
 
     #region BaseConv — Base64
 
+    /// <summary>
+    /// 验证 Base64 编解码保留原字节数组。
+    /// </summary>
     [Fact]
     public void BaseConv_ToBase64_FromBase64_RoundTrip()
     {
@@ -322,6 +442,9 @@ public class ConversionsTests
         decoded.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证 Base64 编解码保留原文本。
+    /// </summary>
     [Fact]
     public void BaseConv_ToBase64String_FromBase64String_RoundTrip()
     {
@@ -331,6 +454,9 @@ public class ConversionsTests
         decoded.ShouldBe(original);
     }
 
+    /// <summary>
+    /// 验证 URL 安全 Base64 不含保留符号且可还原原文本。
+    /// </summary>
     [Fact]
     public void BaseConv_ToBase64UrlString_FromBase64UrlString_RoundTrip()
     {
@@ -348,6 +474,9 @@ public class ConversionsTests
 
     #region BaseConv — Base91
 
+    /// <summary>
+    /// 验证 Base91 编解码保留原字节数组。
+    /// </summary>
     [Fact]
     public void BaseConv_ToBase91_FromBase91_RoundTrip()
     {
@@ -358,6 +487,9 @@ public class ConversionsTests
         decoded.ShouldBe(data);
     }
 
+    /// <summary>
+    /// 验证 Base91 编解码保留原文本。
+    /// </summary>
     [Fact]
     public void BaseConv_ToBase91String_FromBase91String_RoundTrip()
     {

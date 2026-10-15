@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符串截取、前后子串及区间提取行为。
+/// </summary>
 [Trait("StringUT", "Strings.Substring")]
 public class StringSubstringTest
 {

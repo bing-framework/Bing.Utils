@@ -13,10 +13,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
+
+
 /// <summary>
-
 /// 验证 HTTP 客户端工厂配置复用和文件下载失败保护。
-
 /// </summary>
 public class HttpRequestFactoryAndDownloadIntegrationTest
 {
@@ -25,18 +25,18 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
     /// </summary>
     private readonly IHost _host;
 
+
+
     /// <summary>
-
-    /// 初始化一个<see cref="HttpRequestFactoryAndDownloadIntegrationTest"/>类型的实例。
-
+    /// 初始化一个 <see cref="HttpRequestFactoryAndDownloadIntegrationTest"/> 类型的实例。
     /// </summary>
     /// <param name="host">用于测试的依赖注入应用实例。</param>
     public HttpRequestFactoryAndDownloadIntegrationTest(IHost host) => _host = host;
 
+
+
     /// <summary>
-
     /// 验证输入文件和流保持不变。
-
     /// </summary>
     [Fact]
     public async Task WriteAsync_ShouldPreserveInputFileAndStreams()
@@ -70,10 +70,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 验证使用On完成报告成功保存一次。
-
+    /// 验证文件保存成功时完成回调与成功观察记录各触发一次。
     /// </summary>
     [Fact]
     public async Task WriteAsync_WithOnComplete_ReportsSuccessfulSaveOnce()
@@ -103,10 +103,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 验证使用On完成报告保存失败一次。
-
+    /// 验证文件保存失败时完成回调与失败观察记录各触发一次。
     /// </summary>
     [Fact]
     public async Task WriteAsync_WithOnComplete_ReportsSaveFailureOnce()
@@ -140,10 +140,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 验证应流文件到响应。
-
+    /// 验证文件流写入 HTTP 响应并保留原始文件。
     /// </summary>
     [Fact]
     public async Task DownloadFileAsync_ShouldStreamFileToResponse()
@@ -174,10 +174,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证复用已配置的处理管线。
-
     /// </summary>
     [Fact]
     public async Task NamedHttpClientFactory_ReusesConfiguredHandlerPipeline()
@@ -203,10 +203,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         handlerCreations.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证根据请求名称选择已配置的处理程序。
-
     /// </summary>
     [Fact]
     public async Task NamedHttpClient_SelectsTheConfiguredHandlerByRequestName()
@@ -255,10 +255,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证传输失败时保留现有文件并删除临时文件。
-
     /// </summary>
     [Fact]
     public async Task DownloadFileAsync_TransferFailurePreservesExistingFileAndRemovesTemporaryFile()
@@ -284,10 +284,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证取消时保留现有文件并删除临时文件。
-
     /// </summary>
     [Fact]
     public async Task DownloadFileAsync_CancellationPreservesExistingFileAndRemovesTemporaryFile()
@@ -313,13 +313,13 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 验证取消期间清理响应之前提交结果，并保留目标文件。
-
+    /// 验证提交文件前响应清理触发取消时保留原目标状态。
     /// </summary>
-    /// <param name="withResult">测试输入值。</param>
-    /// <param name="targetExists">测试输入值。</param>
+    /// <param name="withResult">是否使用返回下载结果的入口。</param>
+    /// <param name="targetExists">下载前是否预先创建目标文件。</param>
     [Theory]
     [InlineData(false, false)]
     [InlineData(false, true)]
@@ -377,10 +377,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证成功响应会保存文件并报告文件状态。
-
     /// </summary>
     [Fact]
     public async Task DownloadFileWithResultAsync_SavesSuccessfulResponseAndReportsFileState()
@@ -415,10 +415,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证 HTTP 失败时保留现有文件并报告文件未保存。
-
     /// </summary>
     [Fact]
     public async Task DownloadFileWithResultAsync_HttpFailurePreservesExistingFileAndReportsNoSave()
@@ -446,10 +446,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证保存失败时删除临时文件并报告失败状态。
-
     /// </summary>
     [Fact]
     public async Task DownloadFileWithResultAsync_SaveFailureRemovesTemporaryFileAndReportsFaulted()
@@ -482,10 +482,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证解压后的正文超过限制时会被拒绝。
-
     /// </summary>
     [Fact]
     public async Task MaxResponseBytes_RejectsExpandedBodyAfterDecompression()
@@ -506,10 +506,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
                 .DownloadToAsync(Stream.Null));
     }
 
+
+
     /// <summary>
-
     /// 固定返回未找到状态码的消息处理器。
-
     /// </summary>
     private sealed class FailedResponseHandler : HttpMessageHandler
     {
@@ -521,10 +521,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
             });
     }
 
+
+
     /// <summary>
-
     /// 返回指定状态码和正文数据的消息处理器。
-
     /// </summary>
     private sealed class FixedBodyHandler : HttpMessageHandler
     {
@@ -537,7 +537,7 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         /// </summary>
         private readonly byte[] _bytes;
         /// <summary>
-        /// 初始化一个<see cref="FixedBodyHandler"/>类型的实例。
+        /// 初始化一个 <see cref="FixedBodyHandler"/> 类型的实例。
         /// </summary>
         /// <param name="statusCode">测试响应的 HTTP 状态码。</param>
         /// <param name="bytes">响应正文的字节数据。</param>
@@ -547,10 +547,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
             => Task.FromResult(new HttpResponseMessage(_statusCode) { Content = new ByteArrayContent(_bytes) });
     }
 
+
+
     /// <summary>
-
     /// 返回在响应内容释放时触发取消的消息处理器。
-
     /// </summary>
     private sealed class CancellingDisposeBodyHandler : HttpMessageHandler
     {
@@ -559,14 +559,14 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         /// </summary>
         private readonly CancellationTokenSource _cancellation;
         /// <summary>
-        /// 记录处理程序发送请求的次数。
+        /// 获取或设置处理器累计接收的请求次数。
         /// </summary>
         public int SendCount { get; private set; }
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="CancellingDisposeBodyHandler"/>类型的实例。
-
+        /// 初始化一个 <see cref="CancellingDisposeBodyHandler"/> 类型的实例。
         /// </summary>
         /// <param name="cancellation">用于触发测试取消的令牌源。</param>
         public CancellingDisposeBodyHandler(CancellationTokenSource cancellation) => _cancellation = cancellation;
@@ -583,10 +583,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 释放内容时触发取消的字节内容包装器。
-
     /// </summary>
     private sealed class CancellingDisposeContent : ByteArrayContent
     {
@@ -595,10 +595,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         /// </summary>
         private readonly CancellationTokenSource _cancellation;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="CancellingDisposeContent"/>类型的实例。
-
+        /// 初始化一个 <see cref="CancellingDisposeContent"/> 类型的实例。
         /// </summary>
         /// <param name="cancellation">用于触发测试取消的令牌源。</param>
         public CancellingDisposeContent(CancellationTokenSource cancellation)
@@ -612,19 +612,19 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 返回待自动解压流的消息处理器。
-
+    /// 返回已解压正文流的测试消息处理器。
     /// </summary>
     private sealed class DecompressedBodyHandler : HttpMessageHandler
     {
         /// <summary>
-        /// 测试请求或响应使用的字节数据。
+        /// 保存交给响应内容读取的已解压正文流。
         /// </summary>
         private readonly Stream _body;
         /// <summary>
-        /// 初始化一个<see cref="DecompressedBodyHandler"/>类型的实例。
+        /// 初始化一个 <see cref="DecompressedBodyHandler"/> 类型的实例。
         /// </summary>
         /// <param name="body">响应正文数据。</param>
         public DecompressedBodyHandler(Stream body) => _body = body;
@@ -636,10 +636,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
             });
     }
 
+
+
     /// <summary>
-
     /// 返回读取正文时失败的响应内容。
-
     /// </summary>
     private sealed class FailingBodyHandler : HttpMessageHandler
     {
@@ -654,10 +654,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 返回读取正文后触发取消的消息处理器。
-
     /// </summary>
     private sealed class CancelingBodyHandler : HttpMessageHandler
     {
@@ -666,7 +666,7 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         /// </summary>
         private readonly CancellationTokenSource _cancellation;
         /// <summary>
-        /// 初始化一个<see cref="CancelingBodyHandler"/>类型的实例。
+        /// 初始化一个 <see cref="CancelingBodyHandler"/> 类型的实例。
         /// </summary>
         /// <param name="cancellation">用于触发测试取消的令牌源。</param>
         public CancelingBodyHandler(CancellationTokenSource cancellation) => _cancellation = cancellation;
@@ -678,10 +678,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
             });
     }
 
+
+
     /// <summary>
-
-    /// 首次读取返回数据后触发取消的内存流。
-
+    /// 返回首个字节后在后续读取时触发取消的测试流。
     /// </summary>
     private sealed class CancelAfterFirstReadStream : MemoryStream
     {
@@ -694,10 +694,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         /// </summary>
         private bool _hasReturnedData;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="CancelAfterFirstReadStream"/>类型的实例。
-
+        /// 初始化一个 <see cref="CancelAfterFirstReadStream"/> 类型的实例。
         /// </summary>
         /// <param name="cancellation">用于触发测试取消的令牌源。</param>
         public CancelAfterFirstReadStream(CancellationTokenSource cancellation) => _cancellation = cancellation;
@@ -716,10 +716,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 创建读取操作抛出异常的 HTTP 内容。
-
     /// </summary>
     private sealed class FailingBodyContent : HttpContent
     {
@@ -739,10 +739,10 @@ public class HttpRequestFactoryAndDownloadIntegrationTest
             => Task.FromResult<Stream>(new FailAfterFirstReadStream());
     }
 
+
+
     /// <summary>
-
     /// 首次读取后抛出异常的内存流。
-
     /// </summary>
     private sealed class FailAfterFirstReadStream : MemoryStream
     {

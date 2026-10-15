@@ -15,8 +15,9 @@ public class FileHelperTest
         Assert.Equal("test", FileHelper.ReadToString(filePath));
     }
     /// <summary>
-    /// 测试 - 读取文件到字符串
+    /// 验证异步读取测试文件的完整文本。
     /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task Test_ReadToStringAsync()
     {

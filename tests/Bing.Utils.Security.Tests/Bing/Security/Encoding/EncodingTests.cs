@@ -46,8 +46,9 @@ public class EncodingTests
     }
 
     /// <summary>
-    /// 测试目的：奇数长度和非法字符的十六进制文本应失败。
+    /// 验证奇数长度或包含非法字符的十六进制文本会引发格式异常。
     /// </summary>
+    /// <param name="value">待解码的十六进制文本。</param>
     [Theory]
     [InlineData("a")]
     [InlineData("0g")]
@@ -115,8 +116,9 @@ public class EncodingTests
     }
 
     /// <summary>
-    /// 测试目的：普通 Base64、填充和非法长度不应作为 Base64Url 被接受。
+    /// 验证普通 Base64 字符、填充符或非法长度会被 Base64Url 解码器拒绝。
     /// </summary>
+    /// <param name="value">待尝试解码的文本。</param>
     [Theory]
     [InlineData("+/8=")]
     [InlineData("abcde")]

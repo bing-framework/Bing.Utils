@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
+
+
 /// <summary>
-
 /// 验证真实自动重定向对请求签名拦截器的调用边界。
-
 /// </summary>
 public class HttpRedirectSignatureIntegrationTest
 {
@@ -51,15 +51,15 @@ public class HttpRedirectSignatureIntegrationTest
         signer.SignedPaths.ShouldBe(new[] { "/start" });
     }
 
+
+
     /// <summary>
-
     /// 根据请求路径生成并写入签名信息的拦截器。
-
     /// </summary>
     private sealed class PathSigningInterceptor : HttpRequestInterceptor
     {
         /// <summary>
-        /// 记录已签名请求的路径。
+        /// 获取已执行签名拦截的请求路径列表。
         /// </summary>
         public List<string> SignedPaths { get; } = new();
 

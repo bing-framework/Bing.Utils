@@ -6,8 +6,9 @@ namespace Bing.Threading;
 public class ThreadHelperTest
 {
     /// <summary>
-    /// 测试 NeedOnlyOne 方法，当第一个任务完成后，其他任务应被取消
+    /// 验证返回首个成功结果并取消其余任务。
     /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task NeedOnlyOne_Should_Return_First_Completed_Task_Result()
     {
@@ -50,8 +51,9 @@ public class ThreadHelperTest
         Assert.False(task2WasCancelled);
     }
     /// <summary>
-    /// 测试 NeedOnlyOne 方法，当所有任务都被取消或出错时，应抛出异常
+    /// 验证全部任务取消或失败后汇总异常。
     /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task NeedOnlyOne_Should_Throw_Exception_When_All_Tasks_Cancelled_Or_Faulted()
     {
@@ -72,8 +74,9 @@ public class ThreadHelperTest
         Assert.Contains(exception.InnerExceptions, ex => ex.Message == "任务2出错");
     }
     /// <summary>
-    /// 测试 NeedOnlyOne 方法，当函数列表为空时，应抛出异常
+    /// 验证竞速执行拒绝空或无元素的函数集合。
     /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task NeedOnlyOne_Should_Throw_Exception_When_Functions_Null_Or_Empty()
     {
@@ -86,8 +89,9 @@ public class ThreadHelperTest
         await Assert.ThrowsAsync<ArgumentNullException>(() => ThreadHelper.NeedOnlyOne(functions));
     }
     /// <summary>
-    /// 测试 NeedOnlyOne 方法，当第一个完成的任务抛出异常时，应返回下一个成功的任务结果
+    /// 验证先完成的任务失败后返回后续成功结果。
     /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task NeedOnlyOne_Should_Return_Next_Completed_Task_Result_When_First_Faulted()
     {

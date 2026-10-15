@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证全角与半角字符串转换及空格、特殊字符处理。
+/// </summary>
 [Trait("StringUT", "Strings.Convert")]
 public class StringConvertTest
 {

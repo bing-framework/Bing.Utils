@@ -6,12 +6,13 @@ namespace Bing.IdUtils.Legacy;
 public class GuidTest
 {
     /// <summary>
-    /// 测试输出帮助类
+    /// 获取当前测试的输出助手。
     /// </summary>
     protected ITestOutputHelper Output { get; }
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="GuidTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">当前测试的输出助手。</param>
     public GuidTest(ITestOutputHelper output)
     {
         Output = output;
@@ -87,6 +88,10 @@ public class GuidTest
         Test_ShouldNotBeEmpty(GuidProvider.Create(GuidStyle.SequentialAsEndStyle, NoRepeatMode.Off));
         Test_ShouldNotBeEmpty(GuidProvider.Create(GuidStyle.EquifaxStyle, NoRepeatMode.Off));
     }
+    /// <summary>
+    /// 验证 GUID 格式化后不为空，并将结果写入测试输出。
+    /// </summary>
+    /// <param name="id">要验证并输出的 GUID。</param>
     private void Test_ShouldNotBeEmpty(Guid id)
     {
         var result = id.ToString();

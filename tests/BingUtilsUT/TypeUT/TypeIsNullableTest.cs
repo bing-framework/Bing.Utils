@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证可空类型识别及其底层类型获取。
+/// </summary>
 [Trait("TypeUT", "TypeIs.Nullable")]
 public class TypeIsNullableTest
 {

@@ -38,8 +38,9 @@ public class SignatureTests
     }
 
     /// <summary>
-    /// 测试目的：每条支持的 NIST 曲线都应生成并验证 DER 格式 ECDSA 签名。
+    /// 验证支持的 NIST 曲线生成的 ECDSA 签名使用 DER 编码且可通过验证。
     /// </summary>
+    /// <param name="curve">生成 ECDSA 密钥时使用的 NIST 曲线。</param>
     [Theory]
     [InlineData(EcdsaCurve.P256)]
     [InlineData(EcdsaCurve.P384)]

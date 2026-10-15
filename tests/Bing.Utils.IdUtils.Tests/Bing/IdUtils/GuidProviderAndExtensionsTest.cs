@@ -8,6 +8,7 @@ public class GuidProviderAndExtensionsTest
     /// <summary>
     /// 测试用例：验证 `Create` 在 `WithGuidStyle` 场景下，结果为 `ReturnsNonEmptyGuid`。
     /// </summary>
+    /// <param name="style">用于生成 GUID 的格式。</param>
     [Theory]
     [InlineData(GuidStyle.BasicStyle)]
     [InlineData(GuidStyle.CombStyle)]

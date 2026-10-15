@@ -5,7 +5,10 @@ namespace Bing.Collections;
 [Trait("CollectionsUT", "ArrayExtensions.Index")]
 public class ArrayExtensionsIndexTest : TestBase
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// 初始化一个 <see cref="ArrayExtensionsIndexTest"/> 类型的实例。
+    /// </summary>
+    /// <param name="output">测试输出辅助器。</param>
     public ArrayExtensionsIndexTest(ITestOutputHelper output) : base(output)
     {
     }

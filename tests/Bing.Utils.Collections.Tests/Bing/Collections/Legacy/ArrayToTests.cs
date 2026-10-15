@@ -4,13 +4,13 @@ using Bing.Collections;
 namespace Bing.Collections.Legacy;
 
 /// <summary>
-/// 数组转换测试
+/// 数组安全转换的兼容测试。
 /// </summary>
 [Trait("CollUT", "ArrayUT.To")]
 public class ArrayToTests
 {
     /// <summary>
-    /// 测试 - 安全地转换数组
+    /// 验证不同集合来源的安全转换及空源转为空数组。
     /// </summary>
     [Fact]
     public void Test_ConvertToArraySafety()

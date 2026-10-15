@@ -5,15 +5,15 @@ using Bing.Http;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// HTTP 范围能力探测和响应适配测试。
-
 /// </summary>
 public class HttpDownloadRangeProbeTest
 {
     /// <summary>
-    /// 验证识别已声明的并有效部分范围。
+    /// 验证识别服务端声明的字节范围能力及有效的部分内容响应。
     /// </summary>
     [Fact]
     public void Probe_RecognizesAdvertisedAndValidPartialRanges()
@@ -34,10 +34,10 @@ public class HttpDownloadRangeProbeTest
         }, new HttpDownloadRange(4, 7)).Status.ShouldBe(HttpDownloadRangeSupportStatus.Supported);
     }
 
+
+
     /// <summary>
-
-    /// 验证区分服务端拒绝并无效响应。
-
+    /// 验证区分服务端忽略范围请求与范围元数据不一致的响应。
     /// </summary>
     [Fact]
     public void Probe_DistinguishesServerRefusalAndInvalidResponses()
@@ -64,10 +64,10 @@ public class HttpDownloadRangeProbeTest
         }, new HttpDownloadRange(0, 3)).Status.ShouldBe(HttpDownloadRangeSupportStatus.Invalid);
     }
 
+
+
     /// <summary>
-
-    /// 验证向下传递取消请求。
-
+    /// 验证范围能力探测将取消令牌传递给异步探测操作。
     /// </summary>
     [Fact]
     public async Task ProbeAsync_ForwardsCancellation()

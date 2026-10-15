@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证元组类型及其元素类型的识别。
+/// </summary>
 [Trait("TypeUT", "TypeIs.TupleType")]
 public class TypeIsTupleTest
 {

@@ -81,18 +81,30 @@ public class ColorConverterBoundaryContractTest
         color.ToArgb().ShouldBe(Color.Blue.ToArgb());
     }
 
+    /// <summary>
+    /// 提供十六进制颜色边界文本及预期 ARGB 分量。
+    /// </summary>
+    /// <returns>颜色文本和预期通道值组成的测试数据。</returns>
     public static IEnumerable<object[]> GetHexBoundaryCases()
     {
         yield return new object[] { "112233", (byte)0xFF, (byte)0x11, (byte)0x22, (byte)0x33 };
         yield return new object[] { "#112233-ignored", (byte)0xFF, (byte)0x11, (byte)0x22, (byte)0x33 };
     }
 
+    /// <summary>
+    /// 提供 RGB 文本的百分比和空格边界输入。
+    /// </summary>
+    /// <returns>RGB 文本和预期通道值组成的测试数据。</returns>
     public static IEnumerable<object[]> GetRgbBoundaryCases()
     {
         yield return new object[] { "rgb(10%,20%,30%)", (byte)25, (byte)51, (byte)76 };
         yield return new object[] { "rgb( 1 , 2 , 3 )", (byte)1, (byte)2, (byte)3 };
     }
 
+    /// <summary>
+    /// 提供当前颜色解析异常契约的输入及异常类型。
+    /// </summary>
+    /// <returns>颜色文本和预期异常类型组成的测试数据。</returns>
     public static IEnumerable<object[]> GetCurrentExceptionContractCases()
     {
         yield return new object[] { "rgba(10,20,30)", typeof(IndexOutOfRangeException) };

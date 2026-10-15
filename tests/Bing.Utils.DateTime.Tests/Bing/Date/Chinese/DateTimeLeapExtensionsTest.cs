@@ -3,24 +3,21 @@ using System.Globalization;
 namespace Bing.Date.Chinese;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="DateTimeLeapExtensions"/> 相关行为。
-/// 注意：无 calendar 参数重载内部传 null 历法给 ChineseDateHelper，会抛出 ArgumentNullException，
-/// 因此仅测试需要显式传入 <see cref="ChineseLunisolarCalendar"/> 的重载。
-/// 判断逻辑依赖公历年份/月份映射至农历年/月槽位，详见 ChineseDateHelper 实现。
+/// 农历闰年、闰月和闰日扩展测试。
 /// </summary>
+/// <remarks>含历法的重载使用显式农历历法；无历法重载的空历法异常另有用例验证。闰月判断沿用当前实现的公历年月映射规则。</remarks>
 [Trait("DateTimeUT", "ChineseDate.LeapExtensions")]
 public class DateTimeLeapExtensionsTest
 {
     /// <summary>
-    /// 中国农历日历实例
+    /// 闰年、闰月和闰日判断使用的农历历法。
     /// </summary>
     private readonly ChineseLunisolarCalendar _calendar = new();
 
     #region IsLeapYear (with calendar)
 
     /// <summary>
-    /// 测试用例：验证 <see cref="DateTimeLeapExtensions.IsLeapYear(DateTime, ChineseLunisolarCalendar)"/> 在 `LeapYear2020` 场景下，结果为 `ReturnsTrue`。
-    /// 2020年(庚子年)有闰四月，IsLeapYear 使用公历年=2020 查询农历闰年状态
+    /// 验证二〇二〇年被判断为农历闰年。
     /// </summary>
     [Fact]
     public void IsLeapYear_LeapYear2020_ReturnsTrue()
@@ -30,8 +27,7 @@ public class DateTimeLeapExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="DateTimeLeapExtensions.IsLeapYear(DateTime, ChineseLunisolarCalendar)"/> 在 `NonLeapYear2021` 场景下，结果为 `ReturnsFalse`。
-    /// 2021年(辛丑年)无闰月
+    /// 验证二〇二一年被判断为农历平年。
     /// </summary>
     [Fact]
     public void IsLeapYear_NonLeapYear2021_ReturnsFalse()
@@ -41,8 +37,7 @@ public class DateTimeLeapExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="DateTimeLeapExtensions.IsLeapYear(DateTime, ChineseLunisolarCalendar)"/> 在 `LeapYear2023` 场景下，结果为 `ReturnsTrue`。
-    /// 2023年有闰二月
+    /// 验证二〇二三年被判断为农历闰年。
     /// </summary>
     [Fact]
     public void IsLeapYear_LeapYear2023_ReturnsTrue()
@@ -52,8 +47,7 @@ public class DateTimeLeapExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="DateTimeLeapExtensions.IsLeapYear(DateTime)"/> 在 `NoCalendarOverload` 场景下，结果为 `ThrowsArgumentNullException`。
-    /// 无历法重载内部传 null 给 ChineseDateHelper，会抛出 ArgumentNullException
+    /// 验证无历法重载因缺少历法而抛出参数空值异常。
     /// </summary>
     [Fact]
     public void IsLeapYear_NoCalendarOverload_ThrowsArgumentNullException()
@@ -67,8 +61,7 @@ public class DateTimeLeapExtensionsTest
     #region IsLeapMonth (with calendar)
 
     /// <summary>
-    /// 测试用例：验证 <see cref="DateTimeLeapExtensions.IsLeapMonth(DateTime, ChineseLunisolarCalendar)"/> 在 `WithDateInLeapMonth2020` 场景下，结果为 `ReturnsTrue`。
-    /// 2020年5月对应农历闰四月槽位(内部month=5)，IsLeapMonth(2020,5)=true
+    /// 验证二〇二〇年五月的当前闰月映射结果。
     /// </summary>
     [Fact]
     public void IsLeapMonth_WithDateInLeapMonth2020_ReturnsTrue()
@@ -79,8 +72,7 @@ public class DateTimeLeapExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="DateTimeLeapExtensions.IsLeapMonth(DateTime, ChineseLunisolarCalendar)"/> 在 `WithDateInLeapMonth2023` 场景下，结果为 `ReturnsTrue`。
-    /// 2023-03-25 公历月=3，对应农历年2023 month槽位3=闰二月
+    /// 验证二〇二三年三月的当前闰月映射结果。
     /// </summary>
     [Fact]
     public void IsLeapMonth_WithDateInLeapMonth2023_ReturnsTrue()
@@ -90,7 +82,7 @@ public class DateTimeLeapExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="DateTimeLeapExtensions.IsLeapMonth(DateTime, ChineseLunisolarCalendar)"/> 在 `WithDateNotInLeapMonth` 场景下，结果为 `ReturnsFalse`。
+    /// 验证非闰月日期返回否定结果。
     /// </summary>
     [Fact]
     public void IsLeapMonth_WithDateNotInLeapMonth_ReturnsFalse()
@@ -104,7 +96,7 @@ public class DateTimeLeapExtensionsTest
     #region IsLeapDay (with calendar)
 
     /// <summary>
-    /// 测试用例：验证 <see cref="DateTimeLeapExtensions.IsLeapDay(DateTime, ChineseLunisolarCalendar)"/> 在 `WithDayInLeapMonth` 场景下，结果为 `ReturnsTrue`。
+    /// 验证当前闰月映射下的日期被判断为闰日。
     /// </summary>
     [Fact]
     public void IsLeapDay_WithDayInLeapMonth_ReturnsTrue()
@@ -115,7 +107,7 @@ public class DateTimeLeapExtensionsTest
     }
 
     /// <summary>
-    /// 测试用例：验证 <see cref="DateTimeLeapExtensions.IsLeapDay(DateTime, ChineseLunisolarCalendar)"/> 在 `WithDayNotInLeapMonth` 场景下，结果为 `ReturnsFalse`。
+    /// 验证普通农历日期不属于闰日。
     /// </summary>
     [Fact]
     public void IsLeapDay_WithDayNotInLeapMonth_ReturnsFalse()

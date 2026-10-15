@@ -1,18 +1,21 @@
 using System.Globalization;
 namespace Bing.Date.Chinese;
 /// <summary>
-/// 农历帮助类
+/// 农历日期名称、时辰和闰年判断测试。
 /// </summary>
 [Trait("DateTimeUT", "ChineseDate")]
 public class ChineseDateHelperTest
 {
     /// <summary>
-    /// 中国农历日历实例
+    /// 农历日期计算使用的历法。
     /// </summary>
     private readonly ChineseLunisolarCalendar _calendar = new();
     /// <summary>
-    /// 测试 - GetChineseYear - 正确转换公历年份为中文数字年
+    /// 验证公历年份转换为简体或繁体中文数字。
     /// </summary>
+    /// <param name="year">公历年份。</param>
+    /// <param name="traditional">是否使用繁体文字。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(2023, false, "二零二三年")]
     [InlineData(2023, true, "貳零貳叁年")]
@@ -28,8 +31,13 @@ public class ChineseDateHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - GetSexagenaryYear - 正确获取干支年
+    /// 验证指定日期的干支年名称。
     /// </summary>
+    /// <param name="year">公历年份。</param>
+    /// <param name="month">公历月份。</param>
+    /// <param name="day">公历日期。</param>
+    /// <param name="traditional">是否使用繁体文字。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(2023, 1, 22, false, "癸卯年")] // 兔年
     [InlineData(2022, 2, 1, false, "壬寅年")] // 虎年
@@ -45,7 +53,7 @@ public class ChineseDateHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - GetSexagenaryYear - 空日历参数抛出异常
+    /// 验证获取干支年时拒绝空历法。
     /// </summary>
     [Fact]
     public void GetSexagenaryYear_NullCalendar_ThrowsArgumentNullException()
@@ -56,8 +64,13 @@ public class ChineseDateHelperTest
         Should.Throw<ArgumentNullException>(() => ChineseDateHelper.GetSexagenaryYear(null, date));
     }
     /// <summary>
-    /// 测试 - GetChineseMonth - 正确获取农历月份名称
+    /// 验证指定日期的农历月份名称。
     /// </summary>
+    /// <param name="year">公历年份。</param>
+    /// <param name="month">公历月份。</param>
+    /// <param name="day">公历日期。</param>
+    /// <param name="traditional">是否使用繁体文字。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(2023, 1, 22, false, "正月")] // 农历正月
     [InlineData(2023, 2, 20, false, "二月")] // 农历二月
@@ -72,7 +85,7 @@ public class ChineseDateHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - GetChineseMonth - 闰月情况下正确返回月份名称
+    /// 验证闰月名称的简体和繁体格式。
     /// </summary>
     [Fact]
     public void GetChineseMonth_LeapMonth_ReturnsCorrectLeapMonthName()
@@ -87,8 +100,13 @@ public class ChineseDateHelperTest
         traditional.ShouldBe("閏貳月");
     }
     /// <summary>
-    /// 测试 - GetChineseDay - 正确获取农历日期
+    /// 验证指定日期的农历日名称。
     /// </summary>
+    /// <param name="year">公历年份。</param>
+    /// <param name="month">公历月份。</param>
+    /// <param name="day">公历日期。</param>
+    /// <param name="traditional">是否使用繁体文字。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(2023, 1, 22, false, "初一")] // 农历正月初一
     [InlineData(2023, 1, 31, false, "初十")] // 农历正月初十
@@ -105,8 +123,12 @@ public class ChineseDateHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - GetChineseHour - 正确获取农历时辰
+    /// 验证指定时刻的简体或繁体时辰名称。
     /// </summary>
+    /// <param name="hour">小时。</param>
+    /// <param name="minute">分钟。</param>
+    /// <param name="traditional">是否使用繁体文字。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(0, 0, false, "子时")] // 子时 (23:00-1:00)
     [InlineData(1, 0, false, "子时")]
@@ -131,7 +153,7 @@ public class ChineseDateHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - GetChineseHour - 分钟不为零时进位到下一个时辰
+    /// 验证零点和非整点时刻的时辰名称。
     /// </summary>
     [Fact]
     public void GetChineseHour_MinuteNotZero_AdvancesToNextHour()
@@ -147,7 +169,7 @@ public class ChineseDateHelperTest
         result2.ShouldBe("丑时");
     }
     /// <summary>
-    /// 测试 - GetChineseDateTime - 返回完整农历日期表示
+    /// 验证完整农历日期文本可选择包含时辰。
     /// </summary>
     [Fact]
     public void GetChineseDateTime_ValidDate_ReturnsFullChineseDate()
@@ -162,8 +184,10 @@ public class ChineseDateHelperTest
         resultNoHour.ShouldBe("癸卯年正月初一");
     }
     /// <summary>
-    /// 测试 - IsLeapYear - 正确判断是否为农历闰年
+    /// 验证日期与年份重载的农历闰年判断结果一致。
     /// </summary>
+    /// <param name="year">待判断的年份。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(2023, true)] // 2023农历闰二月
     [InlineData(2022, false)]
@@ -180,8 +204,12 @@ public class ChineseDateHelperTest
         resultInt.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - IsLeapMonth - 正确判断是否为农历闰月
+    /// 验证指定日期的农历闰月判断。
     /// </summary>
+    /// <param name="year">公历年份。</param>
+    /// <param name="month">公历月份。</param>
+    /// <param name="day">公历日期。</param>
+    /// <param name="expected">预期结果。</param>
     [Theory]
     [InlineData(2023, 3, 25, true)] // 2023年闰二月
     [InlineData(2023, 1, 22, false)]
@@ -196,7 +224,7 @@ public class ChineseDateHelperTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - IsLeapDay - 正确判断是否为农历闰日
+    /// 验证普通农历日期不属于闰日。
     /// </summary>
     [Fact]
     public void IsLeapDay_ValidDate_ReturnsCorrectResult()

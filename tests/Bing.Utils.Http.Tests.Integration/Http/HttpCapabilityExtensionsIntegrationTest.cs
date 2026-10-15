@@ -10,10 +10,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
+
+
 /// <summary>
-
 /// 验证可选响应能力与 TestServer HTTP 链路集成。
-
 /// </summary>
 public class HttpCapabilityExtensionsIntegrationTest
 {
@@ -22,15 +22,15 @@ public class HttpCapabilityExtensionsIntegrationTest
     /// </summary>
     private readonly IHost _host;
     /// <summary>
-    /// 初始化一个<see cref="HttpCapabilityExtensionsIntegrationTest"/>类型的实例。
+    /// 初始化一个 <see cref="HttpCapabilityExtensionsIntegrationTest"/> 类型的实例。
     /// </summary>
     /// <param name="host">用于测试的依赖注入应用实例。</param>
     public HttpCapabilityExtensionsIntegrationTest(IHost host) => _host = host;
 
+
+
     /// <summary>
-
     /// 验证保留异常元数据并读取原始正文。
-
     /// </summary>
     [Fact]
     public async Task GetResponseAsync_PreservesErrorMetadataAndRawBody()
@@ -47,10 +47,10 @@ public class HttpCapabilityExtensionsIntegrationTest
         result.ContentHeaders["Content-Type"].Single().ShouldContain("application/json");
     }
 
+
+
     /// <summary>
-
     /// 验证 HEAD 和 OPTIONS 请求经过现有客户端管线发送。
-
     /// </summary>
     [Fact]
     public async Task RequestExtensions_SendHeadAndOptionsThroughExistingClientPipeline()
@@ -76,10 +76,10 @@ public class HttpCapabilityExtensionsIntegrationTest
         observed.ShouldBe(new[] { "HEAD", "OPTIONS" });
     }
 
+
+
     /// <summary>
-
     /// 验证命名客户端的管线配置生效并发送 JSON 正文。
-
     /// </summary>
     [Fact]
     public async Task PatchExtension_UsesNamedClientPipelineAndSendsJsonBody()
@@ -107,19 +107,19 @@ public class HttpCapabilityExtensionsIntegrationTest
         json.RootElement.GetProperty("Name").GetString().ShouldBe("Ada");
     }
 
+
+
     /// <summary>
-
     /// 接收 HTTP 请求并调用观察回调的消息处理器。
-
     /// </summary>
     private sealed class ObservingHandler : DelegatingHandler
     {
         /// <summary>
-        /// 测试处理流程使用的委托。
+        /// 发送请求前接收请求及取消令牌的观察回调。
         /// </summary>
         private readonly Func<HttpRequestMessage, CancellationToken, Task> _observe;
         /// <summary>
-        /// 初始化一个<see cref="ObservingHandler"/>类型的实例。
+        /// 初始化一个 <see cref="ObservingHandler"/> 类型的实例。
         /// </summary>
         /// <param name="observe">接收请求后执行的观察回调。</param>
         public ObservingHandler(Func<HttpRequestMessage, CancellationToken, Task> observe) => _observe = observe;

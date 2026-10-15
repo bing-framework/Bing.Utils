@@ -1,11 +1,14 @@
 namespace Bing.Drawing.Internal;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="NoiseReductionProcessor"/> 纯算法。
+/// 验证按邻居数量和连通域面积去除二值图像噪点。
 /// </summary>
 [Trait("Drawing", "Shared.NoiseReductionProcessor")]
 public class NoiseReductionProcessorTest
 {
+    /// <summary>
+    /// 验证邻居数不足的孤立前景像素被清除。
+    /// </summary>
     [Fact]
     public void ClearNoiseByNeighborCount_IsolatedPixel_Removed()
     {
@@ -19,6 +22,9 @@ public class NoiseReductionProcessorTest
         result[1, 1].ShouldBe((byte)255); // isolated → removed
     }
 
+    /// <summary>
+    /// 验证内部连通区域中具有足够邻居的像素被保留。
+    /// </summary>
     [Fact]
     public void ClearNoiseByNeighborCount_ConnectedPixel_Preserved()
     {
@@ -36,6 +42,9 @@ public class NoiseReductionProcessorTest
         result[1, 2].ShouldBe((byte)0);
     }
 
+    /// <summary>
+    /// 验证按邻居数量去噪时清除边界上的孤立像素。
+    /// </summary>
     [Fact]
     public void ClearNoiseByNeighborCount_BorderPixel_Removed()
     {
@@ -49,6 +58,9 @@ public class NoiseReductionProcessorTest
         result[0, 0].ShouldBe((byte)255); // border → removed
     }
 
+    /// <summary>
+    /// 验证小于面积阈值的单像素连通域被清除。
+    /// </summary>
     [Fact]
     public void ClearNoiseByArea_SmallComponent_Removed()
     {
@@ -65,6 +77,9 @@ public class NoiseReductionProcessorTest
         result[2, 0].ShouldBe((byte)255);
     }
 
+    /// <summary>
+    /// 验证达到面积阈值的连通域被保留。
+    /// </summary>
     [Fact]
     public void ClearNoiseByArea_LargeComponent_Preserved()
     {

@@ -4,11 +4,14 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖 ImageSharp 颜色转换适配层。
+/// 验证 ImageSharp 像素与共享颜色模型及颜色字符串的转换。
 /// </summary>
 [Trait("Drawing", "ImageSharp.ColorConv")]
 public class ImageSharpColorConvTest
 {
+    /// <summary>
+    /// 验证 RGBA 像素转共享颜色模型时保留全部通道。
+    /// </summary>
     [Fact]
     public void ToRgbColor_Rgba32_PreservesChannels()
     {
@@ -21,6 +24,9 @@ public class ImageSharpColorConvTest
         rgb.A.ShouldBe((byte)40);
     }
 
+    /// <summary>
+    /// 验证共享颜色模型转 RGBA 像素时保留全部通道。
+    /// </summary>
     [Fact]
     public void ToRgba32_RgbColor_PreservesChannels()
     {
@@ -33,6 +39,9 @@ public class ImageSharpColorConvTest
         rgba.A.ShouldBe((byte)40);
     }
 
+    /// <summary>
+    /// 验证纯红色像素编码为六位十六进制颜色字符串。
+    /// </summary>
     [Fact]
     public void ToHex_Rgba32_ReturnsExpected()
     {
@@ -40,6 +49,9 @@ public class ImageSharpColorConvTest
         hex.ShouldBe("#FF0000");
     }
 
+    /// <summary>
+    /// 验证绿色十六进制颜色解析为对应 RGB 通道。
+    /// </summary>
     [Fact]
     public void FromHex_ValidHex_ReturnsRgba32()
     {
@@ -49,6 +61,9 @@ public class ImageSharpColorConvTest
         color.B.ShouldBe((byte)0);
     }
 
+    /// <summary>
+    /// 验证纯红色像素转换为预期色相、饱和度及亮度。
+    /// </summary>
     [Fact]
     public void ToHsl_Rgba32_ReturnsValidRange()
     {
@@ -58,6 +73,9 @@ public class ImageSharpColorConvTest
         hsl.L.ShouldBe(0.5, tolerance: 0.01);
     }
 
+    /// <summary>
+    /// 验证 HSL 红色转换为不透明的近似纯红像素。
+    /// </summary>
     [Fact]
     public void FromHsl_ValidHsl_ReturnsRgba32()
     {
@@ -68,6 +86,9 @@ public class ImageSharpColorConvTest
         color.A.ShouldBe((byte)255);
     }
 
+    /// <summary>
+    /// 验证 HSL 转像素时使用指定的 Alpha 通道值。
+    /// </summary>
     [Fact]
     public void FromHsl_CustomAlpha_PreservesAlpha()
     {

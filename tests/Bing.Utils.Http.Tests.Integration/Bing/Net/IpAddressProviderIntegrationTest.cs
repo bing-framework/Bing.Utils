@@ -7,14 +7,15 @@ namespace Bing.Net;
 public class IpAddressProviderIntegrationTest : TestBase
 {
     /// <summary>
-    /// 初始化一个 <see cref="IpAddressProviderIntegrationTest"/> 实例。
+    /// 初始化一个 <see cref="IpAddressProviderIntegrationTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">当前测试使用的输出助手。</param>
     public IpAddressProviderIntegrationTest(ITestOutputHelper output) : base(output)
     {
     }
 
     /// <summary>
-    /// 测试目的：顺序模式在可用公网查询服务下应返回有效的非本地 IP，服务不可用时可返回 null。
+    /// 验证顺序模式在可用公网查询服务下应返回有效的非本地 IP，服务不可用时可返回 null。
     /// </summary>
     [Fact]
     public async Task GetPublicIpAsync_SequentialMode_ReturnsValidPublicIpOrNull()
@@ -27,7 +28,7 @@ public class IpAddressProviderIntegrationTest : TestBase
     }
 
     /// <summary>
-    /// 测试目的：并行模式在可用公网查询服务下应返回有效的非本地 IP，服务不可用时可返回 null。
+    /// 验证并行模式在可用公网查询服务下应返回有效的非本地 IP，服务不可用时可返回 null。
     /// </summary>
     [Fact]
     public async Task GetPublicIpAsync_ParallelMode_ReturnsValidPublicIpOrNull()
@@ -40,7 +41,7 @@ public class IpAddressProviderIntegrationTest : TestBase
     }
 
     /// <summary>
-    /// 测试目的：极短超时应由公网查询路径处理，不应抛出异常。
+    /// 验证极短超时应由公网查询路径处理，不应抛出异常。
     /// </summary>
     [Fact]
     public async Task GetPublicIpAsync_WithShortTimeout_HandlesTimeoutGracefully()
@@ -53,7 +54,7 @@ public class IpAddressProviderIntegrationTest : TestBase
     }
 
     /// <summary>
-    /// 测试目的：默认参数应在公网查询服务可用时返回有效的非本地 IP，服务不可用时可返回 null。
+    /// 验证默认参数应在公网查询服务可用时返回有效的非本地 IP，服务不可用时可返回 null。
     /// </summary>
     [Fact]
     public async Task GetPublicIpAsync_DefaultParameters_ReturnsValidPublicIpOrNull()
@@ -66,8 +67,9 @@ public class IpAddressProviderIntegrationTest : TestBase
     }
 
     /// <summary>
-    /// 验证公网查询结果为空或为有效的非本地 IP。
+    /// 验证查询结果为空或为有效的非本地公网地址。
     /// </summary>
+    /// <param name="result">公网查询服务返回的 IP 地址或空值。</param>
     private void AssertPublicIpOrNull(string result)
     {
         if (result == null)

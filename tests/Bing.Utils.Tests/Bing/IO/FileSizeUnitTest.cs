@@ -7,8 +7,10 @@ public class FileSizeUnitTest
 {
     #region 基础功能测试
     /// <summary>
-    /// 测试 - Description - 获取单位描述
+    /// 验证文件大小单位返回预期描述。
     /// </summary>
+    /// <param name="unit">待检查的文件大小单位。</param>
+    /// <param name="expected">预期的单位描述。</param>
     [Theory]
     [InlineData(FileSizeUnit.Byte, "B")]
     [InlineData(FileSizeUnit.K, "KB")]
@@ -40,8 +42,10 @@ public class FileSizeUnitTest
         nullResult.ShouldBe(string.Empty);
     }
     /// <summary>
-    /// 测试 - GetByteMultiplier - 获取字节倍数
+    /// 验证文件大小单位对应的字节倍数。
     /// </summary>
+    /// <param name="unit">待检查的文件大小单位。</param>
+    /// <param name="expected">预期的字节倍数。</param>
     [Theory]
     [InlineData(FileSizeUnit.Byte, 1L)]
     [InlineData(FileSizeUnit.K, 1024L)]
@@ -59,8 +63,11 @@ public class FileSizeUnitTest
     #endregion
     #region 单位转换测试
     /// <summary>
-    /// 测试 - ConvertFromBytes - 从字节转换
+    /// 验证字节数转换为指定文件大小单位。
     /// </summary>
+    /// <param name="unit">转换后的文件大小单位。</param>
+    /// <param name="bytes">待转换的字节数。</param>
+    /// <param name="expected">预期的单位数值。</param>
     [Theory]
     [InlineData(FileSizeUnit.K, 1024L, 1.0)]
     [InlineData(FileSizeUnit.M, 1048576L, 1.0)]
@@ -76,8 +83,12 @@ public class FileSizeUnitTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - ConvertFromBytes - 从字节转换为指定单位
+    /// 验证字节数按指定精度转换为文件大小单位。
     /// </summary>
+    /// <param name="unit">转换后的文件大小单位。</param>
+    /// <param name="bytes">待转换的字节数。</param>
+    /// <param name="precision">保留的小数位数。</param>
+    /// <param name="expected">预期的单位数值。</param>
     [Theory]
     [InlineData(FileSizeUnit.K, 1024L, 2, 1.0)]
     [InlineData(FileSizeUnit.M, 1048576L, 2, 1.0)]
@@ -121,8 +132,11 @@ public class FileSizeUnitTest
             .ParamName.ShouldBe("precision");
     }
     /// <summary>
-    /// 测试 - ConvertToBytes - 转换为字节数
+    /// 验证文件大小单位数值转换为字节数。
     /// </summary>
+    /// <param name="unit">输入值采用的文件大小单位。</param>
+    /// <param name="value">待转换的单位数值。</param>
+    /// <param name="expected">预期的字节数。</param>
     [Theory]
     [InlineData(FileSizeUnit.K, 1.0, 1024L)]
     [InlineData(FileSizeUnit.M, 2.5, 2621440L)]
@@ -159,8 +173,12 @@ public class FileSizeUnitTest
     #endregion
     #region 格式化测试
     /// <summary>
-    /// 测试 - FormatSize - 格式化文件大小
+    /// 验证文件大小按指定精度和单位格式化。
     /// </summary>
+    /// <param name="unit">文件大小单位。</param>
+    /// <param name="value">待格式化的单位数值。</param>
+    /// <param name="precision">保留的小数位数。</param>
+    /// <param name="expected">预期的格式化文本。</param>
     [Theory]
     [InlineData(FileSizeUnit.K, 1.5, 2, "1.5 KB")]
     [InlineData(FileSizeUnit.M, 2.0, 1, "2 MB")]
@@ -177,8 +195,12 @@ public class FileSizeUnitTest
         result.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - FormatSize - 自动移除尾随零
+    /// 验证文件大小格式化移除小数部分的尾随零。
     /// </summary>
+    /// <param name="unit">文件大小单位。</param>
+    /// <param name="value">待格式化的单位数值。</param>
+    /// <param name="precision">保留的小数位数。</param>
+    /// <param name="expected">预期的格式化文本。</param>
     [Theory]
     [InlineData(FileSizeUnit.K, 1.0, 2, "1 KB")]      // 移除 .00
     [InlineData(FileSizeUnit.M, 2.5, 2, "2.5 MB")]    // 移除 .50 -> .5
@@ -204,8 +226,10 @@ public class FileSizeUnitTest
     #endregion
     #region 兼容性和集成测试
     /// <summary>
-    /// 测试 - Value - 获取枚举值
+    /// 验证可空文件大小单位返回枚举数值。
     /// </summary>
+    /// <param name="unit">待检查的文件大小单位。</param>
+    /// <param name="expected">预期的枚举数值。</param>
     [Theory]
     [InlineData(FileSizeUnit.Byte, 0)]
     [InlineData(FileSizeUnit.K, 1)]
@@ -236,8 +260,10 @@ public class FileSizeUnitTest
         result.ShouldBeNull();
     }
     /// <summary>
-    /// 测试 - 往返转换一致性
+    /// 验证文件大小与字节数往返转换后的误差在范围内。
     /// </summary>
+    /// <param name="unit">文件大小单位。</param>
+    /// <param name="originalValue">原始单位数值。</param>
     [Theory]
     [InlineData(FileSizeUnit.K, 1.5)]
     [InlineData(FileSizeUnit.M, 2.5)]

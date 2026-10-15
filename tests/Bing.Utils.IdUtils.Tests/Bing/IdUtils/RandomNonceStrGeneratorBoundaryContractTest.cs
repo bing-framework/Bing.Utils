@@ -21,6 +21,7 @@ public class RandomNonceStrGeneratorBoundaryContractTest
     /// <summary>
     /// 测试用例：Create(forceToAvoidRepetition) 重载应保持默认长度 16。
     /// </summary>
+    /// <param name="forceToAvoidRepetition">是否强制避免生成重复字符。</param>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -35,6 +36,7 @@ public class RandomNonceStrGeneratorBoundaryContractTest
     /// <summary>
     /// 测试用例：Create(length) 在 length 大于 16 时应返回指定长度。
     /// </summary>
+    /// <param name="length">大于最小长度的目标长度。</param>
     [Theory]
     [InlineData(17)]
     [InlineData(32)]
@@ -50,6 +52,7 @@ public class RandomNonceStrGeneratorBoundaryContractTest
     /// <summary>
     /// 测试用例：Create(length) 在 length 小于等于 16（含负数）时应回退为 16 位。
     /// </summary>
+    /// <param name="length">小于或等于最小长度的输入值。</param>
     [Theory]
     [InlineData(int.MinValue)]
     [InlineData(-1)]

@@ -1,35 +1,110 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证类型及其成员上的特性应用、泛型查询和继承行为。
+/// </summary>
 [Trait("TypeUT", "AttributeDefined")]
 public class AttributeDefinedTest
 {
+    /// <summary>
+    /// 表示用于反射查询的第一种测试特性类型。
+    /// </summary>
     public Type AttributeOne = typeof(ModelOneAttribute);
+    /// <summary>
+    /// 表示用于反射查询的第二种测试特性类型。
+    /// </summary>
     public Type AttributeTwo = typeof(ModelTwoAttribute);
+    /// <summary>
+    /// 表示用于反射查询的第三种测试特性类型。
+    /// </summary>
     public Type AttributeThree = typeof(ModelThreeAttribute);
+    /// <summary>
+    /// 获取应用了测试特性的样例类型。
+    /// </summary>
     public Type ModelWithAttr;
+    /// <summary>
+    /// 获取带特性的样例类型的无参构造函数。
+    /// </summary>
     public ConstructorInfo ConstructorForModelWithAttrWithoutParam;
+    /// <summary>
+    /// 获取带特性的样例类型的单参数构造函数。
+    /// </summary>
     public ConstructorInfo ConstructorForModelWithAttrWithOneParam;
+    /// <summary>
+    /// 获取带特性的样例类型的属性成员。
+    /// </summary>
     public PropertyInfo PropertyForModelWithAttr;
+    /// <summary>
+    /// 获取带特性的样例类型的字段成员。
+    /// </summary>
     public FieldInfo FieldForModelWithAttr;
+    /// <summary>
+    /// 获取带特性的样例类型的方法成员。
+    /// </summary>
     public MethodInfo MethodForModelWithAttr;
+    /// <summary>
+    /// 获取带特性的单参数构造函数的参数。
+    /// </summary>
     public ParameterInfo ParameterOfConstructorForModelWithAttrWithOneParam;
+    /// <summary>
+    /// 获取未应用测试特性的样例类型。
+    /// </summary>
     public Type ModelWithoutAttr;
+    /// <summary>
+    /// 获取未带特性样例类型的无参构造函数。
+    /// </summary>
     public ConstructorInfo ConstructorForModelWithoutAttrWithoutParam;
+    /// <summary>
+    /// 获取未带特性样例类型的单参数构造函数。
+    /// </summary>
     public ConstructorInfo ConstructorForModelWithoutAttrWithOneParam;
+    /// <summary>
+    /// 获取未带特性样例类型的属性成员。
+    /// </summary>
     public PropertyInfo PropertyForModelWithoutAttr;
+    /// <summary>
+    /// 获取未带特性样例类型的字段成员。
+    /// </summary>
     public FieldInfo FieldForModelWithoutAttr;
+    /// <summary>
+    /// 获取未带特性样例类型的方法成员。
+    /// </summary>
     public MethodInfo MethodForModelWithoutAttr;
+    /// <summary>
+    /// 获取未带特性样例的单参数构造函数的参数。
+    /// </summary>
     public ParameterInfo ParameterOfConstructorForModelWithoutAttrWithOneParam;
+    /// <summary>
+    /// 获取用于测试继承特性行为的包装类型。
+    /// </summary>
     public Type ModelWrapper;
+    /// <summary>
+    /// 获取包装类型的无参构造函数。
+    /// </summary>
     public ConstructorInfo ConstructorForModelWrapperWithoutParam;
+    /// <summary>
+    /// 获取包装类型的单参数构造函数。
+    /// </summary>
     public ConstructorInfo ConstructorForModelWrapperWithOneParam;
+    /// <summary>
+    /// 获取包装类型继承的属性成员。
+    /// </summary>
     public PropertyInfo PropertyForModelWrapper;
+    /// <summary>
+    /// 获取包装类型继承的字段成员。
+    /// </summary>
     public FieldInfo FieldForModelWrapper;
+    /// <summary>
+    /// 获取包装类型继承的方法成员。
+    /// </summary>
     public MethodInfo MethodForModelWrapper;
+    /// <summary>
+    /// 获取包装类型单参数构造函数的参数。
+    /// </summary>
     public ParameterInfo ParameterOfConstructorForModelWrapperWithOneParam;
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="AttributeDefinedTest"/> 类型的实例。
     /// </summary>
     public AttributeDefinedTest()
     {

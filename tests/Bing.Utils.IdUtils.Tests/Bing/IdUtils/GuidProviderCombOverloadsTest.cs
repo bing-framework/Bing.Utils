@@ -8,6 +8,7 @@ public class GuidProviderCombOverloadsTest
     /// <summary>
     /// 测试用例：验证 `Create` 在 `WithCombStyle` 场景下，结果为 `ReturnsNonEmptyGuid`。
     /// </summary>
+    /// <param name="style">用于生成 GUID 的 COMB 样式。</param>
     [Theory]
     [InlineData(CombStyle.NormalStyle)]
     [InlineData(CombStyle.UnixStyle)]
@@ -31,6 +32,7 @@ public class GuidProviderCombOverloadsTest
     /// <summary>
     /// 测试用例：验证 `Create` 在 `WithValueAndCombStyle` 场景下，结果为 `ReturnsNonEmptyGuid`。
     /// </summary>
+    /// <param name="style">用于生成 GUID 的 COMB 样式。</param>
     [Theory]
     [InlineData(CombStyle.NormalStyle)]
     [InlineData(CombStyle.UnixStyle)]
@@ -45,6 +47,7 @@ public class GuidProviderCombOverloadsTest
     /// <summary>
     /// 测试用例：验证 `Create` 在 `WithTimestampAndCombStyle` 场景下，结果为 `ReturnsNonEmptyGuid`。
     /// </summary>
+    /// <param name="style">用于生成 GUID 的 COMB 样式。</param>
     [Theory]
     [InlineData(CombStyle.NormalStyle)]
     [InlineData(CombStyle.UnixStyle)]
@@ -59,6 +62,7 @@ public class GuidProviderCombOverloadsTest
     /// <summary>
     /// 测试用例：验证 `Create` 在 `WithValueAndTimestampAndCombStyle` 场景下，结果为 `IsDeterministic`。
     /// </summary>
+    /// <param name="style">用于生成 GUID 的 COMB 样式。</param>
     [Theory]
     [InlineData(CombStyle.NormalStyle)]
     [InlineData(CombStyle.UnixStyle)]

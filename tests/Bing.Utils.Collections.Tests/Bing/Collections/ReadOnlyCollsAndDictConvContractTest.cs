@@ -5,13 +5,13 @@ using System.Linq;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：验证 ReadOnlyColls 与 ReadOnlyDictConv 的契约行为。
+/// 只读集合追加和只读字典转换的契约测试。
 /// </summary>
 [Trait("CollectionsUT", "ReadOnlyColls.ReadOnlyDictConv.Contract")]
 public class ReadOnlyCollsAndDictConvContractTest
 {
     /// <summary>
-    /// 测试用例：当 source 为空时，Append 应抛出参数异常。
+    /// 验证当 source 为空时，Append 应抛出参数异常。
     /// </summary>
     [Fact]
     public void Append_SourceIsNull_ThrowsArgumentNullException()
@@ -24,7 +24,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：Append 应保持原顺序并在末尾追加元素，且不修改输入集合。
+    /// 验证Append 应保持原顺序并在末尾追加元素，且不修改输入集合。
     /// </summary>
     [Fact]
     public void Append_ValidSource_ReturnsCollectionWithAppendedItemAndKeepsSourceUnchanged()
@@ -39,7 +39,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：扩展方法 Append 与静态方法行为应一致。
+    /// 验证扩展方法 Append 与静态方法行为应一致。
     /// </summary>
     [Fact]
     public void Append_ExtensionMethodCalled_ReturnsSameExpectedSequence()
@@ -53,7 +53,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：Empty 应返回同类型单例且为空集合。
+    /// 验证Empty 应返回同类型单例且为空集合。
     /// </summary>
     [Fact]
     public void Empty_CalledMultipleTimes_ReturnsSameSingletonInstance()
@@ -66,7 +66,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：OfList(params) 应返回只读列表并保持元素顺序。
+    /// 验证OfList(params) 应返回只读列表并保持元素顺序。
     /// </summary>
     [Fact]
     public void OfList_ParamsValues_ReturnsReadOnlyListInOriginalOrder()
@@ -79,7 +79,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：ToDictionary(键值对) 遇到重复键时应抛出异常。
+    /// 验证ToDictionary(键值对) 遇到重复键时应抛出异常。
     /// </summary>
     [Fact]
     public void ToDictionary_KeyValuePairsWithDuplicateKey_ThrowsArgumentException()
@@ -94,7 +94,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：ToDictionary(键值对, comparer) 应使用比较器进行键匹配。
+    /// 验证ToDictionary(键值对, comparer) 应使用比较器进行键匹配。
     /// </summary>
     [Fact]
     public void ToDictionary_KeyValuePairsWithComparer_UsesComparerForLookup()
@@ -113,7 +113,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：ToDictionary(source, keySelector, elementSelector) 当 elementSelector 为空时应抛出参数异常。
+    /// 验证ToDictionary(source, keySelector, elementSelector) 当 elementSelector 为空时应抛出参数异常。
     /// </summary>
     [Fact]
     public void ToDictionary_SourceWithNullElementSelector_ThrowsArgumentNullException()
@@ -127,7 +127,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：ToDictionary(source, keySelector) 结果应为快照，不受源集合后续修改影响。
+    /// 验证ToDictionary(source, keySelector) 结果应为快照，不受源集合后续修改影响。
     /// </summary>
     [Fact]
     public void ToDictionary_KeySelectorOverMutableSource_ResultShouldRemainSnapshot()
@@ -142,7 +142,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：ToDictionary(source, keySelector, comparer) 当 comparer 为空时应抛出参数异常。
+    /// 验证ToDictionary(source, keySelector, comparer) 当 comparer 为空时应抛出参数异常。
     /// </summary>
     [Fact]
     public void ToDictionary_KeySelectorWithNullComparer_ThrowsArgumentNullException()
@@ -156,7 +156,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：ToDictionary(source, keySelector, elementSelector, comparer) 当 comparer 为空时应抛出参数异常。
+    /// 验证ToDictionary(source, keySelector, elementSelector, comparer) 当 comparer 为空时应抛出参数异常。
     /// </summary>
     [Fact]
     public void ToDictionary_KeyElementWithNullComparer_ThrowsArgumentNullException()
@@ -170,7 +170,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：ToDictionary(source, keySelector, elementSelector) 遇到重复键时应抛出异常。
+    /// 验证ToDictionary(source, keySelector, elementSelector) 遇到重复键时应抛出异常。
     /// </summary>
     [Fact]
     public void ToDictionary_KeyElementWithDuplicateKeys_ThrowsArgumentException()
@@ -182,7 +182,7 @@ public class ReadOnlyCollsAndDictConvContractTest
     }
 
     /// <summary>
-    /// 测试用例：ToDictionary(source, keySelector, elementSelector) 返回结果应为只读字典且禁止写入。
+    /// 验证ToDictionary(source, keySelector, elementSelector) 返回结果应为只读字典且禁止写入。
     /// </summary>
     [Fact]
     public void ToDictionary_KeyElementSelector_ReturnsReadOnlyDictionary()

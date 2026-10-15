@@ -6,7 +6,10 @@ namespace Bing.Collections;
 [Trait("CollectionsUT", "ByteArrayExtensions.To")]
 public class ByteArrayExtensionsToTest : TestBase
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// 初始化一个 <see cref="ByteArrayExtensionsToTest"/> 类型的实例。
+    /// </summary>
+    /// <param name="output">测试输出辅助器。</param>
     public ByteArrayExtensionsToTest(ITestOutputHelper output) : base(output)
     {
     }
@@ -67,8 +70,9 @@ public class ByteArrayExtensionsToTest : TestBase
         Should.Throw<ArgumentNullException>(() => nullBytes.ToInt());
     }
     /// <summary>
-    /// 测试 - ToInt - 无效起始索引抛出异常
+    /// 验证整数字节转换拒绝无效起始索引。
     /// </summary>
+    /// <param name="invalidIndex">无效的起始索引。</param>
     [Theory]
     [InlineData(-1)]     // 负值索引
     [InlineData(10)]     // 超出范围索引
@@ -150,8 +154,9 @@ public class ByteArrayExtensionsToTest : TestBase
         Should.Throw<ArgumentNullException>(() => nullBytes.ToLong());
     }
     /// <summary>
-    /// 测试 - ToLong - 无效起始索引抛出异常
+    /// 验证长整数字节转换拒绝无效起始索引。
     /// </summary>
+    /// <param name="invalidIndex">无效的起始索引。</param>
     [Theory]
     [InlineData(-1)]     // 负值索引
     [InlineData(10)]     // 超出范围索引
@@ -314,8 +319,9 @@ public class ByteArrayExtensionsToTest : TestBase
         restoredDate.ShouldBe(originalDate);
     }
     /// <summary>
-    /// 测试 - ToDateTime - 不同Kind属性的日期时间转换
+    /// 验证不同种类的日期时间经字节转换后保留原值和种类。
     /// </summary>
+    /// <param name="kind">日期时间种类。</param>
     [Theory]
     [InlineData(DateTimeKind.Utc)]
     [InlineData(DateTimeKind.Local)]

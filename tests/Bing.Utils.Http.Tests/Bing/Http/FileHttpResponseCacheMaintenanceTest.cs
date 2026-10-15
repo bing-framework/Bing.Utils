@@ -3,10 +3,10 @@ using Bing.Http.Caching;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// 文件缓存后台维护器的周期、停止和异常隔离测试。
-
 /// </summary>
 public class FileHttpResponseCacheMaintenanceTest
 {
@@ -31,10 +31,10 @@ public class FileHttpResponseCacheMaintenanceTest
         finally { DeleteDirectory(directory); }
     }
 
+
+
     /// <summary>
-
     /// 验证维护器可重复停止且停止后不再执行清理。
-
     /// </summary>
     [Fact]
     public void StopAndDispose_AreIdempotentAndPreventFurtherCleanup()
@@ -57,10 +57,10 @@ public class FileHttpResponseCacheMaintenanceTest
         finally { DeleteDirectory(directory); }
     }
 
+
+
     /// <summary>
-
-    /// 验证是否报告并是否不停止循环。
-
+    /// 验证维护器报告清理异常后仍继续后续清理。
     /// </summary>
     [Fact]
     public async Task CleanupFailure_IsReportedAndDoesNotStopLoop()
@@ -79,21 +79,25 @@ public class FileHttpResponseCacheMaintenanceTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 创建测试用 HTTP 响应。
-
+    /// 创建包含固定正文的成功缓存响应样例。
     /// </summary>
+    /// <returns>正文为单字节且原始文本为 <c>value</c> 的成功响应。</returns>
     private static HttpResponseResult<byte[]> Response()
         => new HttpResponseResult<byte[]>(System.Net.HttpStatusCode.OK,
             new Dictionary<string, IReadOnlyList<string>>(), new Dictionary<string, IReadOnlyList<string>>(),
             new byte[] { 1 }, "value");
 
+
+
     /// <summary>
-
-    /// 处理测试场景中的 EventuallyAsync。
-
+    /// 异步等待测试条件在限定时间内满足。
     /// </summary>
+    /// <param name="condition">异步检测条件的委托，返回 true 时结束等待。</param>
+    /// <exception cref="TimeoutException">三秒内条件仍未满足。</exception>
+    /// <remarks>每次未满足条件后等待二十毫秒。</remarks>
     private static async Task EventuallyAsync(Func<Task<bool>> condition)
     {
         var timeout = DateTime.UtcNow.AddSeconds(3);
@@ -105,19 +109,22 @@ public class FileHttpResponseCacheMaintenanceTest
         throw new TimeoutException("Condition was not met.");
     }
 
+
+
     /// <summary>
-
-    /// 处理测试场景中的 EventuallyAsync。
-
+    /// 异步等待测试条件在限定时间内满足。
     /// </summary>
+    /// <param name="condition">同步检测条件的委托，返回 true 时结束等待。</param>
+    /// <exception cref="TimeoutException">三秒内条件仍未满足。</exception>
     private static async Task EventuallyAsync(Func<bool> condition)
         => await EventuallyAsync(() => Task.FromResult(condition()));
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建用于文件缓存后台维护测试的独立临时目录。
     /// </summary>
+    /// <returns>已创建的唯一临时目录完整路径。</returns>
     private static string CreateDirectory()
     {
         var path = Path.Combine(Path.GetTempPath(), "bing-http-maintenance-" + Guid.NewGuid().ToString("N"));
@@ -125,11 +132,12 @@ public class FileHttpResponseCacheMaintenanceTest
         return path;
     }
 
+
+
     /// <summary>
-
-    /// 清理测试生成的临时资源。
-
+    /// 递归删除测试创建的临时目录。
     /// </summary>
+    /// <param name="path">待清理的目录完整路径；目录不存在时不执行操作。</param>
     private static void DeleteDirectory(string path)
     {
         if (Directory.Exists(path)) Directory.Delete(path, true);

@@ -4,7 +4,7 @@ using static Bing.Text.CaseFormatter;
 namespace Bing.Text;
 
 /// <summary>
-/// 测试类：CaseFormatter 大小写格式化器的全部 Style 枚举和工厂属性
+/// 命名风格格式化器的分隔符和大小写转换测试。
 /// </summary>
 [Trait("TextUT", "CaseFormatter")]
 public class CaseFormatterTest
@@ -12,8 +12,10 @@ public class CaseFormatterTest
     #region LowerUnderscore → 各种 Style
 
     /// <summary>
-    /// 测试目的：LowerUnderscore 分割器配合 LowerCamel style，应转换为小驼峰格式
+    /// 验证下划线命名转换为小驼峰命名。
     /// </summary>
+    /// <param name="input">待格式化文本。</param>
+    /// <param name="expected">预期格式化文本。</param>
     [Theory]
     [InlineData("hello_world", "helloWorld")]
     [InlineData("my_variable_name", "myVariableName")]
@@ -28,8 +30,10 @@ public class CaseFormatterTest
     }
 
     /// <summary>
-    /// 测试目的：LowerUnderscore 分割器配合 UpperCamel style，应转换为大驼峰（PascalCase）格式
+    /// 验证下划线命名转换为大驼峰命名。
     /// </summary>
+    /// <param name="input">待格式化文本。</param>
+    /// <param name="expected">预期格式化文本。</param>
     [Theory]
     [InlineData("hello_world", "HelloWorld")]
     [InlineData("my_variable", "MyVariable")]
@@ -43,8 +47,10 @@ public class CaseFormatterTest
     }
 
     /// <summary>
-    /// 测试目的：LowerUnderscore 分割器配合 LowerHyphen style，应转换为 kebab-case 格式
+    /// 验证下划线命名转换为小写连字符命名。
     /// </summary>
+    /// <param name="input">待格式化文本。</param>
+    /// <param name="expected">预期格式化文本。</param>
     [Theory]
     [InlineData("hello_world", "hello-world")]
     [InlineData("my_variable_name", "my-variable-name")]
@@ -58,8 +64,10 @@ public class CaseFormatterTest
     }
 
     /// <summary>
-    /// 测试目的：LowerUnderscore 分割器配合 UpperUnderscore style，应转换为全大写下划线格式
+    /// 验证下划线命名转换为大写下划线命名。
     /// </summary>
+    /// <param name="input">待格式化文本。</param>
+    /// <param name="expected">预期格式化文本。</param>
     [Theory]
     [InlineData("hello_world", "HELLO_WORLD")]
     [InlineData("my_var", "MY_VAR")]
@@ -73,7 +81,7 @@ public class CaseFormatterTest
     }
 
     /// <summary>
-    /// 测试目的：LowerUnderscore 配合 LowerCamelWithWhiteSpace，应转换为首字母大写（除首词）的空格分隔格式
+    /// 验证LowerUnderscore 配合 LowerCamelWithWhiteSpace，应转换为首字母大写（除首词）的空格分隔格式
     /// </summary>
     [Fact]
     public void LowerUnderscore_ToLowerCamelWithWhiteSpace_ConvertsCorrectly()
@@ -86,7 +94,7 @@ public class CaseFormatterTest
     }
 
     /// <summary>
-    /// 测试目的：LowerUnderscore 配合 UpperCamelWithWhiteSpace，应转换为每词首字母大写的空格分隔格式
+    /// 验证LowerUnderscore 配合 UpperCamelWithWhiteSpace，应转换为每词首字母大写的空格分隔格式
     /// </summary>
     [Fact]
     public void LowerUnderscore_ToUpperCamelWithWhiteSpace_ConvertsCorrectly()
@@ -103,8 +111,10 @@ public class CaseFormatterTest
     #region LowerHyphen → 各种 Style
 
     /// <summary>
-    /// 测试目的：LowerHyphen 分割器配合 LowerCamel style，应正确转换 kebab-case 为小驼峰
+    /// 验证连字符命名转换为小驼峰命名。
     /// </summary>
+    /// <param name="input">待格式化文本。</param>
+    /// <param name="expected">预期格式化文本。</param>
     [Theory]
     [InlineData("hello-world", "helloWorld")]
     [InlineData("my-variable-name", "myVariableName")]
@@ -118,7 +128,7 @@ public class CaseFormatterTest
     }
 
     /// <summary>
-    /// 测试目的：LowerHyphen 分割器配合 LowerUnderscore style，应转换为 snake_case 格式
+    /// 验证LowerHyphen 分割器配合 LowerUnderscore style，应转换为 snake_case 格式
     /// </summary>
     [Fact]
     public void LowerHyphen_ToLowerUnderscore_ConvertsToSnakeCase()
@@ -135,8 +145,11 @@ public class CaseFormatterTest
     #region Instance (Regex 分割器 [-_ ]+)
 
     /// <summary>
-    /// 测试目的：Instance 分割器支持连字符、下划线、空格混合输入的格式转换
+    /// 验证通用格式化器处理空格、连字符和下划线分隔符。
     /// </summary>
+    /// <param name="input">待格式化文本。</param>
+    /// <param name="style">目标命名风格。</param>
+    /// <param name="expected">预期格式化文本。</param>
     [Theory]
     [InlineData("hello world", Style.UpperCamel, "HelloWorld")]
     [InlineData("hello-world", Style.UpperCamel, "HelloWorld")]
@@ -156,8 +169,11 @@ public class CaseFormatterTest
     #region Humanizer
 
     /// <summary>
-    /// 测试目的：Humanizer 模式下使用正则 [-_ ]+ 切分单词，转换各种 Style
+    /// 验证人类可读文本转换为指定命名风格。
     /// </summary>
+    /// <param name="input">待格式化文本。</param>
+    /// <param name="style">目标命名风格。</param>
+    /// <param name="expected">预期格式化文本。</param>
     [Theory]
     [InlineData("Hello World", Style.LowerHyphen, "hello-world")]
     [InlineData("Hello World", Style.LowerUnderscore, "hello_world")]
@@ -176,8 +192,11 @@ public class CaseFormatterTest
     #region 边界：单词/空值
 
     /// <summary>
-    /// 测试目的：单词输入（无分隔符）时，格式转换应正确处理单词
+    /// 验证无分隔符的单词转换为指定命名风格。
     /// </summary>
+    /// <param name="input">待格式化文本。</param>
+    /// <param name="style">目标命名风格。</param>
+    /// <param name="expected">预期格式化文本。</param>
     [Theory]
     [InlineData("hello", Style.UpperCamel, "Hello")]
     [InlineData("hello", Style.LowerCamel, "hello")]

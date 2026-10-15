@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Bing.Collections;
 /// <summary>
-/// 测试类：覆盖 `CollsOps` 相关行为。
+/// 集合追加、去重、移除和合并测试。
 /// </summary>
 [Trait("CollectionsUT", "Colls.Ops")]
 public class CollsOpsTest
 {
     /// <summary>
-    /// 测试用例：验证 `AddRange` 在 `WithLimit` 场景下，结果为 `ReturnsExpectedSequence`。
+    /// 验证批量追加只取限定数量的元素。
     /// </summary>
     [Fact]
     public void AddRange_WithLimit_ReturnsExpectedSequence()
@@ -19,7 +19,7 @@ public class CollsOpsTest
         result.ShouldBe([1, 2, 3, 4]);
     }
     /// <summary>
-    /// 测试用例：验证 `AddIf` 在 `WithFlagFalse` 场景下，结果为 `DoesNotAppendValue`。
+    /// 验证条件为假时不追加元素。
     /// </summary>
     [Fact]
     public void AddIf_WithFlagFalse_DoesNotAppendValue()
@@ -29,7 +29,7 @@ public class CollsOpsTest
         result.ShouldBe([1, 2]);
     }
     /// <summary>
-    /// 测试用例：验证 `AddIf` 在 `WithPredicateNull` 场景下，结果为 `DoesNotAppendValue`。
+    /// 验证谓词为空时不追加元素。
     /// </summary>
     [Fact]
     public void AddIf_WithPredicateNull_DoesNotAppendValue()
@@ -39,7 +39,7 @@ public class CollsOpsTest
         result.ShouldBe([1, 2]);
     }
     /// <summary>
-    /// 测试用例：验证 `AddIf` 在 `WhenSourceIsNull` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证条件追加拒绝空源序列并报告参数名。
     /// </summary>
     [Fact]
     public void AddIf_WhenSourceIsNull_ThrowsArgumentNullException()
@@ -48,7 +48,7 @@ public class CollsOpsTest
         ex.ParamName.ShouldBe("source");
     }
     /// <summary>
-    /// 测试用例：验证 `AddIfNotExist` 在 `WhenValueAlreadyExists` 场景下，结果为 `DoesNotAppend`。
+    /// 验证已有元素不会被重复追加。
     /// </summary>
     [Fact]
     public void AddIfNotExist_WhenValueAlreadyExists_DoesNotAppend()
@@ -58,7 +58,7 @@ public class CollsOpsTest
         result.ShouldBe([1, 2, 3]);
     }
     /// <summary>
-    /// 测试用例：验证 `AddIfNotNull` 在 `WithNullValue` 场景下，结果为 `DoesNotAppend`。
+    /// 验证空值不会被追加。
     /// </summary>
     [Fact]
     public void AddIfNotNull_WithNullValue_DoesNotAppend()
@@ -68,7 +68,7 @@ public class CollsOpsTest
         result.ShouldBe(["a", "b"]);
     }
     /// <summary>
-    /// 测试用例：验证 `GetOrAdd` 在 `WhenItemExists` 场景下，结果为 `DoesNotCallFactory`。
+    /// 验证匹配元素存在时返回该元素且不调用工厂。
     /// </summary>
     [Fact]
     public void GetOrAdd_WhenItemExists_DoesNotCallFactory()
@@ -84,7 +84,7 @@ public class CollsOpsTest
         callCount.ShouldBe(0);
     }
     /// <summary>
-    /// 测试用例：验证 `RemoveDuplicatesIgnoreCase` 在 `RemovesDuplicatesAndKeepsLastEntry` 场景下的行为。
+    /// 验证忽略大小写去重时保留最后出现的元素并更新源列表。
     /// </summary>
     [Fact]
     public void RemoveDuplicatesIgnoreCase_RemovesDuplicatesAndKeepsLastEntry()
@@ -95,7 +95,7 @@ public class CollsOpsTest
         source.ShouldBe(["a", "b", "C"]);
     }
     /// <summary>
-    /// 测试用例：验证 `RemoveIf` 在 `WhenPredicateIsNull` 场景下，结果为 `ThrowsArgumentNullException`。
+    /// 验证条件移除拒绝空谓词并报告参数名。
     /// </summary>
     [Fact]
     public void RemoveIf_WhenPredicateIsNull_ThrowsArgumentNullException()
@@ -105,7 +105,7 @@ public class CollsOpsTest
         ex.ParamName.ShouldBe("predicate");
     }
     /// <summary>
-    /// 测试用例：验证 `RemoveRangeSafety` 在 `WhenIndexAndCountOutOfRange` 场景下，结果为 `ReturnsOriginalList`。
+    /// 验证无效起始索引的安全移除保留原列表。
     /// </summary>
     [Fact]
     public void RemoveRangeSafety_WhenIndexAndCountOutOfRange_ReturnsOriginalList()
@@ -117,7 +117,7 @@ public class CollsOpsTest
         source.ShouldBe([1, 2, 3]);
     }
     /// <summary>
-    /// 测试用例：验证 `Merge` 在 `WithRightNull` 场景下，结果为 `ReturnsSourceOnly`。
+    /// 验证合并空的右侧序列时保留源元素。
     /// </summary>
     [Fact]
     public void Merge_WithRightNull_ReturnsSourceOnly()

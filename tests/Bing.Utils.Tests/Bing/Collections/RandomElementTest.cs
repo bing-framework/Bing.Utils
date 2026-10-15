@@ -8,8 +8,9 @@ namespace Bing.Utils.Tests.Bing.Collections;
 public class RandomElementTest
 {
     /// <summary>
-    /// 测试目的：数组与列表应使用给定随机数产生可重复且有效的结果。
+    /// 验证数组和列表在相同随机种子下选中相同的有效元素。
     /// </summary>
+    /// <param name="seed">伪随机数种子。</param>
     [Theory]
     [InlineData(1)]
     [InlineData(7)]
@@ -28,7 +29,7 @@ public class RandomElementTest
     }
 
     /// <summary>
-    /// 测试目的：普通延迟枚举应仅枚举一次，并返回其中元素。
+    /// 验证普通延迟枚举应仅枚举一次，并返回其中元素。
     /// </summary>
     [Fact]
     public void RandomElement_DeferredEnumerable_EnumeratesOnceAndReturnsSourceElement()
@@ -52,7 +53,7 @@ public class RandomElementTest
     }
 
     /// <summary>
-    /// 测试目的：单元素集合应返回唯一元素。
+    /// 验证单元素集合应返回唯一元素。
     /// </summary>
     [Fact]
     public void RandomElement_SingleElement_ReturnsOnlyElement()
@@ -68,7 +69,7 @@ public class RandomElementTest
     }
 
     /// <summary>
-    /// 测试目的：空集合的强制获取应抛出明确异常。
+    /// 验证空集合的强制获取应抛出明确异常。
     /// </summary>
     [Fact]
     public void RandomElement_EmptySource_ThrowsInvalidOperationException()
@@ -81,7 +82,7 @@ public class RandomElementTest
     }
 
     /// <summary>
-    /// 测试目的：空引用源集合应抛出参数异常。
+    /// 验证空引用源集合应抛出参数异常。
     /// </summary>
     [Fact]
     public void TryRandomElement_NullSource_ThrowsArgumentNullException()
@@ -94,7 +95,7 @@ public class RandomElementTest
     }
 
     /// <summary>
-    /// 测试目的：Try 方法应区分空集合与非空集合。
+    /// 验证Try 方法应区分空集合与非空集合。
     /// </summary>
     [Fact]
     public void TryRandomElement_EmptyAndNonEmptySources_ReturnsExpectedSuccessState()

@@ -4,12 +4,12 @@ using Bing.Tests.Samples;
 namespace Bing.Data;
 
 /// <summary>
-/// 测试类：覆盖 `DataTableHelper` 相关行为。
+/// 数据表映射学生模型的测试。
 /// </summary>
 public class DataTableHelperTest
 {
     /// <summary>
-    /// 测试用例：验证 `Test` 在 `ToList` 场景下的行为。
+    /// 验证数据表首行映射为字段值一致的学生模型。
     /// </summary>
     [Fact]
     public void Test_ToList()

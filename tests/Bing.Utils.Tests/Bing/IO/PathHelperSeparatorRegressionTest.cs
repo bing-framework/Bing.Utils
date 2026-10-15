@@ -1,14 +1,14 @@
 namespace Bing.IO;
 
 /// <summary>
-/// 测试类：PathHelper 路径分隔符回归测试
+/// 验证路径分隔符标准化的回归行为。
 /// </summary>
 [Trait("Category", "Regression")]
 [Trait("Risk", "High")]
 public class PathHelperSeparatorRegressionTest
 {
     /// <summary>
-    /// 测试用例：NormalizePath 应按系统分隔符标准化路径
+    /// 验证NormalizePath 应按系统分隔符标准化路径
     /// </summary>
     [Fact]
     [Trait("DefectPattern", "IO.PathHelper.SeparatorNormalization")]

@@ -8,6 +8,10 @@ namespace Bing.Utils.Tests.Bing.Threading;
 /// </summary>
 public class AsyncDebouncerTests
 {
+    /// <summary>
+    /// 验证异步防抖器保存构造时指定的延迟。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task Constructor_DoesNotExecuteAnyCallback()
     {
@@ -18,6 +22,10 @@ public class AsyncDebouncerTests
         debouncer.Delay.ShouldBe(TimeSpan.FromMilliseconds(100));
     }
 
+    /// <summary>
+    /// 验证单次提交延迟执行回调。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_SingleSubmission_ExecutesAfterDelay()
     {
@@ -31,6 +39,10 @@ public class AsyncDebouncerTests
         invoked.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证零延迟提交执行回调。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_ZeroDelay_ExecutesCallback()
     {
@@ -42,12 +54,19 @@ public class AsyncDebouncerTests
         invoked.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证异步防抖器拒绝负延迟。
+    /// </summary>
     [Fact]
     public void Constructor_NegativeDelay_ThrowsArgumentOutOfRangeException()
     {
         Should.Throw<ArgumentOutOfRangeException>(() => new AsyncDebouncer(TimeSpan.FromMilliseconds(-1)));
     }
 
+    /// <summary>
+    /// 验证防抖提交拒绝空同步回调。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_NullAction_ThrowsArgumentNullException()
     {
@@ -57,6 +76,10 @@ public class AsyncDebouncerTests
         Should.Throw<ArgumentNullException>(() => debouncer.DebounceAsync(action));
     }
 
+    /// <summary>
+    /// 验证防抖提交拒绝空异步回调。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_NullAsyncAction_ThrowsArgumentNullException()
     {
@@ -66,6 +89,10 @@ public class AsyncDebouncerTests
         Should.Throw<ArgumentNullException>(() => debouncer.DebounceAsync(action));
     }
 
+    /// <summary>
+    /// 验证连续提交取消前序任务且仅执行最后回调。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_RepeatedSubmissions_OnlyExecutesLastCallback()
     {
@@ -83,6 +110,10 @@ public class AsyncDebouncerTests
         executed.ShouldBe(new[] { "C" });
     }
 
+    /// <summary>
+    /// 验证新提交重新等待完整防抖延迟。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_NewSubmission_RecalculatesFullDelay()
     {
@@ -103,6 +134,10 @@ public class AsyncDebouncerTests
         finalSubmissionStopwatch.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(250));
     }
 
+    /// <summary>
+    /// 验证执行前外部取消使提交取消且不运行回调。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_ExternalCancellationBeforeExecution_CancelsSubmission()
     {
@@ -122,6 +157,10 @@ public class AsyncDebouncerTests
         invoked.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证主动取消终止待处理提交且不执行回调。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task CancelAsync_PendingSubmission_CancelsAndWaitsForCleanup()
     {
@@ -136,6 +175,10 @@ public class AsyncDebouncerTests
         await debouncer.CancelAsync();
     }
 
+    /// <summary>
+    /// 验证回调异常传递给提交任务且不影响后续提交。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_CallbackException_PropagatesAndDoesNotBreakFutureSubmissions()
     {
@@ -151,6 +194,10 @@ public class AsyncDebouncerTests
         invoked.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证运行期间的新提交与当前回调串行执行。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_SubmissionDuringRunningCallback_DoesNotRunCallbacksConcurrently()
     {
@@ -187,6 +234,10 @@ public class AsyncDebouncerTests
         maximumRunningCallbacks.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证连续提交后仅最后一次提交执行回调。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DebounceAsync_ConcurrentSubmissionsThenFinalSubmission_ExecutesOnlyFinalCallback()
     {
@@ -205,6 +256,10 @@ public class AsyncDebouncerTests
         finalExecutions.ShouldBe(1);
     }
 
+    /// <summary>
+    /// 验证释放防抖器取消待处理任务并拒绝新提交。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DisposeAsync_PendingSubmission_CancelsAndPreventsFutureSubmissions()
     {
@@ -219,6 +274,10 @@ public class AsyncDebouncerTests
         await debouncer.DisposeAsync();
     }
 
+    /// <summary>
+    /// 验证防抖器释放等待正在执行的回调完成。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task DisposeAsync_RunningCallback_WaitsForCallbackCompletion()
     {

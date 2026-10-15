@@ -7,7 +7,7 @@ using Xunit;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：StringCollectionExtensions 字符串集合扩展方法（JoinToString 系列）
+/// 字符串及泛型集合的连接、过滤和格式化测试。
 /// </summary>
 [Trait("TextUT", "StringCollectionExtensions")]
 public class StringCollectionExtensionsTest
@@ -15,7 +15,7 @@ public class StringCollectionExtensionsTest
     #region JoinToString — null 防护
 
     /// <summary>
-    /// 测试目的：对 null 集合调用 JoinToString 应返回空字符串而非抛出异常
+    /// 验证对 null 集合调用 JoinToString 应返回空字符串而非抛出异常
     /// </summary>
     [Fact]
     public void JoinToString_NullList_ReturnsEmpty()
@@ -31,7 +31,7 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：对 null 泛型集合调用 JoinToString&lt;T&gt; 应返回空字符串
+    /// 验证对 null 泛型集合调用 JoinToString&lt;T&gt; 应返回空字符串
     /// </summary>
     [Fact]
     public void JoinToStringGeneric_NullList_ReturnsEmpty()
@@ -51,7 +51,7 @@ public class StringCollectionExtensionsTest
     #region JoinToString — 基础字符串集合
 
     /// <summary>
-    /// 测试目的：JoinToString() 默认以逗号分隔连接字符串集合
+    /// 验证JoinToString() 默认以逗号分隔连接字符串集合
     /// </summary>
     [Fact]
     public void JoinToString_DefaultDelimiter_JoinsWithComma()
@@ -64,7 +64,7 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinToString 对空集合应返回空字符串
+    /// 验证JoinToString 对空集合应返回空字符串
     /// </summary>
     [Fact]
     public void JoinToString_EmptyList_ReturnsEmpty()
@@ -77,7 +77,7 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinToString 对单元素集合应返回该元素本身
+    /// 验证JoinToString 对单元素集合应返回该元素本身
     /// </summary>
     [Fact]
     public void JoinToString_SingleElement_ReturnsSingleElement()
@@ -90,8 +90,10 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinToString(delimiter) 应使用指定分隔符连接
+    /// 验证指定分隔符连接字符串元素。
     /// </summary>
+    /// <param name="delimiter">连接分隔符。</param>
+    /// <param name="expected">预期连接文本。</param>
     [Theory]
     [InlineData(";", "a;b;c")]
     [InlineData("-", "a-b-c")]
@@ -111,7 +113,7 @@ public class StringCollectionExtensionsTest
     #region JoinToString — 泛型集合
 
     /// <summary>
-    /// 测试目的：JoinToString&lt;T&gt;() 对整数集合应转为字符串并以逗号分隔
+    /// 验证JoinToString&lt;T&gt;() 对整数集合应转为字符串并以逗号分隔
     /// </summary>
     [Fact]
     public void JoinToStringGeneric_IntList_JoinsWithComma()
@@ -124,8 +126,10 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinToString&lt;T&gt;(delimiter) 对整数集合应使用指定分隔符
+    /// 验证指定分隔符连接整数元素。
     /// </summary>
+    /// <param name="delimiter">连接分隔符。</param>
+    /// <param name="expected">预期连接文本。</param>
     [Theory]
     [InlineData("|", "1|2|3")]
     [InlineData(" -> ", "1 -> 2 -> 3")]
@@ -143,7 +147,7 @@ public class StringCollectionExtensionsTest
     #region JoinToString — 带条件过滤
 
     /// <summary>
-    /// 测试目的：JoinToString(predicate) 应仅连接满足条件的字符串
+    /// 验证JoinToString(predicate) 应仅连接满足条件的字符串
     /// </summary>
     [Fact]
     public void JoinToString_WithPredicate_FiltersItems()
@@ -159,7 +163,7 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinToString(predicate) 当所有元素都被过滤时应返回空字符串
+    /// 验证JoinToString(predicate) 当所有元素都被过滤时应返回空字符串
     /// </summary>
     [Fact]
     public void JoinToString_WithPredicateAllFiltered_ReturnsEmpty()
@@ -172,7 +176,7 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinToString(indexPredicate) 应按索引条件过滤（仅保留偶数索引）
+    /// 验证JoinToString(indexPredicate) 应按索引条件过滤（仅保留偶数索引）
     /// </summary>
     [Fact]
     public void JoinToString_WithIndexPredicate_FiltersCorrectly()
@@ -188,7 +192,7 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinToString(delimiter, predicate) 应同时使用自定义分隔符和过滤条件
+    /// 验证JoinToString(delimiter, predicate) 应同时使用自定义分隔符和过滤条件
     /// </summary>
     [Fact]
     public void JoinToString_WithDelimiterAndPredicate_FiltersAndJoins()
@@ -208,7 +212,7 @@ public class StringCollectionExtensionsTest
     #region JoinToString — 带转换函数
 
     /// <summary>
-    /// 测试目的：JoinToString&lt;T&gt;(delimiter, to) 应使用自定义转换函数格式化元素
+    /// 验证JoinToString&lt;T&gt;(delimiter, to) 应使用自定义转换函数格式化元素
     /// </summary>
     [Fact]
     public void JoinToStringGeneric_WithToFunc_AppliesTransformation()
@@ -228,7 +232,7 @@ public class StringCollectionExtensionsTest
     #region JoinOnePerLine
 
     /// <summary>
-    /// 测试目的：JoinOnePerLine 应将每个元素单独占一行，并以换行符结尾
+    /// 验证逐行连接结果包含各元素且以换行符结束。
     /// </summary>
     [Fact]
     public void JoinOnePerLine_WithNumbers_EachOnSeparateLine()
@@ -248,7 +252,7 @@ public class StringCollectionExtensionsTest
     #region JoinToStringFormat
 
     /// <summary>
-    /// 测试目的：JoinToStringFormat() 对实现 IFormattable 的集合应返回非空字符串
+    /// 验证JoinToStringFormat() 对实现 IFormattable 的集合应返回非空字符串
     /// </summary>
     [Fact]
     public void JoinToStringFormat_WithDoubles_ReturnsNonEmpty()
@@ -261,7 +265,7 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinToStringFormat(delimiter) 应使用指定分隔符连接格式化后的元素
+    /// 验证JoinToStringFormat(delimiter) 应使用指定分隔符连接格式化后的元素
     /// </summary>
     [Fact]
     public void JoinToStringFormat_WithDelimiter_ContainsDelimiter()
@@ -274,7 +278,7 @@ public class StringCollectionExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：JoinToStringFormat 对整数集合应返回正确的逗号分隔字符串
+    /// 验证JoinToStringFormat 对整数集合应返回正确的逗号分隔字符串
     /// </summary>
     [Fact]
     public void JoinToStringFormat_IntList_DefaultDelimiter()

@@ -1,13 +1,13 @@
 namespace Bing.Reflection;
 /// <summary>
-/// 测试类：覆盖 `TypeVisitDynamicInstance` 相关行为。
+/// 验证动态类型的属性模式、缓存及实例创建边界。
 /// </summary>
 [Trait("Bing.Reflection", "TypeVisit.DynamicInstance")]
 public class TypeVisitDynamicInstanceTest
 {
 #if NET6_0_OR_GREATER
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `WithPropertyDictionary` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 验证非空属性值字典的实例创建当前抛出空引用异常。
     /// </summary>
     [Fact]
     public void CreateInstance_WithPropertyDictionary_CurrentlyThrowsNullReferenceException()
@@ -20,7 +20,7 @@ public class TypeVisitDynamicInstanceTest
         Should.Throw<NullReferenceException>(() => TypeVisit.CreateInstance(values));
     }
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `WithPropertyDictionary` 场景下，结果为 `ReturnsTypeContainingProperties`。
+    /// 验证动态类型包含指定名称及类型的属性。
     /// </summary>
     [Fact]
     public void CreateDynamicType_WithPropertyDictionary_ReturnsTypeContainingProperties()
@@ -36,7 +36,7 @@ public class TypeVisitDynamicInstanceTest
         type.GetProperty("Enabled")!.PropertyType.ShouldBe(typeof(bool));
     }
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `WithSameSignatureAndOrder` 场景下，结果为 `ReturnsCachedType`。
+    /// 验证相同属性签名及顺序复用动态类型。
     /// </summary>
     [Fact]
     public void CreateDynamicType_WithSameSignatureAndOrder_ReturnsCachedType()
@@ -56,7 +56,7 @@ public class TypeVisitDynamicInstanceTest
         type1.ShouldBeSameAs(type2);
     }
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `WithSamePropertiesDifferentOrder` 场景下，结果为 `CurrentlyReturnsDifferentTypes`。
+    /// 验证相同属性以不同顺序声明时当前生成不同类型。
     /// </summary>
     [Fact]
     public void CreateDynamicType_WithSamePropertiesDifferentOrder_CurrentlyReturnsDifferentTypes()
@@ -76,7 +76,7 @@ public class TypeVisitDynamicInstanceTest
         type1.ShouldNotBeSameAs(type2);
     }
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `WithEmptyProperties` 场景下，结果为 `ReturnsTypeDerivedFromDynamicBase`。
+    /// 验证空属性模式生成不含自有属性的动态基类派生类型。
     /// </summary>
     [Fact]
     public void CreateDynamicType_WithEmptyProperties_ReturnsTypeDerivedFromDynamicBase()
@@ -87,7 +87,7 @@ public class TypeVisitDynamicInstanceTest
         type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly).Length.ShouldBe(0);
     }
     /// <summary>
-    /// 测试用例：验证 `CreateDynamicType` 在 `WithNullProperties` 场景下，结果为 `CurrentlyThrowsArgumentNullException`。
+    /// 验证空属性模式当前触发参数空异常。
     /// </summary>
     [Fact]
     public void CreateDynamicType_WithNullProperties_CurrentlyThrowsArgumentNullException()
@@ -96,7 +96,7 @@ public class TypeVisitDynamicInstanceTest
         ex.ParamName.ShouldBe("source");
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `WithNullDictionary` 场景下，结果为 `CurrentlyThrowsArgumentNullException`。
+    /// 验证空属性值字典当前触发参数空异常。
     /// </summary>
     [Fact]
     public void CreateInstance_WithNullDictionary_CurrentlyThrowsArgumentNullException()
@@ -105,7 +105,7 @@ public class TypeVisitDynamicInstanceTest
         ex.ParamName.ShouldBe("source");
     }
     /// <summary>
-    /// 测试用例：验证 `CreateInstance` 在 `WithNullPropertyValue` 场景下，结果为 `CurrentlyThrowsNullReferenceException`。
+    /// 验证包含空属性值的动态实例创建当前抛出空引用异常。
     /// </summary>
     [Fact]
     public void CreateInstance_WithNullPropertyValue_CurrentlyThrowsNullReferenceException()

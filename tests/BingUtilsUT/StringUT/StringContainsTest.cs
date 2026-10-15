@@ -1,10 +1,16 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符串、字符及字符数组的包含判断和忽略大小写行为。
+/// </summary>
 [Trait("StringUT", "Strings.Contains")]
 public class StringContainsTest
 {
     #region Contains
+    /// <summary>
+    /// 验证字符串包含判断的多值、大小写和空值边界行为。
+    /// </summary>
     [Fact]
     public void Test_Contains_String()
     {
@@ -21,6 +27,9 @@ public class StringContainsTest
         Assert.True(Strings.Contains("Hello", ""));
         Assert.Throws<ArgumentNullException>(() => Strings.Contains("Hello", null));
     }
+    /// <summary>
+    /// 验证单个字符的包含判断及空值边界行为。
+    /// </summary>
     [Fact]
     public void Test_Contains_Char()
     {
@@ -32,6 +41,9 @@ public class StringContainsTest
         Assert.False(Strings.Contains(null, 'H'));
         Assert.False(Strings.Contains("", 'H'));
     }
+    /// <summary>
+    /// 验证多个候选字符的包含判断及空值边界行为。
+    /// </summary>
     [Fact]
     public void Test_Contains_Chars()
     {
@@ -45,6 +57,9 @@ public class StringContainsTest
         Assert.True(Strings.Contains("Hello", 'H', null));
         Assert.True(Strings.Contains("Hello", 'H', new char[0]));
     }
+    /// <summary>
+    /// 验证忽略大小写的字符串包含判断及空值边界行为。
+    /// </summary>
     [Fact]
     public void Test_ContainsIgnoreCase_String()
     {
@@ -60,6 +75,9 @@ public class StringContainsTest
         Assert.True(Strings.ContainsIgnoreCase("Hello", ""));
         Assert.Throws<ArgumentNullException>(() => Strings.ContainsIgnoreCase("Hello", null));
     }
+    /// <summary>
+    /// 验证忽略大小写的单个字符包含判断。
+    /// </summary>
     [Fact]
     public void Test_ContainsIgnoreCase_Char()
     {
@@ -71,6 +89,9 @@ public class StringContainsTest
         Assert.False(Strings.ContainsIgnoreCase(null, 'H'));
         Assert.False(Strings.ContainsIgnoreCase("", 'H'));
     }
+    /// <summary>
+    /// 验证忽略大小写的多个候选字符包含判断。
+    /// </summary>
     [Fact]
     public void Test_ContainsIgnoreCase_Chars()
     {
@@ -82,6 +103,9 @@ public class StringContainsTest
         Assert.False(Strings.ContainsIgnoreCase(null, 'H', 'e'));
         Assert.False(Strings.ContainsIgnoreCase("", 'H', 'e'));
     }
+    /// <summary>
+    /// 验证字符串数组候选项遵循指定的大小写匹配方式。
+    /// </summary>
     [Fact]
     public void Test_Contains_StringArray_IgnoreCase()
     {
@@ -98,6 +122,9 @@ public class StringContainsTest
         Assert.False(Strings.Contains("Hello", (string[])null, IgnoreCase.True));
         Assert.False(Strings.Contains("Hello", new string[0], IgnoreCase.True));
     }
+    /// <summary>
+    /// 验证单个字符候选项遵循指定的大小写匹配方式。
+    /// </summary>
     [Fact]
     public void Test_Contains_Char_IgnoreCase()
     {
@@ -113,6 +140,9 @@ public class StringContainsTest
         Assert.False(Strings.Contains(null, 'H', IgnoreCase.True));
         Assert.False(Strings.Contains("", 'H', IgnoreCase.True));
     }
+    /// <summary>
+    /// 验证字符数组候选项遵循指定的大小写匹配方式。
+    /// </summary>
     [Fact]
     public void Test_Contains_CharArray_IgnoreCase()
     {
@@ -130,6 +160,9 @@ public class StringContainsTest
         Assert.False(Strings.Contains("Hello", (char[])null, IgnoreCase.True));
         Assert.False(Strings.Contains("Hello", new char[0], IgnoreCase.True));
     }
+    /// <summary>
+    /// 验证较长字符串中的子串和字符包含判断结果。
+    /// </summary>
     [Fact]
     public void Test_Performance()
     {
@@ -145,7 +178,7 @@ public class StringContainsTest
     #endregion
     #region MatchEmoji
     /// <summary>
-    /// 测试 - 匹配字符串中是否包含 Emoji 表情 - 包含 Emoji 表情
+    /// 验证包含 Emoji 的字符串会被识别为匹配。
     /// </summary>
     [Fact]
     public void Test_MatchEmoji_WithEmoji()
@@ -159,7 +192,7 @@ public class StringContainsTest
         Assert.False(Strings.MatchEmoji("     "));
     }
     /// <summary>
-    /// 测试 - 匹配字符串中是否包含 Emoji 表情 - 排除 Emoji 表情
+    /// 验证不含 Emoji 的普通文本不会匹配。
     /// </summary>
     [Fact]
     public void Test_MatchEmoji_WithoutEmoji()
@@ -169,7 +202,7 @@ public class StringContainsTest
         Assert.False(result);
     }
     /// <summary>
-    /// 测试 - 匹配字符串中是否包含 Emoji 表情 - 空字符串
+    /// 验证空字符串不会被识别为包含 Emoji。
     /// </summary>
     [Fact]
     public void Test_MatchEmoji_EmptyString()
@@ -179,7 +212,7 @@ public class StringContainsTest
         Assert.False(result);
     }
     /// <summary>
-    /// 测试 - 匹配字符串中是否包含 Emoji 表情 - 全空格
+    /// 验证仅含空格的字符串不会被识别为包含 Emoji。
     /// </summary>
     [Fact]
     public void Test_MatchEmoji_StringWithSpaces()
@@ -189,7 +222,7 @@ public class StringContainsTest
         Assert.False(result);
     }
     /// <summary>
-    /// 测试 - 匹配字符串中是否包含 Emoji 表情 - 包含多个 Emoji 表情
+    /// 验证包含多个 Emoji 的字符串会被识别为匹配。
     /// </summary>
     [Fact]
     public void Test_MatchEmoji_MultipleEmojis()

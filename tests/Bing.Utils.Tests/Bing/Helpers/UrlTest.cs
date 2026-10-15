@@ -6,8 +6,9 @@ namespace Bing.Helpers;
 public class UrlTest : TestBase
 {
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="UrlTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">xUnit 测试输出助手。</param>
     public UrlTest(ITestOutputHelper output) : base(output)
     {
         System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);

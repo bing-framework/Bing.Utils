@@ -4,6 +4,10 @@ namespace Bing.IO;
 /// </summary>
 public class FileHelperWriteAsyncTest
 {
+    /// <summary>
+    /// 验证覆盖写入替换已有文件内容。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task WriteAsync_OverwriteExistingFile_ShouldReplaceContent()
     {
@@ -21,6 +25,10 @@ public class FileHelperWriteAsyncTest
                 File.Delete(path);
         }
     }
+    /// <summary>
+    /// 验证追加写入将字节添加到已有文件末尾。
+    /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task WriteAsync_AppendMode_ShouldAppendBytes()
     {

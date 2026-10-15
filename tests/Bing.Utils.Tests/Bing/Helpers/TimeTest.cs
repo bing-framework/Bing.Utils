@@ -7,40 +7,41 @@ public class TimeTest : TestBase, IDisposable
 {
     #region 测试初始化
     /// <summary>
-    /// 日期格式
+    /// 时间格式化使用的日期时间格式字符串。
     /// </summary>
     private static readonly string _dateFormat = "yyyy-MM-dd HH:mm:ss";
     /// <summary>
-    /// 日期时间字符串,"2012-12-12 12:12:12"
+    /// 测试用的本地时间文本。
     /// </summary>
     private static readonly string _testDateString = "2012-12-12 12:12:12";
     /// <summary>
-    /// 日期时间,2012-12-12 12:12:12
+    /// 由测试时间文本解析得到的日期时间。
     /// </summary>
     private static readonly DateTime _testDate = DateTime.Parse(_testDateString);
     /// <summary>
-    /// 本地日期时间,2012-12-12 12:12:12
+    /// 本地时区中的基准日期时间。
     /// </summary>
     private static readonly DateTime _localDate = new(2012, 12, 12, 12, 12, 12, DateTimeKind.Local);
     /// <summary>
-    /// 本地日期时间,2012-12-12 20:12:12
+    /// 本地时区中的第二个基准日期时间。
     /// </summary>
     private static readonly DateTime _localDate2 = new(2012, 12, 12, 20, 12, 12, DateTimeKind.Local);
     /// <summary>
-    /// utc日期时间,2012-12-12 4:12:12
+    /// UTC 时区中的基准日期时间。
     /// </summary>
     private static readonly DateTime _utcDate = new(2012, 12, 12, 4, 12, 12, DateTimeKind.Utc);
     /// <summary>
-    /// utc日期时间,2012-12-12 12:12:12
+    /// UTC 时区中的第二个基准日期时间。
     /// </summary>
     private static readonly DateTime _utcDate2 = new(2012, 12, 12, 12, 12, 12, DateTimeKind.Utc);
     /// <summary>
-    /// 未指定日期时间,2012-12-12 12:12:12
+    /// Kind 为 Unspecified 的基准日期时间。
     /// </summary>
     private static readonly DateTime _unspecifiedDate = new(2012, 12, 12, 12, 12, 12, DateTimeKind.Unspecified);
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="TimeTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">xUnit 测试输出助手。</param>
     public TimeTest(ITestOutputHelper output) : base(output)
     {
     }

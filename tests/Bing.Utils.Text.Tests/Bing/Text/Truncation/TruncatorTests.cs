@@ -4,8 +4,7 @@ using Shouldly;
 namespace Bing.Text;
 
 /// <summary>
-/// 测试类：StringTruncators 的各截断策略（ByLength / ByNumberOfCharacters / ByNumberOfWords / ByNumberOfLines）
-/// 及 StringTruncateExtensions 扩展方法
+/// 文本按长度、字符、单词和行数截断的策略及扩展测试。
 /// </summary>
 [Trait("TextUT", "Truncator")]
 public class TruncatorTests
@@ -13,8 +12,11 @@ public class TruncatorTests
     #region ByLength (FixedLengthTruncator)
 
     /// <summary>
-    /// 测试目的：ByLength 对超长字符串截断后应以截断字符串结尾且总长度等于 maxLength
+    /// 验证长度截断保留上限内文本并为超长文本追加省略号。
     /// </summary>
+    /// <param name="text">待截断文本。</param>
+    /// <param name="maxLength">结果最大长度。</param>
+    /// <param name="expected">预期截断文本。</param>
     [Theory]
     [InlineData("hello world", 8, "hello...")]
     [InlineData("abcdefgh", 5, "ab...")]
@@ -29,8 +31,9 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：ByLength maxLength 为负数时应返回空字符串（非直觉行为，文档规范）
+    /// 验证负长度上限返回空文本。
     /// </summary>
+    /// <param name="maxLength">负长度上限。</param>
     [Theory]
     [InlineData(-1)]
     [InlineData(-100)]
@@ -44,7 +47,7 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：ByLength maxLength 为 0 时应原样返回文本
+    /// 验证ByLength maxLength 为 0 时应原样返回文本
     /// </summary>
     [Fact]
     public void ByLength_WithZeroMaxLength_ReturnsOriginalText()
@@ -57,7 +60,7 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：ByLength 从左侧截断（TruncateFrom.Left）时，结果应以截断符开头
+    /// 验证ByLength 从左侧截断（TruncateFrom.Left）时，结果应以截断符开头
     /// </summary>
     [Fact]
     public void ByLength_TruncateFromLeft_StartsWithEllipsis()
@@ -72,8 +75,9 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：文本为 null 或空时应返回空字符串
+    /// 验证空引用和空文本的长度截断结果为空。
     /// </summary>
+    /// <param name="text">空引用或空文本。</param>
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -87,7 +91,7 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：扩展方法 Truncate() 默认使用 ByLength 截断器
+    /// 验证扩展方法 Truncate() 默认使用 ByLength 截断器
     /// </summary>
     [Fact]
     public void StringExtension_Truncate_UsesLengthTruncatorByDefault()
@@ -105,9 +109,12 @@ public class TruncatorTests
     #region ByNumberOfWords (FixedNumberOfWordsTruncator)
 
     /// <summary>
-    /// 测试目的：ByNumberOfWords 按单词数截断，超出词数时以截断符结尾
-    /// 注：当 shortTruncationString.Length &lt; maxLength &amp;&amp; truncationString.Length &gt; maxLength 时，实现选用 shortTruncationString
+    /// 验证按单词边界截断及未超出上限的原文保留。
     /// </summary>
+    /// <param name="text">待截断文本。</param>
+    /// <param name="maxWords">最大单词数。</param>
+    /// <param name="expected">预期截断文本。</param>
+    /// <remarks>截断符使用当前实现基于长度选择完整或简短形式的规则。</remarks>
     [Theory]
     [InlineData("one two three four", 2, "one two.")]  // maxWords=2: short="."(1) < 2 && full="..."(3) > 2 → 用 "."
     [InlineData("hello world", 1, "hello...")]        // maxWords=1: short="."(1) == 1 → 不满足 < 1, 用 "..."
@@ -122,7 +129,7 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：ByNumberOfWords maxLength 为负数时应返回空字符串
+    /// 验证ByNumberOfWords maxLength 为负数时应返回空字符串
     /// </summary>
     [Fact]
     public void ByNumberOfWords_WithNegativeMaxLength_ReturnsEmptyString()
@@ -135,7 +142,7 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：ByNumberOfWords maxLength 为 0 时原样返回文本
+    /// 验证ByNumberOfWords maxLength 为 0 时原样返回文本
     /// </summary>
     [Fact]
     public void ByNumberOfWords_WithZeroMaxLength_ReturnsOriginalText()
@@ -148,8 +155,7 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：ByNumberOfWords 从左侧截断，结果应以截断符开头
-    /// 注：maxLength=3 时 truncationString.Length(3) == maxLength，不满足 "short < max && full > max" 条件，故用完整 "..."
+    /// 验证从左侧按单词截断时以省略号开头并保留末词。
     /// </summary>
     [Fact]
     public void ByNumberOfWords_TruncateFromLeft_StartsWithTruncationString()
@@ -168,7 +174,7 @@ public class TruncatorTests
     #region ByNumberOfLines (FixedNumberOfLinesTruncator)
 
     /// <summary>
-    /// 测试目的： ByNumberOfLines 按行数截断，实现在 counter==maxLength 时替换为截断符，保留前 maxLength-1 行
+    /// 验证行数上限为三时保留前两行并移除第三行。
     /// </summary>
     [Fact]
     public void ByNumberOfLines_TruncatesAtLineBoundary()
@@ -186,7 +192,7 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：ByNumberOfLines 文本行数未超过 maxLength 时原样返回
+    /// 验证ByNumberOfLines 文本行数未超过 maxLength 时原样返回
     /// </summary>
     [Fact]
     public void ByNumberOfLines_WithTextUnderLimit_ReturnsOriginal()
@@ -206,8 +212,11 @@ public class TruncatorTests
     #region ByNumberOfCharacters (FixedNumberOfCharactersTruncator)
 
     /// <summary>
-    /// 测试目的：ByNumberOfCharacters 按字符数（Unicode 字符）截断
+    /// 验证字符数截断及未超出上限的原文保留。
     /// </summary>
+    /// <param name="text">待截断文本。</param>
+    /// <param name="maxChars">最大字符数。</param>
+    /// <param name="expected">预期截断文本。</param>
     [Theory]
     [InlineData("hello world", 5, "he...")]
     [InlineData("abc", 10, "abc")]  // 不超长，原样返回
@@ -225,7 +234,7 @@ public class TruncatorTests
     #region 扩展方法 Truncate 重载
 
     /// <summary>
-    /// 测试目的：带自定义截断器的扩展方法 Truncate 应使用指定截断器
+    /// 验证带自定义截断器的扩展方法 Truncate 应使用指定截断器
     /// </summary>
     [Fact]
     public void StringExtension_Truncate_WithCustomTruncator_UsesProvidedTruncator()
@@ -240,7 +249,7 @@ public class TruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：完整参数的扩展方法 Truncate 应正确传递所有参数
+    /// 验证完整参数的扩展方法 Truncate 应正确传递所有参数
     /// </summary>
     [Fact]
     public void StringExtension_Truncate_WithFullParams_PassesAllParameters()

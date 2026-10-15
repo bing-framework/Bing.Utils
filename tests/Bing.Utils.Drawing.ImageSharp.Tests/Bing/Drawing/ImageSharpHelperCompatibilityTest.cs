@@ -6,13 +6,16 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖 Phase 1 兼容层 API。
+/// 验证图像兼容接口的缩放、像素效果及颜色矩阵行为。
 /// </summary>
 [Trait("Drawing", "ImageSharp.Compatibility")]
 public class ImageSharpHelperCompatibilityTest
 {
     #region ToStream
 
+    /// <summary>
+    /// 验证编码流包含图像数据且初始位置为零。
+    /// </summary>
     [Fact]
     public void ToStream_ReturnsReadableStreamAtPositionZero()
     {
@@ -22,12 +25,18 @@ public class ImageSharpHelperCompatibilityTest
         stream.Length.ShouldBeGreaterThan(0);
     }
 
+    /// <summary>
+    /// 验证图像流编码拒绝空图像。
+    /// </summary>
     [Fact]
     public void ToStream_NullImage_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ImageSharpHelper.ToStream(null!));
     }
 
+    /// <summary>
+    /// 验证图像经流编码及解码后保持尺寸。
+    /// </summary>
     [Fact]
     public void ToStream_CanRoundTripWithFromStream()
     {
@@ -43,6 +52,9 @@ public class ImageSharpHelperCompatibilityTest
 
     #region MakeThumbnail
 
+    /// <summary>
+    /// 验证固定宽高缩略图使用指定尺寸。
+    /// </summary>
     [Fact]
     public void MakeThumbnail_FixedBoth_ExactDimensions()
     {
@@ -52,6 +64,9 @@ public class ImageSharpHelperCompatibilityTest
         result.Height.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证固定宽度缩略图按原始比例计算高度。
+    /// </summary>
     [Fact]
     public void MakeThumbnail_FixedW_HeightAuto()
     {
@@ -61,6 +76,9 @@ public class ImageSharpHelperCompatibilityTest
         result.Height.ShouldBe(2);
     }
 
+    /// <summary>
+    /// 验证固定高度缩略图按原始比例计算宽度。
+    /// </summary>
     [Fact]
     public void MakeThumbnail_FixedH_WidthAuto()
     {
@@ -70,6 +88,9 @@ public class ImageSharpHelperCompatibilityTest
         result.Height.ShouldBe(2);
     }
 
+    /// <summary>
+    /// 验证裁剪缩略图输出指定宽高。
+    /// </summary>
     [Fact]
     public void MakeThumbnail_Cut_CropsToAspectRatio()
     {
@@ -79,6 +100,9 @@ public class ImageSharpHelperCompatibilityTest
         result.Height.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证缩略图生成拒绝空源图像。
+    /// </summary>
     [Fact]
     public void MakeThumbnail_NullSource_ThrowsArgumentNullException()
     {
@@ -89,6 +113,9 @@ public class ImageSharpHelperCompatibilityTest
 
     #region ScaleImage
 
+    /// <summary>
+    /// 验证横向源图像缩放后使用指定画布尺寸。
+    /// </summary>
     [Fact]
     public void ScaleImage_FitWidth_ProducesExactCanvas()
     {
@@ -98,6 +125,9 @@ public class ImageSharpHelperCompatibilityTest
         result.Height.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证纵向源图像缩放后使用指定画布尺寸。
+    /// </summary>
     [Fact]
     public void ScaleImage_FitHeight_ProducesExactCanvas()
     {
@@ -107,6 +137,9 @@ public class ImageSharpHelperCompatibilityTest
         result.Height.ShouldBe(4);
     }
 
+    /// <summary>
+    /// 验证画布缩放拒绝空图像。
+    /// </summary>
     [Fact]
     public void ScaleImage_NullImage_ThrowsArgumentNullException()
     {
@@ -117,6 +150,9 @@ public class ImageSharpHelperCompatibilityTest
 
     #region Gray
 
+    /// <summary>
+    /// 验证灰度转换保持源图像尺寸。
+    /// </summary>
     [Fact]
     public void Gray_ReturnsSameSizeWithGrayPixels()
     {
@@ -126,12 +162,18 @@ public class ImageSharpHelperCompatibilityTest
         result.Height.ShouldBe(source.Height);
     }
 
+    /// <summary>
+    /// 验证灰度转换拒绝空图像。
+    /// </summary>
     [Fact]
     public void Gray_NullImage_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ImageSharpHelper.Gray(null!));
     }
 
+    /// <summary>
+    /// 验证灰度转换保留纯白像素的三个颜色通道。
+    /// </summary>
     [Fact]
     public void Gray_WhitePixel_PreservesWhite()
     {
@@ -147,6 +189,9 @@ public class ImageSharpHelperCompatibilityTest
 
     #region ToBlackWhiteImage
 
+    /// <summary>
+    /// 验证黑白图像转换保持源图像尺寸。
+    /// </summary>
     [Fact]
     public void ToBlackWhiteImage_ReturnsSameSize()
     {
@@ -156,6 +201,9 @@ public class ImageSharpHelperCompatibilityTest
         result.Height.ShouldBe(source.Height);
     }
 
+    /// <summary>
+    /// 验证黑白图像转换拒绝空图像。
+    /// </summary>
     [Fact]
     public void ToBlackWhiteImage_NullImage_ThrowsArgumentNullException()
     {
@@ -166,6 +214,9 @@ public class ImageSharpHelperCompatibilityTest
 
     #region FilterColor
 
+    /// <summary>
+    /// 验证颜色过滤清除红色通道且保留绿色与蓝色通道。
+    /// </summary>
     [Fact]
     public void FilterColor_RemovesRedChannel()
     {
@@ -177,6 +228,9 @@ public class ImageSharpHelperCompatibilityTest
         pixel.B.ShouldBe((byte)50);
     }
 
+    /// <summary>
+    /// 验证颜色过滤拒绝空图像。
+    /// </summary>
     [Fact]
     public void FilterColor_NullImage_ThrowsArgumentNullException()
     {
@@ -187,6 +241,9 @@ public class ImageSharpHelperCompatibilityTest
 
     #region Plate
 
+    /// <summary>
+    /// 验证反色效果分别反转三个颜色通道。
+    /// </summary>
     [Fact]
     public void Plate_InvertsRgbChannels()
     {
@@ -198,6 +255,9 @@ public class ImageSharpHelperCompatibilityTest
         pixel.B.ShouldBe((byte)55);
     }
 
+    /// <summary>
+    /// 验证反色效果拒绝空图像。
+    /// </summary>
     [Fact]
     public void Plate_NullImage_ThrowsArgumentNullException()
     {
@@ -208,6 +268,9 @@ public class ImageSharpHelperCompatibilityTest
 
     #region PerPixelProcess
 
+    /// <summary>
+    /// 验证逐像素处理结果的采样点被替换为纯红色。
+    /// </summary>
     [Fact]
     public void PerPixelProcess_TransformsAllPixels()
     {
@@ -219,6 +282,9 @@ public class ImageSharpHelperCompatibilityTest
         pixel.B.ShouldBe((byte)0);
     }
 
+    /// <summary>
+    /// 验证逐像素处理不改变源图像的采样像素。
+    /// </summary>
     [Fact]
     public void PerPixelProcess_DoesNotMutateSource()
     {
@@ -228,6 +294,9 @@ public class ImageSharpHelperCompatibilityTest
         original.R.ShouldBe((byte)100);
     }
 
+    /// <summary>
+    /// 验证逐像素处理拒绝空图像。
+    /// </summary>
     [Fact]
     public void PerPixelProcess_NullImage_ThrowsArgumentNullException()
     {
@@ -238,18 +307,27 @@ public class ImageSharpHelperCompatibilityTest
 
     #region ColorExtensions
 
+    /// <summary>
+    /// 验证白色的归一化灰度为一。
+    /// </summary>
     [Fact]
     public void GetGrayScale_White_ReturnsOne()
     {
         ImageSharpHelper.GetGrayScale(Color.White).ShouldBe(1.0f, 0.01f);
     }
 
+    /// <summary>
+    /// 验证黑色的归一化灰度为零。
+    /// </summary>
     [Fact]
     public void GetGrayScale_Black_ReturnsZero()
     {
         ImageSharpHelper.GetGrayScale(Color.Black).ShouldBe(0.0f, 0.01f);
     }
 
+    /// <summary>
+    /// 验证相同颜色的色差为零。
+    /// </summary>
     [Fact]
     public void ColorDifference_SameColor_ReturnsZero()
     {
@@ -257,6 +335,9 @@ public class ImageSharpHelperCompatibilityTest
         ImageSharpHelper.ColorDifference(c, c).ShouldBe(0.0, 0.001);
     }
 
+    /// <summary>
+    /// 验证交换两个颜色不改变色差结果。
+    /// </summary>
     [Fact]
     public void ColorDifference_IsSymmetric()
     {
@@ -265,6 +346,9 @@ public class ImageSharpHelperCompatibilityTest
         ImageSharpHelper.ColorDifference(a, b).ShouldBe(ImageSharpHelper.ColorDifference(b, a), 0.001);
     }
 
+    /// <summary>
+    /// 验证相同颜色被识别为相似。
+    /// </summary>
     [Fact]
     public void IsSimilarColors_SameColor_ReturnsTrue()
     {
@@ -272,6 +356,9 @@ public class ImageSharpHelperCompatibilityTest
         ImageSharpHelper.IsSimilarColors(c, c).ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证红色通道差异较大的两个颜色不被识别为相似。
+    /// </summary>
     [Fact]
     public void IsSimilarColors_DifferentAlpha_ReturnsFalse()
     {
@@ -280,6 +367,9 @@ public class ImageSharpHelperCompatibilityTest
         ImageSharpHelper.IsSimilarColors(a, b).ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证混合比例为一时红色通道取前景值。
+    /// </summary>
     [Fact]
     public void Blend_Amount1_ReturnsOriginal()
     {
@@ -289,6 +379,9 @@ public class ImageSharpHelperCompatibilityTest
         result.ToPixel<Rgba32>().R.ShouldBe((byte)200);
     }
 
+    /// <summary>
+    /// 验证混合比例为零时红色通道取背景值。
+    /// </summary>
     [Fact]
     public void Blend_Amount0_ReturnsBackground()
     {
@@ -302,6 +395,9 @@ public class ImageSharpHelperCompatibilityTest
 
     #region ColorMatrices
 
+    /// <summary>
+    /// 验证单位亮度矩阵的颜色及透明度主对角元素为一。
+    /// </summary>
     [Fact]
     public void ColorMatrices_CreateBrightnessFilter_Amount1_DiagonalIs1()
     {
@@ -312,12 +408,18 @@ public class ImageSharpHelperCompatibilityTest
         matrix[3, 3].ShouldBe(1f, 0.001f);
     }
 
+    /// <summary>
+    /// 验证亮度矩阵生成拒绝负系数。
+    /// </summary>
     [Fact]
     public void ColorMatrices_CreateBrightnessFilter_NegativeAmount_Throws()
     {
         Should.Throw<ArgumentOutOfRangeException>(() => ColorMatrices.CreateBrightnessFilter(-0.1f));
     }
 
+    /// <summary>
+    /// 验证单位对比度矩阵保留红色通道系数且不增加偏移。
+    /// </summary>
     [Fact]
     public void ColorMatrices_CreateContrastFilter_Amount1_DiagonalIs1()
     {
@@ -326,6 +428,9 @@ public class ImageSharpHelperCompatibilityTest
         matrix[4, 0].ShouldBe(0f, 0.001f);
     }
 
+    /// <summary>
+    /// 验证零灰度比例矩阵保留红色及透明度通道系数。
+    /// </summary>
     [Fact]
     public void ColorMatrices_CreateGrayScaleFilter_Amount0_ReturnsIdentityLike()
     {
@@ -334,6 +439,9 @@ public class ImageSharpHelperCompatibilityTest
         matrix[3, 3].ShouldBe(1f, 0.001f);
     }
 
+    /// <summary>
+    /// 验证单位饱和度矩阵保留红色及透明度通道系数。
+    /// </summary>
     [Fact]
     public void ColorMatrices_CreateSaturationFilter_Amount1_ReturnsIdentityLike()
     {
@@ -342,6 +450,9 @@ public class ImageSharpHelperCompatibilityTest
         matrix[3, 3].ShouldBe(1f, 0.001f);
     }
 
+    /// <summary>
+    /// 验证灰度矩阵生成拒绝零至一范围外的比例。
+    /// </summary>
     [Fact]
     public void ColorMatrices_CreateGrayScaleFilter_OutOfRange_Throws()
     {
@@ -349,12 +460,18 @@ public class ImageSharpHelperCompatibilityTest
         Should.Throw<ArgumentOutOfRangeException>(() => ColorMatrices.CreateGrayScaleFilter(1.1f));
     }
 
+    /// <summary>
+    /// 验证对比度矩阵生成拒绝负系数。
+    /// </summary>
     [Fact]
     public void ColorMatrices_CreateContrastFilter_Negative_Throws()
     {
         Should.Throw<ArgumentOutOfRangeException>(() => ColorMatrices.CreateContrastFilter(-0.1f));
     }
 
+    /// <summary>
+    /// 验证饱和度矩阵生成拒绝负系数。
+    /// </summary>
     [Fact]
     public void ColorMatrices_CreateSaturationFilter_Negative_Throws()
     {
@@ -365,6 +482,13 @@ public class ImageSharpHelperCompatibilityTest
 
     #region Helper
 
+    /// <summary>
+    /// 创建指定尺寸及填充颜色的兼容接口测试图像。
+    /// </summary>
+    /// <param name="width">样例图像的宽度，单位为像素，默认为 4。</param>
+    /// <param name="height">样例图像的高度，单位为像素，默认为 4。</param>
+    /// <param name="fill">填充颜色；为 null 时使用红绿蓝通道均为 128 的灰色。</param>
+    /// <returns>指定尺寸的纯色图像，调用方负责释放。</returns>
     private static Image CreateSampleImage(int width = 4, int height = 4, Color? fill = null)
     {
         var image = new Image<Rgba32>(width, height);

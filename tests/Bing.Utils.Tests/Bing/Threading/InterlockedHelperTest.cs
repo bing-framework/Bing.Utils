@@ -5,7 +5,7 @@ namespace Bing.Threading;
 public class InterlockedHelperTest
 {
     /// <summary>
-    /// 测试 - 线程安全地读取整数值
+    /// 验证读取整数时返回原值。
     /// </summary>
     [Fact]
     public void Read_ShouldReturnCorrectIntValue()
@@ -18,7 +18,7 @@ public class InterlockedHelperTest
         Assert.Equal(42, result);
     }
     /// <summary>
-    /// 测试 - 线程安全地读取浮点数值
+    /// 验证读取单精度数时返回原值。
     /// </summary>
     [Fact]
     public void Read_ShouldReturnCorrectFloatValue()
@@ -31,7 +31,7 @@ public class InterlockedHelperTest
         Assert.Equal(42.42f, result);
     }
     /// <summary>
-    /// 测试 - 线程安全地读取双精度浮点数值
+    /// 验证读取双精度数时返回原值。
     /// </summary>
     [Fact]
     public void Read_ShouldReturnCorrectDoubleValue()
@@ -44,7 +44,7 @@ public class InterlockedHelperTest
         Assert.Equal(42.42, result);
     }
     /// <summary>
-    /// 测试 - 线程安全地读取引用类型的值
+    /// 验证读取引用类型时返回原值。
     /// </summary>
     [Fact]
     public void Read_ShouldReturnCorrectReferenceTypeValue()

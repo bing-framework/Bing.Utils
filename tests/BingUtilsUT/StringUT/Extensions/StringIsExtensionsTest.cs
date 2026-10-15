@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT.Extensions;
 
+/// <summary>
+/// 验证字符串扩展方法对格式、字符类别和空值的判断。
+/// </summary>
 [Trait("StringUT.Extensions", "String.Is")]
 public class StringIsExtensionsTest
 {

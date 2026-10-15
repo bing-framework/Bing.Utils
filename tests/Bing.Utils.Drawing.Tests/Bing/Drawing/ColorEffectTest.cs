@@ -10,6 +10,9 @@ namespace Bing.Drawing;
 [Trait("Drawing", "ColorEffect")]
 public class ColorEffectTest
 {
+    /// <summary>
+    /// 提供当前测试使用的颜色效果处理器。
+    /// </summary>
     private readonly ColorEffect _effect = new();
 
     #region ReplaceColor
@@ -183,8 +186,12 @@ public class ColorEffectTest
     #region Helper
 
     /// <summary>
-    /// 创建指定尺寸和颜色的测试用 Bitmap（Format32bppArgb）
+    /// 创建指定尺寸并填充统一颜色的 32 位 ARGB 位图。
     /// </summary>
+    /// <param name="width">位图宽度。</param>
+    /// <param name="height">位图高度。</param>
+    /// <param name="fill">用于填充位图的颜色。</param>
+    /// <returns>已填充指定颜色的位图。</returns>
     private static Bitmap CreateBitmap(int width, int height, Color fill)
     {
         var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);

@@ -2,6 +2,9 @@ using Bing.Extensions;
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符串工具的常用组合、格式化和边界行为。
+/// </summary>
 [Trait("StringUT", "Strings.Basic")]
 public class StringsTest
 {

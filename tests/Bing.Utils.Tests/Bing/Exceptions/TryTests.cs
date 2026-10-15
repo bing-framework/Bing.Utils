@@ -11,6 +11,9 @@ public class TryTests
     // Try.LiftValue / Try.LiftException
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证普通值提升为成功结果并保留原值。
+    /// </summary>
     [Fact]
     public void LiftValue_ReturnsSuccess()
     {
@@ -20,6 +23,9 @@ public class TryTests
         t.Value.ShouldBe(42);
     }
 
+    /// <summary>
+    /// 验证空引用值提升为成功结果。
+    /// </summary>
     [Fact]
     public void LiftValue_NullReferenceType_ReturnsSuccess()
     {
@@ -28,6 +34,9 @@ public class TryTests
         t.Value.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 验证异常提升为包含异常的失败结果。
+    /// </summary>
     [Fact]
     public void LiftException_ReturnsFailure()
     {
@@ -38,6 +47,9 @@ public class TryTests
         t.Exception.ShouldNotBeNull();
     }
 
+    /// <summary>
+    /// 验证异常提升时保留指定原因。
+    /// </summary>
     [Fact]
     public void LiftException_WithCause_ExceptionCauseIsSet()
     {
@@ -52,6 +64,9 @@ public class TryTests
     // Try.Create (Func<T>)
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证函数执行成功后返回计算值。
+    /// </summary>
     [Fact]
     public void Create_NoException_ReturnsSuccess()
     {
@@ -60,6 +75,9 @@ public class TryTests
         t.Value.ShouldBe(99);
     }
 
+    /// <summary>
+    /// 验证函数抛出异常后返回包装异常的失败结果。
+    /// </summary>
     [Fact]
     public void Create_FuncThrows_ReturnsFailure()
     {
@@ -68,6 +86,9 @@ public class TryTests
         t.Exception.InnerException.ShouldBeOfType<ArithmeticException>();
     }
 
+    /// <summary>
+    /// 验证带参数函数返回计算后的成功结果。
+    /// </summary>
     [Fact]
     public void Create_WithArg_Success()
     {
@@ -80,6 +101,9 @@ public class TryTests
     // Success<T> 行为
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证成功结果采用值匹配分支。
+    /// </summary>
     [Fact]
     public void Success_Match_CallsWhenValue()
     {
@@ -88,6 +112,9 @@ public class TryTests
         result.ShouldBe("HELLO");
     }
 
+    /// <summary>
+    /// 验证成功结果恢复后保留原值。
+    /// </summary>
     [Fact]
     public void Success_Recover_ReturnsSelf()
     {
@@ -97,6 +124,9 @@ public class TryTests
         recovered.Value.ShouldBe(7);
     }
 
+    /// <summary>
+    /// 验证成功结果经结果恢复后保留原值。
+    /// </summary>
     [Fact]
     public void Success_RecoverWith_ReturnsSelf()
     {
@@ -105,6 +135,9 @@ public class TryTests
         recovered.Value.ShouldBe(7);
     }
 
+    /// <summary>
+    /// 验证成功结果将值传入成功回调并返回原实例。
+    /// </summary>
     [Fact]
     public void Success_Tap_InvokesSuccessAction()
     {
@@ -115,6 +148,9 @@ public class TryTests
         returned.ShouldBeSameAs(t);
     }
 
+    /// <summary>
+    /// 验证成功结果不调用失败回调。
+    /// </summary>
     [Fact]
     public void Success_Tap_DoesNotInvokeFailureAction()
     {
@@ -124,6 +160,9 @@ public class TryTests
         failureCalled.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证成功结果解构为原值和空异常。
+    /// </summary>
     [Fact]
     public void Success_Deconstruct_ValueSetExceptionDefault()
     {
@@ -133,6 +172,9 @@ public class TryTests
         exception.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 验证成功结果的安全取值返回原值。
+    /// </summary>
     [Fact]
     public void Success_GetSafeValue_Default_ReturnsValue()
     {
@@ -140,6 +182,9 @@ public class TryTests
         t.GetSafeValue().ShouldBe(42);
     }
 
+    /// <summary>
+    /// 验证成功结果尝试取值时返回成功标记及原值。
+    /// </summary>
     [Fact]
     public void Success_TryGetValue_ReturnsTrue()
     {
@@ -152,6 +197,9 @@ public class TryTests
     // Failure<T> 行为
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证直接读取失败结果的值会抛出异常。
+    /// </summary>
     [Fact]
     public void Failure_Value_Throws()
     {
@@ -160,6 +208,9 @@ public class TryTests
         Should.Throw<Exception>(() => _ = t.Value);
     }
 
+    /// <summary>
+    /// 验证失败结果采用异常匹配分支。
+    /// </summary>
     [Fact]
     public void Failure_Match_CallsWhenException()
     {
@@ -169,6 +220,9 @@ public class TryTests
         result.ShouldBe("err:bad");
     }
 
+    /// <summary>
+    /// 验证失败结果恢复为指定的成功值。
+    /// </summary>
     [Fact]
     public void Failure_Recover_ReturnsSuccessWithRecoveredValue()
     {
@@ -179,6 +233,9 @@ public class TryTests
         recovered.Value.ShouldBe(99);
     }
 
+    /// <summary>
+    /// 验证结果恢复抛出异常后仍返回失败状态。
+    /// </summary>
     [Fact]
     public void Failure_RecoverWith_RecoveryThrows_ReturnsNewFailure()
     {
@@ -188,6 +245,9 @@ public class TryTests
         result.IsFailure.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证失败结果调用失败回调。
+    /// </summary>
     [Fact]
     public void Failure_Tap_InvokesFailureAction()
     {
@@ -197,6 +257,9 @@ public class TryTests
         captured.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证失败结果不调用成功回调。
+    /// </summary>
     [Fact]
     public void Failure_Tap_DoesNotInvokeSuccessAction()
     {
@@ -206,6 +269,9 @@ public class TryTests
         successCalled.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证失败结果解构为默认值和非空异常。
+    /// </summary>
     [Fact]
     public void Failure_Deconstruct_ValueDefaultExceptionSet()
     {
@@ -215,6 +281,9 @@ public class TryTests
         exception.ShouldNotBeNull();
     }
 
+    /// <summary>
+    /// 验证失败结果尝试取值时返回失败标记及默认值。
+    /// </summary>
     [Fact]
     public void Failure_TryGetValue_ReturnsFalse()
     {
@@ -223,6 +292,9 @@ public class TryTests
         v.ShouldBe(default);
     }
 
+    /// <summary>
+    /// 验证失败结果的安全取值返回默认值。
+    /// </summary>
     [Fact]
     public void Failure_GetSafeValue_Default_ReturnsDefault()
     {
@@ -230,6 +302,9 @@ public class TryTests
         t.GetSafeValue().ShouldBe(default);
     }
 
+    /// <summary>
+    /// 验证失败结果的安全取值采用指定回退值。
+    /// </summary>
     [Fact]
     public void Failure_GetSafeValue_CustomFallback_ReturnsFallback()
     {
@@ -241,6 +316,9 @@ public class TryTests
     // Map / Bind
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证映射成功结果后得到转换值。
+    /// </summary>
     [Fact]
     public void Map_Success_TransformsValue()
     {
@@ -250,6 +328,9 @@ public class TryTests
         mapped.Value.ShouldBe(50);
     }
 
+    /// <summary>
+    /// 验证映射失败结果后仍为失败状态。
+    /// </summary>
     [Fact]
     public void Map_Failure_StaysFailure()
     {
@@ -258,6 +339,9 @@ public class TryTests
         mapped.IsFailure.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证成功结果绑定到新的成功值。
+    /// </summary>
     [Fact]
     public void Bind_Success_ReturnsBound()
     {
@@ -268,6 +352,9 @@ public class TryTests
         bound.Value.ShouldBe("3");
     }
 
+    /// <summary>
+    /// 验证绑定失败结果后仍为失败状态。
+    /// </summary>
     [Fact]
     public void Bind_Failure_StaysFailure()
     {
@@ -280,6 +367,9 @@ public class TryTests
     // TryExtensions: Select / SelectMany / Where
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证投影成功结果后得到转换值。
+    /// </summary>
     [Fact]
     public void Select_Success_TransformsValue()
     {
@@ -289,6 +379,9 @@ public class TryTests
         selected.Value.ShouldBe(5);
     }
 
+    /// <summary>
+    /// 验证投影失败结果后仍为失败状态。
+    /// </summary>
     [Fact]
     public void Select_Failure_RemainsFailure()
     {
@@ -297,6 +390,9 @@ public class TryTests
         selected.IsFailure.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证投影拒绝空结果对象。
+    /// </summary>
     [Fact]
     public void Select_NullSource_Throws()
     {
@@ -304,6 +400,9 @@ public class TryTests
         Should.Throw<ArgumentNullException>(() => t.Select(x => x));
     }
 
+    /// <summary>
+    /// 验证投影拒绝空选择器。
+    /// </summary>
     [Fact]
     public void Select_NullSelector_Throws()
     {
@@ -311,6 +410,9 @@ public class TryTests
         Should.Throw<ArgumentNullException>(() => t.Select<int, int>(null!));
     }
 
+    /// <summary>
+    /// 验证成功结果可以连续绑定计算。
+    /// </summary>
     [Fact]
     public void SelectMany_Success_Chains()
     {
@@ -320,6 +422,9 @@ public class TryTests
         result.Value.ShouldBe(6);
     }
 
+    /// <summary>
+    /// 验证满足筛选条件时保留成功值。
+    /// </summary>
     [Fact]
     public void Where_PredicateSatisfied_ReturnsSuccess()
     {
@@ -329,6 +434,9 @@ public class TryTests
         filtered.Value.ShouldBe(10);
     }
 
+    /// <summary>
+    /// 验证不满足筛选条件时返回失败状态。
+    /// </summary>
     [Fact]
     public void Where_PredicateNotSatisfied_ReturnsFailure()
     {
@@ -337,6 +445,9 @@ public class TryTests
         filtered.IsFailure.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证筛选失败结果后仍为失败状态。
+    /// </summary>
     [Fact]
     public void Where_OnFailure_RemainsFailure()
     {
@@ -349,6 +460,9 @@ public class TryTests
     // LINQ query syntax (uses Select / SelectMany / Where)
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证查询表达式连续绑定并投影成功值。
+    /// </summary>
     [Fact]
     public void LinqQuery_ChainsSuccessfully()
     {

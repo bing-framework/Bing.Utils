@@ -14,10 +14,10 @@ using Microsoft.AspNetCore.TestHost;
 
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
+
+
 /// <summary>
-
 /// 验证断点续传的片段恢复、完整覆盖和 416 提交语义。
-
 /// </summary>
 public class HttpResumableDownloadIntegrationTest
 {
@@ -103,10 +103,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证续传内容校验器收到请求取消令牌。
-
     /// </summary>
     [Fact]
     public async Task ResumableDownload_PassesCancellationTokenToValidator()
@@ -170,10 +170,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 验证拒绝未知状态架构并开始新的。
-
+    /// 验证未知版本的续传状态被忽略并重新完整下载。
     /// </summary>
     [Fact]
     public async Task ResumableDownload_RejectsUnknownStateSchemaAndStartsFresh()
@@ -206,10 +206,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证重新开始时服务端返回完整响应。
-
     /// </summary>
     [Fact]
     public async Task ResumableDownload_RestartsWhenServerReturnsFullResponse()
@@ -241,10 +241,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 验证完成完整的部分文件文件从范围不可满足。
-
+    /// 验证完整临时文件在 HTTP 416 总长度匹配时提交为目标文件。
     /// </summary>
     [Fact]
     public async Task ResumableDownload_CompletesFullPartialFileFromRangeNotSatisfiable()
@@ -289,12 +289,12 @@ public class HttpResumableDownloadIntegrationTest
     }
 
 
+
+
+
+
     /// <summary>
-
-
     /// 验证代理中断后可从真实服务端恢复下载。
-
-
     /// </summary>
     [Fact]
     public async Task ResumableDownload_RecoversThroughProxyAfterRealServerInterruption()
@@ -373,10 +373,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝无效部分正文范围。
-
     /// </summary>
     [Fact]
     public async Task ResumableDownload_RejectsInvalidPartialContentRange()
@@ -415,10 +415,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证格式错误的完整范围响应不会提交文件。
-
     /// </summary>
     [Fact]
     public async Task ResumableDownload_DoesNotCommitMalformedCompletedRangeResponse()
@@ -458,7 +458,7 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
     /// <summary>
-    /// 验证重新开始时检测请求表示的响应头变化。
+    /// 验证请求表示头变化后放弃原续传状态并重新下载。
     /// </summary>
     [Fact]
     public async Task ResumableDownload_RestartsWhenRequestRepresentationHeadersChange()
@@ -494,10 +494,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝响应正文编码变化。
-
     /// </summary>
     [Fact]
     public async Task ResumableDownload_RejectsResponseContentEncodingChange()
@@ -579,10 +579,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 验证使用最后修改时间时是否接受弱 ETag。
-
+    /// 验证弱实体标签场景使用最后修改时间发送续传条件。
     /// </summary>
     [Fact]
     public async Task ResumableDownload_UsesLastModifiedWhenEtagIsWeak()
@@ -623,10 +623,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证目标地址变化时拒绝提交已完成的范围响应。
-
     /// </summary>
     [Fact]
     public async Task ResumableDownload_RejectsUriMutationBeforeCompletedRangeCommit()
@@ -668,10 +668,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝并发目标下载。
-
     /// </summary>
     [Fact]
     public async Task ResumableDownload_RejectsConcurrentTargetDownload()
@@ -715,12 +715,12 @@ public class HttpResumableDownloadIntegrationTest
     }
 
 
+
+
+
+
     /// <summary>
-
-
-    /// 验证拒绝共享可续传锁由其他进程持有独立进程。
-
-
+    /// 验证分段下载拒绝其他进程持有的续传共享锁并保留现有数据。
     /// </summary>
     [Fact]
     public async Task SegmentedDownload_RejectsSharedResumableLockHeldBySeparateProcess()
@@ -776,7 +776,7 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
     /// <summary>
-    /// 验证拒绝锁由其他进程持有独立进程。
+    /// 验证断点续传拒绝其他进程持有的目标文件锁。
     /// </summary>
     [Fact]
     public async Task ResumableDownload_RejectsLockHeldBySeparateProcess()
@@ -812,11 +812,16 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建包含弱实体标签与最后修改时间的测试响应。
     /// </summary>
+    /// <param name="status">响应的 HTTP 状态码。</param>
+    /// <param name="body">响应正文的字节数据。</param>
+    /// <param name="lastModified">用于续传条件的最后修改时间。</param>
+    /// <param name="failAfter">读取到该字节位置后抛出异常；为空时正文可完整读取。</param>
+    /// <returns>包含指定正文、弱实体标签及最后修改时间的响应。</returns>
     private static HttpResponseMessage CreateLastModifiedResponse(
         HttpStatusCode status, byte[] body, DateTimeOffset lastModified, int? failAfter = null)
     {
@@ -826,11 +831,15 @@ public class HttpResumableDownloadIntegrationTest
         return response;
     }
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建包含固定实体标签及可选读取故障的测试响应。
     /// </summary>
+    /// <param name="status">响应的 HTTP 状态码。</param>
+    /// <param name="body">响应正文的字节数据。</param>
+    /// <param name="failAfter">读取到该字节位置后抛出异常；为空时正文可完整读取。</param>
+    /// <returns>包含指定状态码、正文及固定实体标签的响应。</returns>
     private static HttpResponseMessage CreateResponse(HttpStatusCode status, byte[] body, int? failAfter = null)
     {
         HttpContent content = failAfter.HasValue
@@ -842,11 +851,12 @@ public class HttpResumableDownloadIntegrationTest
         return response;
     }
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建独立的断点续传测试临时目录。
     /// </summary>
+    /// <returns>已创建的临时目录完整路径。</returns>
     private static string CreateRoot()
     {
         var root = Path.Combine(Path.GetTempPath(), "Bing.Utils.Http.Tests", Guid.NewGuid().ToString("N"));
@@ -854,24 +864,30 @@ public class HttpResumableDownloadIntegrationTest
         return root;
     }
 
+
+
     /// <summary>
-
-    /// 清理测试生成的临时资源。
-
+    /// 递归删除断点续传测试的临时目录。
     /// </summary>
+    /// <param name="root">待删除的临时目录；不存在时不执行操作。</param>
     private static void DeleteRoot(string root)
     {
         if (Directory.Exists(root)) Directory.Delete(root, recursive: true);
     }
 
 
+
+
+
+
     /// <summary>
-
-
-    /// 处理测试场景中的 StartLockHelper。
-
-
+    /// 启动独立进程并独占续传锁文件。
     /// </summary>
+    /// <param name="lockPath">需要独占的续传锁文件路径。</param>
+    /// <param name="readyPath">辅助进程获取锁后写入的就绪标记路径。</param>
+    /// <param name="releasePath">辅助进程等待出现后释放锁的标记路径。</param>
+    /// <returns>持有文件锁并等待释放标记的辅助进程。</returns>
+    /// <remarks>无法启动 PowerShell 时跳过跨进程锁测试。</remarks>
     private static Process StartLockHelper(string lockPath, string readyPath, string releasePath)
     {
         var executable = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "powershell.exe" : "pwsh";
@@ -899,11 +915,13 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
-    /// 等待测试条件满足。
-
+    /// 等待辅助进程创建就绪标记文件。
     /// </summary>
+    /// <param name="path">需要等待出现的标记文件路径。</param>
+    /// <remarks>最多等待五秒，超时后通过断言报告未就绪。</remarks>
     private static async Task WaitForFileAsync(string path)
     {
         var deadline = DateTime.UtcNow.AddSeconds(5);
@@ -912,35 +930,35 @@ public class HttpResumableDownloadIntegrationTest
         File.Exists(path).ShouldBeTrue("The lock helper process did not signal readiness.");
     }
 
+
+
     /// <summary>
-
     /// 按请求顺序返回预设响应的消息处理器。
-
     /// </summary>
     private sealed class SequenceHandler : HttpMessageHandler
     {
         /// <summary>
-        /// 测试处理流程使用的委托。
+        /// 按发送顺序选择的测试响应工厂。
         /// </summary>
         private readonly Func<HttpRequestMessage, HttpResponseMessage>[] _responses;
         /// <summary>
-        /// 测试期间记录的调用状态。
+        /// 记录下一次发送使用的响应工厂序号。
         /// </summary>
         private int _index;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="SequenceHandler"/>类型的实例。
-
+        /// 初始化一个 <see cref="SequenceHandler"/> 类型的实例。
         /// </summary>
         /// <param name="responses">按请求顺序返回的响应工厂。</param>
         public SequenceHandler(params Func<HttpRequestMessage, HttpResponseMessage>[] responses)
             => _responses = responses;
 
+
+
         /// <summary>
-
-        /// 记录处理程序收到的请求。
-
+        /// 获取处理器按接收顺序记录的请求列表。
         /// </summary>
         public List<HttpRequestMessage> Requests { get; } = new List<HttpRequestMessage>();
 
@@ -953,42 +971,42 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 收到请求后等待测试释放再返回正文的消息处理器。
-
     /// </summary>
     private sealed class BlockingHandler : HttpMessageHandler
     {
         /// <summary>
-        /// 测试请求或响应使用的字节数据。
+        /// 在测试解除阻塞后作为响应返回的正文字节。
         /// </summary>
         private readonly byte[] _body;
         /// <summary>
-        /// 测试期间记录的调用状态。
+        /// 累计记录阻塞处理器收到的请求次数。
         /// </summary>
         private int _requestCount;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="BlockingHandler"/>类型的实例。
-
+        /// 初始化一个 <see cref="BlockingHandler"/> 类型的实例。
         /// </summary>
         /// <param name="body">响应正文数据。</param>
         public BlockingHandler(byte[] body) => _body = body;
 
+
+
         /// <summary>
-
-        /// 通知测试处理程序已收到请求。
-
+        /// 获取用于通知测试请求已到达的完成信号。
         /// </summary>
         public TaskCompletionSource<bool> RequestStarted { get; } = new TaskCompletionSource<bool>();
         /// <summary>
-        /// 控制测试请求的继续时机。
+        /// 获取用于允许阻塞请求继续执行的完成信号。
         /// </summary>
         public TaskCompletionSource<bool> Release { get; } = new TaskCompletionSource<bool>();
         /// <summary>
-        /// 记录收到的请求数量。
+        /// 获取处理器累计收到的请求次数。
         /// </summary>
         public int RequestCount => _requestCount;
 
@@ -1003,10 +1021,10 @@ public class HttpResumableDownloadIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 超过可读字节数后抛出异常的内存流。
-
     /// </summary>
     private sealed class FailingReadStream : MemoryStream
     {
@@ -1015,10 +1033,10 @@ public class HttpResumableDownloadIntegrationTest
         /// </summary>
         private readonly int _failAfter;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="FailingReadStream"/>类型的实例。
-
+        /// 初始化一个 <see cref="FailingReadStream"/> 类型的实例。
         /// </summary>
         /// <param name="buffer">流读取的字节数据。</param>
         /// <param name="failAfter">触发读取异常前可读取的字节数。</param>

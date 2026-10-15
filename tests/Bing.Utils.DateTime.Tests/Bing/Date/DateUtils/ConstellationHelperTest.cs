@@ -1,13 +1,15 @@
 namespace Bing.Date.DateUtils;
 /// <summary>
-/// 星座帮助类
+/// 星座名称、日期边界和参数校验测试。
 /// </summary>
 [Trait("DateTimeUT", "Constellation")]
 public class ConstellationHelperTest
 {
     /// <summary>
-    /// 测试 - 获取星座名称 - 返回正确的星座名称
+    /// 验证日期时间对应的星座名称。
     /// </summary>
+    /// <param name="date">日期文本。</param>
+    /// <param name="expectedConstellation">预期星座名称。</param>
     [Theory]
     [InlineData("2023-03-21", "白羊座")]
     [InlineData("2023-04-19", "白羊座")]
@@ -43,8 +45,11 @@ public class ConstellationHelperTest
         Assert.Equal(expectedConstellation, constellation);
     }
     /// <summary>
-    /// 测试 - 获取指定月份和日期的星座名称 - 返回正确的星座名称
+    /// 验证月份和日期对应的星座名称。
     /// </summary>
+    /// <param name="month">月份。</param>
+    /// <param name="day">日期。</param>
+    /// <param name="expectedConstellation">预期星座名称。</param>
     [Theory]
     [InlineData(3, 21, "白羊座")]
     [InlineData(4, 19, "白羊座")]
@@ -78,8 +83,10 @@ public class ConstellationHelperTest
         Assert.Equal(expectedConstellation, constellation);
     }
     /// <summary>
-    /// 测试 - Get(DateTime) - 正确返回星座
+    /// 验证日期时间对应的星座名称。
     /// </summary>
+    /// <param name="dateString">日期文本。</param>
+    /// <param name="expected">预期星座名称。</param>
     [Theory]
     [InlineData("2023-01-01", "摩羯座")]
     [InlineData("2023-02-19", "双鱼座")]
@@ -97,8 +104,11 @@ public class ConstellationHelperTest
         constellation.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - Get(month, day) - 每个星座的边界值
+    /// 验证星座交界日映射到对应星座。
     /// </summary>
+    /// <param name="month">月份。</param>
+    /// <param name="day">日期。</param>
+    /// <param name="expected">预期星座名称。</param>
     [Theory]
     [InlineData(1, 19, "摩羯座")]
     [InlineData(1, 20, "水瓶座")]
@@ -132,8 +142,11 @@ public class ConstellationHelperTest
         constellation.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - Get(month, day) - 摩羯座跨年测试
+    /// 验证摩羯座覆盖年末和年初日期。
     /// </summary>
+    /// <param name="month">月份。</param>
+    /// <param name="day">日期。</param>
+    /// <param name="expected">预期星座名称。</param>
     [Theory]
     [InlineData(12, 25, "摩羯座")]
     [InlineData(12, 31, "摩羯座")]
@@ -147,8 +160,10 @@ public class ConstellationHelperTest
         constellation.ShouldBe(expected);
     }
     /// <summary>
-    /// 测试 - Get(month, day) - 无效月份抛出异常
+    /// 验证无效月份触发参数越界异常。
     /// </summary>
+    /// <param name="month">无效月份。</param>
+    /// <param name="day">日期。</param>
     [Theory]
     [InlineData(0, 15)]
     [InlineData(13, 15)]
@@ -159,8 +174,10 @@ public class ConstellationHelperTest
         Should.Throw<ArgumentOutOfRangeException>(() => ConstellationHelper.Get(month, day));
     }
     /// <summary>
-    /// 测试 - Get(month, day) - 无效日期抛出异常
+    /// 验证无效日期触发参数越界异常。
     /// </summary>
+    /// <param name="month">月份。</param>
+    /// <param name="day">无效日期。</param>
     [Theory]
     [InlineData(1, 0)]
     [InlineData(1, 32)]

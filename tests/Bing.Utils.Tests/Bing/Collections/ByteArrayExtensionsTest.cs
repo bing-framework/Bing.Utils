@@ -5,7 +5,10 @@ namespace Bing.Collections;
 [Trait("CollectionsUT", "ByteArrayExtensions")]
 public class ByteArrayExtensionsTest : TestBase
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// 初始化一个 <see cref="ByteArrayExtensionsTest"/> 类型的实例。
+    /// </summary>
+    /// <param name="output">测试输出辅助器。</param>
     public ByteArrayExtensionsTest(ITestOutputHelper output) : base(output)
     {
     }

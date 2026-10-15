@@ -474,13 +474,58 @@ public class TypeVisitAdvancedTests
         public void Array(string[] values) { }
     }
 
-    public interface IParentContract { void Parent(string value); }
+    /// <summary>
+    /// 用于验证接口方法继承的父契约。
+    /// </summary>
+    public interface IParentContract
+    {
+        /// <summary>
+        /// 接收用于验证继承方法签名的文本。
+        /// </summary>
+        /// <param name="value">方法签名中的文本参数。</param>
+        void Parent(string value);
+    }
+    /// <summary>
+    /// 用于验证父接口方法发现的子契约。
+    /// </summary>
     public interface IChildContract : IParentContract { }
-    public interface IStringGet { string Get(); }
-    public interface IIntGet { int Get(); }
+    /// <summary>
+    /// 声明字符串返回值的同名方法契约。
+    /// </summary>
+    public interface IStringGet
+    {
+        /// <summary>
+        /// 返回用于验证返回类型差异的测试值。
+        /// </summary>
+        /// <returns>字符串测试值。</returns>
+        string Get();
+    }
+    /// <summary>
+    /// 声明整数返回值的同名方法契约。
+    /// </summary>
+    public interface IIntGet
+    {
+        /// <summary>
+        /// 返回用于验证返回类型差异的测试值。
+        /// </summary>
+        /// <returns>整数测试值。</returns>
+        int Get();
+    }
+    /// <summary>
+    /// 用于验证同名方法返回类型冲突的组合契约。
+    /// </summary>
     public interface IAmbiguousContract : IStringGet, IIntGet { }
 
-    public interface ICreated { string Value { get; } }
+    /// <summary>
+    /// 用于验证实例创建结果的取值契约。
+    /// </summary>
+    public interface ICreated
+    {
+        /// <summary>
+        /// 获取创建实例时传入的文本。
+        /// </summary>
+        string Value { get; }
+    }
     public sealed class FirstCreated : ICreated
     {
         public FirstCreated(string value) => Value = value;
@@ -503,6 +548,9 @@ public class TypeVisitAdvancedTests
         public ThrowingCreated() => throw new InvalidOperationException("constructor");
     }
 
+    /// <summary>
+    /// 用于验证抽象类型实例创建限制的样例。
+    /// </summary>
     public abstract class AbstractCreated
     {
     }

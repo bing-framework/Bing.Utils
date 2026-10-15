@@ -779,7 +779,16 @@ public class CheckTest
         Assert.Throws<ArgumentException>(() => Check.Range(11.0f, nameof(Test_Range), minimumValue: 1.0f, maximumValue: 10.0f));
         Assert.Throws<ArgumentException>(() => Check.Range(11.0, nameof(Test_Range), minimumValue: 1.0, maximumValue: 10.0));
     }
+    /// <summary>
+    /// 类型赋值兼容性测试的基类样例。
+    /// </summary>
     class Parent;
+    /// <summary>
+    /// 继承自 <see cref="Parent"/> 的派生类型样例。
+    /// </summary>
     class Child : Parent;
+    /// <summary>
+    /// 继承自 <see cref="Child"/> 的第二级派生类型样例。
+    /// </summary>
     class Child2 : Child;
 }

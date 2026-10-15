@@ -127,6 +127,7 @@ public class CheckBoundaryContractTest
     /// <summary>
     /// 测试数据：范围校验失败场景（用于记录当前 `ParamName` 契约）
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetRangeValidationFailureCases()
     {
         yield return new object[]
@@ -151,6 +152,7 @@ public class CheckBoundaryContractTest
     /// <summary>
     /// 测试数据：非法字符串边界输入
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetInvalidStringInputs()
     {
         yield return new object[] { null };
@@ -163,6 +165,7 @@ public class CheckBoundaryContractTest
     /// <summary>
     /// 测试数据：合法字符串边界输入
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetValidStringInputs()
     {
         yield return new object[] { "!@#$%^&*()_+-=[]{}|;':,./<>?" };
@@ -174,12 +177,18 @@ public class CheckBoundaryContractTest
     /// <summary>
     /// 测试数据：超过最大长度的边界样例
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetOverMaxLengthCases()
     {
         yield return new object[] { 1025, 1024 };
         yield return new object[] { 2048, 1024 };
     }
 
+    /// <summary>
+    /// 调用指定的路径校验方法并传入参数名。
+    /// </summary>
+    /// <param name="methodName">要调用的路径校验方法名称。</param>
+    /// <param name="paramName">传递给校验方法的参数名称。</param>
     private static void InvokePathValidation(string methodName, string paramName)
     {
         switch (methodName)

@@ -8,8 +8,9 @@ namespace Bing.IO;
 public class FileHelperWriteRegressionTest
 {
     /// <summary>
-    /// 测试用例：WriteAsync 在覆盖模式下应截断旧内容，避免残留历史字节
+    /// 验证覆盖较短内容时截断文件旧尾部。
     /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     [Trait("DefectPattern", "IO.FileWrite.OverwriteTruncate")]
     public async Task WriteAsync_OverwriteShorterBytes_ShouldTruncateOldTail()

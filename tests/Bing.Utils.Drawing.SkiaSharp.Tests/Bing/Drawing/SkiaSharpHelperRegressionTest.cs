@@ -3,12 +3,12 @@ using SkiaSharp;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖 <see cref="SkiaSharpHelper"/> 的 Phase 0 回归契约。
+/// 验证 <see cref="SkiaSharpHelper"/> 对 Data URL MIME 类型和大小写的回归行为。
 /// </summary>
 public class SkiaSharpHelperRegressionTest
 {
     /// <summary>
-    /// 测试用例：验证 JPEG Data URL 前缀正确，不重复拼接 image/。
+    /// 验证 JPEG Data URL 前缀仅包含一次 <c>image/</c>。
     /// </summary>
     [Fact]
     public void ToDataUrl_Jpeg_UsesExactMimePrefix()
@@ -21,7 +21,7 @@ public class SkiaSharpHelperRegressionTest
     }
 
     /// <summary>
-    /// 测试用例：验证通用 image mime 且大小写混合的 Data URL 可以被解析。
+    /// 验证带有大小写混合通用图像 MIME 的 Data URL 可被加载。
     /// </summary>
     [Fact]
     public void FromDataUrl_GenericMimeWithMixedCase_ReturnsImage()
@@ -37,6 +37,10 @@ public class SkiaSharpHelperRegressionTest
         restored.Height.ShouldBe(source.Height);
     }
 
+    /// <summary>
+    /// 创建包含红、绿、蓝和白色像素的 2×2 测试图像。
+    /// </summary>
+    /// <returns>包含四种颜色样本的图像。</returns>
     private static SKImage CreateSampleImage()
     {
         using var bitmap = new SKBitmap(2, 2, SKColorType.Rgba8888, SKAlphaType.Unpremul);

@@ -1,12 +1,12 @@
 namespace Bing.Collections;
 /// <summary>
-/// 测试类：覆盖 `EqualityHelper` 相关行为。
+/// 投影键相等比较器的去重和哈希一致性测试。
 /// </summary>
 [Trait("Bing.Collections", "EqualityHelper")]
 public class EqualityHelperTest
 {
     /// <summary>
-    /// 测试用例：验证 `CreateComparer` 在 `KeySelector` 场景下，结果为 `DeduplicatesBySelectedKey`。
+    /// 验证按投影标识符去重。
     /// </summary>
     [Fact]
     public void CreateComparer_KeySelector_DeduplicatesBySelectedKey()
@@ -24,7 +24,7 @@ public class EqualityHelperTest
         distinct[1].Id.ShouldBe(2);
     }
     /// <summary>
-    /// 测试用例：验证 `CreateComparer` 在 `WithCustomComparer` 场景下，结果为 `UsesProvidedComparer`。
+    /// 验证投影键比较遵循指定比较器且相等值哈希一致。
     /// </summary>
     [Fact]
     public void CreateComparer_WithCustomComparer_UsesProvidedComparer()
@@ -35,9 +35,18 @@ public class EqualityHelperTest
         comparer.Equals(left, right).ShouldBeTrue();
         comparer.GetHashCode(left).ShouldBe(comparer.GetHashCode(right));
     }
+    /// <summary>
+    /// 投影键相等比较的测试模型。
+    /// </summary>
     private class EqualityItem
     {
+        /// <summary>
+        /// 获取或设置标识符。
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// 获取或设置名称。
+        /// </summary>
         public string Name { get; set; }
     }
 }

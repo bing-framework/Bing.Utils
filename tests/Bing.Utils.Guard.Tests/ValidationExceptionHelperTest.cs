@@ -4,12 +4,12 @@ using ValidationExceptionHelper = guard::Bing.Validation.ValidationExceptionHelp
 namespace Bing.Validation;
 
 /// <summary>
-/// 验证异常帮助类测试
+/// 验证异常帮助方法根据断言结果创建并抛出指定异常。
 /// </summary>
 public class ValidationExceptionHelperTest
 {
     /// <summary>
-    /// 测试目的：验证当断言为 true 时，不会抛出异常
+    /// 验证断言为 true 时调用不会抛出异常。
     /// </summary>
     [Fact]
     public void WrapAndRaise_AssertionTrue_DoesNotThrowException()
@@ -25,7 +25,7 @@ public class ValidationExceptionHelperTest
     }
 
     /// <summary>
-    /// 测试目的：验证当断言为 false 时，抛出指定类型的异常（无参数构造函数）
+    /// 验证断言为 false 且未提供参数时抛出指定异常。
     /// </summary>
     [Fact]
     public void WrapAndRaise_AssertionFalse_ThrowsArgumentException()
@@ -39,7 +39,7 @@ public class ValidationExceptionHelperTest
     }
 
     /// <summary>
-    /// 测试目的：验证当断言为 false 时，抛出带参数的异常
+    /// 验证断言为 false 时将参数名传入异常构造函数。
     /// </summary>
     [Fact]
     public void WrapAndRaise_AssertionFalseWithMessage_ThrowsExceptionWithMessage()
@@ -56,7 +56,7 @@ public class ValidationExceptionHelperTest
     }
 
     /// <summary>
-    /// 测试目的：验证抛出带多个参数的异常
+    /// 验证断言为 false 时将多个构造参数传入异常。
     /// </summary>
     [Fact]
     public void WrapAndRaise_AssertionFalseWithMultipleParams_ThrowsExceptionWithParams()
@@ -75,7 +75,7 @@ public class ValidationExceptionHelperTest
     }
 
     /// <summary>
-    /// 测试目的：验证抛出不同类型的异常
+    /// 验证泛型异常类型可通过反射构造并抛出。
     /// </summary>
     [Theory]
     [InlineData(typeof(ArgumentException))]
@@ -98,7 +98,7 @@ public class ValidationExceptionHelperTest
     }
 
     /// <summary>
-    /// 测试目的：验证多次调用时的正确性
+    /// 验证连续调用时每次均根据断言结果决定是否抛出异常。
     /// </summary>
     [Fact]
     public void WrapAndRaise_MultipleCalls_WorksCorrectly()

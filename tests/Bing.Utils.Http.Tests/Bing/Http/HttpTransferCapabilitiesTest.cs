@@ -9,10 +9,10 @@ using Bing.Http.Clients;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// 验证 HTTP 二进制正文、下载进度和流式 JSON 可选能力。
-
 /// </summary>
 public class HttpTransferCapabilitiesTest
 {
@@ -31,10 +31,10 @@ public class HttpTransferCapabilitiesTest
         Should.Throw<NotSupportedException>(() => request.GetJsonStreamResponseAsync());
     }
 
+
+
     /// <summary>
-
     /// 验证 PUT 请求发送防御性复制的原始字节。
-
     /// </summary>
     [Fact]
     public async Task BinaryContent_PutSendsDefensiveCopyAsRawBytes()
@@ -57,10 +57,10 @@ public class HttpTransferCapabilitiesTest
         contentType.ShouldBe("application/octet-stream; profile=binary");
     }
 
+
+
     /// <summary>
-
     /// 验证空字节数组仍发送非空的空正文内容。
-
     /// </summary>
     [Fact]
     public async Task BinaryContent_EmptyByteArraySendsNonNullEmptyContent()
@@ -79,10 +79,10 @@ public class HttpTransferCapabilitiesTest
         result.ShouldBe("ok");
     }
 
+
+
     /// <summary>
-
     /// 验证无效参数会抛出异常并保留先前配置。
-
     /// </summary>
     [Fact]
     public async Task TransferRegistration_InvalidArgumentsThrowAndPreservePreviousConfiguration()
@@ -116,10 +116,10 @@ public class HttpTransferCapabilitiesTest
         body.Select(item => item.IsCompleted).ShouldBe(new[] { false, false, true });
     }
 
+
+
     /// <summary>
-
     /// 验证空请求会抛出参数异常。
-
     /// </summary>
     [Fact]
     public void TransferExtensions_NullRequestThrowsArgumentNullException()
@@ -133,10 +133,10 @@ public class HttpTransferCapabilitiesTest
         Should.Throw<ArgumentNullException>(() => request.GetJsonStreamAsync());
     }
 
+
+
     /// <summary>
-
     /// 验证构造函数接受有效值并拒绝负长度。
-
     /// </summary>
     [Fact]
     public void HttpDownloadProgress_ConstructorAcceptsValidValuesAndRejectsNegativeLengths()
@@ -150,10 +150,10 @@ public class HttpTransferCapabilitiesTest
         Should.Throw<ArgumentOutOfRangeException>(() => new HttpDownloadProgress(0, -1, false));
     }
 
+
+
     /// <summary>
-
     /// 验证流重放从注册时的位置并遵循所有权。
-
     /// </summary>
     /// <param name="leaveOpen">测试输入值。</param>
     [Theory]
@@ -182,10 +182,10 @@ public class HttpTransferCapabilitiesTest
         source.IsDisposed.ShouldBe(!leaveOpen);
     }
 
+
+
     /// <summary>
-
     /// 验证不可定位流在实际发送前拒绝需要重试的请求。
-
     /// </summary>
     [Fact]
     public async Task BinaryContent_NonSeekableStreamRejectsRetryForActualWriteMethodBeforeSend()
@@ -206,10 +206,10 @@ public class HttpTransferCapabilitiesTest
         source.CanRead.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证不可定位流可以发送一次，但 PUT 请求不能重试。
-
     /// </summary>
     [Fact]
     public async Task BinaryContent_NonSeekableStreamCanSendOnceWhenPutRetriesAreNotAllowed()
@@ -233,10 +233,10 @@ public class HttpTransferCapabilitiesTest
         source.CanRead.ShouldBeFalse();
     }
 
+
+
     /// <summary>
-
     /// 验证调用方拥有的流是否释放之后发送准备或取消失败。
-
     /// </summary>
     [Fact]
     public async Task BinaryContent_OwnedStreamIsReleasedAfterSendPreparationOrCancellationFailure()
@@ -272,10 +272,10 @@ public class HttpTransferCapabilitiesTest
         cancelledStream.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证替换或拒绝请求时释放由调用方拥有的流。
-
     /// </summary>
     [Fact]
     public async Task BinaryContent_ReplacementAndRequestRejectionReleaseOwnedStreams()
@@ -297,10 +297,10 @@ public class HttpTransferCapabilitiesTest
         rejectedStream.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证每次重试都会创建并释放新的请求正文。
-
     /// </summary>
     [Fact]
     public async Task ContentFactory_CreatesAndDisposesFreshContentForEachRetry()
@@ -331,10 +331,10 @@ public class HttpTransferCapabilitiesTest
         bodies[1].ShouldBe(bodies[0]);
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝空并重复实例之前其次发送。
-
     /// </summary>
     [Fact]
     public async Task ContentFactory_RejectsNullAndRepeatedInstancesBeforeSecondSend()
@@ -357,10 +357,10 @@ public class HttpTransferCapabilitiesTest
         sharedContent.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证失败On重试释放之前正文并保留工厂异常。
-
     /// </summary>
     [Fact]
     public async Task ContentFactory_FailureOnRetryDisposesPreviousContentAndPreservesFactoryError()
@@ -384,10 +384,10 @@ public class HttpTransferCapabilitiesTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝混用结构化正文和原始正文，并允许发送后的回调。
-
     /// </summary>
     [Fact]
     public async Task BinaryContent_RejectsStructuredBodyMixAndAllowsOnSendAfter()
@@ -401,10 +401,10 @@ public class HttpTransferCapabilitiesTest
             .OnSendAfter((_, _) => Task.FromResult("custom")).GetResultAsync()).ShouldBe("custom");
     }
 
+
+
     /// <summary>
-
     /// 验证已知长度报告快照使用总数字节。
-
     /// </summary>
     [Fact]
     public async Task UploadProgress_KnownLengthReportsSnapshotsWithTotalBytes()
@@ -437,10 +437,10 @@ public class HttpTransferCapabilitiesTest
         progress.All(item => item.TotalBytes == payload.Length).ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证重试开始新的尝试并报告每次完成。
-
     /// </summary>
     [Fact]
     public async Task UploadProgress_RetryStartsFreshAttemptAndReportsEachCompletion()
@@ -472,10 +472,10 @@ public class HttpTransferCapabilitiesTest
         });
     }
 
+
+
     /// <summary>
-
     /// 验证无效参数会抛出异常，且旧版请求会拒绝该能力。
-
     /// </summary>
     [Fact]
     public void UploadProgress_InvalidArgumentsThrowAndLegacyRequestsRejectCapability()
@@ -490,10 +490,10 @@ public class HttpTransferCapabilitiesTest
         Should.Throw<ArgumentOutOfRangeException>(() => request.ObserveUploadProgress(_ => { }, minimumInterval: TimeSpan.FromTicks(-1)));
     }
 
+
+
     /// <summary>
-
     /// 验证不可定位流的长度未知时不报告总字节数。
-
     /// </summary>
     [Fact]
     public async Task UploadProgress_UnknownLengthReportsNullTotalForNonSeekableStream()
@@ -521,10 +521,10 @@ public class HttpTransferCapabilitiesTest
         progress[1].IsCompleted.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证正文工厂会包装并释放每次重试的正文。
-
     /// </summary>
     [Fact]
     public async Task UploadProgress_ContentFactoryWrapsAndDisposesEachRetryContent()
@@ -559,10 +559,10 @@ public class HttpTransferCapabilitiesTest
         progress.Where(item => item.IsCompleted).Select(item => item.Attempt).ShouldBe(new[] { 1, 2 });
     }
 
+
+
     /// <summary>
-
     /// 验证观察器失败传播并是否不报告完成。
-
     /// </summary>
     [Fact]
     public async Task UploadProgress_ObserverFailurePropagatesAndDoesNotReportCompletion()
@@ -589,10 +589,10 @@ public class HttpTransferCapabilitiesTest
         progressCalls.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证流遵循所有权。
-
     /// </summary>
     /// <param name="leaveOpen">测试输入值。</param>
     [Theory]
@@ -623,10 +623,10 @@ public class HttpTransferCapabilitiesTest
         source.IsDisposed.ShouldBe(!leaveOpen);
     }
 
+
+
     /// <summary>
-
     /// 验证不可定位流报告未知长度。
-
     /// </summary>
     [Fact]
     public async Task UploadProgress_NonSeekableStreamReportsUnknownLength()
@@ -653,10 +653,10 @@ public class HttpTransferCapabilitiesTest
         source.Dispose();
     }
 
+
+
     /// <summary>
-
     /// 验证正文工厂创建独立尝试进度。
-
     /// </summary>
     [Fact]
     public async Task UploadProgress_ContentFactoryCreatesIndependentAttemptProgress()
@@ -693,10 +693,10 @@ public class HttpTransferCapabilitiesTest
         });
     }
 
+
+
     /// <summary>
-
     /// 验证多部分内容会包装完成正文并保留响应头。
-
     /// </summary>
     [Fact]
     public async Task UploadProgress_MultipartWrapsCompleteContentAndPreservesHeaders()
@@ -792,10 +792,10 @@ public class HttpTransferCapabilitiesTest
         });
     }
 
+
+
     /// <summary>
-
     /// 验证中间进度通知必须同时满足两个阈值。
-
     /// </summary>
     [Fact]
     public async Task DownloadProgress_IntermediateNotificationsRequireBothThresholds()
@@ -815,10 +815,10 @@ public class HttpTransferCapabilitiesTest
         progress.Count.ShouldBe(2);
     }
 
+
+
     /// <summary>
-
     /// 验证零间隔报告字节阈值并注册快照变化下一次执行。
-
     /// </summary>
     [Fact]
     public async Task DownloadProgress_ZeroIntervalReportsByteThresholdAndRegistrationSnapshotChangesNextRun()
@@ -850,10 +850,10 @@ public class HttpTransferCapabilitiesTest
         replacement.Last().IsCompleted.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证空成功响应报告零字节正文末尾。
-
     /// </summary>
     /// <param name="status">测试输入值。</param>
     /// <param name="method">测试输入值。</param>
@@ -874,10 +874,10 @@ public class HttpTransferCapabilitiesTest
         progress[1].IsCompleted.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证 HTTP 失败或观察器异常时不报告成功结束。
-
     /// </summary>
     [Fact]
     public async Task DownloadProgress_HttpFailureAndObserverErrorDoNotReportSuccessfulEof()
@@ -901,10 +901,10 @@ public class HttpTransferCapabilitiesTest
         trackingContent.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证取消是否不报告正文读取结束。
-
     /// </summary>
     [Fact]
     public async Task DownloadProgress_CancellationDoesNotReportCompletedEof()
@@ -927,10 +927,10 @@ public class HttpTransferCapabilitiesTest
         body.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证使用已配置选项和字节顺序标记解析 JSON 后缀。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_ParsesJsonSuffixWithConfiguredOptionsAndBom()
@@ -945,10 +945,10 @@ public class HttpTransferCapabilitiesTest
         result.State.ShouldBe(TransferState.Ready);
     }
 
+
+
     /// <summary>
-
     /// 验证 UTF-8 字节顺序标记跨单字节读取时仍可正确解析。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_ParsesUtf8BomSplitAcrossSingleByteReads()
@@ -967,10 +967,10 @@ public class HttpTransferCapabilitiesTest
         body.CanRead.ShouldBeFalse();
     }
 
+
+
     /// <summary>
-
     /// 验证 Unicode 空白字符跨读取边界时仍能识别空前缀。
-
     /// </summary>
     /// <param name="chunkSize">测试输入值。</param>
     [Theory]
@@ -994,10 +994,10 @@ public class HttpTransferCapabilitiesTest
         body.CanRead.ShouldBeFalse();
     }
 
+
+
     /// <summary>
-
     /// 验证已知并未知长度接受准确上限并拒绝一个字节更少。
-
     /// </summary>
     /// <param name="knownLength">测试输入值。</param>
     [Theory]
@@ -1030,10 +1030,10 @@ public class HttpTransferCapabilitiesTest
         rejectedContent.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证空字符串响应保留旧格式空字符串。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_EmptyStringResponseKeepsLegacyEmptyString()
@@ -1047,10 +1047,10 @@ public class HttpTransferCapabilitiesTest
         result.ShouldBe(string.Empty);
     }
 
+
+
     /// <summary>
-
     /// 验证空响应调用自定义转换器一次。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_EmptyResponseInvokesCustomConverterOnce()
@@ -1072,10 +1072,10 @@ public class HttpTransferCapabilitiesTest
         conversionCalls.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证空白正文、HEAD 请求或无正文响应返回空并执行成功回调。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_WhitespaceAndHeadOrNoContentReturnNullAndRunSuccessCallback()
@@ -1099,10 +1099,10 @@ public class HttpTransferCapabilitiesTest
         successCalls.ShouldBe(3);
     }
 
+
+
     /// <summary>
-
     /// 验证空白控制字符仍保持空。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_WhitespaceControlCharactersRemainNull()
@@ -1117,10 +1117,10 @@ public class HttpTransferCapabilitiesTest
         result.ShouldBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证字符串响应使用旧格式回退。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_StringResponseUsesLegacyFallback()
@@ -1135,10 +1135,10 @@ public class HttpTransferCapabilitiesTest
         result.ShouldBe("plain response");
     }
 
+
+
     /// <summary>
-
     /// 验证 Unicode 空白字符正文返回空内容。
-
     /// </summary>
     /// <param name="whitespace">测试输入值。</param>
     [Theory]
@@ -1156,10 +1156,10 @@ public class HttpTransferCapabilitiesTest
         result.ShouldBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证 JSON 前缀前出现 Unicode 空白字符时仍判定为无效。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_UnicodeWhitespacePrefixBeforeJsonRemainsInvalid()
@@ -1173,10 +1173,10 @@ public class HttpTransferCapabilitiesTest
                 .GetJsonStreamAsync());
     }
 
+
+
     /// <summary>
-
     /// 验证非 UTF-8 响应回退到原有转换流程并保留转换回调。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_FallsBackForNonUtf8AndPreservesConversionCallbacks()
@@ -1200,10 +1200,10 @@ public class HttpTransferCapabilitiesTest
         completeCount.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证限制未知长度上限并保留解析失败观察结果。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_EnforcesUnknownLengthLimitAndPreservesParseFailureObservation()
@@ -1231,10 +1231,10 @@ public class HttpTransferCapabilitiesTest
         parseCompletions.Single().Exception.ShouldBeSameAs(parseError);
     }
 
+
+
     /// <summary>
-
     /// 验证取消期间读取是否观察到一次并释放正文。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_CancellationDuringReadIsObservedOnceAndDisposesBody()
@@ -1267,10 +1267,10 @@ public class HttpTransferCapabilitiesTest
         completions[0].Exception.ShouldBeSameAs(error);
     }
 
+
+
     /// <summary>
-
     /// 验证成功回调失败传播并释放响应。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_SuccessCallbackFailurePropagatesAndDisposesResponse()
@@ -1293,10 +1293,10 @@ public class HttpTransferCapabilitiesTest
         completions.Single().Exception.ShouldBeSameAs(callbackError);
     }
 
+
+
     /// <summary>
-
     /// 验证发送后拒绝该能力，并对 HTTP 失败响应回退到原有流程。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_RejectsOnSendAfterAndFallsBackForHttpFailure()
@@ -1317,10 +1317,10 @@ public class HttpTransferCapabilitiesTest
         completeCalls.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证返回元数据并释放响应正文。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamResponseAsync_ReturnsMetadataAndDisposesResponseBody()
@@ -1346,10 +1346,10 @@ public class HttpTransferCapabilitiesTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证非 UTF-8 响应回退到原有流程且只执行一次回调。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamResponseAsync_FallsBackForNonUtf8AndRunsCallbacksOnce()
@@ -1373,10 +1373,10 @@ public class HttpTransferCapabilitiesTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证空响应保留元数据。
-
     /// </summary>
     /// <param name="methodName">测试输入值。</param>
     /// <param name="statusCode">测试输入值。</param>
@@ -1427,10 +1427,10 @@ public class HttpTransferCapabilitiesTest
         oversized.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证取消释放正文。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamResponseAsync_CancellationDisposesBody()
@@ -1452,8 +1452,9 @@ public class HttpTransferCapabilitiesTest
         body.IsDisposed.ShouldBeTrue();
     }
     /// <summary>
-    /// 创建 PUT 方法重试配置。
+    /// 创建允许 PUT 请求重试一次且无需等待的配置。
     /// </summary>
+    /// <returns>禁用抖动、延迟为零并允许 PUT 重试的策略。</returns>
     private static HttpRetryOptions RetryPut()
     {
         var options = new HttpRetryOptions
@@ -1467,24 +1468,31 @@ public class HttpTransferCapabilitiesTest
         return options;
     }
 
+
+
     /// <summary>
-
-    /// 处理测试场景中的 Ok。
-
+    /// 创建携带指定字符串正文的成功响应。
     /// </summary>
+    /// <param name="value">成功响应的字符串正文。</param>
+    /// <returns>状态码为 200 且包含指定正文的 HTTP 响应。</returns>
     private static HttpResponseMessage Ok(string value) => new HttpResponseMessage(HttpStatusCode.OK)
     { Content = new StringContent(value) };
     /// <summary>
-    /// 处理测试场景中的 Status。
+    /// 创建携带固定失败文本的指定状态响应。
     /// </summary>
+    /// <param name="status">响应使用的 HTTP 状态码。</param>
+    /// <returns>正文为 <c>failed</c> 的 HTTP 响应。</returns>
     private static HttpResponseMessage Status(HttpStatusCode status) => new HttpResponseMessage(status)
     { Content = new StringContent("failed") };
 
+
+
     /// <summary>
-
-    /// 处理测试场景中的 JsonContent。
-
+    /// 创建带有指定媒体类型的字节正文。
     /// </summary>
+    /// <param name="bytes">作为正文载荷的原始字节。</param>
+    /// <param name="contentType">可解析的 Content-Type 响应头值。</param>
+    /// <returns>包含指定字节及媒体类型的 HTTP 内容，调用方负责释放。</returns>
     private static HttpContent JsonContent(byte[] bytes, string contentType)
     {
         var content = new ByteArrayContent(bytes);
@@ -1492,10 +1500,10 @@ public class HttpTransferCapabilitiesTest
         return content;
     }
 
+
+
     /// <summary>
-
     /// 根据异步回调生成 HTTP 响应的消息处理器。
-
     /// </summary>
     private sealed class StubHandler : HttpMessageHandler
     {
@@ -1504,12 +1512,12 @@ public class HttpTransferCapabilitiesTest
         /// </summary>
         private readonly Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> _send;
         /// <summary>
-        /// 初始化一个<see cref="StubHandler"/>类型的实例。
+        /// 初始化一个 <see cref="StubHandler"/> 类型的实例。
         /// </summary>
         /// <param name="send">根据请求生成响应的委托。</param>
         public StubHandler(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> send) => _send = send;
         /// <summary>
-        /// 初始化一个<see cref="StubHandler"/>类型的实例。
+        /// 初始化一个 <see cref="StubHandler"/> 类型的实例。
         /// </summary>
         /// <param name="send">根据请求生成响应的委托。</param>
         public StubHandler(Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> send)
@@ -1519,40 +1527,50 @@ public class HttpTransferCapabilitiesTest
             => _send(request, cancellationToken);
     }
 
+
+
     /// <summary>
-
     /// 表示传输能力测试使用的 JSON 数据。
-
     /// </summary>
     private sealed class TransferDto
     {
         /// <summary>
-        /// 保存测试数据对象的名称。
+        /// 获取或设置传输 JSON 样例的名称。
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// 保存测试数据对象的状态。
+        /// 获取或设置传输 JSON 样例的枚举状态。
         /// </summary>
         public TransferState State { get; set; }
     }
     /// <summary>
     /// 标识传输能力测试的数据状态。
     /// </summary>
-    private enum TransferState { Unknown = 0, Ready = 7 }
+    private enum TransferState
+    {
+        /// <summary>
+        /// 表示样例状态未知，数值为零。
+        /// </summary>
+        Unknown = 0,
+        /// <summary>
+        /// 表示样例已就绪，数值为七。
+        /// </summary>
+        Ready = 7
+    }
+
+
 
     /// <summary>
-
     /// 记录内存流的释放状态。
-
     /// </summary>
     private sealed class TrackingMemoryStream : MemoryStream
     {
         /// <summary>
-        /// 指示测试对象是否已释放。
+        /// 获取当前测试对象是否已被释放。
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <summary>
-        /// 初始化一个<see cref="TrackingMemoryStream"/>类型的实例。
+        /// 初始化一个 <see cref="TrackingMemoryStream"/> 类型的实例。
         /// </summary>
         /// <param name="bytes">响应正文的字节数据。</param>
         public TrackingMemoryStream(byte[] bytes) : base(bytes) { }
@@ -1564,15 +1582,15 @@ public class HttpTransferCapabilitiesTest
         }
     }
 
+
+
     /// <summary>
-
     /// 禁用定位能力的内存流。
-
     /// </summary>
     private sealed class NonSeekableStream : MemoryStream
     {
         /// <summary>
-        /// 初始化一个<see cref="NonSeekableStream"/>类型的实例。
+        /// 初始化一个 <see cref="NonSeekableStream"/> 类型的实例。
         /// </summary>
         /// <param name="bytes">响应正文的字节数据。</param>
         public NonSeekableStream(byte[] bytes) : base(bytes) { }
@@ -1584,10 +1602,10 @@ public class HttpTransferCapabilitiesTest
         public override long Length => throw new NotSupportedException();
     }
 
+
+
     /// <summary>
-
     /// 限制单次读取字节数的内存流。
-
     /// </summary>
     private sealed class ChunkedMemoryStream : MemoryStream
     {
@@ -1596,7 +1614,7 @@ public class HttpTransferCapabilitiesTest
         /// </summary>
         private readonly int _chunkSize;
         /// <summary>
-        /// 初始化一个<see cref="ChunkedMemoryStream"/>类型的实例。
+        /// 初始化一个 <see cref="ChunkedMemoryStream"/> 类型的实例。
         /// </summary>
         /// <param name="bytes">响应正文的字节数据。</param>
         /// <param name="chunkSize">单次读取允许返回的最大字节数。</param>
@@ -1606,10 +1624,10 @@ public class HttpTransferCapabilitiesTest
             => base.ReadAsync(buffer, offset, Math.Min(count, _chunkSize), cancellationToken);
     }
 
+
+
     /// <summary>
-
     /// 通知读取开始并等待测试信号的流。
-
     /// </summary>
     private sealed class BlockingReadStream : Stream
     {
@@ -1618,11 +1636,11 @@ public class HttpTransferCapabilitiesTest
         /// </summary>
         private readonly TaskCompletionSource<bool> _readStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         /// <summary>
-        /// 通知测试读取操作已开始。
+        /// 获取在首次异步读取开始时完成的通知任务。
         /// </summary>
         public Task ReadStarted => _readStarted.Task;
         /// <summary>
-        /// 指示测试对象是否已释放。
+        /// 获取当前测试对象是否已被释放。
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <inheritdoc />
@@ -1660,10 +1678,10 @@ public class HttpTransferCapabilitiesTest
         }
     }
 
+
+
     /// <summary>
-
     /// 记录 HTTP 内容释放状态并控制长度报告。
-
     /// </summary>
     private sealed class TrackingContent : HttpContent
     {
@@ -1676,11 +1694,11 @@ public class HttpTransferCapabilitiesTest
         /// </summary>
         private readonly bool _knownLength;
         /// <summary>
-        /// 指示测试对象是否已释放。
+        /// 获取当前测试对象是否已被释放。
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <summary>
-        /// 初始化一个<see cref="TrackingContent"/>类型的实例。
+        /// 初始化一个 <see cref="TrackingContent"/> 类型的实例。
         /// </summary>
         /// <param name="bytes">响应正文的字节数据。</param>
         /// <param name="knownLength">是否向调用方报告正文长度。</param>

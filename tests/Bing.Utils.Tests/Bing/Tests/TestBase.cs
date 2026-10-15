@@ -1,29 +1,33 @@
 namespace Bing.Tests;
 
 /// <summary>
-/// 测试基类
+/// 提供测试输出与测试文件路径访问的基类。
 /// </summary>
 public abstract class TestBase
 {
     /// <summary>
-    /// 输出
+    /// 获取当前测试使用的输出助手。
     /// </summary>
     protected ITestOutputHelper Output { get; }
 
     /// <summary>
-    /// 初始化一个<see cref="TestBase"/>类型的实例。
+    /// 初始化一个 <see cref="TestBase"/> 类型的实例。
     /// </summary>
+    /// <param name="output">当前测试的输出助手。</param>
     protected TestBase(ITestOutputHelper output) => Output = output;
 
     /// <summary>
-    /// 获取根路径
+    /// 获取测试运行的当前工作目录。
     /// </summary>
+    /// <returns>当前工作目录的路径。</returns>
     protected string GetTestRootPath() => Directory.GetCurrentDirectory();
 
     /// <summary>
-    /// 获取测试文件根路径
+    /// 将路径片段与测试工作目录组合为文件路径。
     /// </summary>
-    /// <param name="paths">路径</param>
+    /// <param name="paths">按顺序组合的路径片段。</param>
+    /// <returns>组合后的测试文件路径。</returns>
+    /// <remarks>将组合结果写入测试输出。</remarks>
     protected string GetTestFilePath(params string[] paths)
     {
         var rootPath = GetTestRootPath();

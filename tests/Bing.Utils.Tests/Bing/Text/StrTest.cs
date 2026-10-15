@@ -4,6 +4,11 @@ namespace Bing.Text;
 /// </summary>
 public class StrTest
 {
+    /// <summary>
+    /// 将输入字符串转换为 PascalCase。
+    /// </summary>
+    /// <param name="input">待转换的字符串。</param>
+    /// <param name="expected">预期的 PascalCase 字符串。</param>
     [Theory]
     [InlineData("userName", "UserName")]
     [InlineData("URLValue", "URLValue")]
@@ -14,6 +19,11 @@ public class StrTest
         var result = Str.ToPascalCase(input);
         result.ShouldBe(expected);
     }
+    /// <summary>
+    /// 将输入字符串转换为 camelCase。
+    /// </summary>
+    /// <param name="input">待转换的字符串。</param>
+    /// <param name="expected">预期的 camelCase 字符串。</param>
     [Theory]
     [InlineData("UserName", "userName")]
     [InlineData("URLValue", "urlValue")]
@@ -24,6 +34,11 @@ public class StrTest
         var result = Str.ToCamelCase(input);
         result.ShouldBe(expected);
     }
+    /// <summary>
+    /// 将输入字符串转换为 snake_case。
+    /// </summary>
+    /// <param name="input">待转换的字符串。</param>
+    /// <param name="expected">预期的 snake_case 字符串。</param>
     [Theory]
     [InlineData("UserName", "user_name")]
     [InlineData("HTTPServerError", "http_server_error")]
@@ -33,6 +48,11 @@ public class StrTest
         var result = Str.ToSnakeCase(input);
         result.ShouldBe(expected);
     }
+    /// <summary>
+    /// 将输入字符串转换为 kebab-case。
+    /// </summary>
+    /// <param name="input">待转换的字符串。</param>
+    /// <param name="expected">预期的 kebab-case 字符串。</param>
     [Theory]
     [InlineData("UserName", "user-name")]
     [InlineData("HTTPServerError", "http-server-error")]
@@ -42,6 +62,9 @@ public class StrTest
         var result = Str.ToKebabCase(input);
         result.ShouldBe(expected);
     }
+    /// <summary>
+    /// 验证重复次数不大于零时返回空字符串。
+    /// </summary>
     [Fact]
     public void Repeat_TimesLessThanOrEqualToZero_ReturnsEmptyString()
     {

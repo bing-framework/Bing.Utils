@@ -7,15 +7,16 @@ using Bing.IO;
 namespace Bing.Utils.Http.Tests.Integration.Controllers;
 
 /// <summary>
-/// 测试Api控制器6 - 用于测试上传
+/// 提供将上传文件保存到临时目录的测试端点。
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class Test6Controller : ControllerBase
 {
     /// <summary>
-    /// 上传
+    /// 保存上传文件并回显文件信息及可选表单参数。
     /// </summary>
+    /// <returns>包含字段名称、原始文件名及可选 <c>util</c> 参数的测试文本。</returns>
     [HttpPost]
     public async Task<string> Upload()
     {
@@ -31,8 +32,9 @@ public class Test6Controller : ControllerBase
     }
 
     /// <summary>
-    /// 多上传
+    /// 保存所有上传文件并回显各文件信息。
     /// </summary>
+    /// <returns>带 <c>ok</c> 前缀并依次包含字段名称与原始文件名的测试文本。</returns>
     [HttpPost("multi")]
     public async Task<string> MultiUpload()
     {

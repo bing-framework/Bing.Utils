@@ -3,13 +3,13 @@ using Bing.Collections;
 namespace Bing.Collections.Legacy;
 
 /// <summary>
-/// 数组捷径扩展
+/// 数组查找、清空、反转、排序和字节操作的兼容测试。
 /// </summary>
 [Trait("CollUT", "ArrayUT.Shortcut")]
 public class ArrayShortcutTests
 {
     /// <summary>
-    /// 测试 - 二进制查询
+    /// 验证数组二分查找的匹配和未命中结果。
     /// </summary>
     [Fact]
     public void Test_BinarySearch()
@@ -37,7 +37,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// 测试 - 清空
+    /// 验证整体和局部清空将元素设为默认值并保留数组长度。
     /// </summary>
     [Fact]
     public void Test_Clear()
@@ -79,7 +79,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// 测试 - 查找
+    /// 验证条件查找返回全部匹配元素。
     /// </summary>
     [Fact]
     public void Test_FindAll()
@@ -95,7 +95,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// 测试 - 获取指定对象的索引
+    /// 验证正向索引查找及指定范围的未命中结果。
     /// </summary>
     [Fact]
     public void Test_IndexOf()
@@ -113,7 +113,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// 测试 - 获取指定对象的最后索引
+    /// 验证反向索引查找及指定范围的未命中结果。
     /// </summary>
     [Fact]
     public void Test_LastIndexOf()
@@ -131,7 +131,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// 测试 - 反转
+    /// 验证整体和局部反转的元素顺序。
     /// </summary>
     [Fact]
     public void Test_Reverse()
@@ -152,7 +152,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// 测试 - 排序
+    /// 验证数组按默认顺序原地排序。
     /// </summary>
     [Fact]
     public void Test_Sort()
@@ -166,7 +166,7 @@ public class ArrayShortcutTests
     }
 
     /// <summary>
-    /// 测试 - 字节操作
+    /// 验证数组的字节长度、读取及写入。
     /// </summary>
     [Fact]
     public void Test_ByteOps()

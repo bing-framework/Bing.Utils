@@ -1,13 +1,13 @@
 namespace Bing.Date;
 
 /// <summary>
-/// 测试类：覆盖 `DateTimeExtensions.Navigation` 在 DST 切换日期下的固定偏移契约。
+/// 验证夏令时切换日期下的固定小时偏移计算。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.DstBoundary")]
 public class DateTimeDstBoundaryContractTest
 {
     /// <summary>
-    /// 测试用例：验证 `BeginningOfDay` 在 `DstStartDate` 场景下，结果为 `UsesFixedOffsetArithmetic`。
+    /// 验证夏令时开始日的日首边界按固定偏移计算。
     /// </summary>
     [Fact]
     public void BeginningOfDay_DstStartDate_UsesFixedOffsetArithmetic()
@@ -23,7 +23,7 @@ public class DateTimeDstBoundaryContractTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `EndOfDay` 在 `DstEndDate` 场景下，结果为 `UsesFixedOffsetArithmetic`。
+    /// 验证夏令时结束日的日末边界按固定偏移计算。
     /// </summary>
     [Fact]
     public void EndOfDay_DstEndDate_UsesFixedOffsetArithmetic()

@@ -1,22 +1,22 @@
 namespace Bing.Tests.Samples;
 
 /// <summary>
-/// 测试样例4
+/// 用于验证字符串转换和浅复制的测试样例。
 /// </summary>
 public class Sample4
 {
     /// <summary>
-    /// string值
+    /// 获取或设置用于复制测试的字符串值。
     /// </summary>
     public string StringValue { get; set; }
 
-    /// <summary>
-    /// 输出空字符串
-    /// </summary>
+    /// <inheritdoc />
+    /// <remarks>此样例始终返回空字符串。</remarks>
     public override string ToString() => "";
 
     /// <summary>
-    /// 获取副本
+    /// 创建当前样例的浅副本。
     /// </summary>
+    /// <returns>复制当前实例字段所得的浅副本。</returns>
     public object GetClone() => MemberwiseClone();
 }

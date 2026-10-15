@@ -11,6 +11,8 @@ public class RandomAndTimestampTest
     /// <summary>
     /// 测试用例：Create 在指定长度与字典时，返回长度正确且字符全部来自字典。
     /// </summary>
+    /// <param name="length">要生成的随机 ID 长度。</param>
+    /// <param name="dict">随机 ID 可使用的字符集合。</param>
     [Theory]
     [InlineData(1, RandomIdGenerator.AllNumbers)]
     [InlineData(8, RandomIdGenerator.SimpleWords)]
@@ -45,6 +47,7 @@ public class RandomAndTimestampTest
     /// <summary>
     /// 测试用例：CreateNonce 在长度小于 16 时，自动提升到最小长度 16。
     /// </summary>
+    /// <param name="inputLength">小于最小长度的输入值。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -119,6 +122,8 @@ public class RandomAndTimestampTest
     /// <summary>
     /// 测试辅助：通过反射调用 TimestampId 非公开构造函数，创建可控初始时间的实例。
     /// </summary>
+    /// <param name="initialDate">要传给 TimestampId 非公开构造函数的初始时间。</param>
+    /// <returns>使用指定初始时间创建的时间戳 ID 实例。</returns>
     private static TimestampId CreateTimestampIdByReflection(DateTime initialDate)
     {
         var ctor = typeof(TimestampId).GetConstructor(

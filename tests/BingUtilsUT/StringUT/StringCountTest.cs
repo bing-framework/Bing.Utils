@@ -1,6 +1,9 @@
 using Bing.Text;
 namespace BingUtilsUT.StringUT;
 
+/// <summary>
+/// 验证字符和子串计数对大小写、中文及空输入的处理。
+/// </summary>
 [Trait("StringUT", "Strings.Count")]
 public class StringCountTest
 {

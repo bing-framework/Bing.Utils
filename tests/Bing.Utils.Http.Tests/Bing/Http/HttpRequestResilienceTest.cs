@@ -10,10 +10,10 @@ using Bing.Http.Clients;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+
+
 /// <summary>
-
 /// HTTP 请求隔离、资源释放与显式弹性策略回归测试。
-
 /// </summary>
 public class HttpRequestResilienceTest
 {
@@ -43,10 +43,10 @@ public class HttpRequestResilienceTest
         client.Timeout.ShouldBe(TimeSpan.FromSeconds(33));
     }
 
+
+
     /// <summary>
-
     /// 验证是否拒绝之前发送。
-
     /// </summary>
     [Fact]
     public void SharedHandlerOptions_AreRejectedBeforeSend()
@@ -58,10 +58,10 @@ public class HttpRequestResilienceTest
         Should.Throw<NotSupportedException>(() => request.UseCookies(false));
     }
 
+
+
     /// <summary>
-
     /// 验证不修改真实处理程序属性。
-
     /// </summary>
     [Fact]
     public void SharedHandlerOptions_DoNotMutateRealHandlerProperties()
@@ -105,10 +105,10 @@ public class HttpRequestResilienceTest
         ReferenceEquals(handler.ClientCertificates[0], certificate).ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证释放响应并执行最终回调。
-
     /// </summary>
     [Fact]
     public async Task Result_DisposesResponseAndRunsFinalCallbacks()
@@ -124,10 +124,10 @@ public class HttpRequestResilienceTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证释放调用方拥有的上传流。
-
     /// </summary>
     [Fact]
     public async Task SendBeforeRejectsRequest_DisposesOwnedUploadStream()
@@ -142,10 +142,10 @@ public class HttpRequestResilienceTest
         source.CanRead.ShouldBeFalse();
     }
 
+
+
     /// <summary>
-
     /// 验证释放此前已拥有的流。
-
     /// </summary>
     [Fact]
     public async Task ReplacingUpload_DisposesPreviouslyOwnedStream()
@@ -163,10 +163,10 @@ public class HttpRequestResilienceTest
         replacement.CanRead.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证释放调用方拥有的上传流。
-
     /// </summary>
     [Fact]
     public async Task InvalidDownloadDestination_DisposesOwnedUploadStream()
@@ -180,10 +180,10 @@ public class HttpRequestResilienceTest
         source.CanRead.ShouldBeFalse();
     }
 
+
+
     /// <summary>
-
     /// 验证调用现有受保护的响应重写方法。
-
     /// </summary>
     [Fact]
     public async Task GetResultAsync_InvokesExistingProtectedResponseOverride()
@@ -196,10 +196,10 @@ public class HttpRequestResilienceTest
         result.ShouldBe("overridden");
     }
 
+
+
     /// <summary>
-
     /// 验证释放调用方拥有的上传流。
-
     /// </summary>
     [Fact]
     public async Task RetryRejectsNonSeekableCallerStream_DisposesOwnedUploadStream()
@@ -215,10 +215,10 @@ public class HttpRequestResilienceTest
         source.CanRead.ShouldBeFalse();
     }
 
+
+
     /// <summary>
-
     /// 验证重放调用方提供的可定位流流。
-
     /// </summary>
     [Fact]
     public async Task Retry_ReplaysSeekableCallerStream()
@@ -249,10 +249,10 @@ public class HttpRequestResilienceTest
         source.CanRead.ShouldBeFalse();
     }
 
+
+
     /// <summary>
-
     /// 验证释放响应。
-
     /// </summary>
     [Fact]
     public async Task SendAfterThrows_DisposesResponse()
@@ -269,10 +269,10 @@ public class HttpRequestResilienceTest
         completed.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证取消保留响应在回调完成前保持有效完成。
-
     /// </summary>
     [Fact]
     public async Task SendAfter_CancellationKeepsResponseAliveUntilCallbackCompletes()
@@ -319,10 +319,10 @@ public class HttpRequestResilienceTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证安全方法重试瞬时故障状态不安全方法是否不。
-
     /// </summary>
     [Fact]
     public async Task Retry_SafeMethodRetriesTransientStatus_UnsafeMethodDoesNot()
@@ -511,10 +511,10 @@ public class HttpRequestResilienceTest
         correlationIds.ShouldBe(new[] { "trace-42", "trace-42" });
     }
 
+
+
     /// <summary>
-
     /// 验证配置的重试次数和状态码。
-
     /// </summary>
     /// <param name="statusCode">测试输入值。</param>
     [Theory]
@@ -549,10 +549,10 @@ public class HttpRequestResilienceTest
         attempts.ShouldBe(2);
     }
 
+
+
     /// <summary>
-
     /// 验证是否不重试时发送之前不会影响安全性方法到不安全方法。
-
     /// </summary>
     [Fact]
     public async Task Retry_DoesNotRetryWhenSendBeforeChangesSafeMethodToUnsafeMethod()
@@ -579,10 +579,10 @@ public class HttpRequestResilienceTest
         attempts.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证使用重试之后增量或日期。
-
     /// </summary>
     /// <param name="useDate">测试输入值。</param>
     [Theory]
@@ -614,10 +614,10 @@ public class HttpRequestResilienceTest
         request.Delays.ShouldBe(new[] { useDate ? TimeSpan.FromSeconds(7) : TimeSpan.FromSeconds(3) });
     }
 
+
+
     /// <summary>
-
     /// 验证停止之后已配置重试数量。
-
     /// </summary>
     [Fact]
     public async Task Retry_StopsAfterConfiguredRetryCount()
@@ -644,10 +644,10 @@ public class HttpRequestResilienceTest
         request.Delays.Count.ShouldBe(2);
     }
 
+
+
     /// <summary>
-
     /// 验证使用确定性抖动并限制指数退避时长。
-
     /// </summary>
     [Fact]
     public async Task Retry_UsesDeterministicJitterAndCapsExponentialBackoff()
@@ -680,10 +680,10 @@ public class HttpRequestResilienceTest
         });
     }
 
+
+
     /// <summary>
-
     /// 验证停止时重试之后超过剩余限制超时预算。
-
     /// </summary>
     [Fact]
     public async Task Retry_StopsWhenRetryAfterExceedsRemainingTimeoutBudget()
@@ -712,10 +712,10 @@ public class HttpRequestResilienceTest
         request.Delays.ShouldBeEmpty();
     }
 
+
+
     /// <summary>
-
     /// 验证使用一个超时所有尝试共用的预算。
-
     /// </summary>
     [Fact]
     public async Task Retry_UsesOneTimeoutBudgetAcrossAllAttempts()
@@ -743,10 +743,10 @@ public class HttpRequestResilienceTest
         request.Delays.ShouldBe(new[] { TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(4) });
     }
 
+
+
     /// <summary>
-
     /// 验证无限超时允许已配置退避策略。
-
     /// </summary>
     [Fact]
     public async Task Retry_InfiniteTimeoutAllowsConfiguredBackoff()
@@ -774,10 +774,10 @@ public class HttpRequestResilienceTest
         request.Delays.ShouldBe(new[] { TimeSpan.FromSeconds(1) });
     }
 
+
+
     /// <summary>
-
     /// 验证接受厂商 JSON 媒体类型。
-
     /// </summary>
     [Fact]
     public async Task JsonContent_AcceptsVendorJsonMediaType()
@@ -800,10 +800,10 @@ public class HttpRequestResilienceTest
         body.ShouldContain("sample");
     }
 
+
+
     /// <summary>
-
     /// 验证接受厂商 JSON 媒体类型使用字符集参数。
-
     /// </summary>
     [Fact]
     public async Task JsonContent_AcceptsVendorJsonMediaTypeWithCharsetParameter()
@@ -829,10 +829,10 @@ public class HttpRequestResilienceTest
         body.ShouldContain("sample");
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝未知长度响应。
-
     /// </summary>
     [Fact]
     public async Task Limit_RejectsUnknownLengthResponse()
@@ -844,10 +844,10 @@ public class HttpRequestResilienceTest
                 .MaxResponseBytes(10).GetStreamAsync());
     }
 
+
+
     /// <summary>
-
     /// 验证拒绝过大的自定义回调正文并完成。
-
     /// </summary>
     [Fact]
     public async Task Limit_RejectsOversizedCustomCallbackBodyAndCompletes()
@@ -872,10 +872,10 @@ public class HttpRequestResilienceTest
         completed.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证不能将调用方拥有的流作为响应返回。
-
     /// </summary>
     [Fact]
     public async Task SendAfter_CannotReturnResponseOwnedStream()
@@ -889,10 +889,10 @@ public class HttpRequestResilienceTest
                 .GetResultAsync());
     }
 
+
+
     /// <summary>
-
     /// 验证允许返回独立流。
-
     /// </summary>
     [Fact]
     public async Task SendAfter_AllowsReturningIndependentStream()
@@ -914,10 +914,10 @@ public class HttpRequestResilienceTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证保持目标流保持打开。
-
     /// </summary>
     [Fact]
     public async Task DownloadToAsync_LeavesDestinationOpen()
@@ -931,10 +931,10 @@ public class HttpRequestResilienceTest
         destination.ToArray().ShouldBe(new byte[] { 1, 2, 3 });
     }
 
+
+
     /// <summary>
-
     /// 验证处理空正文。
-
     /// </summary>
     [Fact]
     public async Task DownloadToAsync_HandlesEmptyBody()
@@ -950,10 +950,10 @@ public class HttpRequestResilienceTest
         destination.ToArray().ShouldBeEmpty();
     }
 
+
+
     /// <summary>
-
     /// 验证复制较短内容读取从不可定位源流。
-
     /// </summary>
     [Fact]
     public async Task DownloadToAsync_CopiesShortReadsFromNonSeekableSource()
@@ -969,10 +969,10 @@ public class HttpRequestResilienceTest
         destination.ToArray().ShouldBe(bytes);
     }
 
+
+
     /// <summary>
-
     /// 验证遵循重试后的延迟时间。
-
     /// </summary>
     [Fact]
     public async Task Retry_RespectsRetryAfterDelay()
@@ -996,10 +996,10 @@ public class HttpRequestResilienceTest
         timer.ElapsedMilliseconds.ShouldBeGreaterThanOrEqualTo(65);
     }
 
+
+
     /// <summary>
-
     /// 验证取消期间退避策略停止后续尝试。
-
     /// </summary>
     [Fact]
     public async Task Retry_CancelDuringBackoffStopsFurtherAttempts()
@@ -1018,10 +1018,10 @@ public class HttpRequestResilienceTest
         attempts.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证是否不重试嵌套证书失败。
-
     /// </summary>
     [Fact]
     public async Task Retry_DoesNotRetryNestedCertificateFailure()
@@ -1040,10 +1040,10 @@ public class HttpRequestResilienceTest
         attempts.ShouldBe(1);
     }
 
+
+
     /// <summary>
-
     /// 验证显式 POST 请求会为每次尝试重新创建正文。
-
     /// </summary>
     [Fact]
     public async Task Retry_ExplicitPostRebuildsBodyForEachAttempt()
@@ -1066,10 +1066,10 @@ public class HttpRequestResilienceTest
         bodies[0].ShouldBe(bodies[1]);
     }
 
+
+
     /// <summary>
-
     /// 验证并发请求保留各自的地址和响应头。
-
     /// </summary>
     [Fact]
     public async Task SharedClient_ConcurrentRequestsKeepUrisAndHeadersSeparate()
@@ -1093,10 +1093,10 @@ public class HttpRequestResilienceTest
         client.BaseAddress.ShouldBeNull();
     }
 
+
+
     /// <summary>
-
     /// 验证并发请求使用各自的超时时间。
-
     /// </summary>
     [Fact]
     public async Task SharedClient_ConcurrentRequestsUseIndependentTimeouts()
@@ -1111,10 +1111,10 @@ public class HttpRequestResilienceTest
         (await longRequest).ShouldBe("ok");
     }
 
+
+
     /// <summary>
-
     /// 验证复用处理程序未使用变化It。
-
     /// </summary>
     [Fact]
     public async Task NamedFactoryClient_ReusesHandlerWithoutChangingIt()
@@ -1136,10 +1136,10 @@ public class HttpRequestResilienceTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证遵循所有权。
-
     /// </summary>
     /// <param name="leaveOpen">测试输入值。</param>
     [Theory]
@@ -1160,10 +1160,10 @@ public class HttpRequestResilienceTest
         if (leaveOpen) source.Dispose();
     }
 
+
+
     /// <summary>
-
     /// 验证继续之后释放失败并保留发送异常。
-
     /// </summary>
     [Fact]
     public async Task UploadCleanup_ContinuesAfterDisposeFailureAndPreservesSendException()
@@ -1184,10 +1184,10 @@ public class HttpRequestResilienceTest
         otherStream.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证抛出清理失败之后成功请求。
-
     /// </summary>
     [Fact]
     public async Task UploadCleanup_ThrowsCleanupFailureAfterSuccessfulRequest()
@@ -1210,10 +1210,10 @@ public class HttpRequestResilienceTest
         otherStream.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证已调度等待期间先释放响应，再进入等待。
-
     /// </summary>
     [Fact]
     public async Task ObserveRetry_ReportsOneScheduledWaitAfterResponseDisposalAndBeforeWaiting()
@@ -1255,10 +1255,10 @@ public class HttpRequestResilienceTest
         completions[0].Attempts.ShouldBe(2);
     }
 
+
+
     /// <summary>
-
     /// 验证报告最终重试之后增量或使用日期而非封顶抖动。
-
     /// </summary>
     /// <param name="useDate">测试输入值。</param>
     [Theory]
@@ -1291,10 +1291,10 @@ public class HttpRequestResilienceTest
         request.Delays.ShouldBe(new[] { events[0].Delay });
     }
 
+
+
     /// <summary>
-
     /// 验证报告确定性抖动并封顶的指数延迟。
-
     /// </summary>
     [Fact]
     public async Task ObserveRetry_ReportsDeterministicJitterAndCappedExponentialDelays()
@@ -1322,10 +1322,10 @@ public class HttpRequestResilienceTest
         request.Delays.ShouldBe(events.Select(item => item.Delay));
     }
 
+
+
     /// <summary>
-
     /// 验证网络失败保留原始异常引用。
-
     /// </summary>
     [Fact]
     public async Task ObserveRetry_NetworkFailurePreservesOriginalExceptionReference()
@@ -1350,10 +1350,10 @@ public class HttpRequestResilienceTest
         events[0].Delay.ShouldBe(TimeSpan.FromMilliseconds(200));
     }
 
+
+
     /// <summary>
-
     /// 验证是否不报告时无等待是否接受。
-
     /// </summary>
     /// <param name="boundary">测试输入值。</param>
     [Theory]
@@ -1393,10 +1393,10 @@ public class HttpRequestResilienceTest
         content.IsDisposed.ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
     /// 验证网络不足重试预算保留失败未使用事件。
-
     /// </summary>
     [Fact]
     public async Task ObserveRetry_InsufficientNetworkRetryBudgetPreservesFailureWithoutEvent()
@@ -1418,10 +1418,10 @@ public class HttpRequestResilienceTest
         request.Delays.ShouldBeEmpty();
     }
 
+
+
     /// <summary>
-
     /// 验证证书失败是否不调度等待。
-
     /// </summary>
     [Fact]
     public async Task ObserveRetry_CertificateFailureDoesNotScheduleWait()
@@ -1442,10 +1442,10 @@ public class HttpRequestResilienceTest
         request.Delays.ShouldBeEmpty();
     }
 
+
+
     /// <summary>
-
     /// 验证耗尽重试数量报告仅进入零延迟等待。
-
     /// </summary>
     [Fact]
     public async Task ObserveRetry_ExhaustedRetryCountReportsOnlyEnteredZeroDelayWaits()
@@ -1473,10 +1473,10 @@ public class HttpRequestResilienceTest
         completions[0].Attempts.ShouldBe(3);
     }
 
+
+
     /// <summary>
-
     /// 验证等待期间取消时保留事件并阻止下一次发送。
-
     /// </summary>
     [Fact]
     public async Task ObserveRetry_CancellationDuringWaitKeepsEventButPreventsNextSend()
@@ -1516,10 +1516,10 @@ public class HttpRequestResilienceTest
         completions[0].Outcome.ShouldBe(HttpRequestOutcome.Cancelled);
     }
 
+
+
     /// <summary>
-
     /// 验证取消期间释放响应会阻止事件并取消等待。
-
     /// </summary>
     [Fact]
     public async Task ObserveRetry_CancellationDuringResponseDisposalPreventsEventAndWait()
@@ -1547,10 +1547,10 @@ public class HttpRequestResilienceTest
         completions[0].Outcome.ShouldBe(HttpRequestOutcome.Cancelled);
     }
 
+
+
     /// <summary>
-
     /// 验证观察器并异常处理程序异常是否隔离。
-
     /// </summary>
     /// <param name="errorHandling">测试输入值。</param>
     [Theory]
@@ -1584,10 +1584,10 @@ public class HttpRequestResilienceTest
         else observedErrors.Single().ShouldBeSameAs(expected);
     }
 
+
+
     /// <summary>
-
     /// 验证注册并异常处理程序快照变化仅下一次执行。
-
     /// </summary>
     [Fact]
     public async Task ObserveRetry_RegistrationAndErrorHandlerSnapshotChangesOnlyNextExecution()
@@ -1632,11 +1632,13 @@ public class HttpRequestResilienceTest
         completions.All(item => item.Attempts == 3 && item.Outcome == HttpRequestOutcome.Success).ShouldBeTrue();
     }
 
+
+
     /// <summary>
-
-    /// 处理测试场景中的 RetryObservationOptions。
-
+    /// 创建禁用抖动的重试观察配置。
     /// </summary>
+    /// <param name="maxRetries">允许的最大重试次数，默认为一次。</param>
+    /// <returns>基础延迟为二百毫秒且最大延迟为一秒的重试配置。</returns>
     private static HttpRetryOptions RetryObservationOptions(int maxRetries = 1) => new HttpRetryOptions
     {
         MaxRetries = maxRetries,
@@ -1645,18 +1647,20 @@ public class HttpRequestResilienceTest
         UseJitter = false
     };
 
+
+
     /// <summary>
-
-    /// 创建测试所需的辅助对象或数据。
-
+    /// 创建使用指定同步响应回调的 HTTP 客户端。
     /// </summary>
+    /// <param name="send">根据请求及取消令牌返回响应的测试委托。</param>
+    /// <returns>使用回调消息处理器的客户端，调用方负责释放。</returns>
     private static HttpClient CreateClient(Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> send)
         => new HttpClient(new StubHandler(send));
 
+
+
     /// <summary>
-
     /// 根据同步回调生成 HTTP 响应的消息处理器。
-
     /// </summary>
     private sealed class StubHandler : HttpMessageHandler
     {
@@ -1665,7 +1669,7 @@ public class HttpRequestResilienceTest
         /// </summary>
         private readonly Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> _send;
         /// <summary>
-        /// 初始化一个<see cref="StubHandler"/>类型的实例。
+        /// 初始化一个 <see cref="StubHandler"/> 类型的实例。
         /// </summary>
         /// <param name="send">根据请求生成响应的委托。</param>
         public StubHandler(Func<HttpRequestMessage, CancellationToken, HttpResponseMessage> send) => _send = send;
@@ -1674,10 +1678,10 @@ public class HttpRequestResilienceTest
             => Task.FromResult(_send(request, cancellationToken));
     }
 
+
+
     /// <summary>
-
     /// 延迟指定时间后返回成功响应的消息处理器。
-
     /// </summary>
     private sealed class DelayedHandler : HttpMessageHandler
     {
@@ -1686,10 +1690,10 @@ public class HttpRequestResilienceTest
         /// </summary>
         private readonly TimeSpan _delay;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="DelayedHandler"/>类型的实例。
-
+        /// 初始化一个 <see cref="DelayedHandler"/> 类型的实例。
         /// </summary>
         /// <param name="delay">发送响应前等待的时长。</param>
         public DelayedHandler(TimeSpan delay) => _delay = delay;
@@ -1702,10 +1706,10 @@ public class HttpRequestResilienceTest
         }
     }
 
+
+
     /// <summary>
-
     /// 允许测试指定重试时钟和抖动值的请求实现。
-
     /// </summary>
     private sealed class RetryTimingRequest : HttpRequest<string>
     {
@@ -1718,10 +1722,10 @@ public class HttpRequestResilienceTest
         /// </summary>
         private readonly double _retryJitter;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="RetryTimingRequest"/>类型的实例。
-
+        /// 初始化一个 <see cref="RetryTimingRequest"/> 类型的实例。
         /// </summary>
         /// <param name="client">用于发送测试请求的 HTTP 客户端。</param>
         /// <param name="now">测试使用的当前时间。</param>
@@ -1733,25 +1737,27 @@ public class HttpRequestResilienceTest
             _retryJitter = retryJitter;
         }
 
+
+
         /// <summary>
-
-        /// 记录各次重试等待时长。
-
+        /// 获取按调用顺序记录的重试等待时长。
         /// </summary>
         public List<TimeSpan> Delays { get; } = new List<TimeSpan>();
 
+
+
         /// <summary>
-
-        /// 自定义测试中的重试等待行为。
-
+        /// 获取或设置重试等待时调用的自定义异步操作。
         /// </summary>
         public Func<TimeSpan, CancellationToken, Task> WaitHandler { get; set; }
 
+
+
         /// <summary>
-
-        /// 执行测试替身的辅助操作。
-
+        /// 应用重试配置并异步获取响应结果。
         /// </summary>
+        /// <param name="options">本次执行使用的重试策略。</param>
+        /// <returns>请求最终返回的字符串结果。</returns>
         public Task<string> Run(HttpRetryOptions options) => Retry(options).GetResultAsync();
 
         /// <inheritdoc />
@@ -1770,15 +1776,15 @@ public class HttpRequestResilienceTest
         }
     }
 
+
+
     /// <summary>
-
     /// 通过重写响应处理返回固定结果的请求实现。
-
     /// </summary>
     private sealed class OverridingResponseRequest : HttpRequest<string>
     {
         /// <summary>
-        /// 初始化一个<see cref="OverridingResponseRequest"/>类型的实例。
+        /// 初始化一个 <see cref="OverridingResponseRequest"/> 类型的实例。
         /// </summary>
         /// <param name="client">用于发送测试请求的 HTTP 客户端。</param>
         public OverridingResponseRequest(HttpClient client)
@@ -1789,10 +1795,10 @@ public class HttpRequestResilienceTest
             => Task.FromResult("overridden");
     }
 
+
+
     /// <summary>
-
     /// 记录客户端名称并使用指定处理器创建客户端的工厂。
-
     /// </summary>
     private sealed class NamedFactory : IHttpClientFactory
     {
@@ -1801,11 +1807,11 @@ public class HttpRequestResilienceTest
         /// </summary>
         private readonly HttpMessageHandler _handler;
         /// <summary>
-        /// 记录工厂创建的客户端名称。
+        /// 获取工厂按调用顺序记录的客户端名称。
         /// </summary>
         public List<string> CreatedNames { get; } = new List<string>();
         /// <summary>
-        /// 初始化一个<see cref="NamedFactory"/>类型的实例。
+        /// 初始化一个 <see cref="NamedFactory"/> 类型的实例。
         /// </summary>
         /// <param name="handler">供工厂创建客户端时使用的消息处理器。</param>
         public NamedFactory(HttpMessageHandler handler) => _handler = handler;
@@ -1817,10 +1823,10 @@ public class HttpRequestResilienceTest
         }
     }
 
+
+
     /// <summary>
-
     /// 记录 HTTP 内容是否已释放。
-
     /// </summary>
     private sealed class TrackingContent : StringContent
     {
@@ -1829,13 +1835,13 @@ public class HttpRequestResilienceTest
         /// </summary>
         private readonly Action _onDispose;
         /// <summary>
-        /// 初始化一个<see cref="TrackingContent"/>类型的实例。
+        /// 初始化一个 <see cref="TrackingContent"/> 类型的实例。
         /// </summary>
         /// <param name="content">测试响应正文文本。</param>
         /// <param name="onDispose">内容释放时执行的回调。</param>
         public TrackingContent(string content, Action onDispose = null) : base(content) => _onDispose = onDispose;
         /// <summary>
-        /// 指示测试对象是否已释放。
+        /// 获取当前测试对象是否已被释放。
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <inheritdoc />
@@ -1850,15 +1856,15 @@ public class HttpRequestResilienceTest
         }
     }
 
+
+
     /// <summary>
-
     /// 记录上传流的释放状态。
-
     /// </summary>
     private sealed class TrackingUploadStream : MemoryStream
     {
         /// <summary>
-        /// 指示测试对象是否已释放。
+        /// 获取当前测试对象是否已被释放。
         /// </summary>
         public bool IsDisposed { get; private set; }
         /// <inheritdoc />
@@ -1869,10 +1875,10 @@ public class HttpRequestResilienceTest
         }
     }
 
+
+
     /// <summary>
-
     /// 在释放时抛出指定异常的内存流。
-
     /// </summary>
     private sealed class ThrowingDisposeStream : MemoryStream
     {
@@ -1881,14 +1887,14 @@ public class HttpRequestResilienceTest
         /// </summary>
         private readonly Exception _error;
         /// <summary>
-        /// 记录 Dispose 调用次数。
+        /// 获取已记录的 Dispose 调用次数。
         /// </summary>
         public int DisposeCalls { get; private set; }
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="ThrowingDisposeStream"/>类型的实例。
-
+        /// 初始化一个 <see cref="ThrowingDisposeStream"/> 类型的实例。
         /// </summary>
         /// <param name="error">测试期间抛出的异常。</param>
         public ThrowingDisposeStream(Exception error) => _error = error;
@@ -1905,10 +1911,10 @@ public class HttpRequestResilienceTest
         }
     }
 
+
+
     /// <summary>
-
     /// 发送字节正文但不报告其长度的 HTTP 内容。
-
     /// </summary>
     private sealed class UnknownLengthContent : HttpContent
     {
@@ -1917,7 +1923,7 @@ public class HttpRequestResilienceTest
         /// </summary>
         private readonly byte[] _bytes;
         /// <summary>
-        /// 初始化一个<see cref="UnknownLengthContent"/>类型的实例。
+        /// 初始化一个 <see cref="UnknownLengthContent"/> 类型的实例。
         /// </summary>
         /// <param name="bytes">响应正文的字节数据。</param>
         public UnknownLengthContent(byte[] bytes) => _bytes = bytes;
@@ -1932,15 +1938,15 @@ public class HttpRequestResilienceTest
         }
     }
 
+
+
     /// <summary>
-
     /// 禁用定位能力的内存流。
-
     /// </summary>
     private sealed class NonSeekableStream : MemoryStream
     {
         /// <summary>
-        /// 初始化一个<see cref="NonSeekableStream"/>类型的实例。
+        /// 初始化一个 <see cref="NonSeekableStream"/> 类型的实例。
         /// </summary>
         /// <param name="bytes">响应正文的字节数据。</param>
         public NonSeekableStream(byte[] bytes) : base(bytes) { }
@@ -1956,10 +1962,10 @@ public class HttpRequestResilienceTest
         public override long Seek(long offset, SeekOrigin loc) => throw new NotSupportedException();
     }
 
+
+
     /// <summary>
-
     /// 禁用定位并限制单次读取字节数的流。
-
     /// </summary>
     private sealed class ChunkedNonSeekableStream : Stream
     {
@@ -1976,10 +1982,10 @@ public class HttpRequestResilienceTest
         /// </summary>
         private int _position;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="ChunkedNonSeekableStream"/>类型的实例。
-
+        /// 初始化一个 <see cref="ChunkedNonSeekableStream"/> 类型的实例。
         /// </summary>
         /// <param name="bytes">响应正文的字节数据。</param>
         /// <param name="maxChunkSize">单次读取允许返回的最大字节数。</param>

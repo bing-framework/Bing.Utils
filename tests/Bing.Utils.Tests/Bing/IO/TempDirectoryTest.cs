@@ -5,11 +5,15 @@ namespace Bing.IO;
 public class TempDirectoryTest : TestBase
 {
     /// <summary>
-    /// 初始化一个<see cref="TempDirectoryTest"/>类型的实例
+    /// 初始化一个 <see cref="TempDirectoryTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">当前测试的输出助手。</param>
     public TempDirectoryTest(ITestOutputHelper output) : base(output)
     {
     }
+    /// <summary>
+    /// 验证临时目录在释放后自动删除。
+    /// </summary>
     [Fact]
     public void Test_TempDirectoryRemovesItself()
     {
@@ -20,6 +24,9 @@ public class TempDirectoryTest : TestBase
         tempDir.Dispose();
         Directory.Exists(tempDir.FullPath).ShouldBeFalse();
     }
+    /// <summary>
+    /// 验证临时目录名称采用指定前缀。
+    /// </summary>
     [Fact]
     public void Test_TempDirectoryCanSetPrefix()
     {

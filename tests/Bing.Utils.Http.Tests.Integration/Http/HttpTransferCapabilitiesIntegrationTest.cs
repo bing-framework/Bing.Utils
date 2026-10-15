@@ -10,10 +10,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
+
+
 /// <summary>
-
 /// 验证 HTTP 传输新能力与本地 TestServer、文件系统的协作。
-
 /// </summary>
 public class HttpTransferCapabilitiesIntegrationTest
 {
@@ -22,15 +22,15 @@ public class HttpTransferCapabilitiesIntegrationTest
     /// </summary>
     private readonly IHost _host;
     /// <summary>
-    /// 初始化一个<see cref="HttpTransferCapabilitiesIntegrationTest"/>类型的实例。
+    /// 初始化一个 <see cref="HttpTransferCapabilitiesIntegrationTest"/> 类型的实例。
     /// </summary>
     /// <param name="host">用于测试的依赖注入应用实例。</param>
     public HttpTransferCapabilitiesIntegrationTest(IHost host) => _host = host;
 
+
+
     /// <summary>
-
     /// 验证解析本地测试服务端响应。
-
     /// </summary>
     [Fact]
     public async Task GetJsonStreamAsync_ParsesLocalTestServerResponse()
@@ -44,10 +44,10 @@ public class HttpTransferCapabilitiesIntegrationTest
         result.Message.ShouldBe("error:200");
     }
 
+
+
     /// <summary>
-
     /// 验证正文读取到末尾后，即使文件提交失败也会报告读取完成。
-
     /// </summary>
     [Fact]
     public async Task DownloadProgress_EofRemainsCompletedWhenFileCommitFails()
@@ -78,10 +78,10 @@ public class HttpTransferCapabilitiesIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 验证正文读取结束后清理响应触发取消时会保留目标文件并观察取消。
-
     /// </summary>
     [Fact]
     public async Task DownloadProgress_EofThenResponseCleanupCancellationPreservesTargetAndObservesCancellation()
@@ -129,10 +129,10 @@ public class HttpTransferCapabilitiesIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 包装内部处理器并在响应内容释放时触发取消。
-
     /// </summary>
     private sealed class CancelOnContentDisposeHandler : DelegatingHandler
     {
@@ -141,10 +141,10 @@ public class HttpTransferCapabilitiesIntegrationTest
         /// </summary>
         private readonly CancellationTokenSource _cancellation;
         /// <summary>
-        /// 初始化一个<see cref="CancelOnContentDisposeHandler"/>类型的实例。
+        /// 初始化一个 <see cref="CancelOnContentDisposeHandler"/> 类型的实例。
         /// </summary>
-        /// <param name="inner">待包装的处理器或 HTTP 内容。</param>
-        /// <param name="cancellation">用于触发测试取消的令牌源。</param>
+        /// <param name="inner">实际发送测试请求的内部处理器。</param>
+        /// <param name="cancellation">响应内容释放时触发取消的令牌源。</param>
         public CancelOnContentDisposeHandler(HttpMessageHandler inner, CancellationTokenSource cancellation)
         {
             InnerHandler = inner;
@@ -162,10 +162,10 @@ public class HttpTransferCapabilitiesIntegrationTest
         }
     }
 
+
+
     /// <summary>
-
     /// 释放时取消令牌并释放内部内容的包装器。
-
     /// </summary>
     private sealed class CancelOnDisposeContent : HttpContent
     {
@@ -178,13 +178,13 @@ public class HttpTransferCapabilitiesIntegrationTest
         /// </summary>
         private readonly CancellationTokenSource _cancellation;
 
+
+
         /// <summary>
-
-        /// 初始化一个<see cref="CancelOnDisposeContent"/>类型的实例。
-
+        /// 初始化一个 <see cref="CancelOnDisposeContent"/> 类型的实例。
         /// </summary>
-        /// <param name="inner">待包装的处理器或 HTTP 内容。</param>
-        /// <param name="cancellation">用于触发测试取消的令牌源。</param>
+        /// <param name="inner">需要包装并在释放时一同释放的响应内容。</param>
+        /// <param name="cancellation">内容释放时触发取消的令牌源。</param>
         public CancelOnDisposeContent(HttpContent inner, CancellationTokenSource cancellation)
         {
             _inner = inner;

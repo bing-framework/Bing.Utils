@@ -1750,7 +1750,7 @@ public class RegexPoolTest : IDisposable
 }
 
 /// <summary>
-/// RegexPool 共享静态缓存测试集合
+/// 共用 <see cref="RegexPool"/> 静态缓存的串行测试集合。
 /// </summary>
 [CollectionDefinition("RegexPool", DisableParallelization = true)]
 public class RegexPoolTestCollection

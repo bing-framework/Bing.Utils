@@ -1,12 +1,15 @@
 namespace Bing.Numeric;
 /// <summary>
-/// 测试类：覆盖 `Numbers` 相关行为。
+/// 验证十进制数按指定精度向零截断。
 /// </summary>
 public class NumbersTest
 {
     /// <summary>
-    /// 测试用例：验证 `Test` 在 `RoundTruncate` 场景下，结果为 `1`。
+    /// 验证十进制数按指定精度向零截断。
     /// </summary>
+    /// <param name="input">待截断的十进制数。</param>
+    /// <param name="result">预期的截断结果。</param>
+    /// <param name="precision">保留的小数位数。</param>
     [Theory]
     [InlineData(1.2345678900, 1.2345678900, 10)]
     [InlineData(1.2345678900, 1.234567890, 9)]
@@ -24,8 +27,11 @@ public class NumbersTest
         Assert.Equal(result, input.RoundTruncate(precision));
     }
     /// <summary>
-    /// 测试用例：验证 `Test` 在 `RoundTruncate` 场景下，结果为 `2`。
+    /// 验证十进制数按指定精度向零截断。
     /// </summary>
+    /// <param name="input">待截断的十进制数。</param>
+    /// <param name="result">预期的截断结果。</param>
+    /// <param name="precision">保留的小数位数。</param>
     [Theory]
     [InlineData(3.4611, 3.46, 2)]
     [InlineData(-3.4611, -3.46, 2)]
@@ -36,8 +42,11 @@ public class NumbersTest
         Assert.Equal(result, input.RoundTruncate(precision));
     }
     /// <summary>
-    /// 测试用例：验证 `Test` 在 `RoundTruncate` 场景下，结果为 `3`。
+    /// 验证十进制数按指定精度向零截断。
     /// </summary>
+    /// <param name="input">待截断的十进制数。</param>
+    /// <param name="result">预期的截断结果。</param>
+    /// <param name="precision">保留的小数位数。</param>
     [Theory]
     [InlineData(-1.129, -1.12, 2)]
     [InlineData(-1.120, -1.12, 2)]

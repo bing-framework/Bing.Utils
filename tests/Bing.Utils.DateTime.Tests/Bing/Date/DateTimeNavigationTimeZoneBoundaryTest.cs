@@ -3,13 +3,13 @@ using System.Globalization;
 namespace Bing.Date;
 
 /// <summary>
-/// 测试类：覆盖 `DateTimeExtensions.Navigation` 的时区偏移边界行为。
+/// 验证日期与周边界应用小时偏移时的跨日行为。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeExtensions.Navigation.TimeZoneBoundary")]
 public class DateTimeNavigationTimeZoneBoundaryTest
 {
     /// <summary>
-    /// 测试用例：验证 `BeginningOfDay` 在 `LargePositiveOffset` 场景下，结果为 `CanCrossToNextDay`。
+    /// 验证日首边界应用超过一天的正偏移后跨入下一天。
     /// </summary>
     [Fact]
     public void BeginningOfDay_LargePositiveOffset_CanCrossToNextDay()
@@ -22,7 +22,7 @@ public class DateTimeNavigationTimeZoneBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `EndOfDay` 在 `LargeNegativeOffset` 场景下，结果为 `CanCrossToPreviousDay`。
+    /// 验证日末边界应用超过一天的负偏移后跨入前一天。
     /// </summary>
     [Fact]
     public void EndOfDay_LargeNegativeOffset_CanCrossToPreviousDay()
@@ -35,7 +35,7 @@ public class DateTimeNavigationTimeZoneBoundaryTest
     }
 
     /// <summary>
-    /// 测试用例：验证 `BeginningOfWeek` 在 `OffsetAppliedAfterWeekStart` 场景下，结果为 `UsesFirstDayThenAppliesOffset`。
+    /// 验证周首边界先应用区域性周首日再计算小时偏移。
     /// </summary>
     [Fact]
     public void BeginningOfWeek_OffsetAppliedAfterWeekStart_UsesFirstDayThenAppliesOffset()

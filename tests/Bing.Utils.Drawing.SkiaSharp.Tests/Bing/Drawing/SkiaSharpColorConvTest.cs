@@ -3,11 +3,14 @@ using SkiaSharp;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：覆盖 SkiaSharp 颜色转换适配层。
+/// 验证 SkiaSharp 颜色与 RGB、HSL 及十六进制表示之间的转换。
 /// </summary>
 [Trait("Drawing", "SkiaSharp.ColorConv")]
 public class SkiaSharpColorConvTest
 {
+    /// <summary>
+    /// 验证转换为 RGB 颜色后四个通道值保持不变。
+    /// </summary>
     [Fact]
     public void ToRgbColor_SKColor_PreservesChannels()
     {
@@ -20,6 +23,9 @@ public class SkiaSharpColorConvTest
         rgb.A.ShouldBe((byte)40);
     }
 
+    /// <summary>
+    /// 验证转换为 SkiaSharp 颜色后四个通道值保持不变。
+    /// </summary>
     [Fact]
     public void ToSKColor_RgbColor_PreservesChannels()
     {
@@ -32,6 +38,9 @@ public class SkiaSharpColorConvTest
         sk.Alpha.ShouldBe((byte)40);
     }
 
+    /// <summary>
+    /// 验证红色转换为不含 Alpha 分量的十六进制字符串。
+    /// </summary>
     [Fact]
     public void ToHex_SKColor_ReturnsExpected()
     {
@@ -39,6 +48,9 @@ public class SkiaSharpColorConvTest
         hex.ShouldBe("#FF0000");
     }
 
+    /// <summary>
+    /// 验证十六进制颜色文本可转换为对应的 SkiaSharp 颜色。
+    /// </summary>
     [Fact]
     public void FromHex_ValidHex_ReturnsSKColor()
     {
@@ -48,6 +60,9 @@ public class SkiaSharpColorConvTest
         color.Blue.ShouldBe((byte)0);
     }
 
+    /// <summary>
+    /// 验证红色转换为 HSL 后色相、饱和度和亮度符合预期。
+    /// </summary>
     [Fact]
     public void ToHsl_SKColor_ReturnsValidRange()
     {
@@ -57,6 +72,9 @@ public class SkiaSharpColorConvTest
         hsl.L.ShouldBe(0.5, tolerance: 0.01);
     }
 
+    /// <summary>
+    /// 验证 HSL 红色可转换为对应的 SkiaSharp 颜色。
+    /// </summary>
     [Fact]
     public void FromHsl_ValidHsl_ReturnsSKColor()
     {
@@ -67,6 +85,9 @@ public class SkiaSharpColorConvTest
         color.Alpha.ShouldBe((byte)255);
     }
 
+    /// <summary>
+    /// 验证转换 HSL 颜色时保留指定的 Alpha 值。
+    /// </summary>
     [Fact]
     public void FromHsl_CustomAlpha_PreservesAlpha()
     {

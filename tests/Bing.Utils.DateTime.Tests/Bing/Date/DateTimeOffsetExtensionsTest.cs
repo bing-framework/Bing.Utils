@@ -4,11 +4,15 @@ using System.Globalization;
 namespace Bing.Date;
 
 /// <summary>
-/// Test class: verifies DateTimeOffset extension contracts for navigation, boundaries and exceptions.
+/// 验证带偏移时间点的日期边界、导航与分量设置。
 /// </summary>
 [Trait("DateTimeUT", "DateTimeOffsetExtensions")]
 public class DateTimeOffsetExtensionsTest
 {
+    /// <summary>
+    /// 验证日边界计算保留原日期与偏移量。
+    /// </summary>
+    /// <param name="dto">覆盖闰日、月末、夏令时切换日期及偏移边界的测试时间点。</param>
     [Theory]
     [MemberData(nameof(GetDayBoundaryCases))]
     public void BeginningOfDayAndEndOfDay_ShouldKeepDateAndOffset(DateTimeOffset dto)
@@ -34,6 +38,11 @@ public class DateTimeOffsetExtensionsTest
         end.Offset.ShouldBe(dto.Offset);
     }
 
+    /// <summary>
+    /// 验证月末日期匹配对应月份的实际天数。
+    /// </summary>
+    /// <param name="dto">用于计算月末的测试时间点。</param>
+    /// <param name="expectedDay">预期月份的最后一天数值。</param>
     [Theory]
     [MemberData(nameof(GetLastDayOfMonthCases))]
     public void LastDayOfMonth_BoundaryDates_ReturnsExpected(DateTimeOffset dto, int expectedDay)
@@ -41,6 +50,9 @@ public class DateTimeOffsetExtensionsTest
         dto.LastDayOfMonth().Day.ShouldBe(expectedDay);
     }
 
+    /// <summary>
+    /// 验证年、季度及月的首尾日期。
+    /// </summary>
     [Fact]
     public void FirstAndLastDayHelpers_ShouldReturnExpectedDate()
     {
@@ -54,6 +66,11 @@ public class DateTimeOffsetExtensionsTest
         dto.LastDayOfMonth().Date.ShouldBe(new DateTime(2024, 2, 29));
     }
 
+    /// <summary>
+    /// 验证每周首日遵循指定区域性。
+    /// </summary>
+    /// <param name="cultureName">确定每周首日的区域性名称。</param>
+    /// <param name="expected">预期周首日的日期文本。</param>
     [Theory]
     [InlineData("en-US", "2023-12-31")]
     [InlineData("zh-CN", "2024-01-01")]
@@ -66,6 +83,9 @@ public class DateTimeOffsetExtensionsTest
         result.Date.ShouldBe(DateTime.ParseExact(expected, "yyyy-MM-dd", CultureInfo.InvariantCulture));
     }
 
+    /// <summary>
+    /// 验证周末日期比周首日期晚六天。
+    /// </summary>
     [Fact]
     public void LastDayOfWeek_ShouldBeSixDaysAfterFirstDayOfWeek()
     {
@@ -76,6 +96,9 @@ public class DateTimeOffsetExtensionsTest
         last.Date.ShouldBe(first.Date.AddDays(6));
     }
 
+    /// <summary>
+    /// 验证前后一周分别偏移七天。
+    /// </summary>
     [Fact]
     public void WeekBeforeAndWeekAfter_ShouldShiftSevenDays()
     {
@@ -85,6 +108,9 @@ public class DateTimeOffsetExtensionsTest
         dto.WeekAfter().ShouldBe(dto.AddDays(7));
     }
 
+    /// <summary>
+    /// 验证年、季度、月、周及日的前后导航结果。
+    /// </summary>
     [Fact]
     public void NavigationHelpers_ShouldMoveToExpectedDate()
     {
@@ -104,6 +130,9 @@ public class DateTimeOffsetExtensionsTest
         dto.Yesterday().Date.ShouldBe(new DateTime(2024, 1, 14));
     }
 
+    /// <summary>
+    /// 验证指定星期的前后日期导航。
+    /// </summary>
     [Fact]
     public void NextDayOfWeekAndPreviousDayOfWeek_ShouldReturnExpectedDate()
     {
@@ -113,6 +142,9 @@ public class DateTimeOffsetExtensionsTest
         dto.PreviousDayOfWeek(DayOfWeek.Friday).Date.ShouldBe(new DateTime(2023, 12, 29));
     }
 
+    /// <summary>
+    /// 验证时间与日期分量设置方法更新指定分量。
+    /// </summary>
     [Fact]
     public void AtAndSetHelpers_ShouldUpdateExpectedPart()
     {
@@ -133,6 +165,9 @@ public class DateTimeOffsetExtensionsTest
         dto.SetDay(10).Day.ShouldBe(10);
     }
 
+    /// <summary>
+    /// 验证重新指定日期时保留时间及偏移量。
+    /// </summary>
     [Fact]
     public void On_ShouldSetDateAndKeepTime()
     {
@@ -149,6 +184,10 @@ public class DateTimeOffsetExtensionsTest
         result.Offset.ShouldBe(dto.Offset);
     }
 
+    /// <summary>
+    /// 验证小时设置拒绝超出范围的数值。
+    /// </summary>
+    /// <param name="invalidHour">用于验证范围检查的无效小时值。</param>
     [Theory]
     [InlineData(-1)]
     [InlineData(24)]
@@ -161,6 +200,10 @@ public class DateTimeOffsetExtensionsTest
         exception.Message.ShouldNotBeNullOrWhiteSpace();
     }
 
+    /// <summary>
+    /// 验证目标月份不包含当前日时月份设置抛出异常。
+    /// </summary>
+    /// <param name="targetMonth">不包含三十一日的目标月份。</param>
     [Theory]
     [InlineData(2)]
     [InlineData(4)]
@@ -171,6 +214,9 @@ public class DateTimeOffsetExtensionsTest
         Should.Throw<ArgumentOutOfRangeException>(() => dto.SetMonth(targetMonth));
     }
 
+    /// <summary>
+    /// 验证闰日无法直接设置为平年的对应日期。
+    /// </summary>
     [Fact]
     public void SetYear_LeapDayToCommonYear_ShouldThrowArgumentOutOfRangeException()
     {
@@ -179,6 +225,10 @@ public class DateTimeOffsetExtensionsTest
         Should.Throw<ArgumentOutOfRangeException>(() => dto.SetYear(2023));
     }
 
+    /// <summary>
+    /// 提供日边界计算的日期与偏移测试数据。
+    /// </summary>
+    /// <returns>覆盖闰日、月末、夏令时切换日期及偏移边界的数据行。</returns>
     public static IEnumerable<object[]> GetDayBoundaryCases()
     {
         yield return new object[] { new DateTimeOffset(2024, 2, 29, 12, 0, 0, TimeSpan.FromHours(8)) };   // leap day
@@ -189,6 +239,10 @@ public class DateTimeOffsetExtensionsTest
         yield return new object[] { new DateTimeOffset(2024, 6, 15, 12, 0, 0, TimeSpan.FromHours(-12)) }; // min offset
     }
 
+    /// <summary>
+    /// 提供不同月份的月末日期测试数据。
+    /// </summary>
+    /// <returns>包含输入时间点与预期月末日数的数据行。</returns>
     public static IEnumerable<object[]> GetLastDayOfMonthCases()
     {
         yield return new object[] { new DateTimeOffset(2024, 2, 10, 12, 0, 0, TimeSpan.FromHours(8)), 29 };
@@ -197,6 +251,10 @@ public class DateTimeOffsetExtensionsTest
         yield return new object[] { new DateTimeOffset(2024, 1, 10, 12, 0, 0, TimeSpan.FromHours(8)), 31 };
     }
 
+    /// <summary>
+    /// 创建使用本地时区偏移的固定测试时间点。
+    /// </summary>
+    /// <returns>使用本地偏移的 2024 年 2 月 28 日测试时间点。</returns>
     private static DateTimeOffset CreateLocalDateTimeOffset()
     {
         var localOffset = TimeZoneInfo.Local.GetUtcOffset(new DateTime(2024, 2, 28));

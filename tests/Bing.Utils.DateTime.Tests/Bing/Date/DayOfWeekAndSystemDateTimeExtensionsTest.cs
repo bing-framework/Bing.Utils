@@ -1,14 +1,16 @@
 using System.Linq;
 namespace Bing.Date;
 /// <summary>
-/// 测试类：覆盖 `DayOfWeekAndSystemDateTimeExtensions` 相关行为。
+/// 验证星期文本、星期导航、区间枚举及日期克隆。
 /// </summary>
 [Trait("DateTimeUT", "DayOfWeek.Extensions")]
 public class DayOfWeekAndSystemDateTimeExtensionsTest
 {
     /// <summary>
-    /// 测试用例：验证 `ToChinese` 在 `WithDefaultPrefix` 场景下，结果为 `ReturnsExpectedText`。
+    /// 验证星期转换使用默认中文前缀。
     /// </summary>
+    /// <param name="dayOfWeek">待转换的星期值。</param>
+    /// <param name="expected">预期中文星期文本。</param>
     [Theory]
     [InlineData(DayOfWeek.Sunday, "星期日")]
     [InlineData(DayOfWeek.Monday, "星期一")]
@@ -22,7 +24,7 @@ public class DayOfWeekAndSystemDateTimeExtensionsTest
         dayOfWeek.ToChinese().ShouldBe(expected);
     }
     /// <summary>
-    /// 测试用例：验证 `ToChinese` 在 `WithCustomPrefix` 场景下，结果为 `ReturnsExpectedText`。
+    /// 验证星期转换使用指定前缀。
     /// </summary>
     [Fact]
     public void ToChinese_WithCustomPrefix_ReturnsExpectedText()
@@ -30,7 +32,7 @@ public class DayOfWeekAndSystemDateTimeExtensionsTest
         DayOfWeek.Monday.ToChinese("周").ShouldBe("周一");
     }
     /// <summary>
-    /// 测试用例：验证 `ToChinese` 在 `WithInvalidEnum` 场景下，结果为 `ReturnsNull`。
+    /// 验证未定义星期值的中文转换结果为空。
     /// </summary>
     [Fact]
     public void ToChinese_WithInvalidEnum_ReturnsNull()
@@ -39,7 +41,7 @@ public class DayOfWeekAndSystemDateTimeExtensionsTest
         result.ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `AddDays` 在 `Extension` 场景下，结果为 `ShouldDelegateToCalculator`。
+    /// 验证星期偏移跨越一周边界。
     /// </summary>
     [Fact]
     public void AddDays_Extension_ShouldDelegateToCalculator()
@@ -48,7 +50,7 @@ public class DayOfWeekAndSystemDateTimeExtensionsTest
         DayOfWeek.Monday.AddDays(-2).ShouldBe(DayOfWeek.Saturday);
     }
     /// <summary>
-    /// 测试用例：验证 `GetDaysBetween` 在 `WithBoundaryAndWithoutBoundary` 场景下，结果为 `ReturnsExpected`。
+    /// 验证星期区间枚举按选项包含或排除端点。
     /// </summary>
     [Fact]
     public void GetDaysBetween_WithBoundaryAndWithoutBoundary_ReturnsExpected()
@@ -59,7 +61,7 @@ public class DayOfWeekAndSystemDateTimeExtensionsTest
         withoutBoundary.ShouldBe(new[] { DayOfWeek.Tuesday, DayOfWeek.Wednesday });
     }
     /// <summary>
-    /// 测试用例：验证 `Clone` 在 `DateTimeExtension` 场景下，结果为 `PreservesTicksAndKind`。
+    /// 验证日期克隆保留时钟周期数与时间种类。
     /// </summary>
     [Fact]
     public void Clone_DateTimeExtension_PreservesTicksAndKind()

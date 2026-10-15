@@ -5,7 +5,7 @@ namespace Bing.Threading;
 public class TaskExtensionsTest
 {
     /// <summary>
-    /// 测试 - 当任务在超时时间内完成时，WaitResult 方法是否正常运行。
+    /// 验证已完成任务在时限内等待时不抛出异常。
     /// </summary>
     [Fact]
     public void Test_WaitResult_TaskCompletesWithinTimeout_DoesNotThrowException()
@@ -16,7 +16,7 @@ public class TaskExtensionsTest
         task.WaitResult(1000);
     }
     /// <summary>
-    /// 测试 - 当任务未能在超时时间内完成时，WaitResult 方法是否引发 <see cref="TimeoutException"/> 异常。
+    /// 验证等待任务超过时限后抛出超时异常。
     /// </summary>
     [Fact]
     public void Test_WaitResult_TaskDoesNotCompleteWithinTimeout_ThrowsTimeoutException()
@@ -27,7 +27,7 @@ public class TaskExtensionsTest
         Assert.Throws<TimeoutException>(() => task.WaitResult(1000));
     }
     /// <summary>
-    /// 测试 - 当任务在超时时间内完成时，WaitResult 方法是否返回正确的结果。
+    /// 验证时限内完成的任务返回原结果。
     /// </summary>
     [Fact]
     public void Test_WaitResult_TaskCompletesWithinTimeout_ReturnsCorrectResult()
@@ -41,8 +41,9 @@ public class TaskExtensionsTest
         Assert.Equal(expectedResult, result);
     }
     /// <summary>
-    /// 测试 - 当传递的任务在超时之前完成时，TimeoutAfter 方法是否返回正确的结果。
+    /// 验证异步超时包装返回时限内完成的任务结果。
     /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task Test_TimeoutAfter_CompletesBeforeTimeout_ReturnsCorrectResult()
     {
@@ -55,8 +56,9 @@ public class TaskExtensionsTest
         Assert.Equal(expectedResult, result);
     }
     /// <summary>
-    /// 测试 - 当传递的任务未能在超时时间内完成时，TimeoutAfter 方法是否引发 <see cref="TimeoutException"/> 异常。
+    /// 验证异步超时包装在任务超过时限后抛出异常。
     /// </summary>
+    /// <returns>表示异步测试操作的任务。</returns>
     [Fact]
     public async Task Test_TimeoutAfter_TimeoutOccurs_ThrowsTimeoutException()
     {

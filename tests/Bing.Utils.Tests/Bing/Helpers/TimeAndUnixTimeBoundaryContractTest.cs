@@ -6,9 +6,12 @@ namespace Bing.Helpers;
 [Trait("Bing.Helpers", "TimeAndUnixTime.Boundary")]
 public class TimeAndUnixTimeBoundaryContractTest : IDisposable
 {
+    /// <summary>
+    /// 测试开始前全局 UTC 选项的值，用于释放时恢复。
+    /// </summary>
     private readonly bool _originalIsUseUtc = TimeOptions.IsUseUtc;
     /// <summary>
-    /// 测试辅助：提供 `Dispose` 的测试支撑逻辑。
+    /// 恢复全局时间设置，清理此测试造成的状态变更。
     /// </summary>
     public void Dispose()
     {

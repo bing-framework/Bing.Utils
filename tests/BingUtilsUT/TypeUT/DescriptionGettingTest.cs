@@ -1,27 +1,78 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证反射对类型及其成员的 Description 元数据读取和回退行为。
+/// </summary>
 [Trait("TypeUT", "TypeReflections.GetDescription")]
 public class DescriptionGettingTest
 {
+    /// <summary>
+    /// 获取第一个带 Description 元数据的样例类型。
+    /// </summary>
     public Type EntryOne = typeof(NormalDescriptionClass);
+    /// <summary>
+    /// 获取以显示元数据回退提供描述的样例类型。
+    /// </summary>
     public Type EntryTwo = typeof(NormalDescriptionOrClass);
+    /// <summary>
+    /// 获取第二个带 Description 元数据的样例类型。
+    /// </summary>
     public Type EntryThree = typeof(NormalDisplayNameOrClass);
+    /// <summary>
+    /// 获取用于测试继承描述元数据的包装类型。
+    /// </summary>
     public Type Wrapper = typeof(NormalDescriptionWrapper);
+    /// <summary>
+    /// 获取第一个属性的反射信息。
+    /// </summary>
     public PropertyInfo PropertyOne;
+    /// <summary>
+    /// 获取第二个属性的反射信息。
+    /// </summary>
     public PropertyInfo PropertyTwo;
+    /// <summary>
+    /// 获取第三个属性的反射信息。
+    /// </summary>
     public PropertyInfo PropertyThree;
+    /// <summary>
+    /// 获取第一个字段的反射信息。
+    /// </summary>
     public FieldInfo FieldOne;
+    /// <summary>
+    /// 获取第二个字段的反射信息。
+    /// </summary>
     public FieldInfo FieldTwo;
+    /// <summary>
+    /// 获取第三个字段的反射信息。
+    /// </summary>
     public FieldInfo FieldThree;
+    /// <summary>
+    /// 获取第一个方法的反射信息。
+    /// </summary>
     public MethodInfo MethodOne;
+    /// <summary>
+    /// 获取第二个方法的反射信息。
+    /// </summary>
     public MethodInfo MethodTwo;
+    /// <summary>
+    /// 获取第三个方法的反射信息。
+    /// </summary>
     public MethodInfo MethodThree;
+    /// <summary>
+    /// 获取第一个方法参数的反射信息。
+    /// </summary>
     public ParameterInfo ParameterOne;
+    /// <summary>
+    /// 获取第二个方法参数的反射信息。
+    /// </summary>
     public ParameterInfo ParameterTwo;
+    /// <summary>
+    /// 获取第三个方法参数的反射信息。
+    /// </summary>
     public ParameterInfo ParameterThree;
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="DescriptionGettingTest"/> 类型的实例。
     /// </summary>
     public DescriptionGettingTest()
     {

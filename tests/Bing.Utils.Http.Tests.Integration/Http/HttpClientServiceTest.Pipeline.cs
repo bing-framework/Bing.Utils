@@ -6,12 +6,12 @@ using Bing.Utils.Http.Tests.Integration.Controllers;
 namespace Bing.Utils.Http.Tests.Integration.Http;
 
 /// <summary>
-/// Http客户端测试 - 真实链路协作场景
+/// 验证真实 HTTP 管道中的请求组合、取消及序列化行为。
 /// </summary>
 public partial class HttpClientServiceTest
 {
     /// <summary>
-    /// 测试 - 组合请求链路（Header + Query + Body + 反序列化）
+    /// 验证路由、请求头、查询参数及 JSON 正文组合后正确反序列化。
     /// </summary>
     [Fact]
     public async Task Test_Post_ComposeRequestPipeline_1()
@@ -40,7 +40,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 超时配置生效
+    /// 验证请求超时触发取消异常。
     /// </summary>
     [Fact]
     public async Task Test_Get_Timeout_ThrowsOperationCanceledException_1()
@@ -54,7 +54,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 取消令牌生效
+    /// 验证调用方取消令牌触发取消异常。
     /// </summary>
     [Fact]
     public async Task Test_Get_CancellationToken_ThrowsOperationCanceledException_1()
@@ -69,8 +69,9 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - 4xx/5xx错误映射到OnFail并返回空结果
+    /// 验证客户端与服务器错误触发失败回调并返回空结果。
     /// </summary>
+    /// <param name="statusCode">测试服务端返回的 HTTP 错误状态码。</param>
     [Theory]
     [InlineData(400)]
     [InlineData(500)]
@@ -94,7 +95,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - Text + Http 编码与内容类型协同
+    /// 验证 UTF-16 XML 正文及内容类型字符集能够往返传递。
     /// </summary>
     [Fact]
     public async Task Test_Post_XmlContent_UnicodeEncoding_RoundTrip_1()
@@ -114,7 +115,7 @@ public partial class HttpClientServiceTest
     }
 
     /// <summary>
-    /// 测试 - DateTime + 序列化回环一致性
+    /// 验证日期使用指定 JSON 格式并可还原为原始客户数据。
     /// </summary>
     [Fact]
     public async Task Test_Post_DateTimeSerialization_RoundTrip_1()

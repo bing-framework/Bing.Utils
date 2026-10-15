@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证反射获取类型及成员上指定特性的结果。
+/// </summary>
 [Trait("TypeUT", "AttributeGetting")]
 public class AttributeGettingTest
 {

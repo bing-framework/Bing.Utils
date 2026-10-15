@@ -6,11 +6,20 @@ namespace Bing.Logging;
 /// </summary>
 public class LogHelperTest
 {
+    /// <summary>
+    /// 用于创建测试日志记录器的模拟工厂。
+    /// </summary>
     private readonly Mock<ILoggerFactory> _mockLoggerFactory;
+    /// <summary>
+    /// 用于验证日志调用的模拟记录器。
+    /// </summary>
     private readonly Mock<ILogger> _mockLogger;
+    /// <summary>
+    /// 当前测试使用的日志辅助单例。
+    /// </summary>
     private readonly LogHelper _logHelper;
     /// <summary>
-    /// 测试初始化
+    /// 初始化一个 <see cref="LogHelperTest"/> 类型的实例。
     /// </summary>
     public LogHelperTest()
     {

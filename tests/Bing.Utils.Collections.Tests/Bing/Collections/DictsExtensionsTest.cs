@@ -8,7 +8,7 @@ using Xunit;
 namespace Bing.Collections;
 
 /// <summary>
-/// 测试类：DictsExtensions 字典工具扩展方法
+/// 字典批量添加、更新、默认值和级联查找扩展测试。
 /// </summary>
 [Trait("CollUT", "DictsExtensions")]
 public class DictsExtensionsTest
@@ -16,7 +16,7 @@ public class DictsExtensionsTest
     #region AddRange — 批量添加
 
     /// <summary>
-    /// 测试目的：AddRange 应将另一个字典的所有键值对添加到源字典
+    /// 验证AddRange 应将另一个字典的所有键值对添加到源字典
     /// </summary>
     [Fact]
     public void AddRange_FromAnotherDict_AddsAllPairs()
@@ -39,7 +39,7 @@ public class DictsExtensionsTest
     #region Add(KeyValuePair) — 键值对添加
 
     /// <summary>
-    /// 测试目的：Add(KeyValuePair) 扩展方法应将键值对添加到字典
+    /// 验证Add(KeyValuePair) 扩展方法应将键值对添加到字典
     /// </summary>
     [Fact]
     public void Add_KeyValuePair_AddsPairToDictionary()
@@ -61,7 +61,7 @@ public class DictsExtensionsTest
     #region AddValueOrOverride — 添加或覆盖
 
     /// <summary>
-    /// 测试目的：AddValueOrOverride 对不存在的键应正常添加
+    /// 验证AddValueOrOverride 对不存在的键应正常添加
     /// </summary>
     [Fact]
     public void AddValueOrOverride_NewKey_AddsValue()
@@ -77,7 +77,7 @@ public class DictsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：AddValueOrOverride 对已存在的键应覆盖值
+    /// 验证AddValueOrOverride 对已存在的键应覆盖值
     /// </summary>
     [Fact]
     public void AddValueOrOverride_ExistingKey_OverridesValue()
@@ -98,7 +98,7 @@ public class DictsExtensionsTest
     #region AddValueIfNotExist — 不存在时添加
 
     /// <summary>
-    /// 测试目的：AddValueIfNotExist 对不存在的键应添加值
+    /// 验证AddValueIfNotExist 对不存在的键应添加值
     /// </summary>
     [Fact]
     public void AddValueIfNotExist_NewKey_AddsValue()
@@ -114,7 +114,7 @@ public class DictsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：AddValueIfNotExist 对已存在的键不应覆盖原值
+    /// 验证AddValueIfNotExist 对已存在的键不应覆盖原值
     /// </summary>
     [Fact]
     public void AddValueIfNotExist_ExistingKey_DoesNotOverride()
@@ -130,7 +130,7 @@ public class DictsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：AddValueIfNotExist(valueCalculator) 对不存在的键应使用工厂函数计算值
+    /// 验证AddValueIfNotExist(valueCalculator) 对不存在的键应使用工厂函数计算值
     /// </summary>
     [Fact]
     public void AddValueIfNotExist_WithCalculator_AddsCalculatedValue()
@@ -150,7 +150,7 @@ public class DictsExtensionsTest
     #region GetValueOrDefault — 获取或默认值
 
     /// <summary>
-    /// 测试目的：GetValueOrDefault(key, valueCalculator) 对存在的键应返回实际值
+    /// 验证GetValueOrDefault(key, valueCalculator) 对存在的键应返回实际值
     /// </summary>
     [Fact]
     public void GetValueOrDefault_ExistingKey_ReturnsActualValue()
@@ -166,7 +166,7 @@ public class DictsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：GetValueOrDefault(key, valueCalculator) 对不存在的键应返回 calculator 计算值
+    /// 验证GetValueOrDefault(key, valueCalculator) 对不存在的键应返回 calculator 计算值
     /// </summary>
     [Fact]
     public void GetValueOrDefault_MissingKey_ReturnsCalculatedDefault()
@@ -186,7 +186,7 @@ public class DictsExtensionsTest
     #region GetValueOrAdd — 获取或添加
 
     /// <summary>
-    /// 测试目的：GetValueOrAdd(key, value) 对存在的键应返回已有值，不添加新值
+    /// 验证GetValueOrAdd(key, value) 对存在的键应返回已有值，不添加新值
     /// </summary>
     [Fact]
     public void GetValueOrAdd_ExistingKey_ReturnsExistingValue()
@@ -203,7 +203,7 @@ public class DictsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：GetValueOrAdd(key, value) 对不存在的键应添加并返回新值
+    /// 验证GetValueOrAdd(key, value) 对不存在的键应添加并返回新值
     /// </summary>
     [Fact]
     public void GetValueOrAdd_MissingKey_AddsAndReturnsNewValue()
@@ -220,7 +220,7 @@ public class DictsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：GetValueOrAdd(key, newValueCreator) 对不存在的键应使用工厂函数创建值
+    /// 验证GetValueOrAdd(key, newValueCreator) 对不存在的键应使用工厂函数创建值
     /// </summary>
     [Fact]
     public void GetValueOrAdd_MissingKey_WithCreator_AddsCreatedValue()
@@ -241,7 +241,7 @@ public class DictsExtensionsTest
     #region SetValue — 设置值
 
     /// <summary>
-    /// 测试目的：SetValue 应无论键是否存在都能设置值
+    /// 验证设置不存在的字典键时插入值。
     /// </summary>
     [Fact]
     public void SetValue_NewKey_SetsValue()
@@ -257,7 +257,7 @@ public class DictsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：SetValue 对已存在的键应覆盖旧值
+    /// 验证SetValue 对已存在的键应覆盖旧值
     /// </summary>
     [Fact]
     public void SetValue_ExistingKey_OverridesOldValue()
@@ -277,7 +277,7 @@ public class DictsExtensionsTest
     #region AddValueOrUpdate — 添加或更新
 
     /// <summary>
-    /// 测试目的：AddValueOrUpdate 对不存在的键应使用 insertFunc 插入
+    /// 验证AddValueOrUpdate 对不存在的键应使用 insertFunc 插入
     /// </summary>
     [Fact]
     public void AddValueOrUpdate_NewKey_UsesInsertFunc()
@@ -293,7 +293,7 @@ public class DictsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：AddValueOrUpdate 对已存在的键应使用 updateFunc 更新
+    /// 验证AddValueOrUpdate 对已存在的键应使用 updateFunc 更新
     /// </summary>
     [Fact]
     public void AddValueOrUpdate_ExistingKey_UsesUpdateFunc()
@@ -313,7 +313,7 @@ public class DictsExtensionsTest
     #region GetValueOrDefaultCascading — 级联获取
 
     /// <summary>
-    /// 测试目的：GetValueOrDefaultCascading 在第一个字典找到键时应返回对应值
+    /// 验证GetValueOrDefaultCascading 在第一个字典找到键时应返回对应值
     /// </summary>
     [Fact]
     public void GetValueOrDefaultCascading_KeyInFirstDict_ReturnsFirstValue()
@@ -331,7 +331,7 @@ public class DictsExtensionsTest
     }
 
     /// <summary>
-    /// 测试目的：GetValueOrDefaultCascading 在所有字典均无该键时应返回默认值
+    /// 验证GetValueOrDefaultCascading 在所有字典均无该键时应返回默认值
     /// </summary>
     [Fact]
     public void GetValueOrDefaultCascading_KeyNotFound_ReturnsDefault()

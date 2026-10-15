@@ -7,7 +7,13 @@ namespace Bing.Helpers;
 [Collection("EnvSerial")]
 public class EnvEnvironmentManagementContractTest
 {
+    /// <summary>
+    /// ASP.NET Core 环境名称对应的进程变量键。
+    /// </summary>
     private const string AspNetCoreEnvironment = "ASPNETCORE_ENVIRONMENT";
+    /// <summary>
+    /// .NET 通用环境名称对应的进程变量键。
+    /// </summary>
     private const string DotNetEnvironment = "DOTNET_ENVIRONMENT";
 
     /// <summary>
@@ -100,6 +106,7 @@ public class EnvEnvironmentManagementContractTest
     /// <summary>
     /// 测试数据：GetEnvironmentName 优先级与回退场景。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetEnvironmentNameCases()
     {
         yield return new object[] { Env.Staging, Env.Production, Env.Staging };
@@ -111,6 +118,7 @@ public class EnvEnvironmentManagementContractTest
     /// <summary>
     /// 测试数据：SetEnvironmentName 的 setBothVariables 开关场景。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetSetEnvironmentNameCases()
     {
         yield return new object[] { null, Env.Production, true, Env.Production, Env.Production };
@@ -120,6 +128,7 @@ public class EnvEnvironmentManagementContractTest
     /// <summary>
     /// 测试数据：SetDevelopment 在不同初始环境变量状态下的期望结果。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetSetDevelopmentCases()
     {
         yield return new object[] { null, null, Env.Development, Env.Development };
@@ -130,6 +139,7 @@ public class EnvEnvironmentManagementContractTest
     /// <summary>
     /// 测试数据：非法环境名称输入。
     /// </summary>
+    /// <returns>供对应测试使用的参数数据行。</returns>
     public static IEnumerable<object[]> GetInvalidEnvironmentNames()
     {
         yield return new object[] { null };
@@ -138,9 +148,19 @@ public class EnvEnvironmentManagementContractTest
         yield return new object[] { "\t" };
     }
 
+    /// <summary>
+    /// 设置或移除指定的进程级环境变量。
+    /// </summary>
+    /// <param name="name">环境变量名称。</param>
+    /// <param name="value">环境变量值；为 <see langword="null"/> 时移除该变量。</param>
     private static void SetProcessEnv(string name, string value) =>
         Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.Process);
 
+    /// <summary>
+    /// 读取指定进程级环境变量的当前值。
+    /// </summary>
+    /// <param name="name">环境变量名称。</param>
+    /// <returns>环境变量值；变量不存在时为 <see langword="null"/>。</returns>
     private static string GetProcessEnv(string name) =>
         Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
 
@@ -149,15 +169,27 @@ public class EnvEnvironmentManagementContractTest
     /// </summary>
     private sealed class EnvironmentNameScope : IDisposable
     {
+        /// <summary>
+        /// 作用域进入前的 ASP.NET Core 环境变量值。
+        /// </summary>
         private readonly string _aspNetCore;
+        /// <summary>
+        /// 作用域进入前的 .NET 环境变量值。
+        /// </summary>
         private readonly string _dotNet;
 
+        /// <summary>
+        /// 初始化一个 <see cref="EnvironmentNameScope"/> 类型的实例。
+        /// </summary>
         public EnvironmentNameScope()
         {
             _aspNetCore = GetProcessEnv(AspNetCoreEnvironment);
             _dotNet = GetProcessEnv(DotNetEnvironment);
         }
 
+        /// <summary>
+        /// 恢复进入作用域前保存的进程环境变量。
+        /// </summary>
         public void Dispose()
         {
             SetProcessEnv(AspNetCoreEnvironment, _aspNetCore);

@@ -2,6 +2,9 @@ using Bing.Reflection;
 
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证泛型类型和运行时类型的获取结果。
+/// </summary>
 [Trait("TypeUT ", "TypeOfTests")]
 public class TypeOfTests
 {

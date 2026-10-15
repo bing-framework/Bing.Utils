@@ -1,6 +1,9 @@
 using Bing.Reflection;
 namespace BingUtilsUT.TypeUT;
 
+/// <summary>
+/// 验证集合类型识别对数组、映射和集合接口的处理。
+/// </summary>
 [Trait("TypeUT", "TypeIs.CollType")]
 public class TypeIsCollTest
 {

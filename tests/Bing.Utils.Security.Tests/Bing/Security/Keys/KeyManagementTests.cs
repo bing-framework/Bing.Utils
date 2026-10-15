@@ -10,8 +10,10 @@ namespace Bing.Security.Keys;
 public class KeyManagementTests
 {
     /// <summary>
-    /// 测试目的：AES 密钥生成器应生成指定的标准密钥长度。
+    /// 验证 AES 密钥生成器为支持的密钥大小生成对应字节数。
     /// </summary>
+    /// <param name="keySize">要生成的 AES 密钥大小。</param>
+    /// <param name="expectedLength">该密钥大小对应的预期字节数。</param>
     [Theory]
     [InlineData(AesKeySize.Size128, 16)]
     [InlineData(AesKeySize.Size192, 24)]
@@ -48,8 +50,9 @@ public class KeyManagementTests
     }
 
     /// <summary>
-    /// 测试目的：ECDSA 密钥应使用所选命名曲线并可按标准 PEM 重新导入。
+    /// 验证指定曲线生成的 ECDSA 密钥可导出并通过 PEM 重新导入。
     /// </summary>
+    /// <param name="curve">生成 ECDSA 密钥时使用的命名曲线。</param>
     [Theory]
     [InlineData(EcdsaCurve.P256)]
     [InlineData(EcdsaCurve.P384)]

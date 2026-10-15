@@ -3,7 +3,7 @@ using Shouldly;
 namespace Bing.Text;
 
 /// <summary>
-/// 测试类：StringLines 多行文本分割、计数与截断工具方法
+/// 多行文本分割、过滤、类型转换和计数测试。
 /// </summary>
 [Trait("TextUT", "StringLines")]
 public class StringLinesTest
@@ -11,7 +11,7 @@ public class StringLinesTest
     #region SplitByLines
 
     /// <summary>
-    /// 测试目的：SplitByLines 使用 Environment.NewLine 分割多行文本，应正确返回每行内容
+    /// 验证SplitByLines 使用 Environment.NewLine 分割多行文本，应正确返回每行内容
     /// </summary>
     [Fact]
     public void SplitByLines_WithMultipleLines_ReturnsEachLine()
@@ -30,7 +30,7 @@ public class StringLinesTest
     }
 
     /// <summary>
-    /// 测试目的：单行文本（无换行符）调用 SplitByLines 应返回仅含该行的集合
+    /// 验证单行文本（无换行符）调用 SplitByLines 应返回仅含该行的集合
     /// </summary>
     [Fact]
     public void SplitByLines_WithSingleLine_ReturnsSingleElement()
@@ -44,7 +44,7 @@ public class StringLinesTest
     }
 
     /// <summary>
-    /// 测试目的：空字符串调用 SplitByLines 应返回空集合
+    /// 验证空字符串调用 SplitByLines 应返回空集合
     /// </summary>
     [Fact]
     public void SplitByLines_WithEmptyString_ReturnsEmptyCollection()
@@ -57,7 +57,7 @@ public class StringLinesTest
     }
 
     /// <summary>
-    /// 测试目的：文本末尾有换行符时，SplitByLines 不应产生多余的空行
+    /// 验证文本末尾有换行符时，SplitByLines 不应产生多余的空行
     /// </summary>
     [Fact]
     public void SplitByLines_WithTrailingNewLine_DoesNotProduceExtraEmptyLine()
@@ -73,7 +73,7 @@ public class StringLinesTest
     }
 
     /// <summary>
-    /// 测试目的：扩展方法 SplitByLines() 应与静态方法结果一致
+    /// 验证扩展方法 SplitByLines() 应与静态方法结果一致
     /// </summary>
     [Fact]
     public void SplitByLines_ExtensionMethod_MatchesStaticMethod()
@@ -94,7 +94,7 @@ public class StringLinesTest
     #region SplitInLinesWithoutEmpty
 
     /// <summary>
-    /// 测试目的：SplitInLinesWithoutEmpty 应过滤空行，只返回有内容的行
+    /// 验证SplitInLinesWithoutEmpty 应过滤空行，只返回有内容的行
     /// </summary>
     [Fact]
     public void SplitInLinesWithoutEmpty_FiltersEmptyLines()
@@ -116,7 +116,7 @@ public class StringLinesTest
     #region SplitInLinesTyped<T>
 
     /// <summary>
-    /// 测试目的：SplitInLinesTyped 应将每行转换为目标类型（如 int）
+    /// 验证SplitInLinesTyped 应将每行转换为目标类型（如 int）
     /// </summary>
     [Fact]
     public void SplitInLinesTyped_WithIntegers_ConvertsEachLine()
@@ -136,8 +136,9 @@ public class StringLinesTest
     #region CountByLines
 
     /// <summary>
-    /// 测试目的：CountByLines 应返回文本中实际的行数
+    /// 验证行计数与输入行数一致。
     /// </summary>
+    /// <param name="lineCount">输入文本行数。</param>
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
@@ -156,7 +157,7 @@ public class StringLinesTest
     }
 
     /// <summary>
-    /// 测试目的：扩展方法 CountByLines() 应与静态方法结果一致
+    /// 验证扩展方法 CountByLines() 应与静态方法结果一致
     /// </summary>
     [Fact]
     public void CountByLines_ExtensionMethod_MatchesStaticMethod()

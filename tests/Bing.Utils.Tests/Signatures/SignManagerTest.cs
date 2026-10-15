@@ -2,23 +2,24 @@ using Bing.Helpers;
 using Bing.Utils.Signatures;
 namespace Bing.Utils.Tests.Signatures;
 /// <summary>
-/// 签名管理器测试
+/// 验证签名管理器生成的 RSA2 签名。
 /// </summary>
 public class SignManagerTest : TestBase
 {
     /// <summary>
-    /// 签名管理器
+    /// 保存当前测试使用的签名管理器实例。
     /// </summary>
     private readonly SignManager _manager;
     /// <summary>
-    /// 初始化一个<see cref="SignManagerTest"/>类型的实例
+    /// 初始化一个 <see cref="SignManagerTest"/> 类型的实例。
     /// </summary>
+    /// <param name="output">用于输出测试诊断信息的辅助对象。</param>
     public SignManagerTest(ITestOutputHelper output) : base(output)
     {
         _manager = new SignManager(new SignKey(EncryptTest.RsaKey));
     }
     /// <summary>
-    /// 测试 - 签名
+    /// 验证单个参数生成预期的 RSA2 签名。
     /// </summary>
     [Fact]
     public void Test_Sign_1()
@@ -29,7 +30,7 @@ public class SignManagerTest : TestBase
         Assert.Equal(result, _manager.Sign());
     }
     /// <summary>
-    /// 测试 - 签名
+    /// 验证多个参数生成预期的 RSA2 签名。
     /// </summary>
     [Fact]
     public void Test_Sign_2()

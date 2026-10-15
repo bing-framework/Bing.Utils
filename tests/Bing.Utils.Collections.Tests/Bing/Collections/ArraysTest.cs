@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Bing.Collections;
 /// <summary>
-/// 数组操作 测试类
+/// 数组安全转换、比较和正反向枚举测试。
 /// </summary>
 [Trait("CollectionsUT", "Arrays")]
 public class ArraysTest
@@ -66,8 +66,9 @@ public class ArraysTest
         Assert.Equal(new[] { "A", "B", null, null }, result);
     }
     /// <summary>
-    /// 测试 - ToArraySafety - 请求元素数量为零或负数
+    /// 验证非正的序列转换数量返回空数组。
     /// </summary>
+    /// <param name="count">请求元素数量。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
@@ -178,8 +179,9 @@ public class ArraysTest
         Assert.Throws<InvalidCastException>(() => Arrays.ToArraySafety<int>(array, 1));
     }
     /// <summary>
-    /// 测试 - ToArraySafety - 请求元素数量为零或负数
+    /// 验证非正的数组转换数量返回空数组。
     /// </summary>
+    /// <param name="count">请求元素数量。</param>
     [Theory]
     [InlineData(0)]
     [InlineData(-5)]
@@ -557,33 +559,26 @@ public class ArraysTest
     #endregion
 }
 /// <summary>
-/// 测试用自定义对象
+/// 用于验证数组按对象值比较的测试模型。
 /// </summary>
 public class TestObject
 {
     /// <summary>
-    /// 标识符
+    /// 获取或设置参与相等比较的标识符。
     /// </summary>
     public int Id { get; set; }
     /// <summary>
-    /// 名称
+    /// 获取或设置参与相等比较的名称。
     /// </summary>
     public string Name { get; set; }
-    /// <summary>
-    /// 判断对象是否相等
-    /// </summary>
-    /// <param name="obj">要比较的对象</param>
-    /// <returns>如果对象相等则返回 true，否则返回 false</returns>
+    /// <inheritdoc />
     public override bool Equals(object obj)
     {
         if (obj is not TestObject other)
             return false;
         return Id == other.Id && Name == other.Name;
     }
-    /// <summary>
-    /// 获取哈希码
-    /// </summary>
-    /// <returns>哈希码</returns>
+    /// <inheritdoc />
     public override int GetHashCode()
     {
         return HashCode.Combine(Id, Name);

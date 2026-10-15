@@ -3,12 +3,12 @@ extern alias guard;
 namespace Bing.Text;
 
 /// <summary>
-/// 字符检查器测试
+/// 验证字符范围判断对边界、倒序范围及 Unicode 字符的处理。
 /// </summary>
 public class CharJudgeTest
 {
     /// <summary>
-    /// 测试目的：验证 IsBetween 方法在各种边界和正常情况下的正确性
+    /// 验证字符是否位于包含两端的指定范围内。
     /// </summary>
     [Theory]
     [InlineData('b', 'a', 'c', true)]  // 正常：中间值
@@ -30,7 +30,7 @@ public class CharJudgeTest
     }
 
     /// <summary>
-    /// 测试目的：验证 IsBetween 对特殊字符的处理
+    /// 验证空字符、换行符和制表符按字符值参与范围比较。
     /// </summary>
     [Theory]
     [InlineData('\0', '\0', 'a', true)]   // 边界：null字符作为左边界
@@ -47,7 +47,7 @@ public class CharJudgeTest
     }
 
     /// <summary>
-    /// 测试目的：验证 IsBetween 对倒序范围的处理
+    /// 验证起始值大于结束值时不匹配任何字符。
     /// </summary>
     [Theory]
     [InlineData('b', 'c', 'a', false)] // 异常：倒序范围，中间值
@@ -63,7 +63,7 @@ public class CharJudgeTest
     }
 
     /// <summary>
-    /// 测试目的：验证 IsBetween 对Unicode字符的处理
+    /// 验证希腊字母和中文字符按 Unicode 字符值进行范围比较。
     /// </summary>
     [Theory]
     [InlineData('α', 'α', 'ω', true)]   // 正常：希腊字母范围内

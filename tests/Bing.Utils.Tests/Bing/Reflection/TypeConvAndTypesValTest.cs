@@ -1,12 +1,12 @@
 namespace Bing.Reflection;
 /// <summary>
-/// 测试类：覆盖 `TypeConvAndTypesVal` 相关行为。
+/// 验证可空类型转换及类型集合的访问与隔离。
 /// </summary>
 [Trait("Bing.Reflection", "TypeConvAndTypesVal")]
 public class TypeConvAndTypesValTest
 {
     /// <summary>
-    /// 测试用例：验证 `GetNonNullableType` 在 `NullInput` 场景下，结果为 `ReturnsNull`。
+    /// 验证空类型转换后仍为空。
     /// </summary>
     [Fact]
     public void GetNonNullableType_NullInput_ReturnsNull()
@@ -14,7 +14,7 @@ public class TypeConvAndTypesValTest
         TypeConv.GetNonNullableType(null).ShouldBeNull();
     }
     /// <summary>
-    /// 测试用例：验证 `GetNonNullableType` 在 `NullableType` 场景下，结果为 `ReturnsUnderlyingType`。
+    /// 验证可空类型转换为底层类型。
     /// </summary>
     [Fact]
     public void GetNonNullableType_NullableType_ReturnsUnderlyingType()
@@ -23,7 +23,7 @@ public class TypeConvAndTypesValTest
         result.ShouldBe(typeof(int));
     }
     /// <summary>
-    /// 测试用例：验证 `GetNonNullableType` 在 `ArrayOfNullable` 场景下，结果为 `ReturnsArrayOfUnderlying`。
+    /// 验证可空元素数组转换为底层元素数组。
     /// </summary>
     [Fact]
     public void GetNonNullableType_ArrayOfNullable_ReturnsArrayOfUnderlying()
@@ -32,7 +32,7 @@ public class TypeConvAndTypesValTest
         result.ShouldBe(typeof(int[]));
     }
     /// <summary>
-    /// 测试用例：验证 `GetNonNullableType` 在 `KeyValuePairWithNullableValue` 场景下，结果为 `ReturnsNonNullableValueType`。
+    /// 验证键值对的可空值类型转换为底层类型。
     /// </summary>
     [Fact]
     public void GetNonNullableType_KeyValuePairWithNullableValue_ReturnsNonNullableValueType()
@@ -41,7 +41,7 @@ public class TypeConvAndTypesValTest
         result.ShouldBe(typeof(KeyValuePair<string, int>));
     }
     /// <summary>
-    /// 测试用例：验证 `GetNonNullableType` 在 `DictionaryWithNullableValue` 场景下，结果为 `ReturnsDictionaryWithNonNullableValue`。
+    /// 验证字典的可空值类型转换为底层类型。
     /// </summary>
     [Fact]
     public void GetNonNullableType_DictionaryWithNullableValue_ReturnsDictionaryWithNonNullableValue()
@@ -50,7 +50,7 @@ public class TypeConvAndTypesValTest
         result.ShouldBe(typeof(Dictionary<string, int>));
     }
     /// <summary>
-    /// 测试用例：验证 `GetNonNullableType` 在 `ListOfNullable` 场景下，结果为 `ReturnsListOfNonNullable`。
+    /// 验证列表的可空元素类型转换为底层类型。
     /// </summary>
     [Fact]
     public void GetNonNullableType_ListOfNullable_ReturnsListOfNonNullable()
@@ -59,7 +59,7 @@ public class TypeConvAndTypesValTest
         result.ShouldBe(typeof(List<int>));
     }
     /// <summary>
-    /// 测试用例：验证 `Create` 在 `NullTypes` 场景下，结果为 `ReturnsEmptySingleton`。
+    /// 验证空类型数组返回空集合单例。
     /// </summary>
     [Fact]
     public void Create_NullTypes_ReturnsEmptySingleton()
@@ -69,7 +69,7 @@ public class TypeConvAndTypesValTest
         result.IsEmpty().ShouldBeTrue();
     }
     /// <summary>
-    /// 测试用例：验证 `Create` 在 `WithTypes` 场景下，结果为 `ReturnsExpectedCountAndItems`。
+    /// 验证类型集合保存元素数量与顺序。
     /// </summary>
     [Fact]
     public void Create_WithTypes_ReturnsExpectedCountAndItems()
@@ -80,7 +80,7 @@ public class TypeConvAndTypesValTest
         result[1].ShouldBe(typeof(string));
     }
     /// <summary>
-    /// 测试用例：验证 `Indexer` 在 `OutOfRange` 场景下，结果为 `ThrowsArgumentOutOfRangeException`。
+    /// 验证索引器拒绝负数及超出集合长度的索引。
     /// </summary>
     [Fact]
     public void Indexer_OutOfRange_ThrowsArgumentOutOfRangeException()
@@ -90,7 +90,7 @@ public class TypeConvAndTypesValTest
         Should.Throw<ArgumentOutOfRangeException>(() => _ = result[1]).ParamName.ShouldBe("index");
     }
     /// <summary>
-    /// 测试用例：验证 `TypeArray` 在 `ModifiedOutside` 场景下，结果为 `DoesNotAffectInternalCollection`。
+    /// 验证修改返回数组不影响内部类型集合。
     /// </summary>
     [Fact]
     public void TypeArray_ModifiedOutside_DoesNotAffectInternalCollection()
@@ -102,7 +102,7 @@ public class TypeConvAndTypesValTest
         result.TypeArray[0].ShouldBe(typeof(int));
     }
     /// <summary>
-    /// 测试用例：验证 `Types` 在 `Enumeration` 场景下，结果为 `ReturnsAllTypesInOrder`。
+    /// 验证枚举结果保持全部类型的原始顺序。
     /// </summary>
     [Fact]
     public void Types_Enumeration_ReturnsAllTypesInOrder()

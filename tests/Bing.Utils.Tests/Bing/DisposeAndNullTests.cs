@@ -9,30 +9,45 @@ public class DisposeAndNullTests
     // NullDisposable
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证空操作释放对象的单例非空。
+    /// </summary>
     [Fact]
     public void NullDisposable_Instance_IsNotNull()
     {
         NullDisposable.Instance.ShouldNotBeNull();
     }
 
+    /// <summary>
+    /// 验证空操作释放对象始终返回同一实例。
+    /// </summary>
     [Fact]
     public void NullDisposable_Instance_IsSingleton()
     {
         NullDisposable.Instance.ShouldBeSameAs(NullDisposable.Instance);
     }
 
+    /// <summary>
+    /// 验证空操作释放对象实现释放接口。
+    /// </summary>
     [Fact]
     public void NullDisposable_ImplementsIDisposable()
     {
         NullDisposable.Instance.ShouldBeAssignableTo<IDisposable>();
     }
 
+    /// <summary>
+    /// 验证空操作释放不会抛出异常。
+    /// </summary>
     [Fact]
     public void NullDisposable_Dispose_DoesNotThrow()
     {
         Should.NotThrow(() => NullDisposable.Instance.Dispose());
     }
 
+    /// <summary>
+    /// 验证空操作释放可重复调用。
+    /// </summary>
     [Fact]
     public void NullDisposable_Dispose_CanBeCalledMultipleTimes()
     {
@@ -44,6 +59,9 @@ public class DisposeAndNullTests
         });
     }
 
+    /// <summary>
+    /// 验证空操作释放对象可用于作用域释放。
+    /// </summary>
     [Fact]
     public void NullDisposable_UsedInUsingStatement_DoesNotThrow()
     {
@@ -58,12 +76,18 @@ public class DisposeAndNullTests
     // DisposeAction
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证释放回调对象拒绝空回调。
+    /// </summary>
     [Fact]
     public void DisposeAction_Constructor_NullAction_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => new DisposeAction(null!));
     }
 
+    /// <summary>
+    /// 验证释放对象时执行回调。
+    /// </summary>
     [Fact]
     public void DisposeAction_Dispose_InvokesAction()
     {
@@ -73,6 +97,9 @@ public class DisposeAndNullTests
         called.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证释放回调在退出作用域时执行。
+    /// </summary>
     [Fact]
     public void DisposeAction_UsedInUsingStatement_ActionCalledOnExit()
     {
@@ -84,6 +111,9 @@ public class DisposeAndNullTests
         cleaned.ShouldBeTrue();
     }
 
+    /// <summary>
+    /// 验证重复释放会重复执行回调。
+    /// </summary>
     [Fact]
     public void DisposeAction_Dispose_CalledTwice_ActionCalledTwice()
     {
@@ -94,6 +124,9 @@ public class DisposeAndNullTests
         count.ShouldBe(2);
     }
 
+    /// <summary>
+    /// 验证释放回调对象实现释放接口。
+    /// </summary>
     [Fact]
     public void DisposeAction_ImplementsIDisposable()
     {
@@ -105,12 +138,18 @@ public class DisposeAndNullTests
     // DisposeAction<T>
     // ─────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// 验证泛型释放回调对象拒绝空回调。
+    /// </summary>
     [Fact]
     public void DisposeActionT_Constructor_NullAction_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => new DisposeAction<string>(null!, "param"));
     }
 
+    /// <summary>
+    /// 验证泛型释放将保存的参数传给回调。
+    /// </summary>
     [Fact]
     public void DisposeActionT_Dispose_InvokesActionWithParameter()
     {
@@ -120,6 +159,9 @@ public class DisposeAndNullTests
         captured.ShouldBe("hello");
     }
 
+    /// <summary>
+    /// 验证参数为空时不执行泛型释放回调。
+    /// </summary>
     [Fact]
     public void DisposeActionT_Dispose_NullParameter_DoesNotInvokeAction()
     {
@@ -129,6 +171,9 @@ public class DisposeAndNullTests
         called.ShouldBeFalse();
     }
 
+    /// <summary>
+    /// 验证泛型释放回调在退出作用域时执行。
+    /// </summary>
     [Fact]
     public void DisposeActionT_UsedInUsingStatement_ActionCalledOnExit()
     {
@@ -140,6 +185,9 @@ public class DisposeAndNullTests
         sum.ShouldBe(42);
     }
 
+    /// <summary>
+    /// 验证泛型释放回调对象实现释放接口。
+    /// </summary>
     [Fact]
     public void DisposeActionT_ImplementsIDisposable()
     {

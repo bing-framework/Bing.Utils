@@ -5,7 +5,7 @@ namespace Bing.Date;
 public class DateTimeRangeTest
 {
     /// <summary>
-    /// 当前时间
+    /// 区间相等和格式化测试使用的固定日期时间。
     /// </summary>
     private static readonly DateTime _now = new(2024, 6, 25, 14, 37, 56, 78);
     /// <summary>
@@ -117,7 +117,7 @@ public class DateTimeRangeTest
         minMaxRange.UtcEndTime.ShouldBe(DateTime.MaxValue);
     }
     /// <summary>
-    /// 测试 - 属性
+    /// 验证常用日、月和年区间的边界顺序。
     /// </summary>
     [Fact]
     public void Test_Properties()
@@ -379,7 +379,7 @@ public class DateTimeRangeTest
         earlier.CompareTo(null).ShouldBe(1); // 与null比较应该返回1
     }
     /// <summary>
-    /// 测试 - HashCode 唯一性
+    /// 验证所选相等区间哈希一致且不同样例的哈希不同。
     /// </summary>
     [Fact]
     public void Test_GetHashCode()

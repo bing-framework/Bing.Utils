@@ -4,12 +4,12 @@ using SkiaSharp;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 测试类：SkiaSharp 真实处理链路集成测试
+/// 验证 SkiaSharp 图像处理流程在文件、流和编码格式之间的集成行为。
 /// </summary>
 public class SkiaSharpHelperIntegrationTest
 {
     /// <summary>
-    /// 测试用例：读取-处理-输出完整链路在临时目录中可稳定执行并清理
+    /// 验证图像经过读取、处理、编码和写入后尺寸正确且临时文件可清理。
     /// </summary>
     [Fact]
     public void ProcessingPipeline_ReadProcessWrite_RoundTripAndCleanup()
@@ -45,7 +45,7 @@ public class SkiaSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 测试用例：Jpeg 质量参数应影响输出体积，低质量通常更小
+    /// 验证 JPEG 低质量设置生成的文件小于高质量设置。
     /// </summary>
     [Fact]
     public void OutputQuality_JpegLowQuality_SmallerThanHighQuality()
@@ -59,7 +59,7 @@ public class SkiaSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 测试用例：非法文件内容与非法流应按契约返回空结果
+    /// 验证无效文件内容和流数据均返回空图像结果。
     /// </summary>
     [Fact]
     public void InvalidInput_FileAndStream_ReturnNull()
@@ -76,6 +76,12 @@ public class SkiaSharpHelperIntegrationTest
         fromStream.ShouldBeNull();
     }
 
+    /// <summary>
+    /// 创建颜色随坐标变化的测试图像。
+    /// </summary>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <returns>按像素坐标生成颜色的图像。</returns>
     private static SKImage CreatePatternImage(int width, int height)
     {
         using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -89,6 +95,12 @@ public class SkiaSharpHelperIntegrationTest
         return SKImage.FromBitmap(bitmap);
     }
 
+    /// <summary>
+    /// 创建由固定随机种子生成像素的噪声图像。
+    /// </summary>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <returns>包含确定性随机颜色的图像。</returns>
     private static SKImage CreateNoiseImage(int width, int height)
     {
         using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -103,16 +115,27 @@ public class SkiaSharpHelperIntegrationTest
         return SKImage.FromBitmap(bitmap);
     }
 
+    /// <summary>
+    /// 在系统临时目录中创建并清理测试目录。
+    /// </summary>
     private sealed class TempDirectory : IDisposable
     {
+        /// <summary>
+        /// 初始化一个 <see cref="TempDirectory"/> 类型的实例。
+        /// </summary>
+        /// <param name="prefix">临时目录名称使用的前缀。</param>
         public TempDirectory(string prefix)
         {
             Path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"{prefix}-{Guid.NewGuid():N}");
             Directory.CreateDirectory(Path);
         }
 
+        /// <summary>
+        /// 获取临时目录的完整路径。
+        /// </summary>
         public string Path { get; }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             try

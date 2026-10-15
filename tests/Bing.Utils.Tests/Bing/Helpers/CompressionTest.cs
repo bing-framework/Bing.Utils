@@ -57,6 +57,7 @@ public class CompressionTest : TestBase
     /// <summary>
     /// 测试 - Compress(byte[], CompressionLevel) - 不同压缩级别
     /// </summary>
+    /// <param name="level">本次压缩使用的级别。</param>
     [Theory]
     [InlineData(CompressionLevel.Optimal)]
     [InlineData(CompressionLevel.Fastest)]

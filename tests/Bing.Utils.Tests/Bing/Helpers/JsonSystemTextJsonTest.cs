@@ -154,18 +154,43 @@ public class JsonSystemTextJsonTest
         Json.ToObject<JsonSample>((Stream)null).ShouldBeNull();
     }
 #endif
+    /// <summary>
+    /// 用于验证按接口契约序列化的名称契约。
+    /// </summary>
     private interface IJsonContract
     {
+        /// <summary>
+        /// 获取序列化时公开的名称。
+        /// </summary>
         string Name { get; }
     }
+    /// <summary>
+    /// 实现名称契约并增加一个序列化属性的派生样例。
+    /// </summary>
     private class JsonDerived : IJsonContract
     {
+        /// <inheritdoc />
         public string Name { get; set; }
+
+        /// <summary>
+        /// 获取或设置派生类型的附加数值。
+        /// </summary>
         public int Extra { get; set; }
     }
+
+    /// <summary>
+    /// 用于验证 System.Text.Json 常规属性序列化的样例。
+    /// </summary>
     private class JsonSample
     {
+        /// <summary>
+        /// 获取或设置样例名称。
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// 获取或设置样例数量。
+        /// </summary>
         public int Count { get; set; }
     }
 }

@@ -2,15 +2,30 @@ using Bing.Text.Splitters;
 
 namespace BingUtilsUT.SplitterUT;
 
+/// <summary>
+/// 验证键值映射字符串的分割、字典转换和固定长度解析。
+/// </summary>
 public class MapSplitterTest
 {
+    /// <summary>
+    /// 提供分隔符分组和固定长度分组的键值对字符串样例。
+    /// </summary>
     private static class OriginalStrings
     {
+        /// <summary>
+        /// 获取使用分隔符分开的键值对字符串。
+        /// </summary>
         public static string NormalMapString => "a=1&b=2&c=3&d=4&e=5";
 
+        /// <summary>
+        /// 获取由连续固定长度键值片段组成的字符串。
+        /// </summary>
         public static string FixedLengthMapString => "a=1b=2c=3d=4e=5";
     }
 
+    /// <summary>
+    /// 验证分隔的键值对字符串可转换为键值对序列。
+    /// </summary>
     [Fact]
     public void Test_StringToKvp()
     {
@@ -27,6 +42,9 @@ public class MapSplitterTest
         dict["e"].ShouldBe("5");
     }
 
+    /// <summary>
+    /// 验证键值对序列转换遵守结果数量上限。
+    /// </summary>
     [Fact]
     public void Test_StringToKvp_With_Limit()
     {
@@ -41,6 +59,9 @@ public class MapSplitterTest
         dict["c"].ShouldBe("3");
     }
 
+    /// <summary>
+    /// 验证分隔的键值对字符串可转换为字典。
+    /// </summary>
     [Fact]
     public void Test_StringToDictionary()
     {
@@ -54,6 +75,9 @@ public class MapSplitterTest
         dict["e"].ShouldBe("5");
     }
 
+    /// <summary>
+    /// 验证字典转换遵守键值对数量上限。
+    /// </summary>
     [Fact]
     public void Test_StringToDictionary_With_Limit()
     {
@@ -65,6 +89,9 @@ public class MapSplitterTest
         dict["c"].ShouldBe("3");
     }
 
+    /// <summary>
+    /// 验证定长键值对字符串可转换为键值对序列。
+    /// </summary>
     [Fact]
     public void Test_StringToFixedLengthKvp()
     {
@@ -81,6 +108,9 @@ public class MapSplitterTest
         dict["e"].ShouldBe("5");
     }
 
+    /// <summary>
+    /// 验证定长键值对字符串可转换为字典。
+    /// </summary>
     [Fact]
     public void Test_StringToFixedLengthDictionary()
     {
