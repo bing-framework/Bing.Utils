@@ -1,17 +1,17 @@
 # TODO 执行记录
 
-更新时间：2026-10-15；基于 `813bd12` 上的工作区。本轮完成覆盖计划 P2-3 的六类边界检查策略及补测模板接入；保留此前未提交的源码、测试及工作流改动。本轮仅修改文档，不修改生产代码、测试、依赖、目标框架、CI 或基线。
+更新时间：2026-10-15；本轮基于 `0684e29`，开始时工作区干净。承接质量报告 P2-2 的 Reflection/Text 异常输入模板化测试；不修改生产代码、依赖、目标框架、CI 或基线。
 
 ## 执行依据与本轮范围
 
 - 仓库没有统一的跨模块总排期。按各既有清单及后续记录核对，不将上轮审计建议视为已批准设计。
-- [覆盖计划](test-coverage-map.md) 的 P0、P1、P2-1 及 [质量报告](test-quality-report.md) P1-1 已完成；覆盖计划 P2-2 已实现并通过本地回归，仅外部证据待验证。质量报告 P1-2 的本地实现完成，仅实际 nightly 待验证。本轮承接覆盖计划 P2 原顺序第 3 项，不重开已完成编码项，不改变外部阻塞项范围。
+- [覆盖计划](test-coverage-map.md) 的 P0、P1、P2-1、P2-3 及 [质量报告](test-quality-report.md) P1-1 已完成；覆盖计划 P2-2 已实现并通过本地回归，仅外部证据待验证。质量报告 P1-2 的本地实现完成，仅实际 nightly 待验证。质量报告 P2-1 的性能负载、机器和预算尚未批准，保持阻塞；P2-2 不依赖该预算，可独立推进。
 - 核对 [质量报告](test-quality-report.md)、[HTTP](http-security-reliability-report.md)、[安全清单](../security-cryptography-todo.md)、[图像](image-processing-execution.md)、[Text 资源](text-resources-execution.md)、[Emoji](emoji-execution.md)、[转换](conv-current-status.md)、[反射](reflection-todo-status.md) 的最新状态，后续记录覆盖历史描述。
-- 原计划 P2-3 要求引入横向边界清单策略；交付为 `null/empty/invalid/overflow/concurrent/perf` 统一清单、已有用例引用及模板接入，不扩为全 API 补测。
-- 既有单文件和批量补测模板已经存在，但未统一六类检查记录，模板索引也未收录这些入口；本轮直接修订已有模板，不另建重复工具或流程。
-- 按 `test-project-boundary/refs/test-project-boundary.md` 保留测试归属规则；主断言对象决定模块测试归属，真实跨模块协作进入 Integration。本轮无测试新增或迁移。
-- 主代理负责清单、模板和状态集成；Luna 按用户级委派规则只读定位六类已有样例并复核文档一致性。
-- 验收边界：六类均有适用性判断、契约与断言要求、状态和证据字段；性能入口只引用，不伪造测量或预算，不机械新增并发、基线和 CI。
+- 原计划 P2-2 要求 `null/empty/invalid` 异常输入模板化测试。本轮使用既有 [六类边界清单](boundary-test-checklist.md) 核对代表性入口，复用已覆盖场景，只补明确缺口，不扩为全 API 扫描。
+- Text：旧聚合测试已覆盖 `CaseFormatter` 的 LowerUnderscore 空输入及非法枚举，`SplitterTest` 已覆盖非正长度。补其余六种格式化样式的 null/空串/空白，以及 `OnPattern` 的非法正则模式。
+- Reflection：`TypeVisitAdvancedTests` 已覆盖方法名称、类型、签名的非法输入；补泛型 `GetProperties` 显式 null/空选择器数组的全量属性契约，避免把合法空数组错误归为异常。
+- 按 `test-project-boundary/refs/test-project-boundary.md`，新增断言分别归属 Text.Tests 与 Reflection.Tests，不迁移旧聚合测试，不改测试共享设施。`TypeReflections` 主包其他入口不纳入本轮代表性模板范围。
+- 主代理负责 Text、集成和验证；Luna 独立定位 Reflection 缺口，仅实现 `TypeVisitMembersTests` 中明确的选择器场景。
 
 ## 已完成 TODO
 
@@ -27,7 +27,8 @@
 | 质量报告 P0-2 异步覆盖写 | CLOSED（此前） | `FileHelper.WriteAsync(byte[],...)` 使用 `FileMode.Create` 并释放流；回归断言截断 |
 | 质量报告 P1-1 上传集成用例 | CLOSED（此前） | 无目录文件名、不同字段下的同名文件、同时到达的独立上传请求均验证实际落盘字节；测试控制器隔离并清理临时目录 |
 | 覆盖计划 P2-1 HTTP 失败链路 | CLOSED（此前） | 复用原超时/取消及 400/500 测试补强断言；新增受控异常中间件回归，验证完整错误体与回调一致性 |
-| 覆盖计划 P2-3 横向边界清单 | CLOSED（本轮） | 六类适用性、契约、断言和证据清单；接入单文件/批量补测模板、贡献指南及索引 |
+| 覆盖计划 P2-3 横向边界清单 | CLOSED（此前） | 六类适用性、契约、断言和证据清单；接入单文件/批量补测模板、贡献指南及索引 |
+| 质量报告 P2-2 Reflection/Text 异常模板 | CLOSED（本轮） | 新增 10 个参数化测试实例，补齐格式化空输入、非法正则和显式空选择器；复用原有非法签名回归 |
 | HTTP 后续批准修复 | CLOSED（此前） | 8 类修复及 HTTP-FIX-01/02 完成，逐项见 HTTP 记录；本轮补测范围另列 |
 | SEC-001 | CLOSED（此前） | 遗留密码入口弃用边界 |
 | SEC-002 | CLOSED（此前） | 版本化请求签名迁移入口 |
@@ -49,23 +50,44 @@
 
 ## 此前证据复用
 
-Text 的 `FixedLength(0)` 已改为构造时抛 `ArgumentOutOfRangeException("length")`，IdUtils 只增加测试友元与受控时钟测试，算法不变。上轮 Release 编译及验证：Text 定向 39/39、完整模块 322/322；IdUtils 定向 14/14；主包旧边界 4/4；旧 `SplitterUT` 50/50，均无失败、无跳过。定向 Text 是完整模块的子集，计数不相加。
+Text 的 `FixedLength(0)` 已改为构造时抛 `ArgumentOutOfRangeException("length")`，IdUtils 只增加测试友元与受控时钟测试，算法不变。此前 Release 编译及验证：Text 定向 39/39、当时完整模块 322/322；IdUtils 定向 14/14；主包旧边界 4/4；旧 `SplitterUT` 50/50，均无失败、无跳过。旧 Text 计数仅为历史证据，本轮修改测试后不宣称当前完整模块仍为 322 项。
 
-证据位于 `TestResults/todo-p1-boundaries/`：`text-splitter-net8.trx`、`idutils-snowflake-net8.trx`、`core-splitter-net8.trx`、`legacy-splitter-net8.trx`、`text-full-net8.trx`。本轮不修改这些实现，不重跑其验证。
+证据位于 `TestResults/todo-p1-boundaries/`：`text-splitter-net8.trx`、`idutils-snowflake-net8.trx`、`core-splitter-net8.trx`、`legacy-splitter-net8.trx`、`text-full-net8.trx`。本轮不修改这些生产实现；Text 受影响类使用下节新结果，其他模块不重跑。
 
 上传批次的 net6/net8 各 64/64 是历史证据。此后 P2-1 修改共享宿主并补强失败链路，当前集成证据为 net6/net8 各 65/65，定向 5 项是其子集，不叠加计数；Release 编译均通过。最终 TRX 位于 `TestResults/todo-http-failures/`：`http-failure-targeted-net8.trx`、`http-failure-full-net8-authorized.trx`、`http-failure-full-net6.trx`。
 
-保留该批次沙箱诊断结果 `http-failure-full-net8.trx`（54 通过、11 失败，证书导入或文件替换拒绝访问）；同一 net8 产物经权限流程复核后 65/65 通过。本轮源码、测试、目标框架未变，仅复用此前已记录环境下的本地证据，不声称重新构建、重新测试或验证其他平台。nightly 实际 CI 仍待验证。
+保留该批次沙箱诊断结果 `http-failure-full-net8.trx`（54 通过、11 失败，证书导入或文件替换拒绝访问）；同一 net8 产物经权限流程复核后 65/65 通过。本轮 HTTP 相关源码、测试及框架未变，复用其原本地证据，不声称重跑 HTTP 或验证其他平台。nightly 实际 CI 仍待验证。
 
 ## 本轮影响与验证
 
-- Task：todo-boundary-checklist-p2-3；Round：六类边界检查策略。
-- ChangedFiles：见本页 8 个文档；ChangedProjects、ChangedPublicContracts、ChangedProviders、ChangedRuntimePaths：无。
-- ChangedTFMs、ChangedBuildPackaging、ChangedBenchmarkHarness：无。ChangedDocsOnly：是。AffectedDependents：补测模板使用者和贡献者。RiskLevel：LOW。
-- L0：`git diff --check` 通过；本轮 8 个文档严格 UTF-8 解码通过、50 个相对链接目标存在；六类样例文件/方法及断言含义经只读核对一致。Git 的已有换行转换提示不代表格式检查失败。
-- L1—L5：文档不改变可执行产物，未重新构建或运行测试；复用上节已有编译及本地回归证据，不增加基线、资源探针或视觉校验。
-- 独立复核：Luna 未发现清单、两个补测模板及模板索引的可行动问题；主代理另修正批量模板的旧示例路径，并确保既定 TODO 顺序不被模板的风险排序覆盖。
-- 本轮 Implementation：1/1（策略文档及模板接入）；文档静态验证 PASS，编译/测试未重跑。Goal Status：COMPLETED，Next Action：STOP；仓库其余 TODO 与发布门禁见下节，不据此宣布全部仓库任务完成。
+- Task：todo-exception-templates-p2-2；Round：异常输入模板化回归。
+- ChangedFiles：见本页 5 个文件；ChangedProjects：Text.Tests、Reflection.Tests。ChangedPublicContracts、ChangedProviders、ChangedRuntimePaths：无生产变更。
+- ChangedTFMs、ChangedBuildPackaging、ChangedBenchmarkHarness：无。ChangedDocsOnly：否。AffectedDependents：仅两个模块测试项目，未修改共享测试设施。RiskLevel：LOW。
+- L0：两个测试项目及实际引用目标的 Release 编译通过；`git diff --check`、本轮 5 个文件严格 UTF-8 解码、14 个相对链接检查通过。既有编译警告与换行提示不做无关清理。
+- L1：net8.0 Text 的 `CaseFormatterTest|SplitterTest` 共 72/72；Reflection 的 `TypeVisitMembersTests|TypeVisitAdvancedTests|TypeVisitSelectorValidationTests` 共 67/67，通过且无失败、无跳过。新增测试实例为 Text 8 项、Reflection 2 项，包含在上述计数内。
+- 成功命令见下方；结果保存在 `TestResults/todo-exception-templates/text-exceptions-net8.trx` 和 `reflection-exceptions-net8.trx`。
+- 环境诊断：首次默认并行构建无输出，终止该命令产生的节点后改为单进程。旧资产缺少 netstandard2.0，通过现有项目 `dotnet restore --ignore-failed-sources -m:1 -nr:false` 修复；沙箱随后拒绝写入已有 AssemblyInfoInputs.cache，两个相同范围的测试经权限流程执行成功。未修改项目、包版本、断言或测试过滤来掩盖失败。
+- L2—L5：仅增加测试，无共享设施或生产变化，不扩为完整模块、全解决方案、跨框架、性能或视觉验证。
+- 复核：主代理核对 Reflection 属性全集及重载契约；Luna 只读复核 Text 新增测试。没有将合法 null/空数组改写为应抛异常。
+- 本轮 Implementation：1/1；本地编译及定向验收 2/2 PASS。No-Progress：CHANGED。Goal Status：COMPLETED，Next Action：STOP；仓库外部验收仍按下节保留。
+
+```powershell
+dotnet test tests/Bing.Utils.Text.Tests/Bing.Utils.Text.Tests.csproj -c Release -f net8.0 --no-restore --filter 'FullyQualifiedName~CaseFormatterTest|FullyQualifiedName~SplitterTest' --results-directory TestResults/todo-exception-templates --logger 'trx;LogFileName=text-exceptions-net8.trx' --nologo -m:1 -nr:false -p:UseSharedCompilation=false
+dotnet test tests/Bing.Utils.Reflection.Tests/Bing.Utils.Reflection.Tests.csproj -c Release -f net8.0 --no-restore --filter 'FullyQualifiedName~TypeVisitMembersTests|FullyQualifiedName~TypeVisitAdvancedTests|FullyQualifiedName~TypeVisitSelectorValidationTests' --results-directory TestResults/todo-exception-templates --logger 'trx;LogFileName=reflection-exceptions-net8.trx' --nologo -m:1 -nr:false -p:UseSharedCompilation=false
+```
+
+### 本轮六类边界记录
+
+契约依据：`src/Bing.Utils.Text/Bing/Text/CaseFormatter.cs` 的格式化分支、既有聚合 `CaseFormatterTest` 兼容断言；`Splitter.cs` 的 `InternalSplitToEnumerable/SplitPatternList`；`src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Properties.cs` 对 null/空选择器的明确约定及 [反射失败契约](reflection-contract-migration.md)。
+
+| 类别 | 本轮适用性、输入与预期 | 测试与证据 |
+| --- | --- | --- |
+| null | 适用；格式化 null 返回空串，显式 null 的 params 选择器返回完整可读属性集合 | 新增 `To_WithNullOrEmptySequence_ReturnsEmptyString`、`GetProperties_GenericNullOrEmptySelectors_ReturnsAllGetterProperties`；上述 TRX |
+| empty | 适用；空串/空白格式化为空串，空选择器数组返回三项精确属性集合 | 同上；原 LowerUnderscore 兼容用例仅作契约参考，不声称本轮运行旧聚合项目 |
+| invalid | 适用；非法正则在分割时抛参数异常；非法名称、签名等维持现有异常类型 | 新增 `OnPattern_WithInvalidPattern_ThrowsArgumentExceptionWhenSplit`；已有 `FindMethod_WithInvalidArguments_ThrowsExpectedException` 纳入本轮 Reflection 定向测试 |
+| overflow | NOT_APPLICABLE；本轮冻结范围是空输入、正则语法及选择器分派，不涉及数值容量运算 | 不扩展既有 Snowflake 等其他模块测试 |
+| concurrent | NOT_APPLICABLE；本轮未修改并发实现或声明新的线程安全契约 | 不新增并发测试或基础设施 |
+| perf | 无生产或夹具变化；复用原记录中的未受影响性能证据边界 | 未运行 benchmark，不宣称新阈值或性能通过 |
 
 ## 未完成与依赖
 
@@ -77,7 +99,6 @@ Text 的 `FixedLength(0)` 已改为构造时抛 `ArgumentOutOfRangeException("le
 | 跨平台验收 | 运行时、GDI 平台和字体/ICC 资源 | BLOCKED_APPROVAL / BLOCKED_EXTERNAL；依赖支持矩阵、可分发资源及 runner，不自行删目标或扩矩阵 |
 | 覆盖计划 P2-2 | Reflection 契约回归 | 实现与本地回归已由反射专项完成；远程结果 BLOCKED_EXTERNAL，不重新打开已关闭代码项 |
 | 质量报告 P2-1 | 图像性能基准与阈值 | BLOCKED_APPROVAL；依赖批准负载、机器和预算，后续图像记录未批准此性能任务 |
-| 质量报告 P2-2 | Reflection/Text 异常模板 | OPEN_ACTIONABLE；无未完成编码上游。本轮只接入通用清单，尚需按原条目的 null/empty/invalid 范围核对并补齐参数化回归；已有测试可复用，不将全 API 覆盖设为额外前置条件 |
 | 反射剩余项 | 默认性能预算和容量告警 | BLOCKED_APPROVAL；依赖业务批准数值及环境，已有可选策略，不重建基线 |
 | 反射剩余项 | 外部发布、消费者及依赖诊断治理 | BLOCKED_EXTERNAL / 待确认；依赖真实 CI、消费者及责任人；不擅自清零或扩大批准诊断 |
 | 模块文档，未定级 | FTP 配置接入 | OPEN_ACTIONABLE / 部分待确认；字段映射可独立推进，代理接入方式及 FTP 验收环境需确认 |
@@ -91,17 +112,14 @@ Text 的 `FixedLength(0)` 已改为构造时抛 `ArgumentOutOfRangeException("le
 
 另发现同步 `FileHelper.Write(byte[],...)` 仍有未释放 `File.Create` 的相似问题，与已关闭的异步条目不同，待纳入明确后续修复范围；本轮不修改。
 
-下一轮建议：按质量报告 P2 原顺序记录 P2-1 的预算阻塞，再处理可独立执行的 P2-2 Reflection/Text 异常模板回归，限原定 null/empty/invalid 范围。它无未完成编码依赖，可复用本轮清单与现有测试；不扩为全 API 扫描。质量报告 P1-2、覆盖计划 P2-2 保持待外部实测，不重复增加工作流或重跑无关用例。
+下一轮建议：先核对未定级 FTP 配置接入的既有方案与实际字段映射，仅处理契约明确且不依赖代理选择的部分；代理接入和真实 FTP 环境继续保持待确认。已定级的剩余项均依赖预算或外部验收，不为推进而修改其范围。
 
 ## 本轮文件
 
-- 新增 `docs/quality/boundary-test-checklist.md`：六类边界检查、记录模板及已有样例。
-- 更新 `docs/quality/prompts/test-completion-for-file.prompt.md`：单文件补测接入清单与最小验证。
-- 更新 `docs/quality/prompts/test-completion-batch.prompt.md`：批量补测逐项接入清单，不扩大条目。
-- 更新 `docs/quality/prompts/README.md`：收录既有补测、风格模板及清单入口。
-- 更新 `docs/CONTRIBUTING.md`：贡献流程与 PR 检查接入清单，按影响范围选择验证。
-- 更新 `docs/README.md`：增加清单和模板索引入口。
-- 更新 `docs/quality/test-coverage-map.md`：同步 P2-3 完成状态，保留原计划。
-- 更新 `docs/quality/todo-execution.md`：本轮状态、证据复用、剩余项与依赖。
+- 更新 `tests/Bing.Utils.Text.Tests/Bing/Text/Formatting/CaseFormatterTest.cs`：六种样式的 null/空串/空白参数化回归。
+- 更新 `tests/Bing.Utils.Text.Tests/Bing/Text/Splitters/SplitterTest.cs`：两种非法正则模式的分割异常。
+- 更新 `tests/Bing.Utils.Reflection.Tests/Bing/Reflection/TypeVisitMembersTests.cs`：显式 null/空选择器的精确属性集合回归。
+- 更新 `docs/quality/test-quality-report.md`：同步质量 P2-2 完成及本地证据。
+- 更新 `docs/quality/todo-execution.md`：本轮范围、六类边界记录、证据与剩余依赖。
 
 本轮没有独立于 TODO 的配置清理，也没有 CI、基线或构建配置变更。

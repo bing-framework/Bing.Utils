@@ -1,6 +1,6 @@
 ﻿# 测试质量报告（阶段5）
 
-> 2026-10-15 核对：本文 P0 的 SendBefore、FileHelper 异步写入已修复；P1-1 的三类上传用例已补齐。P1-2 已增加 net8 目标及 net6/net8 nightly，实际 CI 结果待验证。本轮另完成覆盖计划 P2-1 的 HTTP 失败链路，net6/net8 默认完整集成各 65/65 通过。当前证据见 [TODO 执行记录](todo-execution.md) 和 [HTTP 后续记录](http-security-reliability-report.md)。下文为原阶段记录。
+> 2026-10-15 核对：本文 P0、P1-1 已完成；P1-2 的 net8 目标及 net6/net8 nightly 已实现，实际 CI 待验证。覆盖计划 P2-1 的 HTTP 失败链路此前已完成。本轮完成本文 P2-2 的异常输入模板化回归：补格式化空输入、非法正则及显式 null/空选择器，复用既有非法签名用例；net8 Release 编译通过，Text 定向 72/72、Reflection 定向 67/67。P2-1 图像性能预算仍待批准，不将本轮正确性结果作为性能验收。当前范围与证据见 [TODO 执行记录](todo-execution.md)，HTTP 历史结果见 [HTTP 后续记录](http-security-reliability-report.md)。下文保留原阶段记录。
 
 ## 1. 本轮完成范围
 
