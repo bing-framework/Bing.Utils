@@ -55,8 +55,9 @@ public class UnixTimeStampTest
         actualTimestamp.ShouldBeLessThanOrEqualTo(afterCreation + 1);
     }
     /// <summary>
-    /// 测试 - Unix时间戳构造函数 - 有效时间戳
+    /// 验证有效 Unix 秒级时间戳及对应的 UTC 时间。
     /// </summary>
+    /// <param name="unixTimestamp">有效的 Unix 秒级时间戳。</param>
     [Theory]
     [InlineData(0L)]                    // Unix epoch
     [InlineData(1640995200L)]          // 2022-01-01 00:00:00 UTC
@@ -73,8 +74,9 @@ public class UnixTimeStampTest
         actualUtcTime.ShouldBe(expectedUtcTime);
     }
     /// <summary>
-    /// 测试 - Unix时间戳构造函数 - 无效时间戳
+    /// 验证构造函数拒绝负 Unix 时间戳。
     /// </summary>
+    /// <param name="invalidTimestamp">无效的负 Unix 时间戳。</param>
     [Theory]
     [InlineData(-1L)]
     [InlineData(long.MinValue)]
@@ -85,8 +87,9 @@ public class UnixTimeStampTest
             .ParamName.ShouldBe("timestamp");
     }
     /// <summary>
-    /// 测试 - DateTime构造函数 - 各种时区
+    /// 验证不同日期时间种类转换为预期的 Unix 时间戳。
     /// </summary>
+    /// <param name="kind">输入日期时间的种类。</param>
     [Theory]
     [InlineData(DateTimeKind.Utc)]
     [InlineData(DateTimeKind.Local)]
@@ -109,25 +112,19 @@ public class UnixTimeStampTest
         unixTimeStamp.ToTimestamp().ShouldBe(expectedUnixTimestamp);
     }
     /// <summary>
-    /// 测试 - 受保护构造函数 - 直接设置时间和时间戳
+    /// 验证时间戳构造函数保存秒值并转换为对应的本地时间。
     /// </summary>
     [Fact]
     public void Constructor_Protected_SetsValuesCorrectly()
     {
         // Arrange
-        var testDateTime = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Local);
+        var testDateTime = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Utc).ToLocalTime();
         var testTimestamp = 1704110400L; // 对应的Unix时间戳
         // Act - 通过公共构造函数间接测试受保护构造函数
         var unixTimeStamp = new UnixTimeStamp(testTimestamp);
         // Assert
         unixTimeStamp.ToTimestamp().ShouldBe(testTimestamp);
-<<<<<<< TODO: 项目“Bing.Utils.Tests(net7.0)”的未合并的更改, 在此之前:
-        Assert.NotNull(unixTimeStamp.ToDateTime());
-    }
-=======
-    }
->>>>>>> 晚于
-
+        unixTimeStamp.ToDateTime().ShouldBe(testDateTime);
     }
     #endregion
     #region 转换方法测试
@@ -271,8 +268,10 @@ public class UnixTimeStampTest
         unixTimeStamp.ToTimestamp().ShouldBe(expectedSeconds);
     }
     /// <summary>
-    /// 测试 - FromUnixTimeMilliseconds - 毫秒精度丢失处理
+    /// 验证毫秒时间戳转换为秒值时截断毫秒部分。
     /// </summary>
+    /// <param name="millisecondsTimestamp">Unix 毫秒级时间戳。</param>
+    /// <param name="expectedSeconds">预期的 Unix 秒级时间戳。</param>
     [Theory]
     [InlineData(1640995200500L, 1640995200L)]  // 500毫秒被截断
     [InlineData(1640995200999L, 1640995200L)]  // 999毫秒被截断
@@ -302,8 +301,10 @@ public class UnixTimeStampTest
         actualMilliseconds.ShouldBe(expectedMilliseconds);
     }
     /// <summary>
-    /// 测试 - IsAfter2038Problem - 检查2038年问题
+    /// 验证时间戳是否超过 32 位有符号整数的秒值上限。
     /// </summary>
+    /// <param name="timestamp">待检查的 Unix 秒级时间戳。</param>
+    /// <param name="expectedResult">是否预期超过上限。</param>
     [Theory]
     [InlineData(2147483647L, false)]   // 2038年边界，刚好不超过
     [InlineData(2147483648L, true)]    // 超过2038年边界
@@ -318,8 +319,10 @@ public class UnixTimeStampTest
         result.ShouldBe(expectedResult);
     }
     /// <summary>
-    /// 测试 - GetDaysSinceEpoch - 计算距离纪元的天数
+    /// 验证时间戳距 Unix 纪元的整天数。
     /// </summary>
+    /// <param name="timestamp">Unix 秒级时间戳。</param>
+    /// <param name="expectedDays">预期的整天数。</param>
     [Theory]
     [InlineData(0L, 0)]                    // Unix epoch: 1970-01-01
     [InlineData(86400L, 1)]                // 1970-01-02: 1天后
@@ -338,8 +341,10 @@ public class UnixTimeStampTest
         actualDays.ShouldBe(expectedDays);
     }
     /// <summary>
-    /// 测试 - Add方法系列 - 时间加法运算
+    /// 验证添加正时间单位后得到预期的 Unix 时间戳。
     /// </summary>
+    /// <param name="value">添加的时间单位数量。</param>
+    /// <param name="methodName">待调用的时间添加方法名。</param>
     [Theory]
     [InlineData(3600L, "AddSeconds")]   // 1小时
     [InlineData(60L, "AddMinutes")]     // 1分钟转秒
@@ -371,8 +376,10 @@ public class UnixTimeStampTest
         result.ToTimestamp().ShouldBe(expectedTimestamp);
     }
     /// <summary>
-    /// 测试 - Add方法系列 - 负值处理
+    /// 验证添加负时间单位后秒值减小且保留 Unix 时间戳类型。
     /// </summary>
+    /// <param name="value">添加的负时间单位数量。</param>
+    /// <param name="methodName">待调用的时间添加方法名。</param>
     [Theory]
     [InlineData(-3600L, "AddSeconds")]   // 减1小时
     [InlineData(-60L, "AddMinutes")]     // 减1分钟
@@ -417,7 +424,7 @@ public class UnixTimeStampTest
         subtractedUnix.ToTimestamp().ShouldBe(unixTimeStamp.ToTimestamp() - (long)timeSpan.TotalSeconds);
     }
     /// <summary>
-    /// 测试 - Add和Subtract方法 - 精度处理
+    /// 验证添加时间间隔时截断不足一秒的部分。
     /// </summary>
     [Fact]
     public void AddSubtractWithTimeSpan_HandlesMillisecondPrecision()
@@ -488,8 +495,10 @@ public class UnixTimeStampTest
         }
     }
     /// <summary>
-    /// 测试 - ToRelativeString - 相对时间字符串
+    /// 验证相对时间文本包含预期的数值和单位。
     /// </summary>
+    /// <param name="offsetSeconds">相对当前时间的秒数偏移。</param>
+    /// <param name="expectedPattern">包含预期数值和单位的相对时间文本。</param>
     [Theory]
     [InlineData(-30, "30秒前")]
     [InlineData(-120, "2分钟前")]
@@ -509,8 +518,10 @@ public class UnixTimeStampTest
         result.ShouldContain(expectedPattern.Split('前', '后')[0]); // 检查数值和单位
     }
     /// <summary>
-    /// 测试 - ToRelativeString - 边界值处理
+    /// 验证单位边界附近的相对时间文本包含预期数值。
     /// </summary>
+    /// <param name="offsetSeconds">相对当前时间的秒数偏移。</param>
+    /// <param name="expectedPattern">用于提取预期数值的相对时间文本。</param>
     [Theory]
     [InlineData(59, "59秒后")]           // 秒的边界
     [InlineData(3599, "59分钟后")]       // 分钟的边界
@@ -561,13 +572,7 @@ public class UnixTimeStampTest
         var timestamp = baseRef.ToTimestamp();
         // Assert
         timestamp.ShouldBe(1640995200L);
-<<<<<<< TODO: 项目“Bing.Utils.Tests(net7.0)”的未合并的更改, 在此之前:
-        Assert.NotNull(dateTime);
-        // 验证运行时类型
-=======
-        // 验证运行时类型
->>>>>>> 晚于
-
+        dateTime.ShouldBe(new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime());
         // 验证运行时类型
         baseRef.ShouldBeOfType<UnixTimeStamp>();
     }
@@ -683,7 +688,7 @@ public class UnixTimeStampTest
     #endregion
     #region 兼容性测试
     /// <summary>
-    /// 测试 - NowUnixTimeStamp - 过时属性兼容性
+    /// 验证兼容委托返回当前 Unix 秒级时间戳。
     /// </summary>
     [Fact]
     public void NowUnixTimeStamp_ObsoleteProperty_StillWorksCorrectly()
@@ -700,7 +705,7 @@ public class UnixTimeStampTest
         timestamp.ShouldBeLessThanOrEqualTo(afterCall + 1);
     }
     /// <summary>
-    /// 测试 - UtcNowUnixTimeStamp - 过时属性兼容性
+    /// 验证兼容委托返回当前 UTC 时间对应的 Unix 秒值。
     /// </summary>
     [Fact]
     public void UtcNowUnixTimeStamp_ObsoleteProperty_StillWorksCorrectly()
@@ -941,7 +946,7 @@ public class UnixTimeStampTest
     #endregion
     #region 线程安全测试
     /// <summary>
-    /// 测试 - 多线程环境下的静态方法调用
+    /// 验证并发获取的 Unix 时间戳数量正确且接近当前时间。
     /// </summary>
     [Fact]
     public void ThreadSafety_StaticMethods_WorkCorrectlyInMultiThreadedEnvironment()
@@ -974,7 +979,7 @@ public class UnixTimeStampTest
         timestampArray.ShouldAllBe(ts => Math.Abs(ts - currentTimestamp) < 10); // 10秒内
     }
     /// <summary>
-    /// 测试 - MaxUnixTimestamp延迟计算的线程安全性
+    /// 验证并发读取的最大 Unix 时间戳一致且符合日期上限。
     /// </summary>
     [Fact]
     public void ThreadSafety_MaxUnixTimestampLazyCalculation_IsThreadSafe()
