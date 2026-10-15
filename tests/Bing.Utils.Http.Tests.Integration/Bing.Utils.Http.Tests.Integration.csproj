@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="..\..\common.tests.props" />
 	<PropertyGroup>
-		<TargetFrameworks>net7.0;net6.0;net5.0;netcoreapp3.1;</TargetFrameworks>
+		<TargetFrameworks>net8.0;net7.0;net6.0;net5.0;netcoreapp3.1;</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -30,7 +30,7 @@
 		<PackageReference Include="Xunit.DependencyInjection" Version="8.7.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' Or '$(TargetFramework)' == 'net8.0' ">
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.14" />
 		<PackageReference Include="Xunit.DependencyInjection" Version="8.7.0" />

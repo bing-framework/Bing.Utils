@@ -8,6 +8,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
 
 jobs:
   verify:
@@ -16,26 +18,43 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        # nightly 只复用 Windows 执行器；其他事件保持原有跨平台检查。
+        os: ${{ fromJSON(github.event_name == 'schedule' && '["windows-latest"]' || '["windows-latest", "ubuntu-latest", "macos-latest"]') }}
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: |
+          8.0.425
+          ${{ github.event_name == 'schedule' && '6.0.x' || '' }}
     - name: Restore
+      if: github.event_name != 'schedule'
       run: dotnet restore ./Bing.Utils.sln
     - name: Build
+      if: github.event_name != 'schedule'
       run: dotnet build ./Bing.Utils.sln -c Release --no-restore
     - name: Audit NuGet dependencies
+      if: github.event_name != 'schedule'
       shell: pwsh
       run: ./build/Test-NuGetAudit.ps1
     - name: Verify Drawing netstandard2.0
+      if: github.event_name != 'schedule'
       run: |
         dotnet build ./src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj -f netstandard2.0 --no-restore
         dotnet build ./src/Bing.Utils.Drawing.SkiaSharp/Bing.Utils.Drawing.SkiaSharp.csproj -f netstandard2.0 --no-restore
     - name: Test
+      if: github.event_name != 'schedule'
       run: dotnet test ./Bing.Utils.sln -c Release --no-build
+    - name: Nightly HTTP integration tests (net6/net8)
+      if: github.event_name == 'schedule'
+      shell: pwsh
+      run: |
+        $project = './tests/Bing.Utils.Http.Tests.Integration/Bing.Utils.Http.Tests.Integration.csproj'
+        & dotnet test $project -c Release -f net6.0 -p:TargetFrameworks=net6.0
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        & dotnet test $project -c Release -f net8.0 -p:TargetFrameworks=net8.0
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
