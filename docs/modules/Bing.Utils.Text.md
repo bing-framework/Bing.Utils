@@ -12,7 +12,8 @@
 - 输入输出约定
 - 空白输入字符串直接返回空序列，不抛异常。[证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:202` [证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:203`
 - 边界行为（null、空集合、非法参数）
-- `FixedLength(length)` 对负数长度抛 `ArgumentOutOfRangeException`。[证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:290` [证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:291`
+- `FixedLength(length)` 在构造入口拒绝小于或等于 0 的长度，抛出参数名为 `length` 的 `ArgumentOutOfRangeException`。[证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:290`
+- `SplitToDictionary` 遇到重复键抛 `ArgumentException`，不会覆盖；空键值分隔符保持既有行为，将每个片段整体作为键，值为空字符串。
 - `Limit(limit<=0)` 会回退为不限长（`LimitLength = -1`）。[证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:334` [证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:335`
 
 ## 2.1 多关键词匹配
@@ -178,7 +179,7 @@ dict.Count.ShouldBe(3);
 - 示例3：常见错误与修正
 ```csharp
 Assert.Throws<ArgumentOutOfRangeException>(() => Splitter.FixedLength(-1));
-// 修正：固定长度参数应 >= 0
+// 修正：固定长度参数必须大于 0
 ```
 [证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:290` [证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:291`
 
@@ -192,7 +193,7 @@ Assert.Throws<ArgumentOutOfRangeException>(() => Splitter.FixedLength(-1));
 
 ## 5. 异常与日志策略
 - 抛出哪些异常
-- `FixedLength(-1)` 抛 `ArgumentOutOfRangeException`。[证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:291`
+- `FixedLength(0/-1)` 在构造时抛 `ArgumentOutOfRangeException`，不会等到分割时才失败。[证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:291`
 - 什么时候返回默认值而不是抛异常
 - 输入字符串为空白时返回空枚举，不抛异常。[证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:202` [证据] `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:203`
 
@@ -206,8 +207,8 @@ Assert.Throws<ArgumentOutOfRangeException>(() => Splitter.FixedLength(-1));
 - 对应测试项目/测试类/关键用例
 - 模块新增能力由 `tests/Bing.Utils.Text.Tests` 验证；历史分割器测试仍位于聚合测试项目。[证据] `tests/Bing.Utils.Text.Tests/Bing.Utils.Text.Tests.csproj:11` [证据] `tests/BingUtilsUT/BingUtilsUT.csproj:17`
 - 关键类：`SplitterTest`、`MapSplitterTest`、`FixedLengthSplitterTest`，覆盖常见分割与 map/trim/limit 组合。[证据] `tests/BingUtilsUT/SplitterUT/SplitterTest.cs:5` [证据] `tests/BingUtilsUT/SplitterUT/MapSplitterTest.cs:5` [证据] `tests/BingUtilsUT/SplitterUT/FixedLengthSplitterTest.cs:5`
-- 未覆盖风险点
-- `FixedLength` 负数长度异常路径已有显式断言。[证据] `tests/Bing.Utils.Text.Tests/Bing/Text/Splitters/SplitterTest.cs:236`
+- 边界回归
+- 专属 `SplitterTest` 覆盖非正长度、异常参数名和值、空输入、重复键及空键值分隔符；历史 `SplitterBoundaryContractTest`、`FixedLengthSplitterBoundaryTest` 已同步零长度立即失败契约。
 
 ## 8. 版本与兼容性注意事项
 - 跟随公共多目标框架策略。[证据] `common.props:3`

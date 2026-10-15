@@ -233,15 +233,35 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 测试目的：固定长度为负数时应抛出 ArgumentOutOfRangeException
+    /// 测试目的：固定长度非正数时，应在构造入口抛出包含参数信息的越界异常。
     /// </summary>
     [Theory]
+    [InlineData(0)]
     [InlineData(-1)]
     [InlineData(-100)]
-    public void FixedLength_WithNegativeLength_ThrowsArgumentOutOfRangeException(int length)
+    [InlineData(int.MinValue)]
+    public void FixedLength_WithNonPositiveLength_ThrowsArgumentOutOfRangeException(int length)
     {
         // Act & Assert
-        Should.Throw<ArgumentOutOfRangeException>(() => Splitter.FixedLength(length));
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() => Splitter.FixedLength(length));
+        exception.ParamName.ShouldBe("length");
+        exception.ActualValue.ShouldBe(length);
+    }
+
+    /// <summary>
+    /// 测试目的：合法分段长度下，空白输入仍由各终结方法返回空结果。
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void FixedLength_WithEmptyInput_ReturnsEmpty(string input)
+    {
+        var splitter = Splitter.FixedLength(2);
+
+        splitter.Split(input).ShouldBeEmpty();
+        splitter.SplitToList(input).ShouldBeEmpty();
+        splitter.SplitToArray(input).ShouldBeEmpty();
     }
 
     #endregion
@@ -291,6 +311,30 @@ public class SplitterTest
 
         // Assert
         result.ShouldBeEmpty();
+    }
+
+    /// <summary>
+    /// 测试目的：字典转换遇到重复键时明确失败，不静默覆盖先前的值。
+    /// </summary>
+    [Fact]
+    public void MapSplitter_WithDuplicateKeys_ThrowsArgumentException()
+    {
+        Should.Throw<ArgumentException>(() =>
+            Splitter.On('&').WithKeyValueSeparator('=').SplitToDictionary("a=1&a=2"));
+    }
+
+    /// <summary>
+    /// 测试目的：空键值分隔符沿用不切分键值的行为，每个片段成为值为空的键。
+    /// </summary>
+    [Fact]
+    public void MapSplitter_WithEmptyKeyValueSeparator_UsesWholeItemAsKey()
+    {
+        var result = Splitter.On('&').WithKeyValueSeparator(string.Empty)
+            .SplitToDictionary("a=1&b=2");
+
+        result.Count.ShouldBe(2);
+        result["a=1"].ShouldBe(string.Empty);
+        result["b=2"].ShouldBe(string.Empty);
     }
 
     #endregion
