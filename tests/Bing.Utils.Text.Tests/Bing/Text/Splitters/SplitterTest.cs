@@ -197,6 +197,19 @@ public class SplitterTest
     }
 
     /// <summary>
+    /// 测试目的：非法正则模式在分割非空文本时保留参数异常，不静默返回未分割文本。
+    /// </summary>
+    [Theory]
+    [InlineData("[")]
+    [InlineData("(")]
+    public void OnPattern_WithInvalidPattern_ThrowsArgumentExceptionWhenSplit(string pattern)
+    {
+        var splitter = Splitter.OnPattern(pattern);
+
+        Should.Throw<ArgumentException>(() => splitter.SplitToArray("a,b"));
+    }
+
+    /// <summary>
     /// 测试目的：使用 Regex 对象模式时，应按正则规则切割
     /// </summary>
     [Fact]

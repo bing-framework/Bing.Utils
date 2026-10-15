@@ -192,5 +192,24 @@ public class CaseFormatterTest
         result.ShouldBe(expected);
     }
 
+    /// <summary>
+    /// 测试目的：其余格式化分支处理 null、空串和空白时，与已有下划线格式契约一致返回空串。
+    /// </summary>
+    [Theory]
+    [InlineData(Style.LowerCamel)]
+    [InlineData(Style.LowerCamelWithWhiteSpace)]
+    [InlineData(Style.LowerHyphen)]
+    [InlineData(Style.UpperCamel)]
+    [InlineData(Style.UpperCamelWithWhiteSpace)]
+    [InlineData(Style.UpperUnderscore)]
+    public void To_WithNullOrEmptySequence_ReturnsEmptyString(Style style)
+    {
+        var formatter = CaseFormatter.Instance;
+
+        formatter.To(style, null).ShouldBe(string.Empty);
+        formatter.To(style, string.Empty).ShouldBe(string.Empty);
+        formatter.To(style, " \t\r\n").ShouldBe(string.Empty);
+    }
+
     #endregion
 }
