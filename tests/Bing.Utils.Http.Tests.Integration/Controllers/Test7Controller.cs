@@ -54,6 +54,12 @@ public class Test7Controller : ControllerBase
     });
 
     /// <summary>
+    /// 抛出受控异常，由测试宿主中间件生成错误响应。
+    /// </summary>
+    [HttpGet("throw")]
+    public IActionResult Throw() => throw new InvalidOperationException("integration-test-exception");
+
+    /// <summary>
     /// 第一次返回500，后续返回成功，用于重试链路测试
     /// </summary>
     [HttpGet("retry-once/{key}")]

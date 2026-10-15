@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using System.Threading;
 using Bing.Http;
 using Bing.Utils.Http.Tests.Integration.Controllers;
@@ -45,12 +46,20 @@ public partial class HttpClientServiceTest
     [Fact]
     public async Task Test_Get_Timeout_ThrowsOperationCanceledException_1()
     {
+        var failCalled = false;
+        var completeCalled = false;
         await Should.ThrowAsync<OperationCanceledException>(async () =>
         {
             await _client.Get("/api/test7/delay/800")
                 .Timeout(TimeSpan.FromMilliseconds(120))
+                .OnFail((_, _) => failCalled = true)
+                .OnComplete((_, _) => completeCalled = true)
                 .GetResultAsync();
         });
+
+        // 发送阶段取消没有 HTTP 响应，不进入响应失败或完成回调。
+        failCalled.ShouldBeFalse();
+        completeCalled.ShouldBeFalse();
     }
 
     /// <summary>
@@ -60,12 +69,19 @@ public partial class HttpClientServiceTest
     public async Task Test_Get_CancellationToken_ThrowsOperationCanceledException_1()
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(120));
+        var failCalled = false;
+        var completeCalled = false;
 
         await Should.ThrowAsync<OperationCanceledException>(async () =>
         {
             await _client.Get("/api/test7/delay/1000")
+                .OnFail((_, _) => failCalled = true)
+                .OnComplete((_, _) => completeCalled = true)
                 .GetResultAsync(cts.Token);
         });
+
+        failCalled.ShouldBeFalse();
+        completeCalled.ShouldBeFalse();
     }
 
     /// <summary>
@@ -76,21 +92,61 @@ public partial class HttpClientServiceTest
     [InlineData(500)]
     public async Task Test_Get_OnFail_For4xxAnd5xx_1(int statusCode)
     {
-        HttpStatusCode? capturedStatusCode = null;
-        string failPayload = null;
+        await AssertFailureResponseAsync($"/api/test7/status/{statusCode}", statusCode);
+    }
 
-        var result = await _client.Get($"/api/test7/status/{statusCode}")
+    /// <summary>
+    /// 测试 - 中间件捕获异常后的完整错误体与显式 500 响应一致，并原样传给回调。
+    /// </summary>
+    [Fact]
+    public async Task Test_Get_Failure_ExceptionMiddleware_PreservesErrorBody_1()
+    {
+        var expectedBody = await AssertFailureResponseAsync("/api/test7/status/500", 500);
+        var actualBody = await AssertFailureResponseAsync("/api/test7/throw", 500);
+
+        actualBody.ShouldBe(expectedBody);
+    }
+
+    /// <summary>
+    /// 验证失败状态及完整错误结构，且失败、完成回调收到相同响应体。
+    /// </summary>
+    private async Task<string> AssertFailureResponseAsync(string url, int statusCode)
+    {
+        HttpStatusCode? capturedStatusCode = null;
+        HttpStatusCode? completeStatusCode = null;
+        string failPayload = null;
+        string completePayload = null;
+        var callbacks = new List<string>();
+        var successCalled = false;
+
+        var result = await _client.Get(url)
             .OnFail((response, content) =>
             {
+                callbacks.Add("fail");
                 capturedStatusCode = response.StatusCode;
-                failPayload = content?.ToString();
+                response.Content.Headers.ContentType.MediaType.ShouldBe("application/json");
+                failPayload = content.ShouldBeOfType<string>();
             })
+            .OnComplete((response, content) =>
+            {
+                callbacks.Add("complete");
+                completeStatusCode = response.StatusCode;
+                completePayload = content.ShouldBeOfType<string>();
+            })
+            .OnSuccess(_ => successCalled = true)
             .GetResultAsync();
 
         result.ShouldBeNull();
         capturedStatusCode.ShouldBe((HttpStatusCode)statusCode);
+        completeStatusCode.ShouldBe(capturedStatusCode);
         failPayload.ShouldNotBeNullOrWhiteSpace();
-        failPayload.ShouldContain($"\"code\":{statusCode}");
+        completePayload.ShouldBe(failPayload);
+        callbacks.ShouldBe(new[] { "fail", "complete" });
+        successCalled.ShouldBeFalse();
+        using var payload = JsonDocument.Parse(failPayload);
+        payload.RootElement.GetProperty("code").GetInt32().ShouldBe(statusCode);
+        payload.RootElement.GetProperty("message").GetString().ShouldBe($"error:{statusCode}");
+        return failPayload;
     }
 
     /// <summary>
