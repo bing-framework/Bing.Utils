@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "policyId": "reflection-local-net8-v1",
+  "targetFramework": "net8.0",
+  "rounds": 3,
+  "baselineCommit": "c6ff0a4bfd5802cbf28ccea72fee9f5f2d8d732e",
+  "coldStartMaxTimeNs": 31483375,
+  "coldStartMaxBytes": 52510,
+  "steadyStateMaxTimeNs": 2376,
+  "steadyStateMaxBytes": 599
+}

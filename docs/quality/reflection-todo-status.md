@@ -1,5 +1,13 @@
 # 反射 TODO 实施状态
 
+## 后续决策（2026-10-15）
+
+- [性能与剩余范围决策](performance-scope-decisions.md) 已执行：固定基线、本机 3 轮校准及 schema 1 [四项冻结策略](reflection-performance-policy.local-net8.json) 已落地；比较脚本新增 30 分钟测量窗口及失败完整 manifest 保存。见 [校准记录](reflection-budget-execution.md)。
+- 正式确认冷启动耗时/分配、稳态分配通过；稳态第一轮 `method signature` 为 2744.2 ns，超过 2376 ns 上限，整体验收未通过，退出码 1。实现 `CLOSED`、性能验收 `BLOCKED_EXTERNAL`，本批 `OPEN_ACTIONABLE=0`；等待稳定环境复核，不自动放宽或第三次运行。
+- 容量默认保留结构门禁；生产告警数值、更多插件/root 组合和外部自建缓存审计延后，不继续扩探针。
+- CI 数值门禁等待稳定专用 runner；远程 CI、消费者和发布仍为外部阻塞。既有诊断接受范围及严格门禁不变，不自动扩基线。
+- 下文为已有实现和历史状态；其中“预算待确认”由上述决策覆盖，不能将历史通过结果替代本次失败。
+
 ## 当前状态（2026-10-13）
 
 - 已解决：映射缓存测试计数的跨集合并行干扰、程序集 null 名称的精确异常断言、版本读取文档与实现不符、framework-dependent 裁剪支持表述和测试迁移路径过时。

@@ -334,12 +334,43 @@ $expectedResultScopes = @{}
 foreach ($mode in $expectedMetricScopes.Keys) {
     $expectedResultScopes[$mode] = @($expectedMetricScopes[$mode])
 }
+# 测量总窗口固定为 30 分钟，不包含上面的还原和构建；超时终止当前进程树。
+$measurementClock = [Diagnostics.Stopwatch]::StartNew()
+function Invoke-ReflectionProbe([string[]]$Arguments) {
+    $remainingMs = [int][math]::Max(0, 1800000 - $measurementClock.ElapsedMilliseconds)
+    $startInfo = [Diagnostics.ProcessStartInfo]::new('dotnet')
+    $startInfo.UseShellExecute = $false
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+    foreach ($argument in $Arguments) { $startInfo.ArgumentList.Add($argument) }
+    $process = [Diagnostics.Process]::new()
+    $process.StartInfo = $startInfo
+    try {
+        if ($remainingMs -gt 0) {
+            $null = $process.Start()
+            $stdout = $process.StandardOutput.ReadToEndAsync()
+            $stderr = $process.StandardError.ReadToEndAsync()
+            if ($process.WaitForExit($remainingMs)) {
+                $output = $stdout.GetAwaiter().GetResult()
+                $errorOutput = $stderr.GetAwaiter().GetResult()
+                if ($process.ExitCode -ne 0) { throw "Probe failed: $Arguments; $errorOutput" }
+                return @($output -split '\r?\n' | Where-Object { $_.Length -gt 0 })
+            }
+            $process.Kill($true)
+            $process.WaitForExit()
+        }
+        [ordered]@{ status = 'TIMEOUT'; measurementLimitSeconds = 1800;
+            elapsedSeconds = $measurementClock.Elapsed.TotalSeconds; arguments = $Arguments;
+            baselineCommit = $baselineCommit; candidateCommit = $candidateCommit } |
+            ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'measurement-timeout.json') -Encoding utf8
+        throw '反射测量已达到固定 30 分钟窗口，停止且不生成未完成的统计。'
+    } finally { $process.Dispose() }
+}
 foreach ($mode in $modes) {
     for ($round = 1; $round -le $Rounds; $round++) {
         foreach ($variant in $variants) {
             $dllRoot = Join-Path $variant.root "output/release/$comparisonTargetFramework"
-            $probeOutput = & dotnet $probePath (Join-Path $dllRoot 'Bing.Utils.dll') (Join-Path $dllRoot 'Bing.Utils.Reflection.dll') $mode
-            if ($LASTEXITCODE -ne 0) { throw "Probe failed: $($variant.label) $mode" }
+            $probeOutput = Invoke-ReflectionProbe -Arguments @($probePath, (Join-Path $dllRoot 'Bing.Utils.dll'), (Join-Path $dllRoot 'Bing.Utils.Reflection.dll'), $mode)
             $probeOutput | Add-Content -LiteralPath (Join-Path $evidenceRoot 'raw.txt') -Encoding utf8
             foreach ($line in $probeOutput) {
                 if ($line -match '^# runtime: (?<runtime>[^;]+);') {
@@ -709,18 +740,6 @@ $performancePolicyManifest = [ordered]@{
 }
 $performancePolicyManifest | ConvertTo-Json -Depth 8 |
     Set-Content -LiteralPath (Join-Path $evidenceRoot 'performance-policy.json') -Encoding utf8
-if (!$performancePolicyPassed) {
-    if ($coldCompletenessIssues.Count -gt 0) {
-        throw "冷启动结果不完整，共 $($coldCompletenessIssues.Count) 个 round/mode 缺失或重复；详情见 cold-start-budget.json。"
-    }
-    if ($coldBudgetViolations.Count -gt 0) {
-        throw "冷启动预算未通过，共 $($coldBudgetViolations.Count) 个超限结果；详情见 cold-start-budget.json。"
-    }
-    if ($steadyCompletenessIssues.Count -gt 0) {
-        throw "稳态结果不完整，共 $($steadyCompletenessIssues.Count) 个 round/scenario 缺失或重复；详情见 steady-state-budget.json。"
-    }
-    throw "稳态预算未通过，共 $($steadyBudgetViolations.Count) 个超限结果；详情见 steady-state-budget.json。"
-}
 $binaryHashes = foreach ($variant in $variants) {
     foreach ($name in @('Bing.Utils.dll', 'Bing.Utils.Reflection.dll')) {
         Get-FileHash -LiteralPath (Join-Path $variant.root "output/release/$comparisonTargetFramework/$name") -Algorithm SHA256
@@ -750,4 +769,17 @@ Copy-Item -LiteralPath $PSCommandPath -Destination (Join-Path $evidenceRoot 'com
      performancePolicy = $performancePolicyManifest } |
     ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'manifest.json') -Encoding utf8
 Remove-TemporaryRoots
+if (!$performancePolicyPassed) {
+    # 超限也保留源码、程序集身份和 manifest，便于区分代码差异与测量波动。
+    if ($coldCompletenessIssues.Count -gt 0) {
+        throw "冷启动结果不完整，共 $($coldCompletenessIssues.Count) 个 round/mode 缺失或重复；详情见 cold-start-budget.json。"
+    }
+    if ($coldBudgetViolations.Count -gt 0) {
+        throw "冷启动预算未通过，共 $($coldBudgetViolations.Count) 个超限结果；详情见 cold-start-budget.json。"
+    }
+    if ($steadyCompletenessIssues.Count -gt 0) {
+        throw "稳态结果不完整，共 $($steadyCompletenessIssues.Count) 个 round/scenario 缺失或重复；详情见 steady-state-budget.json。"
+    }
+    throw "稳态预算未通过，共 $($steadyBudgetViolations.Count) 个超限结果；详情见 steady-state-budget.json。"
+}
 Write-Output "Evidence saved to $evidenceRoot"

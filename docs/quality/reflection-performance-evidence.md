@@ -1,5 +1,7 @@
 # 反射性能逐轮证据（2026-10-04）
 
+2026-10-15 新工程预算见 [四项预算校准记录](reflection-budget-execution.md) 与 [冻结策略](reflection-performance-policy.local-net8.json)：校准及策略落地完成，正式确认稳态耗时 1 条超限，性能验收未通过。下文历史结果不覆盖这次失败，也不用于重算阈值。
+
 本文保留 2026-10-04 至 2026-10-09 的历史测量；其中“本轮”“当前候选”“尚未提交”均指各节记录时的源码快照，不代表最新 HEAD。历史数字不可作为本次提交的性能结论或正式预算。最新提交验证见 [验证证据](reflection-validation-evidence.md)。
 
 固定基线：`49fd7fa0e9b50ef179a89ec07685cd37c9693622`。候选：记录时的工作树。运行时：Microsoft.NETCore.App 8.0.31；两个版本的库和 `ReflectionComparisonProbe` 均按 Release/net8.0 构建。各场景预热 10000 次，单进程测 5 组各 50000 次并取组内中位数；每轮按基线、候选交替启动。单位为 ns/次；每组的分配量 B/次在同轮五次运行中保持不变。
