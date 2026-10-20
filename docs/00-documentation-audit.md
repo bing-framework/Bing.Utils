@@ -1,11 +1,11 @@
 # 文档与实现盘点
 
-> 盘点基线：2026-10-13 当前工作区（包含未提交改动）。本表以 `src`、项目文件和对应测试项目为事实来源。
+> 初始盘点：2026-10-13；DependencyInjection 状态更新于 2026-10-15（包含未提交改动）。本表以 `src`、项目文件和对应测试项目为事实来源。
 
 ## 盘点结论
 
-- `src` 下共有 19 个项目，其中 18 个已有实际源码，`Bing.Utils.DependencyInjection` 仅有工程和空目录声明。
-- 原有标准模块文档覆盖 12 个项目；本轮补齐 Comments、Drawing.Shared、Guard、Net、Security、Security.Gm，并为 DependencyInjection 建立“待实现”占位文档。
+- `src` 下共有 19 个项目，均已有实际源码；DependencyInjection 已补齐批量注册、受控扫描及泛型提前闭合。
+- 初始补齐 Comments、Drawing.Shared、Guard、Net、Security、Security.Gm；DependencyInjection 的占位文档现已替换为实现与用法说明。
 - `docs/modules` 中小写文件名（如 `core.md`、`http.md`）是较早的设计/迁移资料；以 `Bing.Utils*.md` 命名的文件作为当前模块入口，避免维护两套入口造成歧义。
 - `docs/quality`、`docs/security*.md` 继续承载专项审查、迁移和验证证据，不替代模块使用文档。
 
@@ -15,6 +15,7 @@
 
 - 原有文档经核对可继续作为标准入口：`Bing.Utils`、Collections、DateTime、Drawing、Drawing.ImageSharp、Drawing.SkiaSharp、Extra、Extra.Drawing.SkiaSharp、Http、IdUtils、Reflection、Text。
 - 本轮补齐后文档完整：Comments、Drawing.Shared、Guard、Net、Security、Security.Gm。
+- DependencyInjection 原工程骨架缺口已关闭，DI-01～DI-04 状态及验证见 [执行记录](quality/dependency-injection-execution.md)。
 - 所有已实现模块的标准文档均包含功能说明、核心实现和路径、接口或示例、依赖配置、限制与注意事项。
 
 ### 已实现但原文档缺失或过时
@@ -31,13 +32,12 @@
 
 - 原能力地图遗漏 Drawing.Shared、Security、Security.Gm，并把两个跨平台图像后端描述为只依赖第三方引擎。
 - 安全总览原先容易理解为所有高级密码 API 均支持 `netstandard2.0`；实际 AES-GCM、PBKDF2、RSA/ECDSA、PEM、证书及版本化签名通过条件编译仅在较新 .NET 目标提供。
-- `FtpClientConfig` 暴露多项代理、超时和连接选项，但 `FtpClient` 当前未全部应用；不能把配置模型中的字段都视为已生效行为。
-- DocFX 原配置排除了 Comments、Guard、Net 三个已有实现项目；现仅排除尚未实现的 DependencyInjection。
+- `FtpClientConfig` 的连接超时、读取超时和主动/被动模式已接入控制及数据通道；代理、其他超时、KeepAlive、二进制切换等仍未全部应用。实际字段与待确认语义见 [Net 模块文档](modules/Bing.Utils.Net.md)，不能把配置模型中的全部字段视为已生效。
+- DocFX 原配置排除了 Comments、Guard、Net 及 DependencyInjection；现均纳入源码入口，不在本轮执行 DocFX 发布。
 - Comments 原示例使用了不存在的 `Params` 属性和 `CsCommentsParamCollection.Empty`；现改为实际公开的 `Parameters.Values`。
 
 ### 尚未实现
 
-- `Bing.Utils.DependencyInjection`：只有项目元数据和空目录声明，无源码、有效依赖注册 API 或测试，统一标记为**待实现/待确认**。
 - `Bing.Utils.Guard.CharGuard`：公开类型为空，通用 Guard API 标记为**待实现/待确认**；已实现范围仅按 `CharJudge` 和内部辅助说明。
 - Security 中的 ZUC、格式保留加密（FPE）及 Security.Gm 中的 SM4 分块流式容器均未实现，不作为现有能力宣传。
 
@@ -49,7 +49,7 @@
 | `Bing.Utils.Collections` | 已实现 | [Collections](modules/Bing.Utils.Collections.md) | 数组、集合、字典和枚举辅助已存在 |
 | `Bing.Utils.Comments` | 已实现 | [Comments](modules/Bing.Utils.Comments.md) | XML 注释读取、模型解析、缓存与继承解析已存在 |
 | `Bing.Utils.DateTime` | 已实现 | [DateTime](modules/Bing.Utils.DateTime.md) | 日期时间扩展、时间跨度和 NodaTime 适配已存在 |
-| `Bing.Utils.DependencyInjection` | **待实现/待确认** | [DependencyInjection](modules/Bing.Utils.DependencyInjection.md) | 只有工程骨架，未发现可用源码或测试 |
+| `Bing.Utils.DependencyInjection` | 已实现 | [DependencyInjection](modules/Bing.Utils.DependencyInjection.md) | 原生 DI 批量注册、受控扫描、标准开放泛型及复杂提前闭合 |
 | `Bing.Utils.Drawing` | 已实现 | [Drawing](modules/Bing.Utils.Drawing.md) | `System.Drawing` 后端及兼容 API 已存在 |
 | `Bing.Utils.Drawing.ImageSharp` | 已实现 | [Drawing.ImageSharp](modules/Bing.Utils.Drawing.ImageSharp.md) | ImageSharp 后端已存在 |
 | `Bing.Utils.Drawing.Shared` | 已实现 | [Drawing.Shared](modules/Bing.Utils.Drawing.Shared.md) | 公共契约、颜色/矩阵算法和内部管线已存在 |
@@ -67,7 +67,7 @@
 
 ## 待实现/待确认
 
-- `Bing.Utils.DependencyInjection`：项目描述声明基于 `Microsoft.Extensions.DependencyInjection` 的封装，但当前没有实现、依赖注册扩展或测试；是否继续建设由维护者确认。
+- `Bing.Utils.DependencyInjection` 的任意程序集裁剪/NativeAOT 兼容不在批准范围内，不从本地普通容器验证推断部署兼容。
 - `Bing.Utils.Guard.CharGuard`：当前为空类型，不能作为已实现的字符校验入口；现阶段使用 `CharJudge`。
 - `Bing.Utils.Net`：仅发现 FTP/FTPS 封装；SFTP、HTTP、TCP/UDP 等能力不在当前实现范围。
 - 小写旧模块文档是否长期保留：本轮不删除历史资料；后续可在确认无外部链接依赖后归档。

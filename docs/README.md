@@ -11,11 +11,17 @@
 - [安全与密码学专题](security.md)
 - [质量与验证资料](quality/)
 - [TODO 执行记录](quality/todo-execution.md)：既定清单当前状态、本轮交付及剩余依赖。
+- [依赖注入模块](modules/Bing.Utils.DependencyInjection.md)：显式接口批量注册、受控扫描及开放/复杂泛型示例。
+- [依赖注入执行记录](quality/dependency-injection-execution.md)：DI-01～DI-04 范围及编译、模块测试和打包证据。
+- [图像性能与反射决策](quality/performance-scope-decisions.md)：固定负载、校准预算、执行顺序及反射剩余项边界。
+- [图像性能执行记录](quality/image-performance-execution.md)：质量 P2-1 的 8 场景负载、冒烟、校准及预算验收用法与证据。
 - [六类边界检查清单](quality/boundary-test-checklist.md)：补测时统一记录输入、溢出、并发和性能边界的适用性、契约与证据。
 - [测试协作模板索引](quality/prompts/README.md)：审计、迁移、补测与风格规范化的既有模板入口。
 - [反射验证状态](quality/reflection-validation-evidence.md)：当前候选的测试、发布结果与历史证据边界。
 - [反射失败契约迁移](quality/reflection-contract-migration.md)：异常契约变化及已迁移的消费者测试。
 - [反射性能证据](quality/reflection-performance-evidence.md)：历史逐轮测量与显式预算用法。
+- [反射预算校准](quality/reflection-budget-execution.md)：本机四项冻结预算、正式确认结果与策略适用边界。
+- [反射预算校准](quality/reflection-budget-execution.md)：本机四项冻结预算、正式确认结果与策略适用边界。
 - [反射裁剪证据](quality/reflection-trim-evidence.md)：trimming/NativeAOT 部署命令和支持边界。
 - [反射实施状态](quality/reflection-todo-status.md)：当前剩余问题与历史任务记录。
 - [NativeAOT 基线复核](quality/reflection-nativeaot-baseline-review.md)：批准的精确诊断范围与严格门禁复核结果。
