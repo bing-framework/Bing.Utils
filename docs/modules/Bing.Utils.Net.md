@@ -25,6 +25,9 @@ var config = new FtpClientConfig {
     UserName = "user",
     Password = "secret",
     CharsetName = "UTF-8",
+    Timeout = 30_000,
+    ReadWriteTimeout = 120_000,
+    UsePassive = true,
     EnableSsl = true,
     EncryptionType = EncryptionType.Explicit
 };
@@ -38,12 +41,25 @@ client.UploadFile(@"C:\data\report.csv", "/incoming/report.csv");
 
 - 依赖 `Bing.Utils` 和 `FluentFTP 42.0.1`。
 - 目标框架继承 `common.props`。
-- 构造时实际接入主机、端口、凭据、字符集和加密模式；底层重试次数固定为 3。
+- 构造时接入主机、端口、凭据、字符集、加密模式，以及下表配置。构造不会自动连接；配置值在构造时读取，修改原配置对象不会重新设置底层客户端。
+- 底层 `RetryAttempts` 固定为 3，含义是上传/下载校验失败的重试次数，不是 `ConnectCount` 的连接重试次数。
+
+| 配置项 | 实际映射 | 默认值及单位 |
+| --- | --- | --- |
+| `Timeout` | `ConnectTimeout`、`DataConnectionConnectTimeout` | 100,000 毫秒，控制/数据连接建立超时 |
+| `ReadWriteTimeout` | `ReadTimeout`、`DataConnectionReadTimeout` | 300,000 毫秒，仅控制/数据通道读取超时，未设置独立发送超时 |
+| `UsePassive` | true：`AutoPassive`；false：`AutoActive` | true；具体 FTP 命令由 FluentFTP 协商 |
+
+这些字段此前未生效，底层使用其默认值；现在默认配置会实际采用上述超时。升级时应核对调用方的超时预期。
+
+配置映射回归见 `tests/Bing.Utils.Net.Tests/FtpClientConfigurationTest.cs`，不访问 FTP 服务器；真实连接和传输行为仍需集成验收。
 
 ## 已知限制与注意事项
 
 - **安全注意**：启用 SSL 时，当前证书验证回调无条件接受服务器证书，不能抵御中间人攻击；在修复前不要把它用于不可信网络或高敏感传输。
-- `FtpClientConfig` 中代理、超时、主动/被动模式、二进制和 KeepAlive 等字段当前未在 `FtpClient` 构造逻辑中应用，属于**待实现/待确认**。
+- **待实现/待确认**：`DisconnectTimeout`、`ReceiveTimeout`、`SendTimeout` 在当前 FluentFTP 配置中没有同义映射；`ConnectCount` 的连接重试策略尚未接入，不等同于校验重试。
+- **待实现/待确认**：`KeepAlive` 的请求后保持连接语义不等同于 `SocketKeepAlive` 的 TCP 保活；`UseBinary` 未接入模式切换，ASCII 转换可能与当前严格字节长度校验冲突，需要先确定验收契约。
+- **待实现/待确认**：`LocalDirectory`、`RemoteDirectory` 未用作默认传输路径，调用方应继续显式传入路径。
 - `FtpClientConfig.GetProxy()` 没有接入客户端；其代理凭据判断还要求密码为空，行为与常规配置预期不符，属于**待实现/待确认**。
 - API 仅提供同步调用，不支持 `CancellationToken`。
 - `CopyFile` 会把整个远端文件读入内存，不适合大文件。

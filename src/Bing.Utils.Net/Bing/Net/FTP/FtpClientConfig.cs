@@ -36,13 +36,14 @@ public class FtpClientConfig
     public int Port { get; set; } = 21;
 
     /// <summary>
-    /// 连接超时时长。单位：毫秒
+    /// 控制通道和数据通道的连接超时时长。单位：毫秒
     /// </summary>
     public int Timeout { get; set; } = 100_000;
 
     /// <summary>
     /// 读写超时时长。单位：毫秒
     /// </summary>
+    /// <remarks>当前接入控制通道和数据通道的读取超时，不设置独立的发送超时。</remarks>
     public int ReadWriteTimeout { get; set; } = 300_000;
 
     /// <summary>
@@ -111,7 +112,7 @@ public class FtpClientConfig
     public bool UseBinary { get; set; } = true;
 
     /// <summary>
-    /// 是否允许被动式
+    /// 是否使用被动模式；为 false 时使用主动模式，具体命令由底层自动协商
     /// </summary>
     public bool UsePassive { get; set; } = true;
 
