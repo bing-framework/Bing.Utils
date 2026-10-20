@@ -24,7 +24,7 @@
 | `Bing.Utils.Net` | FTP 能力封装 | 不覆盖完整网络协议栈 | `FtpClient`（`src/Bing.Utils.Net/Bing/Net/FTP/FtpClient.cs:10`） | 依赖 `Bing.Utils`（`src/Bing.Utils.Net/references.props:4`），外部 `FluentFTP`（`src/Bing.Utils.Net/dependency.props:3`） |
 | `Bing.Utils.Comments` | 读取 C# XML 注释、枚举注释映射、`inheritdoc` 解析和弱引用缓存 | 不提供源码解析器（Roslyn） | `CsCommentReader`、`CsCommentsInheritanceResolver`、`CsCommentsXmlCache` | 无额外项目或 NuGet 依赖 |
 | `Bing.Utils.Guard` | 字符闭区间判断；内部验证异常辅助 | 通用参数 Guard 尚未实现，`CharGuard` 为空类型 | `CharJudge`（`src/Bing.Utils.Guard/Bing/Text/CharJudge.cs:8`） | 依赖 `Bing.Utils`（`src/Bing.Utils.Guard/project.dependency.props:3`） |
-| `Bing.Utils.DependencyInjection` | 名义上是 DI 扩展包 | 待确认：当前仅项目壳，无实现代码 | 仅声明文件夹（`src/Bing.Utils.DependencyInjection/Bing.Utils.DependencyInjection.csproj:8`） | 当前未声明项目引用（`src/Bing.Utils.DependencyInjection/Bing.Utils.DependencyInjection.csproj:1` 到 `src/Bing.Utils.DependencyInjection/Bing.Utils.DependencyInjection.csproj:12`） |
+| `Bing.Utils.DependencyInjection` | 原生 DI 批量注册扩展 | 显式接口注册、受控扫描、开放泛型和复杂提前闭合 | `BingServiceCollectionExtensions`（`src/Bing.Utils.DependencyInjection/Bing/DependencyInjection/BingServiceCollectionExtensions.cs`） | 仅直接引用 `Microsoft.Extensions.DependencyInjection.Abstractions 8.0.2` |
 | `Bing.Utils.Extra` | Emoji 序列识别、替换、HTML 数字实体互转、白名单目录、肤色操作；默认英文及简繁中文元数据查询，支持独立目录离线 JSON 本地化导入 | 不负责字体渲染、自动下载翻译、自定义表情注册或未定义的肤色组合生成 | `EmojiUtil`、`EmojiCatalog`、`EmojiInfo`、`EmojiMatch`、`EmojiLocalization` | 无运行时第三方依赖；内置 Unicode 18.0、gemoji 4.1.0 与 CLDR 48.2 简繁中文快照 |
 | `Bing.Utils.Security` | SHA-2、HMAC、随机数、密钥派生、认证加密、签名、证书和请求签名 | 不提供弱算法新入口；高级 API 不支持 `netstandard2.0` | `Hashing`、`AesGcmEncryption`、`Pbkdf2PasswordHasher`、`VersionedRequestSigner` | 主包无第三方密码学依赖 |
 | `Bing.Utils.Security.Gm` | SM2、SM3、HMAC-SM3、SM4-GCM 国密能力 | 不提供 ZUC 或 SM4 分块流式容器 | `Sm2Encryption`、`Sm2Signature`、`Sm3`、`Sm4GcmEncryption` | 依赖 `Bing.Utils.Security` 和 `BouncyCastle.Cryptography 2.6.2` |
@@ -78,7 +78,7 @@
 
 ## 6. 风险与待确认项
 - 待确认：仓库文档存在编码可读性问题，`README.md` 中文出现乱码，可能影响新贡献者理解设计目标。证据：`README.md:5`, `README.md:22`, `README.md:45`。
-- 待确认：`Bing.Utils.DependencyInjection` 当前看起来仍是项目骨架（仅 `Folder Include`，未发现源码类型），是否计划后续实现需产品/维护者确认。证据：`src/Bing.Utils.DependencyInjection/Bing.Utils.DependencyInjection.csproj:8`。
+- DependencyInjection 已实现启动阶段批量注册；复杂泛型只覆盖显式闭合服务集合，不承诺任意扫描 NativeAOT 兼容，见 [模块文档](modules/Bing.Utils.DependencyInjection.md)。
 - 待确认：`Bing.Utils.Guard` 公开入口 `CharGuard` 为空类型，可能处于迁移中。证据：`src/Bing.Utils.Guard/Bing/Text/CharGuard.cs:23`。
 - 风险：`System.Drawing` 在 Linux/Docker 需要额外系统依赖，跨平台部署可能踩坑。证据：`src/Bing.Utils.Drawing/README.md:1` 到 `src/Bing.Utils.Drawing/README.md:6`，`src/Bing.Utils.Drawing/Bing.Utils.Drawing.csproj:19`。
 - 风险：仓库含 `Bing - Backup.Utils.Guard.csproj` 备份工程文件，可能造成维护歧义。证据：`src/Bing.Utils.Guard/Bing - Backup.Utils.Guard.csproj:1`。

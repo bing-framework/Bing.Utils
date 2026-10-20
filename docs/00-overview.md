@@ -14,7 +14,7 @@ Bing.Utils 是面向 .NET 的多包通用工具库。仓库按能力拆分 NuGet
 | 图像 | `Drawing.Shared`、`Drawing`、`Drawing.ImageSharp`、`Drawing.SkiaSharp` | 公共图像契约与三个具体后端 |
 | 内容与元数据 | `Comments`、`Extra`、`Extra.Drawing.SkiaSharp` | XML 注释、Emoji 目录与字形渲染 |
 | 安全 | `Security`、`Security.Gm` | 现代密码学与国密扩展 |
-| 边界项目 | `Guard`、`DependencyInjection` | Guard 当前能力有限；DependencyInjection 尚未实现 |
+| 校验与注册 | `Guard`、`DependencyInjection` | Guard 当前能力有限；DependencyInjection 提供原生 DI 批量注册与泛型提前闭合 |
 
 每个项目的准确状态和文档链接见 [文档与实现盘点](00-documentation-audit.md) 与 [模块文档索引](modules/README.md)。
 
@@ -35,7 +35,7 @@ Bing.Utils 是面向 .NET 的多包通用工具库。仓库按能力拆分 NuGet
 
 ## 当前边界
 
-- `Bing.Utils.DependencyInjection` 只有工程骨架，标记为**待实现/待确认**。
+- `Bing.Utils.DependencyInjection` 已提供显式接口批量注册和受控扫描；复杂泛型仅支持启动时列出的有限闭合服务，见 [模块文档](modules/Bing.Utils.DependencyInjection.md)。
 - `Bing.Utils.Guard` 的公开实现目前仅有字符闭区间判断，不能视为完整 Guard 库。
 - `Bing.Utils.Net` 当前仅封装 FTP/FTPS，且证书验证和未接入配置项存在已知限制。
 - 安全主包在 `netstandard2.0` 仅提供兼容能力，高级密码 API 只在 `.NET 6/7/8` 提供。

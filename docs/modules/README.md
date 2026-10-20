@@ -8,7 +8,7 @@
 | [Bing.Utils.Collections](Bing.Utils.Collections.md) | 数组、集合、字典与枚举辅助 | 已实现 |
 | [Bing.Utils.Comments](Bing.Utils.Comments.md) | C# XML 注释读取、缓存与继承解析 | 已实现 |
 | [Bing.Utils.DateTime](Bing.Utils.DateTime.md) | 日期时间、时间跨度与 NodaTime 适配 | 已实现 |
-| [Bing.Utils.DependencyInjection](Bing.Utils.DependencyInjection.md) | 依赖注入扩展工程 | 待实现/待确认 |
+| [Bing.Utils.DependencyInjection](Bing.Utils.DependencyInjection.md) | 原生 DI 批量注册、受控扫描与泛型提前闭合 | 已实现 |
 | [Bing.Utils.Drawing](Bing.Utils.Drawing.md) | `System.Drawing` 图像后端 | 已实现 |
 | [Bing.Utils.Drawing.ImageSharp](Bing.Utils.Drawing.ImageSharp.md) | ImageSharp 图像后端 | 已实现 |
 | [Bing.Utils.Drawing.Shared](Bing.Utils.Drawing.Shared.md) | 图像公共契约与纯算法 | 已实现 |

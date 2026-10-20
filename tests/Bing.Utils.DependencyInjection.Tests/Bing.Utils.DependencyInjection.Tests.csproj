@@ -8,6 +8,7 @@
 	<Import Project="..\..\common.tests.props" />
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
 		<ProjectReference Include="..\..\src\Bing.Utils.DependencyInjection\Bing.Utils.DependencyInjection.csproj" />
 	</ItemGroup>
 

@@ -20,7 +20,7 @@
 | [Bing.Utils.Http](modules/Bing.Utils.Http.md) | ASP.NET Core 请求、响应、上下文和下载辅助 |
 | [Bing.Utils.Net](modules/Bing.Utils.Net.md) | 基于 FluentFTP 的同步 FTP/FTPS 客户端 |
 | [Bing.Utils.Guard](modules/Bing.Utils.Guard.md) | 当前提供字符闭区间判断，完整 Guard 能力尚未实现 |
-| [Bing.Utils.DependencyInjection](modules/Bing.Utils.DependencyInjection.md) | 空工程，依赖注入能力待实现/待确认 |
+| [Bing.Utils.DependencyInjection](modules/Bing.Utils.DependencyInjection.md) | 原生 DI 批量注册、受控扫描、标准开放泛型与复杂提前闭合 |
 
 ## 图像与内容
 

@@ -10,8 +10,7 @@
           ],
           "exclude": [
             "**/obj/**",
-            "**/bin/**",
-            "**/Bing.Utils.DependencyInjection.csproj"
+            "**/bin/**"
           ]
         }
       ],
