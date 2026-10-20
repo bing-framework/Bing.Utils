@@ -20,6 +20,8 @@
     <ProjectReference Include="..\..\src\Bing.Utils.Reflection\Bing.Utils.Reflection.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Security\Bing.Utils.Security.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Security.Gm\Bing.Utils.Security.Gm.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Drawing.ImageSharp\Bing.Utils.Drawing.ImageSharp.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Drawing.SkiaSharp\Bing.Utils.Drawing.SkiaSharp.csproj" />
   </ItemGroup>
 
 </Project>

@@ -15,6 +15,12 @@ internal class Program
     /// <param name="args">命令行参数。</param>
     static void Main(string[] args)
     {
+        if (args.Any(arg => arg.StartsWith("--image-performance=", StringComparison.OrdinalIgnoreCase)))
+        {
+            ImagePerformanceProbe.Run(args);
+            return;
+        }
+
         if (args.Any(arg => string.Equals(arg, "--reflection-cache", StringComparison.OrdinalIgnoreCase)))
         {
             ReflectionBenchmarks.RunConcurrentCacheProbe();
