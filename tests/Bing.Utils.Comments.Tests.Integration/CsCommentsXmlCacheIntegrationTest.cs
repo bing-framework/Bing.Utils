@@ -390,7 +390,7 @@ public sealed class CsCommentsXmlCacheIntegrationTest
 
         var comments = CsCommentReader.Create(method);
 
-        Assert.Equal("读取类型的注释信息。", comments.Summary);
+        Assert.Equal("读取指定类型的文档注释。", comments.Summary);
     }
 
     /// <summary>
