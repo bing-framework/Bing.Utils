@@ -31,6 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.0" />
 		<PackageReference Include="Xunit.DependencyInjection" Version="8.7.0" />
