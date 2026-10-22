@@ -1,0 +1,102 @@
+<linker>
+  <assembly fullname="ReflectionTrimProbe">
+    <type fullname="ReflectionTrimProbe.TrimSample" preserve="nothing">
+      <method signature="System.Void .ctor(System.Int32)" />
+      <property name="Value" />
+      <method signature="System.Void Execute()" />
+      <attribute fullname="System.ComponentModel.DescriptionAttribute" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimGenericSample`1" preserve="nothing">
+      <method name=".ctor" />
+      <property name="Value" />
+      <method signature="System.Void Execute()" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimParameterlessSample" preserve="nothing">
+      <method signature="System.Void .ctor()" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimValueSample" preserve="nothing">
+      <method signature="System.Void .ctor(System.Int32)" />
+      <property name="Value" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimContainer" preserve="nothing">
+      <method signature="System.Void .ctor(ReflectionTrimProbe.TrimSample)" />
+      <property name="Child" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimFieldSample" preserve="nothing">
+      <method signature="System.Void .ctor(System.Int32)" />
+      <field name="PublicField" />
+      <field name="PrivateField" />
+      <method signature="System.Int32 ReadPrivateField()" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimPrivateContainer" preserve="nothing">
+      <method signature="System.Void .ctor(ReflectionTrimProbe.TrimPrivateNode)" />
+      <property name="Child" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimPrivateNode" preserve="nothing">
+      <method signature="System.Void .ctor(System.Int32)" />
+      <property name="Value" />
+      <method signature="System.Int32 ReadValue()" />
+    </type>
+    <type fullname="ReflectionTrimProbe.ITrimContract" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.ITrimCovariant`1" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.ITrimContravariant`1" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.TrimImplementation" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.TrimCollection" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.TrimVarianceSample" preserve="nothing">
+      <method signature="System.String Produce()" />
+      <method signature="System.Void Consume(System.Object)" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimBaseSample" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.TrimDerivedSample" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.TrimGenericBase`1" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.TrimGenericDerived" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.TrimStatus" preserve="nothing" />
+    <type fullname="ReflectionTrimProbe.TrimMemberBase" preserve="nothing">
+      <method signature="System.Void .ctor()" />
+      <property name="VirtualValue" />
+      <method signature="System.Void ExecuteVirtual()" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimMemberDerived" preserve="nothing">
+      <method signature="System.Void .ctor()" />
+      <property name="VirtualValue" />
+      <method signature="System.Void ExecuteVirtual()" />
+    </type>
+    <type fullname="ReflectionTrimProbe.TrimMemberSample" preserve="nothing">
+      <method signature="System.Void .ctor()" />
+      <property name="Numeric" />
+      <property name="BooleanValue" />
+      <property name="DateTimeValue" />
+      <property name="NullableDateTime" />
+      <property name="NullableNumeric" />
+      <property name="Status" />
+      <property name="NullableStatus" />
+      <property name="Collection" />
+      <property name="Tuple" />
+      <property name="StructValue" />
+      <field name="NumericField" />
+      <field name="TupleField" />
+      <method signature="System.Void Execute(System.Int32)" />
+      <method signature="System.Void RefSignature(System.Int32&amp;)" />
+      <method signature="System.Void InSignature(System.Int32&amp;)" />
+      <method signature="System.Void OutSignature(System.Int32&amp;)" />
+      <method signature="System.Int32&amp; RefReturnSignature()" />
+      <method signature="System.Threading.Tasks.Task ExecuteAsync()" />
+    </type>
+  </assembly>
+  <assembly fullname="ReflectionTrimProbe.Models">
+    <type fullname="ReflectionTrimProbe.Models.UnrootedModel" preserve="nothing">
+      <method signature="System.Void .ctor()" />
+      <property name="ReflectedValue" />
+    </type>
+  </assembly>
+  <assembly fullname="ReflectionTrimProbe.PluginModels">
+    <type fullname="ReflectionTrimProbe.PluginModels.PluginModel" preserve="nothing">
+      <method signature="System.Void .ctor(System.Int32)" />
+      <property name="Child" />
+    </type>
+    <type fullname="ReflectionTrimProbe.PluginModels.PluginNode" preserve="nothing">
+      <method signature="System.Void .ctor(System.Int32)" />
+      <property name="Secret" />
+    </type>
+  </assembly>
+</linker>

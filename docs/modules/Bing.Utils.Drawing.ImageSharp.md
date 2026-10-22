@@ -1,10 +1,13 @@
-﻿# Bing.Utils.Drawing.ImageSharp
+# Bing.Utils.Drawing.ImageSharp
+
+统一入口、行为变更和迁移清单见 [统一图像处理](image-processing.md)。Shared 现为独立程序集；默认输出 PNG，加载失败抛异常，探测失败使用 TryLoad。
+
 ## 1. 包职责（Scope）
 - 解决的问题
 - 提供基于 `SixLabors.ImageSharp` 的图像处理辅助能力，包括：加载/保存/转换、缩放/裁剪/旋转/翻转、灰度/黑白/滤色/底片、颜色矩阵、亮度/对比度/饱和度、水印、ICO、扭曲/冲蚀等高级效果、OCR 预处理、验证码渲染、GPS 元数据清理、颜色空间转换。
 - 不解决的问题（Out of Scope）
 - 不提供 System.Drawing 兼容层（由 `Bing.Utils.Drawing` 提供）。
-- 不提供 TTF/OTF 字体光栅化（当前依赖集无字体渲染包）。中文验证码使用内嵌点阵。
+- 统一文字水印/标注支持调用方字体文件；中文验证码仍使用原有点阵实现。
 
 ## 2. 核心类型与扩展方法
 
@@ -95,20 +98,21 @@ var binary = ImageSharpHelper.ToBinaryArray2D(image, 128);
 
 ## 6. 与其他子包的关系
 - 依赖 `SixLabors.ImageSharp 2.1.11`
-- 共享 `Bing.Utils.Drawing.Shared` 中的纯算法和公共类型（通过 csproj Compile Include 链接）
+- 依赖 `SixLabors.ImageSharp.Drawing 1.0.0` 和 `SixLabors.Fonts 1.0.0`，用于绘制与字体相关能力。
+- 通过 `ProjectReference` 引用 `Bing.Utils.Drawing.Shared` 的公共契约和纯算法。
 - 不依赖 `System.Drawing`、`SkiaSharp`
 - 依赖的包
-- 依赖 `SixLabors.ImageSharp`，未声明对 `Bing.Utils` 的项目引用。[证据] `src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj:15`
+- 未声明对 `Bing.Utils` 的项目引用。[证据] `src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj`
 - 被哪些包复用
 - 当前 `src` 层未发现其他子包直接引用此包。
 
 ## 7. 测试映射
-- 对应测试项目/测试类/关键用例
-- TODO：仓库内未发现 `Bing.Utils.Drawing.ImageSharp` 的直接测试项目或测试类。
-- 未覆盖风险点
-- 透明度边界、不同像素格式兼容性、并发处理性能均缺少测试覆盖（TODO）。
+- 测试项目：`tests/Bing.Utils.Drawing.ImageSharp.Tests`。
+- `ImageSharpHelperTest`、`CompatibilityTest`、`RegressionTest` 和 `IntegrationTest` 覆盖加载、转换、几何处理及兼容行为。
+- `ImageSharpCaptchaTest`、`ImageSharpHelperOcrTest`、`ImageSharpMetadataContractTest` 覆盖验证码、OCR 和元数据契约。
+- `Bing/Drawing/Internal` 下的测试覆盖共享矩阵、连通域、降噪、投影和后端管线。
 
 ## 8. 版本与兼容性注意事项
 - 跟随公共多目标框架策略。[证据] `common.props:3`
-- 当前固定 `SixLabors.ImageSharp` 版本为 `2.1.11`，升级需回归编码器/像素格式行为。[证据] `src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj:15`
+- 当前固定 `SixLabors.ImageSharp 2.1.11`、`SixLabors.ImageSharp.Drawing 1.0.0` 和 `SixLabors.Fonts 1.0.0`，升级需回归编码器、像素格式、绘制与字体行为。[证据] `src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj`
 

@@ -260,11 +260,11 @@ public partial class Splitter : ISplitter
     /// <summary>
     /// 固定长度
     /// </summary>
-    /// <param name="length">长度</param>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <param name="length">大于 0 的分段长度</param>
+    /// <exception cref="ArgumentOutOfRangeException">长度小于或等于 0。</exception>
     public static IFixedLengthSplitter FixedLength(int length)
     {
-        if (length < 0)
+        if (length <= 0)
             throw new ArgumentOutOfRangeException(nameof(length), length, "fixedLength 必须大于0");
         return new Splitter(length);
     }

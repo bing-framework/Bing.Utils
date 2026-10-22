@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><AssemblyName>Bing.Utils.Drawing.Shared</AssemblyName><PackageId>Bing.Utils.Drawing.Shared</PackageId><Description>图像处理公共契约与算法</Description></PropertyGroup>
+  <Import Project="../../common.props" />
+  <PropertyGroup><Nullable>enable</Nullable><LangVersion>10.0</LangVersion></PropertyGroup>
+</Project>

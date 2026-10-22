@@ -31,7 +31,11 @@ public static partial class TypeReflections
     /// <param name="type">类型</param>
     /// <param name="interfaceType">接口类型</param>
     /// <param name="options">接口选项</param>
-    public static bool IsInterfaceDefined(Type type, Type interfaceType, InterfaceOptions options = InterfaceOptions.Default)
+    public static bool IsInterfaceDefined(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, Type interfaceType, InterfaceOptions options = InterfaceOptions.Default)
     {
         if (type is null || interfaceType is null)
             return false;
@@ -55,7 +59,11 @@ public static partial class TypeReflections
     /// <param name="type">类型</param>
     /// <param name="options">接口选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsInterfaceDefined<TInterface>(Type type, InterfaceOptions options = InterfaceOptions.Default) => IsInterfaceDefined(type, typeof(TInterface), options);
+    public static bool IsInterfaceDefined<TInterface>(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, InterfaceOptions options = InterfaceOptions.Default) => IsInterfaceDefined(type, typeof(TInterface), options);
 
     /// <summary>
     /// 判断给定的接口是否定义 的实现方式

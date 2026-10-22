@@ -9,14 +9,13 @@ namespace BingUtilsUT.SplitterUT;
 public class FixedLengthSplitterBoundaryTest
 {
     /// <summary>
-    /// 测试用例：固定长度为 0 时，当前行为在切割阶段抛出除零异常。
+    /// 测试用例：固定长度为 0 时，在构造入口抛出参数越界异常。
     /// </summary>
     [Fact]
-    public void FixedLength_ZeroLength_SplitToList_CurrentlyThrowsDivideByZeroException()
+    public void FixedLength_ZeroLength_ThrowsArgumentOutOfRangeExceptionAtCreation()
     {
-        var splitter = Splitter.FixedLength(0);
-
-        Should.Throw<DivideByZeroException>(() => splitter.SplitToList("abc"));
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() => Splitter.FixedLength(0));
+        exception.ParamName.ShouldBe("length");
     }
 
     /// <summary>

@@ -1,4 +1,7 @@
-﻿# 测试重新归类规划（Test Reclassification Plan）
+# 测试重新归类规划（Test Reclassification Plan）
+
+> 图像模块现状更新：Drawing、ImageSharp、SkiaSharp 均已有专属单元测试；另有 Drawing.Tests.Integration 跨后端集成项目。下文旧审计中的“无图像测试/待创建”属于历史状态，不再作为当前行动项。最新证据见 [图像执行记录](image-processing-execution.md)。
+
 
 ## 1. 背景与目标
 

@@ -66,6 +66,12 @@ public class Test7Controller : ControllerBase
     });
 
     /// <summary>
+    /// 抛出受控异常，由测试宿主中间件生成错误响应。
+    /// </summary>
+    [HttpGet("throw")]
+    public IActionResult Throw() => throw new InvalidOperationException("integration-test-exception");
+
+    /// <summary>
     /// 按请求键模拟首次失败后成功的重试响应。
     /// </summary>
     /// <param name="key">用于隔离访问次数的请求键。</param>

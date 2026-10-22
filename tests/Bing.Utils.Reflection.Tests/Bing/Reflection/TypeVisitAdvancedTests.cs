@@ -1,6 +1,7 @@
 using System.Reflection;
 using Bing.Reflection.Tests;
 using Shouldly;
+using System.Reflection.Emit;
 
 namespace Bing.Reflection;
 
@@ -84,6 +85,29 @@ public class TypeVisitAdvancedTests
     }
 
     /// <summary>
+    /// 测试目的：批量构造的参数集合失败时，应报告失败集合索引和参数类型。
+    /// </summary>
+    [Fact]
+    public void CreateInstances_WithInvalidArgumentSet_ReportsSetIndex()
+    {
+        // Arrange
+        var argumentSets = new[]
+        {
+            new object[] { "first" },
+            new object[] { 2 }
+        };
+
+        // Act
+        var exception = Should.Throw<ArgumentException>(() =>
+            TypeVisit.CreateInstances(typeof(NullableConstructorEntity), argumentSets));
+
+        // Assert
+        exception.Message.ShouldContain("第 1 个参数集合");
+        exception.Message.ShouldContain(typeof(int).FullName!);
+        exception.InnerException.ShouldNotBeNull();
+    }
+
+    /// <summary>
     /// 测试目的：开放泛型定义和类型实参应创建对应的封闭泛型实例。
     /// </summary>
     [Fact]
@@ -109,22 +133,24 @@ public class TypeVisitAdvancedTests
     }
 
     /// <summary>
-    /// 测试目的：普通方法查找应支持公开、私有、静态和基类方法。
+    /// 测试目的：普通方法查找默认仅返回公开方法，显式选项允许私有方法。
     /// </summary>
     [Fact]
     public void FindMethod_WithSimpleTypes_FindsExpectedMethods()
     {
         // Act
         var publicMethod = TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.Public), typeof(string));
-        var privateMethod = TypeVisit.FindMethod(typeof(MethodTarget), "Private", typeof(int));
+        var explicitPrivateMethod = TypeVisit.FindMethod(typeof(MethodTarget), "Private",
+            BindingFlags.Instance | BindingFlags.NonPublic, typeof(int));
         var staticMethod = TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.Static), typeof(Guid));
         var baseMethod = TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodBase.Base), typeof(long));
 
         // Assert
         publicMethod.ShouldNotBeNull();
-        privateMethod.ShouldNotBeNull();
+        explicitPrivateMethod.ShouldNotBeNull();
         staticMethod.ShouldNotBeNull();
         baseMethod.ShouldNotBeNull();
+        Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), "Private", typeof(int)));
     }
 
     /// <summary>
@@ -152,18 +178,18 @@ public class TypeVisitAdvancedTests
     }
 
     /// <summary>
-    /// 测试目的：方法查找应支持接口的父接口成员，并在无匹配时返回 null。
+    /// 测试目的：方法查找应支持接口的父接口成员，并在无匹配时抛出明确异常。
     /// </summary>
     [Fact]
-    public void FindMethod_WithInheritedInterfaceOrMissingSignature_ReturnsExpectedResult()
+    public void FindMethod_WithInheritedInterfaceOrMissingSignature_ThrowsMissingMethodException()
     {
         // Act
         var inheritedMethod = TypeVisit.FindMethod(typeof(IChildContract), nameof(IParentContract.Parent), typeof(string));
-        var missingMethod = TypeVisit.FindMethod(typeof(IChildContract), "Missing", typeof(string));
 
         // Assert
         inheritedMethod.ShouldNotBeNull();
-        missingMethod.ShouldBeNull();
+        Should.Throw<MissingMethodException>(() =>
+            TypeVisit.FindMethod(typeof(IChildContract), "Missing", typeof(string)));
     }
 
     /// <summary>
@@ -255,15 +281,13 @@ public class TypeVisitAdvancedTests
         var ignoredCase = TypeVisit.FindMethod(typeof(MethodTarget), "public",
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase, typeof(string));
         var extensionMethod = typeof(MethodTarget).FindMethod(nameof(MethodTarget.Public), typeof(string));
-        var excluded = TypeVisit.FindMethod(typeof(MethodTarget), "Private",
-            BindingFlags.Instance | BindingFlags.Public, typeof(int));
-
         // Assert
         publicMethod.ShouldNotBeNull();
         privateMethod.ShouldNotBeNull();
         ignoredCase.ShouldNotBeNull();
         extensionMethod.ShouldNotBeNull();
-        excluded.ShouldBeNull();
+        Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), "Private",
+            BindingFlags.Instance | BindingFlags.Public, typeof(int)));
     }
 
     /// <summary>
@@ -279,14 +303,39 @@ public class TypeVisitAdvancedTests
             new MethodParameterSignature(typeof(string[,])));
         var nestedGeneric = TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.NestedGeneric), 1,
             new MethodParameterSignature(typeof(Dictionary<string, List<int>>)));
-        var wrongRank = TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.OneDimensional), 0,
-            new MethodParameterSignature(typeof(string[,])));
-
         // Assert
         oneDimensional.ShouldNotBeNull();
         twoDimensional.ShouldNotBeNull();
         nestedGeneric.ShouldNotBeNull();
-        wrongRank.ShouldBeNull();
+        Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.OneDimensional), 0,
+            new MethodParameterSignature(typeof(string[,]))));
+    }
+
+    [Fact]
+    public void FindMethod_DistinguishesVectorAndVariableBoundArrays_InMatchingAndCache()
+    {
+        var vector = typeof(int[]);
+        var variableBound = typeof(int).MakeArrayType(1);
+        var assembly = AssemblyBuilder.DefineDynamicAssembly(
+            new AssemblyName("ArraySignatureBoundary"), AssemblyBuilderAccess.RunAndCollect);
+        var builder = assembly.DefineDynamicModule("Main").DefineType("ArraySignatureBoundaryType");
+        builder.DefineDefaultConstructor(MethodAttributes.Public);
+        var variableMethod = builder.DefineMethod(nameof(MethodTarget.VectorArray), MethodAttributes.Public,
+            typeof(void), new[] { variableBound });
+        variableMethod.GetILGenerator().Emit(OpCodes.Ret);
+        var variableType = builder.CreateType()!;
+
+        TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.VectorArray), vector).ShouldNotBeNull();
+        Should.Throw<MissingMethodException>(() =>
+            TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.VectorArray), variableBound));
+        TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.VectorArray), vector).ShouldNotBeNull();
+        TypeVisit.FindMethod(variableType, nameof(MethodTarget.VectorArray), variableBound).ShouldNotBeNull();
+        Should.Throw<MissingMethodException>(() =>
+            TypeVisit.FindMethod(variableType, nameof(MethodTarget.VectorArray), vector));
+        TypeVisit.IsSignatureCompatible(typeof(MethodTarget).GetMethod(nameof(MethodTarget.VectorArray))!,
+            variableType.GetMethod(nameof(MethodTarget.VectorArray))!).ShouldBeFalse();
+        Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.NestedVectorArray), 0,
+            new MethodParameterSignature(typeof(List<>).MakeGenericType(variableBound))));
     }
 
     /// <summary>
@@ -327,6 +376,8 @@ public class TypeVisitAdvancedTests
         Should.Throw<ArgumentException>(() => TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.Public), 0,
             new MethodParameterSignature[] { null! }));
         Should.Throw<ArgumentNullException>(() => new MethodParameterSignature(null!));
+        Should.Throw<ArgumentOutOfRangeException>(() =>
+            new MethodParameterSignature(typeof(int), (ParameterPassingKind)99));
     }
 
     /// <summary>
@@ -336,33 +387,27 @@ public class TypeVisitAdvancedTests
     public void FindMethod_WithDeclaredOnlyInterface_ExcludesParentMember()
     {
         // Act
-        var declaredOnlyParent = TypeVisit.FindMethod(typeof(IChildContract), nameof(IParentContract.Parent),
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly, 0,
-            new MethodParameterSignature(typeof(string)));
         var extensionOwn = typeof(MethodTarget).FindMethod(nameof(MethodTarget.ChangeRef),
             BindingFlags.Instance | BindingFlags.Public, 0,
             new MethodParameterSignature(typeof(int), ParameterPassingKind.Ref));
 
         // Assert
-        declaredOnlyParent.ShouldBeNull();
         extensionOwn.ShouldNotBeNull();
+        Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(IChildContract), nameof(IParentContract.Parent),
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly, 0,
+            new MethodParameterSignature(typeof(string))));
     }
 
     /// <summary>
-    /// 测试目的：参数描述符的传递方式与泛型参数数量不一致时，方法查找应返回 null。
+    /// 测试目的：参数描述符的传递方式与泛型参数数量不一致时，方法查找应抛出明确异常。
     /// </summary>
     [Fact]
-    public void FindMethod_WithMismatchedPassingKindOrGenericArity_ReturnsNull()
+    public void FindMethod_WithMismatchedPassingKindOrGenericArity_ThrowsMissingMethodException()
     {
-        // Act
-        var valueInsteadOfRef = TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.ChangeRef), 0,
-            new MethodParameterSignature(typeof(int)));
-        var wrongArity = TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.Generic), 2,
-            new MethodParameterSignature(typeof(List<string>)));
-
-        // Assert
-        valueInsteadOfRef.ShouldBeNull();
-        wrongArity.ShouldBeNull();
+        Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.ChangeRef), 0,
+            new MethodParameterSignature(typeof(int))));
+        Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.Generic), 2,
+            new MethodParameterSignature(typeof(List<string>))));
     }
 
     /// <summary>
@@ -457,6 +502,8 @@ public class TypeVisitAdvancedTests
         public void Generic<T>(List<T> values) { }
         public void OneDimensional(string[] values) { }
         public void TwoDimensional(string[,] values) { }
+        public void VectorArray(int[] values) { }
+        public void NestedVectorArray(List<int[]> values) { }
         public void NestedGeneric<T>(Dictionary<string, List<T>> values) { }
     }
 

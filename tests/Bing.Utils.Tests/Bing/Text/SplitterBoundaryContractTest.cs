@@ -8,13 +8,13 @@ namespace Bing.Text;
 public class SplitterBoundaryContractTest
 {
     /// <summary>
-    /// 测试用例：验证 `FixedLength` 在 `ZeroLength` 场景下，结果为 `CurrentBehaviorThrowsDivideByZeroExceptionOnSplit`。
+    /// 测试用例：零长度在构造分割器时即被拒绝，不延迟到分割阶段。
     /// </summary>
     [Fact]
-    public void FixedLength_ZeroLength_CurrentBehaviorThrowsDivideByZeroExceptionOnSplit()
+    public void FixedLength_ZeroLength_ThrowsArgumentOutOfRangeExceptionAtCreation()
     {
-        var splitter = Splitter.FixedLength(0);
-        Should.Throw<DivideByZeroException>(() => splitter.SplitToArray("abcd"));
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() => Splitter.FixedLength(0));
+        exception.ParamName.ShouldBe("length");
     }
     /// <summary>
     /// 测试用例：验证 `OnPattern` 在 `NullPattern` 场景下，结果为 `ThrowsArgumentNullExceptionWhenSplit`。

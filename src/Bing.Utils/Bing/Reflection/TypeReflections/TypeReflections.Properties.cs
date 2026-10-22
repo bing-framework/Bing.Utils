@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
@@ -14,7 +15,19 @@ public static partial class TypeReflections
     /// <remarks>
     /// 缓存数组不直接暴露给调用方，避免调用方修改结果污染后续查询。
     /// </remarks>
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PublicInstancePropertiesCache = new();
+    private static readonly ConditionalWeakTable<Type, Lazy<PropertyInfo[]>> PublicInstancePropertiesCache = new();
+    private static readonly ConditionalWeakTable<object, object> SafePropertySnapshots = new();
+    private static readonly object SafePropertySnapshotMarker = new();
+
+    private static bool ContainsCollectible(PropertyInfo[] properties)
+    {
+        if (properties == null || SafePropertySnapshots.TryGetValue(properties, out _))
+            return false;
+        if (properties.Any(property => ReflectionCacheScope.IsCollectible((MemberInfo)property)))
+            return true;
+        SafePropertySnapshots.GetValue(properties, _ => SafePropertySnapshotMarker);
+        return false;
+    }
 
     /// <summary>
     /// 获取指定类型的公共实例属性。
@@ -22,12 +35,28 @@ public static partial class TypeReflections
     /// <param name="type">要检查的类型。</param>
     /// <returns>公共实例、非索引器属性的独立快照。对于接口，会合并其继承接口；同名同类型且访问器形状相同的属性只保留一个，同名不同类型属性会同时保留。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 为 null 时抛出。</exception>
-    public static IReadOnlyList<PropertyInfo> GetPublicInstanceProperties(Type type)
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "ConditionalWeakTable 的 Type 键回调不会保留参数级动态成员标注，实际扫描使用已标注的外层 type。")]
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2087", Justification = "ConditionalWeakTable 的 Type 键回调不会保留参数级动态成员标注，实际扫描使用已标注的外层 type。")]
+#endif
+    public static IReadOnlyList<PropertyInfo> GetPublicInstanceProperties(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties | System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type)
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
 
-        return PublicInstancePropertiesCache.GetOrAdd(type, CreatePublicInstanceProperties).ToArray();
+        if (ReflectionCacheScope.IsCollectible(type))
+            return CreatePublicInstanceProperties(type).ToArray();
+
+        var lazy = PublicInstancePropertiesCache.GetValue(type, _ => new Lazy<PropertyInfo[]>(
+            () => CreatePublicInstanceProperties(type), LazyThreadSafetyMode.ExecutionAndPublication));
+        var properties = lazy.Value;
+        if (ContainsCollectible(properties))
+            PublicInstancePropertiesCache.Remove(type);
+        return properties.ToArray();
     }
 
     /// <summary>
@@ -35,7 +64,11 @@ public static partial class TypeReflections
     /// </summary>
     /// <typeparam name="T">要检查的类型。</typeparam>
     /// <returns>公共实例、非索引器属性的独立快照。</returns>
-    public static IReadOnlyList<PropertyInfo> GetPublicInstanceProperties<T>() => GetPublicInstanceProperties(typeof(T));
+    public static IReadOnlyList<PropertyInfo> GetPublicInstanceProperties<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties | System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        T>() => GetPublicInstanceProperties(typeof(T));
 
     /// <summary>
     /// 获取指定类型的公共可读实例属性。
@@ -43,7 +76,11 @@ public static partial class TypeReflections
     /// <param name="type">要检查的类型。</param>
     /// <returns>公共可读、非索引器实例属性的独立快照。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 为 null 时抛出。</exception>
-    public static IReadOnlyList<PropertyInfo> GetPublicReadableInstanceProperties(Type type)
+    public static IReadOnlyList<PropertyInfo> GetPublicReadableInstanceProperties(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties | System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type)
     {
         return GetPublicInstanceProperties(type)
             .Where(property => property.GetMethod != null && property.GetMethod.IsPublic)
@@ -56,10 +93,16 @@ public static partial class TypeReflections
     /// <param name="type">要检查的类型。</param>
     /// <returns>公共可写、非索引器实例属性的独立快照。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 为 null 时抛出。</exception>
-    public static IReadOnlyList<PropertyInfo> GetPublicWritableInstanceProperties(Type type)
+    public static IReadOnlyList<PropertyInfo> GetPublicWritableInstanceProperties(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties | System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type)
     {
         return GetPublicInstanceProperties(type)
-            .Where(property => property.SetMethod != null && property.SetMethod.IsPublic)
+            .Where(property => property.SetMethod != null
+                               && property.SetMethod.IsPublic
+                               && !PropertyInfoExtensions.IsInitOnlySetter(property))
             .ToArray();
     }
 
@@ -68,7 +111,11 @@ public static partial class TypeReflections
     /// </summary>
     /// <param name="type">要检查的类型。</param>
     /// <returns>经过筛选、去重和稳定排序的属性数组。</returns>
-    private static PropertyInfo[] CreatePublicInstanceProperties(Type type)
+    private static PropertyInfo[] CreatePublicInstanceProperties(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties | System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type)
     {
         var properties = type.IsInterface
             ? GetInterfaceProperties(type)
@@ -94,6 +141,10 @@ public static partial class TypeReflections
     /// </summary>
     /// <param name="type">接口类型。</param>
     /// <returns>接口继承图中的声明属性。</returns>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "接口继承图来自已保留的运行时 Type；公共入口已声明接口和属性元数据需求。")]
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "接口继承图通过队列遍历运行时 Type，泛型集合无法表达元素级裁剪注解。")]
+#endif
     private static IEnumerable<PropertyInfo> GetInterfaceProperties(Type type)
     {
         var visited = new HashSet<Type>();

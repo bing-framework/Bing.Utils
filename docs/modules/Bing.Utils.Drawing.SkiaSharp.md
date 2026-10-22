@@ -1,4 +1,7 @@
-﻿# Bing.Utils.Drawing.SkiaSharp
+# Bing.Utils.Drawing.SkiaSharp
+
+统一入口、行为变更和迁移清单见 [统一图像处理](image-processing.md)。Shared 现为独立程序集；默认输出 PNG，加载失败抛异常，探测失败使用 TryLoad。
+
 ## 1. 包职责（Scope）
 - 解决的问题
 - 提供基于 `SkiaSharp` 的图像处理辅助能力，包括：加载/保存/转换、缩放/裁剪/旋转/翻转、灰度/黑白/滤色/底片、颜色矩阵、亮度/对比度/饱和度、文字水印、验证码渲染（全量 `CaptchaOptions` 支持）、OCR 预处理、GPS 元数据清理、颜色空间转换、ICO、扭曲/冲蚀。
@@ -6,6 +9,8 @@
 - 不提供 System.Drawing 兼容层（由 `Bing.Utils.Drawing` 提供）。
 
 ## 2. 核心类型与扩展方法
+
+核心实现位于 `src/Bing.Utils.Drawing.SkiaSharp/Bing/Drawing`，公共契约和纯算法位于 `src/Bing.Utils.Drawing.Shared/Bing/Drawing`。
 
 ### 2.1 加载与转换
 - `SkiaSharpHelper.FromFile / FromStream / FromBytes / FromBase64String / FromDataUrl`
@@ -55,6 +60,12 @@
 - `DeleteCoordinate(string sourcePath, string destPath, ImageMetadataOptions?)`
 - 支持 JPEG APP1 和 PNG eXIf 容器级 GPS IFD 清除
 
+### 2.10 Emoji 渲染
+- `Bing.Utils.Extra.Drawing.SkiaSharp.EmojiRenderer.Render`：将 `Bing.Utils.Extra` 目录中的完整 Emoji 序列按字体测量并生成 `SKImage`
+- `EmojiRenderOptions`：配置字体路径或字体名称、字号、内边距、背景色和非彩色字形颜色
+- 显式字体会校验完整序列的字形覆盖；未指定字体时使用 SkiaSharp 默认字体
+- 复杂 ZWJ、肤色和旗帜序列的彩色效果取决于字体和 SkiaSharp 后端，不内置字体资源
+
 ## 3. 使用示例（最小可运行）
 
 ```csharp
@@ -80,6 +91,15 @@ var hsl = SkiaSharpHelper.ToHsl(new SKColor(255, 0, 0));
 
 // GPS 元数据清理
 var cleaned = SkiaSharpHelper.DeleteCoordinate(jpegBytes);
+
+// Emoji 渲染（需要引用 Bing.Utils.Extra.Drawing.SkiaSharp）
+using Bing.Extra.Emoji.Drawing;
+using var emojiImage = EmojiRenderer.Render("👍🏽", new EmojiRenderOptions
+{
+    FontPath = "NotoColorEmoji.ttf",
+    FontSize = 96,
+    Padding = 8
+});
 ```
 
 ## 4. 性能与线程安全说明
@@ -95,12 +115,13 @@ var cleaned = SkiaSharpHelper.DeleteCoordinate(jpegBytes);
 
 ## 6. 与其他子包的关系
 - 依赖 `SkiaSharp 2.88.9`
-- 共享 `Bing.Utils.Drawing.Shared` 中的纯算法和公共类型（通过 csproj Compile Include 链接）
+- 通过 `ProjectReference` 引用 `Bing.Utils.Drawing.Shared` 的公共契约和纯算法。
 - 不依赖 `System.Drawing`、`SixLabors.ImageSharp`
+- Emoji 渲染由独立的 `Bing.Utils.Extra.Drawing.SkiaSharp` 适配包提供，避免把 SkiaSharp 依赖引入 `Bing.Utils.Extra`
 
 ## 7. 测试映射
 - 测试项目：`tests/Bing.Utils.Drawing.SkiaSharp.Tests`
-- 当前测试基线：140 条，覆盖验证码、缩略图、加载/转换、几何变换、OCR 预处理、高级效果、元数据清理、颜色转换适配
+- 覆盖验证码、缩略图、加载/转换、几何变换、OCR 预处理、高级效果、元数据清理、颜色转换适配；Emoji 适配包另有独立测试项目。
 
 ## 8. 版本与兼容性注意事项
 - 跟随公共多目标框架策略（net8.0/net7.0/net6.0/netstandard2.0）

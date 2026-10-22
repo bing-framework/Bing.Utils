@@ -6,12 +6,13 @@ namespace Bing.Reflection;
 public class TypeConvAndTypesValTest
 {
     /// <summary>
-    /// 验证空类型转换后仍为空。
+    /// 验证空类型输入抛出参数异常并标明参数名。
     /// </summary>
     [Fact]
-    public void GetNonNullableType_NullInput_ReturnsNull()
+    public void GetNonNullableType_NullInput_ThrowsArgumentNullException()
     {
-        TypeConv.GetNonNullableType(null).ShouldBeNull();
+        Should.Throw<ArgumentNullException>(() => TypeConv.GetNonNullableType(null!))
+            .ParamName.ShouldBe("type");
     }
     /// <summary>
     /// 验证可空类型转换为底层类型。

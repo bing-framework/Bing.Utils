@@ -67,30 +67,24 @@ public class TypeVisitCreateInstancesTests
     }
 
     /// <summary>
-    /// 测试目的：参数类型与所有构造函数不匹配时，CreateInstance 静默返回 null（非抛异常）
+    /// 测试目的：参数类型与所有构造函数不匹配时，CreateInstance 抛出参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_WithNonMatchingArgs_ReturnsNull()
+    public void CreateInstance_WithNonMatchingArgs_ThrowsArgumentException()
     {
         // Arrange — SampleEntity 没有 (int, int) 构造函数
         // Act
-        var result = TypeVisit.CreateInstance(typeof(SampleEntity), 123, 456);
-
-        // Assert — 静默失败，返回 null
-        result.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance(typeof(SampleEntity), 123, 456));
     }
 
     /// <summary>
-    /// 测试目的：对无公开构造函数的类型调用 CreateInstance，应返回 null（无法找到构造函数）
+    /// 测试目的：对无公开构造函数的类型调用 CreateInstance，应抛出参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_WithNoPublicCtor_ReturnsNull()
+    public void CreateInstance_WithNoPublicCtor_ThrowsArgumentException()
     {
         // Act
-        var result = TypeVisit.CreateInstance(typeof(NoPublicCtorEntity));
-
-        // Assert
-        result.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance(typeof(NoPublicCtorEntity)));
     }
 
     #endregion
@@ -126,17 +120,14 @@ public class TypeVisitCreateInstancesTests
     }
 
     /// <summary>
-    /// 测试目的：泛型 CreateInstance 参数不匹配时，应返回类型默认值（引用类型为 null）
+    /// 测试目的：泛型 CreateInstance 参数不匹配时，应抛出参数异常。
     /// </summary>
     [Fact]
-    public void CreateInstance_Generic_WithNonMatchingArgs_ReturnsDefault()
+    public void CreateInstance_Generic_WithNonMatchingArgs_ThrowsArgumentException()
     {
         // Arrange — SampleEntity 没有 (int, int) 构造函数
         // Act
-        var result = TypeVisit.CreateInstance<SampleEntity>(100, 200);
-
-        // Assert — 默认值，引用类型为 null
-        result.ShouldBeNull();
+        Should.Throw<ArgumentException>(() => TypeVisit.CreateInstance<SampleEntity>(100, 200));
     }
 
     #endregion

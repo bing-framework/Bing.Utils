@@ -44,6 +44,9 @@ public static partial class BingExtensions
     /// 获取枚举描述，使用<see cref="DescriptionAttribute"/>特性设置描述
     /// </summary>
     /// <param name="instance">枚举实例</param>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("枚举实例的运行时类型和字段特性依赖未裁剪的元数据。")]
+#endif
     public static string Description(this System.Enum instance) => Bing.Helpers.Enums.GetDescription(instance.GetType(), instance);
 
     #endregion

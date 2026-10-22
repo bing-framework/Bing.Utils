@@ -8,7 +8,9 @@ using SixLabors.ImageSharp.Formats.Tiff;
 
 namespace Bing.Drawing;
 
-// 图片操作辅助类 - 转换
+/// <summary>
+/// 提供 ImageSharp 图像编码和格式转换。
+/// </summary>
 public static partial class ImageSharpHelper
 {
     /// <summary>
@@ -23,6 +25,7 @@ public static partial class ImageSharpHelper
     /// </summary>
     /// <param name="quality">1 到 100 之间的编码质量。</param>
     /// <returns>通过验证的编码质量。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">质量不在 1 到 100 之间。</exception>
     private static int ValidateQuality(int quality)
     {
         if (quality < 1 || quality > 100)
@@ -78,29 +81,31 @@ public static partial class ImageSharpHelper
     #region ToBytes(将图像转换为字节数组)
 
     /// <summary>
-    /// 将图像转换为字节数组
+    /// 将图像转换为字节数组。
     /// </summary>
     /// <param name="image">图像</param>
-    /// <param name="imageFormat">图像格式</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <param name="imageFormat">图像格式；为空时使用 PNG。</param>
+    /// <returns>编码后的图像数据。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
     public static byte[] ToBytes(Image image, IImageFormat? imageFormat = default)
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat = NormalizeImageFormat(imageFormat ?? GetTrackedFormat(image));
+        imageFormat = NormalizeImageFormat(imageFormat ?? PngFormat.Instance);
         using var ms = new MemoryStream();
         Save(image, ms, imageFormat);
         return ms.ToArray();
     }
 
     /// <summary>
-    /// 将图像转换为字节数组
+    /// 将图像转换为字节数组。
     /// </summary>
     /// <param name="image">图像</param>
-    /// <param name="imageFormat">图像格式</param>
-    /// <param name="quality">编码质量。当前对 JPEG 生效</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <param name="imageFormat">图像格式。</param>
+    /// <param name="quality">编码质量；取值范围为 1 到 100。</param>
+    /// <returns>编码后的图像数据。</returns>
+    /// <exception cref="ArgumentNullException">图像或图像格式为空。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">质量不在 1 到 100 之间。</exception>
     public static byte[] ToBytes(Image image, IImageFormat imageFormat, int quality)
     {
         if (image is null)
@@ -117,29 +122,32 @@ public static partial class ImageSharpHelper
     #region ToBase64String(转换为Base64字符串)
 
     /// <summary>
-    /// 将图像转换为base64字符串
+    /// 将图像转换为 Base64 字符串。
     /// </summary>
     /// <param name="image">图像</param>
-    /// <param name="imageFormat">图像格式</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <param name="imageFormat">图像格式；为空时使用 PNG。</param>
+    /// <returns>图像的 Base64 编码字符串。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
     public static string ToBase64String(Image image, IImageFormat? imageFormat = default)
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat = NormalizeImageFormat(imageFormat ?? GetTrackedFormat(image));
+        // 统一入口默认 PNG；需要保留来源格式时必须显式传入格式。
+        imageFormat = NormalizeImageFormat(imageFormat ?? PngFormat.Instance);
         using var ms = new MemoryStream();
         Save(image, ms, imageFormat);
         return Convert.ToBase64String(ms.ToArray());
     }
 
     /// <summary>
-    /// 将图像转换为base64字符串
+    /// 将图像转换为 Base64 字符串。
     /// </summary>
     /// <param name="image">图像</param>
-    /// <param name="imageFormat">图像格式</param>
-    /// <param name="quality">编码质量。当前对 JPEG 生效</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <param name="imageFormat">图像格式。</param>
+    /// <param name="quality">编码质量；取值范围为 1 到 100。</param>
+    /// <returns>图像的 Base64 编码字符串。</returns>
+    /// <exception cref="ArgumentNullException">图像或图像格式为空。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">质量不在 1 到 100 之间。</exception>
     public static string ToBase64String(Image image, IImageFormat imageFormat, int quality)
     {
         if (image is null)
@@ -156,28 +164,30 @@ public static partial class ImageSharpHelper
     #region ToDataUrl(转换为DataUrl)
 
     /// <summary>
-    /// 将图像转换为转换为DataUrl。<br />
-    /// 格式：data:image/png;base64,base64String
+    /// 将图像转换为 Data URL。
     /// </summary>
     /// <param name="image">图像</param>
-    /// <param name="imageFormat">要使用的图像格式。</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <param name="imageFormat">图像格式；为空时使用 PNG。</param>
+    /// <returns>包含图像 MIME 类型和 Base64 数据的 Data URL。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
     public static string ToDataUrl(Image image, IImageFormat? imageFormat = default)
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        imageFormat = NormalizeImageFormat(imageFormat ?? GetTrackedFormat(image));
+        // Data URL 的媒体类型必须与实际编码一致，默认始终为 PNG。
+        imageFormat = NormalizeImageFormat(imageFormat ?? PngFormat.Instance);
         return $"data:{imageFormat.DefaultMimeType};base64,{ToBase64String(image, imageFormat)}";
     }
 
     /// <summary>
-    /// 将图像转换为 DataUrl
+    /// 将图像转换为 Data URL。
     /// </summary>
     /// <param name="image">图像</param>
-    /// <param name="imageFormat">图片格式</param>
-    /// <param name="quality">编码质量。当前对 JPEG 生效</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <param name="imageFormat">图像格式。</param>
+    /// <param name="quality">编码质量；取值范围为 1 到 100。</param>
+    /// <returns>包含图像 MIME 类型和 Base64 数据的 Data URL。</returns>
+    /// <exception cref="ArgumentNullException">图像或图像格式为空。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">质量不在 1 到 100 之间。</exception>
     public static string ToDataUrl(Image image, IImageFormat imageFormat, int quality)
     {
         if (image is null)

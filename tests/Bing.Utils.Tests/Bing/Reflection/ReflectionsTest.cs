@@ -62,6 +62,88 @@ public class ReflectionsTest : TestBase
         Assert.Equal("测试样例", Reflections.GetDisplayNameOrDescription<Sample>());
     }
     #endregion
+    #region GetAssemblies
+    /// <summary>
+    /// 测试 - 按绝对路径加载目录中的程序集，并支持大小写不同的扩展名
+    /// </summary>
+    [Fact]
+    public void Test_GetAssemblies_LoadsAssemblyFromPath()
+    {
+        var sourcePath = typeof(Reflections).Assembly.Location;
+        Assert.False(string.IsNullOrWhiteSpace(sourcePath));
+
+        var directoryPath = Path.Combine(Path.GetTempPath(), $"bing-utils-reflections-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(directoryPath);
+        try
+        {
+            var targetPath = Path.Combine(directoryPath, "ReflectionCopy.DLL");
+            File.Copy(sourcePath, targetPath);
+
+            var assemblies = Reflections.GetAssemblies(directoryPath);
+
+            Assert.Contains(assemblies, assembly =>
+                assembly.GetName().Name == typeof(Reflections).Assembly.GetName().Name);
+        }
+        finally
+        {
+            if (Directory.Exists(directoryPath))
+                Directory.Delete(directoryPath, recursive: true);
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Test_GetAssemblies_EmptyDirectoryPath_ThrowsArgumentException(string directoryPath)
+    {
+        Assert.Throws<ArgumentException>(() => Reflections.GetAssemblies(directoryPath));
+    }
+
+    [Fact]
+    public void Test_GetAssemblies_MissingDirectory_ThrowsDirectoryNotFoundException()
+    {
+        var directoryPath = Path.Combine(Path.GetTempPath(), $"bing-utils-reflections-missing-{Guid.NewGuid():N}");
+
+        Assert.Throws<DirectoryNotFoundException>(() => Reflections.GetAssemblies(directoryPath));
+    }
+    #endregion
+    #region GetAssembly
+    /// <summary>
+    /// 测试 - 程序集名称输入校验应返回稳定的参数异常。
+    /// </summary>
+    [Fact]
+    public void Test_GetAssembly_NullName_ThrowsArgumentNullException()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => Reflections.GetAssembly(null!));
+
+        Assert.Equal("assemblyName", exception.ParamName);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("BadAssembly, Version=invalid")]
+    public void Test_GetAssembly_InvalidName_ThrowsArgumentException(string assemblyName)
+    {
+        var exception = Assert.Throws<ArgumentException>(() => Reflections.GetAssembly(assemblyName));
+
+        Assert.Equal("assemblyName", exception.ParamName);
+    }
+
+    /// <summary>
+    /// 测试 - 有效程序集名称应解析到已加载程序集。
+    /// </summary>
+    [Fact]
+    public void Test_GetAssembly_ValidName_LoadsAssembly()
+    {
+        var assemblyName = typeof(Reflections).Assembly.GetName().Name;
+
+        var assembly = Reflections.GetAssembly(assemblyName);
+
+        Assert.Equal(typeof(Reflections).Assembly.GetName().Name, assembly.GetName().Name);
+    }
+    #endregion
     #region FindImplementTypes
     /// <summary>
     /// 验证查找仅有一个实现类的接口返回该实现类型。
@@ -334,7 +416,7 @@ public class ReflectionsTest : TestBase
     [Fact]
     public void Test_GetTopBaseType()
     {
-        Assert.Null(Reflections.GetTopBaseType(null));
+        Assert.Throws<ArgumentNullException>(() => Reflections.GetTopBaseType(null));
     }
     #endregion
     #region GetElementType
@@ -393,8 +475,8 @@ public class ReflectionsTest : TestBase
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Name").ShouldBe("test-children");
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.Count").ShouldBe(9);
         Reflections.GetPropertyValueByPath(value, value.GetType(), "Bing.Reflection.ReflectionsTest+GetPropertyValueByPathTestClass.Children.Name").ShouldBe("test-children");
-        Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.NotExists").ShouldBeNull();
-        Reflections.GetPropertyValueByPath(value, value.GetType(), "NotExists").ShouldBeNull();
+        Should.Throw<InvalidOperationException>(() => Reflections.GetPropertyValueByPath(value, value.GetType(), "Children.NotExists"));
+        Should.Throw<InvalidOperationException>(() => Reflections.GetPropertyValueByPath(value, value.GetType(), "NotExists"));
     }
     /// <summary>
     /// 验证普通及嵌套属性路径写入后可读取更新值。
@@ -495,6 +577,20 @@ public class ReflectionsTest : TestBase
         constants.ShouldNotBeEmpty();
         constants.Except(IdentityPermissions.GetAll()).Count().ShouldBe(0);
     }
+
+    [Fact]
+    public void Test_GetPublicConstantsRecursively_NullType_ThrowsArgumentNullException()
+    {
+        Should.Throw<ArgumentNullException>(() => Reflections.GetPublicConstantsRecursively(null));
+    }
+
+    [Fact]
+    public void Test_GetPublicConstantsRecursively_NullStringConstant_IsSkipped()
+    {
+        var constants = Reflections.GetPublicConstantsRecursively(typeof(NullConstants));
+
+        constants.ShouldBe(new[] { "Present" });
+    }
     #endregion
     #region GetBaseClasses
     /// <summary>
@@ -547,6 +643,14 @@ public class BaseRole
     /// 用于验证基类常量发现的默认角色名称。
     /// </summary>
     public const string BaseRoleName = "DefaultBaseRoleName";
+}
+/// <summary>
+/// 提供用于验证 null 字符串常量处理的测试样例。
+/// </summary>
+public static class NullConstants
+{
+    public const string Missing = null;
+    public const string Present = "Present";
 }
 /// <summary>
 /// 提供继承角色常量并声明自身常量的测试类型。

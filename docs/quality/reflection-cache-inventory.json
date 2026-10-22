@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 1,
+  "scope": "Known static reflection caches owned by Bing.Utils and Bing.Utils.Reflection",
+  "entries": [
+    {
+      "id": "core.metrics.failed-entries",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/CoreCacheMetrics.cs",
+      "match": "ConditionalWeakTable<object, object> FailedEntries",
+      "key": "object",
+      "policy": "weak-key diagnostics only",
+      "guards": ["ConditionalWeakTable"]
+    },
+    {
+      "id": "core.constructor.lookups",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/StrictConstructorBinder.cs",
+      "match": "ConditionalWeakTable<Type, ConstructorLookup> ConstructorLookups",
+      "key": "Type",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible"]
+    },
+    {
+      "id": "core.constructor.invokers",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/StrictConstructorBinder.cs",
+      "match": "ConditionalWeakTable<ConstructorInfo, Lazy<Func<object[], object>>> ConstructorInvokers",
+      "key": "ConstructorInfo",
+      "policy": "weak-key and collectible signature bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible"]
+    },
+    {
+      "id": "core.property.init-only",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.cs",
+      "match": "ConditionalWeakTable<PropertyInfo, StrongBox<bool>> InitOnlySetters",
+      "key": "PropertyInfo",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible(property)"]
+    },
+    {
+      "id": "core.property.ref-setters",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.cs",
+      "match": "ConditionalWeakTable<PropertyInfo, Lazy<RefPropertySetter<T>>> Setters",
+      "key": "PropertyInfo",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible(propertyInfo)"]
+    },
+    {
+      "id": "core.type-properties",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<Type, Lazy<PropertyInfo[]>> TypePropertyCache",
+      "key": "Type",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "core.type-fields",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<Type, Lazy<FieldInfo[]>> TypeFieldCache",
+      "key": "Type",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "core.type-methods",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<Type, Lazy<MethodInfo[]>> TypeMethodCache",
+      "key": "Type",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "core.safe-member-snapshots",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<object, object> SafeMemberSnapshots",
+      "key": "member snapshot array",
+      "policy": "weak-key scan-result marker only",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible"]
+    },
+    {
+      "id": "core.flagged-properties",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<Type, FlaggedPropertyLookup> FlaggedPropertyCache",
+      "key": "Type",
+      "policy": "weak-key, bounded inner dictionary, collectible bypass",
+      "guards": ["ConditionalWeakTable", "FlaggedCacheCapacity", "ReflectionCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "core.flagged-fields",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<Type, FlaggedFieldLookup> FlaggedFieldCache",
+      "key": "Type",
+      "policy": "weak-key, bounded inner dictionary, collectible bypass",
+      "guards": ["ConditionalWeakTable", "FlaggedCacheCapacity", "ReflectionCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "core.flagged-methods",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<Type, FlaggedMethodLookup> FlaggedMethodCache",
+      "key": "Type",
+      "policy": "weak-key, bounded inner dictionary, collectible bypass",
+      "guards": ["ConditionalWeakTable", "FlaggedCacheCapacity", "ReflectionCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "core.property-getters",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<PropertyInfo, Lazy<Func<object, object>>> PropertyValueGetters",
+      "key": "PropertyInfo",
+      "policy": "weak-key and property collectible bypass",
+      "guards": ["ConditionalWeakTable"],
+      "guardSources": [{
+        "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.cs",
+        "match": "ReflectionCacheScope.IsCollectible(propertyInfo)"
+      }]
+    },
+    {
+      "id": "core.property-setters",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<PropertyInfo, Lazy<Action<object, object>>> PropertyValueSetters",
+      "key": "PropertyInfo",
+      "policy": "weak-key and property collectible bypass",
+      "guards": ["ConditionalWeakTable"],
+      "guardSources": [{
+        "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.cs",
+        "match": "ReflectionCacheScope.IsCollectible(propertyInfo)"
+      }]
+    },
+    {
+      "id": "core.typed-property-getters",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<PropertyInfo, Lazy<Func<T, object>>> PropertyValueGetters",
+      "key": "PropertyInfo",
+      "policy": "weak-key and property collectible bypass",
+      "guards": ["ConditionalWeakTable"],
+      "guardSources": [{
+        "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.cs",
+        "match": "ReflectionCacheScope.IsCollectible(propertyInfo)"
+      }]
+    },
+    {
+      "id": "core.typed-property-setters",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Cache.cs",
+      "match": "ConditionalWeakTable<PropertyInfo, Lazy<Action<T, object>>> PropertyValueSetters",
+      "key": "PropertyInfo",
+      "policy": "weak-key and property collectible bypass",
+      "guards": ["ConditionalWeakTable"],
+      "guardSources": [{
+        "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.cs",
+        "match": "ReflectionCacheScope.IsCollectible(propertyInfo)"
+      }]
+    },
+    {
+      "id": "core.public-instance-properties",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Properties.cs",
+      "match": "ConditionalWeakTable<Type, Lazy<PropertyInfo[]>> PublicInstancePropertiesCache",
+      "key": "Type",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "core.safe-property-snapshots",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/TypeReflections/TypeReflections.Properties.cs",
+      "match": "ConditionalWeakTable<object, object> SafePropertySnapshots",
+      "key": "property snapshot array",
+      "policy": "weak-key scan-result marker only",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible"]
+    },
+    {
+      "id": "core.member-path",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/Reflections/Reflections.MemberPath.cs",
+      "match": "ConditionalWeakTable<Type, MemberPathLookup> MemberPathCache",
+      "key": "Type",
+      "policy": "weak-key, bounded path dictionary, collectible bypass",
+      "guards": ["ConditionalWeakTable", "MemberPathCacheCapacity", "ReflectionCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "package.metrics.failed-entries",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/ReflectionCacheMetrics.cs",
+      "match": "ConditionalWeakTable<object, object> FailedEntries",
+      "key": "object",
+      "policy": "weak-key diagnostics only",
+      "guards": ["ConditionalWeakTable"]
+    },
+    {
+      "id": "package.runtime-properties",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Properties.cs",
+      "match": "ConditionalWeakTable<Type, Lazy<PropertyInfo[]>> RuntimePropertiesCache",
+      "key": "Type",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionPackageCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "package.filtered-properties",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Properties.cs",
+      "match": "ConditionalWeakTable<Type, Lazy<PropertyInfo[]>[]> FilteredPropertiesCache",
+      "key": "Type",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionPackageCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "package.safe-property-snapshots",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Properties.cs",
+      "match": "ConditionalWeakTable<object, object> SafePropertySnapshots",
+      "key": "property snapshot array",
+      "policy": "weak-key scan-result marker only",
+      "guards": ["ConditionalWeakTable", "ReflectionPackageCacheScope.IsCollectible"]
+    },
+    {
+      "id": "package.method-signatures",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Methods.cs",
+      "match": "ConditionalWeakTable<Type, MethodSignatureLookup> MethodSignatureCache",
+      "key": "Type",
+      "policy": "weak-key, bounded signature dictionary, collectible bypass",
+      "guards": ["ConditionalWeakTable", "MethodSignatureCacheCapacity", "ReflectionPackageCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "package.method-instances",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Methods.cs",
+      "match": "ConditionalWeakTable<Type, ConditionalWeakTable<MethodInfo, Lazy<MethodInfo>>> MethodInstanceCache",
+      "key": "Type/MethodInfo",
+      "policy": "weak-key and collectible bypass",
+      "guards": ["ConditionalWeakTable", "ReflectionPackageCacheScope.IsCollectible(type)", "ReflectionPackageCacheScope.IsCollectible(method)"]
+    },
+    {
+      "id": "package.named-methods",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Signatures.cs",
+      "match": "ConditionalWeakTable<Type, NamedMethodLookup> NamedMethodCache",
+      "key": "Type",
+      "policy": "weak-key, bounded signature dictionary, collectible bypass",
+      "guards": ["ConditionalWeakTable", "NamedMethodCacheCapacity", "ReflectionPackageCacheScope.IsCollectible(type)"]
+    },
+    {
+      "id": "package.dynamic-schema",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeFactory/TypeFactory.cs",
+      "match": "private static readonly SchemaCache _sharedCache",
+      "key": "SchemaKey",
+      "policy": "bounded schema dictionary with weak generated type",
+      "guards": ["MaxGeneratedTypes", "WeakReference<Type>", "_capacity", "Dictionary<SchemaKey, SchemaEntry> _generatedTypes", "ReflectionPackageCacheScope.IsCollectible"]
+    },
+    {
+      "id": "package.dynamic-schema-fast",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeFactory/TypeFactory.cs",
+      "match": "ConditionalWeakTable<IDictionary<string, Type>, SchemaFastLookup> _schemaFastCache",
+      "key": "IDictionary<string, Type>",
+      "policy": "weak schema key and weak generated type",
+      "guards": ["ConditionalWeakTable", "WeakReference<Type>", "ReflectionPackageCacheScope.IsCollectible"]
+    },
+    {
+      "id": "package.dynamic-schema-recent",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeFactory/TypeFactory.cs",
+      "match": "private static SchemaFastEntry _recentSchema",
+      "key": "SchemaFastEntry",
+      "policy": "single-entry fast cache; collectible schema bypass",
+      "guards": ["WeakReference<Type>", "ReflectionPackageCacheScope.IsCollectible(item.Value)"]
+    },
+    {
+      "id": "package.dynamic-schema-identities",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Reflection/TypeFactory/TypeFactory.cs",
+      "match": "ConditionalWeakTable<Type, SchemaTypeIdentity> _schemaTypeIdentities",
+      "key": "Type",
+      "policy": "weak type key; identity stores name and handle only",
+      "guards": ["ConditionalWeakTable", "SchemaTypeIdentity"]
+    },
+    {
+      "id": "package.dynamic-base-properties",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Dynamic/DynamicBase.cs",
+      "match": "ConditionalWeakTable<Type, PropertyLookup> _propertyCache",
+      "key": "Type",
+      "policy": "weak-key, bounded property dictionary, collectible bypass",
+      "guards": ["ConditionalWeakTable", "PropertyCacheCapacity", "ReflectionPackageCacheScope.IsCollectible(_type)"]
+    },
+    {
+      "id": "package.dynamic-base-init-only",
+      "assembly": "Bing.Utils.Reflection",
+      "source": "src/Bing.Utils.Reflection/Bing/Dynamic/DynamicBase.cs",
+      "match": "ConditionalWeakTable<PropertyInfo, StrongBox<bool>> _initOnlyProperties",
+      "key": "PropertyInfo",
+      "policy": "weak-key with collectible property access",
+      "guards": ["ConditionalWeakTable", "ReflectionPackageCacheScope.IsCollectible(_type)"]
+    }
+  ]
+}

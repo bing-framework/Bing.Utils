@@ -17,6 +17,9 @@ public static partial class MapperHelper
     /// <returns>映射后的新对象。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="values"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当字典键、映射配置或值转换无效且未忽略时抛出。</exception>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("字典映射按运行时类型扫描目标属性，裁剪时必须保留目标类型的公共属性元数据。")]
+#endif
     public static T MapDictionary<T>(IReadOnlyDictionary<string, object> values, DictionaryMapOptions options = null) where T : new()
     {
         if (values == null)
@@ -34,6 +37,9 @@ public static partial class MapperHelper
     /// <returns>映射后的新对象。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="values"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当字典包含非字符串键、映射配置或值转换无效且未忽略时抛出。</exception>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("字典映射按运行时类型扫描目标属性，裁剪时必须保留目标类型的公共属性元数据。")]
+#endif
     public static T MapDictionary<T>(IDictionary values, DictionaryMapOptions options = null) where T : new()
     {
         if (values == null)
@@ -58,6 +64,9 @@ public static partial class MapperHelper
     /// <param name="options">字典映射选项。</param>
     /// <returns>映射后的新对象。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="values"/> 为 null 时抛出。</exception>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("字典映射按运行时类型扫描目标属性，裁剪时必须保留目标类型的公共属性元数据。")]
+#endif
     public static T ToObject<T>(this IReadOnlyDictionary<string, object> values, DictionaryMapOptions options = null) where T : new() =>
         MapDictionary<T>(values, options);
 

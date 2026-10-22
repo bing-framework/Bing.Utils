@@ -50,6 +50,14 @@ public class FtpClient : IFtpClient
         _client = new FluentFTP.FtpClient(config.Host, credentials, config.Port);
         _client.Config.EncryptionMode = Convert(config.EncryptionType);
         _client.Config.RetryAttempts = RETRY_ATTEMPTS_NUMBER;
+        // 控制通道与数据通道分别配置，避免文件传输仍使用底层默认超时。
+        _client.Config.ConnectTimeout = config.Timeout;
+        _client.Config.DataConnectionConnectTimeout = config.Timeout;
+        _client.Config.ReadTimeout = config.ReadWriteTimeout;
+        _client.Config.DataConnectionReadTimeout = config.ReadWriteTimeout;
+        _client.Config.DataConnectionType = config.UsePassive
+            ? FtpDataConnectionType.AutoPassive
+            : FtpDataConnectionType.AutoActive;
         _client.Encoding = Encoding.GetEncoding(config.CharsetName);
         if (config.EnableSsl)
             _client.ValidateCertificate += Client_ValidateCertificate;

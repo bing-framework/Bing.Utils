@@ -370,69 +370,77 @@ public partial class HttpRequest<TResult> where TResult : class
                 if (_offset == _count && !_finalRead)
                     await ReadMoreAsync(token).ConfigureAwait(false);
 
-                var reader = new Utf8JsonReader(
-                    new ReadOnlySpan<byte>(_buffer, _offset, _count - _offset),
-                    _finalRead, _readerState);
-                var previousConsumed = 0L;
-                var endedInThisBuffer = false;
+                if (TryParseBufferedElement())
+                    return true;
 
-                while (reader.Read())
-                {
-                    var consumed = reader.BytesConsumed;
-                    var tokenType = reader.TokenType;
-                    if (!_started)
-                    {
-                        if (tokenType != JsonTokenType.StartArray)
-                            throw new JsonException("The JSON response must start with an array.");
-                        _started = true;
-                        previousConsumed = consumed;
-                        continue;
-                    }
-
-                    if (!_valueStarted && tokenType == JsonTokenType.EndArray)
-                    {
-                        _arrayEnded = true;
-                        endedInThisBuffer = true;
-                        previousConsumed = consumed;
-                        break;
-                    }
-
-                    if (!_valueStarted)
-                    {
-                        _valueStarted = true;
-                        _valueDepth = 0;
-                        _element.SetLength(0);
-                        previousConsumed = reader.TokenStartIndex;
-                    }
-
-                    AppendElementBytes(previousConsumed, consumed);
-                    previousConsumed = consumed;
-
-                    if (IsContainerStart(tokenType)) _valueDepth++;
-                    else if (IsContainerEnd(tokenType)) _valueDepth--;
-
-                    if (_valueDepth == 0 && (IsScalarValueToken(tokenType) || IsContainerEnd(tokenType)))
-                    {
-                        Current = JsonSerializer.Deserialize<TResult>(_element.ToArray(), _options);
-                        _valueStarted = false;
-                        _valueDepth = 0;
-                        _offset += checked((int)consumed);
-                        _readerState = reader.CurrentState;
-                        return true;
-                    }
-                }
-
-                var bytesConsumed = checked((int)reader.BytesConsumed);
-                _offset += bytesConsumed;
-                _readerState = reader.CurrentState;
-
-                if (_arrayEnded && endedInThisBuffer) continue;
+                if (_arrayEnded)
+                    continue;
                 if (_finalRead)
                     throw new JsonException(_started
                         ? "The JSON response ended before the array was complete."
                         : "The JSON response is empty or incomplete.");
                 await ReadMoreAsync(token).ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// 在同步上下文中解析当前缓冲区，避免异步状态机持有 ref struct 读取器。
+        /// </summary>
+        private bool TryParseBufferedElement()
+        {
+            var reader = new Utf8JsonReader(
+                new ReadOnlySpan<byte>(_buffer, _offset, _count - _offset),
+                _finalRead, _readerState);
+            var previousConsumed = 0L;
+
+            while (reader.Read())
+            {
+                var consumed = reader.BytesConsumed;
+                var tokenType = reader.TokenType;
+                if (!_started)
+                {
+                    if (tokenType != JsonTokenType.StartArray)
+                        throw new JsonException("The JSON response must start with an array.");
+                    _started = true;
+                    previousConsumed = consumed;
+                    continue;
+                }
+
+                if (!_valueStarted && tokenType == JsonTokenType.EndArray)
+                {
+                    _arrayEnded = true;
+                    previousConsumed = consumed;
+                    break;
+                }
+
+                if (!_valueStarted)
+                {
+                    _valueStarted = true;
+                    _valueDepth = 0;
+                    _element.SetLength(0);
+                    previousConsumed = reader.TokenStartIndex;
+                }
+
+                AppendElementBytes(previousConsumed, consumed);
+                previousConsumed = consumed;
+
+                if (IsContainerStart(tokenType)) _valueDepth++;
+                else if (IsContainerEnd(tokenType)) _valueDepth--;
+
+                if (_valueDepth == 0 && (IsScalarValueToken(tokenType) || IsContainerEnd(tokenType)))
+                {
+                    Current = JsonSerializer.Deserialize<TResult>(_element.ToArray(), _options);
+                    _valueStarted = false;
+                    _valueDepth = 0;
+                    _offset += checked((int)consumed);
+                    _readerState = reader.CurrentState;
+                    return true;
+                }
+            }
+
+            _offset += checked((int)reader.BytesConsumed);
+            _readerState = reader.CurrentState;
+            return false;
         }
 
         /// <summary>

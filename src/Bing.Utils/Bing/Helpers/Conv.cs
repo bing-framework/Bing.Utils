@@ -1,16 +1,18 @@
 using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Bing.Collections;
+using Bing.Conversions;
 using Bing.Extensions;
+using Bing.Helpers.Internals;
 
 namespace Bing.Helpers;
 
 /// <summary>
-/// 类型转换 操作
+/// 提供常用类型转换能力。
 /// </summary>
-public static partial class Conv
+public static class Conv
 {
     #region ToSByte(转换为sbyte)
 
@@ -54,9 +56,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法首先尝试直接将输入解析为 sbyte，如果失败，则尝试先解析为 double，
-    /// 再转换为 sbyte。这可以处理一些小数形式的输入（例如"12.0"）。
-    /// 如果值超出 sbyte 范围或无法转换，返回 null。
+    /// 同类型输入直接返回；其他输入先按当前区域性解析整数，失败时按双精度值舍入后检查范围。
     /// </remarks>
     /// <example>
     /// <code>
@@ -70,20 +70,23 @@ public static partial class Conv
     /// </example>
     public static sbyte? ToSByteOrNull(object input)
     {
-        var success = sbyte.TryParse(input.SafeString(), out var result);
+        if (input is sbyte direct)
+            return direct;
+        if (input is int integer)
+            return integer is >= sbyte.MinValue and <= sbyte.MaxValue ? (sbyte)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= sbyte.MinValue and <= sbyte.MaxValue ? (sbyte)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= sbyte.MinValue and <= sbyte.MaxValue ? (sbyte)value : null;
+        }
+        var text = input.SafeString();
+        var success = sbyte.TryParse(text, out var result);
         if (success)
             return result;
-        try
-        {
-            var temp = ToDoubleOrNull(input, 0);
-            if (temp == null)
-                return null;
-            return Convert.ToSByte(temp);
-        }
-        catch
-        {
-            return null;
-        }
+        var rounded = ParseRoundedDouble(input, text);
+        return rounded is >= sbyte.MinValue and <= sbyte.MaxValue ? (sbyte)rounded.Value : null;
     }
 
     #endregion
@@ -130,9 +133,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确或负数等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法首先尝试直接将输入解析为 byte，如果失败，则尝试先解析为 double，
-    /// 再转换为 byte。这可以处理一些小数形式的输入（例如"12.0"）。
-    /// 如果值超出 byte 范围（小于0或大于255）或无法转换，返回 null。
+    /// 同类型输入直接返回；其他输入先按当前区域性解析整数，失败时按双精度值舍入后检查范围。
     /// </remarks>
     /// <example>
     /// <code>
@@ -147,20 +148,23 @@ public static partial class Conv
     /// </example>
     public static byte? ToByteOrNull(object input)
     {
-        var success = byte.TryParse(input.SafeString(), out var result);
+        if (input is byte direct)
+            return direct;
+        if (input is int integer)
+            return integer is >= byte.MinValue and <= byte.MaxValue ? (byte)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= byte.MinValue and <= byte.MaxValue ? (byte)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= byte.MinValue and <= byte.MaxValue ? (byte)value : null;
+        }
+        var text = input.SafeString();
+        var success = byte.TryParse(text, out var result);
         if (success)
             return result;
-        try
-        {
-            var temp = ToDoubleOrNull(input, 0);
-            if (temp == null)
-                return null;
-            return Convert.ToByte(temp);
-        }
-        catch
-        {
-            return null;
-        }
+        var rounded = ParseRoundedDouble(input, text);
+        return rounded is >= byte.MinValue and <= byte.MaxValue ? (byte)rounded.Value : null;
     }
 
     #endregion
@@ -277,9 +281,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法首先尝试直接将输入解析为 short，如果失败，则尝试先解析为 double，
-    /// 再转换为 short。这可以处理一些小数形式的输入（例如"123.0"）。
-    /// 如果值超出 short 范围或无法转换，返回 null。
+    /// 同类型输入直接返回；其他输入先按当前区域性解析整数，失败时按双精度值舍入后检查范围。
     /// </remarks>
     /// <example>
     /// <code>
@@ -293,20 +295,23 @@ public static partial class Conv
     /// </example>
     public static short? ToShortOrNull(object input)
     {
-        var success = short.TryParse(input.SafeString(), out var result);
+        if (input is short direct)
+            return direct;
+        if (input is int integer)
+            return integer is >= short.MinValue and <= short.MaxValue ? (short)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= short.MinValue and <= short.MaxValue ? (short)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= short.MinValue and <= short.MaxValue ? (short)value : null;
+        }
+        var text = input.SafeString();
+        var success = short.TryParse(text, out var result);
         if (success)
             return result;
-        try
-        {
-            var temp = ToDoubleOrNull(input, 0);
-            if (temp == null)
-                return null;
-            return Convert.ToInt16(temp);
-        }
-        catch
-        {
-            return null;
-        }
+        var rounded = ParseRoundedDouble(input, text);
+        return rounded is >= short.MinValue and <= short.MaxValue ? (short)rounded.Value : null;
     }
 
     #endregion
@@ -355,9 +360,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法首先尝试直接将输入解析为 int，如果失败，则尝试先解析为 double，
-    /// 再转换为 int。这可以处理一些小数形式的输入（例如"123.45"将返回123）。
-    /// 如果值超出 int 范围或无法转换，返回 null。
+    /// 同类型输入直接返回；其他输入先按当前区域性解析整数，失败时按双精度值舍入后检查范围。
     /// </remarks>
     /// <example>
     /// <code>
@@ -371,20 +374,23 @@ public static partial class Conv
     /// </example>
     public static int? ToIntOrNull(object input)
     {
-        var success = int.TryParse(input.SafeString(), out var result);
+        if (input is int direct)
+            return direct;
+        if (input is long integer)
+            return integer is >= int.MinValue and <= int.MaxValue ? (int)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= int.MinValue and <= int.MaxValue ? (int)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= int.MinValue and <= int.MaxValue ? (int)value : null;
+        }
+        var text = input.SafeString();
+        var success = int.TryParse(text, out var result);
         if (success)
             return result;
-        try
-        {
-            var temp = ToDoubleOrNull(input, 0);
-            if (temp == null)
-                return null;
-            return System.Convert.ToInt32(temp);
-        }
-        catch
-        {
-            return null;
-        }
+        var rounded = ParseRoundedDouble(input, text);
+        return rounded is >= int.MinValue and <= int.MaxValue ? (int)rounded.Value : null;
     }
 
     #endregion
@@ -433,9 +439,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确或负数等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法首先尝试直接将输入解析为 uint，如果失败，则尝试先解析为 double，
-    /// 再转换为 uint。这可以处理一些小数形式的输入（例如"123.45"将返回123）。
-    /// 如果值为负数或超出 uint 范围或无法转换，返回 null。
+    /// 同类型输入直接返回；其他输入先按当前区域性解析整数，失败时按双精度值舍入后检查范围。
     /// </remarks>
     /// <example>
     /// <code>
@@ -449,20 +453,23 @@ public static partial class Conv
     /// </example>
     public static uint? ToUIntOrNull(object input)
     {
-        var success = uint.TryParse(input.SafeString(), out var result);
+        if (input is uint direct)
+            return direct;
+        if (input is int integer)
+            return integer >= 0 ? (uint)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= uint.MinValue and <= uint.MaxValue ? (uint)integral : null;
+        if (input is double floating)
+        {
+            var value = Math.Round(floating, 0, MidpointRounding.AwayFromZero);
+            return value is >= uint.MinValue and <= uint.MaxValue ? (uint)value : null;
+        }
+        var text = input.SafeString();
+        var success = uint.TryParse(text, out var result);
         if (success)
             return result;
-        try
-        {
-            var temp = ToDoubleOrNull(input, 0);
-            if (temp == null || temp < 0)
-                return null;
-            return Convert.ToUInt32(temp);
-        }
-        catch
-        {
-            return null;
-        }
+        var rounded = ParseRoundedDouble(input, text);
+        return rounded is >= uint.MinValue and <= uint.MaxValue ? (uint)rounded.Value : null;
     }
 
     #endregion
@@ -511,10 +518,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法首先尝试直接将输入解析为 long，如果失败，则尝试先解析为 decimal，
-    /// 再转换为 long。注意这里使用的是decimal而非double，以便支持更大范围的数值。
-    /// 这可以处理一些小数形式的输入（例如"123.45"将返回123）。
-    /// 如果值超出 long 范围或无法转换，返回 null。
+    /// 同类型输入直接返回；其他输入先按当前区域性解析整数，失败时按十进制值舍入后检查范围。
     /// </remarks>
     /// <example>
     /// <code>
@@ -528,20 +532,23 @@ public static partial class Conv
     /// </example>
     public static long? ToLongOrNull(object input)
     {
-        var success = long.TryParse(input.SafeString(), out var result);
+        if (input is long direct)
+            return direct;
+        if (input is int integer)
+            return integer;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= long.MinValue and <= long.MaxValue ? (long)integral : null;
+        if (input is decimal fractional)
+        {
+            var value = Math.Round(fractional, 0, MidpointRounding.AwayFromZero);
+            return value is >= long.MinValue and <= long.MaxValue ? (long)value : null;
+        }
+        var text = input.SafeString();
+        var success = long.TryParse(text, out var result);
         if (success)
             return result;
-        try
-        {
-            var temp = ToDecimalOrNull(input, 0);
-            if (temp == null)
-                return null;
-            return System.Convert.ToInt64(temp);
-        }
-        catch
-        {
-            return null;
-        }
+        var rounded = ParseRoundedDecimal(input, text);
+        return rounded is >= long.MinValue and <= long.MaxValue ? (long)rounded.Value : null;
     }
 
     #endregion
@@ -590,10 +597,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确或负数等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法首先尝试直接将输入解析为 ulong，如果失败，则尝试先解析为 decimal，
-    /// 再转换为 ulong。注意这里使用的是decimal而非double，以便支持更大范围的数值。
-    /// 这可以处理一些小数形式的输入（例如"123.45"将返回123）。
-    /// 如果值为负数或超出 ulong 范围或无法转换，返回 null。
+    /// 同类型输入直接返回；其他输入先按当前区域性解析整数，失败时按十进制值舍入后检查范围。
     /// </remarks>
     /// <example>
     /// <code>
@@ -607,20 +611,23 @@ public static partial class Conv
     /// </example>
     public static ulong? ToULongOrNull(object input)
     {
-        var success = ulong.TryParse(input.SafeString(), out var result);
+        if (input is ulong direct)
+            return direct;
+        if (input is int integer)
+            return integer >= 0 ? (ulong)integer : null;
+        if (TryGetIntegralValue(input, out var integral))
+            return integral is >= ulong.MinValue and <= ulong.MaxValue ? (ulong)integral : null;
+        if (input is decimal fractional)
+        {
+            var value = Math.Round(fractional, 0, MidpointRounding.AwayFromZero);
+            return value is >= ulong.MinValue and <= ulong.MaxValue ? (ulong)value : null;
+        }
+        var text = input.SafeString();
+        var success = ulong.TryParse(text, out var result);
         if (success)
             return result;
-        try
-        {
-            var temp = ToDecimalOrNull(input, 0);
-            if (temp == null || temp < 0)
-                return null;
-            return Convert.ToUInt64(temp);
-        }
-        catch
-        {
-            return null;
-        }
+        var rounded = ParseRoundedDecimal(input, text);
+        return rounded is >= ulong.MinValue and <= ulong.MaxValue ? (ulong)rounded.Value : null;
     }
 
     #endregion
@@ -681,7 +688,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法先尝试将输入解析为 float，若指定了小数位数，则会按照指定的舍入模式进行舍入。
+    /// <see cref="float"/> 输入直接取值；其他输入按当前区域性解析。指定小数位数时按所选模式舍入。
     /// 默认采用 <see cref="MidpointRounding.AwayFromZero"/>（四舍五入），
     /// 也可以指定为 <see cref="MidpointRounding.ToEven"/>（银行家舍入，IEEE标准）。
     /// </remarks>
@@ -697,7 +704,17 @@ public static partial class Conv
     /// </example>
     public static float? ToFloatOrNull(object input, int? digits = null, MidpointRounding mode = MidpointRounding.AwayFromZero)
     {
-        var success = float.TryParse(input.SafeString(), out var result);
+        if (input == null || input is DBNull)
+            return null;
+        var result = input is float direct ? direct : default;
+        var success = input is float;
+        if (!success && TryGetIntegralValue(input, out var integral))
+        {
+            result = (float)integral;
+            success = true;
+        }
+        if (!success)
+            success = float.TryParse(input.SafeString(), out result);
         if (!success)
             return null;
         if (digits == null)
@@ -763,7 +780,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法先尝试将输入解析为 double，若指定了小数位数，则会按照指定的舍入模式进行舍入。
+    /// <see cref="double"/> 输入直接取值；其他输入按当前区域性解析。指定小数位数时按所选模式舍入。
     /// 默认采用 <see cref="MidpointRounding.AwayFromZero"/>（四舍五入），
     /// 也可以指定为 <see cref="MidpointRounding.ToEven"/>（银行家舍入，IEEE标准）。
     /// </remarks>
@@ -778,7 +795,17 @@ public static partial class Conv
     /// </example>
     public static double? ToDoubleOrNull(object input, int? digits = null, MidpointRounding mode = MidpointRounding.AwayFromZero)
     {
-        var success = double.TryParse(input.SafeString(), out var result);
+        if (input == null || input is DBNull)
+            return null;
+        var result = input is double direct ? direct : default;
+        var success = input is double;
+        if (!success && TryGetIntegralValue(input, out var integral))
+        {
+            result = (double)integral;
+            success = true;
+        }
+        if (!success)
+            success = double.TryParse(input.SafeString(), out result);
         if (!success)
             return null;
         return digits == null ? result : Math.Round(result, digits.Value, mode);
@@ -844,7 +871,7 @@ public static partial class Conv
     /// 如果转换失败（输入为 null、空字符串、格式不正确等情况），则返回 null
     /// </returns>
     /// <remarks>
-    /// 此方法先尝试将输入解析为 decimal，若指定了小数位数，则会按照指定的舍入模式进行舍入。
+    /// <see cref="decimal"/> 输入直接取值；其他输入按当前区域性解析。指定小数位数时按所选模式舍入。
     /// 默认采用 <see cref="MidpointRounding.AwayFromZero"/>（四舍五入），
     /// 也可以指定为 <see cref="MidpointRounding.ToEven"/>（银行家舍入，IEEE标准）。
     /// decimal类型特别适合于财务和货币计算，提供高精度且避免浮点数舍入误差。
@@ -860,7 +887,17 @@ public static partial class Conv
     /// </example>
     public static decimal? ToDecimalOrNull(object input, int? digits = null, MidpointRounding mode = MidpointRounding.AwayFromZero)
     {
-        var success = decimal.TryParse(input.SafeString(), out var result);
+        if (input == null || input is DBNull)
+            return null;
+        var result = input is decimal direct ? direct : default;
+        var success = input is decimal;
+        if (!success && TryGetIntegralValue(input, out var integral))
+        {
+            result = integral;
+            success = true;
+        }
+        if (!success)
+            success = decimal.TryParse(input.SafeString(), out result);
         if (!success)
             return null;
         return digits == null ? result : Math.Round(result, digits.Value, mode);
@@ -1013,40 +1050,26 @@ public static partial class Conv
 
         // 处理枚举类型
         if (input.GetType().IsEnum)
-            return Convert.ToInt32(input) != 0;
+            return Convert.ToDecimal(input) != 0;
 
         // 处理字符串
-        var str = input.SafeString().Trim().ToLowerInvariant();
+        var str = input.SafeString();
         if (string.IsNullOrEmpty(str))
             return null;
 
         // 扩展支持的字符串
-        switch (str)
-        {
-            case "1":
-            case "是":
-            case "ok":
-            case "yes":
-            case "y":
-            case "on":
-            case "enable":
-            case "enabled":
-            case "t":
-            case "true":
-                return true;
-            case "0":
-            case "否":
-            case "不":
-            case "no":
-            case "fail":
-            case "n":
-            case "off":
-            case "disable":
-            case "disabled":
-            case "f":
-            case "false":
-                return false;
-        }
+        if (str is "1" or "是" || str.Equals("ok", StringComparison.OrdinalIgnoreCase) ||
+            str.Equals("yes", StringComparison.OrdinalIgnoreCase) || str.Equals("y", StringComparison.OrdinalIgnoreCase) ||
+            str.Equals("on", StringComparison.OrdinalIgnoreCase) || str.Equals("enable", StringComparison.OrdinalIgnoreCase) ||
+            str.Equals("enabled", StringComparison.OrdinalIgnoreCase) || str.Equals("t", StringComparison.OrdinalIgnoreCase) ||
+            str.Equals("true", StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (str is "0" or "否" or "不" || str.Equals("no", StringComparison.OrdinalIgnoreCase) ||
+            str.Equals("fail", StringComparison.OrdinalIgnoreCase) || str.Equals("n", StringComparison.OrdinalIgnoreCase) ||
+            str.Equals("off", StringComparison.OrdinalIgnoreCase) || str.Equals("disable", StringComparison.OrdinalIgnoreCase) ||
+            str.Equals("disabled", StringComparison.OrdinalIgnoreCase) || str.Equals("f", StringComparison.OrdinalIgnoreCase) ||
+            str.Equals("false", StringComparison.OrdinalIgnoreCase))
+            return false;
         // 尝试标准 bool 解析
         if (bool.TryParse(str, out var result))
             return result;
@@ -1061,15 +1084,15 @@ public static partial class Conv
     /// <summary>
     /// 转换为日期（<see cref="DateTime"/>）
     /// </summary>
-    /// <param name="input">输入值，支持日期字符串、Date对象等</param>
+    /// <param name="input">日期值或可解析的日期文本。</param>
     /// <param name="defaultValue">默认值，当转换失败时返回此值，默认为 DateTime.MinValue (0001-01-01 00:00:00)</param>
     /// <returns>
     /// 转换后的日期值。如果转换成功，则返回转换后的日期；
     /// 如果转换失败，先尝试返回指定的默认值，若默认值未指定则返回 DateTime.MinValue
     /// </returns>
     /// <remarks>
-    /// 此方法使用 <see cref="DateTime.TryParse(string, out DateTime)"/> 进行日期解析，所以支持多种日期格式。
-    /// 当输入为 null 或转换失败时，返回指定的默认值或 DateTime.MinValue。
+    /// <see cref="DateTime"/> 输入直接返回，保留 ticks 和 <see cref="DateTime.Kind"/>；其他输入使用 <see cref="DateTime.TryParse(string, out DateTime)"/> 解析。
+    /// 输入为 null 或解析失败时，返回指定默认值。
     /// </remarks>
     /// <example>
     /// <code>
@@ -1085,7 +1108,7 @@ public static partial class Conv
     /// <summary>
     /// 转换为可空日期（<see cref="DateTime"/>?）
     /// </summary>
-    /// <param name="input">输入值，支持日期字符串、Date对象等</param>
+    /// <param name="input">日期值或可解析的日期文本。</param>
     /// <param name="defaultValue">默认值，当输入为 null 时返回此值，默认为 null</param>
     /// <returns>
     /// 转换后的可空日期值。如果输入不为 null 且转换成功，则返回转换后的日期；
@@ -1093,8 +1116,7 @@ public static partial class Conv
     /// 如果转换失败，则返回 null 或指定的默认值
     /// </returns>
     /// <remarks>
-    /// 此方法使用 <see cref="DateTime.TryParse(string, out DateTime)"/> 进行日期解析，所以支持多种日期格式。
-    /// 区别于 ToDate 方法，此方法在转换失败时可返回 null。
+    /// <see cref="DateTime"/> 输入直接返回，保留 ticks 和 <see cref="DateTime.Kind"/>；其他输入使用 <see cref="DateTime.TryParse(string, out DateTime)"/> 解析。
     /// </remarks>
     /// <example>
     /// <code>
@@ -1109,6 +1131,8 @@ public static partial class Conv
     {
         if (input == null)
             return defaultValue;
+        if (input is DateTime date)
+            return date;
         return DateTime.TryParse(input.SafeString(), out var result) ? result : defaultValue;
     }
 
@@ -1147,8 +1171,7 @@ public static partial class Conv
     /// 如果转换失败（输入为null、空字符串或格式不正确），则返回null
     /// </returns>
     /// <remarks>
-    /// 此方法使用 <see cref="Guid.TryParse(string, out Guid)"/> 进行解析，支持多种Guid字符串格式。
-    /// 与 ToGuid 方法不同，此方法在转换失败时返回 null 而非 Guid.Empty。
+    /// <see cref="Guid"/> 输入直接返回；其他输入使用 <see cref="Guid.TryParse(string, out Guid)"/> 解析。
     /// </remarks>
     /// <example>
     /// <code>
@@ -1158,7 +1181,9 @@ public static partial class Conv
     /// Guid? value4 = Conv.ToGuidOrNull(null);   // 转换失败，返回 null
     /// </code>
     /// </example> 
-    public static Guid? ToGuidOrNull(object input) => Guid.TryParse(input.SafeString(), out var result) ? result : null;
+    public static Guid? ToGuidOrNull(object input) => input is Guid guid
+        ? guid
+        : Guid.TryParse(input.SafeString(), out var result) ? result : null;
 
     #endregion
 
@@ -1304,18 +1329,17 @@ public static partial class Conv
     #region ToList(泛型集合转换)
 
     /// <summary>
-    /// 将以逗号分隔的字符串转换为泛型集合（<see cref="List{T}"/>）
+    /// 将逗号分隔的文本转换为列表。
     /// </summary>
     /// <typeparam name="T">目标元素类型，可以是任何可转换类型，如<see cref="int"/>、<see cref="Guid"/>等</typeparam>
     /// <param name="input">以逗号分隔的字符串，每个元素会尝试转换为指定的类型T</param>
     /// <returns>
     /// 转换后的泛型集合。如果输入为 null 或空白字符串，则返回空集合。
-    /// 字符串中的每个有效元素都会被转换为指定类型的对象并添加到集合中。
+    /// 每个非空白元素都会添加到集合中，转换失败的元素为目标类型默认值。
     /// </returns>
     /// <remarks>
-    /// 此方法会将输入字符串按逗号（","）分割，然后尝试将每个部分转换为指定的类型T。
-    /// 转换过程使用 <see cref="To{T}"/> 方法进行，空白元素会被自动忽略。
-    /// 如果某个元素无法转换为指定类型，则可能返回该类型的默认值或被忽略，取决于 To{T} 的实现。
+    /// 按逗号分隔后忽略空白项；其他项使用 <see cref="To{T}(object)"/> 转换。
+    /// 转换失败的非空项仍保留在列表中，其值为目标类型默认值。
     /// </remarks>
     /// <example>
     /// <code>
@@ -1341,30 +1365,22 @@ public static partial class Conv
     /// List&lt;int&gt; nullList = Conv.ToList&lt;int&gt;(null);   // 返回空集合 []
     /// </code>
     /// </example>
-    /// <seealso cref="To{T}"/>
+    /// <seealso cref="To{T}(object)"/>
     /// <seealso cref="ToGuidList"/>
-    public static List<T> ToList<T>(string input)
-    {
-        var result = new List<T>();
-        if (string.IsNullOrWhiteSpace(input))
-            return result;
-        var array = input.Split(',');
-        result.AddRange(from each in array where !string.IsNullOrWhiteSpace(each) select To<T>(each));
-        return result;
-    }
+    public static List<T> ToList<T>(string input) => ConvertList<T>(input);
 
     #endregion
 
     #region To(通用泛型转换)
 
     /// <summary>
-    /// 通用泛型转换方法，将输入值转换为指定的目标类型
+    /// 将输入转换为指定类型。
     /// </summary>
     /// <typeparam name="T">目标类型，可以是任何基础类型、枚举、字符串或支持类型转换的自定义类型</typeparam>
     /// <param name="input">待转换的输入值</param>
     /// <returns>
     /// 转换后的目标类型值。如果转换成功，则返回转换后的值；
-    /// 如果转换失败或输入为 null 或空字符串，则返回目标类型的默认值（引用类型为null，值类型为0等）
+    /// 如果转换失败或输入为 null、<see cref="DBNull"/>、空白字符串，则返回目标类型的默认值。
     /// </returns>
     /// <remarks>
     /// 此方法是一个通用的类型转换工具，支持多种类型转换场景：
@@ -1372,8 +1388,8 @@ public static partial class Conv
     /// 2. 支持实现了 IConvertible 接口的类型
     /// 3. 支持 JSON 元素到目标类型的转换
     /// 
-    /// 转换失败时不会抛出异常，而是返回目标类型的默认值。
-    /// 所有其他的类型转换方法（如 ToInt, ToDouble 等）底层都使用此方法。
+    /// 除 <see cref="System.Text.Json.JsonElement"/> 外，同类型输入直接返回。转换失败时返回目标类型默认值；使用 <see cref="TryTo{T}(object, out T)"/> 可区分失败与成功得到默认值。
+    /// 专用数值方法采用各自的解析和舍入规则，与通用转换可能不同。
     /// </remarks>
     /// <example>
     /// <code>
@@ -1400,32 +1416,142 @@ public static partial class Conv
     /// <seealso cref="IConvertible"/>
     public static T To<T>(object input)
     {
-        if (input == null)
-            return default;
-        if (input is string && string.IsNullOrWhiteSpace(input.ToString()))
-            return default;
+        return TryTo(input, out T result) ? result : default;
+    }
 
-        var type = Common.GetType<T>();
-        var typeName = type.Name.ToUpperInvariant();
-        try
+    /// <summary>
+    /// 尝试将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="T">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>转换成功返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    /// <remarks>
+    /// 仅使用内置规则；空白字符串视为失败，成功得到默认值仍返回 <see langword="true"/>。
+    /// </remarks>
+    public static bool TryTo<T>(object input, out T result)
+    {
+        if (input is string text && ConvTypeInfo<T>.UnderlyingType == typeof(long))
         {
-            if (typeName == "STRING" || typeName == "GUID")
-                return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(input.ToString());
-            if (type.IsEnum)
-                return Enums.Parse<T>(input);
-            if (input is IConvertible)
-                return (T)System.Convert.ChangeType(input, type, CultureInfo.InvariantCulture);
-            if (input is JsonElement element)
+            if (long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number))
             {
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                return Json.ToObject<T>(element.GetRawText(), options);
+                result = ConvTypeInfo<T>.IsNullableValueType
+                    ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
+                return true;
             }
-            return (T)input;
+            result = default;
+            return false;
         }
-        catch
-        {
-            return default;
-        }
+        return TryToCore(input, out result);
+    }
+
+    /// <summary>
+    /// 将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="T">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="converter">优先使用的自定义转换器。</param>
+    /// <returns>转换结果；失败时返回目标类型的默认值。</returns>
+    /// <exception cref="ArgumentNullException">转换器为 <see langword="null"/>。</exception>
+    /// <remarks>
+    /// 精确命中的自定义转换失败后不回退内置规则；未命中时使用内置规则。
+    /// </remarks>
+    public static T To<T>(object input, ConvConverter converter) =>
+        TryTo(input, converter, out T result) ? result : default;
+
+    /// <summary>
+    /// 尝试将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="T">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="converter">优先使用的自定义转换器。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>转换成功返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    /// <exception cref="ArgumentNullException">转换器为 <see langword="null"/>。</exception>
+    /// <remarks>
+    /// 精确命中的自定义转换失败后不回退内置规则；未命中时使用内置规则。
+    /// </remarks>
+    public static bool TryTo<T>(object input, ConvConverter converter, out T result)
+    {
+        if (converter == null)
+            throw new ArgumentNullException(nameof(converter));
+        result = default;
+        if (input == null || input is DBNull)
+            return false;
+        var success = converter.TryConvert(input, out result, out var matched);
+        return matched ? success : TryToCore(input, out result);
+    }
+
+    /// <summary>
+    /// 将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <returns>转换结果；失败时返回目标类型的默认值。</returns>
+    public static TTarget To<TSource, TTarget>(TSource input) =>
+        TryTo<TSource, TTarget>(input, out var result) ? result : default;
+
+    /// <summary>
+    /// 尝试将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>转换成功返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    /// <remarks>
+    /// 空输入和 <see cref="DBNull"/> 视为失败；成功得到目标类型默认值时仍返回 <see langword="true"/>。
+    /// </remarks>
+    public static bool TryTo<TSource, TTarget>(TSource input, out TTarget result) =>
+        TryToCoreTyped(input, out result);
+
+    /// <summary>
+    /// 将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="converter">优先使用的自定义转换器。</param>
+    /// <returns>转换结果；失败时返回目标类型的默认值。</returns>
+    /// <exception cref="ArgumentNullException">转换器为 <see langword="null"/>。</exception>
+    /// <remarks>
+    /// 精确命中的自定义转换失败后不回退内置规则；未命中时使用内置规则。
+    /// </remarks>
+    public static TTarget To<TSource, TTarget>(TSource input, ConvConverter converter) =>
+        TryTo<TSource, TTarget>(input, converter, out var result) ? result : default;
+
+    /// <summary>
+    /// 尝试将输入转换为指定类型。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="converter">优先使用的自定义转换器。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>转换成功返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    /// <exception cref="ArgumentNullException">转换器为 <see langword="null"/>。</exception>
+    /// <remarks>
+    /// 精确命中的自定义转换失败后不回退内置规则；未命中时使用内置规则。
+    /// </remarks>
+    public static bool TryTo<TSource, TTarget>(TSource input, ConvConverter converter, out TTarget result)
+    {
+        if (converter == null)
+            throw new ArgumentNullException(nameof(converter));
+        result = default;
+        if (input == null || input is DBNull)
+            return false;
+
+        // 密封类型和值类型的运行时类型已知；可空值类型装箱后需按底层类型匹配。
+        var exactSource = !ConvTypeInfo<TSource>.IsNullableValueType &&
+                          (typeof(TSource).IsSealed || typeof(TSource).IsValueType);
+        bool success;
+        bool matched;
+        if (exactSource)
+            success = converter.TryConvert<TSource, TTarget>(input, out result, out matched);
+        else
+            success = converter.TryConvert<TTarget>((object)input, out result, out matched);
+        return matched ? success : TryToCoreTyped(input, out result);
     }
 
     #endregion
@@ -1433,7 +1559,7 @@ public static partial class Conv
     #region ToDictionary(转换为字典)
 
     /// <summary>
-    /// 将对象转换为字典（属性名-属性值）
+    /// 将对象转换为属性字典。
     /// </summary>
     /// <param name="input">要转换的对象，通常是一个类的实例</param>
     /// <returns>
@@ -1466,7 +1592,7 @@ public static partial class Conv
     public static IDictionary<string, object> ToDictionary(object input) => ToDictionary(input, false);
 
     /// <summary>
-    /// 将对象转换为字典（属性名-属性值），可选择是否使用显示名称
+    /// 将对象转换为属性字典。
     /// </summary>
     /// <param name="input">要转换的对象，通常是一个类的实例</param>
     /// <param name="useDisplayName">
@@ -1482,7 +1608,7 @@ public static partial class Conv
     /// 此方法有几种处理流程：
     /// 1. 如果输入对象为 null，返回空字典
     /// 2. 如果输入对象已经是键值对集合（实现了 IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;），则直接转换为字典
-    /// 3. 否则，使用反射获取对象的所有公共属性，将其添加到结果字典中
+    /// 3. 否则，使用 <see cref="TypeDescriptor.GetProperties(object)"/> 获取输入实例的属性并加入字典
     /// 
     /// 当 useDisplayName 为 true 时，属性的键名优先级为：
     /// 1. Description 特性值（如果存在）
@@ -1518,47 +1644,8 @@ public static partial class Conv
     /// <seealso cref="TypeDescriptor.GetProperties(object)"/>
     /// <seealso cref="DescriptionAttribute"/>
     /// <seealso cref="DisplayNameAttribute"/>
-    public static IDictionary<string, object> ToDictionary(object input, bool useDisplayName)
-    {
-        var result = new Dictionary<string, object>();
-        if (input == null)
-            return result;
-        if (input is IEnumerable<KeyValuePair<string, object>> dict)
-#if NETSTANDARD2_0
-            return new Dictionary<string, object>(dict.ToDictionary());
-#else
-            return new Dictionary<string, object>(dict);
-#endif
-        foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(input))
-        {
-            var value = property.GetValue(input);
-            result.Add(GetPropertyDescriptorName(property, useDisplayName), value);
-        }
-        return result;
-    }
-
-    /// <summary>
-    /// 获取属性描述符的名称
-    /// </summary>
-    /// <param name="property">属性描述符</param>
-    /// <param name="useDisplayName">是否使用显示名称，可使用[Description] 或 [DisplayName]特性设置</param>
-    /// <returns>
-    /// 属性的名称。根据 useDisplayName 参数和特性的存在情况，返回适当的名称：
-    /// - 如果 useDisplayName 为 false，返回原始属性名
-    /// - 如果 useDisplayName 为 true 且有 Description 特性，返回 Description 值
-    /// - 如果 useDisplayName 为 true 且有 DisplayName 特性（无 Description），返回 DisplayName 值
-    /// - 其他情况返回原始属性名
-    /// </returns>
-    private static string GetPropertyDescriptorName(PropertyDescriptor property, bool useDisplayName)
-    {
-        if (useDisplayName == false)
-            return property.Name;
-        if (string.IsNullOrEmpty(property.Description) == false)
-            return property.Description;
-        if (string.IsNullOrEmpty(property.DisplayName) == false)
-            return property.DisplayName;
-        return property.Name;
-    }
+    public static IDictionary<string, object> ToDictionary(object input, bool useDisplayName) =>
+        ConvertDictionary(input, useDisplayName);
 
     #endregion
 
@@ -1838,4 +1925,679 @@ public static partial class Conv
     }
 
     #endregion
+
+    /// <summary>
+    /// 将输入舍入为双精度整数值。
+    /// </summary>
+    /// <param name="input">待转换值；双精度值直接参与舍入。</param>
+    /// <param name="text">其他输入的文本表示。</param>
+    /// <returns>舍入后的值；解析失败时返回 <see langword="null"/>。</returns>
+    /// <remarks>
+    /// 使用当前区域性解析，并采用远离零点的中点舍入规则。
+    /// </remarks>
+    private static double? ParseRoundedDouble(object input, string text)
+    {
+        if (input is double value)
+            return Math.Round(value, 0, MidpointRounding.AwayFromZero);
+        return double.TryParse(text, out value)
+            ? Math.Round(value, 0, MidpointRounding.AwayFromZero)
+            : null;
+    }
+
+    /// <summary>
+    /// 读取内置整数类型的精确值。
+    /// </summary>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="result">输入对应的十进制整数。</param>
+    /// <returns>输入为内置整数类型时返回 <see langword="true"/>。</returns>
+    private static bool TryGetIntegralValue(object input, out decimal result)
+    {
+        switch (input)
+        {
+            case sbyte value: result = value; return true;
+            case byte value: result = value; return true;
+            case short value: result = value; return true;
+            case ushort value: result = value; return true;
+            case int value: result = value; return true;
+            case uint value: result = value; return true;
+            case long value: result = value; return true;
+            case ulong value: result = value; return true;
+            default:
+                result = default;
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// 将输入舍入为十进制整数值。
+    /// </summary>
+    /// <param name="input">待转换值；十进制值直接参与舍入。</param>
+    /// <param name="text">其他输入的文本表示。</param>
+    /// <returns>舍入后的值；解析失败时返回 <see langword="null"/>。</returns>
+    /// <remarks>
+    /// 使用当前区域性解析，并采用远离零点的中点舍入规则。
+    /// </remarks>
+    private static decimal? ParseRoundedDecimal(object input, string text)
+    {
+        if (input is decimal value)
+            return Math.Round(value, 0, MidpointRounding.AwayFromZero);
+        return decimal.TryParse(text, out value)
+            ? Math.Round(value, 0, MidpointRounding.AwayFromZero)
+            : null;
+    }
+
+    /// <summary>
+    /// 复用 JSON 转换所需的序列化配置。
+    /// </summary>
+    /// <remarks>
+    /// 配置在进程内共享，只缓存类型元数据，不持有转换输入。
+    /// </remarks>
+    private static readonly JsonSerializerOptions ConversionJsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    /// <summary>
+    /// 尝试使用内置规则转换输入。
+    /// </summary>
+    /// <typeparam name="T">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>转换成功返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    /// <remarks>
+    /// 字符串数值转换使用 invariant 区域性；空白字符串和 <see cref="DBNull"/> 视为失败。
+    /// </remarks>
+    private static bool TryToCore<T>(object input, out T result)
+    {
+        result = default;
+        if (input == null || input is DBNull)
+            return false;
+        if (input is string longText && ConvTypeInfo<T>.UnderlyingType == typeof(long))
+        {
+            if (!long.TryParse(longText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number))
+                return false;
+            result = ConvTypeInfo<T>.IsNullableValueType
+                ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
+            return true;
+        }
+        if (input is string source && string.IsNullOrWhiteSpace(source))
+            return false;
+        if (input is T same && input is not JsonElement)
+        {
+            result = same;
+            return true;
+        }
+
+        var type = ConvTypeInfo<T>.UnderlyingType;
+        try
+        {
+            if (input is string scalarText)
+            {
+                if (type == typeof(double))
+                {
+                    if (!double.TryParse(scalarText, NumberStyles.Float | NumberStyles.AllowThousands,
+                            CultureInfo.InvariantCulture, out var number))
+                        return false;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
+                    return true;
+                }
+                if (type == typeof(decimal))
+                {
+                    if (!decimal.TryParse(scalarText, NumberStyles.Number, CultureInfo.InvariantCulture, out var number))
+                        return false;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
+                    return true;
+                }
+                if (type == typeof(bool))
+                {
+                    if (!bool.TryParse(scalarText, out var value))
+                        return false;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(value) : (T)(object)value;
+                    return true;
+                }
+                if (type == typeof(DateTime))
+                {
+                    if (!DateTime.TryParse(scalarText, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                        return false;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(date) : (T)(object)date;
+                    return true;
+                }
+            }
+            if (type == typeof(Guid))
+            {
+                if (!Guid.TryParse(input.ToString(), out var guid))
+                    return false;
+                result = ConvTypeInfo<T>.IsNullableValueType
+                    ? ConvTypeInfo<T>.FromNullable(guid) : (T)(object)guid;
+                return true;
+            }
+            if (type == typeof(string))
+            {
+                result = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(input.ToString());
+                return result != null;
+            }
+            if (type.IsEnum)
+            {
+                return ConvEnumParser<T>.TryParse(input.SafeString(), out result);
+            }
+            if (input is string numericText && type == typeof(int))
+            {
+                if (!int.TryParse(numericText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number))
+                    return false;
+                result = ConvTypeInfo<T>.IsNullableValueType
+                    ? ConvTypeInfo<T>.FromNullable(number) : (T)(object)number;
+                return true;
+            }
+            if (type == typeof(int))
+            {
+                if (input is long integer)
+                {
+                    if (integer < int.MinValue || integer > int.MaxValue)
+                        return false;
+                    var value = (int)integer;
+                    result = ConvTypeInfo<T>.IsNullableValueType
+                        ? ConvTypeInfo<T>.FromNullable(value) : (T)(object)value;
+                    return true;
+                }
+            }
+            if (input is IConvertible)
+            {
+                result = (T)System.Convert.ChangeType(input, type, CultureInfo.InvariantCulture);
+                return result != null;
+            }
+            if (input is JsonElement element)
+            {
+                if (element.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+                    return false;
+#if NETSTANDARD2_0
+                result = Json.ToObject<T>(element.GetRawText(), ConversionJsonOptions);
+#else
+                result = element.Deserialize<T>(ConversionJsonOptions);
+#endif
+                return result != null;
+            }
+            result = (T)input;
+            return true;
+        }
+        catch
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 尝试转换保留源类型的输入。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的输入值。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>转换成功返回 <see langword="true"/>；否则返回 <see langword="false"/>。</returns>
+    private static bool TryToCoreTyped<TSource, TTarget>(TSource input, out TTarget result)
+    {
+        result = default;
+        if (input == null || input is DBNull)
+            return false;
+        if (typeof(TSource) == typeof(TTarget) && typeof(TSource).IsValueType &&
+            !ConvTypeInfo<TSource>.IsNullableValueType && input is not JsonElement)
+        {
+            result = (TTarget)(object)input;
+            return true;
+        }
+        if (!ConvTypeInfo<TSource>.IsNullableValueType &&
+            TryConvertTypedNumericPair(input, out result))
+            return true;
+        if (!ConvTypeInfo<TSource>.IsNullableValueType &&
+            IsSupportedTypedNumericPair<TSource, TTarget>())
+            return false;
+        if (input is JsonElement element && typeof(TTarget) != typeof(string) &&
+            typeof(TTarget) != typeof(Guid) && !ConvTypeInfo<TTarget>.UnderlyingType.IsEnum)
+        {
+            try
+            {
+                if (element.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+                    return false;
+#if NETSTANDARD2_0
+                result = Json.ToObject<TTarget>(element.GetRawText(), ConversionJsonOptions);
+#else
+                result = element.Deserialize<TTarget>(ConversionJsonOptions);
+#endif
+                return result != null;
+            }
+            catch
+            {
+                result = default;
+                return false;
+            }
+        }
+        return TryToCore((object)input, out result);
+    }
+
+    /// <summary>
+    /// 尝试无装箱转换已支持的类型化数值对。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <param name="input">待转换的源值。</param>
+    /// <param name="result">转换成功时的结果；失败时为默认值。</param>
+    /// <returns>源和目标为支持的数值组合且转换成功时返回 <see langword="true"/>。</returns>
+    private static bool TryConvertTypedNumericPair<TSource, TTarget>(TSource input, out TTarget result)
+    {
+        result = default;
+        if (typeof(TSource) == typeof(int))
+        {
+            var value = Unsafe.As<TSource, int>(ref input);
+            if (IsTypedTarget<TTarget, int>())
+                return SetTypedNumericResult(value, out result);
+            if (typeof(TTarget) == typeof(long))
+            {
+                var converted = (long)value;
+                result = Unsafe.As<long, TTarget>(ref converted);
+                return true;
+            }
+            if (ConvTypeInfo<TTarget>.IsNullableValueType && ConvTypeInfo<TTarget>.UnderlyingType == typeof(long))
+            {
+                result = ConvTypeInfo<TTarget>.FromNullable((long)value);
+                return true;
+            }
+            if (IsTypedTarget<TTarget, float>())
+                return SetTypedNumericResult((float)value, out result);
+            if (IsTypedTarget<TTarget, double>())
+                return SetTypedNumericResult((double)value, out result);
+            if (IsTypedTarget<TTarget, decimal>())
+                return SetTypedNumericResult((decimal)value, out result);
+        }
+        else if (typeof(TSource) == typeof(short))
+        {
+            if (IsTypedTarget<TTarget, int>())
+                return SetTypedNumericResult((int)Unsafe.As<TSource, short>(ref input), out result);
+        }
+        else if (typeof(TSource) == typeof(uint))
+        {
+            if (IsTypedTarget<TTarget, long>())
+                return SetTypedNumericResult((long)Unsafe.As<TSource, uint>(ref input), out result);
+        }
+        else if (typeof(TSource) == typeof(ulong))
+        {
+            if (IsTypedTarget<TTarget, long>())
+            {
+                var value = Unsafe.As<TSource, ulong>(ref input);
+                if (value > long.MaxValue)
+                    return false;
+                return SetTypedNumericResult((long)value, out result);
+            }
+        }
+        else if (typeof(TSource) == typeof(long))
+        {
+            var value = Unsafe.As<TSource, long>(ref input);
+            if (IsTypedTarget<TTarget, long>())
+                return SetTypedNumericResult(value, out result);
+            if (typeof(TTarget) == typeof(int))
+            {
+                if (value < int.MinValue || value > int.MaxValue)
+                    return false;
+                var converted = (int)value;
+                result = Unsafe.As<int, TTarget>(ref converted);
+                return true;
+            }
+            if (ConvTypeInfo<TTarget>.IsNullableValueType && ConvTypeInfo<TTarget>.UnderlyingType == typeof(int))
+            {
+                if (value < int.MinValue || value > int.MaxValue)
+                    return false;
+                result = ConvTypeInfo<TTarget>.FromNullable((int)value);
+                return true;
+            }
+            if (IsTypedTarget<TTarget, float>())
+                return SetTypedNumericResult((float)value, out result);
+            if (IsTypedTarget<TTarget, double>())
+                return SetTypedNumericResult((double)value, out result);
+            if (IsTypedTarget<TTarget, decimal>())
+                return SetTypedNumericResult((decimal)value, out result);
+        }
+        else if (typeof(TSource) == typeof(float))
+        {
+            var value = Unsafe.As<TSource, float>(ref input);
+            try
+            {
+                if (IsTypedTarget<TTarget, int>())
+                    return SetTypedNumericResult(Convert.ToInt32(value), out result);
+                if (IsTypedTarget<TTarget, long>())
+                    return SetTypedNumericResult(Convert.ToInt64(value), out result);
+            }
+            catch (OverflowException)
+            {
+                result = default;
+                return false;
+            }
+        }
+        else if (typeof(TSource) == typeof(double))
+        {
+            var value = Unsafe.As<TSource, double>(ref input);
+            try
+            {
+                if (IsTypedTarget<TTarget, int>())
+                    return SetTypedNumericResult(Convert.ToInt32(value), out result);
+                if (IsTypedTarget<TTarget, long>())
+                    return SetTypedNumericResult(Convert.ToInt64(value), out result);
+                if (IsTypedTarget<TTarget, decimal>())
+                {
+                    if (double.IsNaN(value) || double.IsInfinity(value) ||
+                        value >= (double)decimal.MaxValue || value <= (double)decimal.MinValue)
+                        return false;
+                    return SetTypedNumericResult(Convert.ToDecimal(value), out result);
+                }
+            }
+            catch (OverflowException)
+            {
+                result = default;
+                return false;
+            }
+        }
+        else if (typeof(TSource) == typeof(decimal))
+        {
+            var value = Unsafe.As<TSource, decimal>(ref input);
+            try
+            {
+                if (IsTypedTarget<TTarget, int>())
+                    return SetTypedNumericResult(Convert.ToInt32(value), out result);
+                if (IsTypedTarget<TTarget, long>())
+                    return SetTypedNumericResult(Convert.ToInt64(value), out result);
+                if (IsTypedTarget<TTarget, double>())
+                    return SetTypedNumericResult(Convert.ToDouble(value), out result);
+            }
+            catch (OverflowException)
+            {
+                result = default;
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 判断数值类型对是否已由类型化路径处理。
+    /// </summary>
+    /// <typeparam name="TSource">源类型。</typeparam>
+    /// <typeparam name="TTarget">目标类型。</typeparam>
+    /// <returns>类型对已处理时返回 <see langword="true"/>。</returns>
+    private static bool IsSupportedTypedNumericPair<TSource, TTarget>() =>
+        typeof(TSource) == typeof(int) || typeof(TSource) == typeof(long)
+            ? IsTypedTarget<TTarget, int>() || IsTypedTarget<TTarget, long>() ||
+              IsTypedTarget<TTarget, float>() || IsTypedTarget<TTarget, double>() ||
+              IsTypedTarget<TTarget, decimal>()
+            : (typeof(TSource) == typeof(short) && IsTypedTarget<TTarget, int>()) ||
+              ((typeof(TSource) == typeof(uint) || typeof(TSource) == typeof(ulong)) &&
+               IsTypedTarget<TTarget, long>()) ||
+              (typeof(TSource) == typeof(double) && IsTypedTarget<TTarget, decimal>()) ||
+              (typeof(TSource) == typeof(decimal) && IsTypedTarget<TTarget, double>()) ||
+              (typeof(TSource) == typeof(float) || typeof(TSource) == typeof(double) ||
+               typeof(TSource) == typeof(decimal)) &&
+              (IsTypedTarget<TTarget, int>() || IsTypedTarget<TTarget, long>());
+
+    /// <summary>
+    /// 判断目标类型是否为指定的数值类型或其可空形式。
+    /// </summary>
+    /// <typeparam name="TTarget">声明的目标类型。</typeparam>
+    /// <typeparam name="TValue">目标数值类型。</typeparam>
+    /// <returns>目标类型匹配时返回 <see langword="true"/>。</returns>
+    private static bool IsTypedTarget<TTarget, TValue>() where TValue : struct =>
+        typeof(TTarget) == typeof(TValue) ||
+        (ConvTypeInfo<TTarget>.IsNullableValueType && ConvTypeInfo<TTarget>.UnderlyingType == typeof(TValue));
+
+    /// <summary>
+    /// 将无装箱的数值结果写入指定目标类型。
+    /// </summary>
+    /// <typeparam name="TTarget">声明的目标类型。</typeparam>
+    /// <typeparam name="TValue">结果的基础数值类型。</typeparam>
+    /// <param name="value">转换后的基础数值。</param>
+    /// <param name="result">转换结果。</param>
+    /// <returns>目标类型匹配时返回 <see langword="true"/>。</returns>
+    private static bool SetTypedNumericResult<TTarget, TValue>(TValue value, out TTarget result) where TValue : struct
+    {
+        if (typeof(TTarget) == typeof(TValue))
+        {
+            result = Unsafe.As<TValue, TTarget>(ref value);
+            return true;
+        }
+        if (ConvTypeInfo<TTarget>.IsNullableValueType && ConvTypeInfo<TTarget>.UnderlyingType == typeof(TValue))
+        {
+            result = ConvTypeInfo<TTarget>.FromNullable(value);
+            return true;
+        }
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// 将逗号分隔的文本转换为列表。
+    /// </summary>
+    /// <typeparam name="T">列表元素类型。</typeparam>
+    /// <param name="input">逗号分隔的输入文本。</param>
+    /// <returns>按输入顺序排列的列表；空白项被忽略，转换失败的非空项保留默认值。</returns>
+    private static List<T> ConvertList<T>(string input)
+    {
+        var result = new List<T>();
+        if (string.IsNullOrWhiteSpace(input))
+            return result;
+#if !NETSTANDARD2_0
+        var useSpanParser = IsSpanListParseType<T>();
+#endif
+        var start = 0;
+        for (var index = 0; index <= input.Length; index++)
+        {
+            if (index != input.Length && input[index] != ',')
+                continue;
+            if (index > start)
+            {
+#if !NETSTANDARD2_0
+                if (useSpanParser)
+                {
+                    var item = input.AsSpan(start, index - start);
+                    if (ContainsNonWhiteSpace(item))
+                    {
+                        result.Add(TryParseListItem(item, out T value) ? value : default);
+                    }
+                }
+                else
+#endif
+                {
+                    var item = input.Substring(start, index - start);
+                    if (!string.IsNullOrWhiteSpace(item))
+                        result.Add(To<T>(item));
+                }
+            }
+            start = index + 1;
+        }
+        return result;
+    }
+
+#if !NETSTANDARD2_0
+    /// <summary>
+    /// 判断列表元素是否支持无中间字符串解析。
+    /// </summary>
+    /// <typeparam name="T">列表元素类型。</typeparam>
+    /// <returns>支持内置值类型解析时返回 <see langword="true"/>。</returns>
+    private static bool IsSpanListParseType<T>()
+    {
+        var type = ConvTypeInfo<T>.UnderlyingType;
+        return type == typeof(sbyte) || type == typeof(byte) ||
+               type == typeof(short) || type == typeof(ushort) ||
+               type == typeof(int) || type == typeof(uint) ||
+               type == typeof(long) || type == typeof(ulong) ||
+               type == typeof(float) || type == typeof(double) ||
+               type == typeof(decimal) || type == typeof(Guid) ||
+               type == typeof(DateTime) || type == typeof(bool) || type.IsEnum;
+    }
+
+    /// <summary>
+    /// 判断文本片段是否包含非空白字符。
+    /// </summary>
+    /// <param name="value">待检查的文本片段。</param>
+    /// <returns>包含非空白字符时返回 <see langword="true"/>。</returns>
+    private static bool ContainsNonWhiteSpace(ReadOnlySpan<char> value)
+    {
+        foreach (var character in value)
+        {
+            if (!char.IsWhiteSpace(character))
+                return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 使用 invariant 区域性解析内置值类型列表项。
+    /// </summary>
+    /// <typeparam name="T">列表元素类型。</typeparam>
+    /// <param name="value">待解析的文本片段。</param>
+    /// <param name="result">解析结果。</param>
+    /// <returns>解析成功时返回 <see langword="true"/>。</returns>
+    private static bool TryParseListItem<T>(ReadOnlySpan<char> value, out T result)
+    {
+        var type = ConvTypeInfo<T>.UnderlyingType;
+        if (type.IsEnum)
+            return ConvEnumParser<T>.TryParse(value, out result);
+        if (type == typeof(bool) && bool.TryParse(value, out var boolValue))
+        {
+            result = SetListItemValue<T, bool>(boolValue);
+            return true;
+        }
+        if (type == typeof(long) && long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var longValue))
+        {
+            result = SetListItemValue<T, long>(longValue);
+            return true;
+        }
+        if (type == typeof(double) && double.TryParse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var doubleValue))
+        {
+            result = SetListItemValue<T, double>(doubleValue);
+            return true;
+        }
+        if (type == typeof(decimal) && decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var decimalValue))
+        {
+            result = SetListItemValue<T, decimal>(decimalValue);
+            return true;
+        }
+        if (type == typeof(Guid) && Guid.TryParse(value, out var guidValue))
+        {
+            result = SetListItemValue<T, Guid>(guidValue);
+            return true;
+        }
+        if (type == typeof(DateTime) && DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateValue))
+        {
+            result = SetListItemValue<T, DateTime>(dateValue);
+            return true;
+        }
+        if (type == typeof(sbyte) && sbyte.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var sbyteValue))
+        {
+            result = SetListItemValue<T, sbyte>(sbyteValue);
+            return true;
+        }
+        if (type == typeof(byte) && byte.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var byteValue))
+        {
+            result = SetListItemValue<T, byte>(byteValue);
+            return true;
+        }
+        if (type == typeof(short) && short.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var shortValue))
+        {
+            result = SetListItemValue<T, short>(shortValue);
+            return true;
+        }
+        if (type == typeof(ushort) && ushort.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ushortValue))
+        {
+            result = SetListItemValue<T, ushort>(ushortValue);
+            return true;
+        }
+        if (type == typeof(int) && int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var intValue))
+        {
+            result = SetListItemValue<T, int>(intValue);
+            return true;
+        }
+        if (type == typeof(uint) && uint.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var uintValue))
+        {
+            result = SetListItemValue<T, uint>(uintValue);
+            return true;
+        }
+        if (type == typeof(ulong) && ulong.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ulongValue))
+        {
+            result = SetListItemValue<T, ulong>(ulongValue);
+            return true;
+        }
+        if (type == typeof(float) && float.TryParse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var floatValue))
+        {
+            result = SetListItemValue<T, float>(floatValue);
+            return true;
+        }
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// 构造列表项的值类型或可空值类型结果。
+    /// </summary>
+    /// <typeparam name="T">列表元素类型。</typeparam>
+    /// <typeparam name="TValue">已解析的基础值类型。</typeparam>
+    /// <param name="value">已解析的基础值。</param>
+    /// <returns>列表元素值。</returns>
+    private static T SetListItemValue<T, TValue>(TValue value) where TValue : struct =>
+        ConvTypeInfo<T>.IsNullableValueType
+            ? ConvTypeInfo<T>.FromNullable(value)
+            : Unsafe.As<TValue, T>(ref value);
+#endif
+
+    /// <summary>
+    /// 将对象转换为属性字典。
+    /// </summary>
+    /// <param name="input">对象或键值对集合。</param>
+    /// <param name="useDisplayName">是否优先使用属性的描述或显示名称。</param>
+    /// <returns>包含原有键值对或对象属性的独立字典；空输入返回空字典。</returns>
+    /// <remarks>
+    /// 属性取自输入实例的 <see cref="TypeDescriptor"/>，支持逐实例的动态属性。
+    /// </remarks>
+    private static IDictionary<string, object> ConvertDictionary(object input, bool useDisplayName)
+    {
+        if (input == null)
+            return new Dictionary<string, object>();
+        if (input is IEnumerable<KeyValuePair<string, object>> dict)
+#if NETSTANDARD2_0
+        {
+            var copy = dict is ICollection<KeyValuePair<string, object>> collection
+                ? new Dictionary<string, object>(collection.Count)
+                : new Dictionary<string, object>();
+            foreach (var pair in dict)
+                copy.Add(pair.Key, pair.Value);
+            return copy;
+        }
+#else
+            return new Dictionary<string, object>(dict);
+#endif
+        var properties = TypeDescriptor.GetProperties(input);
+        var result = new Dictionary<string, object>(properties.Count);
+        foreach (PropertyDescriptor property in properties)
+        {
+            var value = property.GetValue(input);
+            result.Add(GetPropertyDescriptorName(property, useDisplayName), value);
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 获取属性在字典中的键名。
+    /// </summary>
+    /// <param name="property">输入对象的属性描述符。</param>
+    /// <param name="useDisplayName">是否优先使用描述或显示名称。</param>
+    /// <returns>按描述、显示名称、原始名称优先级选出的键名。</returns>
+    private static string GetPropertyDescriptorName(PropertyDescriptor property, bool useDisplayName)
+    {
+        if (useDisplayName == false)
+            return property.Name;
+        if (string.IsNullOrEmpty(property.Description) == false)
+            return property.Description;
+        if (string.IsNullOrEmpty(property.DisplayName) == false)
+            return property.DisplayName;
+        return property.Name;
+    }
 }

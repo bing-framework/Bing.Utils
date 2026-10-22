@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- 该夹具模拟未声明 IsTrimmable 的第三方插件。 -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReflectionTrimProbe.NonTrimmablePluginDependency\ReflectionTrimProbe.NonTrimmablePluginDependency.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- 输出与普通插件相同的程序集身份，用于替换其中的依赖图。 -->
+    <AssemblyName>ReflectionTrimProbe.NonTrimmablePluginModels</AssemblyName>
+    <RootNamespace>ReflectionTrimProbe.NonTrimmablePluginModels</RootNamespace>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReflectionTrimProbe.NonTrimmablePluginDependency\ReflectionTrimProbe.NonTrimmablePluginDependency.csproj" />
+    <ProjectReference Include="..\ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency\ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency.csproj" />
+  </ItemGroup>
+</Project>

@@ -16,8 +16,8 @@ internal static partial class TypeFactory
     /// <returns>输入文本的 MD5 十六进制签名。</returns>
     private static string SignType(string input)
     {
-        using var md5 = MD5.Create();
-        var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(input));
+        using var sha256 = SHA256.Create();
+        var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
         return BitConverter.ToString(hash);
     }
 }

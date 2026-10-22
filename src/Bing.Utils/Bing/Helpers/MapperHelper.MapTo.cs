@@ -16,6 +16,9 @@ public static partial class MapperHelper
     /// <exception cref="ArgumentNullException">当 <paramref name="source"/> 或 <paramref name="destination"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当目标对象为值类型时抛出。</exception>
     /// <exception cref="InvalidOperationException">当成员读取或写入过程中发生异常时抛出。</exception>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("对象映射按运行时类型扫描源和目标成员，裁剪时必须保留相关公共属性和字段元数据。")]
+#endif
     public static int MapTo<TSource, TDestination>(TSource source, TDestination destination, MapOptions options = null)
     {
         if (source is null)
@@ -87,6 +90,9 @@ public static partial class MapperHelper
     /// <returns>按源集合顺序创建的目标对象列表；源集合中的 null 元素会被跳过。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="source"/> 为 null 时抛出。</exception>
     /// <exception cref="ArgumentException">当目标元素类型为值类型时抛出。</exception>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("列表映射按运行时类型扫描源和目标成员，裁剪时必须保留相关公共属性和字段元数据。")]
+#endif
     public static List<TDestination> MapList<TSource, TDestination>(IEnumerable<TSource> source, MapOptions options = null)
         where TDestination : new()
     {

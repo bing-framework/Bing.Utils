@@ -41,6 +41,12 @@ public class MethodTestDerived : MethodTestBase
     public override string VirtualMethod() => "derived";
 }
 
+/// <summary>派生类含有与基类不兼容签名的方法，用于验证基础方法探测的未命中语义。</summary>
+public class MethodSignatureMismatchDerived : MethodTestBase
+{
+    public void VirtualMethod(string value) => _ = value;
+}
+
 /// <summary>含有异步方法的测试类</summary>
 public class AsyncMethodTestClass
 {
@@ -85,6 +91,26 @@ public class TypeVisitMethodsTest
         var method = typeof(MethodTestBase).GetMethod(nameof(MethodTestBase.NormalMethod))!;
         var baseMethod = TypeVisit.GetBaseMethod(method);
         baseMethod.ShouldBeNull();
+    }
+
+    /// <summary>空方法元数据应立即报告参数错误。</summary>
+    [Fact]
+    public void GetBaseMethod_NullMethod_ThrowsArgumentNullException()
+    {
+        Should.Throw<ArgumentNullException>(() => TypeVisit.GetBaseMethod(null!))
+            .ParamName.ShouldBe("method");
+    }
+
+    /// <summary>
+    /// 测试用例：基础类型存在但签名不匹配时，<see cref="TypeVisit.GetBaseMethod"/> 应将未命中转为 null。
+    /// </summary>
+    [Fact]
+    public void GetBaseMethod_IncompatibleSignature_ReturnsNull()
+    {
+        var method = typeof(MethodSignatureMismatchDerived).GetMethod(nameof(MethodSignatureMismatchDerived.VirtualMethod),
+            new[] { typeof(string) })!;
+
+        TypeVisit.GetBaseMethod(method).ShouldBeNull();
     }
 
     /// <summary>
@@ -247,6 +273,12 @@ public class TypeVisitMethodsTest
     #endregion
 
     #region IsOverridden
+
+    [Fact]
+    public void IsOverridden_NullMethod_ThrowsArgumentNullException()
+    {
+        Should.Throw<ArgumentNullException>(() => TypeMetaVisitExtensions.IsOverridden(null!));
+    }
 
     /// <summary>
     /// 测试用例：验证 <see cref="TypeMetaVisitExtensions.IsOverridden"/> 在 `OverriddenMethod` 场景下，结果为 `ReturnsTrue`。

@@ -55,8 +55,7 @@ public static class CsCommentReader
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        var xpath = $"T:{type.FullName.Replace("+", ".")}";
-        return CreateComment(type, xpath);
+        return CreateComment(type, CsCommentId.Create(type));
     }
 
     /// <summary>
@@ -68,9 +67,7 @@ public static class CsCommentReader
     {
         if (ctor == null)
             throw new ArgumentNullException(nameof(ctor));
-        var xpath = GetXPath("M", ctor.DeclaringType, ctor.IsStatic ? "#cctor" : "#ctor");
-        xpath += GetXPathByParameters(ctor.GetParameters());
-        return CreateComment(ctor, xpath);
+        return CreateComment(ctor, CsCommentId.Create(ctor));
     }
 
     /// <summary>
@@ -82,8 +79,7 @@ public static class CsCommentReader
     {
         if (@event == null)
             throw new ArgumentNullException(nameof(@event));
-        var xpath = GetXPath("E", @event.DeclaringType, @event.Name);
-        return CreateComment(@event, xpath);
+        return CreateComment(@event, CsCommentId.Create(@event));
     }
 
     /// <summary>
@@ -95,17 +91,7 @@ public static class CsCommentReader
     {
         if (method == null)
             throw new ArgumentNullException(nameof(method));
-        var xpath = GetXPath("M", method.DeclaringType, method.Name);
-        if (method.IsGenericMethod)
-        {
-            xpath += "``" + method.GetGenericArguments().Length;
-            if (method.IsGenericMethodDefinition == false)
-            {
-                method = method.GetGenericMethodDefinition();
-            }
-        }
-        xpath += GetXPathByParameters(method.GetParameters());
-        return CreateComment(method, xpath);
+        return CreateComment(method, CsCommentId.Create(method));
     }
 
     /// <summary>
@@ -117,9 +103,7 @@ public static class CsCommentReader
     {
         if (prop == null)
             throw new ArgumentNullException(nameof(prop));
-        var xpath = GetXPath("P", prop.DeclaringType, prop.Name);
-        xpath += GetXPathByParameters(prop.GetIndexParameters());
-        return CreateComment(prop, xpath);
+        return CreateComment(prop, CsCommentId.Create(prop));
     }
 
     /// <summary>
@@ -131,8 +115,7 @@ public static class CsCommentReader
     {
         if (field == null)
             throw new ArgumentNullException(nameof(field));
-        var xpath = GetXPath("F", field.DeclaringType, field.Name);
-        return CreateComment(field, xpath);
+        return CreateComment(field, CsCommentId.Create(field));
     }
 
     /// <summary>
@@ -202,9 +185,9 @@ public static class CsCommentReader
     /// 按 XML 文档成员路径解析注释；XML 文档或对应成员节点不存在时返回 <see langword="null"/>。
     /// </summary>
     /// <param name="member">要解析注释的反射成员。</param>
-    /// <param name="path">XML 文档中对应成员的标识路径。</param>
+    /// <param name="memberId">XML 文档中对应成员的标识。</param>
     /// <returns>找到成员节点时返回解析结果；无法读取或正在递归解析时返回 <see langword="null"/>。</returns>
-    private static CsComments CreateComment(MemberInfo member, string path)
+    private static CsComments CreateComment(MemberInfo member, string memberId)
     {
         if (_member == null)
             _member = new List<MemberInfo>();
@@ -212,86 +195,16 @@ public static class CsCommentReader
             return null;
         _member.Add(member);
 
-        var xml = CsCommentsXmlCache.Get(member);
-        if (xml == null)
-            return null;
-
-        var node = xml.SelectNodes("/doc/members/member[@name='" + path.Replace('+', '.') + "']");
-        if (node.Count == 0)
-            return null;
-
-        _member.RemoveAt(_member.Count - 1);
-        return new CsComments(node[0]);
-    }
-
-    /// <summary>
-    /// 根据反射参数生成 XML 文档成员标识中的参数部分。
-    /// </summary>
-    /// <param name="args">方法或索引器的反射参数。</param>
-    /// <returns>不含参数时为 <see langword="null"/>；否则返回括号包围的参数类型列表。</returns>
-    private static string GetXPathByParameters(ParameterInfo[] args)
-    {
-        if (args == null || args.Length == 0)
-            return null;
-        var list = new List<string>(args.Length);
-        foreach (var item in args)
+        try
         {
-            var type = item.ParameterType;
-            list.Add(GetParameterName(type));
+            var node = CsCommentsXmlCache.GetMember(member, memberId);
+            if (node == null)
+                return null;
+            return new CsComments(CsCommentsInheritanceResolver.Resolve(member, memberId, node));
         }
-
-        return "(" + string.Join(",", list.ToArray()) + ")";
-    }
-
-    /// <summary>
-    /// 将类型信息转换为 XML 文档成员标识使用的名称。
-    /// </summary>
-    /// <param name="types">要转换的类型序列。</param>
-    /// <returns>以花括号包围、逗号分隔的类型标识。</returns>
-    private static string GetParameterName(Type[] types)
-    {
-        var list = new List<string>(types.Length);
-        foreach (var type in types)
-            list.Add(GetParameterName(type));
-        return "{" + string.Join(",", list.ToArray()) + "}";
-    }
-
-    /// <summary>
-    /// 将类型信息转换为 XML 文档成员标识使用的名称。
-    /// </summary>
-    /// <param name="type">要转换或用于成员标识的类型。</param>
-    /// <returns>符合 XML 文档成员标识格式的类型名称。</returns>
-    private static string GetParameterName(Type type)
-    {
-        if (type.IsGenericType)
+        finally
         {
-            if (type.IsGenericParameter)
-                return "``" + type.GenericParameterPosition;
-            else if (type.IsGenericTypeDefinition)
-            {
-
-            }
-            else
-            {
-                return type.FullName.Substring(0, type.FullName.IndexOf('`')) +
-                       GetParameterName(type.GetGenericArguments());
-            }
+            _member.RemoveAt(_member.Count - 1);
         }
-
-        return type.FullName;
-    }
-
-    /// <summary>
-    /// 根据类型和成员名生成 XML 文档成员标识前缀。
-    /// </summary>
-    /// <param name="prefix">成员标识的种类前缀，例如类型、方法、属性、事件或字段。</param>
-    /// <param name="type">要转换或用于成员标识的类型。</param>
-    /// <param name="name">成员名称。</param>
-    /// <returns>包含前缀、完整类型名和成员名的 XML 文档标识。</returns>
-    private static string GetXPath(string prefix, Type type, string name)
-    {
-        if (type.IsGenericType && type.IsGenericTypeDefinition == false)
-            type = type.GetGenericTypeDefinition();
-        return $"{prefix}:{type.FullName.Replace("+", ".")}.{name}";
     }
 }

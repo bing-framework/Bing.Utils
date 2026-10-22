@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -17,8 +17,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bing.Utils\Bing.Utils.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Reflection\Bing.Utils.Reflection.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Security\Bing.Utils.Security.csproj" />
     <ProjectReference Include="..\..\src\Bing.Utils.Security.Gm\Bing.Utils.Security.Gm.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Drawing.ImageSharp\Bing.Utils.Drawing.ImageSharp.csproj" />
+    <ProjectReference Include="..\..\src\Bing.Utils.Drawing.SkiaSharp\Bing.Utils.Drawing.SkiaSharp.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,2927 @@
+{
+  "schemaVersion": 1,
+  "kind": "nativeaot-repository-diagnostic-allowlist",
+  "diagnosticContext": "sdk=8.0.425;tfm=net8.0;rid=win-x64;trim=partial;aot=true;mode=ci-single-publish",
+  "sourceBaseline": "NativeAotRepositoryDiagnosticBaseline.json",
+  "ownerPolicy": "Source paths are assigned to the reflection, utility, or validation maintainers responsible for the affected repository boundary; dependency and toolchain diagnostics are excluded.",
+  "entryCount": 363,
+  "sourcePathMigration": {
+    "date": "2026-10-13",
+    "from": "benchmarks/ReflectionTrimProbe/Program.cs",
+    "to": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+    "entryCount": 74,
+    "reason": "用户确认验证目录迁移；只更新诊断文件路径，保留原指纹和次数上限"
+  },
+  "entries": [
+    {
+      "code": "IL2026",
+      "messageFingerprint": "030cbd02ec1e7c3318e31b10fa22ad6f95aae97259af307704d680cc490158dc",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "1718e6b7ec8e725469325882ab5da219ca808d632508e14a81d3afad396d2155",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "164c7d1f2bad9ebdcdb2c551456c9785234d82cb0702d76199b7ab37401568ba",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "14586aeb3ccf0ddb0dafbd31f38ce5cb7f11650ad2547ed0fc2e0294ba911a9f",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "0b205008f19bf748713e5967f7022c1ec5d81b848aecc72da1cdb5d8021661cc",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "078bd9a9fb9c6bbb99afe618e23dade21b995f67e636050dc5582207a86e1731",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "0608aa6286e3f5ee096ec97b9b354dc6922f72e736b3772c0369c12ad78efc3d",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "fb2bad3e91392faf30ee9180b334890b3b6434da1d15153975038c6c48810e90",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "f8e52b31428852a10113c3508a2a3597ea86bde92050c4813be4e315f853c9cb",
+      "file": "src/Bing.Utils/Bing/Helpers/Check.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "f05aa0feb925f48866710aff070cc4b28d077046d72355ee6fc9b7e6d646275c",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "e8a1e4275f7ccbdfd81f93820c684e70a318d15c8c13f65619729e080a49bc79",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "e8a12c16bad13c82552ee38701517a4f94b1fd21c13588aae81c0d602a7fcb2f",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "e8598a82d4a9693b3ad10e6fd9e5de5d80d9af89b4e257968ef7657c81e0bc4d",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "e19312c235b675ef35627dc068929da9fb3d7c79fa520afc2f832247764c0eee",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "da29360eb0c3f593f80f6463e21b98a91d762bf0361f89932cb5556ea3b0397b",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "d66e9be40917e8efa4d0417f0c8e63445129485db0f5ac1d55e86e312b31926a",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "ae990f181afa703c649b91262495c7b9d0a1596f284cc08506b050ce4248f9e0",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "a80ccdc6166ea043718c0fd1d327ee35e0f0a26fe6f1ed03de0a61d98b8c1586",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "188b06cc0d59fb92e42eb09c2bfee85c2e0813813156442f4110fef61f373ac6",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "a7bd9965e832de6bd8636c6fe4c17aa5d3ed254258773cf96c6d244b99560547",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "1b46f572344e42a04e71978b88777a4fccc1787d82fa6e47e4d2672d64b0eb26",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "1ddbb9482d59d8bc314be0a6a6fcb5bcd65fa1e2e49c62f54efd385c9ab884fc",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "a8d78ee9a71031569ac8cf3d3b57eaf24a6c0330ab35aaf2a6bea89f7d986bd2",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "9c68c45b6626dbb225d98d2dfe4cb80359bb2e544ba2b5cd614c70025abdaaec",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "8ccc2a790751bad41f39b0aef18b7c9a649df49007b9b378f81d5e670c089133",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "85c048288576e0aa17b865e650ff00de06dc5d1bc254d37cf5f1a74be0a54877",
+      "file": "src/Bing.Utils/Bing/Extensions/Collections/EnumerableExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "75a611319e2006c1d1b3f78d3b9bc72a77857a41a79e2fa172e31d17cff44fc9",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "74b5992617b525392bab559eb81f46bf06d648c457346936066b4d6a36e1e2ab",
+      "file": "src/Bing.Utils/Bing/Helpers/Enum.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "71d7b3257af65fa001010629f18ab5f2d01e9988ff4ea9b83731d3cdfee5a9ed",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "6a27f662dd27b0e082ef2b4ca4f302199473f09b3132efcdf246d5b437aa2cec",
+      "file": "src/Bing.Utils/Bing/Helpers/Internals/ConvEnumParser.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "58aa7bf33d8c31ed5d9e85401d025e9a361438a415fac87ea2b888d6f1d924cf",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "4f9972f0ed79e3c9aa6b5cd6d115e9523bb84b1cc116210a9a45446713350e7d",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "4b48ddec4ed73976e155d9929bd4cafafd6f873de0cdfb4a418fb49fddbc6134",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "4488f2ffa49d6a28f5a9125d97eae291578d28fe15272259cdc55cf038b33014",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "3fbf65cf1382927356d3cb63bc6f2d8475c1489b004a1481dd292781a7b75a1e",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "3c6f31b93991aa8cdce1230b46e585d98c97d05033214721f8e73c2bbfcf9b9a",
+      "file": "src/Bing.Utils/Bing/Data/DataTableHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "3c38b2fe381809291bd34c7cc53e6d130ea0d6ed556b593a0ff7043d2a4b9cac",
+      "file": "src/Bing.Utils/Bing/Data/DataTableBuilder.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "314845aee2fa5cb8d27d71b09bc9e3c68bf117faa016f0bcedba0bf3181dddd9",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "23bc491615ca59f0c8ccc12c37607c19ade10dc297371980423436c36c32bd43",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "1b61aa2f1dfd9e2d23e1b52249c2b38cea5ab1149bb5596daaaf8ebca45902e1",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "902e5b96410404daeebaccb38ac512372e99671a194adae3207253bcde9a2b00",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "74a4b594f0c81663c95fccaf8e7f8cb05428597c016845a817cb0c9e2b1b295f",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.Dictionary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "5e87b37007770f56c74b4e516af79951e339c9a0fc91db0137567f5b8ec758aa",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "61f1f625bbf923894b52ddfd9279525f5f33cd0a4a519d1ca3d5335b99d520d3",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "4bfb257c3d87882f6af6044d05e42a04bb4902d0ee629a666bfad9d04d65158e",
+      "file": "src/Bing.Utils/Bing/Expressions/Extensions/Extensions.Expression.Lambda.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "3540e1c9745b4242fb9b083d3f77766fbe0e1f230732b08a3d58fd840758d12a",
+      "file": "src/Bing.Utils/Bing/Extensions/Common/BingExtensions.Reflection.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "2e5a8a4d9c44d839784cd3ddd3dac5df109852eaa77b0fff20567deaf19369a2",
+      "file": "src/Bing.Utils/Bing/Helpers/Enum.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "1fb6f8181ffcc83ba186f59f5c5732c1c618e3175a0d714ae48c9f365d27f50a",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "1cfe8cb14a18f8e813eafafc8e2728c35db0216212ce5149abf6086a3e12796a",
+      "file": "src/Bing.Utils/Bing/Expressions/Extensions/Extensions.Expression.Lambda.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "17a47e63f384ce65d781e76cf22f41196032e72a52c016a64ce6bc0cb5d043b6",
+      "file": "src/Bing.Utils/Bing/Expressions/Extensions/Extensions.Expression.Lambda.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "044c93666e80ffea09e86f245e4fdccae277ce02d7a2b22fffabb122c01ca405",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "013eebade466c6c6987b04305938f8b44ddd4d0a3bf36577f2ac529b91734f60",
+      "file": "src/Bing.Utils/Bing/Extensions/Bases/ObjectExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "fcfceb089c64f90a68daa31d9a7786964aa353435b24ee3a8d911f8abd9827ee",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "fc856ccfe8c3ad6dacae1898242e805be95bd1dbd2ebaba30b0780bd1f44a6d3",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeFactory/TypeFactory.Object.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "fc36d92ec893bcf0d326f2aedbe7c46f428293836072070a2638a4f763e2a3e4",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "fbae40685e6b69db05e333e2f73f7ba09f4d47622c38d522fa401f650fa76a2a",
+      "file": "src/Bing.Utils/Bing/Data/DataTableHelper.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "f9a2ee8baf25e407e4cbd3a946cd4a68fa5b9e2f113de031a98bc8c7558c9cbe",
+      "file": "src/Bing.Utils/Bing/Collections/Extensions/Dictionary/Extensions.Dictionary.To.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "f2025fe9c04db452fc4ec6a9704f8b788557c390e96c77e60fcd3cde34d031b9",
+      "file": "src/Bing.Utils/Bing/Serialization/SystemTextJson/EnumJsonConverterFactory.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "ed3c4ba3c32a6f608230107f9559264123a1a1d4d1c96a2058cbce0667d1edf5",
+      "file": "src/Bing.Utils/Bing/Data/DataTableHelper.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "d1e457f42bf052c6095b0bc334616f10a295f90bd65fa0f7d6d01c1109f2e6d1",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "68a5b3854e3b51761d6f949906343d62cb9a84f2a2495e5fde8dbf11228c6284",
+      "file": "src/Bing.Utils/Bing/Extensions/Bases/ObjectExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "8701a9e29e5364e66150a84911bc20fad431b57eeeb9248b2e434f9ebbf367c6",
+      "file": "src/Bing.Utils/Bing/Expressions/Extensions/Extensions.Expression.Lambda.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "896d41289f7a7db934379b364f7367dd13d6efc8b8c3d5342dec9f713563f472",
+      "file": "src/Bing.Utils/Bing/Expressions/Lambdas.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "8dca421fbfa02e1d945410539fab67ff6890b51ec6d10c67d4bf72940bdd112c",
+      "file": "src/Bing.Utils/Bing/Expressions/Extensions/Extensions.Expression.Lambda.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "5b8175ff59e8ec297815b822dc339826fad23736e86a429fe2f1614457ae667b",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "5b2a44e55f0dd68beb05a791c6f24cf5e97268ac314a3ab3066db758b10c4ba1",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "487e11e8d2aeafac4987360a24e04de142d276558c6c907e5ec04f2df8e2fe2b",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "41031c8c62a367a287d5e3363a15009b47000a45fcc6c33b0a81a4cc90a4efee",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "3a8ac1a3b8904c7fcde5ac5ed98e95c1963287ef80b627fc66368fcb43902c4f",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "38671646f8006f4f40d891eda85a8a279c7b1f9acd8d0a2b28928da7d3995178",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "34f2606bbaef9084f348b989d5d44082ae8b1c5af2914a0d4ee93f2c7d537e31",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "3075a0d2162230e1ccd029fd41c2afdba69611fa0ed92f4a481efc8485403da1",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "aa6aaa141586e80b3b3e689c479538dc8a5a332e3ede8fe1764ede40a7ec73d7",
+      "file": "src/Bing.Utils/Bing/Helpers/Internals/ConvEnumParser.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "2c0707016f0a0a5aadef4c76dc4f95c09d7b7fbe9b19c0f43db2f40dd68110c3",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "08eb3f17008ebac914ecc106cbaf54b29dc0211cec34e492de4a3a1e64385925",
+      "file": "src/Bing.Utils/Bing/Helpers/Check.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "f3ec10e8c9a42f7096af0f7f38fe2c52505e77f26fef570b7718726da03b6424",
+      "file": "src/Bing.Utils/Bing/Expressions/Lambdas.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "e74bd3ed7ee0993018fd75f881e9177d9522615308afd69440b05a7a089ee0e1",
+      "file": "src/Bing.Utils/Bing/Expressions/Extensions/Extensions.Expression.Lambda.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "e3e3251aaa20717ff25908300b49b0b292481278619d0174aa96a3f3e9537a0f",
+      "file": "src/Bing.Utils/Bing/Data/DataTableHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "c1e144c489548981a9644138307a6b41e367f76becd76f16f9135752211c5770",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "c1e144c489548981a9644138307a6b41e367f76becd76f16f9135752211c5770",
+      "file": "src/Bing.Utils/Bing/Helpers/Enum.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "978665638f2511da6a12130d2648f7d807879d407e1416b362cc1a5d0c404245",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2075",
+      "messageFingerprint": "978665638f2511da6a12130d2648f7d807879d407e1416b362cc1a5d0c404245",
+      "file": "src/Bing.Utils/Bing/Helpers/Enum.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2087",
+      "messageFingerprint": "16eabd96b17cf89a89b0c5c61a7d83875190a3d31d1fe9355d993f67d57c2520",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.Dictionary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "ca7f56a761f8070c2920ead2553bd09c72db4d00d1ce5335d39f74e879b51479",
+      "file": "src/Bing.Utils/Bing/Serialization/SystemTextJson/EnumJsonConverterFactory.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "ab0c0f6092ba8af1dcdf36c78c28a71b9f8dcef205dd81e5ed405a1a8780fce3",
+      "file": "src/Bing.Utils/Bing/Data/DataTableBuilder.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "b85ba7724043ff99f1c26495ba0de5ff052e2ce69853448f88cc62e4b1f92860",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "b78dec3c2c02c671667d30df6de4628cc8bbd723ce7026b7c63733b36e810674",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 3,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "b78dec3c2c02c671667d30df6de4628cc8bbd723ce7026b7c63733b36e810674",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "b38911a77e4b20e32238ffd58972b5cc8f9c84dab0d2a54e8d54b8d7c1dbb2df",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "b36546f8bac3dbc54de01c616220853393477edcc7a9433d521af130c1f73340",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "af83ec6ca8e7daeed09f54f132948ce39c89df9dfc4f70107108a9fb10be8655",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 3,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "af83ec6ca8e7daeed09f54f132948ce39c89df9dfc4f70107108a9fb10be8655",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "ae6a63a5d8b3e1673b78a2c9d4dd04a5a2c13e7b3c47a88cdbc6ce4a4484cea9",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "ae6a63a5d8b3e1673b78a2c9d4dd04a5a2c13e7b3c47a88cdbc6ce4a4484cea9",
+      "file": "src/Bing.Utils/Bing/Extensions.Random.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "a94c3a76934bb27cefb9ec069bc4a47dab00dd1222ca2fdeb9effbe0150e997f",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "984f45ca09435df2a481419ef5cf0a8344bbe857838e922777ac42edb1850639",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "9299958f1b75c3f6a79e454fd2efe8658a65722bc16be534bd8ef6ed04860018",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "91597f9cc4619803dec9ce9acd6c17a74c2d75af49e5b534ae57b395e34b9a6e",
+      "file": "src/Bing.Utils/Bing/Helpers/Internals/ConvEnumParser.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "8d3879f0ec76f936776012aed3a359d46dc0457695a953abbcc21f9f3ea7d889",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "89347b4801fc589b937499b21826c6a7c171b44850ceb9465871e73acc4d0c79",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "860399a4ac67663565ec67610e367d1e7cae35a5f434c8e1da36566e988c6139",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeFactory/TypeFactory.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "85986be134913c423c44f6d96594ee4c9a082b1f7859fef29acd583c28c94381",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "7b6a55fea6db9477d4ef1d38b3d45d9a8dd25f7675dcff446a41b3b136921b9e",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "b87be7de6e9345e8cc02b458b1ad07cce9f796c1e2dffbcbc43369975a8ce664",
+      "file": "src/Bing.Utils/Bing/Helpers/Internals/ConvEnumParser.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "7b14ae08961217d9bbd7a82d4f9c4ba4ec0b28e9ed5206f4f0fbd15cf57f6c1f",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "c26eacd445f1985366e14ca7d2f0f01add2b3e754800aaec366fd94f04d49294",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "c548332d18bc6a2c487cf666a36b049e0c1e40c0c5044cfda53c0a001e418336",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3051",
+      "messageFingerprint": "b9aaf80927ec05622b9964db39bf88f1b0dd86415dc521dbd8f1024abef633de",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3051",
+      "messageFingerprint": "39cfe47b95c6930405579d2b77fd4e54a23fc34d2d3405c98eb8cf2bed9c8fb2",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "fde45e50397c53380976a78b0dbb28df611c419ad13161d58e353a3893f0bc18",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "f1647db692ac540c8d5993de9e40c1ae5ea6f0cd32ea6d9025be67317aa7411c",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "f138828fb048d3786fed328b26fd725c8e1cdd7f944a1363534147b709a572fa",
+      "file": "src/Bing.Utils/Bing/Data/DataTableBuilder.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "ef2b2675de777042dadf63188596454ed6b00adf89801030b828b2ee4fadf702",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "ee659aa182afeefc9f99d01138d7bd2986ea8c23089d88924f1435bd3ff0d698",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "e73dfe79a94c0f73a54212f5d2bc09975252fc914f8e901cbb55bcdf28b30ca0",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "e72842ad1a75602851aea4a2d5baca3e9379c5c87d18a685020338e48446bde1",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "e57b24bb988bbb96b1919a480eba4a5e054c66c6f820ab0216ae5d11fba6cfe1",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "e55276d3cc0ab4f2984a39a153f2d0b0fba319bdcf5782e552cd720ecf885f4a",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "e050356b01929e1382d9de94b55ef80e9962d65cf892842856c3fa9cf27f1864",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "e035b65a2aef2d98f34f5b59d4606d38f1ffe3771ed0264df5738c92663abb58",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "da18aff7a05adbfcaf1dbdffd65b31933b46c084956b6bd6e2eb9fdb9f443256",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "d4e135342992c4be5b11f1a4b833679dd891e7bc63b6b586a9eddfdb963a3104",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "ce2a615fa11b5466b76f75189bf64670916eecff793ebe15afb620f376ea124a",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Signatures.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "c548332d18bc6a2c487cf666a36b049e0c1e40c0c5044cfda53c0a001e418336",
+      "file": "src/Bing.Utils/Bing/Serialization/SystemTextJson/EnumJsonConverterFactory.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "c39885b5d042f6abbb657c10af990b9bcfb6d6e0711d99644896c69a1c4b6324",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "7afbb5911452cd02b07cf673eb3ce5a58be3e1a13673b2bb31e0434687d83645",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "7af87500aa161b729a15495ff876f1a81a0979952cdaa5e98bb674366c76bdee",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "6e15b38c1eb104d9d3447ab9500de7d4c811df4b366a6b2cc2d4f10b24651a92",
+      "file": "src/Bing.Utils/Bing/Helpers/Internals/ConvEnumParser.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "0efbd1b0199e29bbd48269cf2e503165d9447cd15ac409d89e3f40d7a8977d8f",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "0ddf3f1d095be10aa27574800be680313f1611026649449b4bdad7b85361ab43",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.LegacyBinary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "0895a716f275d1fd389b1e42a42f9150977104b9fa7adfa6f27de77c08315643",
+      "file": "src/Bing.Utils/Bing/Serialization/SystemTextJson/EnumJsonConverterFactory.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3000",
+      "messageFingerprint": "4a79a13343368554d3390eb42ba051c0c209f69f63830524b04911204eb1f2ff",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/AssemblyVisit.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3000",
+      "messageFingerprint": "34063ee3a93839641151327fe8c9c68717d2784c6c5ee293d74a03cd649c9875",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/AssemblyVisit.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2110",
+      "messageFingerprint": "df4a18d137ecdd35997ad414608f37c57d045a9928016ab1dd1f6685dc63b724",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeFactory/TypeFactory.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2091",
+      "messageFingerprint": "ffce72807ad14867328549847e5455147aff7439cb5b82076602c495528e7e7c",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Properties.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2091",
+      "messageFingerprint": "400b5486e28441f515fb7c976febd9917ea3342790db4e6e68b43a814f2c9d2b",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Properties.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "f581a2b593fbd5038c6ba5bc65d5cdc23aab6d47706dadde5186ab75ca135cdf",
+      "file": "src/Bing.Utils/Bing/Extensions/Collections/EnumerableExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "efd5afe1f6e82f1f6fa1dfc715dc2a874164a634589ec5b4ccb4e67b799fd850",
+      "file": "src/Bing.Utils/Bing/Helpers/Internals/ConvEnumParser.cs",
+      "maxCount": 4,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "e518e17f6b1b82e95166d775a168fa568db28c980935ebfd6b558ff1df93173c",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "e4cbe2abc711611eae456e6372ad24e9fbf9c379484d2749eae4c42613ff040f",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "def322152d81ac5d339bc7633c077aa155475dab5ca5d11e5ca48f05b6c4d533",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "dac28d8ecd5b7dfaf1f84cb871ae6c1d90a97ceb485f59a27d4d080bddd3674f",
+      "file": "src/Bing.Utils/Bing/Data/DataTableBuilder.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "d768ddcd2e3921960856323f5e62f622814a159d08fcb6f64e7fd2e2c2ffbcf8",
+      "file": "src/Bing.Utils/Bing/Data/DataTableBuilder.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "cf192e43d0afc301e91f26b616f60972741af8bb8cb46b3b6d41edac3d4bd468",
+      "file": "src/Bing.Utils/Bing/Data/DataTableHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "c70c9b8cffcfce796460d5b8b8d101f59674a892e0634e22fd2c5356f0db5100",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "0ffd9788f4586ab90a83299eac2766e9b77f2e0afb4e4f4271c0dee420fa8363",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "1db5d9aa16aafeaf951d5ebc94f5691ae92e409364f8b1e4dc474cd07a1570d8",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "2b15b4653170593c6cdfacd6e7793e503c18801b6f3b95a0d1b9f9a40b1d5eea",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "2da1093118c327c2ac95faef6609d70be777507580e697b75e9e9ea3da9c301a",
+      "file": "src/Bing.Utils/Bing/Data/DataTableBuilder.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "640100f4476ad83a027a049250959a009e907e69297bfea486b71774d3de947b",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "593064651df2441086f53f629f8d503d86a026ddd9b01bff50ab1f8e1b2d0b77",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "587b232981e4e8bc7ba7df65afcb353ee2edf0e20543a01b87167938bd3a939e",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "55f39e25d3bb08a6e64203ed0da57fd7884decd6a3d77ba73eee43bed0abd614",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "53764a55f2b329d3f6a8b3214d43fd135bc54e36041b8fdf720b97c4df294c16",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "53453585c9042937929b0fa0e188660f123ea21b79f5d2524e2f9d39b2d26c4c",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "53136bcb4a2b482ea12241e02c047b81d2f8871e87932015d044c7278549cfe0",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "52ac03e8c15bc61a1888b06df92cff17bfdf7713f2eba9359b747e427f2cbd24",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2090",
+      "messageFingerprint": "b210e76806d1d5171439f2a2cc3963e4cd7a648eddf8ea4835d812b01a0bf519",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "51ca5ccf407f89945a9ca4daf19cd2d543d4c0f3e79f7a2d43cb9bbef6343063",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "4e3ab9b40d7d553ee388ac856d9063a40caefe0b1d306ef48734310aa924a857",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "4cf76deb75efb622b9595a002b5f7915b51d14dd35b59d88701ea1bac2924da5",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "414025567a19bacfc7739decb2eef1a23d20a76d7410a69ff6d177d2a1b8bc14",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "3ef2e06f7033c1681ddebeb85425bbf5cbe6ef684783f94a99d4e1e036250c70",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "3e3d62841a9ca16cc4c467bab235636bfbb0ab64f570a552a97ef9dcd3a94468",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "398f8b5fd60886368c73524c14205432116488e358e157ef82adc7c304132776",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "38fa33eddcb9943087c5e5d8690b299ac82511d8cfc18024e967faeb34e114b4",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "37e3cb0d5c5fb1865d902c4e195680669548aeca46e766499f3e6203aa8eafde",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "50e279be37399166ddb1a841853a92bf929adda7e11b599ce638a32c3bb226e6",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.LegacyBinary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3051",
+      "messageFingerprint": "e033351a2f9bb519cf3bb2570673afc82b5fa2eacf955b97a0bb8f2823175e8b",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "bda371dc33290e90fb58d05186f9492017df340a36ae7c9e2b4238d0ef3595af",
+      "file": "src/Bing.Utils/Bing/Data/DataTableHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "4f912ecd9b9d8f33a97840b88cc5d933ff7cee76e6acbeccbc1e128f196349ed",
+      "file": "src/Bing.Utils/Bing/Data/DataTableHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "931b186155cc3c496a0ac07c7eaf05bd51806f5f487c135ad2d15d069bd00f5b",
+      "file": "src/Bing.Utils/Bing/IO/FileSizeUnit.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "90819db5a61e2a4cf643c3faaa33a592e485dd0545755f212816b061fe19c939",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "9047d291e34a4f48ad7fdd28350ec6c8ca46c0be58e5468b745fbd4d429659b2",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Signatures.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "8b9c726e165ea2de6ac4289d1eb6cddfadc8692f88f5011f78673130efe9489a",
+      "file": "src/Bing.Utils/Bing/IO/FileSizeUnit.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "892d3d6ce2cf636a2d3c1de34163791d6f6b3a57ddfce6a279f56db4df463d15",
+      "file": "src/Bing.Utils/Bing/Expressions/Extensions/Extensions.Expression.Lambda.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "84fb5f7e5da524c333f9215c0015af606bdc4b76a6701db55410de9c948d0f6c",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "83f4ea9cca5539b7bdbbef01f94f12ce507fe036b6082a9500fa7e596cde4af3",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "80fb6024831f4e4c7d0a4ad4777f3d2a5d52f4ffbacfc9bedaa3422e9cac77e8",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.Dictionary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "7f2891aaef7afebfb47fccef507866c81771ad4da830282681e8469302e95401",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "7e844f086bfeb8833e774e60cd5cdc7a10366095b3f68192048283b119ecd60f",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "7c74fd27573c9d27c3c63c5c8662ab561d8beb68ba185aae94a018e8b6e40d26",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "79faab9ea4cdc5455ec056fcf30e04762d14f9ca2df131ad4020554e825ecd0e",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "7991f2d366b828bac33ba2449eb5791ef11ae1a579dd4b423d4fa7f41e149104",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "73873969ba78f7b13e71268c5a56d651247a227998b8845436e358af0d93d0e3",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "72b24434def52bbbdc1a6fe1c525aa2999ba14ff3ac8e80310e42f81182ca1a1",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "709298b206011bfa6f89275f18d4a8177e067ff8fa9df9c47ebecdaeefde37ef",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "6d83b2205b75ec09f7fb32596e82fd8b2262023bd5ac26ed1e390ea678e09b56",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "93cd73accf8b3cf8cd359f918df717e7ec4fc9a852a1cc07233e3be1e1d843c2",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "693fd029cd3d17f452f019826b462d0788d20c09e05a62cec65167ebe8f5486c",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "93cd73accf8b3cf8cd359f918df717e7ec4fc9a852a1cc07233e3be1e1d843c2",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.Dictionary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "96219ddfa9dfdd28e46fa689007ea45f7a8a9f32c4610c075a47ee093df348cc",
+      "file": "src/Bing.Utils/Bing/Exceptions/ExceptionHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "bb6c328fde84ce9f69c1fc20256f8fe9c137c89256b75e56af9b82af6bc3fd3d",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "b923fbf2e3400201b618929485e0df6b1931008d96bdff5e1b0c0045cb155f07",
+      "file": "src/Bing.Utils/Bing/Extensions/Xml/XmlExtensions.Deserialize.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "b5673b4609a0996ac65069a4ea299b9ab831db8dda7e5a3076a16a0679261932",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "b0eff6422c05c2a306bc9bc4afad4994976c37207d5c9bf15feb41963f32cd1d",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "ab69a9496439971f79ac8bbed3d769057573e82eaff050d9917af570c1f0eb42",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Methods.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "ab6866302ab4d53e2e8872b0018e406fbbea44fda2d5b998c47515d8f42ac4f8",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "a7c06e6af237e0d64bc08651e92e2c0b989e278ca5385cf4a23fe8c8e2903386",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "a59939383a3fcab47b89c423c8c8e43c6e1aa90334a76c936bd1623ae3ce0dd5",
+      "file": "src/Bing.Utils/Bing/Extensions/Xml/XmlExtensions.Deserialize.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "a4ee5462a57933469f16718209e2e06049893be1c46e1246eaaaddf9d7b075d2",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "a30e93367df3c991b5f74a743cdd9f25764fa7fe3f356107c9d370d2b498fd6b",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "a093e34053b720332760c3ba3e2a1057a86c6067cbfc31d99103f9ae52de4475",
+      "file": "src/Bing.Utils/Bing/Extensions/Xml/XmlExtensions.Deserialize.cs",
+      "maxCount": 3,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "9dd9e8f60acfdcddf77f77fb3a1e4045c4dcedb76041ca3c99da2183fcbc07b2",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "9d1459df595caecbf83e91295701098d3db81ac22bc0fde8ccf50bcad2f62f05",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "9c47f5c4ad5cc354ea5df1d0b0945e7c3ca867206b3d74d9d2eaf77743355e32",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "981c945e0661121cca27d914bc16444a167514205d4633b3b863884ad16110de",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "96cdb5872cf4174c9edebe04327cb4bda8b9bc4504f59702b175c8dba816d934",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "963b6fb1969e9163defd8d9f1b5ab506a801b552e1c077dbf28d768e4d0399fd",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "942e78d0fd0b8f99513bb6073f99fea519edc7575b9ae2f58bb266da01ca6379",
+      "file": "src/Bing.Utils/Bing/Exceptions/ExceptionExtensions.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "693fd029cd3d17f452f019826b462d0788d20c09e05a62cec65167ebe8f5486c",
+      "file": "src/Bing.Utils/Bing/Extensions/Xml/XmlExtensions.Deserialize.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "693fd029cd3d17f452f019826b462d0788d20c09e05a62cec65167ebe8f5486c",
+      "file": "src/Bing.Utils/Bing/Extensions/Xml/XmlExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "66b153f757ec3d3f7d764eacef9006909f4e63feeab83ef88dfac0ddec4cda58",
+      "file": "src/Bing.Utils/Bing/Extensions/Xml/XmlExtensions.Deserialize.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "468add8282254a13f16fef0991acde2e1b38c708e6f0616751e97ae65ada550e",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "467b9b0e8ec8f14d36f8e6de2e3b0aaea1bc902df0249c08a566e4d50186854c",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "4269fb263eaa87eb1958ef5752bc2731333fb3f2e64bef775b55cc521c325060",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "3d430e3ed0f23ca69f099c465e5766bb28de13eeb03119b98668a0fe3f13a7a0",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "3667dd88ddf3a19183f2cce9c8dbb65101db29f67015cd8d72faca4615d35fbc",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "32db0b1d28c91b7705d6eb24a51c897d81b045fa0ba4c8e341bf9a2e24ebddfb",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "2ef8fbb3452a27d7bf4975f8bbe7e13582f0abe5c50e8e3cd61a7a3c10708eec",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "2842811c4a5f8ccff91c6f62a095750d1fa0aeac893e6a10e9e5e65238019eb3",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "2808d16ad60a239efc46759018964a13ffa4457d0505b0808e44564b9142a772",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 5,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "278fd8d3a26a830fd45c3a3a5a98d533eb8cb27f3db71547a159f7b3b68229ed",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "1d47809600dbe7274b2eb036afefddb4de4323a88154c53dbc3b434ac033c0ea",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "1bac35358305224933e027a21ec67f92d9dbd9bf205d86513392b56a6809597b",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "1b8de1dc71fa7e0bb9e068228e5342f49a5d717fd2cca2b2a2367267eb190d84",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 3,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "1b8de1dc71fa7e0bb9e068228e5342f49a5d717fd2cca2b2a2367267eb190d84",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "103ff2c5f09412e40cca5dfc65e581705e546b3f7a87dfdff02be4ed7ea961de",
+      "file": "src/Bing.Utils/Bing/Extensions/Xml/XmlExtensions.Deserialize.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "077b0dfe765881d29dc2a40a3e1827d02b0005617c9a8ebd6324b1c471fb51b2",
+      "file": "src/Bing.Utils/Bing/Helpers/Xml.Builder.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "047cb71d116ba418dc024c477e74b4066490f97e76d59c3bb45d7af6ae2fd268",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "469a8d89dc952e9f14c27e8fd762204dd59bb0159a137be0742897851d5c7077",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "47ffee24ad5313d75baeaab7175c779d3887c66c04dca005ec2e96a7d73b2f0c",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "48f99cb9eee5ad97ed2df3579c7a9238a906a646ec7f1a6613e9a59a018ba1b8",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.LegacyBinary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "4d92500e1e1ddd9d24d1ff8072e606e980bd8633fa221d20b97e0b306599446d",
+      "file": "src/Bing.Utils/Bing/Helpers/Xml.Builder.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "635f308ec83d39fbb3c65523d0185183e39e64ae40c62cd2f03b22a5083a70f4",
+      "file": "src/Bing.Utils/Bing/Exceptions/ExceptionHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "635f308ec83d39fbb3c65523d0185183e39e64ae40c62cd2f03b22a5083a70f4",
+      "file": "src/Bing.Utils/Bing/Exceptions/ExceptionExtensions.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "602dbed4aa4244cc25462355bac6b62bd053dfbc968295a5ca24b0229f01867f",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "5f10e00edd71cf09980a1f838608ce10c041037082294978ccab731c37c12ea1",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "5ea7fd63ea38170aa2011203580d58047bbd0d4f9125bb4b229da2816f55c97a",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "5bf95ccdf3ba6333905b90ec3df77ec4920d0c7cf93176430f3b60ac69e63eb9",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "5a87b7f722c6f38215d9595974d63d0e0675db6344dc7f8bbee6afe341ba6714",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "59dd4b1b0fa82aa258e96a3322df04fbb216780de600fb8c947d3912415d60c3",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "c2428975cdf57d208e03e055a8c988de6efef956e61a72ff594f88c453a970c7",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "592ba3b58c78a22224708399d96ece8b09acc8e976b90a4d2b17793105b26238",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "556a7b099ae78346505bea78da399b4ad47e174d3c9ac8af1187e182f389b006",
+      "file": "src/Bing.Utils/Bing/Helpers/Conv.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "52a21e576d94c0ee9c9fe91eb1381ff876f4a36e003457b0268d7d7224a4dddc",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "50d3d62e7f161c0285ac284b5164d319c61055c03cdb84d578dfaf41be3ffea1",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 3,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "4f1487cc4009c098caf0481b8a06919783f2bfc987dec3c1941e984604469258",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 6,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "4f1487cc4009c098caf0481b8a06919783f2bfc987dec3c1941e984604469258",
+      "file": "src/Bing.Utils/Bing/Expressions/Extensions/Extensions.Expression.Lambda.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "4e13408c71d0998327a3106d3505ca7c3352f26eefb3faa4d691a1b923261f33",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 3,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "4dd2514e81a01f5438e5f1e800e8ace5a651f6afbc12ef4eaca5d877c8658e1b",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 3,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "4dd2514e81a01f5438e5f1e800e8ace5a651f6afbc12ef4eaca5d877c8658e1b",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "55e83be2eae9614807d17ebaac51ea198430f5160ae4b7022d00008870261e4c",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "79e72e17c962820dfa95ae460f30041b88bcee497af3406f184b0e64bc002559",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "caba0fa9a684a0823314921939bae6a858933315488364ec4ae2afd10bf118ae",
+      "file": "src/Bing.Utils/Bing/IO/FileSizeUnit.cs",
+      "maxCount": 3,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "cf8e763c78bff88587e92dea6ae09464a5a77c4cefea6a634de2768c7e0f02bb",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.LegacyBinary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "6d34155de2e8cde6e3332220004bcf788e87805f58d3f5794d1f6bcf86e27af9",
+      "file": "src/Bing.Utils/Bing/Extensions/Bases/ObjectExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "536e634fc4035f9e6cc88622c4b37569b0bc9ca7f737c757b7fc1f853ee7d5be",
+      "file": "src/Bing.Utils/Bing/Helpers/Enum.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "5318b1c5e5eb0d8d6e1e01e3cceb03a67db07881bc7a11c6c049797e5db49a41",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "4c0581a34af9e50677d408a7ef6f1bacaf596513e4f378f55ed61685449ee9b6",
+      "file": "src/Bing.Utils/Bing/Extensions/Common/BingExtensions.Type.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "4441c18cbbff5f4d4daae46a342cd940d78bed09de5b523f22eb13ef6a761628",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "4279492f8982edab43234dddc11f6d3c6ca8ee0b105d8dd7d328801b8769b94d",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "424b880bd3065611f23b585b8d52d742320ace4b9275aae6f184194900e074eb",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "3f0eaeacacb905233e4dfa2d4c3f027111c2a1a8a59f34ec2bf57a139ecbbdc9",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "3868dda4abc3b616772c84518cf68736b51d59d54220dc7eb324b6750fc4cc58",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "0c14b32786d95b502c98184ff19ce29facb47ce9a1a76ca977c09c7eb7a34bf0",
+      "file": "src/Bing.Utils/Bing/Extensions/Bases/ObjectExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "0544883bade2503838c54b8c789310a7d4a84cf615c30f599738d5aa8e776da6",
+      "file": "src/Bing.Utils/Bing/Helpers/Enum.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "ea82aa1519e8e32db1cc37bc158b5e2281fa5e9c4aacbd07803a14860afe27fa",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.MapTo.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "e6601aeb36e48c7335ef9edfd1fa6eff835000ede2e3832d0b3aeb211dcd1a7e",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Properties.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "d78f9c6b82a006a02c66c8195bf0de928daf4fa0ac1f86900d250b439fc50d7d",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.AdvancedCreateInstances.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "c53da79c2bb4b906a716d5f897d297cbc16dff67ef785856924d931769149bba",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "c3134ad740d52bfa39d2a07cfd13a43bc4453c939d554947993cf77d8b5f597b",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Types.Constructor.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "a5d7d081f7691be13899404ac0f6b7acb580f4f9568a377a3e8a42f90ee454c2",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "6eca8e9700141f7193eecba35a8a831f4814444eb4b2e4f0df537d188486392d",
+      "file": "src/Bing.Utils/Bing/Serialization/SystemTextJson/EnumJsonConverterFactory.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "9bf5deb9ab271ca89dd95058f8d1b2f1f8f4cefa17f11c2c0c3c0241653336de",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Types.Constructor.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "87a9f81e10efe7f12e27f07ddb9791f4c6f3473a3b56a4b772234b6d9bc98658",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.Struct.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "91f4595cee77b029ebe7198b4bfdca793ee2340ed27541a2bffc7bf16a998eb3",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.MapTo.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "3beda2e9a0694a87cd5fdae4dd003595f8115928bb773a4587066be90a71e363",
+      "file": "src/Bing.Utils/Bing/Data/DataTableHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2072",
+      "messageFingerprint": "15e506f606f49ded46125a292441858741613e7750e07305345d2e94ee6e859a",
+      "file": "src/Bing.Utils/Bing/Data/DataTableHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "f2d95635ca8f4fcb92a4e37cbb1c38264382eeb851c89515cda8d29123407b96",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.MapTo.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "eb92527419d8801e425b0f39f4b362755f61cd67a210d5738abd0faadd514c36",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.Struct.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "da66e35bf60458d5952be20795b2fa713339f7990dbd2c5f8f46b1a31a1d81e4",
+      "file": "src/Bing.Utils/Bing/Extensions/Bases/ObjectExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "d7e8f123505936ab5b0fb81aa433a2ccddbb321a254cfc2ec80856ae72433f16",
+      "file": "src/Bing.Utils/Bing/Helpers/Enum.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "d2307aabef18cb3f9de586422b2d5b769060fd50e57a317c833493cb022741ee",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "cfc7ad99a14081eb7d444951fc4f0d1a990fb3bd84ac5bc3b633c6c78552e687",
+      "file": "src/Bing.Utils/Bing/Extensions/Common/BingExtensions.Type.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "c44f8bd2575bfbfc2dba3d50cf8b9c6186f5efe6e856ff494e92515c9d269e10",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.MapTo.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "bc6cb5550dcc200cb0800690156bd59502c23a66ed78d821144559b8e8ba24d7",
+      "file": "src/Bing.Utils/Bing/Serialization/SystemTextJson/EnumJsonConverterFactory.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "b678a8d5b691d6b34e181c6b9ae4fe839fc6b22143171b39a442bb4c74a45921",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "b128d1e2414988ab1d34a413842a4b26f7b9961c2a1c51daee00df523bfd6bed",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "af19ee955373679a8230565b51314a4b0dd8145387b5ceda763fd62381b884eb",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "a60c95c29f6848ffbd43bc078a2411b3d742e24653a31ef82ad9f9dd7b1553c4",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "9dcb9287b6994714e2d66ad0d7572a03426a7565c6b2e1c02d67c247030bdf87",
+      "file": "src/Bing.Utils/Bing/Helpers/Enums.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "9550c368ced3d848a41ef2e0d7498d3a71e4e585e6ef8570c924ef093b4d6483",
+      "file": "src/Bing.Utils/Bing/Helpers/Enum.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "93adbfe0d81db5b4e1dad2e740ef29d727eb6fbb83fbb472471eaf1f4dce6844",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.MapTo.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2070",
+      "messageFingerprint": "8d117812b6efb2f142361e0c537c3ededd20979a911782b779e7b4ee5fd3cb4b",
+      "file": "src/Bing.Utils/Bing/Extensions/Bases/ObjectExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "83cd355f33c9b889fb391e338781c221274df15c8d5f96b5a51d5cc94beb0ab2",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Fields.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "7d05303ff6a41b4a06f80033cede68aba18db71eb812f1dde7cf4bc04fcff607",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.MapTo.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "6ea83b7d676f2a733ee488279ced83196e1fd6c95b2f378379f58795be4f8884",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.MapTo.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "e3925108fdbf1b3f482e00c2ec5a5aa9981befcab6efc972e43551339df79d25",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "e31a20d2e4d4d6f5f6fb95e7b49c937476335493524a090818bfba31b070246d",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "e2f6ee35e1ae43857132a3910b436fae3d4cb2011c8d76ad0a01750e0339ad6d",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "dfb3e939d32e1fb75218d1c8b6a637748e5c53d1ea3fbf1b0b8217a548ee30ef",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "df4a7228205233280d1b039e4d8c46d7be0e213beb06dae32cae5ae504c22ca9",
+      "file": "src/Bing.Utils/Bing/IO/FileSizeUnit.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "de2f5e912ff3024f2796514442eec09ece9e3c86c1105e15fd402e5ad0f0bc78",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "dcf983dcd87d55b671431e3c561ea647094190fb3885a3a32fc528da5b6ca82b",
+      "file": "src/Bing.Utils/Bing/Extensions/Object/Copier/Extensions.Object.ExpressionCopier.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "dadfef2832c4379acb41a6e51df35ad8441e7e97fefe551bec68768d12cbe33d",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "dadd354d973d98292c4721bdcad0244eeef2510c116b1f0bf8e9b9e3d38c82f8",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "d753712e1c0e54ad41698aa287fc92554b6dd270c3e0827ea0d0fbc3018b28c8",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "d6c51ac5f40d9dde7167d87f7ccee71887084b5d4490dd29ac9b09d814b14bcb",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.LegacyBinary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "d4d564a4791d5e6427833dab582b49cc9adcd9404d6ddc81c99445fc61811e01",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "d1507208dc6526cfc9bf673b80ca23f37a39b6abeeac33360b066f88851659c4",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "d082dfa78f96f7c8abbe307e8013e9d5a81c5dd5dda79e6408d2c1add5eed5c4",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "d0614c2b69652667550cfa0d06e26e21189e22c8b53448b4ce053e1ab7948f7e",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "d02a40af0d374ff3cbc1b590de03ee00e9b0743999ab2585174b38017f11a673",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "cfceaed4610b2b675561fd0cf8f0092b2535521e9ddcbbb81aeceffeb891758e",
+      "file": "src/Bing.Utils/Bing/Extensions/Xml/XmlExtensions.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "e764fab434f22f67d8ab35fe7180a72ebe7da57f33f0d5dedac27acbadfb39fd",
+      "file": "src/Bing.Utils/Bing/Extensions/Xml/XmlExtensions.Deserialize.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "e7652a3d2db87a4511256caf9590653bf1df98122ffec378606796c2dc61a7a8",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Methods.cs",
+      "maxCount": 3,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "e878cee53bcec9de7463d60ea98d224764a2d4098708ff2eb3167a85eeb01630",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "e87e366e1b8637bcc1bf1f2d999753190f8465a230645bd5534d6c20472084ad",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 2,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "4aac0a2868c6534a779034b09e8724608ba1169aba04ef920d42aab187def192",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.Dictionary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "42a94d3e40c9aecd9c3541ff096b53f014d394cc6ecb314bc80b9872c440d0df",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Types.Constructor.cs",
+      "maxCount": 1,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "37e23306d62ee957ceafe1e7034b2c7d45db1974012768e64f21008c8a06f43c",
+      "file": "src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Properties.cs",
+      "maxCount": 3,
+      "owner": "reflection-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "0f15a2843c7b49144168de580c1d2ba08edc6f97df9022d3c95ea9a45b655e6e",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.MapTo.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2067",
+      "messageFingerprint": "0c595cb95ad326ac388a304d73b1fb18d25f5cd2389d1f9f13e33f8df589aafe",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.Dictionary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2046",
+      "messageFingerprint": "ce1db739a9e6a33a929a6d7206d66b1a2af11bb5daac3a7c81b9422c98a636bd",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2046",
+      "messageFingerprint": "bf3075a73c99bcb198186de1d71b10304735719e91fc0c54ea4c82a6d655d3ac",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2046",
+      "messageFingerprint": "627bd0e5782f5c7e34ed08bce495b97dd482a8e75d44887ae3c9e08dabd97822",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "cf4999fd1a62b841fd54e343f1777408d47e56c5ab9cb702062be10f6548df73",
+      "file": "src/Bing.Utils/Bing/Helpers/Xml.Builder.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2046",
+      "messageFingerprint": "0a21447a700c9cbc868c5ff9410d9eea7aed2914a5c1d94f71fa0aee23f228b0",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "fdb7c1ce40a600e686a6ab41405a176794c57462fbe63e54413b017cbe10bb26",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "fcce25fbb11553a322f7a78889b96ebf05cacf678e51170853d9d4f0c4a26bca",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 2,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "fa46f2982f3723d4c1dc40159076ba41621de3ef4a62eed3b937fc20788c7a71",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.LegacyBinary.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "f708e4251f9f3fe2cfd9a394ce4ee54c146e577d973ac100b6806bd071c4585f",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "eed43c625552e89c3f574ca3caf027f2d38463d4922f705d64ad8fbfa767e8ee",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "ee1dace6ff777b461fc54c74e7d8efe453a86b8e2b0b109a515c44cd42319592",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "ec65e03a4e95bc46dd9dcca3ebbc69f9981f9e106c380d18a90f6ef3f465bfec",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "reflection-validation",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "e9c04be85174195ecd88fade1122bc5dcc72e798a082aa990e01ef175c09e71e",
+      "file": "src/Bing.Utils/Bing/Helpers/MapperHelper.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "fe9fa468e8a5d1716fa096928f35cc80a50abea4b11b43c9a6a43c10e56e29d6",
+      "file": "src/Bing.Utils/Bing/Helpers/Json.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL3051",
+      "messageFingerprint": "f0bec7cb205446c22274bcec3dea8f6a21aec1e9dfab23876d373bd1e09fbcca",
+      "file": "src/Bing.Utils/Bing/Helpers/Serialize.DataContract.cs",
+      "maxCount": 1,
+      "owner": "utils-maintainers",
+      "reason": "Retained NativeAOT diagnostic from the SDK 8.0.425 net8.0/win-x64 partial AOT baseline; review before changing the reflection or trimming contract."
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "13b43af633768a6c2fc7ec85609015d840d6f71ff1e14a1dbbec284016006107",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "15fea155d6705e7a4f90adab64c5ab45e5f14cbb75da0c79281c440fb31ab11a",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "292d02df6d1f2dc1ce6f1083db71dde66d01015c7abfd6b6195ae8fccd86ceae",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "35b1c368efda02b460393794ba61352f991e49392fae212b6dca438aaff0ebb5",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "4b8a31dd312d0294b0009376e5e897d00f876fed3b17d67911efdad07e187061",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "596605dbe86cd66e03bccf792fc73f94c21b757cd0a0c05d1e90e6d28e6b136b",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "5fba0bc8bdb962f0fdce7494583680d53d8d6e7ebd69f23dafa25d771dfc22c5",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "7a8fe1222c71323d173047ff495fe53cad0f7999c3cd4d0437ef1d18dd7f708b",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "82675f9f2c8829980d884a51cc9d82b1fa52087ac72ed131d578ded9e0b3f8dc",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "8b6048d9940ae79b2e7edd1f6ab2e435736dafc275b7631a38697c33ad28cc8e",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "ab69a9496439971f79ac8bbed3d769057573e82eaff050d9917af570c1f0eb42",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "c5189efe8b0dfe71b58d1540c31a677d150fd3e242af5eda9cddd5403f9920e0",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "d3c95200f0c1e54d7564989c83c2b6a6d0d2195a693dd8e2ad0178ea27ce2ec0",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "db3f4ff4bbeb2fb1d54685c78b9e71d67ab9ec8e1f290ad8553fe8bd88e25514",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL2026",
+      "messageFingerprint": "dbb0ddb4847312958ecd7568941c517ac4151515b5d828a14980d2e5a6e46b1c",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "183315927afb3b91ea8ed44595ce1d22c88b56676210645f13f241da0e76aeb1",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "2842be04757a67a9dcedcfcdde8f49cc43ea0dab54946dca5504df8fa9179372",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "2a691428a0d03d2dc3a3797d0e9e89b52884656a54c0fa68e0b2e2aba712ea8c",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "2d298582c1e3c2f1197fefdfe9da4c48cf81649893e4ce6f4c306a29a52bd94c",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "553115fe284f10ae23c63d6ee06bc52801034e857d2cadf7f870ba7107d8ce69",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "818643d3bda45f2c9794293cc009267da0de8f8ae4871798d5e055044877e26c",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "a74c56b2732b12087066881c8e3d02ef8638992b8281dcaff0ff0d530ec6f049",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "c2f5e3c0ba2ee880dd9bdfa1a7db12a7bf47ecf29457dad3a3b5da8b9e9c5f7d",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    },
+    {
+      "code": "IL3050",
+      "messageFingerprint": "c548332d18bc6a2c487cf666a36b049e0c1e40c0c5044cfda53c0a001e418336",
+      "file": "tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/Program.cs",
+      "maxCount": 1,
+      "owner": "validation-maintainers",
+      "reason": "探针有意验证带裁剪或动态代码限制的入口；当前原生 smoke 仅证明显式保留元数据与动态代码拒绝边界，不承诺任意业务类型兼容。"
+    }
+  ],
+  "approval": {
+    "date": "2026-10-13",
+    "authority": "用户在当前会话明确批准",
+    "previousAllowlist": "history/20261013-before-approval/NativeAotRepositoryDiagnosticAllowlist.json",
+    "addedEntryCount": 24
+  }
+}

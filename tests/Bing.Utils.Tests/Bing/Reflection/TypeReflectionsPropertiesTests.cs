@@ -88,7 +88,12 @@ public class TypeReflectionsPropertiesTests
         var writable = TypeReflections.GetPublicWritableInstanceProperties(typeof(AccessorProperties)).Select(property => property.Name);
 
         // Assert
-        readable.ShouldBe(new[] { nameof(AccessorProperties.PrivateSet), nameof(AccessorProperties.ReadOnly) });
+        readable.ShouldBe(new[]
+        {
+            nameof(AccessorProperties.InitOnly),
+            nameof(AccessorProperties.PrivateSet),
+            nameof(AccessorProperties.ReadOnly)
+        });
         writable.ShouldBe(new[] { nameof(AccessorProperties.PrivateGet), nameof(AccessorProperties.WriteOnly) });
     }
 
@@ -191,8 +196,9 @@ public class TypeReflectionsPropertiesTests
     public sealed class AccessorProperties
     {
         /// <summary>
-        /// 获取固定的只读测试文本。
+        /// 获取或初始化用于验证 init-only setter 筛选的测试整数。
         /// </summary>
+        public int InitOnly { get; init; }
         public string ReadOnly { get; } = "read";
         /// <summary>
         /// 获取或设置具有私有读取和公开写入访问器的测试文本。

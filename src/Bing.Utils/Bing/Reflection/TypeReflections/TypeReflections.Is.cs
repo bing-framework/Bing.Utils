@@ -96,6 +96,9 @@ public static partial class TypeReflections
     /// 判断给定的 <see cref="MemberInfo"/> 元信息是否为集合或数组类型
     /// </summary>
     /// <param name="member">成员元数据</param>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "该入口通过 Func<Type, bool> 间接调用带类型保留契约的集合判断器，成员类型来自运行时元数据。")]
+#endif
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCollection(MemberInfo member) => X(member, type => type, Types.IsCollectionType);
 }

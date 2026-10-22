@@ -10,12 +10,7 @@
           ],
           "exclude": [
             "**/obj/**",
-            "**/bin/**",
-            "**/Bing.Utils.Comments.csproj",
-            "**/Bing.Utils.DependencyInjection.csproj",
-            "**/Bing.Utils.Extra.csproj",
-            "**/Bing.Utils.Guard.csproj",
-            "**/Bing.Utils.Net.csproj"
+            "**/bin/**"
           ]
         }
       ],

@@ -7,12 +7,12 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 验证图像文件读写、处理及编码转换的完整链路。
+/// 验证 ImageSharp 真实处理链路的集成行为。
 /// </summary>
 public class ImageSharpHelperIntegrationTest
 {
     /// <summary>
-    /// 验证图像读取、透明度处理、Data URL 转换及文件输出的完整链路。
+    /// 验证读取、处理和输出完整链路可稳定执行并清理临时目录。
     /// </summary>
     [Fact]
     public void ProcessingPipeline_ReadProcessWrite_RoundTripAndCleanup()
@@ -44,7 +44,7 @@ public class ImageSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 验证 PNG 和 JPEG 编码输出各自的文件签名。
+    /// 验证不同输出格式生成对应的文件签名。
     /// </summary>
     [Fact]
     public void OutputFormat_PngAndJpeg_HaveExpectedMagicBytes()
@@ -66,29 +66,27 @@ public class ImageSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 验证非图像内容的文件和流均返回空加载结果。
+    /// 验证非法文件内容和非法流会抛出 <see cref="InvalidDataException" />。
     /// </summary>
     [Fact]
-    public void InvalidInput_FileAndStream_ReturnNull()
+    public void InvalidInput_FileAndStream_ThrowsInvalidDataException()
     {
         using var temp = new TempDirectory("bing-utils-imagesharp-invalid");
         var invalidPath = Path.Combine(temp.Path, "invalid.png");
         File.WriteAllText(invalidPath, "not-an-image", Encoding.UTF8);
 
-        var fromFile = ImageSharpHelper.FromFile(invalidPath);
-        fromFile.ShouldBeNull();
+        Should.Throw<InvalidDataException>(() => ImageSharpHelper.FromFile(invalidPath));
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes("plain-text"));
-        var fromStream = ImageSharpHelper.FromStream(stream);
-        fromStream.ShouldBeNull();
+        Should.Throw<InvalidDataException>(() => ImageSharpHelper.FromStream(stream));
     }
 
     /// <summary>
-    /// 创建颜色随坐标变化的图像以验证处理链路。
+    /// 创建用于集成测试的图案图像。
     /// </summary>
-    /// <param name="width">图像宽度，单位为像素。</param>
-    /// <param name="height">图像高度，单位为像素。</param>
-    /// <returns>指定尺寸的不透明 RGBA 图像，调用方负责释放。</returns>
+    /// <param name="width">图像宽度。</param>
+    /// <param name="height">图像高度。</param>
+    /// <returns>填充确定性图案的图像。</returns>
     private static Image<Rgba32> CreatePatternImage(int width, int height)
     {
         var image = new Image<Rgba32>(width, height);
@@ -103,14 +101,15 @@ public class ImageSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 提供测试期间创建及清理的独立临时目录。
+    /// 管理测试期间创建的临时目录。
     /// </summary>
+    /// <param name="prefix">临时目录名称前缀。</param>
     private sealed class TempDirectory : IDisposable
     {
         /// <summary>
-        /// 初始化一个 <see cref="TempDirectory"/> 类型的实例。
+        /// 初始化 <see cref="TempDirectory" /> 类的新实例。
         /// </summary>
-        /// <param name="prefix">临时目录名称的前缀。</param>
+        /// <param name="prefix">临时目录名称前缀。</param>
         public TempDirectory(string prefix)
         {
             Path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"{prefix}-{Guid.NewGuid():N}");
@@ -118,7 +117,7 @@ public class ImageSharpHelperIntegrationTest
         }
 
         /// <summary>
-        /// 获取当前测试临时目录的完整路径。
+        /// 获取临时目录路径。
         /// </summary>
         public string Path { get; }
 

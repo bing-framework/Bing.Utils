@@ -4,12 +4,12 @@ using SkiaSharp;
 namespace Bing.Drawing;
 
 /// <summary>
-/// 验证 SkiaSharp 图像处理流程在文件、流和编码格式之间的集成行为。
+/// 验证 SkiaSharp 真实处理链路的集成行为。
 /// </summary>
 public class SkiaSharpHelperIntegrationTest
 {
     /// <summary>
-    /// 验证图像经过读取、处理、编码和写入后尺寸正确且临时文件可清理。
+    /// 验证读取、处理和输出完整链路可稳定执行并清理临时目录。
     /// </summary>
     [Fact]
     public void ProcessingPipeline_ReadProcessWrite_RoundTripAndCleanup()
@@ -45,7 +45,7 @@ public class SkiaSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 验证 JPEG 低质量设置生成的文件小于高质量设置。
+    /// 验证 JPEG 质量参数影响输出体积，低质量输出通常更小。
     /// </summary>
     [Fact]
     public void OutputQuality_JpegLowQuality_SmallerThanHighQuality()
@@ -59,29 +59,27 @@ public class SkiaSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 验证无效文件内容和流数据均返回空图像结果。
+    /// 验证非法文件内容和非法流会抛出 <see cref="InvalidDataException" />。
     /// </summary>
     [Fact]
-    public void InvalidInput_FileAndStream_ReturnNull()
+    public void InvalidInput_FileAndStream_ThrowsInvalidDataException()
     {
         using var temp = new TempDirectory("bing-utils-skiasharp-invalid");
         var invalidPath = Path.Combine(temp.Path, "invalid.png");
         File.WriteAllText(invalidPath, "not-an-image", Encoding.UTF8);
 
-        var fromFile = SkiaSharpHelper.FromFile(invalidPath);
-        fromFile.ShouldBeNull();
+        Should.Throw<InvalidDataException>(() => SkiaSharpHelper.FromFile(invalidPath));
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes("plain-text"));
-        var fromStream = SkiaSharpHelper.FromStream(stream);
-        fromStream.ShouldBeNull();
+        Should.Throw<InvalidDataException>(() => SkiaSharpHelper.FromStream(stream));
     }
 
     /// <summary>
-    /// 创建颜色随坐标变化的测试图像。
+    /// 创建用于集成测试的图案图像。
     /// </summary>
     /// <param name="width">图像宽度。</param>
     /// <param name="height">图像高度。</param>
-    /// <returns>按像素坐标生成颜色的图像。</returns>
+    /// <returns>填充确定性图案的图像。</returns>
     private static SKImage CreatePatternImage(int width, int height)
     {
         using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -96,11 +94,11 @@ public class SkiaSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 创建由固定随机种子生成像素的噪声图像。
+    /// 创建用于质量比较的确定性噪声图像。
     /// </summary>
     /// <param name="width">图像宽度。</param>
     /// <param name="height">图像高度。</param>
-    /// <returns>包含确定性随机颜色的图像。</returns>
+    /// <returns>填充确定性噪声的图像。</returns>
     private static SKImage CreateNoiseImage(int width, int height)
     {
         using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -116,14 +114,14 @@ public class SkiaSharpHelperIntegrationTest
     }
 
     /// <summary>
-    /// 在系统临时目录中创建并清理测试目录。
+    /// 管理测试期间创建的临时目录。
     /// </summary>
     private sealed class TempDirectory : IDisposable
     {
         /// <summary>
-        /// 初始化一个 <see cref="TempDirectory"/> 类型的实例。
+        /// 初始化 <see cref="TempDirectory" /> 类的新实例。
         /// </summary>
-        /// <param name="prefix">临时目录名称使用的前缀。</param>
+        /// <param name="prefix">临时目录名称前缀。</param>
         public TempDirectory(string prefix)
         {
             Path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"{prefix}-{Guid.NewGuid():N}");
@@ -131,7 +129,7 @@ public class SkiaSharpHelperIntegrationTest
         }
 
         /// <summary>
-        /// 获取临时目录的完整路径。
+        /// 获取临时目录路径。
         /// </summary>
         public string Path { get; }
 

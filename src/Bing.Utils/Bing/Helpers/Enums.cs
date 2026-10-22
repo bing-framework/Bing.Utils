@@ -304,14 +304,22 @@ public static class Enums
     /// </summary>
     /// <typeparam name="TEnum">枚举类型</typeparam>
     /// <param name="member">成员名、值、实例均可,范例:Enum1枚举有成员A=0,可传入"A"、0、Enum1.A，获取值0</param>
-    public static string GetDescription<TEnum>(object member) => Reflections.GetDescription<TEnum>(GetName<TEnum>(member));
+    public static string GetDescription<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        TEnum>(object member) => Reflections.GetDescription<TEnum>(GetName<TEnum>(member));
 
     /// <summary>
     /// 获取描述，使用<see cref="DescriptionAttribute"/>特性设置描述
     /// </summary>
     /// <param name="type">枚举类型</param>
     /// <param name="member">成员名、值、实例均可,范例:Enum1枚举有成员A=0,可传入"A"、0、Enum1.A，获取值0</param>
-    public static string GetDescription(Type type, object member) => Reflections.GetDescription(type, GetName(type, member));
+    public static string GetDescription(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]
+#endif
+        Type type, object member) => Reflections.GetDescription(type, GetName(type, member));
 
     #endregion
 

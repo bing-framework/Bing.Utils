@@ -47,7 +47,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证新建图像默认导出为 PNG 格式。
+    /// 验证新建图像默认导出为 PNG 格式。
     /// </summary>
     [Fact]
     public void ToDataUrl_DefaultFormat_ForInMemoryImage_UsesPng()
@@ -60,10 +60,10 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证从 JPEG 加载的图像经缩放后默认导出仍为 JPEG。
+    /// 验证从 JPEG 加载的图像经缩放后默认导出仍为 JPEG。
     /// </summary>
     [Fact]
-    public void ToDataUrl_DefaultFormat_ForDerivedImage_PreservesTrackedJpeg()
+    public void ToDataUrl_DefaultFormat_ForDerivedImage_UsesPng()
     {
         using var source = CreateNoiseImage(32, 16);
         var bytes = SkiaSharpHelper.ToBytes(source, SKEncodedImageFormat.Jpeg, 90);
@@ -72,7 +72,7 @@ public class SkiaSharpHelperTest
 
         var dataUrl = SkiaSharpHelper.ToDataUrl(resized);
 
-        dataUrl.ShouldStartWith("data:image/jpeg;base64,");
+        dataUrl.ShouldStartWith("data:image/png;base64,");
     }
     /// <summary>
     /// 验证 PNG Data URL 可还原为与源图像尺寸相同的图像。
@@ -128,19 +128,47 @@ public class SkiaSharpHelperTest
     /// 验证无效 Base64 文本无法生成图像并返回空结果。
     /// </summary>
     [Fact]
-    public void FromBase64String_InvalidValue_ReturnsNull()
+    public void FromBase64String_InvalidValue_ThrowsFormatException()
     {
-        var restored = SkiaSharpHelper.FromBase64String("not-base64");
-        restored.ShouldBeNull();
+        Should.Throw<FormatException>(() => SkiaSharpHelper.FromBase64String("not-base64"));
     }
     /// <summary>
     /// 验证无效 Data URL 无法生成图像并返回空结果。
     /// </summary>
     [Fact]
-    public void FromDataUrl_InvalidFormat_ReturnsNull()
+    public void FromDataUrl_InvalidFormat_ThrowsFormatException()
     {
-        var restored = SkiaSharpHelper.FromDataUrl("invalid-data-url");
-        restored.ShouldBeNull();
+        Should.Throw<FormatException>(() => SkiaSharpHelper.FromDataUrl("invalid-data-url"));
+    }
+
+    /// <summary>
+    /// 测试用例：验证尝试加载无效图像时返回 false 且不抛出内容异常。
+    /// </summary>
+    [Fact]
+    public void TryLoad_InvalidBytes_ReturnsFalseWithoutThrowing()
+    {
+        var loaded = SkiaSharpHelper.TryLoad(new byte[] { 1, 2, 3 }, out var image);
+
+        loaded.ShouldBeFalse();
+        image.ShouldBeNull();
+    }
+
+    /// <summary>
+    /// 测试用例：验证无显式格式时 ToBytes 始终输出 PNG。
+    /// </summary>
+    [Fact]
+    public void ToBytes_DefaultFormat_UsesPng()
+    {
+        using var source = CreateSampleImage();
+        var jpeg = SkiaSharpHelper.ToBytes(source, SKEncodedImageFormat.Jpeg, 90);
+        using var restored = SkiaSharpHelper.FromBytes(jpeg);
+
+        var output = SkiaSharpHelper.ToBytes(restored!);
+        using var data = SKData.CreateCopy(output);
+        using var codec = SKCodec.Create(data);
+
+        codec.ShouldNotBeNull();
+        codec!.EncodedFormat.ShouldBe(SKEncodedImageFormat.Png);
     }
     /// <summary>
     /// 验证 PNG 文件可加载为与原图尺寸相同的图像。
@@ -167,7 +195,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证图像从流当前位置加载，且加载后调用方流仍可读取。
+    /// 验证图像从流当前位置加载，且加载后调用方流仍可读取。
     /// </summary>
     [Fact]
     public void FromStream_WithOffsetPayload_LoadsExpectedImageAndKeepsStreamOpen()
@@ -216,7 +244,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证设置透明度时按原像素 Alpha 比例缩放。
+    /// 验证设置透明度时按原像素 Alpha 比例缩放。
     /// </summary>
     [Fact]
     public void SetOpacity_PartiallyTransparentPixel_MultipliesExistingAlpha()
@@ -239,7 +267,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证 PNG 图像对应的 MIME 类型和文件扩展名。
+    /// 验证 PNG 图像对应的 MIME 类型和文件扩展名。
     /// </summary>
     [Fact]
     public void GetMimeType_And_GetImageExtension_PngLoadedImage_ReturnExpectedValues()
@@ -254,7 +282,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证含透明像素的图像被识别为具有 Alpha 通道。
+    /// 验证含透明像素的图像被识别为具有 Alpha 通道。
     /// </summary>
     [Fact]
     public void HasAlpha_TransparentImage_ReturnsTrue()
@@ -267,7 +295,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证保持宽高比缩放会返回新图像并计算出正确尺寸。
+    /// 验证保持宽高比缩放会返回新图像并计算出正确尺寸。
     /// </summary>
     [Fact]
     public void Resize_KeepAspectRatio_ReturnsExpectedSize()
@@ -283,7 +311,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证禁用放大时小图保持原始尺寸。
+    /// 验证禁用放大时小图保持原始尺寸。
     /// </summary>
     [Fact]
     public void Resize_AllowEnlargeFalse_DoesNotGrowImage()
@@ -296,7 +324,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证超出图像边界的裁剪区域会收缩至有效范围。
+    /// 验证超出图像边界的裁剪区域会收缩至有效范围。
     /// </summary>
     [Fact]
     public void Crop_OutOfBoundsRectangle_ClampsToImageBounds()
@@ -309,7 +337,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证旋转 90 度后图像宽高互换。
+    /// 验证旋转 90 度后图像宽高互换。
     /// </summary>
     [Fact]
     public void Rotate_90_SwapsDimensions()
@@ -322,7 +350,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证水平翻转后像素位置关于垂直轴镜像。
+    /// 验证水平翻转后像素位置关于垂直轴镜像。
     /// </summary>
     [Fact]
     public void FlipHorizontal_MirrorsPixels()
@@ -416,7 +444,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证 ICO 图像使用标准的 x-icon MIME 类型。
+    /// 验证 ICO 图像使用标准的 x-icon MIME 类型。
     /// </summary>
     [Fact]
     public void GetMimeType_IcoFormat_ReturnsXIconMime()
@@ -425,7 +453,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证颜色替换会匹配容差范围内的像素并应用目标颜色。
+    /// 验证颜色替换会匹配容差范围内的像素并应用目标颜色。
     /// </summary>
     [Fact]
     public void ReplaceColor_MatchingPixel_ReplacesColor()
@@ -442,7 +470,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证黑白效果保留源像素的 Alpha 值。
+    /// 验证黑白效果保留源像素的 Alpha 值。
     /// </summary>
     [Fact]
     public void SetBlackWhiteEffect_PreservesAlpha()
@@ -459,7 +487,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证黑色源像素在双色调效果下映射为第一种目标颜色。
+    /// 验证黑色源像素在双色调效果下映射为第一种目标颜色。
     /// </summary>
     [Fact]
     public void SetDuotoneEffect_BlackPixel_ReturnsColorA()
@@ -476,7 +504,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证亮度参数为 0 时像素结果为黑色。
+    /// 验证亮度参数为 0 时像素结果为黑色。
     /// </summary>
     [Fact]
     public void SetBrightness_AmountZero_ReturnsBlackPixels()
@@ -494,7 +522,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证对比度参数为 0 时像素结果为中灰色。
+    /// 验证对比度参数为 0 时像素结果为中灰色。
     /// </summary>
     [Fact]
     public void SetContrast_AmountZero_ReturnsMidGrayPixels()
@@ -512,7 +540,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证饱和度参数为 0 时像素结果为灰度。
+    /// 验证饱和度参数为 0 时像素结果为灰度。
     /// </summary>
     [Fact]
     public void SetSaturation_AmountZero_ReturnsGrayscalePixels()
@@ -530,7 +558,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证应用单位颜色矩阵后像素通道保持不变。
+    /// 验证应用单位颜色矩阵后像素通道保持不变。
     /// </summary>
     [Fact]
     public void ApplyColorMatrix_IdentityMatrix_ReturnsUnchangedPixels()
@@ -559,7 +587,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证颜色变换 API 拒绝越界参数。
+    /// 验证颜色变换 API 拒绝越界参数。
     /// </summary>
     [Fact]
     public void ColorApis_InvalidParameters_Throw()
@@ -581,7 +609,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证边缘柔化降低边缘 Alpha 且保留中心区域。
+    /// 验证边缘柔化降低边缘 Alpha 且保留中心区域。
     /// </summary>
     [Fact]
     public void SoftEdge_PositiveRadius_SoftensBorderAlpha()
@@ -597,7 +625,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证柔化半径为 0 时返回像素不变的新图像。
+    /// 验证柔化半径为 0 时返回像素不变的新图像。
     /// </summary>
     [Fact]
     public void SoftEdge_ZeroRadius_ReturnsUnchangedClone()
@@ -616,7 +644,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证负柔化半径会被拒绝。
+    /// 验证负柔化半径会被拒绝。
     /// </summary>
     [Fact]
     public void SoftEdge_NegativeRadius_ThrowsArgumentOutOfRangeException()
@@ -628,7 +656,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证柔化卷积将单个亮点扩散到相邻像素。
+    /// 验证柔化卷积将单个亮点扩散到相邻像素。
     /// </summary>
     [Fact]
     public void Soften_SingleBrightPixel_SpreadsToNeighbors()
@@ -650,7 +678,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证锐化卷积不改变均匀颜色图像的像素。
+    /// 验证锐化卷积不改变均匀颜色图像的像素。
     /// </summary>
     [Fact]
     public void Sharpen_UniformImage_PreservesPixels()
@@ -664,7 +692,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证浮雕卷积将均匀颜色图像转换为近似中灰。
+    /// 验证浮雕卷积将均匀颜色图像转换为近似中灰。
     /// </summary>
     [Fact]
     public void Emboss_UniformImage_ReturnsMidGrayLikePixels()
@@ -682,7 +710,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证雾化效果使用局部前向采样生成新图像。
+    /// 验证雾化效果使用局部前向采样生成新图像。
     /// </summary>
     [Fact]
     public void Atomizing_PatternImage_SamplesFromForwardNeighborhood()
@@ -708,7 +736,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证雾化效果拒绝空图像参数。
+    /// 验证雾化效果拒绝空图像参数。
     /// </summary>
     [Fact]
     public void Atomizing_NullImage_Throw()
@@ -718,7 +746,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证图片水印按目标区域缩放叠加且不修改源图像。
+    /// 验证图片水印按目标区域缩放叠加且不修改源图像。
     /// </summary>
     [Fact]
     public void AddImageWatermark_FullOpacity_AppliesScaledOverlay()
@@ -738,7 +766,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证水印透明度为 0 时返回像素不变的新图像。
+    /// 验证水印透明度为 0 时返回像素不变的新图像。
     /// </summary>
     [Fact]
     public void AddImageWatermark_ZeroOpacity_ReturnsUnchangedClone()
@@ -755,7 +783,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证半透明水印叠加结果符合源像素与水印的 Alpha 比例。
+    /// 验证半透明水印叠加结果符合源像素与水印的 Alpha 比例。
     /// </summary>
     [Fact]
     public void AddImageWatermark_PartiallyTransparentWatermark_PreservesAlphaComposition()
@@ -770,7 +798,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证图片水印拒绝空图像、无效区域和越界透明度。
+    /// 验证图片水印拒绝空图像、无效区域和越界透明度。
     /// </summary>
     [Fact]
     public void AddImageWatermark_InvalidArguments_Throw()
@@ -789,7 +817,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证文字水印在图像右下区域绘制且不修改源图像。
+    /// 验证文字水印在图像右下区域绘制且不修改源图像。
     /// </summary>
     [Fact]
     public void AddTextWatermark_FullOpacity_DrawsInBottomRightRegion()
@@ -808,7 +836,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证文字水印透明度为 0 时图像像素保持不变。
+    /// 验证文字水印透明度为 0 时图像像素保持不变。
     /// </summary>
     [Fact]
     public void AddTextWatermark_ZeroOpacity_ReturnsUnchangedClone()
@@ -824,7 +852,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证文字水印拒绝空图像、空白文本和无效尺寸参数。
+    /// 验证文字水印拒绝空图像、空白文本和无效尺寸参数。
     /// </summary>
     [Fact]
     public void AddTextWatermark_InvalidArguments_Throw()
@@ -842,7 +870,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证验证码文本长度正确且仅包含去歧义数字和字母。
+    /// 验证验证码文本长度正确且仅包含去歧义数字和字母。
     /// </summary>
     [Fact]
     public void GetCaptchaCode_ValidLength_ReturnsExpectedShape()
@@ -854,7 +882,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证验证码长度为 0 时抛出范围异常。
+    /// 验证验证码长度为 0 时抛出范围异常。
     /// </summary>
     [Fact]
     public void GetCaptchaCode_InvalidLength_ThrowsArgumentOutOfRangeException()
@@ -864,7 +892,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证按长度创建的验证码图片包含指定长度的数字字母文本。
+    /// 验证按长度创建的验证码图片包含指定长度的数字字母文本。
     /// </summary>
     [Fact]
     public void CreateCaptchaImage_WithLengthOutCode_ReturnsExpectedCodeShapeAndImageSize()
@@ -881,7 +909,7 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证按长度创建验证码图片时拒绝非法长度。
+    /// 验证按长度创建验证码图片时拒绝非法长度。
     /// </summary>
     [Fact]
     public void CreateCaptchaImage_InvalidLength_ThrowsArgumentOutOfRangeException()
@@ -891,8 +919,11 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证验证码图片尺寸随文本长度变化且文本区域含有绘制像素。
+    /// 验证验证码图片尺寸随文本长度变化且文本区域含有绘制像素。
     /// </summary>
+    /// <param name="code">验证码文本。</param>
+    /// <param name="expectedWidth">期望图像宽度。</param>
+    /// <param name="expectedHeight">期望图像高度。</param>
     [Theory]
     [InlineData("A", 40, 30)]
     [InlineData("AB12", 100, 30)]
@@ -908,8 +939,9 @@ public class SkiaSharpHelperTest
     }
 
     /// <summary>
-/// 验证验证码图片 API 拒绝空白验证码文本。
+    /// 验证验证码图片 API 拒绝空白验证码文本。
     /// </summary>
+    /// <param name="code">待验证的验证码文本。</param>
     [Theory]
     [InlineData("")]
     [InlineData("   ")]

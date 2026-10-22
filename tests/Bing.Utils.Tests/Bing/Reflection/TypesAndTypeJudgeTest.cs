@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Bing.Reflection;
 /// <summary>
 /// 验证类型默认值、可空类型、元组及泛型实现判定。
@@ -24,12 +26,12 @@ public class TypesAndTypeJudgeTest
         result.ShouldBeNull();
     }
     /// <summary>
-    /// 验证空类型的默认值查询当前抛出空引用异常。
+    /// 验证空类型的默认值查询抛出参数异常。
     /// </summary>
     [Fact]
-    public void DefaultValue_ByType_NullType_CurrentlyThrowsNullReferenceException()
+    public void DefaultValue_ByType_NullType_ThrowsArgumentNullException()
     {
-        Should.Throw<NullReferenceException>(() => Types.DefaultValue((Type)null));
+        Should.Throw<ArgumentNullException>(() => Types.DefaultValue((Type)null));
     }
     /// <summary>
     /// 验证泛型与对象重载均识别默认值及非默认值。
@@ -65,12 +67,13 @@ public class TypesAndTypeJudgeTest
         types.ShouldBe([typeof(int), typeof(string)]);
     }
     /// <summary>
-    /// 验证空对象数组的类型提取结果为空。
+    /// 验证空对象数组的类型提取抛出参数异常并标明参数名。
     /// </summary>
     [Fact]
-    public void Of_ObjectArray_NullArray_ReturnsNull()
+    public void Of_ObjectArray_NullArray_ThrowsArgumentNullException()
     {
-        Types.Of(null).ShouldBeNull();
+        Should.Throw<ArgumentNullException>(() => Types.Of((object[])null!))
+            .ParamName.ShouldBe("objects");
     }
     /// <summary>
     /// 验证引用元组与值元组均满足元组类型判定。
@@ -108,6 +111,17 @@ public class TypesAndTypeJudgeTest
         object value = 123;
         Types.IsNumericType(value).ShouldBeFalse();
     }
+
+    /// <summary>
+    /// 测试用例：验证 `IsStructType` 的 TypeInfo 重载在空值和有效结构类型场景下返回预期结果。
+    /// </summary>
+    [Fact]
+    public void IsStructType_TypeInfo_NullAndValueType_ReturnsExpected()
+    {
+        Types.IsStructType((TypeInfo)null).ShouldBeFalse();
+        Types.IsStructType(typeof(DateTime).GetTypeInfo()).ShouldBeTrue();
+    }
+
     /// <summary>
     /// 验证空集合值在忽略可空选项下按声明类型识别。
     /// </summary>
@@ -162,13 +176,17 @@ public class TypesAndTypeJudgeTest
         TypeJudge.IsGenericImplementation(typeof(DerivedGeneric), typeof(BaseGeneric<>)).ShouldBeTrue();
     }
     /// <summary>
-    /// 验证泛型实现查询当前接受开放泛型定义而不接受闭合类型。
+    /// 验证泛型实现与原始类型查询包装器可匹配闭合泛型类型。
     /// </summary>
     [Fact]
-    public void Types_IsGenericImplementation_WrapperMethod_CurrentlyRequiresOpenGenericAndReturnsFalseForClosedGeneric()
+    public void Types_IsGenericImplementationAndRawType_WrapperMethods_AcceptClosedGeneric()
     {
         Types.IsGenericImplementation(typeof(List<int>), typeof(IEnumerable<>)).ShouldBeTrue();
-        Types.IsGenericImplementation<DerivedGeneric, BaseGeneric<int>>().ShouldBeFalse();
+        Types.IsGenericImplementation<DerivedGeneric, BaseGeneric<int>>().ShouldBeTrue();
+        Types.IsGenericImplementation<DerivedGeneric, BaseGeneric<string>>().ShouldBeFalse();
+        Types.GetRawTypeFromGenericClass(typeof(DerivedGeneric), typeof(BaseGeneric<int>)).ShouldBe(typeof(int));
+        Types.GetRawTypeFromGenericClass<DerivedGeneric, BaseGeneric<int>>().ShouldBe(typeof(int));
+        Types.GetRawTypeFromGenericClass(typeof(DerivedGeneric), typeof(BaseGeneric<string>)).ShouldBeNull();
     }
     /// <summary>
     /// 提供可空枚举类型判定的测试枚举。

@@ -23,6 +23,16 @@ public sealed class CsCommentsParam
     public static readonly CsCommentsParam Empty = new();
 
     /// <summary>
+    /// 获取 param 或 typeparam 节点的原始 XML。
+    /// </summary>
+    public string RawXml { get; private set; }
+
+    /// <summary>
+    /// 获取 param 或 typeparam 节点的结构化元素快照。
+    /// </summary>
+    public CsCommentElement Element { get; private set; }
+
+    /// <summary>
     /// 初始化一个 <see cref="CsCommentsParam"/> 类型的实例。
     /// </summary>
     private CsCommentsParam() { }
@@ -33,6 +43,8 @@ public sealed class CsCommentsParam
     /// <param name="node">包含 <c>name</c> 属性和说明文本的 XML 参数节点。</param>
     internal CsCommentsParam(XmlNode node)
     {
+        RawXml = node.OuterXml;
+        Element = new CsCommentElement(node);
         var attr = node.Attributes["name"];
         if (attr != null)
             Name = attr.InnerText.Trim();

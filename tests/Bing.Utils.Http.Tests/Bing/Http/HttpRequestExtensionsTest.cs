@@ -23,7 +23,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// <c>GetAbsoluteUri</c> 应拼接 Scheme/Host/PathBase/Path/Query 为完整地址
+    /// 验证绝对地址由协议、主机、路径基址、请求路径和查询参数组成。
     /// </summary>
     [Fact]
     public void GetAbsoluteUri_ShouldReturnExpectedUri()
@@ -232,7 +232,48 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// <c>IsJsonContentType</c> 在 JSON 相关请求头都缺失时应返回 <c>false</c>
+    /// 验证 JSON 媒体类型按完整名称匹配。
+    /// </summary>
+    /// <param name="contentType">Content-Type 头值。</param>
+    /// <param name="accept">Accept 头值。</param>
+    /// <param name="expected">预期是否识别为 JSON。</param>
+    [Theory]
+    [InlineData("APPLICATION/JSON; charset=utf-8", null, true)]
+    [InlineData("text/json", null, true)]
+    [InlineData("application/jsonp", null, false)]
+    [InlineData("application/problem+json", null, false)]
+    [InlineData("text/plain", "text/html, application/json; q=0.9", true)]
+    [InlineData(null, "text/html, TEXT/JSON", true)]
+    [InlineData(null, "application/jsonp", false)]
+    [InlineData(null, "application/json, invalid", false)]
+    public void IsJsonContentType_ShouldParseMediaTypesExactly(string contentType, string accept,
+        bool expected)
+    {
+        var request = CreateRequest(r =>
+        {
+            if (contentType != null)
+                r.Headers["Content-Type"] = contentType;
+            if (accept != null)
+                r.Headers["Accept"] = accept;
+        });
+
+        request.IsJsonContentType().ShouldBe(expected);
+    }
+
+    /// <summary>
+    /// 验证多个 Accept 头值中的 JSON 类型可被识别。
+    /// </summary>
+    [Fact]
+    public void IsJsonContentType_ShouldReturnTrue_WhenAcceptHasMultipleHeaderValues()
+    {
+        var request = CreateRequest(r =>
+            r.Headers["Accept"] = new StringValues(new[] { "text/html", "text/json; q=0.8" }));
+
+        request.IsJsonContentType().ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// 验证未声明 JSON 类型时返回 false。
     /// </summary>
     [Fact]
     public void IsJsonContentType_ShouldReturnFalse_WhenJsonHeadersMissing()
@@ -292,7 +333,7 @@ public class HttpRequestExtensionsTest
     }
 
     /// <summary>
-    /// 验证 User-Agent 长度不足时不匹配移动浏览器特征。
+    /// 验证过短 User-Agent 不匹配移动浏览器特征。
     /// </summary>
     [Fact]
     public void IsMobileBrowser_ShouldReturnFalse_WhenUserAgentLengthLessThan4()

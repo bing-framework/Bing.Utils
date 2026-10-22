@@ -2,7 +2,9 @@ using SkiaSharp;
 
 namespace Bing.Drawing;
 
-// 图片操作辅助类 - 兼容层
+/// <summary>
+/// 提供 SkiaSharp 兼容图像操作。
+/// </summary>
 public static partial class SkiaSharpHelper
 {
     #region ToStream(转换为内存流)
@@ -11,17 +13,13 @@ public static partial class SkiaSharpHelper
     /// 将图片转换为内存流，调用方负责释放资源
     /// </summary>
     /// <param name="image">图片</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>定位到起始位置的图像流。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
     public static Stream ToStream(SKImage image)
     {
         if (image is null)
             throw new ArgumentNullException(nameof(image));
-        using var data = Encode(image);
-        var ms = new MemoryStream();
-        var bytes = data.ToArray();
-        ms.Write(bytes, 0, bytes.Length);
-        ms.Position = 0;
-        return ms;
+        return new MemoryStream(ToBytes(image), writable: false);
     }
 
     #endregion
@@ -29,14 +27,15 @@ public static partial class SkiaSharpHelper
     #region MakeThumbnail(生成缩略图)
 
     /// <summary>
-    /// 生成缩略图
+    /// 生成缩略图。
     /// </summary>
     /// <param name="sourceImage">源图</param>
     /// <param name="width">缩略图宽度</param>
     /// <param name="height">缩略图高度</param>
     /// <param name="mode">缩略图方式</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <returns>生成的缩略图。</returns>
+    /// <exception cref="ArgumentNullException">源图为空。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">目标宽度或高度无效。</exception>
     public static SKImage MakeThumbnail(SKImage sourceImage, int width, int height, ThumbnailMode mode)
     {
         if (sourceImage is null)
@@ -48,8 +47,8 @@ public static partial class SkiaSharpHelper
 
         var srcW = sourceImage.Width;
         var srcH = sourceImage.Height;
-        int destW = width, destH = height;
-        int cropX = 0, cropY = 0, cropW = srcW, cropH = srcH;
+        long destW = width, destH = height;
+        long cropX = 0, cropY = 0, cropW = srcW, cropH = srcH;
 
         switch (mode)
         {
@@ -57,63 +56,86 @@ public static partial class SkiaSharpHelper
                 break;
 
             case ThumbnailMode.FixedW:
-                destH = srcH * width / srcW;
+                destH = checked((long)srcH * width / srcW);
                 break;
 
             case ThumbnailMode.FixedH:
-                destW = srcW * height / srcH;
+                destW = checked((long)srcW * height / srcH);
                 break;
 
             case ThumbnailMode.Cut:
                 if (srcW / (double)srcH > destW / (double)destH)
                 {
-                    cropW = srcH * destW / destH;
+                    cropW = checked((long)srcH * destW / destH);
                     cropX = (srcW - cropW) / 2;
                 }
                 else
                 {
-                    cropH = srcW * destH / destW;
+                    cropH = checked((long)srcW * destH / destW);
                     cropY = (srcH - cropH) / 2;
                 }
                 break;
         }
 
+        var outputWidth = ToDimension(destW, nameof(width));
+        var outputHeight = ToDimension(destH, nameof(height));
+        var cropLeft = ToDimension(cropX, nameof(cropX), allowZero: true);
+        var cropTop = ToDimension(cropY, nameof(cropY), allowZero: true);
+        var cropWidth = ToDimension(cropW, nameof(cropW));
+        var cropHeight = ToDimension(cropH, nameof(cropH));
+
         using var sourceBitmap = SKBitmap.FromImage(sourceImage);
 
         if (mode == ThumbnailMode.Cut)
         {
-            using var cropped = new SKBitmap(cropW, cropH, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+            using var cropped = new SKBitmap(cropWidth, cropHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
             using var cropCanvas = new SKCanvas(cropped);
             cropCanvas.Clear(SKColors.Transparent);
-            cropCanvas.DrawBitmap(sourceBitmap, new SKRect(cropX, cropY, cropX + cropW, cropY + cropH),
-                new SKRect(0, 0, cropW, cropH));
+            cropCanvas.DrawBitmap(sourceBitmap, new SKRect(cropLeft, cropTop, cropLeft + cropWidth, cropTop + cropHeight),
+                new SKRect(0, 0, cropWidth, cropHeight));
 
-            using var output = new SKBitmap(destW, destH, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+            using var output = new SKBitmap(outputWidth, outputHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
             using var canvas = new SKCanvas(output);
             using var paint = new SKPaint { FilterQuality = SKFilterQuality.High, IsAntialias = true };
             canvas.Clear(SKColors.Transparent);
-            canvas.DrawBitmap(cropped, new SKRect(0, 0, destW, destH), paint);
+            canvas.DrawBitmap(cropped, new SKRect(0, 0, outputWidth, outputHeight), paint);
             return CopyTrackedFormat(sourceImage, SKImage.FromBitmap(output));
         }
 
         {
-            using var output = new SKBitmap(destW, destH, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+            using var output = new SKBitmap(outputWidth, outputHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
             using var canvas = new SKCanvas(output);
             using var paint = new SKPaint { FilterQuality = SKFilterQuality.High, IsAntialias = true };
             canvas.Clear(SKColors.Transparent);
-            canvas.DrawBitmap(sourceBitmap, new SKRect(0, 0, destW, destH), paint);
+            canvas.DrawBitmap(sourceBitmap, new SKRect(0, 0, outputWidth, outputHeight), paint);
             return CopyTrackedFormat(sourceImage, SKImage.FromBitmap(output));
         }
     }
 
     /// <summary>
-    /// 从字节数组生成缩略图
+    /// 将缩略图计算结果限制在 SkiaSharp 可接受的整数尺寸内。
+    /// </summary>
+    /// <param name="value">计算后的尺寸。</param>
+    /// <param name="parameterName">发生异常时使用的参数名。</param>
+    /// <param name="allowZero">是否允许结果为零。</param>
+    /// <returns>转换后的整数尺寸。</returns>
+    private static int ToDimension(long value, string parameterName, bool allowZero = false)
+    {
+        var minimum = allowZero ? 0 : 1;
+        if (value < minimum || value > int.MaxValue)
+            throw new ArgumentOutOfRangeException(parameterName, "计算后的图像尺寸超出有效范围。");
+        return (int)value;
+    }
+
+    /// <summary>
+    /// 生成缩略图。
     /// </summary>
     /// <param name="imgBytes">源文件字节数组</param>
     /// <param name="width">缩略图宽度</param>
     /// <param name="height">缩略图高度</param>
     /// <param name="mode">缩略图方式</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>生成的缩略图。</returns>
+    /// <exception cref="ArgumentNullException">源字节数组为空。</exception>
     public static SKImage MakeThumbnail(byte[] imgBytes, int width, int height, ThumbnailMode mode)
     {
         if (imgBytes is null)
@@ -127,14 +149,15 @@ public static partial class SkiaSharpHelper
     }
 
     /// <summary>
-    /// 从文件路径生成缩略图并保存到指定路径
+    /// 生成缩略图。
     /// </summary>
+    /// <remarks>从源文件生成缩略图，并将结果写入指定目标路径。</remarks>
     /// <param name="sourceImagePath">源文件路径</param>
     /// <param name="thumbnailPath">缩略图保存路径</param>
     /// <param name="width">缩略图宽度</param>
     /// <param name="height">缩略图高度</param>
     /// <param name="mode">缩略图方式</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentNullException">源文件路径或目标文件路径为空。</exception>
     public static void MakeThumbnail(string sourceImagePath, string thumbnailPath, int width, int height, ThumbnailMode mode)
     {
         if (string.IsNullOrWhiteSpace(sourceImagePath))
@@ -149,7 +172,7 @@ public static partial class SkiaSharpHelper
 
         using var result = MakeThumbnail(source, width, height, mode);
         var resultBytes = ToBytes(result);
-        File.WriteAllBytes(thumbnailPath, resultBytes);
+        Internal.ImageFileWriter.Write(thumbnailPath, resultBytes);
     }
 
     #endregion
@@ -157,13 +180,14 @@ public static partial class SkiaSharpHelper
     #region ScaleImage(缩放图像)
 
     /// <summary>
-    /// 缩放图像到指定画布大小，保持宽高比居中放置，透明背景填充
+    /// 缩放图像到指定画布大小。
     /// </summary>
     /// <param name="image">图像</param>
     /// <param name="width">目标画布宽度</param>
     /// <param name="height">目标画布高度</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <returns>缩放后的图像。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">目标宽度或高度无效。</exception>
     public static SKImage ScaleImage(SKImage image, int width, int height)
     {
         if (image is null)
@@ -204,7 +228,8 @@ public static partial class SkiaSharpHelper
     /// 图片灰度化。使用加权公式 Gray = 0.299*R + 0.587*G + 0.114*B。
     /// </summary>
     /// <param name="image">图片</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>灰度处理后的图像。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
     public static SKImage Gray(SKImage image)
     {
         if (image is null)
@@ -227,7 +252,8 @@ public static partial class SkiaSharpHelper
     /// 将图像转换为黑白图片。使用 RGB 均值公式 result = (R + G + B) / 3。
     /// </summary>
     /// <param name="image">图片</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>黑白处理后的图像。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
     public static SKImage ToBlackWhiteImage(SKImage image)
     {
         if (image is null)
@@ -248,7 +274,8 @@ public static partial class SkiaSharpHelper
     /// 滤色处理，将红色通道置零
     /// </summary>
     /// <param name="image">图片</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>滤色处理后的图像。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
     public static SKImage FilterColor(SKImage image)
     {
         if (image is null)
@@ -265,7 +292,8 @@ public static partial class SkiaSharpHelper
     /// 底片效果，反转 RGB 通道
     /// </summary>
     /// <param name="image">图片</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>底片处理后的图像。</returns>
+    /// <exception cref="ArgumentNullException">图像为空。</exception>
     public static SKImage Plate(SKImage image)
     {
         if (image is null)
@@ -287,7 +315,8 @@ public static partial class SkiaSharpHelper
     /// </summary>
     /// <param name="image">图片</param>
     /// <param name="func">像素转换函数，输入原始颜色，返回目标颜色</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <returns>逐像素处理后的图像。</returns>
+    /// <exception cref="ArgumentNullException">图像或像素转换函数为空。</exception>
     public static SKImage PerPixelProcess(SKImage image, Func<SKColor, SKColor> func)
     {
         if (image is null)
@@ -306,6 +335,7 @@ public static partial class SkiaSharpHelper
     /// 获取颜色的灰度值（0..1）
     /// </summary>
     /// <param name="color">颜色</param>
+    /// <returns>范围为 0 到 1 的灰度值。</returns>
     public static float GetGrayScale(SKColor color)
     {
         return (0.30f * color.Red + 0.59f * color.Green + 0.11f * color.Blue) / 255f;
@@ -317,6 +347,7 @@ public static partial class SkiaSharpHelper
     /// <param name="sourceColor">原始颜色</param>
     /// <param name="clr1">决定双色调效果的颜色A</param>
     /// <param name="clr2">决定双色调效果的颜色B</param>
+    /// <returns>按灰度值在两种颜色之间插值得到的颜色。</returns>
     public static SKColor GetDuotoneColor(SKColor sourceColor, SKColor clr1, SKColor clr2)
     {
         var grayScale = GetGrayScale(sourceColor);
@@ -332,6 +363,7 @@ public static partial class SkiaSharpHelper
     /// <param name="x">颜色A</param>
     /// <param name="y">颜色B</param>
     /// <param name="accuracy">允许的误差值。默认：36</param>
+    /// <returns>颜色相近返回 <see langword="true" />，否则返回 <see langword="false" />。</returns>
     public static bool IsSimilarColors(SKColor x, SKColor y, int accuracy = 36)
     {
         if (Math.Abs(x.Alpha - y.Alpha) > 1)
@@ -355,6 +387,7 @@ public static partial class SkiaSharpHelper
     /// </summary>
     /// <param name="x">颜色A</param>
     /// <param name="y">颜色B</param>
+    /// <returns>两种颜色的加权差异值。</returns>
     public static double ColorDifference(SKColor x, SKColor y)
     {
         return ColorDifferenceInternal(x, y);
@@ -366,6 +399,7 @@ public static partial class SkiaSharpHelper
     /// <param name="color">背景颜色</param>
     /// <param name="backColor">其它混合背景颜色</param>
     /// <param name="amount">保留多少颜色（0..1）</param>
+    /// <returns>混合后的颜色。</returns>
     public static SKColor Blend(SKColor color, SKColor backColor, double amount)
     {
         var r = (byte)(color.Red * amount + backColor.Red * (1 - amount));
@@ -377,6 +411,9 @@ public static partial class SkiaSharpHelper
     /// <summary>
     /// 计算颜色差异（内部使用）
     /// </summary>
+    /// <param name="x">第一个颜色。</param>
+    /// <param name="y">第二个颜色。</param>
+    /// <returns>两种颜色的加权差异值。</returns>
     private static double ColorDifferenceInternal(SKColor x, SKColor y)
     {
         var m = (x.Red + y.Red) / 2d;

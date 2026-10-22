@@ -4,7 +4,9 @@
   <Import Project="..\..\common.props" />
 
   <ItemGroup>
-    <Folder Include="Bing\Extra\Emoji\" />
+    <None Include="..\..\asset\emoji\LICENSE.unicode.txt" Pack="true" PackagePath="licenses/" />
+    <None Include="..\..\asset\emoji\LICENSE.gemoji.txt" Pack="true" PackagePath="licenses/" />
+    <None Include="..\..\asset\emoji\README.md" Pack="true" PackagePath="licenses/emoji-sources.md" />
   </ItemGroup>
 
 </Project>

@@ -18,9 +18,24 @@ public sealed class CsCommentsException
     public string Cref { get; private set; }
 
     /// <summary>
+    /// 获取节点中未经兼容处理的 cref 属性值。
+    /// </summary>
+    public string RawCref { get; private set; }
+
+    /// <summary>
     /// 获取异常节点去除首尾空白后的说明文本。
     /// </summary>
     public string Text { get; private set; }
+
+    /// <summary>
+    /// 获取 exception 节点的原始 XML。
+    /// </summary>
+    public string RawXml { get; private set; }
+
+    /// <summary>
+    /// 获取 exception 节点的结构化元素快照。
+    /// </summary>
+    public CsCommentElement Element { get; private set; }
 
     /// <summary>
     /// 初始化一个 <see cref="CsCommentsException"/> 类型的实例。
@@ -29,12 +44,16 @@ public sealed class CsCommentsException
     /// <param name="node">包含 <c>cref</c> 属性和说明文本的 XML 异常节点。</param>
     internal CsCommentsException(int index, XmlNode node)
     {
+        RawXml = node.OuterXml;
+        Element = new CsCommentElement(node);
         Index = index;
         var attr = node.Attributes["cref"];
         if (attr != null)
         {
-            Cref = attr.InnerText;
-            Cref = Cref?.Remove(0, 2);
+            RawCref = attr.Value;
+            Cref = RawCref != null && RawCref.Length > 1 && RawCref[1] == ':'
+                ? RawCref.Substring(2)
+                : RawCref;
         }
         Text = node.InnerText.Trim();
     }

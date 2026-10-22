@@ -1,5 +1,13 @@
 ﻿# 测试质量报告（阶段5）
 
+> 2026-10-15 P0-2 验收补齐：核对原计划发现，异步写入生产修复及单次覆盖／追加测试已完成，但本节要求的并发／重复写入回归此前缺失。本轮在 `tests/Bing.Utils.Tests/Bing/IO/FileHelperWriteRegressionTest.cs` 新增 2 项回归，验证重复覆盖（含短内容、空内容）、返回后独占重开及 8 个不同文件并发写入的完整内容。net8.0 Release 编译通过，相关测试 5/5 通过、0 失败、0 跳过；P0-2 关闭。生产代码未改，同一路径并发串行化不属于本项契约。命令及证据见 [TODO 执行记录](todo-execution.md) 当前批次；下文保留原阶段记录。
+
+> 2026-10-15 核对：本文 P0、P1-1 已完成；P1-2 的 net8 目标及 net6/net8 nightly 已实现，实际 CI 待验证。覆盖计划 P2-1 的 HTTP 失败链路此前已完成。本轮完成本文 P2-2 的异常输入模板化回归：补格式化空输入、非法正则及显式 null/空选择器，复用既有非法签名用例；net8 Release 编译通过，Text 定向 72/72、Reflection 定向 67/67。P2-1 图像性能预算仍待批准，不将本轮正确性结果作为性能验收。当前范围与证据见 [TODO 执行记录](todo-execution.md)，HTTP 历史结果见 [HTTP 后续记录](http-security-reliability-report.md)。下文保留原阶段记录。
+
+> 2026-10-15 P2-1 实施：已按 [性能决策](performance-scope-decisions.md) 完成 8 场景负载、smoke、校准和预算检查；net8 Release 编译及 smoke 8/8 通过，候选分配量 8/8、耗时 4/8 达标，整体性能门禁未通过。P2-1 为 PARTIAL / BLOCKED_EXTERNAL；同程序集耗时差异待稳定环境复核，不放宽阈值或自动重跑。见 [执行证据](image-performance-execution.md)。上文“预算待批准”是此前状态。
+
+> 2026-10-15 决策补充：P2-1 的两后端负载、机器、测量轮次及校准预算规则已确定，转为可执行，尚未实施或验收。以 [图像性能与反射决策](performance-scope-decisions.md) 为准；上文“预算待批准”是此前状态。
+
 ## 1. 本轮完成范围
 
 - 已补齐 P0（图像相关核心单测）：`ImageSharpHelper`、`SkiaSharpHelper`、`CaptchaBuilder` 的正向与边界行为。  

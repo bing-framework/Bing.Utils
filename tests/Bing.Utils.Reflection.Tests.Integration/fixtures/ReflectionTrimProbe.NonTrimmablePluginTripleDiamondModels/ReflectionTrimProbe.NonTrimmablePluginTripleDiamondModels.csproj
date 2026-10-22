@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- 该夹具模拟同时引用三条未声明 IsTrimmable 的第三方依赖边。 -->
+    <AssemblyName>ReflectionTrimProbe.NonTrimmablePluginModels</AssemblyName>
+    <RootNamespace>ReflectionTrimProbe.NonTrimmablePluginModels</RootNamespace>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReflectionTrimProbe.NonTrimmablePluginDependency\ReflectionTrimProbe.NonTrimmablePluginDependency.csproj" />
+    <ProjectReference Include="..\ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency\ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency.csproj" />
+    <ProjectReference Include="..\ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency\ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency.csproj" />
+  </ItemGroup>
+</Project>

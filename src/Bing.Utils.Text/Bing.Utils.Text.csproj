@@ -6,9 +6,34 @@
 	</PropertyGroup>
 
 	<Import Project="..\..\common.props" />
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(BingTextExternalOnly)' == 'true'">
+		<PackageId>Bing.Utils.Text.External</PackageId>
+		<OutputPath>..\..\output\external\$(Configuration)\</OutputPath>
+		<IntermediateOutputPath>obj\external\$(Configuration)\</IntermediateOutputPath>
+		<DefineConstants>$(DefineConstants);BING_TEXT_EXTERNAL_ONLY</DefineConstants>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Bing.Utils\Bing.Utils.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(BingTextExternalOnly)' != 'true'">
+		<EmbeddedResource Include="..\..\asset\pinyin\data\characters.gz" LogicalName="Bing.Text.Pinyin.Data.characters.gz" />
+		<EmbeddedResource Include="..\..\asset\pinyin\data\phrases.gz" LogicalName="Bing.Text.Pinyin.Data.phrases.gz" />
+		<EmbeddedResource Include="..\..\asset\opencc\data\s2t.gz" LogicalName="Bing.Text.Chinese.Data.s2t.gz" />
+		<EmbeddedResource Include="..\..\asset\opencc\data\t2s.gz" LogicalName="Bing.Text.Chinese.Data.t2s.gz" />
+		<None Include="..\..\asset\opencc\LICENSE" Pack="true" PackagePath="licenses/" Link="opencc-license.txt" />
+		<None Include="..\..\asset\opencc\README.md" Pack="true" PackagePath="licenses/opencc-sources.md" />
+		<None Include="..\..\asset\pinyin\LICENSE.characters.txt" Pack="true" PackagePath="licenses/pinyin-characters.txt" />
+		<None Include="..\..\asset\pinyin\LICENSE.phrases.txt" Pack="true" PackagePath="licenses/pinyin-phrases.txt" />
+		<None Include="..\..\asset\pinyin\README.md" Pack="true" PackagePath="licenses/pinyin-sources.md" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(BingTextExternalOnly)' == 'true'">
+		<Compile Remove="Bing\Text\Chinese\ChineseConverter.cs" />
 	</ItemGroup>
 
 </Project>

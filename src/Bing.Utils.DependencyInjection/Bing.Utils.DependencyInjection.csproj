@@ -5,9 +5,13 @@
 		<Description>Bing.Utils.DependencyInjection是Bing应用框架的IOC组件操作类库，基于 Microsoft.Extensions.DependencyInjection 所封装的类库。</Description>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Folder Include="Bing\DependencyInjection\" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
 	</ItemGroup>
 
 	<Import Project="..\..\common.props" />
+	<ItemGroup>
+		<!-- 保留公共 SourceLink 构建能力，不向本模块消费者传递构建工具依赖。 -->
+		<PackageReference Update="DotNetCore.SourceLink.Environment" PrivateAssets="all" />
+	</ItemGroup>
 
 </Project>

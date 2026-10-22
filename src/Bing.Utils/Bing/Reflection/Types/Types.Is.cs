@@ -406,7 +406,8 @@ public static partial class Types
     /// <param name="typeInfo">类型信息</param>
     /// <param name="isOptions">类型判断选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsStructType(TypeInfo typeInfo, TypeIsOptions isOptions = TypeIsOptions.Default) => IsStructType(typeInfo.AsType(), isOptions);
+    public static bool IsStructType(TypeInfo typeInfo, TypeIsOptions isOptions = TypeIsOptions.Default) =>
+        typeInfo is not null && IsStructType(typeInfo.AsType(), isOptions);
 
     /// <summary>
     /// 判断给定的类型是否为结构类型
@@ -468,7 +469,11 @@ public static partial class Types
     /// 判断给定的类型是否为集合或数组类型
     /// </summary>
     /// <param name="type">类型</param>
-    public static bool IsCollectionType(Type type)
+    public static bool IsCollectionType(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type)
     {
         return type is not null && (type.IsArray || type.GetInterfaces().Any(InterfacePredicate));
 
@@ -488,7 +493,11 @@ public static partial class Types
     /// </summary>
     /// <typeparam name="T">泛型类型</typeparam>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsCollectionType<T>() => IsCollectionType(typeof(T));
+    public static bool IsCollectionType<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        T>() => IsCollectionType(typeof(T));
 
     /// <summary>
     /// 判断给定的对象是否为集合或数组类型
@@ -497,7 +506,11 @@ public static partial class Types
     /// <param name="value">值</param>
     /// <param name="isOptions">类型判断选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsCollectionType<T>(T value, TypeIsOptions isOptions = TypeIsOptions.Default) =>
+    public static bool IsCollectionType<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        T>(T value, TypeIsOptions isOptions = TypeIsOptions.Default) =>
         isOptions switch
         {
             TypeIsOptions.Default => value is not null && IsCollectionType(typeof(T)),
@@ -571,7 +584,11 @@ public static partial class Types
     /// <param name="interfaceType">接口类型</param>
     /// <param name="options">接口选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsInterfaceDefined(Type type, Type interfaceType, InterfaceOptions options = InterfaceOptions.Default) =>
+    public static bool IsInterfaceDefined(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, Type interfaceType, InterfaceOptions options = InterfaceOptions.Default) =>
         TypeReflections.IsInterfaceDefined(type, interfaceType, options);
 
     /// <summary>
@@ -581,7 +598,11 @@ public static partial class Types
     /// <param name="type">类型</param>
     /// <param name="options">接口选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsInterfaceDefined<TInterface>(Type type, InterfaceOptions options = InterfaceOptions.Default) =>
+    public static bool IsInterfaceDefined<TInterface>(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, InterfaceOptions options = InterfaceOptions.Default) =>
         TypeReflections.IsInterfaceDefined<TInterface>(type, options);
 
     /// <summary>
@@ -591,7 +612,11 @@ public static partial class Types
     /// <typeparam name="TInterface">接口类型</typeparam>
     /// <param name="options">接口选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsInterfaceDefined<T, TInterface>(InterfaceOptions options = InterfaceOptions.Default) =>
+    public static bool IsInterfaceDefined<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        T, TInterface>(InterfaceOptions options = InterfaceOptions.Default) =>
         TypeReflections.IsInterfaceDefined<TInterface>(typeof(T), options);
 
     /// <summary>
@@ -603,7 +628,11 @@ public static partial class Types
     /// <param name="options">接口选项</param>
     /// <param name="isOptions">类型判断选项</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsInterfaceDefined<T, TInterface>(T value, InterfaceOptions options = InterfaceOptions.Default, TypeIsOptions isOptions = TypeIsOptions.Default)
+    public static bool IsInterfaceDefined<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        T, TInterface>(T value, InterfaceOptions options = InterfaceOptions.Default, TypeIsOptions isOptions = TypeIsOptions.Default)
     {
         return isOptions switch
         {

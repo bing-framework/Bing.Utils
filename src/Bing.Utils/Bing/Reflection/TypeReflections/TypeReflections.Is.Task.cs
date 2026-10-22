@@ -7,16 +7,6 @@ namespace Bing.Reflection;
 public static partial class TypeReflections
 {
     /// <summary>
-    /// 是否 <see cref="Task{T}"/> 泛型缓存
-    /// </summary>
-    private static readonly ConcurrentDictionary<TypeInfo, bool> IsTaskOfTCache = new();
-
-    /// <summary>
-    /// 是否 <see cref="ValueTask{T}"/> 泛型缓存
-    /// </summary>
-    private static readonly ConcurrentDictionary<TypeInfo, bool> IsValueTaskOfTCache = new();
-
-    /// <summary>
     /// 无返回结果类型
     /// </summary>
     private static readonly Type VoidTaskResultType = Type.GetType("System.Threading.Tasks.VoidTaskResult", false);
@@ -42,7 +32,7 @@ public static partial class TypeReflections
     {
         if (typeInfo == null)
             throw new ArgumentNullException(nameof(typeInfo));
-        return IsTaskOfTCache.GetOrAdd(typeInfo, info => info.IsGenericType && typeof(Task).GetTypeInfo().IsAssignableFrom(info));
+        return typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == typeof(Task<>);
     }
 
     /// <summary>
@@ -54,7 +44,10 @@ public static partial class TypeReflections
     {
         if (typeInfo == null)
             throw new ArgumentNullException(nameof(typeInfo));
-        return typeInfo.GenericTypeParameters.Length > 0 && typeInfo.GenericTypeParameters[0] == VoidTaskResultType;
+        return typeInfo.IsGenericType
+            && typeInfo.GetGenericTypeDefinition() == typeof(Task<>)
+            && typeInfo.GenericTypeArguments.Length > 0
+            && typeInfo.GenericTypeArguments[0] == VoidTaskResultType;
     }
 
     /// <summary>
@@ -78,7 +71,7 @@ public static partial class TypeReflections
     {
         if (typeInfo == null)
             throw new ArgumentNullException(nameof(typeInfo));
-        return IsValueTaskOfTCache.GetOrAdd(typeInfo, info => info.IsGenericType && info.GetGenericTypeDefinition() == typeof(ValueTask<>));
+        return typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == typeof(ValueTask<>);
     }
 }
 

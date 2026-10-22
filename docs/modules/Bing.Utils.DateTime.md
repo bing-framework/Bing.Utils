@@ -64,8 +64,7 @@ var cst = input.ToCst(); // 注意：实现按当前时钟取值，不使用 inp
 - 对应测试项目/测试类/关键用例
 - 项目：`tests/Bing.Utils.DateTime.Tests`。[证据] `tests/Bing.Utils.DateTime.Tests/Bing.Utils.DateTime.Tests.csproj:11`
 - 类：`DateTimeExtensionsToTest`，覆盖 `ToUtc/ToCst/ToEpochTimeSpan/ToLocalDateTime`。[证据] `tests/Bing.Utils.DateTime.Tests/Bing/Date/Extensions/DateTimeExtensionsToTest.cs:10` [证据] `tests/Bing.Utils.DateTime.Tests/Bing/Date/Extensions/DateTimeExtensionsToTest.cs:23` [证据] `tests/Bing.Utils.DateTime.Tests/Bing/Date/Extensions/DateTimeExtensionsToTest.cs:84`
-- 未覆盖风险点
-- `DateTimeSpanExtensions` 的专门测试映射需补充核对（TODO）。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:8`
+- `DateTimeSpan` 的核心计算由 `tests/Bing.Utils.DateTime.Tests/Bing/Date/DateTimeSpanCoreTest.cs` 覆盖。
 
 ## 8. 版本与兼容性注意事项
 - 跟随公共多目标框架策略。[证据] `common.props:3`

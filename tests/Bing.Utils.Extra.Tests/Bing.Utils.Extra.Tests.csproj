@@ -11,4 +11,9 @@
 		<ProjectReference Include="..\..\src\Bing.Utils.Extra\Bing.Utils.Extra.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<EmbeddedResource Include="..\..\asset\emoji\emoji-test.txt" Link="emoji\emoji-test.txt" LogicalName="Bing.Utils.Extra.Tests.emoji-test.txt" />
+		<EmbeddedResource Include="..\..\asset\emoji\gemoji.json" Link="emoji\gemoji.json" LogicalName="Bing.Utils.Extra.Tests.gemoji.json" />
+	</ItemGroup>
+
 </Project>

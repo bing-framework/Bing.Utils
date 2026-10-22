@@ -1,13 +1,18 @@
-﻿# Bing.Utils.Drawing
-## 1. 包职责（Scope）
+# Bing.Utils.Drawing
+
+统一入口、行为变更和迁移清单见 [统一图像处理](image-processing.md)。Shared 现为独立程序集；默认输出 PNG，加载失败抛异常，探测失败使用 TryLoad。
+
+## 1. 功能说明
 - 解决的问题
 - 基于 `System.Drawing` 提供验证码生成与图像处理辅助（旧版 GDI+ 实现）。
-- 同时提供 `Bing.Utils.Drawing.Shared` 源码共享层，包含跨平台纯算法和公共类型，不依赖任何图像引擎。
+- 同时提供 `Bing.Utils.Drawing.Shared` 独立程序集，包含跨平台纯算法和公共类型，不依赖任何图像引擎。
 - 不解决的问题（Out of Scope）
 - 不提供前端渲染组件。
 - ImageSharp / SkiaSharp 跨平台实现由独立子包承担。
 
 ## 2. 核心类型
+
+关键实现位于 `src/Bing.Utils.Drawing/Bing/Drawing`；公共图像契约和纯算法位于 `src/Bing.Utils.Drawing.Shared/Bing/Drawing`。
 
 ### 2.1 旧版（System.Drawing 依赖）
 - `CaptchaBuilder`：验证码生成器（属性驱动配置，支持中文系统字体）
@@ -43,7 +48,36 @@
 - `PngMetadataSanitizer`：PNG eXIf GPS 清除
 - `EncodedImageSanitizer`：格式检测与调度
 
-## 3. 注意事项
+## 3. 对外接口与用法示例
+
+```csharp
+using Bing.Drawing;
+using System.Drawing;
+
+using var source = Image.FromFile("photo.jpg");
+using var thumbnail = ImageHelper.MakeThumbnail(
+    source,
+    width: 200,
+    height: 200,
+    mode: ThumbnailMode.FixedBoth);
+
+var builder = new CaptchaBuilder {
+    FontSize = 24,
+    Height = 48
+};
+using var captcha = builder.CreateImage("AB12");
+```
+
+具体重载和历史兼容行为以 `ImageHelper`、`CaptchaBuilder` 的公开签名为准。
+
+## 4. 依赖与配置
+
+- 项目通过 `ProjectReference` 依赖 `Bing.Utils` 和 `Bing.Utils.Drawing.Shared`。
+- 图像后端依赖 `System.Drawing.Common 6.0.0`，并启用不安全代码。
+- 目标框架继承 `common.props`：`net8.0;net7.0;net6.0;netstandard2.0`。
+- Linux/Docker 通常需要额外安装 `libgdiplus`；平台是否支持仍取决于运行时和部署环境。
+
+## 5. 已知限制与注意事项
 - 旧版 `ColorConv.RgbToHsb` 实际语义是 HSL（GDI+ 行为），新版 `ColorConversion` 正确命名为 `RgbToHsl`。
 - 旧版 `DeleteCoordinate(Image)` 基于已解码对象，跨平台新版使用编码字节级清理。
 - Shared 层禁止依赖 `System.Drawing`、`SixLabors.ImageSharp`、`SkiaSharp`。
@@ -55,26 +89,26 @@
 - 是否可并发调用
 - 建议“每线程/每请求独立实例”并发调用。
 
-## 5. 异常与日志策略
+## 6. 异常与日志策略
 - 抛出哪些异常
 - 参数非法抛 `ArgumentOutOfRangeException` / `ArgumentNullException`。[证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:121` [证据] `src/Bing.Utils.Drawing/Bing/Drawing/CaptchaBuilder.cs:219`
 - 什么时候返回默认值而不是抛异常
 - 当前核心 API 对非法输入倾向抛异常，不返回默认值。
 
-## 6. 与其他子包的关系
+## 7. 与其他子包的关系
 - 依赖的包
 - 依赖 `Bing.Utils` 与 `System.Drawing.Common`。[证据] `src/Bing.Utils.Drawing/Bing.Utils.Drawing.csproj:15` [证据] `src/Bing.Utils.Drawing/Bing.Utils.Drawing.csproj:19`
 - 被哪些包复用
 - 当前 `src` 层未见其他子包直接引用 `Bing.Utils.Drawing`。
 
-## 7. 测试映射
+## 8. 测试映射
 - 对应测试项目/测试类/关键用例
 - 项目：`tests/Bing.Utils.Tests` 引用本包。[证据] `tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj:13`
 - 类：`CaptchaBuilderTest`（验证码生成与图片生成冒烟）。[证据] `tests/Bing.Utils.Tests/Drawing/CaptchaBuilderTest.cs:5`
 - 未覆盖风险点
 - 当前测试以“执行通过+输出”为主，断言强度有限（如像素正确性、并发一致性未覆盖）。[证据] `tests/Bing.Utils.Tests/Drawing/CaptchaBuilderTest.cs:19` [证据] `tests/Bing.Utils.Tests/Drawing/CaptchaBuilderTest.cs:47`
 
-## 8. 版本与兼容性注意事项
+## 9. 版本与兼容性注意事项
 - 跟随公共多目标框架策略。[证据] `common.props:3`
 - Linux/Docker 需安装 `libgdiplus` 等系统依赖，否则运行时可能失败。[证据] `src/Bing.Utils.Drawing/README.md:2` [证据] `src/Bing.Utils.Drawing/README.md:6`
 

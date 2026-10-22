@@ -17,8 +17,8 @@ public static class BitmapExtensions
     /// <param name="percentage">改变图像亮度的百分比。范围：-100..100。</param>
     public static void SetBrightness(this Bitmap bitmap, float percentage)
     {
-        var colorMatrix = ColorMatrices.CreateBrightnessFilter(percentage);
-        ColorMatrices.ApplyMatrix(bitmap, colorMatrix);
+        var colorMatrix = global::Bing.Drawing.Gdi.ColorMatrices.CreateBrightnessFilter(percentage);
+        global::Bing.Drawing.Gdi.ColorMatrices.ApplyMatrix(bitmap, colorMatrix);
     }
 
     /// <summary>
@@ -28,8 +28,8 @@ public static class BitmapExtensions
     /// <param name="percentage">改变图像对比度的百分比。范围：-100..100。</param>
     public static void SetContrast(this Bitmap bitmap, float percentage)
     {
-        var colorMatrix = ColorMatrices.CreateContrastFilter(percentage);
-        ColorMatrices.ApplyMatrix(bitmap, colorMatrix);
+        var colorMatrix = global::Bing.Drawing.Gdi.ColorMatrices.CreateContrastFilter(percentage);
+        global::Bing.Drawing.Gdi.ColorMatrices.ApplyMatrix(bitmap, colorMatrix);
     }
 
     /// <summary>
@@ -75,12 +75,13 @@ public static class BitmapExtensions
     }
 
     /// <summary>
-    /// 尝试获取颜色
+    /// 尝试从像素数组读取颜色。
     /// </summary>
     /// <param name="colorData">颜色数组</param>
     /// <param name="offset">偏移量</param>
     /// <param name="channels">图像通道数</param>
     /// <param name="color">颜色</param>
+    /// <returns>读取成功返回 <see langword="true" />，否则返回 <see langword="false" />。</returns>
     private static bool TryCreateColorFromData(byte[] colorData, int offset, int channels, out Color color)
     {
         // 需要考虑大小端

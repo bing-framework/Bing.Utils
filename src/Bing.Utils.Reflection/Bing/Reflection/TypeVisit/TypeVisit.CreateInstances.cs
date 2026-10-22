@@ -1,6 +1,8 @@
 using System.Reflection;
-using AspectCore.Extensions.Reflection;
-using Bing.Dynamic;
+
+#if NET5_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace Bing.Reflection;
 
@@ -23,11 +25,21 @@ public static partial class TypeVisit
     /// 它首先尝试找到与提供的参数匹配的构造函数，然后使用该构造函数创建类型的新实例。
     /// 如果没有提供参数（即<paramref name="args"/>为空或长度为0），则尝试使用无参数的构造函数创建实例。
     /// </remarks>
-    public static object CreateInstance(Type type, params object[] args)
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("构造函数按运行时类型和参数匹配，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
+#endif
+    public static object CreateInstance(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type, params object[] args)
     {
         if (type is null)
             throw new ArgumentNullException(nameof(type));
-        return CreateInstanceImpl(type, args);
+        return CreateInstanceStrict(type, args);
     }
 
     /// <summary>
@@ -40,12 +52,22 @@ public static partial class TypeVisit
     /// 此方法利用反射来动态创建指定类型的对象实例，适用于当类型在编写代码时未知或者需要在运行时决定的情况。
     /// 它首先尝试根据传递的参数找到匹配的构造函数，然后使用找到的构造函数创建类型的新实例。
     /// 如果没有提供参数（即<paramref name="args"/>为空或长度为0），则尝试使用无参数的构造函数创建实例。
-    /// 此方法在内部调用<see cref="CreateInstanceImpl(Type, object[])"/>来执行实例化逻辑，并尝试将结果转换为<typeparamref name="TInstance"/>类型。
-    /// 如果转换失败，可能返回默认值（对于值类型是0或false，对于引用类型是null）。
+    /// 此方法在内部调用<see cref="CreateInstanceStrict(Type, object[])"/>来执行实例化逻辑，并将结果转换为<typeparamref name="TInstance"/>类型。
+    /// 无兼容构造函数时抛出参数异常。
     /// </remarks>
-    public static TInstance CreateInstance<TInstance>(params object[] args)
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("构造函数按泛型类型的运行时元数据匹配，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
+#endif
+    public static TInstance CreateInstance<
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        TInstance>(params object[] args)
     {
-        return CreateInstanceImpl(Types.Of<TInstance>(), args).AsOrDefault<TInstance>();
+        return (TInstance)CreateInstanceStrict(typeof(TInstance), args);
     }
 
     /// <summary>
@@ -59,14 +81,30 @@ public static partial class TypeVisit
     /// <remarks>
     /// 此方法使用反射来根据运行时提供的类型信息创建对象实例。它支持带参数的构造函数，允许在运行时动态地传递构造函数参数。
     /// 如果没有提供参数（即<paramref name="args"/>为空或长度为0），则尝试使用无参数的构造函数创建实例。
-    /// 创建实例后，尝试将其转换为<typeparamref name="TInstance"/>类型。如果转换失败，则可能返回类型的默认值。
+    /// 创建实例前验证目标类型可赋值给<typeparamref name="TInstance"/>，失败时抛出参数异常。
     /// 此方法适用于类型在编译时未知或需要根据条件动态选择类型的场景。
     /// </remarks>
-    public static TInstance CreateInstance<TInstance>(Type type, params object[] args)
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("构造函数按运行时类型和参数匹配，裁剪时必须保留目标类型的公共构造函数。")]
+#endif
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
+#endif
+    public static TInstance CreateInstance<
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        TInstance>(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+        Type type, params object[] args)
     {
         if (type is null)
             throw new ArgumentNullException(nameof(type));
-        return CreateInstanceImpl(type, args).AsOrDefault<TInstance>();
+        if (!typeof(TInstance).IsAssignableFrom(type))
+            throw new ArgumentException($"类型“{type.FullName}”不可赋值给“{typeof(TInstance).FullName}”。", nameof(type));
+        return (TInstance)CreateInstanceStrict(type, args);
     }
 
     ///// <summary>
@@ -90,19 +128,6 @@ public static partial class TypeVisit
     //    return CreateInstance<TInstance>(type, args);
     //}
 
-    /// <summary>
-    /// 实现创建类型实例的逻辑
-    /// </summary>
-    /// <param name="type">要创建实例的实例。</param>
-    /// <param name="args">传递给构造函数的参数数组。</param>
-    /// <returns>创建的类型实例。</returns>
-    private static object CreateInstanceImpl(Type type, params object[] args)
-    {
-        return args is null || args.Length == 0
-            ? type.GetConstructor(Type.EmptyTypes)?.GetReflector().Invoke()
-            : type.GetConstructor(Types.Of(args))?.GetReflector().Invoke(args);
-    }
-
     #endregion
 
     #region Create Instance for Dynamic Type
@@ -117,14 +142,15 @@ public static partial class TypeVisit
     /// 此方法首先基于<paramref name="values"/>中的键值对动态创建一个类型定义，其中键表示属性名称，值表示属性的类型。
     /// 使用此类型定义，然后实例化该类型的一个实例。对于字典中的每个键值对，设置新实例对应属性的值。
     /// </remarks>
+#if NET7_0_OR_GREATER
+    [RequiresDynamicCode("动态对象通过 Reflection.Emit 创建类型，要求运行时支持动态代码。")]
+#endif
+#if NET5_0_OR_GREATER
+    [RequiresUnreferencedCode("动态对象创建依赖运行时生成的属性元数据，裁剪时必须显式保留相关成员。")]
+#endif
     public static object CreateInstance(IDictionary<string, object> values)
     {
-        var properties = values.ToDictionary(_ => _.Key, _ => _.Value.GetType());
-        var dynamicType = TypeFactory.CreateType(properties);
-        var @object = (DynamicBase)Activator.CreateInstance(dynamicType);
-        foreach (var item in values)
-            @object.SetPropertyValue(item.Key, item.Value);
-        return @object;
+        return TypeFactory.CreateObject(values);
     }
 #endif
 

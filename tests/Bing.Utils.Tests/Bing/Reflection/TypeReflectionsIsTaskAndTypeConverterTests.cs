@@ -213,6 +213,16 @@ public class TypeReflectionsIsTaskTests
     /// 验证 <c>int</c> 不满足 <c>IsTaskWithVoidTaskResult</c> 判定。
     /// </summary>
     [Fact]
+    public void IsTaskWithVoidTaskResult_TaskOfVoidTaskResult_ReturnsTrue()
+    {
+        var voidTaskResult = Type.GetType("System.Threading.Tasks.VoidTaskResult", throwOnError: true)!;
+        var taskType = typeof(Task<>).MakeGenericType(voidTaskResult);
+
+        TypeReflections.IsTaskWithVoidTaskResult(taskType.GetTypeInfo()).ShouldBeTrue();
+        taskType.GetTypeInfo().IsTaskWithVoidTaskResult().ShouldBeTrue();
+    }
+
+    [Fact]
     public void IsTaskWithVoidTaskResult_IntType_ReturnsFalse()
     {
         TypeReflections.IsTaskWithVoidTaskResult(typeof(int).GetTypeInfo()).ShouldBeFalse();

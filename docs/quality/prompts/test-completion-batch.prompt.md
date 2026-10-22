@@ -1,17 +1,18 @@
 # 多文件批量补全单元测试总控提示词（Test Completion Batch）
 
-> 版本：v1.0（连续执行版）
+> 版本：v1.1（六类边界清单接入）
 
 使用 $test-project-boundary skill，并严格遵循 AGENTS.md。
 
-任务：针对“指定的一组源码文件”批量补全单元测试（增量方式），按模块/目标测试项目分组执行；不做无关迁移，不修改生产代码逻辑（除非明确授权）。
+统一使用 [六类边界检查清单](../boundary-test-checklist.md)，逐项记录适用性、预期行为及证据；正常路径仍须覆盖。
+
+任务：针对“指定的一组源码文件”批量补全单元测试（增量方式），保持既有 TODO 优先级及顺序，并标明模块/目标测试项目；不做无关迁移，不修改生产代码逻辑（除非明确授权）。
 
 ## 输入参数（执行前填写）
 请填写本轮待补测文件清单（示例）：
 
-- `src/Bing.Utils/Bing.Utils.Text/StringHelper.cs` -> `tests/Bing.Utils.Text.Tests/StringHelperTest.cs`
-- `src/Bing.Utils/Bing.Utils.Text/MaskHelper.cs` -> `tests/Bing.Utils.Text.Tests/MaskHelperTest.cs`
-- `src/Bing.Utils/Bing.Utils.Collections/CollectionExtensions.cs` -> `tests/Bing.Utils.Collections.Tests/CollectionExtensionsTest.cs`
+- `src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs` -> `tests/Bing.Utils.Text.Tests/Bing/Text/Splitters/SplitterTest.cs`
+- `src/Bing.Utils.Collections/Bing/Collections/Dicts.cs` -> `tests/Bing.Utils.Collections.Tests/Bing/Collections/DictsAndCollConvTest.cs`
 
 说明：
 - 左侧是源码文件
@@ -31,9 +32,10 @@ Mock 框架：按仓库现有约定（如无必要不引入）
   - 本轮清单之外的测试文件
 
 ## 本轮处理策略
-- 按目标测试项目分组执行（例如 `Bing.Utils.Text.Tests`、`Bing.Utils.Collections.Tests`）
+- 按既有 TODO 优先级及内部顺序执行，分组展示不得改变条目顺序
 - 若文件数量较多，自动拆分为子批次（如 `TestBatch-1 / TestBatch-2`）
-- 优先处理高价值文件（公共工具类、分支复杂、注释约束明确）
+- 仅在未指定顺序且无既定清单时，按价值与风险拟定顺序
+- 上游未就绪的条目保持未完成，记录具体依赖，不扩大依赖方范围；独立条目仍按原顺序处理
 - 默认增量补全，不重写已有测试文件
 
 ## 任务目标
@@ -51,9 +53,10 @@ Mock 框架：按仓库现有约定（如无必要不引入）
    - `AGENTS.md`
    - 本轮所有指定源码文件
    - 对应目标测试文件（如存在）
+   - `docs/quality/boundary-test-checklist.md`
 2. 先输出“批量补测计划”（不要直接写代码）
 3. 保持测试命名与风格一致（优先沿用各测试项目现有风格）
-4. 不猜测行为语义；不确定时基于源码与注释推断，并明确写出依据
+4. 预期行为追溯到方案、接口/XML 契约或确认过的兼容行为；源码推断须注明依据，仍无法确认的标记“待确认”，不写猜测断言
 5. 不适合单元测试的方法先标记 TODO，不强行编写脆弱测试
 6. 不修改生产代码逻辑（`src/*`）
 
@@ -65,10 +68,11 @@ Mock 框架：按仓库现有约定（如无必要不引入）
 - 当前测试覆盖情况（如目标测试文件存在）
 - 缺失测试清单（高/中/低优先级）
 - 风险点（边界、异常、时间、随机、文化区域、线程安全等）
+- 对每个指定成员范围按统一记录模板输出 `null/empty/invalid/overflow/concurrent/perf` 六行；已有覆盖引用现有测试，不适用项写明依据，待确认项列明缺少的契约
 
 同时输出：
 - 本轮是否需要拆分子批次（若总量过大）
-- 建议的执行顺序（按价值/风险排序）
+- 执行顺序及依赖（沿用原清单；未定序时说明价值/风险依据）
 
 ### 第2步：批量补测计划（先不改代码）
 按“目标测试项目 -> 测试文件 -> 测试方法”输出计划，至少包含：
@@ -82,6 +86,7 @@ Mock 框架：按仓库现有约定（如无必要不引入）
 - 避免重复测试
 - 尽量将同类场景合并为参数化测试
 - 与现有风格保持一致
+- 只为本次成员的明确缺口补测，不扩展为全 API 扫描；并发及性能不适用时保留说明，不机械生成测试
 
 ### 第3步：执行补全（修改测试代码）
 根据第2步计划执行：
@@ -103,6 +108,7 @@ Mock 框架：按仓库现有约定（如无必要不引入）
 - 是否存在重复/冗余测试
 - 是否覆盖关键边界与异常路径
 - 是否仅修改本轮允许范围
+- 是否区分本次实际执行和旧证据复用；性能负载、阈值或环境未批准时标注对应阻塞，不自动新增依赖、CI、基线或探针
 
 ### 第5步：结果总结
 请按以下结构输出：

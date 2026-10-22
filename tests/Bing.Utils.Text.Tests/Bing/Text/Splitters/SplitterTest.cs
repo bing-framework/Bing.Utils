@@ -214,7 +214,20 @@ public class SplitterTest
     }
 
     /// <summary>
-    /// 验证使用 Regex 对象模式时，应按正则规则切割
+    /// 测试目的：非法正则模式在分割非空文本时保留参数异常，不静默返回未分割文本。
+    /// </summary>
+    [Theory]
+    [InlineData("[")]
+    [InlineData("(")]
+    public void OnPattern_WithInvalidPattern_ThrowsArgumentExceptionWhenSplit(string pattern)
+    {
+        var splitter = Splitter.OnPattern(pattern);
+
+        Should.Throw<ArgumentException>(() => splitter.SplitToArray("a,b"));
+    }
+
+    /// <summary>
+    /// 验证使用 Regex 对象模式时按正则规则切割文本。
     /// </summary>
     [Fact]
     public void On_WithRegexObject_SplitsCorrectly()
@@ -257,12 +270,32 @@ public class SplitterTest
     /// </summary>
     /// <param name="length">无效分割长度。</param>
     [Theory]
+    [InlineData(0)]
     [InlineData(-1)]
     [InlineData(-100)]
-    public void FixedLength_WithNegativeLength_ThrowsArgumentOutOfRangeException(int length)
+    [InlineData(int.MinValue)]
+    public void FixedLength_WithNonPositiveLength_ThrowsArgumentOutOfRangeException(int length)
     {
         // Act & Assert
-        Should.Throw<ArgumentOutOfRangeException>(() => Splitter.FixedLength(length));
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() => Splitter.FixedLength(length));
+        exception.ParamName.ShouldBe("length");
+        exception.ActualValue.ShouldBe(length);
+    }
+
+    /// <summary>
+    /// 测试目的：合法分段长度下，空白输入仍由各终结方法返回空结果。
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void FixedLength_WithEmptyInput_ReturnsEmpty(string input)
+    {
+        var splitter = Splitter.FixedLength(2);
+
+        splitter.Split(input).ShouldBeEmpty();
+        splitter.SplitToList(input).ShouldBeEmpty();
+        splitter.SplitToArray(input).ShouldBeEmpty();
     }
 
     #endregion
@@ -313,6 +346,30 @@ public class SplitterTest
 
         // Assert
         result.ShouldBeEmpty();
+    }
+
+    /// <summary>
+    /// 测试目的：字典转换遇到重复键时明确失败，不静默覆盖先前的值。
+    /// </summary>
+    [Fact]
+    public void MapSplitter_WithDuplicateKeys_ThrowsArgumentException()
+    {
+        Should.Throw<ArgumentException>(() =>
+            Splitter.On('&').WithKeyValueSeparator('=').SplitToDictionary("a=1&a=2"));
+    }
+
+    /// <summary>
+    /// 测试目的：空键值分隔符沿用不切分键值的行为，每个片段成为值为空的键。
+    /// </summary>
+    [Fact]
+    public void MapSplitter_WithEmptyKeyValueSeparator_UsesWholeItemAsKey()
+    {
+        var result = Splitter.On('&').WithKeyValueSeparator(string.Empty)
+            .SplitToDictionary("a=1&b=2");
+
+        result.Count.ShouldBe(2);
+        result["a=1"].ShouldBe(string.Empty);
+        result["b=2"].ShouldBe(string.Empty);
     }
 
     #endregion

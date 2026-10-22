@@ -20,8 +20,14 @@ public static partial class Types
     /// </summary>
     /// <param name="type">对象类型，仅支持值类型</param>
     /// <returns>如果是类型为默认值则返回默认值，否则返回 null</returns>
-    public static object DefaultValue(Type type)
+    public static object DefaultValue(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
+#endif
+        Type type)
     {
+        if (type is null)
+            throw new ArgumentNullException(nameof(type));
         if (type.IsValueType)
             return Activator.CreateInstance(type);
         return null;
@@ -36,14 +42,22 @@ public static partial class Types
     /// </summary>
     /// <param name="type">类型</param>
     /// <param name="genericType">泛型类型</param>
-    public static bool IsGenericImplementation(Type type, Type genericType) => TypeJudge.IsGenericImplementation(type, genericType);
+    public static bool IsGenericImplementation(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type, Type genericType) => TypeJudge.IsGenericImplementation(type, genericType);
 
     /// <summary>
     /// 是否泛型实现类型
     /// </summary>
     /// <typeparam name="TGot">类型</typeparam>
     /// <typeparam name="TGeneric">泛型类型</typeparam>
-    public static bool IsGenericImplementation<TGot, TGeneric>() => TypeJudge.IsGenericImplementation<TGot, TGeneric>();
+    public static bool IsGenericImplementation<
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        TGot, TGeneric>() => TypeJudge.IsGenericImplementation<TGot, TGeneric>();
 
     #endregion
 
@@ -71,6 +85,9 @@ public static partial class Types
     /// 是否默认值
     /// </summary>
     /// <param name="obj">对象</param>
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("对象的运行时类型由 object.GetType() 决定，默认值创建可能需要被裁剪的构造函数元数据。")]
+#endif
     public static bool IsDefaultValue(object obj)
     {
         if (obj == null)

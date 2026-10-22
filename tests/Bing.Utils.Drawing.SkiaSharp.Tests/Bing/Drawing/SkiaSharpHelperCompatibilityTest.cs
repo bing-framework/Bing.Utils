@@ -46,6 +46,22 @@ public class SkiaSharpHelperCompatibilityTest
         restored.Dispose();
     }
 
+    /// <summary>
+    /// 验证加载的 JPEG 图像默认转换为 PNG 流。
+    /// </summary>
+    [Fact]
+    public void ToStream_LoadedJpegDefaultsToPng()
+    {
+        using var source = CreateSampleImage();
+        var jpeg = SkiaSharpHelper.ToBytes(source, SKEncodedImageFormat.Jpeg);
+        using var loaded = SkiaSharpHelper.FromBytes(jpeg);
+        using var stream = SkiaSharpHelper.ToStream(loaded!);
+        var header = new byte[8];
+        stream.Read(header, 0, header.Length).ShouldBe(header.Length);
+
+        header.ShouldBe(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 });
+    }
+
     #endregion
 
     #region MakeThumbnail

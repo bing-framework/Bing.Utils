@@ -46,6 +46,7 @@
 - 可测试：可写稳定单测（Happy Path / 非法输入 / 边界值），不依赖不可控环境状态。[证据] `tests/Bing.Utils.IdUtils.Tests/Bing/IdUtils/ObjectIdTest.cs:307` [证据] `tests/Bing.Utils.IdUtils.Tests/Bing/IdUtils/ObjectIdTest.cs:328` [证据] `tests/Bing.Utils.Http.Tests/Bing/Helpers/WebTest.cs:447`
 - 语义清晰：命名、返回值、异常类型一致且可预期。[证据] `src/Bing.Utils.IdUtils/Bing/IdUtils/ObjectId.cs:339` [证据] `src/Bing.Utils.IdUtils/Bing/IdUtils/ObjectId.cs:354`
 - 边界明确：`null`/空/越界/冲突等分支必须有定义（抛异常或返回默认值）。[证据] `src/Bing.Utils/Bing/Helpers/Check.cs:87` [证据] `src/Bing.Utils/Bing/Helpers/Check.cs:392`
+- 按 [六类边界检查清单](quality/boundary-test-checklist.md) 记录 `null/empty/invalid/overflow/concurrent/perf` 的适用性、预期及证据；已有用例直接引用，不适用项说明原因，待确认项列出阻塞契约。
 - 不破坏已有语义：避免同名 API 行为变化、默认值变化、异常类型变化（见第 5 节）。[证据] `src/Bing.Utils/Bing/Date/TimeStamp.cs:426` [证据] `src/Bing.Utils.IdUtils/Bing/Helpers/Id.SnowflakeId.cs:154`
 
 ## 3. 性能基线要求
@@ -67,11 +68,13 @@
 - 非法输入（异常语义）
 - 边界值（空、极值、临界）
 - 并发或集成行为涉及时，追加并发测试或 integration 测试。[证据] `Bing.Utils.sln:83` [证据] `tests/Bing.Utils.IdUtils.Tests/Bing/Helpers/IdSnowflakeTest.cs:384` [证据] `tests/Bing.Utils.IdUtils.Tests/Bing/Helpers/IdSnowflakeTest.cs:416`
-- 推荐本地验证命令：
+- 先执行受影响项目的定向验证，例如 Text 分割器：
 
-```bash
-dotnet test Bing.Utils.sln -c Release
+```powershell
+dotnet test tests/Bing.Utils.Text.Tests/Bing.Utils.Text.Tests.csproj -c Release -f net8.0 --filter FullyQualifiedName~SplitterTest
 ```
+
+共享测试设施变化时扩大到受影响套件；公开契约、共享核心或项目/框架图变更，以及批准的阶段收口，才按影响执行跨项目或全解决方案验证。仅模板和文档变化检查链接、编码及差异，复用未受影响的代码证据。
 
 ## 5. 兼容性策略
 
@@ -83,21 +86,22 @@ dotnet test Bing.Utils.sln -c Release
 - public 类型/命名空间重命名或移除
 - 弃用流程采用“先标记再迁移”：优先 `[Obsolete("迁移建议", false)]`，给出替代 API。[证据] `src/Bing.Utils/Bing/Date/TimeStamp.cs:426` [证据] `src/Bing.Utils/Bing/Date/TimeStamp.cs:433` [证据] `src/Bing.Utils.IdUtils/Bing/Helpers/Id.SnowflakeId.cs:154`
 
-## 6. PR 检查清单（可复制）
+## 6. 拉取请求检查清单（可复制）
 
 ```markdown
-## PR Checklist
+## 拉取请求检查清单
 
 - [ ] 变更为基础设施通用能力，不包含业务语义
 - [ ] 命名符合规范（Extensions / Builder|Accessor|Factory / Options / Mode|Style）
 - [ ] 新增 public API 具备 XML 注释（summary/param/returns/exception）
 - [ ] 新增 public API 已补示例（优先测试代码）
 - [ ] 已覆盖 Happy Path / 非法输入 / 边界值
+- [ ] 已按六类边界清单记录适用性、预期、现有/新增用例及未完成原因
 - [ ] 涉及并发时已补并发测试
 - [ ] 涉及集成行为时已补 integration 测试或标注 TODO 风险
 - [ ] 性能敏感改动已给出 benchmark 或分配对比
 - [ ] 已更新 docs/modules 与 docs/reference/api-reference.md
-- [ ] 本地已执行：`dotnet test Bing.Utils.sln -c Release`
+- [ ] 已记录实际编译/测试命令与结果，复用证据或未执行项已注明范围和原因
 - [ ] 若涉及弃用，已给出 Obsolete 迁移说明
 ```
 

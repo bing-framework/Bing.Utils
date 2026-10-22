@@ -27,7 +27,7 @@ public class ColorConvTest
         var color = Color.FromArgb(r, g, b);
 
         // Act
-        var hsb = ColorConv.RgbToHsb(color);
+        var hsb = global::Bing.Drawing.Gdi.ColorConv.RgbToHsb(color);
 
         // Assert
         Assert.NotNull(hsb);
@@ -38,7 +38,7 @@ public class ColorConvTest
     }
 
     /// <summary>
-    /// 测试目的：验证 RgbToHsb 对已知颜色的转换准确性
+    /// 验证红色的 RGB 转 HSB 结果。
     /// </summary>
     [Fact]
     public void RgbToHsb_RedColor_ReturnsCorrectHsb()
@@ -47,7 +47,7 @@ public class ColorConvTest
         var red = Color.FromArgb(255, 0, 0);
 
         // Act
-        var hsb = ColorConv.RgbToHsb(red);
+        var hsb = global::Bing.Drawing.Gdi.ColorConv.RgbToHsb(red);
 
         // Assert - 红色：色相=0, 饱和度=1, 亮度=0.5
         Assert.Equal(0, hsb[0]);
@@ -72,7 +72,7 @@ public class ColorConvTest
         var color = Color.FromArgb(r, g, b);
 
         // Act
-        var hsb = ColorConv.RgbToHsb(color);
+        var hsb = global::Bing.Drawing.Gdi.ColorConv.RgbToHsb(color);
 
         // Assert
         Assert.Equal(expectedHue, hsb[0]);
@@ -92,7 +92,7 @@ public class ColorConvTest
     public void HsbToRgb_ZeroSaturation_ReturnsGrayscale(double hue, double saturation, double value)
     {
         // Act
-        var color = ColorConv.HsbToRgb(hue, saturation, value);
+        var color = global::Bing.Drawing.Gdi.ColorConv.HsbToRgb(hue, saturation, value);
 
         // Assert - 饱和度为0时，RGB三个分量应该相等（灰度）
         Assert.Equal(color.R, color.G);
@@ -100,7 +100,7 @@ public class ColorConvTest
     }
 
     /// <summary>
-    /// 测试目的：验证 HsbToRgb 转换到已知RGB颜色
+    /// 验证红色色相的 HSB 转 RGB 结果。
     /// </summary>
     [Fact]
     public void HsbToRgb_RedColor_ReturnsRed()
@@ -111,7 +111,7 @@ public class ColorConvTest
         double value = 0.5;
 
         // Act
-        var color = ColorConv.HsbToRgb(hue, saturation, value);
+        var color = global::Bing.Drawing.Gdi.ColorConv.HsbToRgb(hue, saturation, value);
 
         // Assert
         Assert.InRange(color.R, 250, 255);
@@ -132,7 +132,7 @@ public class ColorConvTest
     public void HsbToRgb_BoundaryValues_ReturnsValidColor(double hue, double saturation, double value)
     {
         // Act
-        var color = ColorConv.HsbToRgb(hue, saturation, value);
+        var color = global::Bing.Drawing.Gdi.ColorConv.HsbToRgb(hue, saturation, value);
 
         // Assert
         Assert.InRange(color.R, 0, 255);
@@ -160,8 +160,8 @@ public class ColorConvTest
         var originalColor = Color.FromArgb(r, g, b);
 
         // Act
-        var hsb = ColorConv.RgbToHsb(originalColor);
-        var convertedColor = ColorConv.HsbToRgb(hsb[0], hsb[1], hsb[2]);
+        var hsb = global::Bing.Drawing.Gdi.ColorConv.RgbToHsb(originalColor);
+        var convertedColor = global::Bing.Drawing.Gdi.ColorConv.HsbToRgb(hsb[0], hsb[1], hsb[2]);
 
         // Assert - 允许小的误差范围（±2），因为浮点运算精度
         Assert.InRange(convertedColor.R, r - 2, r + 2);
@@ -187,7 +187,7 @@ public class ColorConvTest
         double value = 0.5;
 
         // Act
-        var color = ColorConv.HsbToRgb(hue, saturation, value);
+        var color = global::Bing.Drawing.Gdi.ColorConv.HsbToRgb(hue, saturation, value);
 
         // Assert
         Assert.InRange(color.R, 0, 255);

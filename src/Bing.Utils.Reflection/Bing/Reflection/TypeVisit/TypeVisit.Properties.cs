@@ -4,6 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
+#if NET5_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
+
 namespace Bing.Reflection;
 
 /// <summary>
@@ -12,17 +16,17 @@ namespace Bing.Reflection;
 public enum PropertyAccessOptions
 {
     /// <summary>
-    /// 访问器
+    /// 具有公共实例 getter 的非索引器属性。
     /// </summary>
     Getters,
 
     /// <summary>
-    /// 设置器
+    /// 具有公共实例 setter、可在初始化后写入的非索引器属性。
     /// </summary>
     Setters,
 
     /// <summary>
-    /// 访问器 + 设置器
+    /// 同时满足 getter 和 setter 条件的属性。
     /// </summary>
     Both,
 }
@@ -32,28 +36,108 @@ public enum PropertyAccessOptions
 /// </summary>
 internal static class PropertyReflectionHelper
 {
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Type, Lazy<PropertyInfo[]>> RuntimePropertiesCache = new();
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Type, Lazy<PropertyInfo[]>[]> FilteredPropertiesCache = new();
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, object> SafePropertySnapshots = new();
+    private static readonly object SafePropertySnapshotMarker = new();
+
+    private static bool ContainsCollectible(PropertyInfo[] properties)
+    {
+        if (properties == null || SafePropertySnapshots.TryGetValue(properties, out _))
+            return false;
+        if (properties.Any(property => ReflectionPackageCacheScope.IsCollectible((MemberInfo)property)))
+            return true;
+        SafePropertySnapshots.GetValue(properties, _ => SafePropertySnapshotMarker);
+        return false;
+    }
+
+#if NET5_0_OR_GREATER
+    private static PropertyInfo[] GetRuntimeProperties([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type type)
+#else
+    private static PropertyInfo[] GetRuntimeProperties(Type type)
+#endif
+    {
+        if (ReflectionPackageCacheScope.IsCollectible(type))
+            return type.GetRuntimeProperties().ToArray();
+        var lazy = RuntimePropertiesCache.GetValue(type, _ => new Lazy<PropertyInfo[]>(
+            () => type.GetRuntimeProperties().ToArray(),
+            System.Threading.LazyThreadSafetyMode.ExecutionAndPublication));
+        var properties = lazy.Value;
+        if (ContainsCollectible(properties))
+            RuntimePropertiesCache.Remove(type);
+        return properties;
+    }
     /// <summary>
     /// 获取可设置的属性列表
     /// </summary>
     /// <param name="type">类型</param>
-    public static IEnumerable<PropertyInfo> GetPropertiesWithPublicInstanceSetters(Type type) =>
-        type.GetRuntimeProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsStatic && p.SetMethod.IsPublic);
+    public static IEnumerable<PropertyInfo> GetPropertiesWithPublicInstanceSetters(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+#endif
+        Type type) =>
+        GetFilteredProperties(type, PropertyAccessOptions.Setters);
 
     /// <summary>
     /// 获取可访问的属性列表
     /// </summary>
     /// <param name="type">类型</param>
-    public static IEnumerable<PropertyInfo> GetPropertiesWithPublicInstanceGetters(Type type) =>
-        type.GetRuntimeProperties().Where(p => p.GetMethod != null && !p.GetMethod.IsStatic && p.GetMethod.IsPublic);
+    public static IEnumerable<PropertyInfo> GetPropertiesWithPublicInstanceGetters(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+#endif
+        Type type) =>
+        GetFilteredProperties(type, PropertyAccessOptions.Getters);
 
     /// <summary>
     /// 获取可访问及设置的属性列表
     /// </summary>
     /// <param name="type">类型</param>
-    public static IEnumerable<PropertyInfo> GetPropertiesWithPublicInstance(Type type) =>
-        type.GetRuntimeProperties().Where(p =>
-            p.SetMethod != null && !p.SetMethod.IsStatic && p.SetMethod.IsPublic
-            && p.GetMethod != null && !p.GetMethod.IsStatic && p.GetMethod.IsPublic);
+    public static IEnumerable<PropertyInfo> GetPropertiesWithPublicInstance(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+#endif
+        Type type) =>
+        GetFilteredProperties(type, PropertyAccessOptions.Both);
+
+    private static PropertyInfo[] GetFilteredProperties(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+#endif
+        Type type, PropertyAccessOptions accessOptions)
+    {
+        if (ReflectionPackageCacheScope.IsCollectible(type))
+        {
+            var properties = GetRuntimeProperties(type);
+            return accessOptions switch
+            {
+                PropertyAccessOptions.Getters => properties.Where(IsPublicGetter).ToArray(),
+                PropertyAccessOptions.Setters => properties.Where(IsPublicSetter).ToArray(),
+                PropertyAccessOptions.Both => properties.Where(property =>
+                    IsPublicGetter(property) && IsPublicSetter(property)).ToArray(),
+                _ => throw new InvalidOperationException("Invalid operation for unknown access type")
+            };
+        }
+
+        var filters = FilteredPropertiesCache.GetValue(type, _ => new[]
+        {
+            new Lazy<PropertyInfo[]>(() => GetRuntimeProperties(type).Where(p => IsPublicGetter(p)).ToArray()),
+            new Lazy<PropertyInfo[]>(() => GetRuntimeProperties(type).Where(p => IsPublicSetter(p)).ToArray()),
+            new Lazy<PropertyInfo[]>(() => GetRuntimeProperties(type).Where(p => IsPublicGetter(p) && IsPublicSetter(p)).ToArray())
+        });
+        var filteredProperties = filters[(int)accessOptions].Value;
+        if (ContainsCollectible(filteredProperties))
+            FilteredPropertiesCache.Remove(type);
+        return filteredProperties.ToArray();
+    }
+
+    private static bool IsPublicGetter(PropertyInfo property) => property.GetIndexParameters().Length == 0
+        && property.GetMethod?.IsPublic == true && !property.GetMethod.IsStatic;
+
+    private static bool IsPublicSetter(PropertyInfo property) => property.GetIndexParameters().Length == 0
+        && property.SetMethod?.IsPublic == true && !property.SetMethod.IsStatic
+        && !property.SetMethod.ReturnParameter.GetRequiredCustomModifiers()
+            .Any(type => type.FullName == "System.Runtime.CompilerServices.IsExternalInit");
 
     /// <summary>
     /// 检查属性访问
@@ -62,17 +146,25 @@ internal static class PropertyReflectionHelper
     /// <param name="accessOptions">属性访问选项</param>
     public static void CheckPropertyAccess(PropertyInfo propertyInfo, PropertyAccessOptions accessOptions)
     {
+        if (propertyInfo == null)
+            throw new ArgumentNullException(nameof(propertyInfo));
         ArgumentException CreatePropertyNotMatchAccessException() => new($"The property ({propertyInfo.Name}) does not match accessibility restrictions.");
         switch (accessOptions)
         {
             case PropertyAccessOptions.Getters:
-                if (!(propertyInfo.GetMethod != null && !propertyInfo.GetMethod.IsStatic && propertyInfo.GetMethod.IsPublic))
+                if (!IsPublicGetter(propertyInfo))
                     throw CreatePropertyNotMatchAccessException();
                 break;
             case PropertyAccessOptions.Setters:
-                if (!(propertyInfo.SetMethod != null && !propertyInfo.SetMethod.IsStatic && propertyInfo.SetMethod.IsPublic))
+                if (!IsPublicSetter(propertyInfo))
                     throw CreatePropertyNotMatchAccessException();
                 break;
+            case PropertyAccessOptions.Both:
+                if (!IsPublicGetter(propertyInfo) || !IsPublicSetter(propertyInfo))
+                    throw CreatePropertyNotMatchAccessException();
+                break;
+            default:
+                throw new InvalidOperationException("Invalid operation for unknown access type");
         }
     }
 }
@@ -89,7 +181,11 @@ public static partial class TypeVisit
     /// <param name="accessOptions">属性访问选项</param>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    public static IEnumerable<PropertyInfo> GetProperties(Type type, PropertyAccessOptions accessOptions)
+    public static IEnumerable<PropertyInfo> GetProperties(
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+#endif
+        Type type, PropertyAccessOptions accessOptions)
     {
         if (type is null)
             throw new ArgumentNullException(nameof(type));
@@ -108,9 +204,14 @@ public static partial class TypeVisit
     /// <typeparam name="T">类型</typeparam>
     /// <param name="accessOptions">属性访问选项</param>
     /// <param name="propertySelectors">属性选择器集合</param>
-    public static IEnumerable<PropertyInfo> GetProperties<T>(PropertyAccessOptions accessOptions, params Expression<Func<T, object>>[] propertySelectors)
+    public static IEnumerable<PropertyInfo> GetProperties<
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+#endif
+        T>(PropertyAccessOptions accessOptions, params Expression<Func<T, object>>[] propertySelectors)
     {
-        if (propertySelectors is null)
+        // params 未传入时会生成空数组；此时与显式 null 一样表示“返回该访问模式的全部属性”。
+        if (propertySelectors is null || propertySelectors.Length == 0)
             return GetProperties(typeof(T), accessOptions);
         return GetProperties(propertySelectors, accessOptions);
     }
@@ -126,7 +227,11 @@ public static partial class TypeVisit
     {
         if (propertySelectors is null)
             throw new ArgumentNullException(nameof(propertySelectors));
-        return propertySelectors.Select(p => GetProperty(p, accessOptions));
+
+        var properties = new List<PropertyInfo>();
+        foreach (var selector in propertySelectors)
+            properties.Add(GetProperty(selector, accessOptions));
+        return properties.ToArray();
     }
 
     /// <summary>
@@ -179,7 +284,6 @@ public static partial class TypeVisit
             throw new ArgumentNullException(nameof(properties));
         if (expressions is null)
             throw new ArgumentNullException(nameof(expressions));
-
         ISet<PropertyInfo> excluded = new HashSet<PropertyInfo>(GetProperties(expressions));
 
         return properties.Where(p => !excluded.Contains(p));
@@ -194,8 +298,8 @@ public static partial class TypeVisit
     {
         if (property is null)
             throw new ArgumentNullException(nameof(property));
-        return (property.CanRead && property.GetMethod!.IsVisibleAndVirtual()) ||
-               (property.CanWrite && property.GetMethod!.IsVisibleAndVirtual());
+        return (property.GetMethod?.IsVisibleAndVirtual() ?? false) ||
+               (property.SetMethod?.IsVisibleAndVirtual() ?? false);
     }
 }
 
@@ -230,7 +334,11 @@ public static partial class TypeVisitExtensions
     /// <param name="this">当前对象</param>
     /// <param name="propertySelectors">属性选择器集合</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public static IEnumerable<PropertyInfo> GetProperties<T>(this T @this, params Expression<Func<T, object>>[] propertySelectors)
+    public static IEnumerable<PropertyInfo> GetProperties<
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+#endif
+        T>(this T @this, params Expression<Func<T, object>>[] propertySelectors)
     {
         if (@this is null)
             throw new ArgumentNullException(nameof(@this));
@@ -245,7 +353,11 @@ public static partial class TypeVisitExtensions
     /// <param name="accessOptions"></param>
     /// <param name="propertySelectors">属性选择器集合</param>
     /// <exception cref="ArgumentNullException">属性访问选项</exception>
-    public static IEnumerable<PropertyInfo> GetProperties<T>(this T @this, PropertyAccessOptions accessOptions, params Expression<Func<T, object>>[] propertySelectors)
+    public static IEnumerable<PropertyInfo> GetProperties<
+#if NET5_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)]
+#endif
+        T>(this T @this, PropertyAccessOptions accessOptions, params Expression<Func<T, object>>[] propertySelectors)
     {
         if (@this is null)
             throw new ArgumentNullException(nameof(@this));
@@ -264,6 +376,8 @@ public static partial class TypeMetaVisitExtensions
     /// <param name="property">属性元数据</param>
     public static bool IsVirtual(this PropertyInfo property)
     {
+        if (property is null)
+            throw new ArgumentNullException(nameof(property));
         var accessor = property.GetAccessors().FirstOrDefault();
         return accessor is not null && accessor.IsVirtual && !accessor.IsFinal;
     }
@@ -274,6 +388,8 @@ public static partial class TypeMetaVisitExtensions
     /// <param name="property">属性元数据</param>
     public static bool IsAbstract(this PropertyInfo property)
     {
+        if (property is null)
+            throw new ArgumentNullException(nameof(property));
         var accessor = property.GetAccessors().FirstOrDefault();
         return accessor is not null && accessor.IsAbstract && !accessor.IsFinal;
     }

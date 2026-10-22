@@ -2,3 +2,6 @@
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Collections")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Http")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Http.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Benchmark")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Reflection")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Tests")]

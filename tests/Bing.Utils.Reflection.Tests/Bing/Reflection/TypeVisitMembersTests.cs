@@ -11,6 +11,11 @@ namespace Bing.Reflection;
 [Trait("ReflectionUT", "TypeVisit.Members")]
 public class TypeVisitMembersTests
 {
+    private sealed class PrivateSetterEntity
+    {
+        public string Value { get; private set; } = string.Empty;
+    }
+
     #region GetFields(Type)
 
     /// <summary>
@@ -25,6 +30,19 @@ public class TypeVisitMembersTests
         // Assert
         fields.ShouldNotBeEmpty();
         fields.ShouldContain(f => f.Name == nameof(SampleEntity.PublicField));
+    }
+
+    /// <summary>
+    /// 测试目的：泛型 params 字段查询未传选择器时，应返回类型的全部公共字段。
+    /// </summary>
+    [Fact]
+    public void GetFields_GenericWithoutSelectors_ReturnsAllFields()
+    {
+        // Act
+        var fields = TypeVisit.GetFields<SampleEntity>().ToList();
+
+        // Assert
+        fields.ShouldContain(field => field.Name == nameof(SampleEntity.PublicField));
     }
 
     /// <summary>
@@ -113,6 +131,45 @@ public class TypeVisitMembersTests
     }
 
     /// <summary>
+    /// 测试目的：泛型 params 属性查询未传选择器时，应返回访问模式匹配的全部属性，而不是空集合。
+    /// </summary>
+    [Fact]
+    public void GetProperties_GenericWithoutSelectors_ReturnsAllMatchingProperties()
+    {
+        // Act
+        var props = TypeVisit.GetProperties<SampleEntity>(PropertyAccessOptions.Getters).ToList();
+
+        // Assert
+        props.ShouldContain(property => property.Name == nameof(SampleEntity.ReadWriteProp));
+        props.ShouldContain(property => property.Name == nameof(SampleEntity.ReadOnlyProp));
+    }
+
+    /// <summary>
+    /// 测试目的：显式传入 null 或空选择器数组时，应返回全部公开可读属性。
+    /// </summary>
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void GetProperties_GenericNullOrEmptySelectors_ReturnsAllGetterProperties(bool useNullSelectors)
+    {
+        Expression<Func<SampleEntity, object>>[] selectors = useNullSelectors
+            ? null!
+            : Array.Empty<Expression<Func<SampleEntity, object>>>();
+
+        var props = TypeVisit.GetProperties<SampleEntity>(PropertyAccessOptions.Getters, selectors)
+            .Select(property => property.Name)
+            .OrderBy(name => name)
+            .ToArray();
+
+        props.ShouldBe(new[]
+        {
+            nameof(SampleEntity.ExpressionProp),
+            nameof(SampleEntity.ReadOnlyProp),
+            nameof(SampleEntity.ReadWriteProp)
+        });
+    }
+
+    /// <summary>
     /// 测试目的：用 Setters 选项获取属性，只返回有公开 setter 的属性
     /// </summary>
     [Fact]
@@ -166,6 +223,59 @@ public class TypeVisitMembersTests
         Should.Throw<ArgumentException>(() =>
             TypeVisit.GetProperty<SampleEntity, int>(
                 x => x.ReadOnlyProp, PropertyAccessOptions.Setters));
+    }
+
+    [Fact]
+    public void GetProperties_WithSettersOption_ExcludesInitOnlyAndIndexers()
+    {
+        var setters = TypeVisit.GetProperties(typeof(SetterBoundarySample), PropertyAccessOptions.Setters)
+            .Select(property => property.Name).ToArray();
+        var getters = TypeVisit.GetProperties(typeof(SetterBoundarySample), PropertyAccessOptions.Getters)
+            .Select(property => property.Name).ToArray();
+        var both = TypeVisit.GetProperties(typeof(SetterBoundarySample), PropertyAccessOptions.Both)
+            .Select(property => property.Name).ToArray();
+
+        setters.ShouldContain(nameof(SetterBoundarySample.Mutable));
+        setters.ShouldNotContain(nameof(SetterBoundarySample.Initialized));
+        setters.ShouldNotContain("Item");
+        getters.ShouldContain(nameof(SetterBoundarySample.Initialized));
+        getters.ShouldNotContain("Item");
+        both.ShouldContain(nameof(SetterBoundarySample.Mutable));
+        both.ShouldNotContain(nameof(SetterBoundarySample.Initialized));
+        both.ShouldNotContain("Item");
+        Should.Throw<ArgumentException>(() => TypeVisit.GetProperty<SetterBoundarySample, int>(
+            sample => sample.Initialized, PropertyAccessOptions.Setters));
+    }
+
+    private sealed class SetterBoundarySample
+    {
+        public int Mutable { get; set; }
+        public int Initialized { get; init; }
+        public int this[int index] { get => index; set { } }
+    }
+
+    /// <summary>Both 要求 getter 和 setter 均为公开实例访问器。</summary>
+    [Fact]
+    public void GetProperty_ReadOnlyPropertyWithBothOption_ThrowsArgumentException()
+    {
+        Should.Throw<ArgumentException>(() =>
+            TypeVisit.GetProperty<SampleEntity, int>(x => x.ReadOnlyProp, PropertyAccessOptions.Both));
+    }
+
+    /// <summary>私有 setter 不满足 Both 的公开访问要求。</summary>
+    [Fact]
+    public void GetProperty_PrivateSetterWithBothOption_ThrowsArgumentException()
+    {
+        Should.Throw<ArgumentException>(() =>
+            TypeVisit.GetProperty<PrivateSetterEntity, string>(x => x.Value, PropertyAccessOptions.Both));
+    }
+
+    /// <summary>未知访问选项与类型扫描入口一致，明确拒绝。</summary>
+    [Fact]
+    public void GetProperty_UnknownAccessOption_ThrowsInvalidOperationException()
+    {
+        Should.Throw<InvalidOperationException>(() =>
+            TypeVisit.GetProperty<SampleEntity, string>(x => x.ReadWriteProp, (PropertyAccessOptions)123));
     }
 
     /// <summary>
@@ -222,6 +332,17 @@ public class TypeVisitMembersTests
     }
 
     /// <summary>
+    /// 测试目的：接口和抽象类型不可实例化时，HasParameterlessConstructor 应返回 false。
+    /// </summary>
+    [Theory]
+    [InlineData(typeof(System.IDisposable))]
+    [InlineData(typeof(System.IO.Stream))]
+    public void HasParameterlessConstructor_WithNonCreatableType_ReturnsFalse(Type type)
+    {
+        TypeVisit.HasParameterlessConstructor(type).ShouldBeFalse();
+    }
+
+    /// <summary>
     /// 测试目的：HasParameterlessConstructor 的扩展方法与静态方法结果一致
     /// </summary>
     [Fact]
@@ -236,25 +357,27 @@ public class TypeVisitMembersTests
     }
 
     /// <summary>
-    /// 测试目的：GetParameterlessConstructor 对有无参构造的类返回 ConstructorInfo，对无无参构造的类返回 null
+    /// 测试目的：GetParameterlessConstructor 对有无参构造的类返回 ConstructorInfo，对无无参构造的类抛出明确异常
     /// </summary>
     [Theory]
     [InlineData(typeof(SampleEntity), true)]
     [InlineData(typeof(NoPublicCtorEntity), false)]
     public void GetParameterlessConstructor_ReturnsExpectedResult(Type type, bool expectNonNull)
     {
-        // Act
-        var ctor = TypeVisit.GetParameterlessConstructor(type);
-
-        // Assert
         if (expectNonNull)
+        {
+            var ctor = TypeVisit.GetParameterlessConstructor(type);
             ctor.ShouldNotBeNull();
+        }
         else
-            ctor.ShouldBeNull();
+        {
+            var exception = Should.Throw<ArgumentException>(() => TypeVisit.GetParameterlessConstructor(type));
+            exception.ParamName.ShouldBe("args");
+        }
     }
 
     /// <summary>
-    /// 测试目的：GetMatchingConstructor 以匹配参数类型返回构造函数，不匹配时返回 null
+    /// 测试目的：GetMatchingConstructor 以匹配参数类型返回构造函数
     /// </summary>
     [Fact]
     public void GetMatchingConstructor_WithMatchingTypes_ReturnsConstructorInfo()
@@ -268,16 +391,14 @@ public class TypeVisitMembersTests
     }
 
     /// <summary>
-    /// 测试目的：GetMatchingConstructor 参数类型不匹配时应返回 null
+    /// 测试目的：GetMatchingConstructor 参数类型不匹配时应抛出明确异常
     /// </summary>
     [Fact]
-    public void GetMatchingConstructor_WithNonMatchingTypes_ReturnsNull()
+    public void GetMatchingConstructor_WithNonMatchingTypes_ThrowsArgumentException()
     {
-        // Act — 无 (int, int) 构造函数
-        var ctor = TypeVisit.GetMatchingConstructor(typeof(SampleEntity), new[] { typeof(int), typeof(int) });
-
-        // Assert
-        ctor.ShouldBeNull();
+        var exception = Should.Throw<ArgumentException>(() =>
+            TypeVisit.GetMatchingConstructor(typeof(SampleEntity), new[] { typeof(int), typeof(int) }));
+        exception.ParamName.ShouldBe("args");
     }
 
     /// <summary>

@@ -1,0 +1,1355 @@
+name: Reflection verification
+on:
+  pull_request:
+    paths:
+      - 'src/Bing.Utils/**'
+      - 'src/Bing.Utils.Reflection/**'
+      - 'tests/Bing.Utils.Tests/**'
+      - 'tests/Bing.Utils.Reflection.Tests/**'
+      - 'benchmarks/Bing.Utils.Benchmark/**'
+      - 'benchmarks/ReflectionComparisonProbe/**'
+      - 'tests/Bing.Utils.Reflection.Tests.Integration/**'
+      - 'docs/quality/reflection-*.md'
+      - 'docs/quality/reflection-performance-policy.schema.json'
+      - 'docs/quality/reflection-cache-inventory.json'
+      - 'benchmarks/Bing.Utils.Benchmark/Test-ReflectionCacheInventory.ps1'
+      - 'benchmarks/Bing.Utils.Benchmark/Test-ReflectionExternalCacheBoundary.ps1'
+      - 'global.json'
+      - '*.props'
+      - '.github/workflows/reflection.yml'
+  workflow_dispatch:
+    inputs:
+      baseline_ref:
+        description: 'Optional Git ref, tag, or commit SHA for a baseline comparison; required when comparison_rounds or a budget is supplied.'
+        required: false
+        default: ''
+        type: string
+      comparison_rounds:
+        description: 'Manual comparison rounds (1-20), requires baseline_ref; pull requests always use three summary rounds.'
+        required: false
+        default: '1'
+        type: string
+      multi_plugin_rounds:
+        description: 'Manual multi-plugin dependency graph rounds (1-20); pull requests default to three rounds.'
+        required: false
+        default: '3'
+        type: string
+      strict_aot_warnings:
+        description: 'Fail the NativeAOT job when a warning ID is not in the checked-in baseline.'
+        required: false
+        default: false
+        type: boolean
+      strict_aot_unparsed:
+        description: 'Legacy opt-out: set false to allow unparsed NativeAOT diagnostics during investigation; the default gate is enabled.'
+        required: false
+        default: true
+        type: boolean
+      allow_unparsed_aot_diagnostics:
+        description: 'Allow unparsed NativeAOT diagnostics for an explicit diagnostic investigation run.'
+        required: false
+        default: false
+        type: boolean
+      strict_aot_repository_warnings:
+        description: 'Legacy manual opt-out: set false to bypass the default repository diagnostic ownership allowlist gate.'
+        required: false
+        default: true
+        type: boolean
+      allow_aot_repository_warning_drift:
+        description: 'Allow repository NativeAOT diagnostic ownership allowlist drift for an explicit diagnostic investigation run.'
+        required: false
+        default: false
+        type: boolean
+      allow_aot_nonrepository_diagnostic_drift:
+        description: 'Allow unowned NativeAOT dependency, toolchain, generated, or unknown diagnostics for an explicit diagnostic investigation run.'
+        required: false
+        default: false
+        type: boolean
+      strict_aot_repository_fingerprints:
+        description: 'Legacy opt-out: set false to allow repository diagnostic fingerprint drift during investigation; the default gate is enabled.'
+        required: false
+        default: true
+        type: boolean
+      allow_aot_repository_fingerprint_drift:
+        description: 'Allow repository NativeAOT diagnostic fingerprint drift for an explicit diagnostic investigation run.'
+        required: false
+        default: false
+        type: boolean
+      aot_diagnostic_allowlist_path:
+        description: 'Optional repository-relative NativeAOT diagnostic allowlist JSON; defaults to the checked-in reflection baseline.'
+        required: false
+        default: ''
+        type: string
+      aot_nonrepository_ownership_path:
+        description: 'Optional repository-relative non-repository NativeAOT ownership manifest; defaults to the checked-in reflection manifest.'
+        required: false
+        default: ''
+        type: string
+      cold_start_max_time_ns:
+        description: 'Optional candidate cold-start time budget in ns; requires baseline_ref.'
+        required: false
+        default: ''
+        type: string
+      cold_start_max_bytes:
+        description: 'Optional candidate cold-start allocation budget in bytes; requires baseline_ref.'
+        required: false
+        default: ''
+        type: string
+      steady_state_max_time_ns:
+        description: 'Optional candidate steady-state time budget in ns; requires baseline_ref.'
+        required: false
+        default: ''
+        type: string
+      steady_state_max_bytes:
+        description: 'Optional candidate steady-state allocation budget in bytes; requires baseline_ref.'
+        required: false
+        default: ''
+        type: string
+      performance_policy_path:
+        description: 'Optional repository-relative JSON performance policy; requires baseline_ref and enables an auditable explicit comparison gate.'
+        required: false
+        default: ''
+        type: string
+      reflection_capacity_max_bypass:
+        description: 'Optional reflection capacity bypass budget; empty keeps structural-only validation.'
+        required: false
+        default: ''
+        type: string
+      reflection_capacity_max_time_us:
+        description: 'Optional reflection capacity probe time budget in microseconds; empty keeps structural-only validation.'
+        required: false
+        default: ''
+        type: string
+jobs:
+  verify:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tfm: [net8.0, net7.0, net6.0, net5.0, netcoreapp3.1]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.425
+            7.0.x
+            6.0.x
+            5.0.x
+            3.1.x
+      - name: Verify legacy runtime availability
+        if: matrix.tfm == 'net5.0' || matrix.tfm == 'netcoreapp3.1'
+        shell: pwsh
+        run: |
+          $expectedPrefix = if ('${{ matrix.tfm }}' -eq 'net5.0') { '5.0.' } else { '3.1.' }
+          $runtimeLines = & dotnet --list-runtimes
+          $runtimeLine = $runtimeLines | Where-Object { $_ -match ('^Microsoft\.NETCore\.App\s+' + [regex]::Escape($expectedPrefix)) } | Select-Object -First 1
+          if ([string]::IsNullOrWhiteSpace([string]$runtimeLine)) {
+            throw "Required legacy runtime Microsoft.NETCore.App $expectedPrefix* was not installed for ${{ matrix.tfm }}."
+          }
+          Write-Output ("legacy-runtime-available:${{ matrix.tfm }}:" + $runtimeLine)
+      - name: Reflection module tests
+        run: dotnet test tests/Bing.Utils.Reflection.Tests/Bing.Utils.Reflection.Tests.csproj -c Release -f ${{ matrix.tfm }}
+      - name: Core reflection consumers
+        run: dotnet test tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj -c Release -f ${{ matrix.tfm }} --filter "FullyQualifiedName~Reflection"
+      - name: Verify framework-dependent PublishTrimmed boundary
+        if: matrix.tfm == 'net8.0'
+        shell: pwsh
+        run: |
+          $publishDir = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/framework-dependent-trim-negative'
+          $output = & dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj -c Release -f net8.0 -p:TargetFrameworks=net8.0 -p:PublishTrimmed=true -p:SelfContained=false -p:DebugType=None "-p:PublishDir=$publishDir" 2>&1
+          $exitCode = $LASTEXITCODE
+          $text = $output -join [Environment]::NewLine
+          if ($exitCode -eq 0) { throw 'Framework-dependent PublishTrimmed unexpectedly succeeded; update the trim boundary contract.' }
+          if ($text -notmatch 'NETSDK1102') { throw "Framework-dependent PublishTrimmed failed without NETSDK1102: $text" }
+          Write-Output 'framework-dependent-publish-trimmed:unsupported-NETSDK1102'
+  probes:
+    runs-on: windows-latest
+    env:
+      REFLECTION_MULTI_PLUGIN_ROUNDS: ${{ inputs.multi_plugin_rounds || '3' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.425
+      - name: Build reflection benchmark tools
+        run: dotnet build benchmarks/Bing.Utils.Benchmark/Bing.Utils.Benchmark.csproj -c Release -f net8.0
+      - name: Build comparison probe
+        run: dotnet build benchmarks/ReflectionComparisonProbe/ReflectionComparisonProbe.csproj -c Release
+      - name: Build reflection plugin load probe
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/ReflectionTrimPluginLoadProbe.csproj -c Release -f net8.0
+      - name: Build unrooted plugin model
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.UnrootedModels/ReflectionTrimProbe.UnrootedModels.csproj -c Release -f net8.0
+      - name: Build quinary linker root model
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.QuinaryModels/ReflectionTrimProbe.QuinaryModels.csproj -c Release -f net8.0
+      - name: Build non-trimmable third-party plugin transitive dependency
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.csproj -c Release -f net8.0
+      - name: Build variant non-trimmable third-party plugin transitive dependency
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependencyVariant/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependencyVariant.csproj -c Release -f net8.0
+      - name: Build variant non-trimmable third-party plugin dependency
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyVariant/ReflectionTrimProbe.NonTrimmablePluginDependencyVariant.csproj -c Release -f net8.0
+      - name: Build non-trimmable third-party plugin secondary dependency
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency.csproj -c Release -f net8.0
+      - name: Build diamond non-trimmable third-party plugin model
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDiamondModels/ReflectionTrimProbe.NonTrimmablePluginDiamondModels.csproj -c Release -f net8.0
+      - name: Build deep non-trimmable third-party plugin leaf dependency
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepDependency/ReflectionTrimProbe.NonTrimmablePluginDeepDependency.csproj -c Release -f net8.0
+      - name: Build deep non-trimmable third-party plugin transitive dependency variant
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepTransitiveDependencyVariant/ReflectionTrimProbe.NonTrimmablePluginDeepTransitiveDependencyVariant.csproj -c Release -f net8.0
+      - name: Build non-trimmable third-party plugin tertiary dependency
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency.csproj -c Release -f net8.0
+      - name: Build non-trimmable third-party triple diamond plugin model
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTripleDiamondModels/ReflectionTrimProbe.NonTrimmablePluginTripleDiamondModels.csproj -c Release -f net8.0
+      - name: Build version-conflicting third-party plugin dependency
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyV2/ReflectionTrimProbe.NonTrimmablePluginDependencyV2.csproj -c Release -f net8.0
+      - name: Build strong-name conflict dependency
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictDependency/ReflectionTrimProbe.StrongNameConflictDependency.csproj -c Release -f net8.0
+      - name: Build strong-name conflict plugin model
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictModels/ReflectionTrimProbe.StrongNameConflictModels.csproj -c Release -f net8.0
+      - name: Build non-trimmable third-party plugin dependency
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/ReflectionTrimProbe.NonTrimmablePluginDependency.csproj -c Release -f net8.0
+      - name: Build non-trimmable third-party plugin model
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/ReflectionTrimProbe.NonTrimmablePluginModels.csproj -c Release -f net8.0
+      - name: Build non-trimmable third-party plugin boundary probe
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/ReflectionTrimThirdPartyPluginProbe.csproj -c Release -f net8.0
+      - name: Build real AssemblyRef cycle fixture
+        shell: pwsh
+        run: |
+          $fixtureOutput = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.RuntimeCycleFixtures/bin/Release/net8.0'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.RuntimeCycleFixtures/Build-RuntimeCycleFixtures.ps1 -OutputDirectory $fixtureOutput
+          if ($LASTEXITCODE -ne 0) { throw "Real AssemblyRef cycle fixture failed with exit code $LASTEXITCODE" }
+      - name: Test NativeAOT warning report classification
+        shell: pwsh
+        run: ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Test-Check-NativeAotWarnings.ps1
+      - name: Build framework-dependent reflection trim analysis
+        run: dotnet build tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj -c Release -f net8.0 -p:TargetFrameworks=net8.0 -p:EnableTrimAnalyzer=true -p:TrimMode=partial -p:DebugType=None
+      - name: Execute framework-dependent reflection contract probe
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll'
+          if (!(Test-Path -LiteralPath $probe)) { throw "Framework-dependent reflection probe was not built: $probe" }
+          $probeOutput = @(& dotnet $probe 2>&1)
+          $exitCode = $LASTEXITCODE
+          $probeOutput | Write-Output
+          if ($exitCode -ne 0) { throw "Framework-dependent reflection probe failed with exit code $exitCode" }
+          if (-not ($probeOutput -contains 'reflection-trim-byref-signature-ok')) {
+            throw 'Framework-dependent reflection probe did not emit the by-ref signature marker.'
+          }
+          if (-not ($probeOutput -contains 'reflection-trim-ref-return-ok')) {
+            throw 'Framework-dependent reflection probe did not emit the ref-return marker.'
+          }
+          if (-not ($probeOutput -contains 'reflection-trim-generic-variance-ok')) {
+            throw 'Framework-dependent reflection probe did not emit the generic variance marker.'
+          }
+      - name: Stage unrooted plugin for framework boundary
+        shell: pwsh
+        run: |
+          $source = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.UnrootedModels/bin/Release/net8.0/ReflectionTrimProbe.UnrootedModels.dll'
+          $targetDirectory = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0'
+          if (!(Test-Path -LiteralPath $source)) { throw "Unrooted plugin model was not built: $source" }
+          Copy-Item -LiteralPath $source -Destination $targetDirectory -Force
+      - name: Execute framework-dependent plugin load boundary
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0'
+          if (!(Test-Path -LiteralPath $probe)) { throw "Plugin load probe was not built: $probe" }
+          & dotnet $probe $target
+          if ($LASTEXITCODE -ne 0) { throw "Framework-dependent plugin load boundary failed with exit code $LASTEXITCODE" }
+      - name: Stage non-trimmable third-party plugin on framework host
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $transitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependency) -OutputDirectory $target
+      - name: Execute non-trimmable third-party plugin on framework host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin'
+          & dotnet $probe $target metadata-preserved
+          if ($LASTEXITCODE -ne 0) { throw "Non-trimmable third-party plugin on framework host failed with exit code $LASTEXITCODE" }
+      - name: Verify missing transitive dependency on framework host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+          $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+          $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-missing-transitive'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependency -OutputDirectory $target
+          & dotnet $probe $target member-trimmed
+          if ($LASTEXITCODE -ne 0) { throw "Missing transitive dependency boundary failed with exit code $LASTEXITCODE" }
+      - name: Stage version-conflicting third-party plugin on framework host
+        shell: pwsh
+        run: |
+          $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+          $dependencyV2 = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyV2/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+          $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-version-conflict'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependencyV2 -OutputDirectory $target
+      - name: Execute version-conflicting third-party plugin on framework host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-version-conflict'
+          & dotnet $probe $target metadata-preserved version-conflict-v2
+          if ($LASTEXITCODE -ne 0) { throw "Version-conflicting third-party plugin on framework host failed with exit code $LASTEXITCODE" }
+      - name: Stage strong-name conflicting third-party plugin on framework host
+        shell: pwsh
+        run: |
+          $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictModels/bin/Release/net8.0/ReflectionTrimProbe.StrongNameConflictModels.dll'
+          $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictDependency/bin/Release/net8.0/System.Text.Json.dll'
+          $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-strong-name-conflict'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependency -OutputDirectory $target
+      - name: Execute strong-name conflicting third-party plugin on framework host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-strong-name-conflict'
+          & dotnet $probe $target metadata-preserved strong-name-conflict
+          if ($LASTEXITCODE -ne 0) { throw "Strong-name conflicting third-party plugin on framework host failed with exit code $LASTEXITCODE" }
+      - name: Stage concurrent third-party plugin dependency matrix on framework host
+        shell: pwsh
+        run: |
+          $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+          $diamondPlugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDiamondModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+          $tripleDiamondPlugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTripleDiamondModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+          $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+          $secondaryDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency.dll'
+          $dependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+          $transitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+          $transitiveDependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+          $deepTransitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepTransitiveDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+          $deepDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDeepDependency.dll'
+          $tertiaryDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency.dll'
+          $dependencyV2 = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyV2/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+          $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v2'
+          $duplicateTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1-variant'
+          $directVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1-direct-variant'
+          $diamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-diamond'
+          $mixedVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-mixed-variant'
+          $deepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-deep-diamond'
+          $wideDeepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-wide-deep-diamond'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependency) -OutputDirectory $firstTarget
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependencyV2 -OutputDirectory $secondTarget
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependencyVariant) -OutputDirectory $duplicateTarget
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependencyVariant, $transitiveDependency) -OutputDirectory $directVariantTarget
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $diamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $transitiveDependency) -OutputDirectory $diamondTarget
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependencyVariant, $transitiveDependencyVariant) -OutputDirectory $mixedVariantTarget
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $diamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $deepTransitiveDependency, $deepDependency) -OutputDirectory $deepDiamondTarget
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $tripleDiamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $tertiaryDependency, $deepTransitiveDependency, $deepDependency) -OutputDirectory $wideDeepDiamondTarget
+      - name: Execute concurrent third-party plugin versions on framework host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v2'
+          & dotnet $probe --multi-version $firstTarget $secondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Concurrent third-party plugin versions on framework host failed with exit code $LASTEXITCODE" }
+      - name: Execute concurrent third-party plugin dependency matrix on framework host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v2'
+          $strongNameTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-strong-name-conflict'
+          $duplicateTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1-variant'
+          $directVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1-direct-variant'
+          $diamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-diamond'
+          $mixedVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-mixed-variant'
+          $deepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-deep-diamond'
+          $wideDeepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-wide-deep-diamond'
+          $multiPluginRounds = 3
+          $multiPluginRoundsText = ([string]$env:REFLECTION_MULTI_PLUGIN_ROUNDS).Trim()
+          if ([string]::IsNullOrWhiteSpace($multiPluginRoundsText) -or
+              ![int]::TryParse($multiPluginRoundsText, [Globalization.NumberStyles]::Integer, [Globalization.CultureInfo]::InvariantCulture, [ref]$multiPluginRounds) -or
+              $multiPluginRounds -lt 1 -or
+              $multiPluginRounds -gt 20) {
+            throw 'multi_plugin_rounds must be an integer from 1 through 20.'
+          }
+          & dotnet $probe --multi-plugin-rounds $multiPluginRounds $firstTarget $secondTarget $strongNameTarget $duplicateTarget $directVariantTarget $diamondTarget $mixedVariantTarget $deepDiamondTarget $wideDeepDiamondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Concurrent dependency graph rounds on framework host failed with exit code $LASTEXITCODE" }
+      - name: Verify multi-plugin resource, admission, and long-round boundary
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v2'
+          $strongNameTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-strong-name-conflict'
+          $duplicateTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1-variant'
+          $directVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1-direct-variant'
+          $diamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-diamond'
+          $mixedVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-mixed-variant'
+          $deepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-deep-diamond'
+          $wideDeepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-wide-deep-diamond'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Test-MultiPluginCapacity.ps1 -ProbePath $probe -Rounds 3 -ValidPluginDirectories @(
+            $firstTarget,
+            $secondTarget,
+            $strongNameTarget,
+            $duplicateTarget,
+            $directVariantTarget,
+            $diamondTarget,
+            $mixedVariantTarget,
+            $deepDiamondTarget,
+            $wideDeepDiamondTarget
+          )
+          if ($LASTEXITCODE -ne 0) { throw "Multi-plugin resource rejection boundary failed with exit code $LASTEXITCODE" }
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Test-MultiPluginLongRounds.ps1 -ProbePath $probe -PluginDirectories @(
+            $firstTarget,
+            $secondTarget,
+            $strongNameTarget,
+            $duplicateTarget,
+            $directVariantTarget,
+            $diamondTarget,
+            $mixedVariantTarget,
+            $deepDiamondTarget,
+            $wideDeepDiamondTarget
+          )
+          if ($LASTEXITCODE -ne 0) { throw "Multi-plugin long-round boundary failed with exit code $LASTEXITCODE" }
+      - name: Execute runtime circular resolver boundary on framework host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/third-party-plugin-multi-version-v1-variant'
+          & dotnet $probe --runtime-cycle $firstTarget $secondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Runtime circular resolver boundary on framework host failed with exit code $LASTEXITCODE" }
+      - name: Execute real AssemblyRef cycle fixture
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $fixture = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.RuntimeCycleFixtures/bin/Release/net8.0'
+          & dotnet $probe --assemblyref-cycle $fixture
+          if ($LASTEXITCODE -ne 0) { throw "Real AssemblyRef cycle fixture failed with exit code $LASTEXITCODE" }
+      - name: Execute AssemblyRef branch fixture
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $fixture = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.RuntimeCycleFixtures/bin/Release/net8.0'
+          & dotnet $probe --assemblyref-branch $fixture
+          if ($LASTEXITCODE -ne 0) { throw "AssemblyRef branch fixture failed with exit code $LASTEXITCODE" }
+      - name: Execute AssemblyRef multi-branch fixture
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $fixture = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.RuntimeCycleFixtures/bin/Release/net8.0'
+          & dotnet $probe --assemblyref-multi-branch $fixture
+          if ($LASTEXITCODE -ne 0) { throw "AssemblyRef multi-branch fixture failed with exit code $LASTEXITCODE" }
+      - name: Execute AssemblyRef deep-branch fixture
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $fixture = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.RuntimeCycleFixtures/bin/Release/net8.0'
+          & dotnet $probe --assemblyref-deep-branch $fixture
+          if ($LASTEXITCODE -ne 0) { throw "AssemblyRef deep-branch fixture failed with exit code $LASTEXITCODE" }
+      - name: Publish self-contained trimmed reflection probe
+        shell: pwsh
+        run: |
+          $publishDir = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial'
+          dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj -c Release -f net8.0 -r win-x64 --self-contained true -p:TargetFrameworks=net8.0 -p:PublishTrimmed=true -p:TrimMode=partial -p:DebugType=None "-p:PublishDir=$publishDir"
+      - name: Execute self-contained trimmed reflection probe
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.exe'
+          if (!(Test-Path -LiteralPath $probe)) { throw "Self-contained trimmed reflection probe was not published: $probe" }
+          $probeOutput = @(& $probe 2>&1)
+          $exitCode = $LASTEXITCODE
+          $probeOutput | Write-Output
+          if ($exitCode -ne 0) { throw "Self-contained trimmed reflection probe failed with exit code $exitCode" }
+          if (-not ($probeOutput -contains 'reflection-trim-byref-signature-ok')) {
+            throw 'Self-contained trimmed reflection probe did not emit the by-ref signature marker.'
+          }
+          if (-not ($probeOutput -contains 'reflection-trim-ref-return-ok')) {
+            throw 'Self-contained trimmed reflection probe did not emit the ref-return marker.'
+          }
+          if (-not ($probeOutput -contains 'reflection-trim-generic-variance-ok')) {
+            throw 'Self-contained trimmed reflection probe did not emit the generic variance marker.'
+          }
+      - name: Execute self-contained plugin load boundary
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial'
+          & dotnet $probe $target
+          if ($LASTEXITCODE -ne 0) { throw "Self-contained plugin load boundary failed with exit code $LASTEXITCODE" }
+      - name: Execute preserved external plugin deployment on partial trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll'
+          $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.UnrootedModels.dll'
+          $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-external-plugin'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -OutputDirectory $target
+          foreach ($path in @((Join-Path $target 'ReflectionTrimProbe.UnrootedModels.dll'), (Join-Path $target 'ReflectionTrimProbe.dll'))) {
+            if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Staged partial-trim plugin deployment file was not created: $path" }
+          }
+          & dotnet $probe $target
+          if ($LASTEXITCODE -ne 0) { throw "Preserved external plugin on partial-trim host failed with exit code $LASTEXITCODE" }
+      - name: Stage non-trimmable third-party plugin on partial trim host
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $dependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $transitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.dll'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependency) -OutputDirectory $target
+      - name: Execute non-trimmable third-party plugin on partial trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin'
+          & dotnet $probe $target metadata-preserved
+          if ($LASTEXITCODE -ne 0) { throw "Non-trimmable third-party plugin on partial-trim host failed with exit code $LASTEXITCODE" }
+      - name: Stage version-conflicting third-party plugin on partial trim host
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependencyV2 = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyV2/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.dll'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-version-conflict'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependencyV2 -OutputDirectory $target
+      - name: Execute version-conflicting third-party plugin on partial trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-version-conflict'
+          & dotnet $probe $target metadata-preserved version-conflict-v2
+          if ($LASTEXITCODE -ne 0) { throw "Version-conflicting third-party plugin on partial trim host failed with exit code $LASTEXITCODE" }
+      - name: Stage strong-name conflicting third-party plugin on partial trim host
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictModels/bin/Release/net8.0/ReflectionTrimProbe.StrongNameConflictModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictDependency/bin/Release/net8.0/System.Text.Json.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.dll'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-strong-name-conflict'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependency -OutputDirectory $target
+      - name: Execute strong-name conflicting third-party plugin on partial trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-strong-name-conflict'
+          & dotnet $probe $target metadata-preserved strong-name-conflict
+          if ($LASTEXITCODE -ne 0) { throw "Strong-name conflicting third-party plugin on partial trim host failed with exit code $LASTEXITCODE" }
+      - name: Stage concurrent third-party plugin dependency matrix on partial trim host
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $diamondPlugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDiamondModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $tripleDiamondPlugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTripleDiamondModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $secondaryDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency.dll'
+           $dependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $transitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $transitiveDependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $deepTransitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepTransitiveDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $deepDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDeepDependency.dll'
+           $tertiaryDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency.dll'
+           $dependencyV2 = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyV2/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.dll'
+           $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v1'
+           $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v2'
+           $duplicateTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v1-variant'
+           $directVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v1-direct-variant'
+           $diamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-diamond'
+           $mixedVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-mixed-variant'
+           $deepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-deep-diamond'
+           $wideDeepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-wide-deep-diamond'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependency) -OutputDirectory $firstTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependencyV2 -OutputDirectory $secondTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependencyVariant) -OutputDirectory $duplicateTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependencyVariant, $transitiveDependency) -OutputDirectory $directVariantTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $diamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $transitiveDependency) -OutputDirectory $diamondTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependencyVariant, $transitiveDependencyVariant) -OutputDirectory $mixedVariantTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $diamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $deepTransitiveDependency, $deepDependency) -OutputDirectory $deepDiamondTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $tripleDiamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $tertiaryDependency, $deepTransitiveDependency, $deepDependency) -OutputDirectory $wideDeepDiamondTarget
+      - name: Execute concurrent third-party plugin versions on partial trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v2'
+          & dotnet $probe --multi-version $firstTarget $secondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Concurrent third-party plugin versions on partial trim host failed with exit code $LASTEXITCODE" }
+      - name: Execute concurrent third-party plugin dependency matrix on partial trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v2'
+          $strongNameTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-strong-name-conflict'
+          $duplicateTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v1-variant'
+          $directVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v1-direct-variant'
+          $diamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-diamond'
+          $mixedVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-mixed-variant'
+          $deepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-deep-diamond'
+          $wideDeepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-wide-deep-diamond'
+          $multiPluginRounds = 3
+          $multiPluginRoundsText = ([string]$env:REFLECTION_MULTI_PLUGIN_ROUNDS).Trim()
+          if ([string]::IsNullOrWhiteSpace($multiPluginRoundsText) -or
+              ![int]::TryParse($multiPluginRoundsText, [Globalization.NumberStyles]::Integer, [Globalization.CultureInfo]::InvariantCulture, [ref]$multiPluginRounds) -or
+              $multiPluginRounds -lt 1 -or
+              $multiPluginRounds -gt 20) {
+            throw 'multi_plugin_rounds must be an integer from 1 through 20.'
+          }
+          & dotnet $probe --multi-plugin-rounds $multiPluginRounds $firstTarget $secondTarget $strongNameTarget $duplicateTarget $directVariantTarget $diamondTarget $mixedVariantTarget $deepDiamondTarget $wideDeepDiamondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Concurrent dependency graph rounds on partial trim host failed with exit code $LASTEXITCODE" }
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Test-MultiPluginCapacity.ps1 -ProbePath $probe -Rounds 3 -ValidPluginDirectories @(
+            $firstTarget,
+            $secondTarget,
+            $strongNameTarget,
+            $duplicateTarget,
+            $directVariantTarget,
+            $diamondTarget,
+            $mixedVariantTarget,
+            $deepDiamondTarget,
+            $wideDeepDiamondTarget
+          )
+          if ($LASTEXITCODE -ne 0) { throw "Partial trim multi-plugin capacity boundary failed with exit code $LASTEXITCODE" }
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Test-MultiPluginLongRounds.ps1 -ProbePath $probe -Rounds 10 -PluginDirectories @(
+            $firstTarget,
+            $secondTarget,
+            $strongNameTarget,
+            $duplicateTarget,
+            $directVariantTarget,
+            $diamondTarget,
+            $mixedVariantTarget,
+            $deepDiamondTarget,
+            $wideDeepDiamondTarget
+          )
+          if ($LASTEXITCODE -ne 0) { throw "Partial trim multi-plugin long-round boundary failed with exit code $LASTEXITCODE" }
+      - name: Execute runtime circular resolver boundary on partial trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-third-party-plugin-multi-version-v1-variant'
+          & dotnet $probe --runtime-cycle $firstTarget $secondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Runtime circular resolver boundary on partial trim host failed with exit code $LASTEXITCODE" }
+      - name: Publish trim-capable external plugin host (partial)
+        shell: pwsh
+        run: |
+          $publishDir = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-partial'
+          dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/ReflectionTrimProbe.UnrootedModelsHost.csproj -c Release -f net8.0 -r win-x64 --self-contained true -p:PublishTrimmed=true -p:TrimMode=partial -p:DebugType=None "-p:PublishDir=$publishDir"
+          $hostExecutable = Join-Path $publishDir 'ReflectionTrimProbe.UnrootedModelsHost.exe'
+          $plugin = Join-Path $publishDir 'ReflectionTrimProbe.UnrootedModels.dll'
+          $compositePlugin = Join-Path $publishDir 'ReflectionTrimProbe.PluginModels.dll'
+          $tertiaryPlugin = Join-Path $publishDir 'ReflectionTrimProbe.TertiaryModels.dll'
+          $quaternaryPlugin = Join-Path $publishDir 'ReflectionTrimProbe.QuaternaryModels.dll'
+          $quinaryPlugin = Join-Path $publishDir 'ReflectionTrimProbe.QuinaryModels.dll'
+          foreach ($path in @($hostExecutable, $plugin, $compositePlugin, $tertiaryPlugin, $quaternaryPlugin, $quinaryPlugin)) {
+            if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Trim-capable partial plugin host output was not created: $path" }
+          }
+      - name: Execute trim-capable external plugin host (partial)
+        shell: pwsh
+        run: |
+          $hostExecutable = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.UnrootedModelsHost.exe'
+          & $hostExecutable
+          if ($LASTEXITCODE -ne 0) { throw "Trim-capable partial plugin host failed with exit code $LASTEXITCODE" }
+      - name: Verify linker root preserve and multi-assembly modes on partial host
+        shell: pwsh
+        run: |
+          $hostExecutable = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.UnrootedModelsHost.exe'
+          $output = (& $hostExecutable --root-modes 2>&1 | Out-String)
+          if ($LASTEXITCODE -ne 0) { throw "Partial host linker root preserve/multi-assembly matrix failed with exit code $LASTEXITCODE" }
+          if (!$output.Contains('reflection-plugin-constrained-generic-root-modes:verified', [System.StringComparison]::Ordinal)) { throw 'Partial host constrained generic root marker was not found.' }
+      - name: Execute member-trimmed external plugin on partial host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll'
+          $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.UnrootedModels.dll'
+          $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial/ReflectionTrimProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-partial-member-trimmed-plugin'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -OutputDirectory $target
+          & dotnet $probe $target member-trimmed
+          if ($LASTEXITCODE -ne 0) { throw "Member-trimmed external plugin on partial-trim host failed with exit code $LASTEXITCODE" }
+      - name: Publish full trimmed reflection probe
+        shell: pwsh
+        run: |
+          $publishDir = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full'
+          dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj -c Release -f net8.0 -r win-x64 --self-contained true -p:TargetFrameworks=net8.0 -p:PublishTrimmed=true -p:TrimMode=full -p:DebugType=None "-p:PublishDir=$publishDir"
+      - name: Execute full trimmed reflection probe
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.exe'
+          if (!(Test-Path -LiteralPath $probe)) { throw "Full trimmed reflection probe was not published: $probe" }
+          $env:REFLECTION_TRIM_EXPECT_UNROOTED_METHOD = '1'
+          $probeOutput = @(& $probe 2>&1)
+          $exitCode = $LASTEXITCODE
+          $probeOutput | Write-Output
+          if ($exitCode -ne 0) { throw "Full trimmed reflection probe failed with exit code $exitCode" }
+          if (-not ($probeOutput -contains 'reflection-trim-byref-signature-ok')) {
+            throw 'Full trimmed reflection probe did not emit the by-ref signature marker.'
+          }
+          if (-not ($probeOutput -contains 'reflection-trim-ref-return-ok')) {
+            throw 'Full trimmed reflection probe did not emit the ref-return marker.'
+          }
+          if (-not ($probeOutput -contains 'reflection-trim-generic-variance-ok')) {
+            throw 'Full trimmed reflection probe did not emit the generic variance marker.'
+          }
+      - name: Execute full-trim plugin load boundary
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full'
+          & dotnet $probe $target
+          if ($LASTEXITCODE -ne 0) { throw "Full-trim plugin load boundary failed with exit code $LASTEXITCODE" }
+      - name: Execute preserved external plugin deployment on full trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll'
+          $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.UnrootedModels.dll'
+          $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-external-plugin'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -OutputDirectory $target
+          foreach ($path in @((Join-Path $target 'ReflectionTrimProbe.UnrootedModels.dll'), (Join-Path $target 'ReflectionTrimProbe.dll'))) {
+            if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Staged full-trim plugin deployment file was not created: $path" }
+          }
+          & dotnet $probe $target
+          if ($LASTEXITCODE -ne 0) { throw "Preserved external plugin on full-trim host failed with exit code $LASTEXITCODE" }
+      - name: Stage non-trimmable third-party plugin on full trim host
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $dependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $transitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.dll'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependency) -OutputDirectory $target
+      - name: Execute non-trimmable third-party plugin on full-trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin'
+          & dotnet $probe $target metadata-preserved
+          if ($LASTEXITCODE -ne 0) { throw "Non-trimmable third-party plugin on full-trim host failed with exit code $LASTEXITCODE" }
+      - name: Stage version-conflicting third-party plugin on full trim host
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependencyV2 = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyV2/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.dll'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-version-conflict'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependencyV2 -OutputDirectory $target
+      - name: Execute version-conflicting third-party plugin on full trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-version-conflict'
+          & dotnet $probe $target metadata-preserved version-conflict-v2
+          if ($LASTEXITCODE -ne 0) { throw "Version-conflicting third-party plugin on full trim host failed with exit code $LASTEXITCODE" }
+      - name: Stage strong-name conflicting third-party plugin on full trim host
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictModels/bin/Release/net8.0/ReflectionTrimProbe.StrongNameConflictModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictDependency/bin/Release/net8.0/System.Text.Json.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.dll'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-strong-name-conflict'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependency -OutputDirectory $target
+      - name: Execute strong-name conflicting third-party plugin on full trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-strong-name-conflict'
+          & dotnet $probe $target metadata-preserved strong-name-conflict
+          if ($LASTEXITCODE -ne 0) { throw "Strong-name conflicting third-party plugin on full trim host failed with exit code $LASTEXITCODE" }
+      - name: Stage concurrent third-party plugin dependency matrix on full trim host
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $diamondPlugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDiamondModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $tripleDiamondPlugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTripleDiamondModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $secondaryDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency.dll'
+           $dependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $transitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $transitiveDependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $deepTransitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepTransitiveDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $deepDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDeepDependency.dll'
+           $tertiaryDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency.dll'
+           $dependencyV2 = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyV2/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.dll'
+           $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v1'
+           $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v2'
+           $duplicateTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v1-variant'
+           $directVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v1-direct-variant'
+           $diamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-diamond'
+           $mixedVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-mixed-variant'
+           $deepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-deep-diamond'
+           $wideDeepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-wide-deep-diamond'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependency) -OutputDirectory $firstTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependencyV2 -OutputDirectory $secondTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependencyVariant) -OutputDirectory $duplicateTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependencyVariant, $transitiveDependency) -OutputDirectory $directVariantTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $diamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $transitiveDependency) -OutputDirectory $diamondTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependencyVariant, $transitiveDependencyVariant) -OutputDirectory $mixedVariantTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $diamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $deepTransitiveDependency, $deepDependency) -OutputDirectory $deepDiamondTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $tripleDiamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $tertiaryDependency, $deepTransitiveDependency, $deepDependency) -OutputDirectory $wideDeepDiamondTarget
+      - name: Execute concurrent third-party plugin versions on full trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v2'
+          & dotnet $probe --multi-version $firstTarget $secondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Concurrent third-party plugin versions on full trim host failed with exit code $LASTEXITCODE" }
+      - name: Execute concurrent third-party plugin dependency matrix on full trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v2'
+          $strongNameTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-strong-name-conflict'
+          $duplicateTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v1-variant'
+          $directVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v1-direct-variant'
+          $diamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-diamond'
+          $mixedVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-mixed-variant'
+          $deepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-deep-diamond'
+          $wideDeepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-wide-deep-diamond'
+          $multiPluginRounds = 3
+          $multiPluginRoundsText = ([string]$env:REFLECTION_MULTI_PLUGIN_ROUNDS).Trim()
+          if ([string]::IsNullOrWhiteSpace($multiPluginRoundsText) -or
+              ![int]::TryParse($multiPluginRoundsText, [Globalization.NumberStyles]::Integer, [Globalization.CultureInfo]::InvariantCulture, [ref]$multiPluginRounds) -or
+              $multiPluginRounds -lt 1 -or
+              $multiPluginRounds -gt 20) {
+            throw 'multi_plugin_rounds must be an integer from 1 through 20.'
+          }
+          & dotnet $probe --multi-plugin-rounds $multiPluginRounds $firstTarget $secondTarget $strongNameTarget $duplicateTarget $directVariantTarget $diamondTarget $mixedVariantTarget $deepDiamondTarget $wideDeepDiamondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Concurrent dependency graph rounds on full trim host failed with exit code $LASTEXITCODE" }
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Test-MultiPluginCapacity.ps1 -ProbePath $probe -Rounds 3 -ValidPluginDirectories @(
+            $firstTarget,
+            $secondTarget,
+            $strongNameTarget,
+            $duplicateTarget,
+            $directVariantTarget,
+            $diamondTarget,
+            $mixedVariantTarget,
+            $deepDiamondTarget,
+            $wideDeepDiamondTarget
+          )
+          if ($LASTEXITCODE -ne 0) { throw "Full trim multi-plugin capacity boundary failed with exit code $LASTEXITCODE" }
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Test-MultiPluginLongRounds.ps1 -ProbePath $probe -Rounds 10 -PluginDirectories @(
+            $firstTarget,
+            $secondTarget,
+            $strongNameTarget,
+            $duplicateTarget,
+            $directVariantTarget,
+            $diamondTarget,
+            $mixedVariantTarget,
+            $deepDiamondTarget,
+            $wideDeepDiamondTarget
+          )
+          if ($LASTEXITCODE -ne 0) { throw "Full trim multi-plugin long-round boundary failed with exit code $LASTEXITCODE" }
+      - name: Execute runtime circular resolver boundary on full trim host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-third-party-plugin-multi-version-v1-variant'
+          & dotnet $probe --runtime-cycle $firstTarget $secondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Runtime circular resolver boundary on full trim host failed with exit code $LASTEXITCODE" }
+      - name: Publish trim-capable external plugin host (full)
+        shell: pwsh
+        run: |
+          $publishDir = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-full'
+          dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/ReflectionTrimProbe.UnrootedModelsHost.csproj -c Release -f net8.0 -r win-x64 --self-contained true -p:PublishTrimmed=true -p:TrimMode=full -p:DebugType=None "-p:PublishDir=$publishDir"
+          $hostExecutable = Join-Path $publishDir 'ReflectionTrimProbe.UnrootedModelsHost.exe'
+          $plugin = Join-Path $publishDir 'ReflectionTrimProbe.UnrootedModels.dll'
+          $compositePlugin = Join-Path $publishDir 'ReflectionTrimProbe.PluginModels.dll'
+          $tertiaryPlugin = Join-Path $publishDir 'ReflectionTrimProbe.TertiaryModels.dll'
+          $quaternaryPlugin = Join-Path $publishDir 'ReflectionTrimProbe.QuaternaryModels.dll'
+          $quinaryPlugin = Join-Path $publishDir 'ReflectionTrimProbe.QuinaryModels.dll'
+          foreach ($path in @($hostExecutable, $plugin, $compositePlugin, $tertiaryPlugin, $quaternaryPlugin, $quinaryPlugin)) {
+            if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Trim-capable full plugin host output was not created: $path" }
+          }
+      - name: Execute trim-capable external plugin host (full)
+        shell: pwsh
+        run: |
+          $hostExecutable = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.UnrootedModelsHost.exe'
+          & $hostExecutable
+          if ($LASTEXITCODE -ne 0) { throw "Trim-capable full plugin host failed with exit code $LASTEXITCODE" }
+      - name: Verify linker root preserve and multi-assembly modes on full host
+        shell: pwsh
+        run: |
+          $hostExecutable = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.UnrootedModelsHost.exe'
+          $output = (& $hostExecutable --root-modes 2>&1 | Out-String)
+          if ($LASTEXITCODE -ne 0) { throw "Full host linker root preserve/multi-assembly matrix failed with exit code $LASTEXITCODE" }
+          if (!$output.Contains('reflection-plugin-constrained-generic-root-modes:verified', [System.StringComparison]::Ordinal)) { throw 'Full host constrained generic root marker was not found.' }
+      - name: Execute member-trimmed external plugin on full host
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll'
+          $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.UnrootedModels.dll'
+          $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full/ReflectionTrimProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/publish-full-member-trimmed-plugin'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -OutputDirectory $target
+          & dotnet $probe $target member-trimmed
+          if ($LASTEXITCODE -ne 0) { throw "Member-trimmed external plugin on full-trim host failed with exit code $LASTEXITCODE" }
+      - name: Restore NativeAOT reflection metadata probe
+        shell: pwsh
+        run: |
+          dotnet restore tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj `
+            -p:TargetFrameworks=net8.0 `
+            -r win-x64 `
+            -p:PublishAot=true
+          if ($LASTEXITCODE -ne 0) { throw "NativeAOT reflection probe restore failed with exit code $LASTEXITCODE" }
+      - name: Publish NativeAOT reflection metadata probe
+        shell: pwsh
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP 'reflection-nativeaot.log'
+          $publishDir = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native'
+          $sdkVersion = (& dotnet --version).Trim()
+          if ($sdkVersion -ne '8.0.425') { throw "NativeAOT reflection validation requires SDK 8.0.425, but the active SDK is $sdkVersion." }
+          $diagnosticContext = @(
+            "sdk=$sdkVersion"
+            'tfm=net8.0'
+            'rid=win-x64'
+            'trim=partial'
+            'aot=true'
+            'mode=ci-single-publish'
+          ) -join ';'
+          $output = & dotnet publish tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/ReflectionTrimProbe.csproj -c Release -f net8.0 -r win-x64 --self-contained true -p:TargetFrameworks=net8.0 -p:PublishAot=true -p:PublishTrimmed=true -p:TrimMode=partial -p:DebugType=portable --no-restore "-p:PublishDir=$publishDir/" 2>&1
+          $exitCode = $LASTEXITCODE
+          $output | Set-Content -LiteralPath $log -Encoding utf8
+          $output | Write-Output
+          if ($exitCode -ne 0) { throw "NativeAOT reflection probe publish failed with exit code $exitCode" }
+          $probe = Join-Path $publishDir 'ReflectionTrimProbe.exe'
+          if (!(Test-Path -LiteralPath $probe -PathType Leaf)) { throw "NativeAOT reflection probe was not published: $probe" }
+          "REFLECTION_NATIVEAOT_LOG=$log" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "REFLECTION_NATIVEAOT_DIAGNOSTIC_CONTEXT=$diagnosticContext" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Build NativeAOT source symbol map
+        shell: pwsh
+        run: |
+          $map = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/nativeaot-source-map.json'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Build-NativeAotSourceMap.ps1 `
+            -SearchRoot @(
+              (Join-Path $env:GITHUB_WORKSPACE 'output/release/net8.0'),
+              (Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0')) `
+            -AssemblyName @(
+              'Bing.Utils.dll',
+              'Bing.Utils.Reflection.dll',
+              'ReflectionTrimProbe.dll',
+              'ReflectionTrimProbe.Models.dll',
+              'ReflectionTrimProbe.PluginModels.dll',
+              'ReflectionTrimProbe.TertiaryModels.dll',
+              'ReflectionTrimProbe.QuaternaryModels.dll',
+              'ReflectionTrimProbe.QuinaryModels.dll') `
+            -RepositoryRoot $env:GITHUB_WORKSPACE `
+            -OutputPath $map
+          if (-not $?) { throw 'NativeAOT source symbol map generation failed.' }
+          "REFLECTION_NATIVEAOT_SYMBOL_MAP=$map" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Check NativeAOT warning baseline
+        shell: pwsh
+        env:
+          AOT_DIAGNOSTIC_ALLOWLIST_PATH: ${{ inputs.aot_diagnostic_allowlist_path }}
+          AOT_NONREPOSITORY_OWNERSHIP_PATH: ${{ inputs.aot_nonrepository_ownership_path }}
+        run: |
+          $baseline = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/baselines/NativeAotWarningBaseline.txt'
+          $report = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/nativeaot-warning-report.json'
+          if ([string]::IsNullOrWhiteSpace($env:REFLECTION_NATIVEAOT_DIAGNOSTIC_CONTEXT)) { throw 'NativeAOT diagnostic context was not exported by the publish step.' }
+          $arguments = @(
+            '-LogPath', $env:REFLECTION_NATIVEAOT_LOG,
+            '-BaselinePath', $baseline,
+            '-OutputPath', $report,
+            '-DiagnosticContext', $env:REFLECTION_NATIVEAOT_DIAGNOSTIC_CONTEXT,
+            '-SymbolMapPath', $env:REFLECTION_NATIVEAOT_SYMBOL_MAP)
+          $diagnosticBaseline = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/baselines/NativeAotRepositoryDiagnosticBaseline.json'
+          $manualDispatch = '${{ github.event_name }}' -eq 'workflow_dispatch'
+          $allowRepositoryFingerprintDrift = ('${{ inputs.allow_aot_repository_fingerprint_drift }}' -eq 'true') -or ($manualDispatch -and '${{ inputs.strict_aot_repository_fingerprints }}' -eq 'false')
+          if (Test-Path -LiteralPath $diagnosticBaseline -PathType Leaf) {
+            $arguments += @('-DiagnosticBaselinePath', $diagnosticBaseline)
+            if (!$allowRepositoryFingerprintDrift) { $arguments += '-FailOnNewRepositoryDiagnostic' }
+          } elseif (!$allowRepositoryFingerprintDrift) {
+            throw "Checked-in NativeAOT repository fingerprint baseline was not found: $diagnosticBaseline"
+          }
+          if ('${{ inputs.strict_aot_warnings }}' -eq 'true') { $arguments += '-FailOnNewWarning' }
+          $allowUnparsedDiagnostics = ('${{ inputs.allow_unparsed_aot_diagnostics }}' -eq 'true') -or ($manualDispatch -and '${{ inputs.strict_aot_unparsed }}' -eq 'false')
+          if (!$allowUnparsedDiagnostics) { $arguments += '-FailOnUnparsedDiagnostic' }
+          $allowlistPath = ([string]$env:AOT_DIAGNOSTIC_ALLOWLIST_PATH).Trim()
+          if ([string]::IsNullOrWhiteSpace($allowlistPath)) {
+            $allowlistPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/baselines/NativeAotRepositoryDiagnosticAllowlist.json'
+          }
+          $allowRepositoryWarningDrift = ('${{ inputs.allow_aot_repository_warning_drift }}' -eq 'true') -or ($manualDispatch -and '${{ inputs.strict_aot_repository_warnings }}' -eq 'false')
+          if (Test-Path -LiteralPath $allowlistPath -PathType Leaf) {
+            $arguments += @('-DiagnosticAllowlistPath', $allowlistPath)
+            if (!$allowRepositoryWarningDrift) { $arguments += '-FailOnUnapprovedRepositoryDiagnostic' }
+          } elseif (!$allowRepositoryWarningDrift) {
+            throw "NativeAOT diagnostic allowlist was not found: $allowlistPath"
+          }
+          $nonRepositoryOwnershipPath = ([string]$env:AOT_NONREPOSITORY_OWNERSHIP_PATH).Trim()
+          if ([string]::IsNullOrWhiteSpace($nonRepositoryOwnershipPath)) {
+            $nonRepositoryOwnershipPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/baselines/NativeAotNonRepositoryDiagnosticOwnership.json'
+          }
+          $allowNonRepositoryDiagnosticDrift = '${{ inputs.allow_aot_nonrepository_diagnostic_drift }}' -eq 'true'
+          if (Test-Path -LiteralPath $nonRepositoryOwnershipPath -PathType Leaf) {
+            $arguments += @('-NonRepositoryOwnershipPath', $nonRepositoryOwnershipPath)
+            if (!$allowNonRepositoryDiagnosticDrift) { $arguments += '-FailOnUnownedNonRepositoryDiagnostic' }
+          } elseif (!$allowNonRepositoryDiagnosticDrift) {
+            throw "NativeAOT non-repository ownership manifest was not found: $nonRepositoryOwnershipPath"
+          }
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Check-NativeAotWarnings.ps1 @arguments
+          if (-not $?) { throw 'NativeAOT warning baseline check failed.' }
+      - name: Build NativeAOT repository fingerprint baseline artifact
+        shell: pwsh
+        run: |
+          $report = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/nativeaot-warning-report.json'
+          $compact = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/nativeaot-repository-fingerprint-baseline.json'
+          $reportData = Get-Content -LiteralPath $report -Encoding utf8 -Raw | ConvertFrom-Json
+          if ([int]$reportData.repositorySourceDiagnosticCount -gt 0) {
+            & pwsh -NoProfile -File ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Build-NativeAotDiagnosticBaseline.ps1 -ReportPath $report -OutputPath $compact
+            if ($LASTEXITCODE -ne 0) { throw "NativeAOT repository fingerprint baseline generation failed with exit code $LASTEXITCODE" }
+          } else {
+            Write-Warning 'NativeAOT warning report contains no repository source diagnostics; no fingerprint baseline artifact was generated.'
+          }
+      - name: Execute NativeAOT reflection metadata probe
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native/ReflectionTrimProbe.exe'
+          if (!(Test-Path -LiteralPath $probe)) { throw "NativeAOT reflection probe was not published: $probe" }
+          $env:REFLECTION_TRIM_EXPECT_UNROOTED_METHOD = '1'
+          $probeOutput = @(& $probe 2>&1)
+          $exitCode = $LASTEXITCODE
+          $probeOutput | Write-Output
+          if ($exitCode -ne 0) { throw "NativeAOT reflection probe failed with exit code $exitCode" }
+          foreach ($marker in @('reflection-trim-byref-signature-ok', 'reflection-trim-ref-return-ok', 'reflection-trim-generic-variance-ok', 'reflection-aot-attribute-fallback-ok', 'reflection-aot-metadata-ok')) {
+            if (-not ($probeOutput -contains $marker)) {
+              throw "NativeAOT reflection probe did not emit required marker: $marker"
+            }
+          }
+      - name: Execute NativeAOT plugin load boundary
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native'
+          & dotnet $probe $target
+          if ($LASTEXITCODE -ne 0) { throw "NativeAOT plugin load boundary failed with exit code $LASTEXITCODE" }
+      - name: Execute preserved external plugin deployment on NativeAOT host output
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimPluginLoadProbe/bin/Release/net8.0/ReflectionTrimPluginLoadProbe.dll'
+          $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/ReflectionTrimProbe.UnrootedModels.dll'
+          $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native/ReflectionTrimProbe.exe'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-external-plugin'
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -OutputDirectory $target
+          foreach ($path in @((Join-Path $target 'ReflectionTrimProbe.UnrootedModels.dll'), (Join-Path $target 'ReflectionTrimProbe.exe'))) {
+            if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Staged NativeAOT plugin deployment file was not created: $path" }
+          }
+          & dotnet $probe $target
+          if ($LASTEXITCODE -ne 0) { throw "Preserved external plugin on NativeAOT host output failed with exit code $LASTEXITCODE" }
+      - name: Stage non-trimmable third-party plugin on NativeAOT host output
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $dependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $transitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native/ReflectionTrimProbe.exe'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependency) -OutputDirectory $target
+      - name: Execute non-trimmable third-party plugin on NativeAOT host output
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin'
+          & dotnet $probe $target metadata-preserved
+          if ($LASTEXITCODE -ne 0) { throw "Non-trimmable third-party plugin on NativeAOT host output failed with exit code $LASTEXITCODE" }
+      - name: Stage version-conflicting third-party plugin on NativeAOT host output
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependencyV2 = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyV2/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native/ReflectionTrimProbe.exe'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-version-conflict'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependencyV2 -OutputDirectory $target
+      - name: Execute version-conflicting third-party plugin on NativeAOT host output
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-version-conflict'
+          & dotnet $probe $target metadata-preserved version-conflict-v2
+          if ($LASTEXITCODE -ne 0) { throw "Version-conflicting third-party plugin on NativeAOT host output failed with exit code $LASTEXITCODE" }
+      - name: Stage strong-name conflicting third-party plugin on NativeAOT host output
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictModels/bin/Release/net8.0/ReflectionTrimProbe.StrongNameConflictModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.StrongNameConflictDependency/bin/Release/net8.0/System.Text.Json.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native/ReflectionTrimProbe.exe'
+           $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-strong-name-conflict'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependency -OutputDirectory $target
+      - name: Execute strong-name conflicting third-party plugin on NativeAOT host output
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $target = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-strong-name-conflict'
+          & dotnet $probe $target metadata-preserved strong-name-conflict
+          if ($LASTEXITCODE -ne 0) { throw "Strong-name conflicting third-party plugin on NativeAOT host output failed with exit code $LASTEXITCODE" }
+      - name: Stage concurrent third-party plugin dependency matrix on NativeAOT host output
+        shell: pwsh
+        run: |
+           $plugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $diamondPlugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDiamondModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $tripleDiamondPlugin = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTripleDiamondModels/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginModels.dll'
+           $dependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $secondaryDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginSecondaryDependency.dll'
+           $dependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $transitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $transitiveDependencyVariant = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $deepTransitiveDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepTransitiveDependencyVariant/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTransitiveDependency.dll'
+           $deepDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDeepDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDeepDependency.dll'
+           $tertiaryDependency = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginTertiaryDependency.dll'
+           $dependencyV2 = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/fixtures/ReflectionTrimProbe.NonTrimmablePluginDependencyV2/bin/Release/net8.0/ReflectionTrimProbe.NonTrimmablePluginDependency.dll'
+           $hostAssemblyPath = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native/ReflectionTrimProbe.exe'
+           $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v1'
+           $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v2'
+           $duplicateTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v1-variant'
+           $directVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v1-direct-variant'
+           $diamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-diamond'
+           $mixedVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-mixed-variant'
+           $deepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-deep-diamond'
+           $wideDeepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-wide-deep-diamond'
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependency) -OutputDirectory $firstTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath $dependencyV2 -OutputDirectory $secondTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $transitiveDependencyVariant) -OutputDirectory $duplicateTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependencyVariant, $transitiveDependency) -OutputDirectory $directVariantTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $diamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $transitiveDependency) -OutputDirectory $diamondTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $plugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependencyVariant, $transitiveDependencyVariant) -OutputDirectory $mixedVariantTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $diamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $deepTransitiveDependency, $deepDependency) -OutputDirectory $deepDiamondTarget
+           & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Stage-ExternalPlugin.ps1 -PluginAssemblyPath $tripleDiamondPlugin -HostAssemblyPath $hostAssemblyPath -AdditionalAssemblyPath @($dependency, $secondaryDependency, $tertiaryDependency, $deepTransitiveDependency, $deepDependency) -OutputDirectory $wideDeepDiamondTarget
+      - name: Execute concurrent third-party plugin versions on NativeAOT host output
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v2'
+          & dotnet $probe --multi-version $firstTarget $secondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Concurrent third-party plugin versions on NativeAOT host failed with exit code $LASTEXITCODE" }
+      - name: Execute concurrent third-party plugin dependency matrix on NativeAOT host output
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v2'
+          $strongNameTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-strong-name-conflict'
+          $duplicateTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v1-variant'
+          $directVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v1-direct-variant'
+          $diamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-diamond'
+          $mixedVariantTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-mixed-variant'
+          $deepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-deep-diamond'
+          $wideDeepDiamondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-wide-deep-diamond'
+          $multiPluginRounds = 3
+          $multiPluginRoundsText = ([string]$env:REFLECTION_MULTI_PLUGIN_ROUNDS).Trim()
+          if ([string]::IsNullOrWhiteSpace($multiPluginRoundsText) -or
+              ![int]::TryParse($multiPluginRoundsText, [Globalization.NumberStyles]::Integer, [Globalization.CultureInfo]::InvariantCulture, [ref]$multiPluginRounds) -or
+              $multiPluginRounds -lt 1 -or
+              $multiPluginRounds -gt 20) {
+            throw 'multi_plugin_rounds must be an integer from 1 through 20.'
+          }
+          & dotnet $probe --multi-plugin-rounds $multiPluginRounds $firstTarget $secondTarget $strongNameTarget $duplicateTarget $directVariantTarget $diamondTarget $mixedVariantTarget $deepDiamondTarget $wideDeepDiamondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Concurrent dependency graph rounds on NativeAOT host failed with exit code $LASTEXITCODE" }
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Test-MultiPluginCapacity.ps1 -ProbePath $probe -Rounds 3 -ValidPluginDirectories @(
+            $firstTarget,
+            $secondTarget,
+            $strongNameTarget,
+            $duplicateTarget,
+            $directVariantTarget,
+            $diamondTarget,
+            $mixedVariantTarget,
+            $deepDiamondTarget,
+            $wideDeepDiamondTarget
+          )
+          if ($LASTEXITCODE -ne 0) { throw "NativeAOT multi-plugin capacity boundary failed with exit code $LASTEXITCODE" }
+          & ./tests/Bing.Utils.Reflection.Tests.Integration/tools/Test-MultiPluginLongRounds.ps1 -ProbePath $probe -Rounds 10 -PluginDirectories @(
+            $firstTarget,
+            $secondTarget,
+            $strongNameTarget,
+            $duplicateTarget,
+            $directVariantTarget,
+            $diamondTarget,
+            $mixedVariantTarget,
+            $deepDiamondTarget,
+            $wideDeepDiamondTarget
+          )
+          if ($LASTEXITCODE -ne 0) { throw "NativeAOT multi-plugin long-round boundary failed with exit code $LASTEXITCODE" }
+      - name: Execute runtime circular resolver boundary on NativeAOT host output
+        shell: pwsh
+        run: |
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimThirdPartyPluginProbe/bin/Release/net8.0/ReflectionTrimThirdPartyPluginProbe.dll'
+          $firstTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v1'
+          $secondTarget = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/Release/net8.0/win-x64/native-third-party-plugin-multi-version-v1-variant'
+          & dotnet $probe --runtime-cycle $firstTarget $secondTarget
+          if ($LASTEXITCODE -ne 0) { throw "Runtime circular resolver boundary on NativeAOT host output failed with exit code $LASTEXITCODE" }
+      - name: Publish NativeAOT trim-capable external plugin host
+        shell: pwsh
+        run: |
+          $project = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/ReflectionTrimProbe.UnrootedModelsHost.csproj'
+          $publishDir = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-nativeaot'
+          dotnet restore $project -r win-x64 -p:PublishAot=true -p:PublishTrimmed=true -p:TrimMode=full
+          if ($LASTEXITCODE -ne 0) { throw "NativeAOT trim-capable external plugin host restore failed with exit code $LASTEXITCODE" }
+          dotnet publish $project -c Release -f net8.0 -r win-x64 --self-contained true -p:PublishAot=true -p:PublishTrimmed=true -p:TrimMode=full -p:DebugType=None --no-restore "-p:PublishDir=$publishDir/"
+          if ($LASTEXITCODE -ne 0) { throw "NativeAOT trim-capable external plugin host publish failed with exit code $LASTEXITCODE" }
+          $hostExecutable = Join-Path $publishDir 'ReflectionTrimProbe.UnrootedModelsHost.exe'
+          if (!(Test-Path -LiteralPath $hostExecutable -PathType Leaf)) { throw "NativeAOT trim-capable external plugin host output was not created: $hostExecutable" }
+      - name: Execute NativeAOT member-trimmed external plugin host
+        shell: pwsh
+        run: |
+          $hostExecutable = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-nativeaot/ReflectionTrimProbe.UnrootedModelsHost.exe'
+          & $hostExecutable member-trimmed
+          if ($LASTEXITCODE -ne 0) { throw "NativeAOT member-trimmed external plugin host failed with exit code $LASTEXITCODE" }
+      - name: Verify linker root preserve and multi-assembly modes on NativeAOT host
+        shell: pwsh
+        run: |
+          $hostExecutable = Join-Path $env:GITHUB_WORKSPACE 'tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe.UnrootedModelsHost/bin/Release/net8.0/win-x64/publish-nativeaot/ReflectionTrimProbe.UnrootedModelsHost.exe'
+          $output = (& $hostExecutable --root-modes 2>&1 | Out-String)
+          if ($LASTEXITCODE -ne 0) { throw "NativeAOT linker root preserve/multi-assembly matrix failed with exit code $LASTEXITCODE" }
+          if (!$output.Contains('reflection-plugin-constrained-generic-root-modes:verified', [System.StringComparison]::Ordinal)) { throw 'NativeAOT constrained generic root marker was not found.' }
+      - name: Upload NativeAOT warning report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflection-nativeaot-warnings-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/reflection-nativeaot.log
+            tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/nativeaot-warning-report.json
+            tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/nativeaot-repository-fingerprint-baseline.json
+            tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe/bin/nativeaot-source-map.json
+            tests/Bing.Utils.Reflection.Tests.Integration/baselines/NativeAotWarningBaseline.txt
+            tests/Bing.Utils.Reflection.Tests.Integration/baselines/NativeAotRepositoryDiagnosticBaseline.json
+            tests/Bing.Utils.Reflection.Tests.Integration/baselines/NativeAotRepositoryDiagnosticAllowlist.json
+            tests/Bing.Utils.Reflection.Tests.Integration/baselines/NativeAotNonRepositoryDiagnosticOwnership.json
+          if-no-files-found: warn
+      - name: Build reflection runtime inputs
+        run: |
+          dotnet build src/Bing.Utils/Bing.Utils.csproj -c Release -f net8.0
+          dotnet build src/Bing.Utils.Reflection/Bing.Utils.Reflection.csproj -c Release -f net8.0
+      - name: Execute reflection steady-state probe
+        shell: pwsh
+        run: |
+          $core = Join-Path $env:GITHUB_WORKSPACE 'output/release/net8.0/Bing.Utils.dll'
+          $reflection = Join-Path $env:GITHUB_WORKSPACE 'output/release/net8.0/Bing.Utils.Reflection.dll'
+          $probe = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionComparisonProbe/bin/Release/net8.0/ReflectionComparisonProbe.dll'
+          foreach ($path in @($core, $reflection, $probe)) {
+            if (!(Test-Path -LiteralPath $path)) { throw "Reflection probe input was not built: $path" }
+          }
+          & dotnet $probe $core $reflection --steady
+          if ($LASTEXITCODE -ne 0) { throw "Reflection steady-state probe failed with exit code $LASTEXITCODE" }
+      - name: Validate reflection cache inventory
+        shell: pwsh
+        run: |
+          ./benchmarks/Bing.Utils.Benchmark/Test-ReflectionCacheInventory.ps1 -OutputPath benchmarks/Bing.Utils.Benchmark/bin/reflection-cache-inventory.json
+      - name: Validate reflection external cache boundary
+        shell: pwsh
+        run: |
+          ./benchmarks/Bing.Utils.Benchmark/Test-ReflectionExternalCacheBoundary.ps1 -OutputPath benchmarks/Bing.Utils.Benchmark/bin/reflection-external-cache-boundary.json
+      - name: Execute reflection cache capacity probe
+        shell: pwsh
+        env:
+          REFLECTION_CAPACITY_MAX_BYPASS: ${{ inputs.reflection_capacity_max_bypass }}
+          REFLECTION_CAPACITY_MAX_TIME_US: ${{ inputs.reflection_capacity_max_time_us }}
+        run: |
+          $report = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/Bing.Utils.Benchmark/bin/reflection-capacity-report.json'
+          $arguments = @('--reflection-capacity', "--reflection-capacity-output=$report")
+          foreach ($budget in @(
+              @{ Name = 'REFLECTION_CAPACITY_MAX_BYPASS'; Parameter = '--reflection-capacity-max-bypass' },
+              @{ Name = 'REFLECTION_CAPACITY_MAX_TIME_US'; Parameter = '--reflection-capacity-max-time-us' })) {
+            $text = [string](Get-Item -Path ("Env:" + $budget.Name)).Value
+            if ([string]::IsNullOrWhiteSpace($text)) { continue }
+            $arguments += "$($budget.Parameter)=$($text.Trim())"
+          }
+          dotnet run --project benchmarks/Bing.Utils.Benchmark/Bing.Utils.Benchmark.csproj --no-build -c Release -f net8.0 -- @arguments
+          if ($LASTEXITCODE -ne 0) { throw "Reflection capacity probe failed with exit code $LASTEXITCODE" }
+      - name: Upload reflection capacity evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflection-capacity-${{ github.run_id }}
+          path: |
+            benchmarks/Bing.Utils.Benchmark/bin/reflection-capacity-report.json
+            benchmarks/Bing.Utils.Benchmark/bin/reflection-cache-inventory.json
+            benchmarks/Bing.Utils.Benchmark/bin/reflection-external-cache-boundary.json
+          if-no-files-found: warn
+  baseline-comparison:
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && (inputs.baseline_ref != '' || inputs.comparison_rounds != '1' || inputs.cold_start_max_time_ns != '' || inputs.cold_start_max_bytes != '' || inputs.steady_state_max_time_ns != '' || inputs.steady_state_max_bytes != '' || inputs.performance_policy_path != ''))
+    permissions:
+      contents: read
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.425
+      - name: Prime NuGet cache for snapshot restores
+        run: dotnet restore benchmarks/ReflectionComparisonProbe/ReflectionComparisonProbe.csproj -p:TargetFrameworks=net8.0
+      - name: Run BaselineRef comparison
+        shell: pwsh
+        env:
+          BASELINE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || inputs.baseline_ref }}
+          COMPARISON_ROUNDS: ${{ inputs.comparison_rounds }}
+          COLD_START_MAX_TIME_NS: ${{ inputs.cold_start_max_time_ns }}
+          COLD_START_MAX_BYTES: ${{ inputs.cold_start_max_bytes }}
+          STEADY_STATE_MAX_TIME_NS: ${{ inputs.steady_state_max_time_ns }}
+          STEADY_STATE_MAX_BYTES: ${{ inputs.steady_state_max_bytes }}
+          PERFORMANCE_POLICY_PATH: ${{ inputs.performance_policy_path }}
+        run: |
+          $baselineRef = $env:BASELINE_REF.Trim()
+          if ([string]::IsNullOrWhiteSpace($baselineRef)) { throw 'baseline_ref must not be empty.' }
+          $evidence = Join-Path $env:GITHUB_WORKSPACE 'benchmarks/ReflectionComparisonProbe/bin/ci-baseline-ref'
+          $rounds = 3
+          if ('${{ github.event_name }}' -eq 'workflow_dispatch') {
+            $roundsText = $env:COMPARISON_ROUNDS.Trim()
+            if ([string]::IsNullOrWhiteSpace($roundsText) -or ![int]::TryParse($roundsText, [Globalization.NumberStyles]::Integer, [Globalization.CultureInfo]::InvariantCulture, [ref]$rounds) -or $rounds -lt 1 -or $rounds -gt 20) {
+              throw 'comparison_rounds must be an integer from 1 through 20.'
+            }
+          }
+          $arguments = @('-BaselineRef', $baselineRef, '-Rounds', $rounds, '-OutputDirectory', $evidence)
+          foreach ($budget in @(
+              @{ Name = 'COLD_START_MAX_TIME_NS'; Parameter = '-ColdStartMaxTimeNs' },
+              @{ Name = 'COLD_START_MAX_BYTES'; Parameter = '-ColdStartMaxBytes' },
+              @{ Name = 'STEADY_STATE_MAX_TIME_NS'; Parameter = '-SteadyStateMaxTimeNs' },
+              @{ Name = 'STEADY_STATE_MAX_BYTES'; Parameter = '-SteadyStateMaxBytes' })) {
+            $text = [string](Get-Item -Path ("Env:" + $budget.Name)).Value
+            if ([string]::IsNullOrWhiteSpace($text)) { continue }
+            try {
+              $value = [double]::Parse($text.Trim(), [Globalization.CultureInfo]::InvariantCulture)
+            } catch {
+              throw "$($budget.Name) must be a finite non-negative number."
+            }
+            if ([double]::IsNaN($value) -or [double]::IsInfinity($value) -or $value -lt 0) {
+              throw "$($budget.Name) must be a finite non-negative number."
+            }
+            $arguments += @($budget.Parameter, $value)
+          }
+          $policyText = $env:PERFORMANCE_POLICY_PATH.Trim()
+          if (![string]::IsNullOrWhiteSpace($policyText)) {
+            $workspaceRoot = ([IO.Path]::GetFullPath($env:GITHUB_WORKSPACE)).TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
+            $policyPath = [IO.Path]::GetFullPath((Join-Path $workspaceRoot $policyText))
+            if (!$policyPath.StartsWith($workspaceRoot, [StringComparison]::OrdinalIgnoreCase)) {
+              throw 'performance_policy_path must stay under GITHUB_WORKSPACE.'
+            }
+            if (!(Test-Path -LiteralPath $policyPath -PathType Leaf)) {
+              throw "performance_policy_path was not found under the repository: $policyText"
+            }
+            $resolvedPolicyPath = (Resolve-Path -LiteralPath $policyPath).Path
+            if (!$resolvedPolicyPath.StartsWith($workspaceRoot, [StringComparison]::OrdinalIgnoreCase)) {
+              throw 'performance_policy_path resolved outside GITHUB_WORKSPACE.'
+            }
+            $arguments += @('-PerformancePolicyPath', $resolvedPolicyPath)
+          }
+          & ./benchmarks/ReflectionComparisonProbe/Run-ReflectionComparison.ps1 @arguments
+          if ($LASTEXITCODE -ne 0) { throw "BaselineRef comparison smoke failed with exit code $LASTEXITCODE" }
+      - name: Upload BaselineRef comparison evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflection-baseline-comparison-${{ github.run_id }}
+          path: benchmarks/ReflectionComparisonProbe/bin/ci-baseline-ref
+          if-no-files-found: error
