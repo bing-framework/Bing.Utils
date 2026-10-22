@@ -31,9 +31,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
     }
 
     /// <summary>
-
     /// 包装请求正文以观测上传进度。
-
     /// </summary>
     private HttpContent WrapUploadContent(HttpContent inner, int attempt, Action<HttpUploadProgress> observer,
         long minimumBytes, TimeSpan minimumInterval)
@@ -43,9 +41,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
     }
 
     /// <summary>
-
     /// 包装请求正文并在序列化时观测上传进度。
-
     /// </summary>
     private sealed class UploadProgressContent : HttpContent
     {
@@ -97,9 +93,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
 #endif
 
         /// <summary>
-
         /// 复制上传正文并按阈值报告进度。
-
         /// </summary>
         private async Task SerializeToStreamAsyncCore(Stream stream, TransportContext context,
             CancellationToken cancellationToken)
@@ -135,9 +129,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
     }
 
     /// <summary>
-
     /// 跟踪单次请求正文发送尝试的上传状态。
-
     /// </summary>
     private sealed class UploadProgressState
     {
@@ -187,16 +179,12 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
         }
 
         /// <summary>
-
         /// 获取当前发送尝试已经写入的字节数。
-
         /// </summary>
         public long BytesWritten { get; private set; }
 
         /// <summary>
-
         /// 累加已写入字节并按阈值报告进度。
-
         /// </summary>
         /// <param name="bytes">本次写入的字节数。</param>
         public void Add(long bytes)
@@ -206,9 +194,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
         }
 
         /// <summary>
-
         /// 按进度阈值向观察者报告上传状态。
-
         /// </summary>
         /// <param name="bytes">已写入的字节数。</param>
         /// <param name="total">已知时表示正文总字节数。</param>
@@ -225,9 +211,7 @@ public partial class HttpRequest<TResult> : IHttpRequestUploadProgressRegistrati
     }
 
     /// <summary>
-
     /// 代理正文写入并累计上传进度的流。
-
     /// </summary>
     private sealed class ProgressStream : Stream
     {

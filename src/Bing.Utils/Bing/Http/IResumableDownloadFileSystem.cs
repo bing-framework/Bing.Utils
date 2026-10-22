@@ -1,9 +1,7 @@
 namespace Bing.Http;
 
 /// <summary>
-
 /// 为断点续传侧车维护提供可替换的文件系统操作。
-
 /// </summary>
 /// <remarks>该接口仅供库内部和测试使用，默认实现直接调用 System.IO。</remarks>
 internal interface IResumableDownloadFileSystem
@@ -54,9 +52,7 @@ internal interface IResumableDownloadFileSystem
 }
 
 /// <summary>
-
 /// 断点续传侧车维护的默认文件系统适配器。
-
 /// </summary>
 internal sealed class DefaultResumableDownloadFileSystem : IResumableDownloadFileSystem
 {

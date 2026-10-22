@@ -3,9 +3,7 @@ using System.Net;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 一次已接受的重试等待计划；不保证等待结束后会再次发送。
-
 /// </summary>
 public sealed class HttpRetryScheduled
 {
@@ -28,9 +26,7 @@ public sealed class HttpRetryScheduled
     }
 
     /// <summary>
-
     /// 获取刚失败的发送尝试序号，从 1 开始。
-
     /// </summary>
     public int FailedAttempt { get; }
     /// <summary>

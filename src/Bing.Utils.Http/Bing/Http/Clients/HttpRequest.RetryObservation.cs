@@ -1,9 +1,7 @@
 namespace Bing.Http.Clients;
 
 /// <summary>
-
 /// HTTP 请求的可选重试等待观测能力。
-
 /// </summary>
 public partial class HttpRequest<TResult> : IHttpRequestRetryObservationRegistration<TResult> where TResult : class
 {
@@ -24,9 +22,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRetryObservationRegistra
     }
 
     /// <summary>
-
     /// 报告分片下载已安排的重试等待。
-
     /// </summary>
     private static void NotifyRetryScheduled(Action<HttpRetryScheduled> observer, Action<Exception> onObserverError,
         int attempt, TimeSpan delay, System.Net.HttpStatusCode? statusCode, Exception error)

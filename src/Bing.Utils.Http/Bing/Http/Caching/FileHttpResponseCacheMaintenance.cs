@@ -3,9 +3,7 @@ using System.Threading;
 namespace Bing.Http.Caching;
 
 /// <summary>
-
 /// 显式调度文件 HTTP 响应缓存清理的后台维护器。
-
 /// </summary>
 /// <remarks>
 /// 创建实例不会启动后台任务；调用 <see cref="Start"/> 后才会立即执行一次清理并按周期重复。
@@ -85,9 +83,7 @@ public sealed class FileHttpResponseCacheMaintenance : IDisposable
     }
 
     /// <summary>
-
     /// 获取维护器当前是否正在运行。
-
     /// </summary>
     public bool IsRunning
     {
@@ -95,9 +91,7 @@ public sealed class FileHttpResponseCacheMaintenance : IDisposable
     }
 
     /// <summary>
-
     /// 启动后台清理；重复调用不会创建第二个任务。
-
     /// </summary>
     public void Start()
     {
@@ -111,9 +105,7 @@ public sealed class FileHttpResponseCacheMaintenance : IDisposable
     }
 
     /// <summary>
-
     /// 停止后台清理并等待当前清理轮次结束；重复调用安全。
-
     /// </summary>
     public void Stop()
     {
@@ -153,9 +145,7 @@ public sealed class FileHttpResponseCacheMaintenance : IDisposable
     }
 
     /// <summary>
-
     /// 按配置间隔执行后台缓存清理任务。
-
     /// </summary>
     private async Task RunAsync(CancellationToken cancellationToken)
     {
@@ -184,9 +174,7 @@ public sealed class FileHttpResponseCacheMaintenance : IDisposable
     }
 
     /// <summary>
-
     /// 对象已释放时抛出异常。
-
     /// </summary>
     private void ThrowIfDisposed()
     {

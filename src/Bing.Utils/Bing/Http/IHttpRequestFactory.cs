@@ -3,9 +3,7 @@ using System.Net.Http;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 提供不限定于既有常用动词的 HTTP 请求创建能力。
-
 /// </summary>
 public interface IHttpRequestFactory
 {

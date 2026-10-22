@@ -170,9 +170,7 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 使用当前 HttpRequest 的客户端、请求头、拦截器和重试策略执行分片下载。
-
     /// </summary>
     /// <param name="filePath">最终目标文件路径。</param>
     /// <param name="state">已规划且覆盖完整正文的分片状态。</param>
@@ -213,18 +211,14 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 发送用于探测服务器分段下载能力的请求。
-
     /// </summary>
     private Task<HttpDownloadRangeResponseMetadata> SendSegmentedProbeRequestAsync(CancellationToken cancellationToken)
         => ExecuteAsync(async (response, token) => ReadRangeMetadata(response),
             cancellationToken, nested: true, allowRetries: true);
 
     /// <summary>
-
     /// 请求指定范围并返回响应正文流。
-
     /// </summary>
     private Task<Stream> SendSegmentedRangeRequestAsync(HttpDownloadRange range, long? totalLength,
         CancellationToken cancellationToken)
@@ -251,9 +245,7 @@ public partial class HttpRequest<TResult> where TResult : class
         });
 
     /// <summary>
-
     /// 从分段响应中读取并校验范围元数据。
-
     /// </summary>
     private static HttpDownloadRangeResponseMetadata ReadRangeMetadata(HttpResponseMessage response)
     {

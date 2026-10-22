@@ -6,9 +6,7 @@ using System.Net.Http.Headers;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 保存 HTTP 响应状态、头信息及转换结果，供请求结束后继续读取。
-
 /// </summary>
 /// <typeparam name="TResult">成功响应正文转换后的类型。</typeparam>
 /// <remarks>头信息和多值集合均为独立只读快照，不依赖已释放的响应对象。</remarks>
@@ -48,9 +46,7 @@ public sealed class HttpResponseResult<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 获取 HTTP 响应状态码。
-
     /// </summary>
     public HttpStatusCode StatusCode { get; }
     /// <summary>
@@ -82,9 +78,7 @@ public sealed class HttpResponseResult<TResult> where TResult : class
     public string RawContent { get; }
 
     /// <summary>
-
     /// 复制头字典及其多值集合为独立只读快照。
-
     /// </summary>
     /// <param name="source">待复制的头字典。</param>
     /// <returns>名称不区分大小写且保留多值的快照。</returns>
@@ -97,9 +91,7 @@ public sealed class HttpResponseResult<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 将响应消息的头信息复制为独立只读快照。
-
     /// </summary>
     /// <param name="source">尚未释放的响应头；可为空。</param>
     /// <returns>名称不区分大小写且保留多值的头信息快照。</returns>

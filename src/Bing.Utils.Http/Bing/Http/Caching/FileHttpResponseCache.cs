@@ -264,9 +264,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 清理过期缓存和超过保留时间的临时文件。
-
     /// </summary>
     /// <param name="staleAfter">临时文件至少应保留的时间；必须为非负有限值。</param>
     /// <param name="cancellationToken">取消清理和容量锁等待的令牌。</param>
@@ -281,9 +279,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
         => CleanupAsync(staleAfter, cancellationToken, false);
 
     /// <summary>
-
     /// 递归清理当前缓存目录树中的过期缓存和遗留临时文件。
-
     /// </summary>
     /// <param name="staleAfter">临时文件至少应保留的时间；必须为非负有限值。</param>
     /// <param name="cancellationToken">取消清理和容量锁等待的令牌。</param>
@@ -294,9 +290,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
         => CleanupAsync(staleAfter, cancellationToken, true);
 
     /// <summary>
-
     /// 清理文件缓存中过期条目和陈旧临时文件。
-
     /// </summary>
     private Task<FileHttpResponseCacheCleanupResult> CleanupAsync(
         TimeSpan staleAfter, CancellationToken cancellationToken, bool recursive)
@@ -384,9 +378,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
             requestContainsAuthorization, allowAuthenticated).ConfigureAwait(false);
 
     /// <summary>
-
     /// 读取或创建文件缓存，并允许取消锁等待、文件阶段和回源后的提交。
-
     /// </summary>
     /// <param name="key">调用方定义的稳定缓存键。</param>
     /// <param name="ttl">回源结果的缓存有效期。</param>
@@ -436,9 +428,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 根据缓存键生成缓存数据文件路径。
-
     /// </summary>
     private string CachePath(string key) => Path.Combine(_directory, Hash(key) + ".cache");
     /// <summary>
@@ -447,9 +437,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     private string LockPath(string key) => Path.Combine(_directory, Hash(key) + ".lock");
 
     /// <summary>
-
     /// 按配置容量移除过期或最久未访问的缓存条目。
-
     /// </summary>
     private void EnforceCapacity()
     {
@@ -499,17 +487,13 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 读取并验证指定缓存文件的响应内容。
-
     /// </summary>
     private HttpResponseResult<byte[]> TryRead(string path, string key)
         => TryRead(path, key, CancellationToken.None);
 
     /// <summary>
-
     /// 读取并验证指定缓存文件的响应内容。
-
     /// </summary>
     private HttpResponseResult<byte[]> TryRead(string path, string key, CancellationToken cancellationToken)
     {
@@ -543,26 +527,20 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 获取指定缓存条目的跨进程锁。
-
     /// </summary>
     private FileStream AcquireLock(string key)
         => AcquireLock(key, CancellationToken.None);
 
     /// <summary>
-
     /// 获取指定缓存条目的跨进程锁。
-
     /// </summary>
     private FileStream AcquireLock(string key, CancellationToken cancellationToken)
         => AcquireLockPath(LockPath(key), cancellationToken,
             () => Interlocked.Increment(ref _lockWaits));
 
     /// <summary>
-
     /// 获取指定缓存条目的跨进程锁。
-
     /// </summary>
     private FileStream AcquireLock(string key, CancellationToken cancellationToken,
         IFileHttpResponseCacheFileSystem fileSystem)
@@ -570,9 +548,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
             () => Interlocked.Increment(ref _lockWaits));
 
     /// <summary>
-
     /// 获取指定缓存条目的跨进程锁。
-
     /// </summary>
     private FileStream AcquireLock(string directory, string key, CancellationToken cancellationToken,
         IFileHttpResponseCacheFileSystem fileSystem)
@@ -580,26 +556,20 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
             () => Interlocked.Increment(ref _lockWaits));
 
     /// <summary>
-
     /// 获取文件缓存容量维护所需的跨进程锁。
-
     /// </summary>
     private FileStream AcquireCapacityLock()
         => AcquireCapacityLock(CancellationToken.None);
 
     /// <summary>
-
     /// 获取文件缓存容量维护所需的跨进程锁。
-
     /// </summary>
     private FileStream AcquireCapacityLock(CancellationToken cancellationToken)
         => AcquireLockPath(Path.Combine(_directory, ".binghttp.capacity.lock"), cancellationToken,
             () => Interlocked.Increment(ref _lockWaits));
 
     /// <summary>
-
     /// 获取文件缓存容量维护所需的跨进程锁。
-
     /// </summary>
     private FileStream AcquireCapacityLock(CancellationToken cancellationToken,
         IFileHttpResponseCacheFileSystem fileSystem)
@@ -607,9 +577,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
             () => Interlocked.Increment(ref _lockWaits));
 
     /// <summary>
-
     /// 获取文件缓存容量维护所需的跨进程锁。
-
     /// </summary>
     private FileStream AcquireCapacityLock(string directory, CancellationToken cancellationToken,
         IFileHttpResponseCacheFileSystem fileSystem)
@@ -617,9 +585,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
             () => Interlocked.Increment(ref _lockWaits));
 
     /// <summary>
-
     /// 枚举根目录及按需递归发现的子目录。
-
     /// </summary>
     private static IEnumerable<string> FindDirectories(string root, bool recursive,
         CancellationToken cancellationToken, IFileHttpResponseCacheFileSystem fileSystem)
@@ -645,9 +611,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 打开指定路径对应的独占锁文件。
-
     /// </summary>
     private static FileStream AcquireLockPath(string path, CancellationToken cancellationToken,
         Action onWait)
@@ -668,9 +632,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 将缓存键转换为稳定的文件名摘要。
-
     /// </summary>
     private static string Hash(string key)
     {
@@ -679,9 +641,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 验证缓存键非空且符合调用要求。
-
     /// </summary>
     private static void ValidateKey(string key)
     {
@@ -691,9 +651,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 验证缓存有效期为正且有限。
-
     /// </summary>
     private static void ValidateTtl(TimeSpan ttl)
     {
@@ -702,9 +660,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 读取文件缓存条目及其响应快照。
-
     /// </summary>
     private static FileCacheEntry Read(string path)
     {
@@ -732,9 +688,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 将旧格式缓存条目迁移为当前格式。
-
     /// </summary>
     private bool TryMigrateLegacy(string path, FileCacheEntry entry)
     {
@@ -756,9 +710,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 将缓存条目写入文件。
-
     /// </summary>
     private static void Write(string path, FileCacheEntry entry)
     {
@@ -778,9 +730,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 从缓存文件读取响应头集合。
-
     /// </summary>
     private static Dictionary<string, IReadOnlyList<string>> ReadHeaders(BinaryReader reader)
     {
@@ -800,9 +750,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 将响应头集合写入缓存文件。
-
     /// </summary>
     private static void WriteHeaders(BinaryWriter writer, IReadOnlyDictionary<string, IReadOnlyList<string>> headers)
     {
@@ -818,9 +766,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 以临时文件替换目标缓存文件。
-
     /// </summary>
     private static void Replace(string temp, string target)
     {
@@ -833,9 +779,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 尝试删除缓存或临时文件。
-
     /// </summary>
     private static bool TryDelete(string path)
     {
@@ -849,9 +793,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 尝试删除缓存或临时文件。
-
     /// </summary>
     private static bool TryDelete(IFileHttpResponseCacheFileSystem fileSystem, string path)
     {
@@ -860,9 +802,7 @@ public sealed class FileHttpResponseCache : IHttpResponseCache<byte[]>, IHttpRes
     }
 
     /// <summary>
-
     /// 文件缓存记录的反序列化数据。
-
     /// </summary>
     private sealed class FileCacheEntry
     {

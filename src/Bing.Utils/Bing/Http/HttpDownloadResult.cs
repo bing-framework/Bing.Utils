@@ -6,9 +6,7 @@ using System.Net.Http.Headers;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 流式下载结束后可独立使用的响应元数据。
-
 /// </summary>
 public sealed class HttpDownloadResult
 {
@@ -47,9 +45,7 @@ public sealed class HttpDownloadResult
     }
 
     /// <summary>
-
     /// 获取响应状态码。
-
     /// </summary>
     public HttpStatusCode StatusCode { get; }
     /// <summary>
@@ -80,9 +76,7 @@ public sealed class HttpDownloadResult
     public bool IsFileSaved { get; }
 
     /// <summary>
-
     /// 返回标记为已保存文件的下载结果副本。
-
     /// </summary>
     /// <returns>文件保存状态为 <see langword="true"/> 的结果副本。</returns>
     internal HttpDownloadResult WithFileSaved() => new HttpDownloadResult(StatusCode, Headers, ContentHeaders, BytesWritten);
@@ -105,9 +99,7 @@ public sealed class HttpDownloadResult
     }
 
     /// <summary>
-
     /// 复制 HTTP 头集合为独立只读快照。
-
     /// </summary>
     /// <param name="source">待复制的头集合；可以为空。</param>
     /// <returns>名称不区分大小写且保留多值的快照。</returns>
@@ -121,9 +113,7 @@ public sealed class HttpDownloadResult
     }
 
     /// <summary>
-
     /// 复制头字典及其多值集合为独立只读快照。
-
     /// </summary>
     /// <param name="source">待复制的头字典；可以为空。</param>
     /// <returns>名称不区分大小写且保留多值的快照。</returns>

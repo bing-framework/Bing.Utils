@@ -8,9 +8,7 @@ public partial class HttpRequest<TResult> where TResult : class
     private const int ResumeStateSchemaVersion = 1;
 
     /// <summary>
-
     /// 保存断点续传时用于验证和恢复下载的状态。
-
     /// </summary>
     private sealed class ResumeDownloadState
     {

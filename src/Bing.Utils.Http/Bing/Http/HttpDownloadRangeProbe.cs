@@ -4,9 +4,7 @@ using System.Net.Http.Headers;
 namespace Bing.Http;
 
 /// <summary>
-
 /// HTTP 分片能力探测的结果状态。
-
 /// </summary>
 public enum HttpDownloadRangeSupportStatus
 {
@@ -16,24 +14,18 @@ public enum HttpDownloadRangeSupportStatus
     Supported,
 
     /// <summary>
-
     /// 服务器没有提供范围能力或拒绝了范围请求。
-
     /// </summary>
     Unsupported,
 
     /// <summary>
-
     /// 服务器响应违反了范围协议。
-
     /// </summary>
     Invalid
 }
 
 /// <summary>
-
 /// 与具体 HTTP 客户端无关的响应元数据。
-
 /// </summary>
 public sealed class HttpDownloadRangeResponseMetadata
 {
@@ -43,31 +35,23 @@ public sealed class HttpDownloadRangeResponseMetadata
     public HttpStatusCode StatusCode { get; set; }
 
     /// <summary>
-
     /// 获取或设置 Accept-Ranges 头值。
-
     /// </summary>
     public string AcceptRanges { get; set; }
 
     /// <summary>
-
     /// 获取或设置 Content-Length 值。
-
     /// </summary>
     public long? ContentLength { get; set; }
 
     /// <summary>
-
     /// 获取或设置解析后的 Content-Range 值。
-
     /// </summary>
     public ContentRangeHeaderValue ContentRange { get; set; }
 }
 
 /// <summary>
-
 /// 描述 HTTP 字节范围能力探测结果。
-
 /// </summary>
 public sealed class HttpDownloadRangeProbeResult
 {
@@ -82,31 +66,23 @@ public sealed class HttpDownloadRangeProbeResult
     }
 
     /// <summary>
-
     /// 获取探测状态。
-
     /// </summary>
     public HttpDownloadRangeSupportStatus Status { get; }
 
     /// <summary>
-
     /// 获取响应报告的正文总长度。
-
     /// </summary>
     public long? TotalLength { get; }
 
     /// <summary>
-
     /// 获取状态说明。
-
     /// </summary>
     public string Reason { get; }
 }
 
 /// <summary>
-
 /// 探测和适配 HTTP 字节范围响应。
-
 /// </summary>
 public static class HttpDownloadRangeProbe
 {
@@ -162,9 +138,7 @@ public static class HttpDownloadRangeProbe
     }
 
     /// <summary>
-
     /// 通过调用方提供的响应读取委托执行可取消的能力探测。
-
     /// </summary>
     /// <param name="readMetadata">读取响应元数据的委托。</param>
     /// <param name="expectedRange">范围请求；为空表示初始能力探测。</param>
@@ -182,33 +156,25 @@ public static class HttpDownloadRangeProbe
     }
 
     /// <summary>
-
     /// 判断 Content-Range 单位是否为 bytes。
-
     /// </summary>
     private static bool IsBytes(string value)
         => string.Equals(value?.Trim(), "bytes", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
-
     /// 创建表示服务器支持范围请求的探测结果。
-
     /// </summary>
     private static HttpDownloadRangeProbeResult Supported(long? totalLength, string reason)
         => new HttpDownloadRangeProbeResult(HttpDownloadRangeSupportStatus.Supported, totalLength, reason);
 
     /// <summary>
-
     /// 创建表示服务器不支持范围请求的探测结果。
-
     /// </summary>
     private static HttpDownloadRangeProbeResult Unsupported(string reason)
         => new HttpDownloadRangeProbeResult(HttpDownloadRangeSupportStatus.Unsupported, null, reason);
 
     /// <summary>
-
     /// 创建表示范围探测响应无效的结果。
-
     /// </summary>
     private static HttpDownloadRangeProbeResult Invalid(string reason)
         => new HttpDownloadRangeProbeResult(HttpDownloadRangeSupportStatus.Invalid, null, reason);

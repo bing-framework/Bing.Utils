@@ -1,9 +1,7 @@
 namespace Bing.Http.Caching;
 
 /// <summary>
-
 /// 为宿主提供显式启用的分布式 HTTP 响应缓存入口。
-
 /// </summary>
 /// <remarks>该扩展只接入 byte[] 响应；回源并发协调、租约和跨节点一致性由存储契约实现负责。</remarks>
 public static class DistributedHttpResponseCacheExtensions
@@ -61,9 +59,7 @@ public static class DistributedHttpResponseCacheExtensions
     }
 
     /// <summary>
-
     /// 读取分布式快照，未命中时执行 byte[] 响应回源。
-
     /// </summary>
     /// <param name="store">宿主提供的分布式快照存储。</param>
     /// <param name="cacheKey">全局稳定缓存键。</param>
@@ -86,9 +82,7 @@ public static class DistributedHttpResponseCacheExtensions
     }
 
     /// <summary>
-
     /// 校验分布式响应缓存的存储、键和有效期。
-
     /// </summary>
     private static void Validate(IDistributedHttpResponseStore store, string key, TimeSpan ttl,
         bool requestContainsAuthorization, bool allowAuthenticated)
@@ -102,9 +96,7 @@ public static class DistributedHttpResponseCacheExtensions
     }
 
     /// <summary>
-
     /// 根据命名空间版本生成当前有效的缓存键。
-
     /// </summary>
     private static async Task<string> ResolveNamespaceKeyAsync(
         IDistributedHttpResponseStore store, string cacheKey, string namespaceName,
@@ -121,9 +113,7 @@ public static class DistributedHttpResponseCacheExtensions
     }
 
     /// <summary>
-
     /// 等待获得分布式缓存回源租约。
-
     /// </summary>
     private static async Task<IDistributedHttpResponseLease> WaitForLeaseAsync(
         IDistributedHttpResponseLeaseStore leaseStore, IDistributedHttpResponseStore store,
@@ -144,9 +134,7 @@ public static class DistributedHttpResponseCacheExtensions
     }
 
     /// <summary>
-
     /// 执行缓存未命中时的回源请求并保存响应快照。
-
     /// </summary>
     private static async Task<HttpResponseResult<byte[]>> ExecuteOriginAsync(
         IDistributedHttpResponseStore store, string cacheKey, TimeSpan ttl,
@@ -160,18 +148,14 @@ public static class DistributedHttpResponseCacheExtensions
     }
 
     /// <summary>
-
     /// 将响应结果转换为可持久化的快照。
-
     /// </summary>
     private static DistributedHttpResponseSnapshot ToSnapshot(HttpResponseResult<byte[]> response)
         => new DistributedHttpResponseSnapshot(response.StatusCode, response.Headers,
             response.ContentHeaders, response.Data, response.RawContent);
 
     /// <summary>
-
     /// 将持久化快照还原为响应结果。
-
     /// </summary>
     private static HttpResponseResult<byte[]> ToResponse(DistributedHttpResponseSnapshot snapshot)
         => new HttpResponseResult<byte[]>(snapshot.StatusCode, snapshot.Headers,

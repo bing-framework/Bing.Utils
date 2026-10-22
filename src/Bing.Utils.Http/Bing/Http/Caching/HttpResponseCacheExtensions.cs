@@ -3,9 +3,7 @@ using Bing.Http.Clients;
 namespace Bing.Http.Caching;
 
 /// <summary>
-
 /// 为 HTTP 响应缓存提供显式启用的请求和回源扩展。
-
 /// </summary>
 public static class HttpResponseCacheExtensions
 {
@@ -34,9 +32,7 @@ public static class HttpResponseCacheExtensions
     }
 
     /// <summary>
-
     /// 发送请求并将响应快照按指定键显式缓存。
-
     /// </summary>
     /// <typeparam name="TResult">响应转换后的数据类型。</typeparam>
     /// <param name="request">要发送的请求。</param>
@@ -63,9 +59,7 @@ public static class HttpResponseCacheExtensions
     }
 
     /// <summary>
-
     /// 发送请求并将文件缓存响应按指定键显式缓存，同时支持取消锁等待。
-
     /// </summary>
     /// <remarks>此重载面向 byte[] 响应；文件缓存只保存不可释放的响应快照。</remarks>
     /// <param name="request">要发送的请求。</param>

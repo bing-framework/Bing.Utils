@@ -4,9 +4,7 @@ using System.Net.Http;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 在每次 HTTP 发送尝试前修改请求，并在发送后观察结果的异步拦截器。
-
 /// </summary>
 /// <remarks>发送前按注册顺序调用，发送后按相反顺序调用。每次重试都会重新执行发送前处理。</remarks>
 public abstract class HttpRequestInterceptor
@@ -20,9 +18,7 @@ public abstract class HttpRequestInterceptor
     public virtual Task BeforeSendAsync(HttpRequestInterceptorContext context, CancellationToken token) => Task.CompletedTask;
 
     /// <summary>
-
     /// 在当前发送尝试结束后异步观察响应元数据或发送异常。
-
     /// </summary>
     /// <param name="context">包含当前尝试结果的请求上下文。</param>
     /// <param name="token">请求取消令牌；发送取消时可能已取消，观察逻辑应尊重该状态。</param>
@@ -31,9 +27,7 @@ public abstract class HttpRequestInterceptor
 }
 
 /// <summary>
-
 /// 为同一次 HTTP 发送尝试的拦截器提供请求、响应元数据和共享状态。
-
 /// </summary>
 /// <remarks>每次尝试使用独立上下文；同一请求执行中的重试共享 <see cref="Items"/>，另一次执行会创建新的集合。</remarks>
 public sealed class HttpRequestInterceptorContext
@@ -52,9 +46,7 @@ public sealed class HttpRequestInterceptorContext
     }
 
     /// <summary>
-
     /// 获取当前发送尝试的请求消息。
-
     /// </summary>
     /// <remarks>发送前回调可修改此消息。消息由请求管线拥有，并在尝试结束时释放；拦截器不应自行释放或在回调结束后继续使用。</remarks>
     /// <remarks>消息由请求管线拥有并在尝试结束时释放；拦截器不应释放它，也不应在回调结束后继续使用。</remarks>

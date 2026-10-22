@@ -1,9 +1,7 @@
 namespace Bing.Http;
 
 /// <summary>
-
 /// 为支持重试观测的请求提供链式注册扩展。
-
 /// </summary>
 public static class HttpRetryObservationExtensions
 {

@@ -3,9 +3,7 @@ using System.Net.Http;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 通过可选能力接口提供原始正文、下载进度和流式 JSON 入口。
-
 /// </summary>
 public static class HttpTransferCapabilityExtensions
 {
@@ -25,9 +23,7 @@ public static class HttpTransferCapabilityExtensions
     }
 
     /// <summary>
-
     /// 设置从当前位置发送的流正文，允许保留调用方流。
-
     /// </summary>
     /// <typeparam name="TResult">响应转换类型。</typeparam>
     /// <param name="request">请求对象。</param>
@@ -43,9 +39,7 @@ public static class HttpTransferCapabilityExtensions
     }
 
     /// <summary>
-
     /// 为每次发送尝试创建全新的、由模块释放的 HttpContent。
-
     /// </summary>
     /// <typeparam name="TResult">响应转换类型。</typeparam>
     /// <param name="request">请求对象。</param>
@@ -59,9 +53,7 @@ public static class HttpTransferCapabilityExtensions
     }
 
     /// <summary>
-
     /// 注册成功下载的同步进度通知，中间通知同时遵守字节和时间阈值。
-
     /// </summary>
     /// <typeparam name="TResult">响应转换类型。</typeparam>
     /// <param name="request">请求对象。</param>
@@ -79,9 +71,7 @@ public static class HttpTransferCapabilityExtensions
     }
 
     /// <summary>
-
     /// 注册上传正文的同步进度通知，中间通知同时遵守字节和时间阈值。
-
     /// </summary>
     /// <typeparam name="TResult">响应转换类型。</typeparam>
     /// <param name="request">请求对象。</param>
@@ -99,9 +89,7 @@ public static class HttpTransferCapabilityExtensions
     }
 
     /// <summary>
-
     /// 逐项读取 UTF-8 顶层 JSON 数组；消费期间不会自动重试。
-
     /// </summary>
     /// <typeparam name="TResult">数组元素类型。</typeparam>
     /// <param name="request">请求对象。</param>
@@ -114,9 +102,7 @@ public static class HttpTransferCapabilityExtensions
             .GetJsonArrayStreamAsync(cancellationToken);
 
     /// <summary>
-
     /// 显式使用流式 JSON；需要完整正文语义时自动回退现有处理流程。
-
     /// </summary>
     /// <typeparam name="TResult">响应转换类型。</typeparam>
     /// <param name="request">请求对象。</param>
@@ -127,9 +113,7 @@ public static class HttpTransferCapabilityExtensions
         => Capability<IHttpRequestStreamingJson<TResult>>(request).GetJsonStreamAsync(cancellationToken);
 
     /// <summary>
-
     /// 直接流式解析 JSON，并返回响应元数据快照。
-
     /// </summary>
     /// <typeparam name="TResult">响应转换类型。</typeparam>
     /// <param name="request">请求对象。</param>

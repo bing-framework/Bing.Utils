@@ -3,9 +3,7 @@ using System.Net.Http;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 提供原始二进制正文和按发送尝试创建正文的可选能力。
-
 /// </summary>
 /// <typeparam name="TResult">响应转换类型。</typeparam>
 public interface IHttpRequestRawContentRegistration<TResult> where TResult : class
@@ -18,9 +16,7 @@ public interface IHttpRequestRawContentRegistration<TResult> where TResult : cla
     void SetBinaryContent(byte[] content, string contentType);
 
     /// <summary>
-
     /// 从注册时的位置发送流正文，可定位流重试时回到该位置。
-
     /// </summary>
     /// <param name="content">可读流；不能为 null。</param>
     /// <param name="contentType">合法的媒体类型及可选参数。</param>
@@ -29,9 +25,7 @@ public interface IHttpRequestRawContentRegistration<TResult> where TResult : cla
     void SetBinaryContent(Stream content, string contentType, bool leaveOpen);
 
     /// <summary>
-
     /// 设置每次发送尝试创建独立正文的工厂。
-
     /// </summary>
     /// <param name="factory">同步创建非空、全新 HttpContent 的工厂；正文由模块释放。</param>
     /// <remarks>同一执行内重复返回同一实例会失败；工厂应确保重试正文内容等价。工厂异常通过请求任务传播。</remarks>
@@ -39,9 +33,7 @@ public interface IHttpRequestRawContentRegistration<TResult> where TResult : cla
 }
 
 /// <summary>
-
 /// 提供下载正文进度注册的可选能力。
-
 /// </summary>
 /// <typeparam name="TResult">响应转换类型。</typeparam>
 public interface IHttpRequestDownloadProgressRegistration<TResult> where TResult : class
@@ -57,9 +49,7 @@ public interface IHttpRequestDownloadProgressRegistration<TResult> where TResult
 }
 
 /// <summary>
-
 /// 提供上传正文进度注册的可选能力。
-
 /// </summary>
 /// <typeparam name="TResult">响应转换类型。</typeparam>
 public interface IHttpRequestUploadProgressRegistration<TResult> where TResult : class
@@ -74,9 +64,7 @@ public interface IHttpRequestUploadProgressRegistration<TResult> where TResult :
 }
 
 /// <summary>
-
 /// 提供顶层 JSON 数组逐项异步消费的可选能力。
-
 /// </summary>
 /// <typeparam name="TResult">数组元素类型。</typeparam>
 public interface IHttpRequestJsonArrayStreaming<TResult> where TResult : class
@@ -90,9 +78,7 @@ public interface IHttpRequestJsonArrayStreaming<TResult> where TResult : class
 }
 
 /// <summary>
-
 /// 提供显式流式 JSON 解析的可选能力。
-
 /// </summary>
 /// <typeparam name="TResult">JSON 转换类型。</typeparam>
 public interface IHttpRequestStreamingJson<TResult> where TResult : class

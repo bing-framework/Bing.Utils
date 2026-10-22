@@ -6,9 +6,7 @@ using System.Security.Cryptography;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 为既有 HTTP 客户端和请求对象提供基于可选接口的扩展能力。
-
 /// </summary>
 /// <remarks>扩展会在运行时检查相应能力接口；旧实现缺少能力时以 <see cref="NotSupportedException"/> 明确失败。</remarks>
 public static class HttpCapabilityExtensions
@@ -32,9 +30,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 设置 If-Modified-Since 条件请求头。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>
     /// <param name="request">要配置的请求。</param>
@@ -49,9 +45,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 发送一次请求并按校验器确认服务端已接受上传。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>
     /// <param name="request">要发送的请求。</param>
@@ -73,9 +67,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 流式下载到调用方拥有的目标流，并返回状态及写入字节数。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>
     /// <param name="request">要发送的请求。</param>
@@ -93,9 +85,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 流式保存文件，并返回状态及写入字节数。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>
     /// <param name="request">要发送的请求。</param>
@@ -113,9 +103,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 使用持久化 partial 和验证器续传文件，并返回下载元数据。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>
     /// <param name="request">要发送的请求。</param>
@@ -135,9 +123,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 设置断点续传提交前的异步内容校验器。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>
     /// <param name="request">要配置的请求。</param>
@@ -155,9 +141,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 设置断点续传提交前的 SHA-256 内容校验。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>
     /// <param name="request">要配置的请求。</param>
@@ -175,9 +159,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 计算流内容的 SHA-256 摘要并与期望值比较。
-
     /// </summary>
     /// <param name="stream">从当前位置读取的内容流。</param>
     /// <param name="expectedSha256">期望的十六进制摘要。</param>
@@ -192,9 +174,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 使用持久化 partial 和验证器续传文件；成功后返回。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>
     /// <param name="request">要发送的请求。</param>
@@ -211,9 +191,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 注册整次请求完成时的观测回调。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>
     /// <param name="request">要配置的请求。</param>
@@ -232,9 +210,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 通过客户端的请求工厂创建指定 HTTP 方法的请求。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应正文转换后的类型。</typeparam>
     /// <param name="client">提供请求创建能力的 HTTP 客户端。</param>
@@ -252,9 +228,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 创建指定成功响应类型的 PATCH 请求。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应正文转换后的类型。</typeparam>
     /// <param name="client">提供 PATCH 请求创建能力的 HTTP 客户端。</param>
@@ -266,9 +240,7 @@ public static class HttpCapabilityExtensions
         client.Request<TResult>(new HttpMethod("PATCH"), url);
 
     /// <summary>
-
     /// 创建 PATCH 请求并设置可选正文。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应正文转换后的类型。</typeparam>
     /// <param name="client">提供 PATCH 请求创建能力的 HTTP 客户端。</param>
@@ -281,9 +253,7 @@ public static class HttpCapabilityExtensions
         content == null ? client.Patch<TResult>(url) : client.Patch<TResult>(url).Content(content);
 
     /// <summary>
-
     /// 创建 PATCH 请求并将响应正文按字符串读取。
-
     /// </summary>
     /// <param name="client">提供 PATCH 请求创建能力的 HTTP 客户端。</param>
     /// <param name="url">请求地址。</param>
@@ -293,9 +263,7 @@ public static class HttpCapabilityExtensions
     public static IHttpRequest<string> Patch(this IHttpClient client, string url) => client.Patch<string>(url);
 
     /// <summary>
-
     /// 创建 PATCH 请求、设置可选正文并将响应正文按字符串读取。
-
     /// </summary>
     /// <param name="client">提供 PATCH 请求创建能力的 HTTP 客户端。</param>
     /// <param name="url">请求地址。</param>
@@ -306,9 +274,7 @@ public static class HttpCapabilityExtensions
     public static IHttpRequest<string> Patch(this IHttpClient client, string url, object content) => client.Patch<string>(url, content);
 
     /// <summary>
-
     /// 创建 HEAD 请求并将结果类型设为字符串。
-
     /// </summary>
     /// <param name="client">提供 HEAD 请求创建能力的 HTTP 客户端。</param>
     /// <param name="url">请求地址。</param>
@@ -318,9 +284,7 @@ public static class HttpCapabilityExtensions
     public static IHttpRequest<string> Head(this IHttpClient client, string url) => client.Request<string>(HttpMethod.Head, url);
 
     /// <summary>
-
     /// 创建 OPTIONS 请求并将结果类型设为字符串。
-
     /// </summary>
     /// <param name="client">提供 OPTIONS 请求创建能力的 HTTP 客户端。</param>
     /// <param name="url">请求地址。</param>
@@ -330,9 +294,7 @@ public static class HttpCapabilityExtensions
     public static IHttpRequest<string> Options(this IHttpClient client, string url) => client.Request<string>(HttpMethod.Options, url);
 
     /// <summary>
-
     /// 发送请求并读取完整响应元数据和转换后的结果。
-
     /// </summary>
     /// <typeparam name="TResult">成功响应正文转换后的类型。</typeparam>
     /// <param name="request">实现完整响应读取能力的 HTTP 请求。</param>
@@ -352,9 +314,7 @@ public static class HttpCapabilityExtensions
     }
 
     /// <summary>
-
     /// 将异步拦截器追加到请求处理链，并返回原请求以继续链式配置。
-
     /// </summary>
     /// <typeparam name="TResult">请求响应结果类型。</typeparam>
     /// <param name="request">支持拦截器注册的 HTTP 请求。</param>

@@ -22,9 +22,7 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 清理一个资源；已有主异常时保留主异常。
-
     /// </summary>
     private static void DisposePreservingException(IDisposable resource, Exception primaryError)
     {
@@ -48,9 +46,7 @@ public partial class HttpRequest<TResult> where TResult : class
     #region ConvertTo(将内容转换为结果)
 
     /// <summary>
-
     /// 将内容转换为结果
-
     /// </summary>
     /// <param name="content">内容</param>
     /// <param name="contentType">内容类型</param>
@@ -119,9 +115,7 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 判断 HTTP 响应是否按语义不包含正文。
-
     /// </summary>
     private static bool HasNoResponseBody(HttpResponseMessage response) =>
         response.StatusCode == HttpStatusCode.NoContent || response.RequestMessage?.Method == HttpMethod.Head;

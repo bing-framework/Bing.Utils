@@ -3,9 +3,7 @@ using Bing.Http;
 namespace Bing.Http.Caching;
 
 /// <summary>
-
 /// 显式管理 HTTP 响应快照的缓存。
-
 /// </summary>
 /// <typeparam name="TResult">响应转换后的数据类型。</typeparam>
 public interface IHttpResponseCache<TResult> where TResult : class
@@ -18,9 +16,7 @@ public interface IHttpResponseCache<TResult> where TResult : class
     Task<HttpResponseResult<TResult>> GetAsync(string key);
 
     /// <summary>
-
     /// 按缓存键写入响应快照。
-
     /// </summary>
     /// <param name="key">调用方定义的稳定缓存键。</param>
     /// <param name="response">要缓存的响应快照。</param>
@@ -31,35 +27,27 @@ public interface IHttpResponseCache<TResult> where TResult : class
         bool requestContainsAuthorization = false, bool allowAuthenticated = false);
 
     /// <summary>
-
     /// 移除指定缓存键。
-
     /// </summary>
     /// <param name="key">要移除的缓存键。</param>
     /// <returns>表示移除操作的任务。</returns>
     Task RemoveAsync(string key);
 
     /// <summary>
-
     /// 移除所有以指定前缀开头的缓存键。
-
     /// </summary>
     /// <param name="prefix">大小写敏感的序数前缀；空前缀不被允许。</param>
     /// <returns>实际移除的缓存条目数。</returns>
     int RemoveByPrefix(string prefix);
 
     /// <summary>
-
     /// 清空当前缓存实例中的所有已发布条目。
-
     /// </summary>
     /// <returns>实际移除的条目数。</returns>
     Task<int> ClearAsync();
 
     /// <summary>
-
     /// 读取缓存，未命中时由一个并发工厂请求回源并共享结果。
-
     /// </summary>
     /// <param name="key">调用方定义的稳定缓存键。</param>
     /// <param name="ttl">回源结果的缓存有效期，必须为正数且为有限值。</param>

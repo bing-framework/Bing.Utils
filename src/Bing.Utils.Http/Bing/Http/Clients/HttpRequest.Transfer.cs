@@ -7,9 +7,7 @@ using Bing.Http.Clients.Internal;
 namespace Bing.Http.Clients;
 
 /// <summary>
-
 /// HTTP 请求的可选正文、下载进度与流式 JSON 能力。
-
 /// </summary>
 public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<TResult>,
     IHttpRequestDownloadProgressRegistration<TResult>, IHttpRequestStreamingJson<TResult>, IHttpRequestStreamingResponse<TResult>, IHttpRequestJsonArrayStreaming<TResult>, IHttpRequestResumableDownload<TResult> where TResult : class
@@ -88,9 +86,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
     }
 
     /// <summary>
-
     /// 验证原始二进制正文的内容类型。
-
     /// </summary>
     private static void ValidateBinaryContentType(string contentType)
     {
@@ -99,9 +95,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
     }
 
     /// <summary>
-
     /// 拒绝与已配置的结构化正文混用。
-
     /// </summary>
     private void EnsureNoStructuredBody()
     {
@@ -110,9 +104,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
     }
 
     /// <summary>
-
     /// 替换当前原始正文并按所有权释放旧流。
-
     /// </summary>
     private void ReplaceRawBody(Stream replacement)
     {
@@ -125,9 +117,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
     }
 
     /// <summary>
-
     /// 创建可供请求发送并支持重放的原始正文内容。
-
     /// </summary>
     private HttpContent CreateRawHttpContent()
     {
@@ -163,9 +153,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
     }
 
     /// <summary>
-
     /// 按字节数和时间阈值跟踪响应下载进度。
-
     /// </summary>
     private sealed class DownloadProgressState
     {
@@ -205,9 +193,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
         }
 
         /// <summary>
-
         /// 按进度阈值向观察者报告下载状态。
-
         /// </summary>
         /// <param name="bytes">已复制的字节数。</param>
         /// <param name="total">已知时表示正文总字节数。</param>
@@ -242,9 +228,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
     }
 
     /// <summary>
-
     /// 判断响应是否可按 JSON 正文流式解析。
-
     /// </summary>
     private bool CanStreamJson(HttpResponseMessage response)
     {
@@ -259,9 +243,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
     }
 
     /// <summary>
-
     /// 流式解析响应 JSON 并生成请求结果。
-
     /// </summary>
     private async Task<TResult> ReadJsonStreamAsync(HttpResponseMessage response, CancellationToken token)
     {
@@ -270,9 +252,7 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
     }
 
     /// <summary>
-
     /// 流式解析 JSON 并保留响应元数据。
-
     /// </summary>
     private async Task<HttpResponseResult<TResult>> ReadJsonStreamResponseAsync(
         HttpResponseMessage response, CancellationToken token)

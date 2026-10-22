@@ -1,9 +1,7 @@
 namespace Bing.Http.Caching;
 
 /// <summary>
-
 /// 用于测试和单进程宿主的共享快照存储适配器。
-
 /// </summary>
 /// <remarks>此实现只在当前进程内提供锁和一致性，不能作为跨进程或跨节点的分布式实现。</remarks>
 public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpResponseStore,
@@ -104,9 +102,7 @@ public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpRespo
     }
 
     /// <summary>
-
     /// 释放当前持有的分布式缓存租约。
-
     /// </summary>
     private Task ReleaseLeaseAsync(string key, string token, CancellationToken cancellationToken)
     {
@@ -188,33 +184,25 @@ public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpRespo
     }
 
     /// <summary>
-
     /// 生成下一个命名空间版本标识。
-
     /// </summary>
     private string NextVersion() => (++_version).ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     /// <summary>
-
     /// 复制分片清单及其中的分片状态。
-
     /// </summary>
     private static DistributedHttpResponseSnapshot Clone(DistributedHttpResponseSnapshot snapshot)
         => CloneWithVersion(snapshot, snapshot.Version);
 
     /// <summary>
-
     /// 复制响应快照并替换版本标识。
-
     /// </summary>
     private static DistributedHttpResponseSnapshot CloneWithVersion(DistributedHttpResponseSnapshot snapshot, string version)
         => new DistributedHttpResponseSnapshot(snapshot.StatusCode, snapshot.Headers, snapshot.ContentHeaders,
             snapshot.Body, snapshot.RawContent, version);
 
     /// <summary>
-
     /// 校验分布式响应缓存的存储、键和有效期。
-
     /// </summary>
     private static void Validate(string key, DistributedHttpResponseSnapshot snapshot, TimeSpan ttl)
     {
@@ -225,9 +213,7 @@ public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpRespo
     }
 
     /// <summary>
-
     /// 验证缓存键非空且符合调用要求。
-
     /// </summary>
     private static void ValidateKey(string key, string parameterName = "key")
     {
@@ -235,9 +221,7 @@ public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpRespo
     }
 
     /// <summary>
-
     /// 存储快照及其过期时间的条目。
-
     /// </summary>
     private sealed class Entry
     {
@@ -259,9 +243,7 @@ public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpRespo
     }
 
     /// <summary>
-
     /// 存储租约令牌及其有效期的条目。
-
     /// </summary>
     private sealed class LeaseEntry
     {
@@ -283,9 +265,7 @@ public sealed class InMemoryDistributedHttpResponseStore : IDistributedHttpRespo
     }
 
     /// <summary>
-
     /// 由当前存储实例管理的回源租约。
-
     /// </summary>
     private sealed class MemoryLease : IDistributedHttpResponseLease
     {

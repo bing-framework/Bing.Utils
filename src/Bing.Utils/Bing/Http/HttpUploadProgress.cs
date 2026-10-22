@@ -1,9 +1,7 @@
 namespace Bing.Http;
 
 /// <summary>
-
 /// 单次 HTTP 发送尝试的不可变上传进度。
-
 /// </summary>
 public sealed class HttpUploadProgress
 {
@@ -26,9 +24,7 @@ public sealed class HttpUploadProgress
     }
 
     /// <summary>
-
     /// 获取发送尝试序号，从 1 开始。
-
     /// </summary>
     public int Attempt { get; }
     /// <summary>

@@ -3,9 +3,7 @@ using System.Net.Http;
 namespace Bing.Http;
 
 /// <summary>
-
 /// HTTP 请求重试配置；仅在显式调用 Retry 时生效。
-
 /// </summary>
 public sealed class HttpRetryOptions
 {

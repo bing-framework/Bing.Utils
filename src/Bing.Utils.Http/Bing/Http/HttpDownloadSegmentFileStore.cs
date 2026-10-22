@@ -3,9 +3,7 @@ using System.Security.Cryptography;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 管理 HTTP 分片的临时文件写入和最终顺序合并。
-
 /// </summary>
 /// <remarks>该组件不发送 HTTP 请求，也不会自动删除或修改调用方的状态文件。</remarks>
 public sealed class HttpDownloadSegmentFileStore
@@ -20,9 +18,7 @@ public sealed class HttpDownloadSegmentFileStore
     private readonly string _targetPath;
 
     /// <summary>
-
     /// 初始化一个 <see cref="HttpDownloadSegmentFileStore"/> 类型的实例。
-
     /// </summary>
     /// <param name="stagingDirectory">分片临时目录。</param>
     /// <param name="targetPath">最终目标文件路径。</param>
@@ -37,9 +33,7 @@ public sealed class HttpDownloadSegmentFileStore
     }
 
     /// <summary>
-
     /// 写入一个完整分片并返回可持久化的已完成状态。
-
     /// </summary>
     /// <param name="range">分片范围。</param>
     /// <param name="content">只包含该范围正文的可读流。</param>
@@ -94,9 +88,7 @@ public sealed class HttpDownloadSegmentFileStore
     }
 
     /// <summary>
-
     /// 清洗恢复状态，并移除不属于当前分片规划的残留文件。
-
     /// </summary>
     /// <param name="state">已验证的分片状态。</param>
     /// <returns>被降级的分片数量。</returns>
@@ -135,9 +127,7 @@ public sealed class HttpDownloadSegmentFileStore
     }
 
     /// <summary>
-
     /// 验证全部分片后按范围顺序合并并原子替换目标文件。
-
     /// </summary>
     /// <param name="state">完整且已验证的分片状态。</param>
     /// <param name="cancellationToken">取消合并；取消不会替换目标文件。</param>
@@ -146,9 +136,7 @@ public sealed class HttpDownloadSegmentFileStore
         => await MergeAsync(state, null, cancellationToken).ConfigureAwait(false);
 
     /// <summary>
-
     /// 验证全部分片后执行最终正文校验，再原子替换目标文件。
-
     /// </summary>
     /// <param name="state">完整且已验证的分片状态。</param>
     /// <param name="validator">对目标临时文件执行的最终校验器。</param>
@@ -208,17 +196,13 @@ public sealed class HttpDownloadSegmentFileStore
     }
 
     /// <summary>
-
     /// 根据范围起止位置生成分片文件路径。
-
     /// </summary>
     private string SegmentPath(HttpDownloadRange range)
         => Path.Combine(_stagingDirectory, "segment-" + range.Start + "-" + range.End + ".part");
 
     /// <summary>
-
     /// 计算指定分片文件的 SHA-256 摘要。
-
     /// </summary>
     private static string ComputeSha256(string path)
     {
@@ -228,9 +212,7 @@ public sealed class HttpDownloadSegmentFileStore
     }
 
     /// <summary>
-
     /// 尝试删除缓存或临时文件。
-
     /// </summary>
     private static void TryDelete(string path)
     {

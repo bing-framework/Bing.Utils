@@ -1,9 +1,7 @@
 namespace Bing.Http.Clients.Internal;
 
 /// <summary>
-
 /// 让 HttpContent 可释放包装层，同时保留调用方拥有的流。
-
 /// </summary>
 internal sealed class NonClosingStream : Stream
 {

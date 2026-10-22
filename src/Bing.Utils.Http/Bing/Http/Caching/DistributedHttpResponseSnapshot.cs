@@ -4,9 +4,7 @@ using System.Net;
 namespace Bing.Http.Caching;
 
 /// <summary>
-
 /// 可在外部共享存储中保存的不可变 HTTP 响应快照。
-
 /// </summary>
 /// <remarks>正文使用字节数组表达，避免分布式存储契约依赖具体序列化器或可释放的 HTTP 对象。</remarks>
 public sealed class DistributedHttpResponseSnapshot
@@ -39,58 +37,42 @@ public sealed class DistributedHttpResponseSnapshot
     }
 
     /// <summary>
-
     /// 获取 HTTP 状态码。
-
     /// </summary>
     public HttpStatusCode StatusCode { get; }
 
     /// <summary>
-
     /// 获取响应头快照。
-
     /// </summary>
     public IReadOnlyDictionary<string, IReadOnlyList<string>> Headers { get; }
 
     /// <summary>
-
     /// 获取正文头快照。
-
     /// </summary>
     public IReadOnlyDictionary<string, IReadOnlyList<string>> ContentHeaders { get; }
 
     /// <summary>
-
     /// 获取响应正文的独立副本。
-
     /// </summary>
     public byte[] Body => _body == null ? null : (byte[])_body.Clone();
 
     /// <summary>
-
     /// 获取可选的解码正文。
-
     /// </summary>
     public string RawContent { get; }
 
     /// <summary>
-
     /// 获取由存储适配器分配的不透明版本令牌。
-
     /// </summary>
     public string Version { get; }
 
     /// <summary>
-
     /// 获取状态码是否表示成功响应。
-
     /// </summary>
     public bool IsSuccessStatusCode => (int)StatusCode >= 200 && (int)StatusCode <= 299;
 
     /// <summary>
-
     /// 复制响应头并生成不可变的头集合。
-
     /// </summary>
     private static IReadOnlyDictionary<string, IReadOnlyList<string>> Copy(
         IReadOnlyDictionary<string, IReadOnlyList<string>> source)

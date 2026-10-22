@@ -1,9 +1,7 @@
 namespace Bing.Http;
 
 /// <summary>
-
 /// 显式调度多个 HTTP 分片下载并写入分片文件。
-
 /// </summary>
 /// <remarks>调度器不会合并最终文件，也不会接入 <c>HttpRequest</c>；成功后由调用方显式调用合并组件。</remarks>
 public sealed class HttpDownloadSegmentScheduler
@@ -42,9 +40,7 @@ public sealed class HttpDownloadSegmentScheduler
     private readonly Action<Exception> _retryObservationErrorHandler;
 
     /// <summary>
-
     /// 初始化一个 <see cref="HttpDownloadSegmentScheduler"/> 类型的实例。
-
     /// </summary>
     /// <param name="fileStore">分片文件存储。</param>
     /// <param name="maxConcurrency">同时下载的最大分片数。</param>
@@ -76,9 +72,7 @@ public sealed class HttpDownloadSegmentScheduler
     }
 
     /// <summary>
-
     /// 下载所有未完成分片并返回新的状态快照。
-
     /// </summary>
     /// <param name="state">已验证的分片状态。</param>
     /// <param name="download">根据范围创建响应正文流的委托。</param>
@@ -113,9 +107,7 @@ public sealed class HttpDownloadSegmentScheduler
     }
 
     /// <summary>
-
     /// 下载单个分片并更新持久状态及观测结果。
-
     /// </summary>
     private async Task DownloadSegmentAsync(HttpDownloadSegmentState segment, SemaphoreSlim gate,
         Func<HttpDownloadRange, CancellationToken, Task<Stream>> download,
@@ -199,9 +191,7 @@ public sealed class HttpDownloadSegmentScheduler
     }
 
     /// <summary>
-
     /// 报告分片下载已安排的重试等待。
-
     /// </summary>
     private void NotifyRetryScheduled(int failedAttempt, TimeSpan delay, Exception error)
     {
@@ -215,9 +205,7 @@ public sealed class HttpDownloadSegmentScheduler
     }
 
     /// <summary>
-
     /// 复制分片清单及其中的分片状态。
-
     /// </summary>
     private static HttpDownloadSegmentsState Clone(HttpDownloadSegmentsState source)
         => new HttpDownloadSegmentsState

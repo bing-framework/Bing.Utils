@@ -1,9 +1,7 @@
 namespace Bing.Http;
 
 /// <summary>
-
 /// 为 HTTP 请求提供读取状态、头信息和转换结果的可选能力。
-
 /// </summary>
 /// <typeparam name="TResult">成功响应正文转换后的类型。</typeparam>
 public interface IHttpRequestResponse<TResult> where TResult : class
@@ -21,9 +19,7 @@ public interface IHttpRequestResponse<TResult> where TResult : class
 }
 
 /// <summary>
-
 /// 为 HTTP 请求提供直接流式 JSON 解析及响应元数据快照的可选能力。
-
 /// </summary>
 /// <typeparam name="TResult">成功响应正文转换后的类型。</typeparam>
 public interface IHttpRequestStreamingResponse<TResult> where TResult : class
@@ -37,9 +33,7 @@ public interface IHttpRequestStreamingResponse<TResult> where TResult : class
 }
 
 /// <summary>
-
 /// 为 HTTP 请求提供追加异步拦截器的可选能力。
-
 /// </summary>
 /// <typeparam name="TResult">请求响应结果类型，用于与对应请求对象关联。</typeparam>
 public interface IHttpRequestInterceptorRegistration<TResult> where TResult : class
@@ -54,9 +48,7 @@ public interface IHttpRequestInterceptorRegistration<TResult> where TResult : cl
 }
 
 /// <summary>
-
 /// 为请求提供带结果的流式下载能力。
-
 /// </summary>
 public interface IHttpRequestDownloadResult<TResult> where TResult : class
 {
@@ -69,9 +61,7 @@ public interface IHttpRequestDownloadResult<TResult> where TResult : class
     Task<HttpDownloadResult> DownloadToWithResultAsync(Stream destination, CancellationToken cancellationToken = default);
 
     /// <summary>
-
     /// 通过临时文件保存成功响应，并返回下载元数据；拒绝发送时返回空。
-
     /// </summary>
     /// <returns>下载结果；发送被拒绝时返回 <see langword="null"/>。</returns>
     /// <param name="filePath">目标文件路径。</param>
@@ -80,9 +70,7 @@ public interface IHttpRequestDownloadResult<TResult> where TResult : class
 }
 
 /// <summary>
-
 /// 为请求提供带验证器的文件断点续传能力。
-
 /// </summary>
 /// <typeparam name="TResult">成功响应结果类型。</typeparam>
 public interface IHttpRequestResumableDownload<TResult> where TResult : class
@@ -98,9 +86,7 @@ public interface IHttpRequestResumableDownload<TResult> where TResult : class
 }
 
 /// <summary>
-
 /// 为请求提供断点续传完成后的内容校验能力。
-
 /// </summary>
 /// <typeparam name="TResult">成功响应结果类型。</typeparam>
 public interface IHttpRequestResumableDownloadValidation<TResult> where TResult : class
@@ -114,9 +100,7 @@ public interface IHttpRequestResumableDownloadValidation<TResult> where TResult 
 }
 
 /// <summary>
-
 /// 为请求提供整次执行完成观测的可选能力。
-
 /// </summary>
 public interface IHttpRequestObservationRegistration<TResult> where TResult : class
 {
@@ -130,9 +114,7 @@ public interface IHttpRequestObservationRegistration<TResult> where TResult : cl
 }
 
 /// <summary>
-
 /// 为请求提供重试等待观测的可选能力，不改变已有重试策略。
-
 /// </summary>
 /// <typeparam name="TResult">成功响应结果类型。</typeparam>
 public interface IHttpRequestRetryObservationRegistration<TResult> where TResult : class

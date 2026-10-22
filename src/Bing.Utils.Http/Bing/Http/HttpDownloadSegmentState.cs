@@ -6,9 +6,7 @@ using System.Text.Json.Serialization;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 一个 HTTP 分片及其本地完成状态。
-
 /// </summary>
 public sealed class HttpDownloadSegmentState
 {
@@ -18,46 +16,34 @@ public sealed class HttpDownloadSegmentState
     public long Start { get; set; }
 
     /// <summary>
-
     /// 获取或设置分片包含式结束偏移。
-
     /// </summary>
     public long End { get; set; }
 
     /// <summary>
-
     /// 获取或设置当前已写入的字节数。
-
     /// </summary>
     public long BytesWritten { get; set; }
 
     /// <summary>
-
     /// 获取或设置分片是否已完整写入。
-
     /// </summary>
     public bool Completed { get; set; }
 
     /// <summary>
-
     /// 获取或设置可选的分片 SHA-256 十六进制摘要。
-
     /// </summary>
     public string Sha256 { get; set; }
 
     /// <summary>
-
     /// 获取此状态对应的范围。
-
     /// </summary>
     [JsonIgnore]
     public HttpDownloadRange Range => new HttpDownloadRange(Start, End);
 }
 
 /// <summary>
-
 /// 可恢复的 HTTP 分片下载状态。
-
 /// </summary>
 public sealed class HttpDownloadSegmentsState
 {
@@ -67,38 +53,28 @@ public sealed class HttpDownloadSegmentsState
     public int SchemaVersion { get; set; }
 
     /// <summary>
-
     /// 获取或设置正文总长度。
-
     /// </summary>
     public long TotalLength { get; set; }
 
     /// <summary>
-
     /// 获取或设置用于确认正文身份的可选验证器。
-
     /// </summary>
     public string Validator { get; set; }
 
     /// <summary>
-
     /// 获取或设置服务端响应的内容编码。
-
     /// </summary>
     public string ContentEncoding { get; set; }
 
     /// <summary>
-
     /// 获取或设置正文的完整分片状态。
-
     /// </summary>
     public List<HttpDownloadSegmentState> Segments { get; set; }
 }
 
 /// <summary>
-
 /// 读写和验证 HTTP 分片下载状态文件。
-
 /// </summary>
 public static class HttpDownloadSegmentStateStore
 {
@@ -108,9 +84,7 @@ public static class HttpDownloadSegmentStateStore
     public const int CurrentSchemaVersion = 1;
 
     /// <summary>
-
     /// 从 JSON 文件读取并验证分片状态。
-
     /// </summary>
     /// <param name="path">状态文件路径。</param>
     /// <returns>已验证的分片状态。</returns>
@@ -127,9 +101,7 @@ public static class HttpDownloadSegmentStateStore
     }
 
     /// <summary>
-
     /// 验证分片状态的版本、范围、覆盖关系和校验字段。
-
     /// </summary>
     /// <param name="state">待验证的状态。</param>
     public static void Validate(HttpDownloadSegmentsState state)
@@ -167,9 +139,7 @@ public static class HttpDownloadSegmentStateStore
     }
 
     /// <summary>
-
     /// 验证状态中的范围与请求的分片大小完全一致。
-
     /// </summary>
     /// <param name="state">待验证的分片状态。</param>
     /// <param name="segmentSize">请求的最大分片大小。</param>
@@ -183,9 +153,7 @@ public static class HttpDownloadSegmentStateStore
     }
 
     /// <summary>
-
     /// 验证后以临时文件原子替换状态文件。
-
     /// </summary>
     /// <param name="path">目标状态文件路径。</param>
     /// <param name="state">要保存的状态。</param>
@@ -223,9 +191,7 @@ public static class HttpDownloadSegmentStateStore
     }
 
     /// <summary>
-
     /// 校验 SHA-256 值的格式。
-
     /// </summary>
     private static void ValidateSha256(string value)
     {

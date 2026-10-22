@@ -4,9 +4,7 @@ using System.Net.Http.Headers;
 namespace Bing.Http;
 
 /// <summary>
-
 /// 表示一个包含首尾位置的 HTTP 字节范围。
-
 /// </summary>
 public readonly struct HttpDownloadRange : IEquatable<HttpDownloadRange>
 {
@@ -24,30 +22,22 @@ public readonly struct HttpDownloadRange : IEquatable<HttpDownloadRange>
     }
 
     /// <summary>
-
     /// 获取范围的起始偏移。
-
     /// </summary>
     public long Start { get; }
 
     /// <summary>
-
     /// 获取范围的包含式结束偏移。
-
     /// </summary>
     public long End { get; }
 
     /// <summary>
-
     /// 获取范围包含的字节数。
-
     /// </summary>
     public long Length => End - Start + 1;
 
     /// <summary>
-
     /// 生成 Range 请求头的值。
-
     /// </summary>
     public string ToHeaderValue() => "bytes=" + Start + "-" + End;
 
@@ -61,24 +51,18 @@ public readonly struct HttpDownloadRange : IEquatable<HttpDownloadRange>
     public override int GetHashCode() => Start.GetHashCode() ^ End.GetHashCode();
 
     /// <summary>
-
     /// 比较两个字节范围。
-
     /// </summary>
     public static bool operator ==(HttpDownloadRange left, HttpDownloadRange right) => left.Equals(right);
 
     /// <summary>
-
     /// 比较两个字节范围是否不同。
-
     /// </summary>
     public static bool operator !=(HttpDownloadRange left, HttpDownloadRange right) => !left.Equals(right);
 }
 
 /// <summary>
-
 /// 创建和验证显式选择的 HTTP 分片范围。
-
 /// </summary>
 public static class HttpDownloadRangePlanner
 {
@@ -111,9 +95,7 @@ public static class HttpDownloadRangePlanner
     }
 
     /// <summary>
-
     /// 严格验证一个分片响应是否匹配预期范围和正文总长度。
-
     /// </summary>
     /// <param name="expected">请求的范围。</param>
     /// <param name="contentRange">响应的 Content-Range 值。</param>

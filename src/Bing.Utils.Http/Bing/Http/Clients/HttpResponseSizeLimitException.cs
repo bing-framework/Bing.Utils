@@ -1,9 +1,7 @@
 namespace Bing.Http.Clients;
 
 /// <summary>
-
 /// 响应正文超过配置的字节上限。
-
 /// </summary>
 public sealed class HttpResponseSizeLimitException : IOException
 {
@@ -15,9 +13,7 @@ public sealed class HttpResponseSizeLimitException : IOException
         : base($"HTTP response exceeds the configured {limit} byte limit.") => Limit = limit;
 
     /// <summary>
-
     /// 获取配置的字节上限。
-
     /// </summary>
     public long Limit { get; }
 }

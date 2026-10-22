@@ -12,9 +12,7 @@ public partial class HttpRequest<TResult> where TResult : class
     private interface IResponseOwnershipTransfer { }
 
     /// <summary>
-
     /// 持有响应消息和正文流并统一释放其资源。
-
     /// </summary>
     private sealed class JsonArrayResponseLease : IResponseOwnershipTransfer, IDisposable
     {
@@ -37,9 +35,7 @@ public partial class HttpRequest<TResult> where TResult : class
         }
 
         /// <summary>
-
         /// 获取已准备的响应正文读取流。
-
         /// </summary>
         public ResponseBodyReadStream Body => _body;
 
@@ -65,9 +61,7 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 创建 JSON 数组枚举所需的响应租约和解析器。
-
     /// </summary>
     private Task<JsonArrayResponseLease> StartJsonArrayAsync(CancellationToken cancellationToken)
     {
@@ -117,9 +111,7 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 为一次 JSON 数组响应创建可枚举序列。
-
     /// </summary>
     private sealed class JsonArrayEnumerable : IAsyncEnumerable<TResult>
     {
@@ -168,9 +160,7 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 按需读取并反序列化 JSON 数组元素。
-
     /// </summary>
     private sealed class JsonArrayEnumerator : IAsyncEnumerator<TResult>
     {
@@ -215,9 +205,7 @@ public partial class HttpRequest<TResult> where TResult : class
         }
 
         /// <summary>
-
         /// 获取当前反序列化的数组元素。
-
         /// </summary>
         public TResult Current { get; private set; }
 
@@ -270,9 +258,7 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 跨缓冲区解析 JSON 数组并提取单个元素。
-
     /// </summary>
     private sealed class JsonArrayParser : IDisposable
     {
@@ -344,16 +330,12 @@ public partial class HttpRequest<TResult> where TResult : class
         }
 
         /// <summary>
-
         /// 获取当前反序列化的数组元素。
-
         /// </summary>
         public TResult Current { get; private set; }
 
         /// <summary>
-
         /// 异步读取下一个 JSON 数组元素。
-
         /// </summary>
         public async ValueTask<bool> MoveNextAsync(CancellationToken token)
         {
@@ -444,9 +426,7 @@ public partial class HttpRequest<TResult> where TResult : class
         }
 
         /// <summary>
-
         /// 将已消费的正文字节追加到当前 JSON 元素。
-
         /// </summary>
         private void AppendElementBytes(long previousConsumed, long consumed)
         {
@@ -456,25 +436,19 @@ public partial class HttpRequest<TResult> where TResult : class
         }
 
         /// <summary>
-
         /// 判断 JSON 令牌是否为容器起始标记。
-
         /// </summary>
         private static bool IsContainerStart(JsonTokenType tokenType) =>
             tokenType == JsonTokenType.StartObject || tokenType == JsonTokenType.StartArray;
 
         /// <summary>
-
         /// 判断 JSON 令牌是否为容器结束标记。
-
         /// </summary>
         private static bool IsContainerEnd(JsonTokenType tokenType) =>
             tokenType == JsonTokenType.EndObject || tokenType == JsonTokenType.EndArray;
 
         /// <summary>
-
         /// 判断 JSON 令牌是否表示标量值。
-
         /// </summary>
         private static bool IsScalarValueToken(JsonTokenType tokenType) =>
             tokenType == JsonTokenType.String || tokenType == JsonTokenType.Number ||
@@ -482,9 +456,7 @@ public partial class HttpRequest<TResult> where TResult : class
             tokenType == JsonTokenType.Null;
 
         /// <summary>
-
         /// 校验数组结束标记之后不存在额外 JSON 内容。
-
         /// </summary>
         private async Task ValidateTailAsync(CancellationToken token)
         {
@@ -504,9 +476,7 @@ public partial class HttpRequest<TResult> where TResult : class
         }
 
         /// <summary>
-
         /// 从响应流读取更多 JSON 正文数据。
-
         /// </summary>
         private async Task ReadMoreAsync(CancellationToken token)
         {

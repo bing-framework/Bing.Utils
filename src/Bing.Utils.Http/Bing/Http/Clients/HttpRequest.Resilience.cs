@@ -17,9 +17,7 @@ public partial class HttpRequest<TResult> where TResult : class
     private static readonly object RetryRandomLock = new object();
 
     /// <summary>
-
     /// 当前请求使用的重试配置副本。
-
     /// </summary>
     private HttpRetryOptions _retryOptions;
     /// <summary>
@@ -32,9 +30,7 @@ public partial class HttpRequest<TResult> where TResult : class
     private Action<Exception> _observationErrorHandler;
 
     /// <summary>
-
     /// 汇总单次请求的结果和观测状态。
-
     /// </summary>
     private sealed class ObservationState
     {
@@ -142,9 +138,7 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 判断响应状态码是否属于可重试状态。
-
     /// </summary>
     private static bool IsRetryable(HttpStatusCode status) =>
         status == HttpStatusCode.RequestTimeout || (int)status == 429 ||
@@ -152,9 +146,7 @@ public partial class HttpRequest<TResult> where TResult : class
         status == HttpStatusCode.ServiceUnavailable || status == HttpStatusCode.GatewayTimeout;
 
     /// <summary>
-
     /// 检查异常链中是否包含证书验证失败。
-
     /// </summary>
     private static bool IsCertificateFailure(Exception error)
     {
@@ -167,9 +159,7 @@ public partial class HttpRequest<TResult> where TResult : class
     }
 
     /// <summary>
-
     /// 计算并执行下一次重试前的等待。
-
     /// </summary>
     private async Task<bool> DelayBeforeRetryAsync(HttpResponseMessage response, int attempt, DateTimeOffset deadline,
         CancellationToken token, Exception error, Action<HttpRetryScheduled> observer, Action<Exception> onObserverError)

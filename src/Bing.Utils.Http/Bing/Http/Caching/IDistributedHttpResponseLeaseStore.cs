@@ -1,9 +1,7 @@
 namespace Bing.Http.Caching;
 
 /// <summary>
-
 /// 为分布式 HTTP 响应回源提供按键租约协调能力。
-
 /// </summary>
 /// <remarks>租约只协调回源，不替代快照存储的一致性、故障恢复或跨节点时钟语义。</remarks>
 public interface IDistributedHttpResponseLeaseStore
@@ -20,9 +18,7 @@ public interface IDistributedHttpResponseLeaseStore
 }
 
 /// <summary>
-
 /// 表示一个分布式 HTTP 响应回源租约。
-
 /// </summary>
 public interface IDistributedHttpResponseLease
 {

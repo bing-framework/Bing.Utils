@@ -1,9 +1,7 @@
 namespace Bing.Http;
 
 /// <summary>
-
 /// 断点续传侧车文件一次清理操作的结果。
-
 /// </summary>
 public sealed class HttpResumableDownloadCleanupResult
 {
@@ -24,45 +22,33 @@ public sealed class HttpResumableDownloadCleanupResult
     }
 
     /// <summary>
-
     /// 获取移除的 .binghttp.part 文件数。
-
     /// </summary>
     public int PartialFilesRemoved { get; }
 
     /// <summary>
-
     /// 获取移除的 .binghttp.resume.json 文件数。
-
     /// </summary>
     public int StateFilesRemoved { get; }
 
     /// <summary>
-
     /// 获取移除的续传状态临时文件数。
-
     /// </summary>
     public int TemporaryFilesRemoved { get; }
 
     /// <summary>
-
     /// 获取保留的锁文件数；包括活跃锁和为并发安全而保留的空闲锁。
-
     /// </summary>
     public int LockFilesRetained { get; }
 
     /// <summary>
-
     /// 获取本次实际移除的侧车文件总数。
-
     /// </summary>
     public int TotalRemoved => PartialFilesRemoved + StateFilesRemoved + TemporaryFilesRemoved;
 }
 
 /// <summary>
-
 /// 提供显式的断点续传侧车文件维护操作。
-
 /// </summary>
 public static class HttpResumableDownloadMaintenance
 {
@@ -84,9 +70,7 @@ public static class HttpResumableDownloadMaintenance
     private const string StateTempMarker = ".binghttp.resume.json.";
 
     /// <summary>
-
     /// 清理指定目录中过期且未被活动下载占用的断点续传侧车文件。
-
     /// </summary>
     /// <param name="directory">包含下载目标及其侧车文件的目录；目录不存在时返回空结果。</param>
     /// <param name="staleAfter">侧车文件至少应保留的时间；必须为非负有限值。</param>
@@ -106,9 +90,7 @@ public static class HttpResumableDownloadMaintenance
     }
 
     /// <summary>
-
     /// 递归清理指定目录及其子目录中过期且未被活动下载占用的侧车文件。
-
     /// </summary>
     /// <param name="directory">递归扫描的根目录。</param>
     /// <param name="staleAfter">侧车文件至少应保留的时间；必须为非负有限值。</param>
@@ -127,9 +109,7 @@ public static class HttpResumableDownloadMaintenance
     }
 
     /// <summary>
-
     /// 使用指定文件系统清理目录顶层的过期续传侧车文件。
-
     /// </summary>
     /// <param name="directory">待扫描目录。</param>
     /// <param name="staleAfter">侧车文件至少应保留的时间。</param>
@@ -142,9 +122,7 @@ public static class HttpResumableDownloadMaintenance
         => CleanupAsync(directory, staleAfter, cancellationToken, fileSystem, false);
 
     /// <summary>
-
     /// 使用指定文件系统清理过期续传侧车文件。
-
     /// </summary>
     /// <param name="directory">待扫描目录。</param>
     /// <param name="staleAfter">侧车文件至少应保留的时间。</param>
@@ -218,9 +196,7 @@ public static class HttpResumableDownloadMaintenance
     }
 
     /// <summary>
-
     /// 验证清理目录和侧车保留时间。
-
     /// </summary>
     /// <param name="directory">待扫描目录。</param>
     /// <param name="staleAfter">侧车文件至少应保留的时间。</param>
@@ -233,9 +209,7 @@ public static class HttpResumableDownloadMaintenance
     }
 
     /// <summary>
-
     /// 枚举根目录及按需递归的子目录。
-
     /// </summary>
     /// <param name="directory">枚举起始目录。</param>
     /// <param name="recursive">是否递归枚举子目录。</param>
@@ -266,9 +240,7 @@ public static class HttpResumableDownloadMaintenance
     }
 
     /// <summary>
-
     /// 从侧车文件路径中提取对应的下载目标路径。
-
     /// </summary>
     /// <param name="directory">待扫描目录。</param>
     /// <param name="cancellationToken">取消扫描的令牌。</param>
@@ -303,9 +275,7 @@ public static class HttpResumableDownloadMaintenance
     }
 
     /// <summary>
-
     /// 根据当前时间和保留时长计算过期截止时间。
-
     /// </summary>
     /// <param name="now">当前 UTC 时间。</param>
     /// <param name="staleAfter">侧车文件至少应保留的时间。</param>
@@ -314,9 +284,7 @@ public static class HttpResumableDownloadMaintenance
         => staleAfter.Ticks >= now.Ticks ? DateTime.MinValue : now.Subtract(staleAfter);
 
     /// <summary>
-
     /// 判断文件是否早于截止时间且可读取其修改时间。
-
     /// </summary>
     /// <param name="path">待检查文件路径。</param>
     /// <param name="cutoff">过期截止时间。</param>
@@ -331,9 +299,7 @@ public static class HttpResumableDownloadMaintenance
     }
 
     /// <summary>
-
     /// 尝试独占打开目标对应的清理锁。
-
     /// </summary>
     /// <param name="path">锁文件路径。</param>
     /// <param name="fileSystem">文件系统适配器。</param>
@@ -349,9 +315,7 @@ public static class HttpResumableDownloadMaintenance
     }
 
     /// <summary>
-
     /// 尝试删除文件，并将常见文件系统拒绝视为未删除。
-
     /// </summary>
     /// <param name="path">待删除文件路径。</param>
     /// <param name="fileSystem">文件系统适配器。</param>

@@ -3,9 +3,7 @@ using Bing.Http;
 namespace Bing.Http.Caching;
 
 /// <summary>
-
 /// 无外部依赖的进程内 HTTP 响应缓存。
-
 /// </summary>
 /// <typeparam name="TResult">响应转换后的数据类型。</typeparam>
 public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TResult>, IHttpResponseCacheStatistics where TResult : class
@@ -198,9 +196,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
     }
 
     /// <summary>
-
     /// 执行单次回源工厂并向等待者发布结果。
-
     /// </summary>
     private async Task RunFactoryAsync(string key, TimeSpan ttl,
         Func<Task<HttpResponseResult<TResult>>> factory,
@@ -236,9 +232,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
     }
 
     /// <summary>
-
     /// 验证缓存键非空且符合调用要求。
-
     /// </summary>
     private static void ValidateKey(string key)
     {
@@ -246,9 +240,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
     }
 
     /// <summary>
-
     /// 验证缓存有效期为正且有限。
-
     /// </summary>
     private static void ValidateTtl(TimeSpan ttl)
     {
@@ -257,9 +249,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
     }
 
     /// <summary>
-
     /// 阻止未显式允许的认证请求进入缓存。
-
     /// </summary>
     private static void ValidateAuthorization(bool requestContainsAuthorization, bool allowAuthenticated)
     {
@@ -268,9 +258,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
     }
 
     /// <summary>
-
     /// 保存响应并按容量策略淘汰旧缓存条目。
-
     /// </summary>
     private void Store(string key, HttpResponseResult<TResult> response, TimeSpan ttl)
     {
@@ -308,9 +296,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
     }
 
     /// <summary>
-
     /// 根据配置估算缓存响应占用的字节数。
-
     /// </summary>
     private long EstimateSize(HttpResponseResult<TResult> response)
     {
@@ -321,9 +307,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
     }
 
     /// <summary>
-
     /// 保存响应及容量淘汰元数据的缓存条目。
-
     /// </summary>
     private sealed class CacheItem
     {
@@ -339,9 +323,7 @@ public sealed class InMemoryHttpResponseCache<TResult> : IHttpResponseCache<TRes
         }
 
         /// <summary>
-
         /// 获取缓存的响应快照。
-
         /// </summary>
         public HttpResponseResult<TResult> Response { get; }
         /// <summary>
