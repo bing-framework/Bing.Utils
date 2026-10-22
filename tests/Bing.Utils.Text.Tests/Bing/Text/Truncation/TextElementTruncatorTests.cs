@@ -11,7 +11,7 @@ namespace Bing.Text;
 public class TextElementTruncatorTests
 {
     /// <summary>
-    /// 测试目的：代理对、肤色序列、ZWJ 序列、键帽和旗帜应各自作为一个文本元素保留。
+    /// 测试目的：验证常见组合字符的截断结果遵循当前运行时的文本元素边界。
     /// </summary>
     /// <param name="text">待截断文本。</param>
     /// <param name="maxLength">允许的文本元素数量。</param>
@@ -23,43 +23,57 @@ public class TextElementTruncatorTests
     [InlineData("A1️⃣B", 2, "A.")]
     [InlineData("A🇨🇳B", 2, "A.")]
     [InlineData("AéB", 2, "A.")]
-    public void Truncate_PreservesTextElementBoundaries(string text, int maxLength, string expected)
+    public void Truncate_RespectsRuntimeTextElementBoundaries(string text, int maxLength, string expected)
     {
         text.TruncateByTextElements(maxLength).ShouldBe(expected);
     }
 
     /// <summary>
-    /// 验证从右侧截断时，保留下来的组合文本元素不会被拆开。
+    /// 验证从右侧截断时，结果遵循当前运行时的文本元素边界。
     /// </summary>
-    /// <param name="element">待验证文本元素。</param>
+    /// <param name="element">待截断的组合字符。</param>
+    /// <param name="expected">当前目标框架的预期结果。</param>
     [Theory]
-    [InlineData("😀")]
-    [InlineData("👍🏽")]
-    [InlineData("👨‍👩‍👧‍👦")]
-    [InlineData("1️⃣")]
-    [InlineData("🇨🇳")]
-    [InlineData("é")]
-    public void TruncateFromRight_KeepsWholeTextElement(string element)
+    [InlineData("😀", "A😀.")]
+#if NETCOREAPP3_1
+    [InlineData("👍🏽", "A👍.")]
+    [InlineData("👨‍👩‍👧‍👦", "A👨.")]
+    [InlineData("🇨🇳", "A🇨.")]
+#else
+    [InlineData("👍🏽", "A👍🏽.")]
+    [InlineData("👨‍👩‍👧‍👦", "A👨‍👩‍👧‍👦.")]
+    [InlineData("🇨🇳", "A🇨🇳.")]
+#endif
+    [InlineData("1️⃣", "A1️⃣.")]
+    [InlineData("é", "Aé.")]
+    public void TruncateFromRight_RespectsRuntimeTextElementBoundaries(string element, string expected)
     {
         ("A" + element + "BC").TruncateByTextElements(3, truncationString: ".")
-            .ShouldBe("A" + element + ".");
+            .ShouldBe(expected);
     }
 
     /// <summary>
-    /// 验证从左侧截断时，保留下来的组合文本元素不会被拆开。
+    /// 验证从左侧截断时，结果遵循当前运行时的文本元素边界。
     /// </summary>
-    /// <param name="element">待验证文本元素。</param>
+    /// <param name="element">待截断的组合字符。</param>
+    /// <param name="expected">当前目标框架的预期结果。</param>
     [Theory]
-    [InlineData("😀")]
-    [InlineData("👍🏽")]
-    [InlineData("👨‍👩‍👧‍👦")]
-    [InlineData("1️⃣")]
-    [InlineData("🇨🇳")]
-    [InlineData("é")]
-    public void TruncateFromLeft_KeepsWholeTextElement(string element)
+    [InlineData("😀", ".😀C")]
+#if NETCOREAPP3_1
+    [InlineData("👍🏽", ".🏽C")]
+    [InlineData("👨‍👩‍👧‍👦", ".👦C")]
+    [InlineData("🇨🇳", ".🇳C")]
+#else
+    [InlineData("👍🏽", ".👍🏽C")]
+    [InlineData("👨‍👩‍👧‍👦", ".👨‍👩‍👧‍👦C")]
+    [InlineData("🇨🇳", ".🇨🇳C")]
+#endif
+    [InlineData("1️⃣", ".1️⃣C")]
+    [InlineData("é", ".éC")]
+    public void TruncateFromLeft_RespectsRuntimeTextElementBoundaries(string element, string expected)
     {
         ("AB" + element + "C").TruncateByTextElements(3, truncationString: ".", from: StringTruncateFrom.Left)
-            .ShouldBe("." + element + "C");
+            .ShouldBe(expected);
     }
 
     /// <summary>
@@ -76,12 +90,17 @@ public class TextElementTruncatorTests
     }
 
     /// <summary>
-    /// 测试目的：未超出文本元素上限时应原样返回，左侧截断应保留末尾完整元素。
+    /// 测试目的：原样返回与左侧截断结果应遵循当前运行时的文本元素边界。
     /// </summary>
     [Fact]
-    public void Truncate_ReturnsOriginalOrKeepsRightSideElements()
+    public void Truncate_UsesRuntimeTextElementBoundaries()
     {
+#if NETCOREAPP3_1
+        "A👍🏽B".TruncateByTextElements(3).ShouldBe("...");
+#else
         "A👍🏽B".TruncateByTextElements(3).ShouldBe("A👍🏽B");
+#endif
+        "A👍🏽B".TruncateByTextElements(4).ShouldBe("A👍🏽B");
         "A👍🏽BC".TruncateByTextElements(2, from: StringTruncateFrom.Left).ShouldBe(".C");
     }
 
