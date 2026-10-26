@@ -28,7 +28,7 @@ public static partial class FileHelper
             return false;
         try
         {
-            SaveFile(filePath, content, null, null);
+            SaveFileInternal(filePath, content, null, null);
             return true;
         }
         catch
@@ -52,7 +52,7 @@ public static partial class FileHelper
             return false;
         try
         {
-            SaveFile(filePath, content, encoding, FileMode.Create);
+            SaveFileInternal(filePath, content, encoding, FileMode.Create);
             return true;
         }
         catch
@@ -76,7 +76,7 @@ public static partial class FileHelper
             return false;
         try
         {
-            SaveFile(filePath, content, Encoding.UTF8, fileMode);
+            SaveFileInternal(filePath, content, Encoding.UTF8, fileMode);
             return true;
         }
         catch
@@ -101,7 +101,7 @@ public static partial class FileHelper
             return false;
         try
         {
-            SaveFile(filePath, content, encoding, fileMode);
+            SaveFileInternal(filePath, content, encoding, fileMode);
             return true;
         }
         catch
@@ -117,7 +117,7 @@ public static partial class FileHelper
     /// <param name="content">数据</param>
     /// <param name="encoding">字符编码</param>
     /// <param name="fileMode">写入模式</param>
-    private static void SaveFile(string filePath, string content, Encoding encoding, FileMode? fileMode)
+    private static void SaveFileInternal(string filePath, string content, Encoding encoding, FileMode? fileMode)
     {
         encoding ??= Encoding.UTF8;
         fileMode ??= FileMode.Create;
@@ -148,10 +148,21 @@ public static partial class FileHelper
     /// </summary>
     /// <param name="filePath">文件的绝对路径</param>
     /// <param name="stream">内容</param>
+    /// <remarks>可定位源先回到起点，成功后停在末尾；不可定位源从当前位置读取。保留源流，覆盖时截断目标；I/O 失败可能留下部分文件并传播异常。</remarks>
     public static void Write(string filePath, Stream stream)
     {
-        var bytes = ToBytes(stream);
-        Write(filePath, bytes);
+        if (stream.CanSeek)
+            stream.Seek(0, SeekOrigin.Begin);
+
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            stream.CopyTo(Stream.Null);
+            return;
+        }
+
+        DirectoryHelper.CreateDirectory(filePath);
+        using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+        stream.CopyTo(fileStream);
     }
 
     /// <summary>
@@ -180,10 +191,7 @@ public static partial class FileHelper
         if (string.IsNullOrWhiteSpace(targetFilePath))
             return false;
 
-        if (!appendMode && File.Exists(targetFilePath))
-            File.Create(targetFilePath);
-
-        var fileMode = appendMode ? FileMode.Append : FileMode.Open;
+        var fileMode = appendMode ? FileMode.Append : FileMode.Create;
         using var fs = new FileStream(targetFilePath, fileMode, FileAccess.Write);
         return fs.TryWrite(byteArray, 0, byteArray.Length);
     }
@@ -209,10 +217,21 @@ public static partial class FileHelper
     /// <param name="filePath">文件的绝对路径</param>
     /// <param name="content">内容</param>
     /// <param name="cancellationToken">取消令牌</param>
+    /// <remarks>可定位源先回到起点，成功后停在末尾；保留源流。读取、写入和取消异常传播，失败可能留下部分文件。</remarks>
     public static async Task WriteAsync(string filePath, Stream content, CancellationToken cancellationToken = default)
     {
-        var bytes = await ToBytesAsync(content, cancellationToken);
-        await WriteAsync(filePath, bytes, cancellationToken);
+        if (content.CanSeek)
+            content.Seek(0, SeekOrigin.Begin);
+
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            await content.CopyToAsync(Stream.Null, DefaultBufferSize, cancellationToken);
+            return;
+        }
+
+        DirectoryHelper.CreateDirectory(filePath);
+        using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read, DefaultBufferSize, FileOptions.Asynchronous | FileOptions.SequentialScan);
+        await content.CopyToAsync(fileStream, DefaultBufferSize, cancellationToken);
     }
 
 #if NETSTANDARD2_1 || NETCOREAPP3_0_OR_GREATER

@@ -127,7 +127,7 @@ public static class JsonHelper
     {
         lock (obj)
         {
-            using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {
                 using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
                 {

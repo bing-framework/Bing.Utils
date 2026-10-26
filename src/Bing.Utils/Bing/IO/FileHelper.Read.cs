@@ -17,14 +17,15 @@ public static partial class FileHelper
             return null;
 
         using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        var byteArray = new byte[fs.Length];
-        _ = fs.Read(byteArray, 0, byteArray.Length);
-        return byteArray;
+        using var output = new MemoryStream();
+        fs.CopyTo(output);
+        return output.ToArray();
     }
 
     /// <summary>
-    /// 读取流并转换成字节数组
+    /// 读取流直至结束并转换成字节数组，支持短读及不可定位流。
     /// </summary>
+    /// <remarks>不关闭输入流；可定位流从起点读取，成功后复位到起点；不可定位流从当前位置读取。</remarks>
     /// <param name="stream">流</param>
     public static byte[] ReadToBytes(Stream stream)
     {
@@ -34,11 +35,11 @@ public static partial class FileHelper
             return null;
         if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
-        var buffer = new byte[stream.Length];
-        _ = stream.Read(buffer, 0, buffer.Length);
+        using var output = new MemoryStream();
+        stream.CopyTo(output);
         if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
-        return buffer;
+        return output.ToArray();
     }
 
     #endregion
@@ -59,14 +60,15 @@ public static partial class FileHelper
 #else
         using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 #endif
-        var byteArray = new byte[fs.Length];
-        _ = await fs.ReadAsync(byteArray, 0, byteArray.Length, cancellationToken);
-        return byteArray;
+        using var output = new MemoryStream();
+        await fs.CopyToAsync(output, 81920, cancellationToken).ConfigureAwait(false);
+        return output.ToArray();
     }
 
     /// <summary>
-    /// 读取流并转换成字节数组
+    /// 读取流直至结束并转换成字节数组，支持短读及不可定位流。
     /// </summary>
+    /// <remarks>不关闭输入流；可定位流从起点读取，成功后复位到起点；不可定位流从当前位置读取。</remarks>
     /// <param name="stream">流</param>
     /// <param name="cancellationToken">取消令牌</param>
     public static async Task<byte[]> ReadToBytesAsync(Stream stream, CancellationToken cancellationToken = default)
@@ -77,11 +79,11 @@ public static partial class FileHelper
             return null;
         if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
-        var buffer = new byte[stream.Length];
-        _ = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+        using var output = new MemoryStream();
+        await stream.CopyToAsync(output, 81920, cancellationToken).ConfigureAwait(false);
         if (stream.CanSeek)
             stream.Seek(0, SeekOrigin.Begin);
-        return buffer;
+        return output.ToArray();
     }
 
     #endregion
@@ -158,19 +160,22 @@ public static partial class FileHelper
     /// 读取文件到内存流中
     /// </summary>
     /// <param name="filePath">文件的绝对路径</param>
+    /// <remarks>成功返回时位置位于末尾，读取前须复位；调用方负责释放。读取失败返回 null。</remarks>
     public static MemoryStream ReadToMemoryStream(string filePath)
     {
+        MemoryStream memoryStream = null;
         try
         {
             if (Exists(filePath) == false)
                 return null;
-            var memoryStream = new MemoryStream();
+            memoryStream = new MemoryStream();
             using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             stream.CopyTo(memoryStream);
             return memoryStream;
         }
         catch
         {
+            memoryStream?.Dispose();
             return null;
         }
     }
@@ -184,19 +189,28 @@ public static partial class FileHelper
     /// </summary>
     /// <param name="filePath">文件的绝对路径</param>
     /// <param name="cancellationToken">取消令牌</param>
+    /// <remarks>成功返回时位置位于末尾，读取前须复位；调用方负责释放。取消正常传播，其他读取失败返回 null。</remarks>
     public static async Task<MemoryStream> ReadToMemoryStreamAsync(string filePath, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+        MemoryStream memoryStream = null;
         try
         {
             if (Exists(filePath) == false)
                 return null;
-            var memoryStream = new MemoryStream();
+            memoryStream = new MemoryStream();
             await using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             await stream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
             return memoryStream;
         }
+        catch (OperationCanceledException)
+        {
+            memoryStream?.Dispose();
+            throw;
+        }
         catch
         {
+            memoryStream?.Dispose();
             return null;
         }
     }
@@ -206,19 +220,28 @@ public static partial class FileHelper
     /// </summary>
     /// <param name="filePath">文件的绝对路径</param>
     /// <param name="cancellationToken">取消令牌</param>
+    /// <remarks>成功返回时位置位于末尾，读取前须复位；调用方负责释放。取消正常传播，其他读取失败返回 null。</remarks>
     public static async Task<MemoryStream> ReadToMemoryStreamAsync(string filePath, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+        MemoryStream memoryStream = null;
         try
         {
             if (Exists(filePath) == false)
                 return null;
-            var memoryStream = new MemoryStream();
+            memoryStream = new MemoryStream();
             using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             await stream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
             return memoryStream;
         }
+        catch (OperationCanceledException)
+        {
+            memoryStream?.Dispose();
+            throw;
+        }
         catch
         {
+            memoryStream?.Dispose();
             return null;
         }
     }
