@@ -9,6 +9,8 @@ namespace Bing.Utils.Json.Converters.Internals;
 internal class DataRowConverter : JsonConverter
 {
     /// <inheritdoc />
+    public override bool CanRead => false;
+    /// <inheritdoc />
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         DataRow row = value as DataRow;
@@ -24,7 +26,7 @@ internal class DataRowConverter : JsonConverter
     /// <inheritdoc />
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException("行读取需要所属表的列结构，请使用 TabularJson 或 DataTableConverter。");
     }
 
     /// <inheritdoc />
