@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Security;
 using System.Text;
 using FluentFTP;
 
@@ -7,7 +8,7 @@ namespace Bing.Net.FTP;
 /// <summary>
 /// FTP客户端
 /// </summary>
-public class FtpClient : IFtpClient
+public partial class FtpClient : IFtpClient
 {
     /// <summary>
     /// 重试次数
@@ -43,51 +44,28 @@ public class FtpClient : IFtpClient
     /// </summary>
     /// <param name="config">Ftp客户端配置</param>
     public FtpClient(FtpClientConfig config)
+        : this(config, FtpConfigurationMode.Legacy)
     {
-        _config = config;
-
-        var credentials = new NetworkCredential(config.UserName, config.Password);
-        _client = new FluentFTP.FtpClient(config.Host, credentials, config.Port);
-        _client.Config.EncryptionMode = Convert(config.EncryptionType);
-        _client.Config.RetryAttempts = RETRY_ATTEMPTS_NUMBER;
-        // 控制通道与数据通道分别配置，避免文件传输仍使用底层默认超时。
-        _client.Config.ConnectTimeout = config.Timeout;
-        _client.Config.DataConnectionConnectTimeout = config.Timeout;
-        _client.Config.ReadTimeout = config.ReadWriteTimeout;
-        _client.Config.DataConnectionReadTimeout = config.ReadWriteTimeout;
-        _client.Config.DataConnectionType = config.UsePassive
-            ? FtpDataConnectionType.AutoPassive
-            : FtpDataConnectionType.AutoActive;
-        _client.Encoding = Encoding.GetEncoding(config.CharsetName);
-        if (config.EnableSsl)
-            _client.ValidateCertificate += Client_ValidateCertificate;
     }
 
     /// <summary>
-    /// 转换为FTP加密模式
+    /// 按配置策略验证 FTPS 服务器证书，默认只接受无策略错误的证书。
     /// </summary>
-    /// <param name="type">加密方式</param>
-    private FtpEncryptionMode Convert(EncryptionType type)
-    {
-        switch (type)
-        {
-            case EncryptionType.None:
-                return FtpEncryptionMode.None;
-            case EncryptionType.Implicit:
-                return FtpEncryptionMode.Implicit;
-            case EncryptionType.Explicit:
-                return FtpEncryptionMode.Explicit;
-            default:
-                return FtpEncryptionMode.None;
-        }
-    }
-
-    /// <summary>
-    /// 客户端的证书验证
-    /// </summary>
+    /// <param name="control">触发验证的 FTP 控制客户端。</param>
+    /// <param name="e">包含证书、证书链和策略错误的验证参数。</param>
+    /// <exception cref="Exception">自定义证书策略抛出异常时，拒绝证书并传播该异常。</exception>
     private void Client_ValidateCertificate(FluentFTP.Client.BaseClient.BaseFtpClient control, FtpSslValidationEventArgs e)
     {
-        e.Accept = true;
+        try
+        {
+            var policy = _config.SslCertificateValidationPolicy;
+            e.Accept = policy == null ? e.PolicyErrors == SslPolicyErrors.None : policy(e);
+        }
+        catch
+        {
+            e.Accept = false;
+            throw;
+        }
     }
 
     /// <summary>
@@ -96,15 +74,15 @@ public class FtpClient : IFtpClient
     public bool IsConnected => (_client?.IsConnected ?? false) && (_client?.IsAuthenticated ?? false);
 
     /// <summary>
-    /// 连接
+    /// 连接；完整配置模式下，显式连接不会因 <see cref="FtpClientConfig.KeepAlive"/> 为 false 而立即断开。
     /// </summary>
     /// <exception cref="FtpClientException"></exception>
     public void Connect()
     {
+        using var operation = BeginOperation(true, false);
         try
         {
-            if (!_client.IsConnected)
-                _client.Connect();
+            EnsureConnectedCore();
         }
         catch (FluentFTP.FtpException e)
         {
@@ -117,8 +95,8 @@ public class FtpClient : IFtpClient
     /// </summary>
     public void Disconnect()
     {
-        if (_client.IsConnected)
-            _client.Disconnect();
+        using var operation = BeginOperation(false, false);
+        DisconnectCore();
     }
 
     #region File(文件操作)
@@ -129,6 +107,8 @@ public class FtpClient : IFtpClient
     /// <param name="path">路径</param>
     public bool DeleteFile(string path)
     {
+        using var operation = BeginOperation();
+        path = GetRemotePath(path);
         try
         {
             _client.DeleteFile(path);
@@ -148,6 +128,9 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public bool RenameFile(string path, string dest)
     {
+        using var operation = BeginOperation();
+        path = GetRemotePath(path);
+        dest = GetRemotePath(dest);
         try
         {
             _client.Rename(path, dest);
@@ -167,6 +150,9 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public bool CopyFile(string file, string destinationFile)
     {
+        using var operation = BeginOperation();
+        file = GetRemotePath(file);
+        destinationFile = GetRemotePath(destinationFile);
         bool result = false;
         try
         {
@@ -192,6 +178,9 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public bool MoveFile(string file, string destinationFile)
     {
+        using var operation = BeginOperation();
+        file = GetRemotePath(file);
+        destinationFile = GetRemotePath(destinationFile);
         bool result = false;
         try
         {
@@ -211,6 +200,8 @@ public class FtpClient : IFtpClient
     /// <param name="remoteFileName">远程文件名</param>
     public bool FileExists(string remoteFileName)
     {
+        using var operation = BeginOperation();
+        remoteFileName = GetRemotePath(remoteFileName);
         return _client.FileExists(remoteFileName);
     }
 
@@ -219,6 +210,7 @@ public class FtpClient : IFtpClient
     /// </summary>
     public List<string> GetFiles()
     {
+        using var operation = BeginOperation();
         return GetFiles(GetCurrentDirectory());
     }
 
@@ -229,6 +221,8 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public List<string> GetFiles(string path)
     {
+        using var operation = BeginOperation();
+        path = GetRemotePath(path);
         var files = Enumerable.Empty<string>().ToList();
         try
         {
@@ -255,9 +249,13 @@ public class FtpClient : IFtpClient
     /// <param name="remotePath">远程路径</param>
     public bool UploadStream(Stream stream, string remotePath)
     {
+        using var operation = BeginOperation();
+        remotePath = GetRemotePath(remotePath);
         try
         {
             var status = _client.UploadStream(stream, remotePath, FtpRemoteExists.Overwrite, true);
+            if (!ShouldCheckTransferLength(_configurationMode, _config.UseBinary))
+                return status == FtpStatus.Success;
             long remoteFileLength = 0;
             if (status == FtpStatus.Success && _client.FileExists(remotePath))
                 remoteFileLength = _client.GetFileSize(remotePath);
@@ -283,9 +281,13 @@ public class FtpClient : IFtpClient
     /// <param name="remotePath">远程路径</param>
     public bool UploadBytes(byte[] bytes, string remotePath)
     {
+        using var operation = BeginOperation();
+        remotePath = GetRemotePath(remotePath);
         try
         {
             var status = _client.UploadBytes(bytes, remotePath, FtpRemoteExists.Overwrite, true);
+            if (!ShouldCheckTransferLength(_configurationMode, _config.UseBinary))
+                return status == FtpStatus.Success;
             long remoteFileLength = 0;
             if (status == FtpStatus.Success && _client.FileExists(remotePath))
                 remoteFileLength = _client.GetFileSize(remotePath);
@@ -311,10 +313,15 @@ public class FtpClient : IFtpClient
     /// <param name="remoteDir">远程目录</param>
     public bool UploadDirectory(string localDir, string remoteDir)
     {
+        using var operation = BeginOperation();
+        localDir = GetLocalPath(localDir);
+        remoteDir = GetRemotePath(remoteDir);
         try
         {
-            var result = _client.UploadDirectory(localDir, remoteDir);
-            return true;
+            var result = _configurationMode == FtpConfigurationMode.Complete && !_config.UseBinary
+                ? _client.UploadDirectory(localDir, remoteDir, verifyOptions: FtpVerify.None)
+                : _client.UploadDirectory(localDir, remoteDir);
+            return _configurationMode != FtpConfigurationMode.Complete || TransfersSucceeded(result);
         }
         catch (FluentFTP.FtpException e)
         {
@@ -329,10 +336,20 @@ public class FtpClient : IFtpClient
     /// <param name="remotePath">远程路径</param>
     public bool UploadFile(string localPath, string remotePath)
     {
+        using var operation = BeginOperation();
+        localPath = GetLocalPath(localPath);
+        remotePath = GetRemotePath(remotePath);
         try
         {
             long remoteFileLength = 0;
-            var status = _client.UploadFile(localPath, remotePath, FtpRemoteExists.Overwrite, true, FtpVerify.Retry | FtpVerify.Delete | FtpVerify.Throw);
+            var status = _client.UploadFile(
+                localPath,
+                remotePath,
+                FtpRemoteExists.Overwrite,
+                true,
+                GetTransferVerification(_configurationMode, _config.UseBinary, FtpVerify.Retry | FtpVerify.Delete | FtpVerify.Throw));
+            if (!ShouldCheckTransferLength(_configurationMode, _config.UseBinary))
+                return status == FtpStatus.Success;
             if (status == FtpStatus.Success && _client.FileExists(remotePath))
                 remoteFileLength = _client.GetFileSize(remotePath);
             else
@@ -357,12 +374,25 @@ public class FtpClient : IFtpClient
     /// <param name="remoteDir">远程目录</param>
     public bool UploadFiles(IEnumerable<string> localPaths, string remoteDir)
     {
-        if (!localPaths.Any())
+        using var operation = BeginOperation(false);
+        var resolvedLocalPaths = _configurationMode == FtpConfigurationMode.Complete
+            ? localPaths.Select(GetLocalPath).ToList()
+            : null;
+        if (resolvedLocalPaths != null ? resolvedLocalPaths.Count == 0 : !localPaths.Any())
             return false;
+        if (_configurationMode == FtpConfigurationMode.Complete)
+            EnsureConnectedCore();
+        remoteDir = GetRemotePath(remoteDir);
         try
         {
-            var result = _client.UploadFiles(localPaths, remoteDir, FtpRemoteExists.Overwrite, true, FtpVerify.Retry);
-            return localPaths.Count() == result;
+            var result = _client.UploadFiles(
+                resolvedLocalPaths ?? localPaths,
+                remoteDir,
+                FtpRemoteExists.Overwrite,
+                true,
+                GetTransferVerification(_configurationMode, _config.UseBinary, FtpVerify.Retry));
+            var sourceCount = resolvedLocalPaths?.Count ?? localPaths.Count();
+            return sourceCount == result;
         }
         catch (FluentFTP.FtpException e)
         {
@@ -381,18 +411,28 @@ public class FtpClient : IFtpClient
     /// <param name="remotePath">远程路径</param>
     public bool DownloadStream(Stream stream, string remotePath)
     {
+        using var operation = BeginOperation();
+        remotePath = GetRemotePath(remotePath);
         long remoteFileLength = 0;
         try
         {
-            _client.DownloadStream(stream, remotePath);
-            remoteFileLength = _client.GetFileSize(remotePath);
+            var status = _client.DownloadStream(stream, remotePath);
+            if (!ShouldAcceptDownloadStatus(_configurationMode, status))
+                return false;
+            if (ShouldCheckTransferLength(_configurationMode, _config.UseBinary))
+                remoteFileLength = _client.GetFileSize(remotePath);
         }
         catch (FluentFTP.FtpException e)
         {
             throw new FtpClientException($"下载文件 操作时出错: {(e.InnerException != null ? e.InnerException.Message : e.Message)}", e);
         }
 
-        if (stream.Length > 0)
+        if (!ShouldCheckTransferLength(_configurationMode, _config.UseBinary))
+        {
+            if (_client.FileExists(remotePath))
+                return true;
+        }
+        else if (stream.Length > 0)
         {
             if (remoteFileLength != stream.Length)
                 throw new FtpClientException($"对文件 {remotePath} 执行 下载文件 操作时出错，操作不成功");
@@ -409,18 +449,28 @@ public class FtpClient : IFtpClient
     /// <param name="remotePath">远程路径</param>
     public bool DownloadBytes(out byte[] bytes, string remotePath)
     {
+        using var operation = BeginOperation();
+        remotePath = GetRemotePath(remotePath);
         long remoteFileLength = 0;
         try
         {
-            _client.DownloadBytes(out bytes, remotePath);
-            remoteFileLength = _client.GetFileSize(remotePath);
+            var status = _client.DownloadBytes(out bytes, remotePath);
+            if (!ShouldAcceptDownloadStatus(_configurationMode, status))
+                return false;
+            if (ShouldCheckTransferLength(_configurationMode, _config.UseBinary))
+                remoteFileLength = _client.GetFileSize(remotePath);
         }
         catch (FluentFTP.FtpException e)
         {
             throw new FtpClientException($"下载文件 操作时出错: {(e.InnerException != null ? e.InnerException.Message : e.Message)}", e);
         }
 
-        if (bytes.Length > 0)
+        if (!ShouldCheckTransferLength(_configurationMode, _config.UseBinary))
+        {
+            if (_client.FileExists(remotePath))
+                return true;
+        }
+        else if (bytes.Length > 0)
         {
             if (remoteFileLength != bytes.Length)
                 throw new FtpClientException($"对文件 {remotePath} 执行 下载文件 操作时出错，操作不成功");
@@ -437,10 +487,15 @@ public class FtpClient : IFtpClient
     /// <param name="remoteDir">远程目录</param>
     public bool DownloadDirectory(string localDir, string remoteDir)
     {
+        using var operation = BeginOperation();
+        localDir = GetLocalPath(localDir);
+        remoteDir = GetRemotePath(remoteDir);
         try
         {
-            var result = _client.DownloadDirectory(localDir, remoteDir);
-            return true;
+            var result = _configurationMode == FtpConfigurationMode.Complete && !_config.UseBinary
+                ? _client.DownloadDirectory(localDir, remoteDir, verifyOptions: FtpVerify.None)
+                : _client.DownloadDirectory(localDir, remoteDir);
+            return _configurationMode != FtpConfigurationMode.Complete || TransfersSucceeded(result);
         }
         catch (FluentFTP.FtpException e)
         {
@@ -455,13 +510,21 @@ public class FtpClient : IFtpClient
     /// <param name="remotePath">远程路径</param>
     public bool DownloadFile(string localPath, string remotePath)
     {
+        using var operation = BeginOperation();
+        localPath = GetLocalPath(localPath);
+        remotePath = GetRemotePath(remotePath);
         long remoteFileLength = 0;
         try
         {
-            var status = _client.DownloadFile(localPath, remotePath, FtpLocalExists.Overwrite, FtpVerify.Retry | FtpVerify.Delete | FtpVerify.Throw);
+            var status = _client.DownloadFile(
+                localPath,
+                remotePath,
+                FtpLocalExists.Overwrite,
+                GetTransferVerification(_configurationMode, _config.UseBinary, FtpVerify.Retry | FtpVerify.Delete | FtpVerify.Throw));
             if (status != FtpStatus.Success)
                 return false;
-            remoteFileLength = _client.GetFileSize(remotePath);
+            if (ShouldCheckTransferLength(_configurationMode, _config.UseBinary))
+                remoteFileLength = _client.GetFileSize(remotePath);
         }
         catch (FluentFTP.FtpException e)
         {
@@ -470,6 +533,8 @@ public class FtpClient : IFtpClient
 
         if (File.Exists(localPath))
         {
+            if (!ShouldCheckTransferLength(_configurationMode, _config.UseBinary))
+                return true;
             var localFileInfo = new FileInfo(localPath);
             if (remoteFileLength != localFileInfo.Length)
             {
@@ -490,12 +555,24 @@ public class FtpClient : IFtpClient
     /// <param name="remotePaths">远程路径列表</param>
     public bool DownloadFiles(string localDir, IEnumerable<string> remotePaths)
     {
-        if (!remotePaths.Any())
+        using var operation = BeginOperation(false);
+        var resolvedRemotePaths = _configurationMode == FtpConfigurationMode.Complete
+            ? remotePaths.Select(GetRemotePath).ToList()
+            : null;
+        if (resolvedRemotePaths != null ? resolvedRemotePaths.Count == 0 : !remotePaths.Any())
             return false;
+        if (_configurationMode == FtpConfigurationMode.Complete)
+            EnsureConnectedCore();
+        localDir = GetLocalPath(localDir);
         try
         {
-            var result = _client.DownloadFiles(localDir, remotePaths, FtpLocalExists.Overwrite, FtpVerify.Retry);
-            return remotePaths.Count() == result;
+            var result = _client.DownloadFiles(
+                localDir,
+                resolvedRemotePaths ?? remotePaths,
+                FtpLocalExists.Overwrite,
+                GetTransferVerification(_configurationMode, _config.UseBinary, FtpVerify.Retry));
+            var sourceCount = resolvedRemotePaths?.Count ?? remotePaths.Count();
+            return sourceCount == result;
         }
         catch (FluentFTP.FtpException e)
         {
@@ -514,6 +591,8 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public bool CreateDirectory(string path)
     {
+        using var operation = BeginOperation();
+        path = GetRemotePath(path);
         try
         {
             return _client.CreateDirectory(path, true);
@@ -531,6 +610,8 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public bool DeleteDirectory(string path)
     {
+        using var operation = BeginOperation();
+        path = GetRemotePath(path);
         try
         {
             var items = _client.GetListing(path).Where(x => x.Type == FtpObjectType.Directory).ToList();
@@ -554,6 +635,8 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public bool DeleteDirectory(string path, bool deleteRecursively)
     {
+        using var operation = BeginOperation();
+        path = GetRemotePath(path);
         if (deleteRecursively)
         {
             try
@@ -590,17 +673,28 @@ public class FtpClient : IFtpClient
     /// <exception cref="DirectoryNotFoundException"></exception>
     public void SetCurrentDirectory(string newDirPath)
     {
+        using var operation = BeginOperation();
+        newDirPath = GetRemotePath(newDirPath);
         if (_client.DirectoryExists(newDirPath))
+        {
             _client.SetWorkingDirectory(newDirPath);
+            SetRemoteDirectoryBase(newDirPath);
+        }
         else
             throw new DirectoryNotFoundException($"设置目录 操作引发错误，找不到路径 {newDirPath}");
     }
 
     /// <summary>
-    /// 获取当前文件夹的路径
+    /// 获取当前文件夹的路径；完整模式返回相对路径解析基准，历史模式查询服务器工作目录。
     /// </summary>
     public string GetCurrentDirectory()
     {
+        if (_configurationMode == FtpConfigurationMode.Complete)
+        {
+            using var scope = BeginOperation(false, false);
+            return _remoteDirectory;
+        }
+        using var operation = BeginOperation();
         return _client.GetWorkingDirectory();
     }
 
@@ -612,6 +706,9 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public bool RenameDirectory(string path, string dest)
     {
+        using var operation = BeginOperation();
+        path = GetRemotePath(path);
+        dest = GetRemotePath(dest);
         try
         {
             _client.Rename(path, dest);
@@ -631,6 +728,9 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public bool MoveDirectory(string path, string dest)
     {
+        using var operation = BeginOperation();
+        path = GetRemotePath(path);
+        dest = GetRemotePath(dest);
         bool result = false;
         try
         {
@@ -650,6 +750,8 @@ public class FtpClient : IFtpClient
     /// <param name="remoteDirPath">指定的目录名</param>
     public bool DirectoryExists(string remoteDirPath)
     {
+        using var operation = BeginOperation();
+        remoteDirPath = GetRemotePath(remoteDirPath);
         return _client.DirectoryExists(remoteDirPath);
     }
 
@@ -658,6 +760,7 @@ public class FtpClient : IFtpClient
     /// </summary>
     public string[] GetDirectories()
     {
+        using var operation = BeginOperation();
         return GetDirectories(GetCurrentDirectory());
     }
 
@@ -668,6 +771,8 @@ public class FtpClient : IFtpClient
     /// <exception cref="FtpClientException"></exception>
     public string[] GetDirectories(string path)
     {
+        using var operation = BeginOperation();
+        path = GetRemotePath(path);
         string[] directories = null;
 
         try
@@ -690,6 +795,7 @@ public class FtpClient : IFtpClient
     /// </summary>
     public void Dispose()
     {
+        using var operation = BeginOperation(false, false);
         if (_client != null)
         {
             _client.Dispose();

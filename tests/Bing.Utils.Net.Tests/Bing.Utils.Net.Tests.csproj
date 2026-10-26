@@ -5,6 +5,9 @@
 		<Version>1.0.0.0</Version>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<PolySharpExcludeGeneratedTypes>System.Runtime.CompilerServices.IsExternalInit</PolySharpExcludeGeneratedTypes>
+	</PropertyGroup>
 	<Import Project="..\..\common.tests.props" />
 
 	<ItemGroup>
