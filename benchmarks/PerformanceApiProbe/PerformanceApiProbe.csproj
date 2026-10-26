@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <CandidateDirectory Condition="'$(CandidateDirectory)' == ''">$(MSBuildThisFileDirectory)../../output/release/net8.0</CandidateDirectory>
+    <DefineConstants Condition="'$(ProbeCandidate)' == 'true'">$(DefineConstants);CANDIDATE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Reference Include="Bing.Utils"><HintPath>$(CandidateDirectory)/Bing.Utils.dll</HintPath></Reference>
+    <Reference Include="Bing.Utils.IdUtils"><HintPath>$(CandidateDirectory)/Bing.Utils.IdUtils.dll</HintPath></Reference>
+    <Reference Include="Bing.Utils.Http"><HintPath>$(CandidateDirectory)/Bing.Utils.Http.dll</HintPath></Reference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+</Project>
