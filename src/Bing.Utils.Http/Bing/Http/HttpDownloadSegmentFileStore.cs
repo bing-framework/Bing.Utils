@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Security.Cryptography;
 
 namespace Bing.Http;
@@ -6,8 +7,13 @@ namespace Bing.Http;
 /// 管理 HTTP 分片的临时文件写入和最终顺序合并。
 /// </summary>
 /// <remarks>该组件不发送 HTTP 请求，也不会自动删除或修改调用方的状态文件。</remarks>
-public sealed class HttpDownloadSegmentFileStore
+public sealed partial class HttpDownloadSegmentFileStore
 {
+    /// <summary>
+    /// 大分片每次最多复制 1 MiB，减少异步 I/O 次数，同时限制每路并发的临时内存。
+    /// </summary>
+    private const int MaxTransferBufferSize = 1024 * 1024;
+
     /// <summary>
     /// 保存分片文件及清单的暂存目录。
     /// </summary>
@@ -44,34 +50,34 @@ public sealed class HttpDownloadSegmentFileStore
     {
         if (content == null) throw new ArgumentNullException(nameof(content));
         if (!content.CanRead) throw new ArgumentException("The segment stream must be readable.", nameof(content));
+        cancellationToken.ThrowIfCancellationRequested();
+        if (range.Length <= 0) throw new ArgumentOutOfRangeException(nameof(range));
         Directory.CreateDirectory(_stagingDirectory);
         var path = SegmentPath(range);
+        if (EnforceDiskReservation)
+            foreach (var residue in Directory.EnumerateFiles(_stagingDirectory, Path.GetFileName(path) + ".*.tmp"))
+                DeleteReservedFile(residue);
         var tempPath = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
         try
         {
+            string hash;
             using (var output = new FileStream(tempPath, FileMode.CreateNew, FileAccess.Write,
-                FileShare.None, 81920, true))
+                FileShare.None, 4096, true))
+            using (var sha = IncrementalHash.CreateHash(HashAlgorithmName.SHA256))
             {
-                var remaining = range.Length;
-                var buffer = new byte[81920];
-                while (remaining > 0)
+                var buffer = ArrayPool<byte>.Shared.Rent(TransferBufferSize(range.Length));
+                try
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var read = await content.ReadAsync(buffer, 0,
-                        (int)Math.Min(buffer.Length, remaining), cancellationToken).ConfigureAwait(false);
-                    if (read == 0) throw new InvalidDataException("The segment stream ended before its range length.");
-                    await output.WriteAsync(buffer, 0, read, cancellationToken).ConfigureAwait(false);
-                    remaining -= read;
+                    hash = await CopySegmentAsync(content, output, range.Length, buffer, sha,
+                        cancellationToken).ConfigureAwait(false);
                 }
-                var extra = await content.ReadAsync(buffer, 0, 1, cancellationToken).ConfigureAwait(false);
-                if (extra != 0) throw new InvalidDataException("The segment stream exceeded its range length.");
+                finally { ArrayPool<byte>.Shared.Return(buffer, clearArray: true); }
                 output.Flush(true);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
             if (File.Exists(path)) File.Replace(tempPath, path, null);
             else File.Move(tempPath, path);
-            var hash = ComputeSha256(path);
             return new HttpDownloadSegmentState
             {
                 Start = range.Start,
@@ -146,19 +152,9 @@ public sealed class HttpDownloadSegmentFileStore
         CancellationToken cancellationToken = default)
     {
         HttpDownloadSegmentStateStore.Validate(state);
+        cancellationToken.ThrowIfCancellationRequested();
         if (state.Segments.Any(segment => !segment.Completed || segment.BytesWritten != segment.End - segment.Start + 1))
             throw new InvalidDataException("All segments must be complete before merging.");
-
-        foreach (var segment in state.Segments)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            var path = SegmentPath(segment.Range);
-            if (!File.Exists(path) || new FileInfo(path).Length != segment.Range.Length)
-                throw new InvalidDataException("A completed segment file is missing or has an invalid length.");
-            if (!string.IsNullOrEmpty(segment.Sha256) &&
-                !string.Equals(segment.Sha256, ComputeSha256(path), StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("A segment checksum does not match its state.");
-        }
 
         var directory = Path.GetDirectoryName(_targetPath);
         if (string.IsNullOrEmpty(directory)) throw new InvalidDataException("The target directory is missing.");
@@ -167,14 +163,34 @@ public sealed class HttpDownloadSegmentFileStore
         try
         {
             using (var output = new FileStream(tempTarget, FileMode.CreateNew, FileAccess.Write,
-                FileShare.None, 81920, true))
+                FileShare.None, 65536, true))
+            using (var sha = IncrementalHash.CreateHash(HashAlgorithmName.SHA256))
             {
-                foreach (var segment in state.Segments)
+                // 整次合并共享缓冲区和摘要实例，避免小分片反复租用、清零和构造。
+                var largest = state.Segments.Count == 0 ? 1 : state.Segments.Max(segment => segment.Range.Length);
+                var buffer = ArrayPool<byte>.Shared.Rent(TransferBufferSize(largest));
+                try
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    using (var input = File.OpenRead(SegmentPath(segment.Range)))
-                        await input.CopyToAsync(output, 81920, cancellationToken).ConfigureAwait(false);
+                    foreach (var segment in state.Segments)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        // 校验与复制使用同一次读取；任何失败只影响临时目标，不提交旧文件。
+                        var segmentPath = SegmentPath(segment.Range);
+                        // 使用真正的异步句柄；复制器已有缓冲区，输入不再重复缓冲。
+                        using (var input = OpenSegment(segmentPath))
+                        {
+                            if (input.Length != segment.Range.Length)
+                                throw new InvalidDataException("A completed segment file has an invalid length.");
+                            var hash = await CopySegmentAsync(input, output, segment.Range.Length, buffer,
+                                string.IsNullOrEmpty(segment.Sha256) ? null : sha, cancellationToken,
+                                verifyFileLength: true).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(segment.Sha256) &&
+                                !string.Equals(hash, segment.Sha256, StringComparison.OrdinalIgnoreCase))
+                                throw new InvalidDataException("A completed segment file has an invalid SHA-256 digest.");
+                        }
+                    }
                 }
+                finally { ArrayPool<byte>.Shared.Return(buffer, clearArray: true); }
                 output.Flush(true);
             }
 
@@ -202,6 +218,81 @@ public sealed class HttpDownloadSegmentFileStore
         => Path.Combine(_stagingDirectory, "segment-" + range.Start + "-" + range.End + ".part");
 
     /// <summary>
+    /// 按分片长度限制租用和归还时清零的范围；极小分片不再使用大块复制缓冲区。
+    /// </summary>
+    private static int TransferBufferSize(long length)
+        => (int)Math.Min(MaxTransferBufferSize, Math.Max(1, length));
+
+    /// <summary>
+    /// 打开分片并保持缺失文件的既有异常契约，省去每片打开前额外的存在性查询。
+    /// </summary>
+    private static FileStream OpenSegment(string path)
+    {
+        try
+        {
+            return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1,
+                FileOptions.Asynchronous | FileOptions.SequentialScan);
+        }
+        catch (FileNotFoundException exception)
+        {
+            throw new InvalidDataException("A completed segment file is missing.", exception);
+        }
+        catch (DirectoryNotFoundException exception)
+        {
+            throw new InvalidDataException("A completed segment file is missing.", exception);
+        }
+        catch (UnauthorizedAccessException exception) when (Directory.Exists(path))
+        {
+            throw new InvalidDataException("A completed segment file is missing.", exception);
+        }
+        catch (IOException exception) when (Directory.Exists(path))
+        {
+            throw new InvalidDataException("A completed segment file is missing.", exception);
+        }
+    }
+
+    /// <summary>
+    /// 复制严格等长的分片；写入进行时计算摘要，等待写入结束后才复用缓冲区。
+    /// </summary>
+    /// <remarks>外部流多读一个字节确认结束；已打开的本地分片复核句柄长度，省去额外 EOF 读取。超额字节不写入。</remarks>
+    private static async Task<string> CopySegmentAsync(Stream input, FileStream output, long length,
+        byte[] buffer, IncrementalHash sha, CancellationToken cancellationToken, bool verifyFileLength = false)
+    {
+        long total = 0;
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var remaining = length - total;
+            if (remaining == 0 && verifyFileLength)
+            {
+                if (input.Length != length) throw new InvalidDataException("A completed segment file has an invalid length.");
+                break;
+            }
+            var requested = remaining >= buffer.Length ? buffer.Length : (int)remaining + 1;
+#if NETSTANDARD2_0
+            var read = await input.ReadAsync(buffer, 0, requested, cancellationToken).ConfigureAwait(false);
+#else
+            var read = await input.ReadAsync(buffer.AsMemory(0, requested), cancellationToken).ConfigureAwait(false);
+#endif
+            cancellationToken.ThrowIfCancellationRequested();
+            if (read == 0) break;
+            if (read > remaining) throw new InvalidDataException("The segment stream exceeds its range length.");
+#if NETSTANDARD2_0
+            var write = output.WriteAsync(buffer, 0, read, cancellationToken);
+#else
+            var write = output.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+#endif
+            // 无论摘要是否失败，都必须收尾已启动的写入，才允许归还缓冲区或关闭文件。
+            try { sha?.AppendData(buffer, 0, read); }
+            finally { await write.ConfigureAwait(false); }
+            total += read;
+        }
+        if (total != length) throw new InvalidDataException("The segment stream ended before its range length.");
+        cancellationToken.ThrowIfCancellationRequested();
+        return sha == null ? null : BitConverter.ToString(sha.GetHashAndReset()).Replace("-", string.Empty).ToLowerInvariant();
+    }
+
+    /// <summary>
     /// 计算指定分片文件的 SHA-256 摘要。
     /// </summary>
     private static string ComputeSha256(string path)
@@ -216,7 +307,8 @@ public sealed class HttpDownloadSegmentFileStore
     /// </summary>
     private static void TryDelete(string path)
     {
-        try { if (File.Exists(path)) File.Delete(path); }
+        // File.Delete 对不存在的文件直接返回；不再为每个分片多查一次元数据。
+        try { File.Delete(path); }
         catch { }
     }
 
@@ -227,8 +319,8 @@ public sealed class HttpDownloadSegmentFileStore
     {
         try
         {
-            if (Directory.Exists(path) && !Directory.EnumerateFileSystemEntries(path).Any())
-                Directory.Delete(path);
+            // 非递归删除只会删除空目录；非空或已删除时按既有清理约定忽略错误。
+            Directory.Delete(path);
         }
         catch { }
     }

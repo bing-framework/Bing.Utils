@@ -7,7 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// Bing 请求级传输隔离注册扩展。
 /// </summary>
-public static class BingHttpClientBuilderExtensions
+public static partial class BingHttpClientBuilderExtensions
 {
     /// <summary>
     /// 以弱引用关联客户端与隔离注册标识，用于确认请求隔离能力。

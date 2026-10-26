@@ -1010,11 +1010,21 @@ public class HttpRequestResilienceTest
             attempts++;
             return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable) { Content = new StringContent("wait") };
         });
-        using var cancellation = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+        using var cancellation = new CancellationTokenSource();
+        var retryScheduled = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         var options = new HttpRetryOptions { BaseDelay = TimeSpan.FromSeconds(1), MaxDelay = TimeSpan.FromSeconds(1), UseJitter = false };
-        await Should.ThrowAsync<OperationCanceledException>(async () =>
-            await new HttpRequest<string>(null, client, HttpMethod.Get, "https://example.test/")
-                .Retry(options).GetResultAsync(cancellation.Token));
+        var execution = new HttpRequest<string>(null, client, HttpMethod.Get, "https://example.test/")
+            .ObserveRetry(_ =>
+            {
+                retryScheduled.TrySetResult(true);
+                cancellation.Cancel();
+            })
+            .Retry(options)
+            .GetResultAsync(cancellation.Token);
+
+        await Task.WhenAny(retryScheduled.Task, execution);
+        retryScheduled.Task.IsCompleted.ShouldBeTrue();
+        await Should.ThrowAsync<OperationCanceledException>(() => execution);
         attempts.ShouldBe(1);
     }
 

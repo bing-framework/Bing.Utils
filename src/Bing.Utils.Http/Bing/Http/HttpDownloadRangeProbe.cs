@@ -48,6 +48,31 @@ public sealed class HttpDownloadRangeResponseMetadata
     /// 获取或设置解析后的 Content-Range 值。
     /// </summary>
     public ContentRangeHeaderValue ContentRange { get; set; }
+
+    /// <summary>
+    /// 获取或设置响应的 ETag。
+    /// </summary>
+    public string ETag { get; set; }
+
+    /// <summary>
+    /// 获取或设置响应的 Last-Modified HTTP 日期。
+    /// </summary>
+    public string LastModified { get; set; }
+
+    /// <summary>
+    /// 获取或设置规范化后的 Content-Encoding 值。
+    /// </summary>
+    public string ContentEncoding { get; set; }
+
+    /// <summary>
+    /// 获取或设置响应对应的 HTTP 请求身份。
+    /// </summary>
+    public string RequestIdentity { get; set; }
+
+    /// <summary>
+    /// 获取或设置响应对应的 HTTP 请求头指纹。
+    /// </summary>
+    public string RequestFingerprint { get; set; }
 }
 
 /// <summary>

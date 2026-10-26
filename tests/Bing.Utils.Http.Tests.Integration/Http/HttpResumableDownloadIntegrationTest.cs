@@ -22,6 +22,36 @@ namespace Bing.Utils.Http.Tests.Integration.Http;
 public class HttpResumableDownloadIntegrationTest
 {
     /// <summary>
+    /// 下载总预算包含已有分片，每次响应预算只统计本次正文；超限保留原目标和检查点。
+    /// </summary>
+    [Fact]
+    public async Task ResumableDownload_TotalBudgetIncludesExistingBytes()
+    {
+        var root = CreateRoot(); var target = Path.Combine(root, "budget.bin");
+        var body = Encoding.UTF8.GetBytes("0123456789");
+        HttpResponseMessage Partial()
+        {
+            var response = CreateResponse(HttpStatusCode.PartialContent, body.Skip(4).ToArray());
+            response.Content.Headers.ContentRange = new ContentRangeHeaderValue(4, 9, 10); return response;
+        }
+        using var client = new HttpClient(new SequenceHandler(_ => CreateResponse(HttpStatusCode.OK, body, 4), _ => Partial(), _ => Partial()));
+        try
+        {
+            File.WriteAllText(target, "old", Encoding.UTF8);
+            await Assert.ThrowsAsync<IOException>(() => new HttpRequest<string>(null, client, HttpMethod.Get, "http://localhost/budget")
+                .DownloadFileResumableWithResultAsync(target));
+            var request = new HttpRequest<string>(null, client, HttpMethod.Get, "http://localhost/budget");
+            request.MaxDownloadBytes(9).MaxResponseBytes(6);
+            await Assert.ThrowsAsync<HttpDownloadSizeLimitException>(() => request.DownloadFileResumableWithResultAsync(target));
+            Assert.Equal("old", File.ReadAllText(target, Encoding.UTF8));
+            Assert.Equal(4, new FileInfo(target + ".binghttp.part").Length);
+            request.MaxDownloadBytes(10);
+            var result = await request.DownloadFileResumableWithResultAsync(target);
+            Assert.True(result.IsFileSaved); Assert.Equal(body, File.ReadAllBytes(target));
+        }
+        finally { DeleteRoot(root); }
+    }
+    /// <summary>
     /// 验证续传部分响应并提交文件。
     /// </summary>
     [Fact]

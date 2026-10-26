@@ -12,6 +12,21 @@ namespace Bing.Http;
 public static class HttpCapabilityExtensions
 {
     /// <summary>
+    /// 以字节数组形式获取响应正文。
+    /// </summary>
+    /// <typeparam name="TResult">响应类型。</typeparam>
+    /// <param name="request">HTTP 请求。</param>
+    /// <param name="cancellationToken">取消令牌。</param>
+    /// <returns>响应正文的字节数组。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> 为 null。</exception>
+    public static Task<byte[]> GetBytesAsync<TResult>(this IHttpRequest<TResult> request,
+        CancellationToken cancellationToken = default) where TResult : class
+    {
+        if (request == null) throw new ArgumentNullException(nameof(request));
+        return request.GetStreamAsync(cancellationToken);
+    }
+
+    /// <summary>
     /// 设置 If-None-Match 条件请求头。
     /// </summary>
     /// <typeparam name="TResult">成功响应结果类型。</typeparam>

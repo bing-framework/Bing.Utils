@@ -265,10 +265,10 @@ public partial class HttpRequest<TResult> : IHttpRequestRawContentRegistration<T
             TResult result = null;
             if (!HasNoResponseBody(response) && response.Content != null)
             {
-                if (_maxResponseBytes.HasValue && response.Content.Headers.ContentLength > _maxResponseBytes.Value)
-                    throw new HttpResponseSizeLimitException(_maxResponseBytes.Value);
+                if (EffectiveMaxResponseBytes.HasValue && response.Content.Headers.ContentLength > EffectiveMaxResponseBytes.Value)
+                    throw new HttpResponseSizeLimitException(EffectiveMaxResponseBytes.Value);
                 source = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                body = new ResponseBodyReadStream(source, _maxResponseBytes);
+                body = new ResponseBodyReadStream(source, EffectiveMaxResponseBytes);
                 if (await body.InitializeAsync(token).ConfigureAwait(false))
                     result = await JsonSerializer.DeserializeAsync<TResult>(body, GetJsonSerializerOptions(), token).ConfigureAwait(false);
             }

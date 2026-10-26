@@ -85,109 +85,134 @@ public sealed class HttpDownloadSegmentScheduler
         CancellationToken cancellationToken = default,
         Func<HttpDownloadSegmentsState, CancellationToken, Task> checkpoint = null)
     {
-        HttpDownloadSegmentStateStore.Validate(state);
         if (download == null) throw new ArgumentNullException(nameof(download));
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var result = Clone(state);
-        var completedBytes = result.Segments.Where(segment => segment.Completed)
-            .Sum(segment => segment.End - segment.Start + 1);
-        using (var gate = new SemaphoreSlim(_maxConcurrency, _maxConcurrency))
-        using (var checkpointGate = new SemaphoreSlim(1, 1))
-        {
-            var tasks = result.Segments.Where(segment => !segment.Completed)
-                .Select(segment => DownloadSegmentAsync(segment, gate, download, cancellationToken,
-                    state.TotalLength,
-                    () => Interlocked.Add(ref completedBytes, segment.End - segment.Start + 1), result,
-                    checkpointGate, checkpoint))
-                .ToArray();
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-        }
-        return result;
+        return await DownloadCoreAsync(state, download, null, cancellationToken, checkpoint).ConfigureAwait(false);
     }
 
     /// <summary>
-    /// 下载单个分片并更新持久状态及观测结果。
+    /// 使用固定工作任务直接写入存储，致命错误后停止领取新分片并收尾。
     /// </summary>
-    private async Task DownloadSegmentAsync(HttpDownloadSegmentState segment, SemaphoreSlim gate,
+    internal Task<HttpDownloadSegmentsState> DownloadToStoreAsync(HttpDownloadSegmentsState state,
+        Func<HttpDownloadRange, CancellationToken, Task<HttpDownloadSegmentState>> write,
+        CancellationToken cancellationToken, Func<HttpDownloadSegmentsState, CancellationToken, Task> checkpoint)
+        => DownloadCoreAsync(state, null, write, cancellationToken, checkpoint);
+
+    /// <summary>
+    /// 共享调度循环，直接消费旧流委托，避免每片增加异步适配任务和异常重抛。
+    /// </summary>
+    private async Task<HttpDownloadSegmentsState> DownloadCoreAsync(HttpDownloadSegmentsState state,
         Func<HttpDownloadRange, CancellationToken, Task<Stream>> download,
-        CancellationToken cancellationToken, long totalLength, Func<long> addCompletedBytes,
-        HttpDownloadSegmentsState state, SemaphoreSlim checkpointGate,
-        Func<HttpDownloadSegmentsState, CancellationToken, Task> checkpoint)
+        Func<HttpDownloadRange, CancellationToken, Task<HttpDownloadSegmentState>> write,
+        CancellationToken cancellationToken, Func<HttpDownloadSegmentsState, CancellationToken, Task> checkpoint)
     {
-        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-        try
+        HttpDownloadSegmentStateStore.Validate(state);
+        cancellationToken.ThrowIfCancellationRequested();
+        var result = Clone(state);
+        var completedBytes = result.Segments.Where(segment => segment.Completed).Sum(segment => segment.Range.Length);
+        var next = 0;
+        var stopped = false;
+        var sync = new object();
+        using var checkpointGate = new SemaphoreSlim(1, 1);
+        var workers = new Task[Math.Min(_maxConcurrency, result.Segments.Count)];
+        for (var i = 0; i < workers.Length; i++) workers[i] = WorkerAsync();
+        try { await Task.WhenAll(workers).ConfigureAwait(false); }
+        finally { cancellationToken.ThrowIfCancellationRequested(); }
+        return result;
+
+        async Task WorkerAsync()
         {
-            var range = segment.Range;
-            for (var attempt = 0; ; attempt++)
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                var progressCallbackFailed = false;
-                try
+                while (true)
                 {
-                    using (var stream = await download(range, cancellationToken).ConfigureAwait(false))
+                    HttpDownloadSegmentState segment;
+                    lock (sync)
                     {
-                        if (stream == null) throw new InvalidDataException("The segment download returned no stream.");
-                        var completed = await _fileStore.WriteSegmentAsync(range, stream, cancellationToken)
-                            .ConfigureAwait(false);
-                        var previousBytesWritten = segment.BytesWritten;
-                        var previousCompleted = segment.Completed;
-                        var previousSha256 = segment.Sha256;
-                        await checkpointGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (stopped) return;
+                        while (next < result.Segments.Count && result.Segments[next].Completed) next++;
+                        if (next == result.Segments.Count) return;
+                        segment = result.Segments[next++];
+                    }
+                    var range = segment.Range;
+                    for (var attempt = 0; ; attempt++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var progressCallbackFailed = false;
                         try
                         {
-                            segment.BytesWritten = completed.BytesWritten;
-                            segment.Completed = completed.Completed;
-                            segment.Sha256 = completed.Sha256;
-                            if (checkpoint != null)
-                                await checkpoint(Clone(state), cancellationToken).ConfigureAwait(false);
+                            using var stream = download == null ? null : await download(range, cancellationToken).ConfigureAwait(false);
+                            if (download != null && stream == null)
+                                throw new InvalidDataException("The segment download returned no stream.");
+                            {
+                                var completed = download == null
+                                    ? await write(range, cancellationToken).ConfigureAwait(false)
+                                    : await _fileStore.WriteSegmentAsync(range, stream, cancellationToken).ConfigureAwait(false);
+                                var previousBytesWritten = segment.BytesWritten;
+                                var previousCompleted = segment.Completed;
+                                var previousSha256 = segment.Sha256;
+                                await checkpointGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+                                try
+                                {
+                                    segment.BytesWritten = completed.BytesWritten;
+                                    segment.Completed = completed.Completed;
+                                    segment.Sha256 = completed.Sha256;
+                                    if (checkpoint != null)
+                                        await checkpoint(Clone(result), cancellationToken).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    segment.BytesWritten = previousBytesWritten;
+                                    segment.Completed = previousCompleted;
+                                    segment.Sha256 = previousSha256;
+                                    throw;
+                                }
+                                finally { checkpointGate.Release(); }
+
+                                var totalCompleted = Interlocked.Add(ref completedBytes, range.Length);
+                                if (_progressObserver != null)
+                                {
+                                    progressCallbackFailed = true;
+                                    _progressObserver(new HttpDownloadSegmentProgress(range, attempt + 1,
+                                        totalCompleted, state.TotalLength));
+                                    progressCallbackFailed = false;
+                                }
+                            }
+                            break;
                         }
-                        catch
+                        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                         {
-                            segment.BytesWritten = previousBytesWritten;
-                            segment.Completed = previousCompleted;
-                            segment.Sha256 = previousSha256;
                             throw;
                         }
-                        finally { checkpointGate.Release(); }
-
-                        var totalCompleted = addCompletedBytes();
-                        if (_progressObserver != null)
+                        catch when (progressCallbackFailed)
                         {
-                            progressCallbackFailed = true;
-                            _progressObserver(new HttpDownloadSegmentProgress(range, attempt + 1,
-                                totalCompleted, totalLength));
-                            progressCallbackFailed = false;
+                            throw;
+                        }
+                        catch (Exception error) when (attempt < _maxRetries)
+                        {
+                            NotifyRetryScheduled(attempt + 1, _retryDelay, error);
+                            if (_retryDelay > TimeSpan.Zero)
+                                await Task.Delay(_retryDelay, cancellationToken).ConfigureAwait(false);
+                        }
+                        catch (Exception error)
+                        {
+                            await checkpointGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+                            try
+                            {
+                                segment.BytesWritten = 0;
+                                segment.Completed = false;
+                                segment.Sha256 = null;
+                            }
+                            finally { checkpointGate.Release(); }
+                            try { _failureObserver?.Invoke(new HttpDownloadSegmentFailure(range, attempt + 1, error)); }
+                            catch { }
+                            break;
                         }
                     }
-                    return;
-                }
-                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-                {
-                    throw;
-                }
-                catch when (progressCallbackFailed)
-                {
-                    throw;
-                }
-                catch (Exception error) when (attempt < _maxRetries)
-                {
-                    NotifyRetryScheduled(attempt + 1, _retryDelay, error);
-                    if (_retryDelay > TimeSpan.Zero)
-                        await Task.Delay(_retryDelay, cancellationToken).ConfigureAwait(false);
-                }
-                catch (Exception error)
-                {
-                    segment.BytesWritten = 0;
-                    segment.Completed = false;
-                    segment.Sha256 = null;
-                    try { _failureObserver?.Invoke(new HttpDownloadSegmentFailure(range, attempt + 1, error)); }
-                    catch { }
-                    return;
                 }
             }
+            catch { lock (sync) stopped = true; throw; }
         }
-        finally { gate.Release(); }
     }
 
     /// <summary>
@@ -214,6 +239,9 @@ public sealed class HttpDownloadSegmentScheduler
             TotalLength = source.TotalLength,
             Validator = source.Validator,
             ContentEncoding = source.ContentEncoding,
+            RequestIdentity = source.RequestIdentity,
+            RequestFingerprint = source.RequestFingerprint,
+            ValidatorKind = source.ValidatorKind,
             Segments = source.Segments.Select(segment => new HttpDownloadSegmentState
             {
                 Start = segment.Start,

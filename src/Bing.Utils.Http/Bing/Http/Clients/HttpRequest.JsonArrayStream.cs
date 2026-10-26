@@ -74,8 +74,8 @@ public partial class HttpRequest<TResult> where TResult : class
             if (HasNoResponseBody(response) || response.Content == null)
                 return new JsonArrayResponseLease(response, null);
 
-            if (_maxResponseBytes.HasValue && response.Content.Headers.ContentLength > _maxResponseBytes.Value)
-                throw new HttpResponseSizeLimitException(_maxResponseBytes.Value);
+            if (EffectiveMaxResponseBytes.HasValue && response.Content.Headers.ContentLength > EffectiveMaxResponseBytes.Value)
+                throw new HttpResponseSizeLimitException(EffectiveMaxResponseBytes.Value);
 
             var mediaType = response.Content.Headers.ContentType?.MediaType;
             if (!string.IsNullOrWhiteSpace(mediaType) &&
@@ -94,7 +94,7 @@ public partial class HttpRequest<TResult> where TResult : class
             try
             {
                 var source = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                body = new ResponseBodyReadStream(source, _maxResponseBytes);
+                body = new ResponseBodyReadStream(source, EffectiveMaxResponseBytes);
                 if (!await body.InitializeAsync(token).ConfigureAwait(false))
                 {
                     body.Dispose();

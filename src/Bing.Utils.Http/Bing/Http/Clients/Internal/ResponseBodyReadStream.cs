@@ -131,6 +131,17 @@ internal sealed class ResponseBodyReadStream : Stream
     }
 
     /// <summary>
+    /// 将底层读取限制为剩余额度加一个探测字节，避免大缓冲区先读完整正文再拒绝。
+    /// </summary>
+    private int LimitReadSize(int count)
+    {
+        if (!_limit.HasValue || count <= 0) return count;
+        var remaining = _limit.Value - _bytesRead;
+        if (remaining < 0) throw new HttpResponseSizeLimitException(_limit.Value);
+        return remaining >= count ? count : (int)remaining + 1;
+    }
+
+    /// <summary>
     /// 从底层流异步读取数据。
     /// </summary>
     /// <param name="buffer">接收数据的缓冲区。</param>
@@ -141,7 +152,7 @@ internal sealed class ResponseBodyReadStream : Stream
     private async Task<int> ReadSourceAsync(byte[] buffer, int offset, int count, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        var read = await _inner.ReadAsync(buffer, offset, count, token).ConfigureAwait(false);
+        var read = await _inner.ReadAsync(buffer, offset, LimitReadSize(count), token).ConfigureAwait(false);
         CountRead(read);
         return read;
     }
@@ -151,7 +162,7 @@ internal sealed class ResponseBodyReadStream : Stream
     {
         var copied = ReadPrefix(buffer, offset, count);
         if (copied != 0 || count == 0) return copied;
-        var read = _inner.Read(buffer, offset, count);
+        var read = _inner.Read(buffer, offset, LimitReadSize(count));
         CountRead(read);
         return read;
     }

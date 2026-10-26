@@ -222,6 +222,37 @@ public class HttpCapabilityExtensionsTest
 
 
     /// <summary>
+    /// 验证字节别名兼容仅实现既有请求接口的消费者，并转发取消令牌。
+    /// </summary>
+    [Fact]
+    public async Task GetBytesAsync_DelegatesToLegacyStreamMethod()
+    {
+        var legacy = new LegacyHttpRequest();
+        using var cancellation = new CancellationTokenSource();
+
+        var bytes = await ((IHttpRequest<string>)legacy).GetBytesAsync(cancellation.Token);
+
+        bytes.ShouldBe(new byte[] { 1, 2, 3 });
+        legacy.GetStreamCallCount.ShouldBe(1);
+        legacy.LastStreamCancellationToken.ShouldBe(cancellation.Token);
+    }
+
+
+
+    /// <summary>
+    /// 验证字节别名拒绝空请求对象。
+    /// </summary>
+    [Fact]
+    public void GetBytesAsync_NullRequestThrows()
+    {
+        IHttpRequest<string> request = null;
+
+        Should.Throw<ArgumentNullException>(() => request.GetBytesAsync());
+    }
+
+
+
+    /// <summary>
     /// 验证复制响应头时保留不区分大小写的多值内容。
     /// </summary>
     [Fact]
@@ -1980,6 +2011,12 @@ public class HttpCapabilityExtensionsTest
     /// </summary>
     private sealed class LegacyHttpRequest : IHttpRequest<string>
     {
+        private readonly byte[] _streamBytes = { 1, 2, 3 };
+
+        public int GetStreamCallCount { get; private set; }
+
+        public CancellationToken LastStreamCancellationToken { get; private set; }
+
         /// <inheritdoc />
         public IHttpRequest<string> HttpClientName(string name) => this;
         /// <inheritdoc />
@@ -2061,7 +2098,12 @@ public class HttpCapabilityExtensionsTest
         /// <inheritdoc />
         public Task<string> GetResultAsync(CancellationToken cancellationToken = default) => Task.FromResult("legacy");
         /// <inheritdoc />
-        public Task<byte[]> GetStreamAsync(CancellationToken cancellationToken = default) => Task.FromResult(Array.Empty<byte>());
+        public Task<byte[]> GetStreamAsync(CancellationToken cancellationToken = default)
+        {
+            GetStreamCallCount++;
+            LastStreamCancellationToken = cancellationToken;
+            return Task.FromResult(_streamBytes);
+        }
         /// <inheritdoc />
         public Task DownloadToAsync(Stream destination, CancellationToken cancellationToken = default) => Task.CompletedTask;
         /// <inheritdoc />

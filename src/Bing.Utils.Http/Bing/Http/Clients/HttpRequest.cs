@@ -612,6 +612,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     {
         if (maxBytes < 0) throw new ArgumentOutOfRangeException(nameof(maxBytes));
         _maxResponseBytes = maxBytes;
+        _hasResponseLimitOverride = true;
         return this;
     }
 
@@ -728,7 +729,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
             _operationToken.Value = token;
             try
             {
-                if (_maxResponseBytes.HasValue && (SendAfterAction != null || SendAfterWithCancellationAction != null) && response.Content != null)
+                if (EffectiveMaxResponseBytes.HasValue && (SendAfterAction != null || SendAfterWithCancellationAction != null) && response.Content != null)
                 {
                     try
                     {
@@ -1086,6 +1087,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
         CancellationToken cancellationToken, ObservationState observation, bool allowRetries = true,
         Action<HttpRequestMessage, int, HttpClient> prepareMessage = null)
     {
+        var previousLimit = _responseLimitContext.Value;
         HttpClient client = null;
         RequestIsolationContext isolation = null;
         CancellationTokenSource timeout = null;
@@ -1103,6 +1105,8 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
             var token = timeout?.Token ?? cancellationToken;
             var deadline = hasFiniteTimeout ? GetUtcNow() + HttpTimeout.Value : DateTimeOffset.MaxValue;
             client = GetClient();
+            _responseLimitContext.Value = new ResponseLimitSnapshot(_hasResponseLimitOverride
+                ? _maxResponseBytes : BingHttpClientBuilderExtensions.GetDefaultMaxResponseBytes(client), _maxDownloadBytes);
             InitHttpClient(client);
             var registration = BingHttpClientBuilderExtensions.GetRegistration(client);
             if (registration == null && (_ignoreSsl || _useCookiesSpecified || !string.IsNullOrWhiteSpace(CertificatePath)))
@@ -1319,6 +1323,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
         }
         finally
         {
+            _responseLimitContext.Value = previousLimit;
             var cleanupError = DisposeAndCapture(isolation, null);
             cleanupError = DisposeAndCapture(timeout, cleanupError);
             if (_httpClient == null) cleanupError = DisposeAndCapture(client, cleanupError);
@@ -1735,10 +1740,15 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
     /// <param name="destination">接收正文的目标流。</param>
     /// <param name="token">复制操作的取消令牌。</param>
     /// <param name="progress">可选的下载进度状态。</param>
+    /// <param name="existingBytes">续传已有的逻辑字节数。</param>
+    /// <param name="bytesCopied">本次复制累计字节回调。</param>
+    /// <param name="isDownload">是否同时应用最终下载总量预算。</param>
     /// <returns>写入目标流的字节数。</returns>
     private async Task<long> CopyResponseAsync(HttpResponseMessage response, Stream destination, CancellationToken token,
-        DownloadProgressState progress = null, long existingBytes = 0, Action<long> bytesCopied = null)
+        DownloadProgressState progress = null, long existingBytes = 0, Action<long> bytesCopied = null, bool isDownload = false)
     {
+        var downloadLimit = isDownload ? EffectiveMaxDownloadBytes : null;
+        EnsureDownloadSize(existingBytes, 0, downloadLimit);
         if (HasNoResponseBody(response) || response.Content == null)
         {
             progress?.Report(existingBytes, existingBytes, false, true);
@@ -1746,8 +1756,9 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
             return 0;
         }
         var length = response.Content.Headers.ContentLength;
-        if (_maxResponseBytes.HasValue && length.HasValue && existingBytes + length.Value > _maxResponseBytes.Value)
-            throw new HttpResponseSizeLimitException(_maxResponseBytes.Value);
+        if (EffectiveMaxResponseBytes.HasValue && length.HasValue && length.Value > EffectiveMaxResponseBytes.Value)
+            throw new HttpResponseSizeLimitException(EffectiveMaxResponseBytes.Value);
+        if (length.HasValue) EnsureDownloadSize(existingBytes, length.Value, downloadLimit);
         var source = await response.Content.ReadAsStreamAsync();
         byte[] buffer = null;
         long copied = 0;
@@ -1765,8 +1776,9 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
                     throw new OperationCanceledException("Reading the HTTP response body was canceled.", ex, token);
                 }
                 if (count == 0) break;
-                if (_maxResponseBytes.HasValue && existingBytes + copied + count > _maxResponseBytes.Value)
-                    throw new HttpResponseSizeLimitException(_maxResponseBytes.Value);
+                if (EffectiveMaxResponseBytes.HasValue && count > EffectiveMaxResponseBytes.Value - copied)
+                    throw new HttpResponseSizeLimitException(EffectiveMaxResponseBytes.Value);
+                EnsureDownloadSize(checked(existingBytes + copied), count, downloadLimit);
                 await destination.WriteAsync(buffer, 0, count, token);
                 copied += count;
                 bytesCopied?.Invoke(copied);
@@ -1855,7 +1867,7 @@ public partial class HttpRequest<TResult> : IHttpRequest<TResult>, IHttpRequestR
             {
                 long bytesWritten = 0;
                 if (response.IsSuccessStatusCode)
-                    bytesWritten = await CopyResponseAsync(response, destination, token, progress);
+                    bytesWritten = await CopyResponseAsync(response, destination, token, progress, isDownload: true);
                 else
                 {
                     content = await ReadResponseBytesAsync(response, token);

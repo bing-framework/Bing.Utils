@@ -137,10 +137,14 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     IHttpRequest<TResult> QueryString(object queryString);
 
     /// <summary>
-    /// 设置是否自动携带Cookie
+    /// 设置是否自动携带 Cookie。
     /// </summary>
+    /// <remarks>
+    /// 显式配置请求级 Cookie 行为需要通过 <c>AddHttpClient(...).UseBingRequestIsolation()</c> 注册客户端；禁用自动 Cookie 且没有其他隔离设置时，请求可以复用隔离路由器的共享传输。
+    /// </remarks>
     /// <param name="isUseCookies">是否自动携带Cookie</param>
     /// <returns>当前请求配置对象。</returns>
+    /// <exception cref="NotSupportedException">客户端未注册请求级传输隔离。</exception>
     IHttpRequest<TResult> UseCookies(bool isUseCookies = true);
 
     /// <summary>
@@ -313,8 +317,11 @@ public interface IHttpRequest<TResult> : IHttpRequest where TResult : class
     Task<TResult> GetResultAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 获取流
+    /// 读取响应正文并返回字节数组。
     /// </summary>
+    /// <remarks>
+    /// 此兼容接口会缓冲完整响应正文，并不返回可供调用方读取的流；新代码可使用 <c>GetBytesAsync</c> 别名表达字节数组语义。
+    /// </remarks>
     /// <param name="cancellationToken">取消令牌</param>
     /// <returns>表示异步读取响应正文字节数组的任务。</returns>
     Task<byte[]> GetStreamAsync(CancellationToken cancellationToken = default);

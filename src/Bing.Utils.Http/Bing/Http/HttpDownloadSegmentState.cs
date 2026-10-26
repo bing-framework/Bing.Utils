@@ -68,6 +68,21 @@ public sealed class HttpDownloadSegmentsState
     public string ContentEncoding { get; set; }
 
     /// <summary>
+    /// 获取或设置自动请求入口使用的 HTTP 请求身份。
+    /// </summary>
+    public string RequestIdentity { get; set; }
+
+    /// <summary>
+    /// 获取或设置自动请求入口使用的请求头指纹。
+    /// </summary>
+    public string RequestFingerprint { get; set; }
+
+    /// <summary>
+    /// 获取或设置验证器类型；当前支持 <c>ETag</c> 或 <c>Last-Modified</c>。
+    /// </summary>
+    public string ValidatorKind { get; set; }
+
+    /// <summary>
     /// 获取或设置正文的完整分片状态。
     /// </summary>
     public List<HttpDownloadSegmentState> Segments { get; set; }
@@ -171,12 +186,10 @@ public static class HttpDownloadSegmentStateStore
         var tempPath = fullPath + "." + Guid.NewGuid().ToString("N") + ".tmp";
         try
         {
-            var json = JsonSerializer.Serialize(state);
-            var bytes = Encoding.UTF8.GetBytes(json);
             using (var stream = new FileStream(tempPath, FileMode.CreateNew, FileAccess.Write,
                 FileShare.None, 4096, FileOptions.SequentialScan))
             {
-                await stream.WriteAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
+                await JsonSerializer.SerializeAsync(stream, state, cancellationToken: cancellationToken).ConfigureAwait(false);
                 stream.Flush(true);
             }
             cancellationToken.ThrowIfCancellationRequested();

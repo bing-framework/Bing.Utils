@@ -126,6 +126,7 @@ public partial class HttpRequest<TResult> where TResult : class
 
                             if (IsCompletedRangeResponse(response, candidate))
                             {
+                                EnsureDownloadSize(candidate.BytesWritten, 0, EffectiveMaxDownloadBytes);
                                 activeState = candidate;
                                 completedByRange = true;
                                 return new HttpDownloadResult(response, candidate.BytesWritten, false);
@@ -163,7 +164,11 @@ public partial class HttpRequest<TResult> where TResult : class
                             "A fresh download requires a 200 response.");
                     }
 
-                    activeState = CreateResumeState(response, identity: null, offset, candidate);
+                    var responseState = CreateResumeState(response, identity: null, offset, candidate);
+                    EnsureDownloadSize(offset, 0, EffectiveMaxDownloadBytes);
+                    if (responseState.TotalLength.HasValue)
+                        EnsureDownloadSize(responseState.TotalLength.Value, 0, EffectiveMaxDownloadBytes);
+                    activeState = responseState;
 
                     activeState.RequestFingerprint = BuildRequestFingerprint(response.RequestMessage, requestClient);
                     activeState.Identity = BuildRequestIdentity(response.RequestMessage, requestClient);
@@ -194,7 +199,7 @@ public partial class HttpRequest<TResult> where TResult : class
                                 activeState.BytesWritten = offset + value;
                                 SaveResumeState(statePath, activeState);
                             }
-                        }).ConfigureAwait(false);
+                        }, isDownload: true).ConfigureAwait(false);
                     if (expectedPartialLength.HasValue && copied != expectedPartialLength.Value)
                         throw new HttpRequestException("The partial response body length does not match Content-Range.");
 
