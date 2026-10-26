@@ -60,7 +60,7 @@ Bing.Utils 是一个基于`.net core`平台下的工具库，旨在提升小型�
 
 | 项目 | 要求 | 说明 |
 |---|---|---|
-| .NET SDK | 8.0 或更高 | CI 固定使用 `8.0.x`（见 `.github/workflows/dotnet.yml`）；仓库未提供 `global.json`，不锁定 SDK 版本 |
+| .NET SDK | `8.0.425` | 开发和 CI 通过仓库 `global.json` 固定使用此 SDK 版本 |
 | 目标框架 | `net8.0`、`net7.0`、`net6.0`、`netstandard2.0` | 由 `common.props` 的 `TargetFrameworks` 统一定义 |
 | 操作系统 | Windows / Linux / macOS | CI 在三个平台同时验证；其中 `Bing.Utils.Drawing` 依赖 `System.Drawing.Common`，非 Windows 平台行为受限 |
 | IDE | Visual Studio 2022（17.3+）或 VS Code + C# 扩展 | 解决方案文件为 Visual Studio Version 17 格式 |
@@ -386,6 +386,8 @@ dotnet add package Bing.Utils.Security.Gm
 - **贡献者名单**：对于热心的贡献者，我们会将您的名字列入贡献者名单。
 
 ## 贡献指南
+
+工具新能力的契约、示例与兼容边界见 [能力扩展指南](docs/reference/capability-expansion-guide.md)，FTP 配置映射见 [FTP 能力矩阵](docs/reference/ftp-capabilities.md)。本轮实施与验证证据见 [执行记录](docs/quality/capability-expansion-execution.md)。
 
 参与协作前请先阅读 [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)，其中包含带源码出处的命名与兼容性约定。以下流程是提交代码的硬性要求。
 

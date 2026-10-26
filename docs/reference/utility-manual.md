@@ -3,6 +3,8 @@
 > 面向刚接手本项目的开发者。手册只收录**日常开发高频使用**的工具类，并按功能分类组织。
 > 所有类名、方法签名、异常类型均取自当前仓库源码（`version.props` 版本 `1.5.0`），示例均已通过编译与运行验证。
 
+HTTP 正文读取、流式压缩、正则超时和内存流的入口选择与资源契约，另见[流式与 API 选择指南](performance-api-guide.md)。
+
 ## 约定与前提
 
 | 项 | 值 | 依据 |
@@ -553,8 +555,9 @@ Console.WriteLine($"{unix.ToTimestamp()} {unix.ToIso8601String()}");  // 1790769
 
 | 方法 | 返回 | 说明 |
 |---|---|---|
-| `ReadToString(string filePath)` / `ReadToStringAsync(...)` | `string` | 文件不存在返回 `string.Empty`（实测） |
-| `ReadToBytes(string)` / `ReadToMemoryStream(string)` | `byte[]` / `MemoryStream` | 文件不存在返回 `null` |
+| `ReadToString(string filePath)` / `ReadToStringAsync(...)` | `string` | 文件不存在返回 `string.Empty`；读取过程中的 I/O 错误会传播 |
+| `ReadToBytes(string)` / `ReadToBytesAsync(string)` | `byte[]` | 文件不存在返回 `null`；读取过程中的 I/O 错误会传播 |
+| `ReadToMemoryStream(string)` / `ReadToMemoryStreamAsync(...)` | `MemoryStream` | 文件不存在或读取失败返回 `null`；异步取消会传播 |
 | `Write(string filePath, string content)` / `Write(string filePath, byte[] content)` | `void` | **自动创建目录**（实测） |
 | `Exists(string path)` / `DeleteIfExists(string filePath)` | `bool` | 删除不存在的文件返回 `false` |
 | `GetFileSize(string filePath)` | `FileSize` | 路径为空白抛 `ArgumentNullException` |
@@ -569,13 +572,13 @@ using Bing.IO;
 var path = PathHelper.GetPhysicalPath("manual/sample.txt");
 FileHelper.Write(path, "bing utils");                       // 目录不存在时自动创建
 Console.WriteLine(FileHelper.ReadToString(path));           // bing utils
-Console.WriteLine(FileHelper.ReadToString("not-exists"));   // ''（空串，不抛异常）
+Console.WriteLine(FileHelper.ReadToString("not-exists"));   // ''（文件不存在时）
 Console.WriteLine(FileHelper.DeleteIfExists(path));         // True
 ```
 
 **常见误用与注意事项**
 
-- 读文件**不抛异常**：`ReadToString` 返回 `string.Empty`，`ReadToBytes` / `ReadToMemoryStream` 返回 `null`（源码：`FileHelper.Read.cs:104`、`Read.cs:16`）。用返回值判空而不是 try/catch。
+- 文件不存在时，`ReadToString` 返回 `string.Empty`，`ReadToBytes` 与 `ReadToMemoryStream` 返回 `null`；这不表示读取操作统一吞掉异常。`ReadToString`、`ReadToBytes` 的打开和读取错误会传播；`ReadToMemoryStream` 捕获读取错误并返回 `null`，其异步版本仍传播取消（源码：`FileHelper.Read.cs`）。
 - `SaveFile(...)` 系列**吞掉所有异常只返回 bool**（源码：`FileHelper.Write.cs:29`），且当路径不含目录部分时直接静默返回（源码：`FileHelper.Write.cs:124`），排查"文件没写出来"时优先看这两点。
 - `GetMd5` / `GetSha1` 已标记 `[Obsolete("MD5/SHA-1 仅用于兼容非安全校验；安全完整性校验请使用 Bing.Security.Hashing.Hashing 的 SHA-2 API。")]`（源码：`FileHelper.Hash.cs:16`、`72`），完整性校验请用 8.2 节的 `Hashing`。
 - 文档契约是**绝对路径**（XML 注释均写"文件的绝对路径"），相对路径是否可用取决于进程当前目录；拼接路径请用 `PathHelper`。
@@ -646,6 +649,7 @@ Console.WriteLine(FileSizeHelper.AutoFormat(5L * 1024 * 1024 * 1024)); // 5 GB�
 | `Compress(byte[] data, CompressionLevel = Optimal)` / `Decompress(byte[])` | `byte[]` | GZip |
 | `Compress(string value, Encoding encoding = null)` / `Decompress(string, Encoding)` | `string` | 输出/输入为 **Base64 字符串** |
 | `CompressAsync` / `DecompressAsync` | `Task<byte[]>` / `Task<string>` | 异步版本 |
+| `CompressTo` / `CompressToAsync`、`DecompressTo` / `DecompressToAsync` | `void` / `Task` | 从流当前位置传输到目标流；解压需指定输出字节上限 |
 | `Zip(string sourceDir, string zipFile)` / `UnZip(string zipFile, string targetDir)` | `void` | 标准 ZIP（文件夹） |
 | `IsValidGZipData(byte[] data)` | `bool` | 只校验魔数 `0x1F 0x8B` |
 
@@ -665,21 +669,24 @@ Console.WriteLine(Encoding.UTF8.GetString(Compression.Decompress(gzip)).Length);
 **常见误用与注意事项**
 
 - 字符串重载输出的是 **Base64**，不是原始字节（源码：`Compression.cs:208`），跨系统传输时不要再做一次 Base64。
-- `Compress(Stream)` / `Decompress(Stream)` 会读 `stream.Length`，**不可 Seek 的流（如网络流）会抛异常**（源码：`Compression.cs:330`）。
-- 失败时抛 `InvalidOperationException("压缩操作失败", ex)`（源码：`Compression.cs:60`），异常里带 `InnerException`；`Zip` 源目录不存在抛 `DirectoryNotFoundException`。
+- `Compress(Stream)` 和 `CompressAsync(Stream)` 支持不可定位流；可定位输入从起点读，不可定位输入从当前位置读，且压缩不关闭输入。`Decompress(Stream)` / `DecompressAsync(Stream)` 从当前位置解压并支持不可定位输入；非空输入随解压操作关闭。需要同时保留两个流时使用 `DecompressTo(..., leaveOpen: true)`。
+- `*To` 流式方法从源和目标的当前位置工作，不自动复位或截断目标；默认保留两个流。失败时目标可能已写入部分数据。`DecompressTo` 必须传入最大输出字节数。
+- 字节数组和流到字节数组的压缩/解压失败会包装为带 `InnerException` 的 `InvalidOperationException`；流式 `*To` 方法按具体失败传播原异常。`Zip` 源目录不存在抛 `DirectoryNotFoundException`。
 - 旧类 `Bing.Helpers.GZip` 已整类标记 `[Obsolete("建议使用 Compression 类获得更完整的功能和更好的异常处理")]`（源码：`GZip.cs:6`），且它没有 `Zip/UnZip`。
 
 ### 6.5 `StreamHelper` / `PooledMemoryStream` / `LargeMemoryStream`
 
 **用途与适用场景**：字符串转流、高频字节缓冲、超过 2GB 的大内存流。源码：`src/Bing.Utils/Bing/IO/StreamHelper.cs`、`PooledMemoryStream.cs`、`LargeMemoryStream.cs`。
 
-**主要方法**：`StreamHelper.GenerateStreamFromString(string content, Encoding encoding = null)`（默认 UTF-8，`content` 为 `null` 抛 `ArgumentNullException`）；`PooledMemoryStream` / `LargeMemoryStream` 提供 `GetSpan()`、`GetMemory()`、`ToArray()`、`WriteTo(Stream)` 等。
+**主要方法**：`StreamHelper.GenerateStreamFromString(string content, Encoding encoding = null)`（默认 UTF-8，`content` 为 `null` 抛 `ArgumentNullException`）；`PooledMemoryStream` 提供 `GetSpan()`、`GetMemory()`、`GetBuffer()`、`ToArray()`、`WriteTo(Stream)`；`LargeMemoryStream` 提供 `GetSpan()`、`GetMemory()`、`ToArraySegment()` 和只覆盖逻辑数据的 `GetWrittenSegments()`，向其他流复制可使用继承的 `CopyTo/CopyToAsync`。
 
 **常见误用与注意事项**
 
 - ⚠ 两个内存流都基于 `ArrayPool<byte>.Shared`，**必须 `Dispose`**（或用 `using`）才会把租借的数组归还，否则失去池化意义（源码：`PooledMemoryStream.cs:290`、`LargeMemoryStream.cs:275`）。
 - `PooledMemoryStream.Dispose` 之后再读写一律抛 `ObjectDisposedException`（源码：`PooledMemoryStream.cs:341`）。
-- `LargeMemoryStream.Seek(offset, SeekOrigin.End)` 的实现与 .NET 标准语义相反（源码：`LargeMemoryStream.cs:151`），仅在确实需要 >2GB 内存流时使用。
+- `PooledMemoryStream.GetBuffer()` 和 `ToArray()` 返回逻辑内容的独立副本；后续写入或释放流不会改变已返回数组。`GetSpan()`、`GetMemory()` 与 `ToArraySegment()` 返回借用视图，不应用作流释放后的快照（源码：`PooledMemoryStream.cs:120`、`267`）。
+- `LargeMemoryStream.Seek(offset, SeekOrigin.End)` 按常见 .NET 约定以 `Length + offset` 计算尾部位置；例如 `Seek(-1, SeekOrigin.End)` 定位到末尾前一字节（源码：`LargeMemoryStream.cs:154`）。
+- `LargeMemoryStream()` 默认页大小为 64 KiB，空实例不租用页面；显式页大小构造方式保留。页面视图借用池内存，不是持久快照，见 [能力收敛指南](capability-refinement-guide.md)。
 
 ---
 
@@ -1140,6 +1147,7 @@ Console.WriteLine(RandomIdGenerator.Create(12, RandomIdGenerator.NanoWords)); //
 **常见误用与注意事项**
 
 - GUID 风格要按数据库选：`SequentialAsEndStyle`（SQL Server）、`SequentialAsStringStyle`（MySQL / PostgreSQL）、`SequentialAsBinaryStyle`（Oracle），枚举注释已标注适用库；跨系统唯一标识用 `BasicStyle`。
+- `RandomNonceStrGenerator.Create` 使用密码学安全随机源生成 62 字符字母数字串，长度小于或等于 16 时按 16 生成；`forceToAvoidRepetition` 为兼容旧调用而保留，不启用全局去重，也不保证两次调用结果不同。
 - `RandomIdGenerator.Create` 内部使用共享的 `System.Random` 静态实例且无锁，高并发下不适合作为安全随机；安全场景请用 `SecurityRandom`。
 - `ObjectId.Parse` 传入非 24 字符抛 `ArgumentOutOfRangeException`；需要容错用 `TryParse`。
 
@@ -1173,7 +1181,7 @@ Console.WriteLine(RandomIdGenerator.Create(12, RandomIdGenerator.NanoWords)); //
 4. `DictsExtensions.GetValueOrDefault(key)` 单参重载易与 BCL 冲突，统一用带默认值重载。
 5. `Splitter.OmitEmptyStrings()` 过滤不掉"只含空格"的段（实测）。
 6. `PinyinUtil.GetPinyin("重庆")` 得到 `ZhongQing`，多音字必须用 `GetContextualPinyin`。
-7. `FileHelper` 读不存在的文件**不抛异常**（字符串返回空串、字节返回 `null`）；`SaveFile` 吞异常只返回 `false`。
+7. `FileHelper` 对不存在的文件返回约定的空值；`ReadToString` / `ReadToBytes` 的实际 I/O 错误仍会传播，`ReadToMemoryStream` 捕获读取错误并返回 `null`；`SaveFile` 吞异常只返回 `false`。
 8. `DirectoryHelper.CreateDirectory` 会把无扩展名的文件路径当目录创建（源码：`DirectoryHelper.cs:30`）。
 9. HTTP 请求**非 2xx 不抛异常**，结果返回 `null`，要挂 `OnFail` 才能感知（实测）。
 10. AES-GCM / SM4-GCM **认证失败抛 `CryptographicException`**（实测），而**验签失败返回 `false`**，两者的错误处理完全不同。

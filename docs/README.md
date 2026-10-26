@@ -8,9 +8,23 @@
 - [分类模块目录](01-module-catalog.md)
 - [模块文档索引](modules/README.md)
 - [API 参考说明](reference/api-reference.md)
+- [传输限速、分片任务与临时文件](reference/transfer-lifecycle-guide.md)
+- [数据库读取器与表格流](reference/tabular-datareader-guide.md)
+- [传输与数据流实施记录](quality/transfer-lifecycle-execution.md)
+- [流处理与资源管理](reference/stream-platform-guide.md)
+- [CSV/TSV 流读写](reference/csv-stream-guide.md)
+- [流平台修复执行记录](quality/stream-hardening-execution.md)
+- [工具能力扩展指南](reference/capability-expansion-guide.md)
+- [表格 JSON v2 流式读写与编辑状态恢复](reference/capability-refinement-guide.md)
+- [异步 FTP 目录操作](reference/ftp-directory-guide.md)
+- [文件监控与可靠停止](reference/file-watcher-guide.md)
+- [UUIDv7 使用指南（RFC 9562）](reference/uuid7-guide.md)
+- [工具能力扩展执行记录](quality/capability-expansion-execution.md)
+- [流处理扩展实施记录](quality/stream-platform-execution.md)
 - [安全与密码学专题](security.md)
 - [质量与验证资料](quality/)
 - [TODO 执行记录](quality/todo-execution.md)：既定清单当前状态、本轮交付及剩余依赖。
+- [功能变更隔离与验证](quality/feature-isolation-2026-10-26.md)：剩余工作区变更的批次依赖、独立补丁及验证证据。
 - [依赖注入模块](modules/Bing.Utils.DependencyInjection.md)：显式接口批量注册、受控扫描及开放/复杂泛型示例。
 - [依赖注入执行记录](quality/dependency-injection-execution.md)：DI-01～DI-04 范围及编译、模块测试和打包证据。
 - [图像性能与反射决策](quality/performance-scope-decisions.md)：固定负载、校准预算、执行顺序及反射剩余项边界。

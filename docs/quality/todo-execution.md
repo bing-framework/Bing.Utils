@@ -1,6 +1,15 @@
 # TODO 执行记录
 
-更新时间：2026-10-15。本轮核对发现质量报告 P0-2 的生产修复虽已完成，但原计划明确要求的并发／重复写入回归尚未补齐；本轮范围仅补齐该项验收。已有未提交变更全部保留；下方旧批次的“本轮”仅指各自历史语境。
+## 交付隔离更新（2026-10-26）
+
+JSON Schema 官方样例的两处行尾空格已修复，独立模块 449 项测试通过。HTTP、共享流与序列化、CI、性能工具及汇总资料按功能拆为可应用补丁，当前批次、依赖和验证状态以[功能变更隔离与验证](feature-isolation-2026-10-26.md)为准。功能实现状态、补丁隔离验证与远程 CI 分别记录。
+
+## 后续状态更新（2026-10-25）
+
+- FTP 配置接入已从早期的“部分字段生效、其余待决策”推进为本地实现完成：旧同步构造保留 `Legacy`，显式 `Complete` 应用完整可支持配置，另有独立原生异步客户端。独立超时、同步取消等真实限制仍保留；真实 FTP/FTPS/代理服务器验收为 `BLOCKED_EXTERNAL`。详情见[FTP 模块说明](../modules/Bing.Utils.Net.md)、[FTP 能力矩阵](../reference/ftp-capabilities.md)和[能力扩展执行记录](capability-expansion-execution.md)。
+- 表格 JSON 已完成双向读写；历史 v1/无参转换器读取仍缓冲完整 JSON，v2 提供行编辑状态恢复，`OpenReaderAsync` 提供逐行读取。返回完整 `DataTable`/`DataSet` 仍需保存全部结果。v2 契约见[表格 v2 流式与编辑状态恢复指南](../reference/capability-refinement-guide.md)。
+
+原始记录日期：2026-10-15。本页以下较早批次保留当时的范围和证据；后续状态以本节及各专项链接为准。质量报告 P0-2 的原始本轮范围为补齐并发／重复写入回归。
 
 ## 当前批次：质量报告 P0-2 回归补齐
 
@@ -81,7 +90,8 @@ P0-2 本轮缺失验收 2/2 CLOSED，OPEN_ACTIONABLE 0，No-Progress CHANGED，N
 | 质量报告 P2-2 Reflection/Text 异常模板 | CLOSED（此前） | 新增 10 个参数化测试实例，补齐格式化空输入、非法正则和显式空选择器；复用原有非法签名回归 |
 | 质量报告 P2-1 图像性能实现部分 | 此前完成部分（整项 PARTIAL） | 8 场景负载、smoke、固定基线校准及预算检查已实现；编译和 smoke 通过，候选耗时门禁未通过 |
 | 反射四项预算校准及策略落地 | CLOSED（此前，实现部分） | schema 1 四项冻结值、限时执行和失败完整证据已落地；正式稳态耗时 1 条超限，性能验收仍阻塞 |
-| FTP 配置接入的明确字段 | 此前完成部分（整体未关闭） | 连接/读取超时覆盖控制及数据通道，主动/被动模式生效；默认与自定义配置回归已通过 |
+| FTP 配置接入 | CLOSED（本地实现）；BLOCKED_EXTERNAL（真实服务） | 旧构造保留 Legacy；完整同步配置与原生异步 API 已实现。当前支持项、限制和服务器验证边界见 [Net 模块说明](../modules/Bing.Utils.Net.md) 与 [能力扩展执行记录](capability-expansion-execution.md) |
+| DataTable/DataSet JSON 读取与写入 | CLOSED（本地实现） | 双向 v1/v2 转换、v2 行编辑状态恢复及逐行 reader 已交付；v1 全文缓冲是历史兼容路径，详见 [v2 流式与编辑状态恢复指南](../reference/capability-refinement-guide.md) |
 | HTTP 后续批准修复 | CLOSED（此前） | 8 类修复及 HTTP-FIX-01/02 完成，逐项见 HTTP 记录；本轮未修改或重跑 |
 | SEC-001 | CLOSED（此前） | 遗留密码入口弃用边界 |
 | SEC-002 | CLOSED（此前） | 版本化请求签名迁移入口 |
@@ -122,7 +132,7 @@ Text 的 `FixedLength(0)` 已改为构造时抛 `ArgumentOutOfRangeException("le
 - 环境诊断：沙箱拒绝写入 Net 的既有 obj 缓存及 netstandard2.0 输出 DLL；相同测试/构建经权限流程通过。未修改配置、依赖、断言、过滤或忽略检查来规避失败。
 - L3：真实 FTP 控制/数据通道、主动模式和超时触发验收 BLOCKED_EXTERNAL，需要隔离服务器与凭据；L4/L5 不运行，无共享核心、性能或夹具变化，不扩矩阵、不增加 CI、资源或视觉验证。
 - 复核：Luna 未发现生产映射及模块文档的可行动问题；主代理核对测试的实际底层配置、默认值、两个模式及未连接状态。私有反射仅用于测试观察，不新增生产入口或友元。
-- 本轮已确认可映射字段 3/3；本地编译/单元门禁 2/2 PASS。FTP 原条目整体 PARTIAL，未确认字段 BLOCKED_APPROVAL、服务器验收 BLOCKED_EXTERNAL。No-Progress：CHANGED。本轮无剩余已确认可编码项，Goal Status：STOPPED_BLOCKED，Next Action：STOP；不自动关闭原 FTP 条目。
+- 当时本轮已确认可映射字段 3/3；本地编译/单元门禁 2/2 PASS。该历史批次结束时 FTP 原条目整体 PARTIAL、其余字段待决策；后续完整实现状态见本页顶部更新及 [能力扩展执行记录](capability-expansion-execution.md)。真实服务器验收仍为 BLOCKED_EXTERNAL。No-Progress：CHANGED。本轮无剩余已确认可编码项，Goal Status：STOPPED_BLOCKED，Next Action：STOP。
 
 ```powershell
 dotnet test tests/Bing.Utils.Net.Tests/Bing.Utils.Net.Tests.csproj -c Release -f net8.0 --no-restore --results-directory TestResults/todo-ftp-config --logger 'trx;LogFileName=net-config-net8.trx' --nologo -m:1 -nr:false -p:UseSharedCompilation=false
@@ -154,26 +164,24 @@ dotnet build src/Bing.Utils.Net/Bing.Utils.Net.csproj -c Release -f netstandard2
 | 质量报告 P2-1 | 图像性能基准与阈值 | PARTIAL / BLOCKED_EXTERNAL；实现、编译、smoke 及冻结校准已完成；同程序集两次测量有显著耗时差异，4/8 耗时未过预算；依赖稳定环境复核，无未完成代码上游，不自动重跑或放宽 |
 | 反射剩余项 | 性能验收、默认门禁和容量告警 | 校准/策略实现 CLOSED；稳态耗时 1 条超限，性能验收 BLOCKED_EXTERNAL，依赖稳定环境，无未完成代码上游；默认 PR 绝对门禁及业务容量/告警 DEFERRED，结构门禁保留 |
 | 反射剩余项 | 外部发布、消费者及依赖诊断治理 | BLOCKED_EXTERNAL / 待确认；依赖真实 CI、消费者及责任人；不擅自清零或扩大批准诊断 |
-| 模块文档，未定级 | FTP 配置接入 | PARTIAL；连接/读取超时与主动/被动模式已接入。其余字段依赖下列具体契约，BLOCKED_APPROVAL；真实控制/数据通道及超时触发依赖服务器/凭据，BLOCKED_EXTERNAL |
-| 接口推断，未定级 | JSON 转换器读取 | BLOCKED_APPROVAL；上游是仅写/双向及表结构契约，不定义猜测的读取格式 |
+| 模块文档，未定级 | FTP 外部协议验收 | BLOCKED_EXTERNAL；本地配置映射、完整同步模式和异步客户端已实现；仍需真实 FTP/FTPS/代理服务验证协商、证书链及服务器行为，见 [FTP 能力矩阵](../reference/ftp-capabilities.md) |
 | 模块文档，未定级 | CharGuard | BLOCKED_APPROVAL；上游是守护契约及兼容决策 |
 | 下一主版本安全计划 | 遗留密码 API 移除 | DEFERRED；依赖下一主版本、完整弃用周期和迁移安排，当前保留兼容 |
-| 上轮风险审计，非实施方案 | FTPS 证书、防重放、词库容量、正则超时 | 待确认；分别依赖信任策略、调用方协议、资源上限、超时契约，不能自动当作批准方案 |
+| 安全审查 | FTPS 默认证书验证 | CLOSED（默认严格验证和显式策略已实现）；真实证书链及服务器行为 BLOCKED_EXTERNAL，见 [Net 模块说明](../modules/Bing.Utils.Net.md) |
+| 上轮风险审计，非实施方案 | 防重放、词库容量、正则超时 | 待确认；分别依赖调用方协议、资源上限、超时契约，不能自动当作批准方案 |
 
 其他边界：图像动画/新格式、Emoji 额外语言及旧 API、Conv 其他优化沿用原记录 DEFERRED 或 ACCEPTED_LIMITATION；旧运行时、Linux、DocFX 沿用各专项外部阻塞。反射旧运行时证据不扩大为其他模块已验证。
 
-另发现同步 `FileHelper.Write(byte[],...)` 仍有未释放 `File.Create` 的相似问题，与已关闭的异步条目不同，待纳入明确后续修复范围；本轮不修改。
+此前发现的同步 `FileHelper.Write(byte[],...)` 句柄与覆盖截断问题已在后续 IO 修复中关闭；当前实现使用受 `using` 管理的文件流，覆盖采用 `FileMode.Create`，追加采用 `FileMode.Append`。见[能力扩展执行记录](capability-expansion-execution.md)中的 A02，此项不再属于待处理编码问题。
 
-FTP 未完成字段的具体依赖：
+FTP 当前保留的同步边界：
 
-- 代理：需明确 HTTP/SOCKS/FTP 代理协议及凭据策略；现有 `WebProxy` 不能直接等同 FluentFTP 的具体代理客户端。
-- `DisconnectTimeout/ReceiveTimeout/SendTimeout`：FluentFTP 42.0.1 的配置无同义字段；需要确定适配范围，不把读取超时冒充独立发送/断开超时。
-- `ConnectCount`：需确定连接重试次数、失败范围和等待策略；`RetryAttempts` 是上传/下载校验失败重试，继续固定为 3。
-- `KeepAlive`：需明确请求后连接生命周期或 TCP 保活，不能静默混用两种语义。
-- `UseBinary`：ASCII 可改变换行及字节长度，需明确与现有严格长度校验的兼容及验收方式。
-- `LocalDirectory/RemoteDirectory`：需明确默认路径相对规则及现有显式路径优先级，不自动改变工作目录。
+- `FtpClient(config)` 继续使用 `Legacy` 兼容模式；需要完整配置映射时显式使用 `FtpConfigurationMode.Complete`。
+- 完整同步模式对显式设置的 `SendTimeout`、`DisconnectTimeout` 抛出 `NotSupportedException`，不伪造后端不支持的独立超时。
+- 同步 API 不支持 `CancellationToken`；同步 `CopyFile` 会将完整远端文件缓存在内存后再上传。
+- 异步客户端使用独立选项与原生异步后端；真实服务端、FTPS 证书链和代理握手仍属于外部验证，不因本地假后端测试通过而标记完成。
 
-下一轮建议：STOP，先取得稳定测量环境或真实 CI/消费者证据，再复核对应外部门禁；图像及反射性能均保持失败记录，不自动复测或套用其他数值。FTP 等条目待具体契约和隔离服务器，不跳过决策去实现未批准范围。
+此前“FTP 配置接入待决策”和“JSON 转换器读取待决策”均为历史状态，不再是未完成编码项。当前图像与反射性能验收仍按原记录保持外部阻塞；不自动复测或放宽门禁。
 
 ## 本轮文件
 
