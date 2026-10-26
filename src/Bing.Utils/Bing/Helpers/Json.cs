@@ -11,6 +11,10 @@ namespace Bing.Helpers;
 /// </summary>
 public static class Json
 {
+    /// <summary>
+    /// 仅供内部复用的默认选项；转换器不捕获调用线程的文化或时区。
+    /// </summary>
+    private static readonly JsonSerializerOptions DefaultSerializerOptions = CreateDefaultSerializerOptions();
     #region ToJson(将对象转换为Json字符串)
 
     /// <summary>
@@ -94,9 +98,14 @@ public static class Json
     /// <param name="options">Json序列化配置</param>
     /// <returns>应用 JSON 输出设置后的选项。</returns>
     private static JsonSerializerOptions GetToJsonOptions(JsonSerializerOptions options)
+        => options ?? DefaultSerializerOptions;
+
+    /// <summary>
+    /// 构造一次默认选项，首次使用后由 System.Text.Json 保持只读。
+    /// </summary>
+    /// <returns>仅供内部使用的序列化选项。</returns>
+    private static JsonSerializerOptions CreateDefaultSerializerOptions()
     {
-        if (options != null)
-            return options;
         return new JsonSerializerOptions
         {
 #if NET5_0_OR_GREATER
