@@ -17,6 +17,8 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.0.0" />
 		<PackageReference Include="System.Text.Json" Version="4.6.0" />
+		<!--修复旧 JSON 依赖链中的 CVE-2021-26701，并将最低修复版本传递给包消费者。-->
+		<PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
 		<PackageReference Include="System.Memory" Version="4.5.5" />
 		<!--用于解决 [1..^1] 的问题-->
 		<PackageReference Include="IndexRange" Version="1.0.3" />
