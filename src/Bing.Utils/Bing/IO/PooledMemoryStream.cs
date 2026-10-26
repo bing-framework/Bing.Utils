@@ -20,7 +20,7 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     /// 设置过扩展因子为2意味着，每当内存流的容量需要增加时，新的容量将是所需容量的两倍。
     /// 这有助于减少因频繁扩容而导致的内存分配次数，从而提高性能。
     /// </remarks>
-    private const float OverExpansionFactor = 2;
+    private const int OverExpansionFactor = 2;
 
     /// <summary>
     /// 内部用于存储流数据的缓冲区。
@@ -96,7 +96,20 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     public override long Length => _length;
 
     /// <inheritdoc />
-    public override long Position { get; set; }
+    public override long Position
+    {
+        get => _position;
+        set
+        {
+            AssertNotDisposed();
+            if (value < 0 || value > int.MaxValue)
+                throw new ArgumentOutOfRangeException(nameof(value));
+            _position = value;
+        }
+    }
+
+    /// <summary>当前读取或写入位置；设置位置本身不公开池中的未初始化数据。</summary>
+    private long _position;
 
     /// <summary>
     /// 获取当前流的容量，即流中可以存储的字节数。
@@ -107,18 +120,21 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     /// 获取表示流当前内容的Span。
     /// </summary>
     /// <returns>包含流数据的Span。</returns>
+    /// <remarks>返回借用视图，仅在流未扩容或释放期间有效；需要独立快照时使用 ToArray。</remarks>
     public Span<byte> GetSpan() => _data.AsSpan(0, _length);
 
     /// <summary>
     /// 获取表示流当前内容的Memory。
     /// </summary>
     /// <returns>包含流数据的Memory。</returns>
+    /// <remarks>返回借用视图，仅在流未扩容或释放期间有效；需要独立快照时使用 ToArray。</remarks>
     public Memory<byte> GetMemory() => _data.AsMemory(0, _length);
 
     /// <summary>
     /// 将流内容转换为ArraySegment。
     /// </summary>
     /// <returns>包含流数据的ArraySegment。</returns>
+    /// <remarks>返回借用视图，仅在流未扩容或释放期间有效；需要独立快照时使用 ToArray。</remarks>
     public ArraySegment<byte> ToArraySegment() => new(_data, 0, (int)Length);
 
     /// <inheritdoc />
@@ -132,9 +148,12 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     public override int Read(byte[] buffer, int offset, int count)
     {
         AssertNotDisposed();
+        ValidateBuffer(buffer, offset, count);
         if (count == 0)
             return 0;
-        var available = Math.Min(count, Length - Position);
+        var available = Math.Min(count, Math.Max(0, Length - Position));
+        if (available == 0)
+            return 0;
         Array.Copy(_data, Position, buffer, offset, available);
         Position += available;
         return (int)available;
@@ -156,26 +175,26 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
         switch (origin)
         {
             case SeekOrigin.Current:
-                if (Position + offset < 0 || Position + offset > Capacity)
+                if (offset < -Position || offset > Capacity - Position)
                     throw new ArgumentOutOfRangeException(nameof(offset));
                 Position += offset;
-                _length = (int)Math.Max(Position, _length);
+                ExtendLength((int)Position);
                 return Position;
 
             case SeekOrigin.Begin:
                 if (offset < 0 || offset > Capacity)
                     throw new ArgumentOutOfRangeException(nameof(offset));
                 Position = offset;
-                _length = (int)Math.Max(Position, _length);
+                ExtendLength((int)Position);
                 return Position;
 
             case SeekOrigin.End:
-                if (Length + offset < 0)
+                if (offset < -Length || offset > int.MaxValue - Length)
                     throw new ArgumentOutOfRangeException(nameof(offset));
                 if (Length + offset > Capacity)
                     SetCapacity((int)(Length + offset));
                 Position = Length + offset;
-                _length = (int)Math.Max(Position, _length);
+                ExtendLength((int)Position);
                 return Position;
 
             default:
@@ -194,10 +213,11 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     public override void SetLength(long value)
     {
         AssertNotDisposed();
-        if (value < 0)
+        if (value < 0 || value > int.MaxValue)
             throw new ArgumentOutOfRangeException(nameof(value));
         if (value > Capacity)
             SetCapacity((int)value);
+        ExtendLength((int)value);
         _length = (int)value;
         if (Position > Length)
             Position = Length;
@@ -213,13 +233,19 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     public override void Write(byte[] buffer, int offset, int count)
     {
         AssertNotDisposed();
+        ValidateBuffer(buffer, offset, count);
         if (count == 0)
             return;
-        if (Capacity - Position < count)
-            SetCapacity((int)(OverExpansionFactor * (Position + count)));
+        var end = checked(Position + count);
+        if (end > int.MaxValue)
+            throw new IOException("流长度超过支持范围。");
+        if (end > Capacity)
+            SetCapacity((int)Math.Min(int.MaxValue, Math.Max(end, OverExpansionFactor * end)));
+        if (Position > _length)
+            ExtendLength((int)Position);
         Array.Copy(buffer, offset, _data, Position, count);
-        Position += count;
-        _length = (int)Math.Max(Position, _length);
+        Position = end;
+        _length = Math.Max(_length, (int)end);
     }
 
     /// <summary>
@@ -241,15 +267,13 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     public byte[] GetBuffer()
     {
         AssertNotDisposed();
-        if (_data.Length == Length)
-            return _data;
         var buffer = new byte[Length];
         Buffer.BlockCopy(_data, 0, buffer, 0, buffer.Length);
         return buffer;
     }
 
     /// <summary>
-    /// 将流内容转换为字节数组。
+    /// 将流内容复制到独立字节数组，后续流修改或缓冲池复用不会改变该副本。
     /// </summary>
     /// <returns>流数据的字节数组。</returns>
     public byte[] ToArray() => GetBuffer();
@@ -261,9 +285,9 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
         if (disposing)
         {
             _isDisposed = true;
-            Position = 0;
+            _position = 0;
             _length = 0;
-            if (_data != null)
+            if (_data != null && _data.Length > 0)
             {
                 _pool.Return(_data);
                 _data = null;
@@ -285,12 +309,30 @@ public sealed class PooledMemoryStream : Stream, IEnumerable<byte>
     private void SetCapacity(int newCapacity)
     {
         var newData = _pool.Rent(newCapacity);
-        if (_data != null)
+        if (_data != null && _data.Length > 0)
         {
-            Array.Copy(_data, 0, newData, 0, Position);
+            Array.Copy(_data, 0, newData, 0, _length);
             _pool.Return(_data);
         }
         _data = newData;
+    }
+
+    /// <summary>清零即将对调用方可见的区域，避免暴露缓冲池的历史内容。</summary>
+    private void ExtendLength(int length)
+    {
+        if (length <= _length)
+            return;
+        Array.Clear(_data, _length, length - _length);
+        _length = length;
+    }
+
+    /// <summary>在修改位置或缓冲区前验证读取和写入参数。</summary>
+    private static void ValidateBuffer(byte[] buffer, int offset, int count)
+    {
+        if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+        if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+        if (offset > buffer.Length - count) throw new ArgumentException("缓冲区范围无效。");
     }
 
     /// <summary>
