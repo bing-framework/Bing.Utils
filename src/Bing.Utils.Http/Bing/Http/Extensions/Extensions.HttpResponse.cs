@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using Bing.Utils.Json;
 using Microsoft.AspNetCore.Http;
 
@@ -8,8 +9,50 @@ namespace Bing.Http;
 /// <summary>
 /// Http响应(<see cref="HttpResponse"/>) 扩展
 /// </summary>
-public static class HttpResponseExtensions
+public static partial class HttpResponseExtensions
 {
+    /// <summary>
+    /// 将对象以 UTF-8 JSON 格式直接序列化到响应正文流。
+    /// </summary>
+    /// <typeparam name="T">待序列化对象的类型。</typeparam>
+    /// <param name="response">HTTP 响应。</param>
+    /// <param name="value">待序列化对象。</param>
+    /// <param name="options">JSON 序列化选项；为空时使用默认选项。</param>
+    /// <param name="cancellationToken">调用方提供的取消令牌；同时遵守请求的 RequestAborted 令牌。</param>
+    /// <returns>表示异步序列化操作的任务。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="response"/> 为 null。</exception>
+    /// <exception cref="OperationCanceledException">请求或调用方取消了序列化。</exception>
+    public static async Task WriteJsonStreamAsync<T>(this HttpResponse response, T value,
+        JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
+    {
+        if (response == null) throw new ArgumentNullException(nameof(response));
+
+        var requestAborted = response.HttpContext?.RequestAborted ?? CancellationToken.None;
+        CancellationTokenSource linkedCancellation = null;
+        var effectiveCancellationToken = cancellationToken;
+        if (cancellationToken.CanBeCanceled && requestAborted.CanBeCanceled)
+        {
+            linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, requestAborted);
+            effectiveCancellationToken = linkedCancellation.Token;
+        }
+        else if (!effectiveCancellationToken.CanBeCanceled)
+        {
+            effectiveCancellationToken = requestAborted;
+        }
+
+        try
+        {
+            effectiveCancellationToken.ThrowIfCancellationRequested();
+            response.ContentType = "application/json; charset=utf-8";
+            await JsonSerializer.SerializeAsync(response.Body, value, options, effectiveCancellationToken)
+                .ConfigureAwait(false);
+        }
+        finally
+        {
+            linkedCancellation?.Dispose();
+        }
+    }
+
     #region WriteJsonAsync(写入Json)
 
     /// <summary>
