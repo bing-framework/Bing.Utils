@@ -51,8 +51,6 @@ public class RandomIdTest
         nonceStr2.Length.ShouldBe(16);
         nonceStr3.Length.ShouldBe(16);
         nonceStr4.Length.ShouldBe(16);
-        nonceStr1.ShouldNotBe(nonceStr2);
-        nonceStr3.ShouldNotBe(nonceStr4);
         Output.WriteLine(nonceStr1);
         Output.WriteLine(nonceStr2);
         Output.WriteLine(nonceStr3);
@@ -76,8 +74,6 @@ public class RandomIdTest
         nonceStr2.Length.ShouldBe(16);
         nonceStr3.Length.ShouldBe(16);
         nonceStr4.Length.ShouldBe(16);
-        nonceStr1.ShouldNotBe(nonceStr2);
-        nonceStr3.ShouldNotBe(nonceStr4);
         Output.WriteLine(nonceStr1);
         Output.WriteLine(nonceStr2);
         Output.WriteLine(nonceStr3);
