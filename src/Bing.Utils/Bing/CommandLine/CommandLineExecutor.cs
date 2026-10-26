@@ -65,11 +65,6 @@ public class CommandLineExecutor
     private TimeSpan _timeout;
 
     /// <summary>
-    /// 事件等待句柄
-    /// </summary>
-    private readonly EventWaitHandle _outputReceived;
-
-    /// <summary>
     /// 预期完成输出消息
     /// </summary>
     private readonly List<string> _outputToMatch;
@@ -87,7 +82,6 @@ public class CommandLineExecutor
         _createNoWindow = true;
         _environmentVariables = new Dictionary<string, string>();
         _timeout = TimeSpan.FromSeconds(30);
-        _outputReceived = new EventWaitHandle(false, EventResetMode.ManualReset);
         _outputToMatch = new List<string>();
     }
 
@@ -200,17 +194,12 @@ public class CommandLineExecutor
     /// 设置重定向标准输出流
     /// </summary>
     /// <param name="value">是否重定向标准输出流。默认值：true</param>
-    /// <remarks>注意：如果要设置 UseShellExecute 为 false，则必须将 RedirectStandardOutput 设置为 true。</remarks>
+    /// <remarks>启用重定向时禁用 Shell 启动；关闭重定向不会自动启用 Shell。</remarks>
     public CommandLineExecutor RedirectStandardOutput(bool value = true)
     {
         _redirectStandardOutput = value;
         if (value)
-        {
             _useShellExecute = false;
-            return this;
-        }
-        _useShellExecute = true;
-        _outputEncoding = null;
         return this;
     }
 
@@ -221,6 +210,8 @@ public class CommandLineExecutor
     public CommandLineExecutor RedirectStandardError(bool value = true)
     {
         _redirectStandardError = value;
+        if (value)
+            _useShellExecute = false;
         return this;
     }
 
@@ -244,7 +235,7 @@ public class CommandLineExecutor
         if (value)
         {
             _redirectStandardOutput = false;
-            _outputEncoding = null;
+            _redirectStandardError = false;
             return this;
         }
 
@@ -273,7 +264,7 @@ public class CommandLineExecutor
     }
 
     /// <summary>
-    /// 设置命令执行超时间隔。默认值：60秒
+    /// 设置命令执行超时间隔。默认值：30秒
     /// </summary>
     /// <param name="timeout">命令执行超时间隔</param>
     public CommandLineExecutor Timeout(TimeSpan timeout)
@@ -288,33 +279,114 @@ public class CommandLineExecutor
     /// <param name="outputs">输出消息</param>
     public CommandLineExecutor OutputToMatch(params string[] outputs)
     {
+        if (outputs == null)
+            throw new ArgumentNullException(nameof(outputs));
+        if (outputs.Any(output => output == null))
+            throw new ArgumentException("输出匹配项不能为 null。", nameof(outputs));
         _outputToMatch.AddRange(outputs);
         return this;
     }
 
     /// <summary>
-    /// 执行命令行
+    /// 执行命令行。
     /// </summary>
-    /// <exception cref="ArgumentException"></exception>
-    /// <exception cref="TimeoutException"></exception>
+    /// <remarks>
+    /// 未设置输出条件时等待直接启动的进程退出；设置条件时匹配任意消息即返回，进程可能仍在运行。
+    /// 进程退出后最多再等待 500 毫秒接收输出尾部，随后停止输出事件，避免后代进程持有管道导致无限等待。
+    /// 返回的进程及其重定向读取资源由调用方释放。提前退出但未匹配时抛出异常；超时会终止本次启动的进程并释放资源。
+    /// 已退出进程留下的后台服务由调用方管理，不再枚举其后代；netstandard2.0 超时仅终止直接进程。
+    /// </remarks>
+    /// <exception cref="ArgumentException">命令或等待时间无效。</exception>
+    /// <exception cref="InvalidOperationException">进程退出时仍未匹配预期输出。</exception>
+    /// <exception cref="TimeoutException">等待超时。</exception>
     public Process Execute()
     {
         if (string.IsNullOrWhiteSpace(_command))
             throw new ArgumentException("命令未设置");
+        if (_timeout.TotalMilliseconds < -1 || _timeout.TotalMilliseconds > int.MaxValue)
+            throw new ArgumentOutOfRangeException(nameof(_timeout));
         _logger.LogDebug($"Running command: {GetDebugText()}");
-        var process = new Process
+        var process = new Process { StartInfo = CreateProcessStartInfo(), EnableRaisingEvents = true };
+        // 每次调用独立记录退出、输出结束和匹配状态，重复执行不会继承上次的信号。
+        var exited = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var matched = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var outputEnded = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var errorEnded = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var expected = _outputToMatch.ToArray();
+        void Receive(DataReceivedEventArgs e, TaskCompletionSource<bool> ended)
         {
-            StartInfo = CreateProcessStartInfo()
-        };
-        process.OutputDataReceived += OnOutput;
-        process.ErrorDataReceived += OnOutput;
-        process.Start();
-        process.BeginOutputReadLine();
-        process.BeginErrorReadLine();
-        var done = _outputReceived.WaitOne(_timeout);
-        if (!done)
-            throw new TimeoutException($"命令 \"{GetDebugText()}\" 超时");
-        return process;
+            if (e.Data == null)
+            {
+                ended.TrySetResult(true);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(e.Data))
+                return;
+            try { _logger.LogDebug(e.Data); }
+            catch (InvalidOperationException) { }
+            if (expected.Any(e.Data.Contains))
+                matched.TrySetResult(true);
+        }
+        process.Exited += (_, _) => exited.TrySetResult(true);
+        process.OutputDataReceived += (_, e) => Receive(e, outputEnded);
+        process.ErrorDataReceived += (_, e) => Receive(e, errorEnded);
+        if (!process.StartInfo.RedirectStandardOutput) outputEnded.SetResult(true);
+        if (!process.StartInfo.RedirectStandardError) errorEnded.SetResult(true);
+        var drainedOutput = Task.WhenAll(outputEnded.Task, errorEnded.Task);
+        Task completion = expected.Length == 0 ? exited.Task : Task.WhenAny(matched.Task, exited.Task);
+        var started = false;
+        try
+        {
+            started = process.Start();
+            if (process.StartInfo.RedirectStandardOutput) process.BeginOutputReadLine();
+            if (process.StartInfo.RedirectStandardError) process.BeginErrorReadLine();
+            if (!completion.Wait(_timeout))
+                throw new TimeoutException($"命令 \"{GetDebugText()}\" 超时");
+            if (exited.Task.IsCompleted)
+            {
+                // Exited 与管道 EOF 是两个不同的事件；后代可能继续持有继承的写入端。
+                Task tail = expected.Length == 0 ? drainedOutput : Task.WhenAny(matched.Task, drainedOutput);
+                tail.Wait(TimeSpan.FromMilliseconds(500));
+                StopRedirectedReaders(process);
+            }
+            if (expected.Length > 0 && !matched.Task.IsCompleted)
+                throw new InvalidOperationException($"命令退出（退出码 {process.ExitCode}），但未匹配预期输出。");
+            return process;
+        }
+        catch
+        {
+            try
+            {
+                if (started && !process.HasExited)
+                {
+#if NETSTANDARD2_0
+                    process.Kill();
+#else
+                    process.Kill(entireProcessTree: true);
+#endif
+                    process.WaitForExit(5000);
+                }
+            }
+            catch (InvalidOperationException) { } // 进程可能在检查后自行退出。
+            catch (System.ComponentModel.Win32Exception) { }
+            finally { process.Dispose(); }
+            throw;
+        }
+    }
+
+    /// <summary>停止输出事件；管道由 Process.Dispose 释放，成功返回时由调用方负责。</summary>
+    private static void StopRedirectedReaders(Process process)
+    {
+        if (process.StartInfo.RedirectStandardOutput)
+        {
+            try { process.CancelOutputRead(); }
+            catch (InvalidOperationException) { }
+        }
+        if (process.StartInfo.RedirectStandardError)
+        {
+            try { process.CancelErrorRead(); }
+            catch (InvalidOperationException) { }
+        }
     }
 
     /// <summary>
@@ -322,39 +394,19 @@ public class CommandLineExecutor
     /// </summary>
     private ProcessStartInfo CreateProcessStartInfo()
     {
-        var escapedArgs = _arguments.Replace("\"", "\\\"");
-        var result = new ProcessStartInfo(_command, escapedArgs)
+        var result = new ProcessStartInfo(_command, _arguments ?? string.Empty)
         {
             RedirectStandardOutput = _redirectStandardOutput,
             RedirectStandardError = _redirectStandardError,
-            StandardOutputEncoding = _outputEncoding,
-            StandardErrorEncoding = _outputEncoding,
+            StandardOutputEncoding = _redirectStandardOutput ? _outputEncoding : null,
+            StandardErrorEncoding = _redirectStandardError ? _outputEncoding : null,
             UseShellExecute = _useShellExecute,
             WorkingDirectory = _workingDirectory,
             CreateNoWindow = _createNoWindow,
         };
         foreach (var item in _environmentVariables)
-            result.EnvironmentVariables.Add(item.Key, item.Value);
+            result.EnvironmentVariables[item.Key] = item.Value;
         return result;
-    }
-
-    /// <summary>
-    /// 接收输出消息事件处理
-    /// </summary>
-    private void OnOutput(object sendingProcess, DataReceivedEventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(e.Data))
-            return;
-        try
-        {
-            _logger.LogDebug(e.Data);
-        }
-        catch (InvalidOperationException)
-        {
-        }
-        if (_outputToMatch.Any(e.Data.Contains))
-            _outputReceived.Set();
-
     }
 
     /// <summary>
@@ -366,21 +418,23 @@ public class CommandLineExecutor
     /// 执行 PowerShell 命令
     /// </summary>
     /// <param name="command">PowerShell 命令。范例：Set-ExecutionPolicy RemoteSigned</param>
-    /// <param name="workingDirectory">工作目录</param>
+    /// <param name="workingDirectory">可选工作目录。</param>
+    /// <remarks>
+    /// 直接启动 Windows PowerShell 或跨平台 PowerShell，并无限等待进程结束；输出仍会读取但不保留。
+    /// </remarks>
     public static void ExecutePowerShell(string command, string workingDirectory = null)
     {
-        using Process process = new Process();
-        process.StartInfo.FileName = "cmd.exe";
-        process.StartInfo.CreateNoWindow = false;
-        process.StartInfo.RedirectStandardError = true;
-        process.StartInfo.RedirectStandardInput = true;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.WorkingDirectory = workingDirectory;
-        process.Start();
-        process.StandardInput.WriteLine($"powershell {command}");
-        process.StandardInput.WriteLine("exit");
-        process.StandardInput.AutoFlush = true;
-        process.WaitForExit();
+        var fileName = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+            System.Runtime.InteropServices.OSPlatform.Windows) ? "powershell.exe" : "pwsh";
+        var options = new CommandOptions
+        {
+            FileName = fileName,
+            Arguments = new List<string> { "-NoProfile", "-NonInteractive", "-Command", command ?? string.Empty },
+            WorkingDirectory = workingDirectory,
+            Timeout = null,
+            MaxStandardOutputChars = 0,
+            MaxStandardErrorChars = 0,
+        };
+        CommandRunner.RunAsync(options).GetAwaiter().GetResult();
     }
 }
