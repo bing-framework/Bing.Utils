@@ -318,7 +318,7 @@ public static partial class Compression
     /// <summary>
     /// 对流进行 GZip 压缩
     /// </summary>
-    /// <param name="stream">输入流</param>
+    /// <param name="stream">输入流；可定位流从起点读取，不可定位流从当前位置读取。压缩操作不关闭输入流。</param>
     /// <param name="compressionLevel">压缩级别</param>
     /// <returns>压缩后的字节数组</returns>
     /// <exception cref="ArgumentNullException">当 stream 为 null 时抛出</exception>
@@ -327,12 +327,21 @@ public static partial class Compression
     {
         if (stream == null)
             throw new ArgumentNullException(nameof(stream), "待压缩的流不能为 null");
-        if (stream.Length == 0)
+        if (stream.CanSeek && stream.Length == 0)
             return [];
         try
         {
-            var bytes = StreamToBytes(stream);
-            return Compress(bytes, compressionLevel);
+            if (stream.CanSeek) stream.Seek(0, SeekOrigin.Begin);
+            var buffer = new byte[DefaultBufferSize];
+            var count = stream.Read(buffer, 0, buffer.Length);
+            if (count == 0) return [];
+            using var output = new MemoryStream();
+            using (var gzip = new GZipStream(output, compressionLevel, true))
+            {
+                gzip.Write(buffer, 0, count);
+                stream.CopyTo(gzip, DefaultBufferSize);
+            }
+            return output.ToArray();
         }
         catch (Exception ex)
         {
@@ -343,7 +352,7 @@ public static partial class Compression
     /// <summary>
     /// 异步对流进行 GZip 压缩
     /// </summary>
-    /// <param name="stream">输入流</param>
+    /// <param name="stream">输入流；可定位流从起点读取，不可定位流从当前位置读取。压缩操作不关闭输入流。</param>
     /// <param name="compressionLevel">压缩级别</param>
     /// <param name="cancellationToken">取消令牌</param>
     /// <returns>压缩后的字节数组</returns>
@@ -351,12 +360,21 @@ public static partial class Compression
     {
         if (stream == null)
             throw new ArgumentNullException(nameof(stream), "待压缩的流不能为 null");
-        if (stream.Length == 0)
+        if (stream.CanSeek && stream.Length == 0)
             return [];
         try
         {
-            var bytes = await StreamToBytesAsync(stream, cancellationToken);
-            return await CompressAsync(bytes, compressionLevel, cancellationToken);
+            if (stream.CanSeek) stream.Seek(0, SeekOrigin.Begin);
+            var buffer = new byte[DefaultBufferSize];
+            var count = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+            if (count == 0) return [];
+            using var output = new MemoryStream();
+            using (var gzip = new GZipStream(output, compressionLevel, true))
+            {
+                await gzip.WriteAsync(buffer, 0, count, cancellationToken).ConfigureAwait(false);
+                await stream.CopyToAsync(gzip, DefaultBufferSize, cancellationToken).ConfigureAwait(false);
+            }
+            return output.ToArray();
         }
         catch (OperationCanceledException)
         {
@@ -368,35 +386,6 @@ public static partial class Compression
         }
     }
 
-    /// <summary>
-    /// 流转换为字节数组
-    /// </summary>
-    /// <param name="stream">输入流</param>
-    /// <returns>字节数组</returns>
-    private static byte[] StreamToBytes(Stream stream)
-    {
-        if (stream.CanSeek)
-            stream.Seek(0, SeekOrigin.Begin);
-        using var memoryStream = new MemoryStream();
-        stream.CopyTo(memoryStream);
-        return memoryStream.ToArray();
-    }
-
-    /// <summary>
-    /// 异步将流转换为字节数组
-    /// </summary>
-    /// <param name="stream">输入流</param>
-    /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>字节数组</returns>
-    private static async Task<byte[]> StreamToBytesAsync(Stream stream, CancellationToken cancellationToken = default)
-    {
-        if (stream.CanSeek)
-            stream.Seek(0, SeekOrigin.Begin);
-        using var memoryStream = new MemoryStream();
-        await stream.CopyToAsync(memoryStream, DefaultBufferSize, cancellationToken);
-        return memoryStream.ToArray();
-    }
-
     #endregion
 
     #region Decompress(对Stream进行解压)
@@ -404,7 +393,7 @@ public static partial class Compression
     /// <summary>
     /// 对流进行 GZip 解压
     /// </summary>
-    /// <param name="stream">压缩流</param>
+    /// <param name="stream">从当前位置读取的压缩流；非空流会随解压操作关闭，支持不可定位流。</param>
     /// <returns>解压后的字节数组</returns>
     /// <exception cref="ArgumentNullException">当 stream 为 null 时抛出</exception>
     /// <exception cref="InvalidOperationException">当解压操作失败时抛出</exception>
@@ -412,7 +401,7 @@ public static partial class Compression
     {
         if (stream == null)
             throw new ArgumentNullException(nameof(stream), "待解压的流不能为 null");
-        if (stream.Length == 0)
+        if (stream.CanSeek && stream.Length == 0)
             return [];
         try
         {
@@ -432,14 +421,14 @@ public static partial class Compression
     /// <summary>
     /// 异步对流进行 GZip 解压
     /// </summary>
-    /// <param name="stream">压缩流</param>
+    /// <param name="stream">从当前位置读取的压缩流；非空流会随解压操作关闭，支持不可定位流。</param>
     /// <param name="cancellationToken">取消令牌</param>
     /// <returns>解压后的字节数组</returns>
     public static async Task<byte[]> DecompressAsync(Stream stream, CancellationToken cancellationToken = default)
     {
         if (stream == null)
             throw new ArgumentNullException(nameof(stream), "待解压的流不能为 null");
-        if (stream.Length == 0)
+        if (stream.CanSeek && stream.Length == 0)
             return [];
         try
         {
@@ -592,6 +581,7 @@ public static partial class Compression
             throw new FileNotFoundException($"ZIP 文件不存在: {zipFile}");
         try
         {
+            ValidateArchivePaths(zipFile, targetDir);
             // 确保目标目录存在
             if (!Directory.Exists(targetDir))
                 Directory.CreateDirectory(targetDir);
@@ -636,6 +626,7 @@ public static partial class Compression
             throw new FileNotFoundException($"ZIP 文件不存在: {zipFile}");
         try
         {
+            ValidateArchivePaths(zipFile, targetDir);
             // 确保目标目录存在
             if (!Directory.Exists(targetDir))
                 Directory.CreateDirectory(targetDir);
@@ -663,6 +654,54 @@ public static partial class Compression
         }
     }
 
+    /// <summary>先验证全部条目，避免后续恶意条目导致部分解压或覆盖。</summary>
+    internal static void ValidateArchivePaths(string zipFile, string targetDir)
+    {
+        using var archive = ZipFile.OpenRead(zipFile);
+        foreach (var entry in archive.Entries)
+            GetArchiveDestination(targetDir, entry.FullName);
+    }
+
+    /// <summary>解析归档条目的目标路径，拒绝绝对路径及越过目标目录的路径。</summary>
+    private static string GetArchiveDestination(string targetDir, string entryName)
+    {
+        // ZIP 可来自其他操作系统，因此同时识别两种分隔符和 Windows 盘符。
+        var relative = entryName.Replace('\\', '/');
+        if (Path.IsPathRooted(relative) || relative.StartsWith("/", StringComparison.Ordinal) || relative.IndexOf(':') >= 0)
+            throw new InvalidDataException("ZIP 条目不能使用绝对路径或盘符。");
+        var root = Path.GetFullPath(targetDir);
+        var prefix = root.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+        var destination = Path.GetFullPath(Path.Combine(root, relative.Replace('/', Path.DirectorySeparatorChar)));
+        var comparison = Path.DirectorySeparatorChar == '\\' ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        var isRootDirectory = relative.EndsWith("/", StringComparison.Ordinal)
+            && string.Equals(destination.TrimEnd(Path.DirectorySeparatorChar), root.TrimEnd(Path.DirectorySeparatorChar), comparison);
+        if (!destination.StartsWith(prefix, comparison) && !isRootDirectory)
+            throw new InvalidDataException("ZIP 条目越过了解压目标目录。");
+        // 已存在的链接目录或文件可能把词法上合法的路径重定向到解压目录之外。
+        // 调用方仍须保证解压期间目标目录不被其他进程并发替换。
+        var current = destination;
+        while (true)
+        {
+            RejectArchiveLink(current);
+            if (string.Equals(current.TrimEnd(Path.DirectorySeparatorChar), root.TrimEnd(Path.DirectorySeparatorChar), comparison))
+                break;
+            current = Path.GetDirectoryName(current.TrimEnd(Path.DirectorySeparatorChar));
+        }
+        return destination;
+    }
+
+    /// <summary>拒绝已有符号链接及 junction，防止路径被文件系统重定向。</summary>
+    private static void RejectArchiveLink(string path)
+    {
+        try
+        {
+            if ((File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0)
+                throw new InvalidDataException("ZIP 目标路径不能包含符号链接或重解析点。");
+        }
+        catch (FileNotFoundException) { }
+        catch (DirectoryNotFoundException) { }
+    }
+
 #if NETSTANDARD2_0
     /// <summary>
     /// 在 .NET Standard 2.0 中支持覆盖解压的辅助方法
@@ -674,9 +713,12 @@ public static partial class Compression
         using var archive = ZipFile.OpenRead(zipFile);
         foreach (var entry in archive.Entries)
         {
-            if (string.IsNullOrEmpty(entry.Name))
-                continue; // 跳过目录条目
-            var destinationPath = Path.Combine(targetDir, entry.FullName);
+            var destinationPath = GetArchiveDestination(targetDir, entry.FullName);
+            if (entry.FullName.EndsWith("/", StringComparison.Ordinal) || entry.FullName.EndsWith("\\", StringComparison.Ordinal))
+            {
+                Directory.CreateDirectory(destinationPath);
+                continue;
+            }
             var destinationDir = Path.GetDirectoryName(destinationPath);
             if (!string.IsNullOrEmpty(destinationDir) && !Directory.Exists(destinationDir)) 
                 Directory.CreateDirectory(destinationDir);
