@@ -9,4 +9,8 @@
     <PackageReference Include="FlubuCore" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- 消费者编译样例属于独立项目，不能并入构建脚本程序集。 -->
+    <Compile Remove="CapabilityConsumer/**/*.cs" />
+  </ItemGroup>
 </Project>

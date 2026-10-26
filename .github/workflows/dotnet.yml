@@ -62,6 +62,13 @@ jobs:
     - name: Build
       if: github.event_name != 'schedule'
       run: dotnet build ./Bing.Utils.sln -c Release --no-restore
+    - name: Verify review contracts against netstandard2.0 assembly
+      if: github.event_name != 'schedule'
+      shell: pwsh
+      run: ./build/Test-ReviewNetStandard.ps1 -NoBuild
+    - name: Compile capability API consumers across target frameworks
+      if: github.event_name != 'schedule'
+      run: dotnet build ./build/CapabilityConsumer/CapabilityConsumer.csproj -c Release
     - name: Verify Drawing netstandard2.0
       if: github.event_name != 'schedule'
       run: |
@@ -70,6 +77,10 @@ jobs:
     - name: Test all target frameworks (Windows)
       if: github.event_name != 'schedule' && matrix.os == 'windows-latest'
       run: dotnet test ./Bing.Utils.sln -c Release --no-build
+    - name: Verify stream platform netstandard assembly identity
+      if: github.event_name != 'schedule' && matrix.os == 'windows-latest'
+      shell: pwsh
+      run: ./build/Test-StreamPlatformNetStandard.ps1 -VerifyIdentityOnly
     - name: Test net8.0 across platforms
       if: github.event_name != 'schedule' && matrix.os != 'windows-latest'
       run: dotnet test ./Bing.Utils.sln -c Release --no-build --framework net8.0
