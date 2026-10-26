@@ -109,10 +109,15 @@ public static partial class Colls
             throw new ArgumentNullException(nameof(selector));
         if (factory is null)
             throw new ArgumentNullException(nameof(factory));
-        var item = source.FirstOrDefault(selector);
-        if (item is null)
-            source.Add(item = factory());
-        return item;
+        foreach (var item in source)
+        {
+            if (selector(item))
+                return item;
+        }
+
+        var newItem = factory();
+        source.Add(newItem);
+        return newItem;
     }
 
     /// <summary>
@@ -210,7 +215,7 @@ public static partial class Colls
             return source;
         if (index >= source.Count)
             return source;
-        count = Math.Min(count, source.Count) - index;
+        count = Math.Min(count, source.Count - index);
         source.RemoveRange(index, count);
         return source;
     }

@@ -83,6 +83,66 @@ public class CollsOpsTest
         result.ShouldBe("a");
         callCount.ShouldBe(0);
     }
+
+    /// <summary>
+    /// 验证值类型未命中时调用工厂并添加结果。
+    /// </summary>
+    [Fact]
+    public void GetOrAdd_WhenValueTypeIsMissing_CallsFactoryAndAddsResult()
+    {
+        var source = new List<int> { 1 };
+        var callCount = 0;
+
+        var result = Colls.GetOrAdd(source, value => value == 2, () =>
+        {
+            callCount++;
+            return 2;
+        });
+
+        result.ShouldBe(2);
+        callCount.ShouldBe(1);
+        source.ShouldBe([1, 2]);
+    }
+
+    /// <summary>
+    /// 验证命中默认值时不会误判为未命中。
+    /// </summary>
+    [Fact]
+    public void GetOrAdd_WhenDefaultValueMatches_DoesNotCallFactory()
+    {
+        var source = new List<int> { 0 };
+        var callCount = 0;
+
+        var result = Colls.GetOrAdd(source, value => value == 0, () =>
+        {
+            callCount++;
+            return 42;
+        });
+
+        result.ShouldBe(0);
+        callCount.ShouldBe(0);
+        source.ShouldBe([0]);
+    }
+
+    /// <summary>
+    /// 验证命中 null 时不会再次添加工厂结果。
+    /// </summary>
+    [Fact]
+    public void GetOrAdd_WhenNullValueMatches_DoesNotCallFactory()
+    {
+        ICollection<string> source = new List<string> { null! };
+        var callCount = 0;
+
+        var result = Colls.GetOrAdd(source, value => value is null, () =>
+        {
+            callCount++;
+            return "new";
+        });
+
+        result.ShouldBeNull();
+        callCount.ShouldBe(0);
+        source.Count.ShouldBe(1);
+    }
     /// <summary>
     /// 验证忽略大小写去重时保留最后出现的元素并更新源列表。
     /// </summary>
@@ -115,6 +175,21 @@ public class CollsOpsTest
         source.ShouldBe([1, 2, 3]);
         Colls.RemoveRangeSafety(source, 10, 2).ShouldBe(source);
         source.ShouldBe([1, 2, 3]);
+    }
+
+    /// <summary>
+    /// 验证安全范围移除准确删除 count 个元素，并将过大的 count 截断到末尾。
+    /// </summary>
+    [Fact]
+    public void RemoveRangeSafety_RemovesRequestedCountAndClampsToEnd()
+    {
+        var source = new List<int> { 1, 2, 3, 4, 5 };
+
+        Colls.RemoveRangeSafety(source, 1, 2).ShouldBe(source);
+        source.ShouldBe([1, 4, 5]);
+
+        Colls.RemoveRangeSafety(source, 1, 10).ShouldBe(source);
+        source.ShouldBe([1]);
     }
     /// <summary>
     /// 验证合并空的右侧序列时保留源元素。
