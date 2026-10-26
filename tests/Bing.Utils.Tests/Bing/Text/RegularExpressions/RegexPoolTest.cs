@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Globalization;
 namespace Bing.Text.RegularExpressions;
 /// <summary>
 /// 正则表达式池 单元测试
@@ -1745,6 +1746,76 @@ public class RegexPoolTest : IDisposable
         result.ShouldContain("MissCount=");
         result.ShouldContain("%"); // 百分比格式
         result.ShouldContain("/"); // 分数格式
+    }
+
+    /// <summary>
+    /// 验证文化敏感正则使用独立缓存项，且 Contains 与 Remove 遵循当前文化。
+    /// </summary>
+    [Fact]
+    public void GetOrCreate_CultureSensitivePattern_UsesCultureSpecificCacheKeys()
+    {
+        var originalCulture = CultureInfo.CurrentCulture;
+        const string pattern = "^i$";
+        const RegexOptions options = RegexOptions.IgnoreCase;
+
+        try
+        {
+            RegexPool.Clear();
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            var englishRegex = RegexPool.GetOrCreate(pattern, options);
+            englishRegex.IsMatch("I").ShouldBeTrue();
+            RegexPool.Contains(pattern, options).ShouldBeTrue();
+
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("tr-TR");
+            var turkishRegex = RegexPool.GetOrCreate(pattern, options);
+            turkishRegex.ShouldNotBeSameAs(englishRegex);
+            turkishRegex.IsMatch("I").ShouldBeFalse();
+            RegexPool.Contains(pattern, options).ShouldBeTrue();
+            RegexPool.Remove(pattern, options).ShouldBeTrue();
+            RegexPool.Contains(pattern, options).ShouldBeFalse();
+
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            RegexPool.Contains(pattern, options).ShouldBeTrue();
+            RegexPool.Remove(pattern, options).ShouldBeTrue();
+            RegexPool.Contains(pattern, options).ShouldBeFalse();
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+            RegexPool.Clear();
+        }
+    }
+
+    /// <summary>
+    /// 验证 CultureInvariant 正则在不同当前文化下共享同一缓存项。
+    /// </summary>
+    [Fact]
+    public void GetOrCreate_CultureInvariantPattern_UsesUnifiedCacheKey()
+    {
+        var originalCulture = CultureInfo.CurrentCulture;
+        const string pattern = "^i$";
+        const RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
+
+        try
+        {
+            RegexPool.Clear();
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            var englishRegex = RegexPool.GetOrCreate(pattern, options);
+
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("tr-TR");
+            var invariantRegex = RegexPool.GetOrCreate(pattern, options);
+
+            invariantRegex.ShouldBeSameAs(englishRegex);
+            RegexPool.Count.ShouldBe(1);
+            RegexPool.Contains(pattern, options).ShouldBeTrue();
+            RegexPool.Remove(pattern, options).ShouldBeTrue();
+            RegexPool.Contains(pattern, options).ShouldBeFalse();
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+            RegexPool.Clear();
+        }
     }
     #endregion
 }

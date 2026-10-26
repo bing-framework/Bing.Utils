@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Bing.Text.RegularExpressions;
@@ -6,34 +7,25 @@ namespace Bing.Text.RegularExpressions;
 /// <summary>
 /// 正则表达式池 - 管理和缓存已编译的正则表达式对象
 /// </summary>
-public static class RegexPool
+public static partial class RegexPool
 {
     #region 私有字段
 
     /// <summary>
     /// 正则表达式缓存
     /// </summary>
-    private static readonly ConcurrentDictionary<string, CacheItem> Cache = new();
+    private static readonly ConcurrentDictionary<CacheKey, CacheItem> Cache = new();
 
     /// <summary>
     /// 缓存最大容量，超过此值将触发清理机制
     /// </summary>
     private const int MaxCacheSize = 1000;
 
-    /// <summary>
-    /// 缓存命中统计计数器
-    /// </summary>
-    private static long _hitCount;
+    /// <summary>协调冷插入、淘汰和清空；热命中不获取此锁。</summary>
+    private static readonly object CacheGate = new();
 
-    /// <summary>
-    /// 缓存未命中统计计数器
-    /// </summary>
-    private static long _missCount;
-
-    /// <summary>
-    /// 用于LRU清理的访问时间戳
-    /// </summary>
-    private static long _currentTimestamp;
+    /// <summary>每次 Clear 创建独立统计代际，旧请求收尾不污染新统计。</summary>
+    private static CacheStatistics _statistics = new();
 
     #endregion
 
@@ -48,64 +40,81 @@ public static class RegexPool
     /// <exception cref="ArgumentNullException">当模式字符串为null时抛出</exception>
     /// <exception cref="ArgumentException">当正则表达式模式无效时抛出</exception>
     public static Regex GetOrCreate(string pattern, RegexOptions options = RegexOptions.IgnoreCase)
+        => GetOrCreateCore(pattern, options, null);
+
+    /// <summary>复用统一缓存实现；null 保留运行时为旧入口配置的默认超时。</summary>
+    private static Regex GetOrCreateCore(string pattern, RegexOptions options, TimeSpan? matchTimeout, Func<Regex> factory = null)
     {
-        if (pattern == null)
-            throw new ArgumentNullException(nameof(pattern), "正则表达式模式不能为空");
-
-        var cacheKey = GenerateCacheKey(pattern, options);
-        var currentTime = Interlocked.Increment(ref _currentTimestamp);
-
-        // 首先尝试获取已存在的缓存项
-        if (Cache.TryGetValue(cacheKey, out var cachedItem))
+        if (pattern == null) throw new ArgumentNullException(nameof(pattern), "正则表达式模式不能为空");
+        var key = GenerateCacheKey(pattern, options, matchTimeout);
+        var created = false;
+        if (!Cache.TryGetValue(key, out var item))
         {
-            Interlocked.Increment(ref _hitCount);
-            Cache.TryUpdate(cacheKey, cachedItem with { LastAccessTime = currentTime }, cachedItem);
-            return cachedItem.Regex;
-        }
-
-        // 如果不存在，尝试创建并添加
-        // 使用一个标志来确保统计的准确性
-        var wasAdded = false;
-        var newItem = Cache.GetOrAdd(cacheKey, _ =>
-        {
-            wasAdded = true;
-
-            // 如果缓存达到最大容量，使用LRU策略清理
-            if (Cache.Count >= MaxCacheSize)
-                CleanupLRU();
-
-            try
+            lock (CacheGate)
             {
-                var regex = new Regex(pattern, options | RegexOptions.Compiled);
-                return new CacheItem(regex, currentTime);
+                if (!Cache.TryGetValue(key, out item))
+                {
+                    if (Cache.Count >= MaxCacheSize) CleanupLRU();
+                    item = CreateCacheItem(pattern, options, matchTimeout, factory, _statistics);
+                    Cache[key] = item;
+                    created = true;
+                }
             }
-            catch (ArgumentException ex)
-            {
-                throw new ArgumentException($"无效的正则表达式模式: {pattern}", nameof(pattern), ex);
-            }
-        });
-
-        // 只有真正添加了新项时才增加miss计数
-        if (wasAdded)
-        {
-            Interlocked.Increment(ref _missCount);
         }
-        else
+        try
         {
-            // 如果没有添加（说明其他线程已经添加了），这是一次hit
-            Interlocked.Increment(ref _hitCount);
+            var regex = item.Value.Value;
+            Interlocked.Exchange(ref item.LastAccessTime, Interlocked.Increment(ref item.Statistics.Timestamp));
+            if (created) Interlocked.Increment(ref item.Statistics.Misses);
+            else Interlocked.Increment(ref item.Statistics.Hits);
+            return regex;
         }
-
-        return newItem.Regex;
+        catch
+        {
+            // 构造期间可能发生 Remove/Clear 及同键重建，只删除本次失败的项。
+            ((ICollection<KeyValuePair<CacheKey, CacheItem>>)Cache).Remove(new KeyValuePair<CacheKey, CacheItem>(key, item));
+            throw;
+        }
     }
+
+    /// <summary>仅冷路径创建闭包，避免热命中为工厂捕获参数分配对象。</summary>
+    private static CacheItem CreateCacheItem(string pattern, RegexOptions options, TimeSpan? timeout,
+        Func<Regex> factory, CacheStatistics statistics)
+        => new(factory ?? (() => CreateRegex(pattern, options, timeout)), statistics);
+
+    /// <summary>在缓存项的共享初始化中构造正则，保留既有异常包装。</summary>
+    private static Regex CreateRegex(string pattern, RegexOptions options, TimeSpan? matchTimeout)
+    {
+        try
+        {
+            return matchTimeout.HasValue
+                ? new Regex(pattern, options | RegexOptions.Compiled, matchTimeout.Value)
+                : new Regex(pattern, options | RegexOptions.Compiled);
+        }
+        catch (ArgumentException ex)
+        {
+            throw new ArgumentException($"无效的正则表达式模式: {pattern}", nameof(pattern), ex);
+        }
+    }
+
+    /// <summary>实例级工厂接缝，用于验证单次初始化、失败重试和移除竞态，不替换全局构造器。</summary>
+    internal static Regex GetOrCreateForTesting(string pattern, Func<Regex> factory)
+        => GetOrCreateCore(pattern, RegexOptions.None, null, factory);
 
     /// <summary>
     /// 生成缓存键，统一缓存键的生成逻辑
     /// </summary>
     /// <param name="pattern">正则表达式模式</param>
     /// <param name="options">正则表达式选项</param>
+    /// <param name="matchTimeout">显式超时；null 表示旧入口的运行时默认值。</param>
     /// <returns>生成的缓存键</returns>
-    private static string GenerateCacheKey(string pattern, RegexOptions options) => $"{pattern}:{(int)options}";
+    private static CacheKey GenerateCacheKey(string pattern, RegexOptions options, TimeSpan? matchTimeout = null)
+    {
+        var cultureName = (options & RegexOptions.CultureInvariant) != 0
+            ? CultureInfo.InvariantCulture.Name
+            : CultureInfo.CurrentCulture.Name;
+        return new CacheKey(pattern, options, cultureName, matchTimeout);
+    }
 
     /// <summary>
     /// 使用LRU策略清理缓存，移除最久未使用的项目
@@ -119,7 +128,7 @@ public static class RegexPool
             if (itemsToRemove <= 0) return;
 
             var oldestItems = Cache
-                .OrderBy(kvp => kvp.Value.LastAccessTime)
+                .OrderBy(kvp => Interlocked.Read(ref kvp.Value.LastAccessTime))
                 .Take(itemsToRemove)
                 .Select(kvp => kvp.Key)
                 .ToList();
@@ -418,10 +427,11 @@ public static class RegexPool
     /// </summary>
     public static void Clear()
     {
-        Cache.Clear();
-        Interlocked.Exchange(ref _hitCount, 0);
-        Interlocked.Exchange(ref _missCount, 0);
-        Interlocked.Exchange(ref _currentTimestamp, 0);
+        lock (CacheGate)
+        {
+            Cache.Clear();
+            _statistics = new CacheStatistics();
+        }
     }
 
     /// <summary>
@@ -466,14 +476,14 @@ public static class RegexPool
     public static int Count => Cache.Count;
 
     /// <summary>
-    /// 获取缓存命中总次数
+    /// 获取成功共享缓存项的总次数，包含等待同一项初始化的请求
     /// </summary>
-    public static long HitCount => _hitCount;
+    public static long HitCount => Interlocked.Read(ref _statistics.Hits);
 
     /// <summary>
-    /// 获取缓存未命中总次数
+    /// 获取成功创建缓存项的请求总次数，构造失败不计入
     /// </summary>
-    public static long MissCount => _missCount;
+    public static long MissCount => Interlocked.Read(ref _statistics.Misses);
 
     /// <summary>
     /// 获取缓存命中率，范围为0.0到1.0
@@ -482,8 +492,9 @@ public static class RegexPool
     {
         get
         {
-            var total = _hitCount + _missCount;
-            return total == 0 ? 0 : (double)_hitCount / total;
+            var hits = HitCount;
+            var total = hits + MissCount;
+            return total == 0 ? 0 : (double)hits / total;
         }
     }
 
@@ -596,30 +607,33 @@ public static class RegexPool
     #region 内部类型
 
     /// <summary>
+    /// 缓存键包含文化及超时；旧入口与显式超时入口分别缓存。
+    /// </summary>
+    private readonly record struct CacheKey(string Pattern, RegexOptions Options, string CultureName, TimeSpan? MatchTimeout);
+
+    /// <summary>
     /// 缓存项，包含正则表达式和访问时间戳
     /// </summary>
-    private readonly record struct CacheItem
+    private sealed class CacheItem
     {
-        /// <summary>
-        /// 获取或初始化缓存的正则表达式对象
-        /// </summary>
-        public Regex Regex { get; init; }
+        internal readonly Lazy<Regex> Value;
+        internal readonly CacheStatistics Statistics;
+        internal long LastAccessTime;
 
-        /// <summary>
-        /// 获取或初始化最后访问时间戳，用于LRU清理
-        /// </summary>
-        public long LastAccessTime { get; init; }
-
-        /// <summary>
-        /// 初始化一个 <see cref="CacheItem"/> 类型的实例。
-        /// </summary>
-        /// <param name="regex">正则表达式对象</param>
-        /// <param name="lastAccessTime">最后访问时间戳</param>
-        public CacheItem(Regex regex, long lastAccessTime)
+        internal CacheItem(Func<Regex> factory, CacheStatistics statistics)
         {
-            Regex = regex;
-            LastAccessTime = lastAccessTime;
+            Value = new Lazy<Regex>(factory, LazyThreadSafetyMode.ExecutionAndPublication);
+            Statistics = statistics;
+            LastAccessTime = Interlocked.Increment(ref statistics.Timestamp);
         }
+    }
+
+    /// <summary>缓存代际统计，允许已清空代际的请求独立收尾。</summary>
+    private sealed class CacheStatistics
+    {
+        internal long Hits;
+        internal long Misses;
+        internal long Timestamp;
     }
 
     #endregion
