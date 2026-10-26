@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <Import Project="../../common.tests.props" />
+  <ItemGroup>
+    <ProjectReference Include="../../src/Bing.Utils.JsonSchema/Bing.Utils.JsonSchema.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Fixtures/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

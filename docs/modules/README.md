@@ -18,6 +18,7 @@
 | [Bing.Utils.Guard](Bing.Utils.Guard.md) | 字符判断与验证异常辅助 | 已实现（范围有限） |
 | [Bing.Utils.Http](Bing.Utils.Http.md) | ASP.NET Core 请求、响应和上下文辅助 | 已实现 |
 | [Bing.Utils.IdUtils](Bing.Utils.IdUtils.md) | Snowflake、ObjectId 等 ID 生成 | 已实现 |
+| [Bing.Utils.JsonSchema](Bing.Utils.JsonSchema.md) | JSON Schema 校验、结构化诊断与预注册引用（.NET 8） | 已实现 |
 | [Bing.Utils.Net](Bing.Utils.Net.md) | FTP/FTPS 客户端封装 | 已实现（单一协议） |
 | [Bing.Utils.Reflection](Bing.Utils.Reflection.md) | 类型访问、动态创建与反射缓存 | 已实现 |
 | [Bing.Utils.Security](Bing.Utils.Security.md) | 现代密码学、密钥、证书和请求签名 | 已实现 |

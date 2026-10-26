@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Bing.Utils.JsonSchema</AssemblyName>
+    <PackageId>Bing.Utils.JsonSchema</PackageId>
+    <Description>基于 JsonSchema.Net 的 JSON Schema 校验、引用解析与结构化诊断。</Description>
+  </PropertyGroup>
+  <Import Project="../../common.props" />
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="JsonSchema.Net" Version="[9.4.1]" />
+    <PackageReference Update="DotNetCore.SourceLink.Environment" PrivateAssets="all" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>
