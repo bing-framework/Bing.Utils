@@ -28,27 +28,55 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
+        dotnet-version: 8.0.425
+    # 旧版运行时依赖已退出支持的 Linux/macOS 环境；Windows 保留全 TFM 执行。
+    - name: Setup legacy .NET runtimes for full TFM tests
+      if: github.event_name != 'schedule' && matrix.os == 'windows-latest'
+      uses: actions/setup-dotnet@v4
+      with:
         dotnet-version: |
-          8.0.425
-          ${{ github.event_name == 'schedule' && '6.0.x' || '' }}
+          3.1.426
+          5.0.408
+          6.0.428
+          7.0.410
+    - name: Setup .NET 6 runtime for nightly tests
+      if: github.event_name == 'schedule'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 6.0.428
+    - name: Check installed test runtimes
+      if: github.event_name == 'schedule'
+      shell: pwsh
+      run: ./build/Test-CiDotnetRuntimes.ps1 -TargetFrameworks @('net6.0', 'net8.0')
+    - name: Check installed legacy test runtimes
+      if: github.event_name != 'schedule' && matrix.os == 'windows-latest'
+      shell: pwsh
+      run: ./build/Test-CiDotnetRuntimes.ps1 -TargetFrameworks @('netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0')
+    - name: Check installed cross-platform test runtime
+      if: github.event_name != 'schedule' && matrix.os != 'windows-latest'
+      shell: pwsh
+      run: ./build/Test-CiDotnetRuntimes.ps1 -TargetFrameworks @('net8.0')
     - name: Restore
       if: github.event_name != 'schedule'
       run: dotnet restore ./Bing.Utils.sln
     - name: Build
       if: github.event_name != 'schedule'
       run: dotnet build ./Bing.Utils.sln -c Release --no-restore
-    - name: Audit NuGet dependencies
-      if: github.event_name != 'schedule'
-      shell: pwsh
-      run: ./build/Test-NuGetAudit.ps1
     - name: Verify Drawing netstandard2.0
       if: github.event_name != 'schedule'
       run: |
         dotnet build ./src/Bing.Utils.Drawing.ImageSharp/Bing.Utils.Drawing.ImageSharp.csproj -f netstandard2.0 --no-restore
         dotnet build ./src/Bing.Utils.Drawing.SkiaSharp/Bing.Utils.Drawing.SkiaSharp.csproj -f netstandard2.0 --no-restore
-    - name: Test
-      if: github.event_name != 'schedule'
+    - name: Test all target frameworks (Windows)
+      if: github.event_name != 'schedule' && matrix.os == 'windows-latest'
       run: dotnet test ./Bing.Utils.sln -c Release --no-build
+    - name: Test net8.0 across platforms
+      if: github.event_name != 'schedule' && matrix.os != 'windows-latest'
+      run: dotnet test ./Bing.Utils.sln -c Release --no-build --framework net8.0
+    - name: Audit NuGet dependencies
+      if: github.event_name != 'schedule'
+      shell: pwsh
+      run: ./build/Test-NuGetAudit.ps1
     - name: Nightly HTTP integration tests (net6/net8)
       if: github.event_name == 'schedule'
       shell: pwsh
@@ -58,6 +86,22 @@ jobs:
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         & dotnet test $project -c Release -f net8.0 -p:TargetFrameworks=net8.0
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  nightly-audit:
+    if: github.event_name == 'schedule'
+    name: Nightly NuGet dependency audit
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.425
+    - name: Restore for dependency audit
+      run: dotnet restore ./Bing.Utils.sln
+    - name: Audit NuGet dependencies
+      shell: pwsh
+      run: ./build/Test-NuGetAudit.ps1
 
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -71,7 +115,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 8.0.425
     - name: Install FlubuCore
       run: dotnet tool install --global FlubuCore.Tool --version 8.0.0
     - name: Publish packages
