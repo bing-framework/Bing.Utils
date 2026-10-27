@@ -1,0 +1,72 @@
+{
+  "strategy": "Fresh complete core and HTTP project runs; reuse unchanged scopes from the solution run, including entirely skipped runs. The original solution command exited 1 and remains a failed historical run.",
+  "original_solution": {
+    "log": "completion-solution-test.log",
+    "runs": 100,
+    "passed": 66771,
+    "failed": 11,
+    "skipped": 90,
+    "total": 66872
+  },
+  "fresh_core": {
+    "log": "completion-core-full.log",
+    "runs": 5,
+    "passed": 37785,
+    "failed": 0,
+    "skipped": 36,
+    "total": 37821
+  },
+  "fresh_http": {
+    "log": "completion-http-full.log",
+    "runs": 5,
+    "passed": 9644,
+    "failed": 0,
+    "skipped": 0,
+    "total": 9644
+  },
+  "reused_other_projects": {
+    "log": "completion-solution-test.log",
+    "excluded_assemblies": [
+      "Bing.Utils.Tests.dll",
+      "Bing.Utils.Http.Tests.dll"
+    ],
+    "runs": 90,
+    "passed": 19353,
+    "failed": 0,
+    "skipped": 54,
+    "total": 19407
+  },
+  "entirely_skipped_runs": [
+    {
+      "failed": 0,
+      "passed": 0,
+      "skipped": 18,
+      "total": 18,
+      "assembly": "Bing.Utils.Net.Tests.Integration.dll",
+      "framework": "net8.0"
+    },
+    {
+      "failed": 0,
+      "passed": 0,
+      "skipped": 18,
+      "total": 18,
+      "assembly": "Bing.Utils.Net.Tests.Integration.dll",
+      "framework": "net7.0"
+    },
+    {
+      "failed": 0,
+      "passed": 0,
+      "skipped": 18,
+      "total": 18,
+      "assembly": "Bing.Utils.Net.Tests.Integration.dll",
+      "framework": "net6.0"
+    }
+  ],
+  "current_coverage": {
+    "runs": 100,
+    "passed": 66782,
+    "failed": 0,
+    "skipped": 90,
+    "total": 66872
+  }
+}

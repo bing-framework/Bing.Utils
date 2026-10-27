@@ -9,6 +9,7 @@ Bing.Utils 是一个基于`.net core`平台下的工具库，旨在提升小型�
 - [分类模块目录](01-module-catalog.md)
 - [模块文档索引](modules/README.md)
 - [能力地图](00-capability-map.md)
+- [通用工具主线指南](reference/general-utilities-guide.md)
 - [安全与密码学](security.md)
 - [API 参考说明](reference/api-reference.md)
 

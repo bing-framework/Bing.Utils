@@ -9,6 +9,8 @@
 ## 2. 子包职责矩阵（包名 / 职责 / 典型类型 / 依赖）
 | 包名 | 职责（解决什么） | 边界（不解决什么） | 典型类型 | 依赖 |
 |---|---|---|---|---|
+| `Bing.Utils.Cron` | 五段/六段 Cron 解析、显式时区及有限区间计算 | 不执行任务，不支持 Quartz 七段 | `CronSchedule`（[模块文档](modules/Bing.Utils.Cron.md)） | 独立包，固定 Cronos `[0.13.0]` |
+| `Bing.Utils.Diff` | 可取消、有预算的大文本行级 Diff | 不提供字符级 Diff 或三方合并 | `TextDiff`、`TextDiffResult`（[模块文档](modules/Bing.Utils.Diff.md)） | 无运行时第三方依赖，内部适配 DiffPlex 1.7.0 必需源码 |
 | `Bing.Utils` | 核心通用工具、扩展与基础能力承载 | 不聚焦某一垂直领域（如仅图像或仅HTTP） | `FileHelper`（`src/Bing.Utils/Bing/IO/FileHelper.cs:11`），`BooleanExtensions`（`src/Bing.Utils/Bing/Extensions.Boolean.cs:8`），`JsonOptions`（`src/Bing.Utils/Bing/JsonOptions.cs:6`） | 外部包 `Newtonsoft.Json`、`AspectCore.Extensions.Reflection` 等（`src/Bing.Utils/Bing.Utils.csproj:16` 到 `src/Bing.Utils/Bing.Utils.csproj:20`） |
 | `Bing.Utils.Collections` | 集合/字典操作工具与只读集合转换 | 不实现持久化、缓存中间件 | `Dicts`（`src/Bing.Utils.Collections/Bing/Collections/Dicts.cs:6`） | 依赖 `Bing.Utils`（`src/Bing.Utils.Collections/references.props:4`） |
 | `Bing.Utils.DateTime` | 时间跨度、日期扩展、NodaTime 扩展 | 不提供调度系统/定时任务框架 | `DateTimeSpanExtensions`（`src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:8`），`TimeOptions`（`src/Bing.Utils/Bing/Date/TimeOptions.cs:6`） | 依赖 `Bing.Utils`（`src/Bing.Utils.DateTime/Bing.Utils.DateTime.csproj:11`），外部 `NodaTime`（`src/Bing.Utils.DateTime/Bing.Utils.DateTime.csproj:15`） |
@@ -31,6 +33,7 @@
 | `Bing.Utils.Security.Gm` | SM2、SM3、HMAC-SM3、SM4-GCM 国密能力 | 不提供 ZUC 或 SM4 分块流式容器 | `Sm2Encryption`、`Sm2Signature`、`Sm3`、`Sm4GcmEncryption` | 依赖 `Bing.Utils.Security` 和 `BouncyCastle.Cryptography 2.6.2` |
 
 ## 3. 公共设计约定
+- 通用并发能力：核心包的 `KeyedAsyncLock<TKey>` 支持按键互斥和自动条目回收，`SingleFlight<TKey,TValue>` 合并进行中的同键请求且隔离等待取消；均不新增核心依赖。见 [通用工具指南](reference/general-utilities-guide.md)。
 - 约定1：大量使用“扩展方法 + 静态工具类”。证据：`BooleanExtensions`（`src/Bing.Utils/Bing/Extensions.Boolean.cs:8`）、`DateTimeSpanExtensions`（`src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:8`）、`HttpResponseMessageExtensions`（`src/Bing.Utils.Http/Bing/Http/Extensions/HttpResponseMessageExtensions.cs:9`）、`SKEncodedImageFormatExtensions`（`src/Bing.Utils.Drawing.SkiaSharp/Bing/Drawing/Extensions/SKEncodedImageFormatExtensions.cs:10`）。
 - 约定2：`Options` 风格存在两类。证据：可实例化配置（`JsonOptions`，`src/Bing.Utils/Bing/JsonOptions.cs:6`）；静态运行时选项（`TimeOptions`，`src/Bing.Utils/Bing/Date/TimeOptions.cs:6`）；组件内私有 options（`SplitterOptions`，`src/Bing.Utils.Text/Bing/Text/Splitters/Splitter.cs:43`）。
 - 约定3：异常策略以“参数前置校验 + 语义化异常 + 封装再抛”为主。证据：`Web` 中大量 `ArgumentException/InvalidOperationException`（`src/Bing.Utils.Http/Bing/Helpers/Web.cs:413`, `src/Bing.Utils.Http/Bing/Helpers/Web.cs:563`）；`FtpClient` 捕获 `FluentFTP.FtpException` 后包装为 `FtpClientException`（`src/Bing.Utils.Net/Bing/Net/FTP/FtpClient.cs:101` 到 `src/Bing.Utils.Net/Bing/Net/FTP/FtpClient.cs:104`）；`ExceptionHelper.PrepareForRethrow` 保持堆栈（`src/Bing.Utils/Bing/Exceptions/ExceptionHelper.cs:14` 到 `src/Bing.Utils/Bing/Exceptions/ExceptionHelper.cs:19`）。

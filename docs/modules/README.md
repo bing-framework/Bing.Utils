@@ -8,6 +8,8 @@
 | [Bing.Utils.Collections](Bing.Utils.Collections.md) | 数组、集合、字典与枚举辅助 | 已实现 |
 | [Bing.Utils.Comments](Bing.Utils.Comments.md) | C# XML 注释读取、缓存与继承解析 | 已实现 |
 | [Bing.Utils.DateTime](Bing.Utils.DateTime.md) | 日期时间、时间跨度与 NodaTime 适配 | 已实现 |
+| [Bing.Utils.Cron](Bing.Utils.Cron.md) | Cron 解析、显式时区与有限区间枚举 | 已实现 |
+| [Bing.Utils.Diff](Bing.Utils.Diff.md) | 真实计算取消、有预算的大文本行比较 | 已实现 |
 | [Bing.Utils.DependencyInjection](Bing.Utils.DependencyInjection.md) | 原生 DI 批量注册、受控扫描与泛型提前闭合 | 已实现 |
 | [Bing.Utils.Drawing](Bing.Utils.Drawing.md) | `System.Drawing` 图像后端 | 已实现 |
 | [Bing.Utils.Drawing.ImageSharp](Bing.Utils.Drawing.ImageSharp.md) | ImageSharp 图像后端 | 已实现 |

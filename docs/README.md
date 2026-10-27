@@ -4,6 +4,7 @@
 
 - [项目概览](00-overview.md)
 - [能力地图](00-capability-map.md)
+- [通用工具主线指南](reference/general-utilities-guide.md)：KeyedLock、SingleFlight、Cron 与可取消文本 Diff。
 - [文档与实现盘点](00-documentation-audit.md)
 - [分类模块目录](01-module-catalog.md)
 - [模块文档索引](modules/README.md)

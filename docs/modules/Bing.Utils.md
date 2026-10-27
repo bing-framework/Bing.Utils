@@ -1,11 +1,14 @@
 ﻿# Bing.Utils
 ## 1. 包职责（Scope）
+- 通用并发：`Bing.Threading.KeyedAsyncLock<TKey>` 提供按键互斥、超时空租约和自动条目回收；`SingleFlight<TKey,TValue>` 合并同键正在进行的任务，隔离等待取消且完成不缓存。源码位于 `Bing/Threading/KeyedAsyncLock.cs` 和 `SingleFlight.cs`，测试归属 `Bing.Utils.Tests/Bing/Threading`，保持核心依赖和目标框架不变。见 [通用工具指南](../reference/general-utilities-guide.md)。
 - 解决的问题
 - 提供基础设施通用能力：IO、异常、基础类型扩展、Json 配置等，是多个子包共同依赖的核心包。[证据] `src/Bing.Utils/Bing.Utils.csproj:3` [证据] `src/Bing.Utils/Bing.Utils.csproj:16` [证据] `src/Bing.Utils/Bing.Utils.csproj:18`
 - `FileHelper` 提供文件读取/转换等基础 IO 能力。[证据] `src/Bing.Utils/Bing/IO/FileHelper.cs:11` [证据] `src/Bing.Utils/Bing/IO/FileHelper.Read.cs:95`
 - `BooleanExtensions` 提供布尔条件守卫与链式逻辑组合。[证据] `src/Bing.Utils/Bing/Extensions/Bases/BooleanExtensions.cs:7` [证据] `src/Bing.Utils/Bing/Extensions/Bases/BooleanExtensions.cs:49`
 - 不解决的问题（Out of Scope）
 - 不面向单一垂直领域（如专用 HTTP 客户端、图像引擎、ID 算法实现细节），这些由子包承载。[证据] `Bing.Utils.sln:22` [证据] `Bing.Utils.sln:24` [证据] `Bing.Utils.sln:26` [证据] `Bing.Utils.sln:87`
+
+文件内容识别提供 15 类常见格式的签名检测、可选的六种 Office 容器识别、有界读取、前缀重放、显式有界缓存、细分预算诊断和文件名/扩展名一致性比较，详见[使用指南](../reference/file-content-detection-guide.md)。
 
 ## 2. 核心类型与扩展方法
 - 类型/方法签名摘要

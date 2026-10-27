@@ -9,6 +9,8 @@
 | [Bing.Utils](modules/Bing.Utils.md) | IO、转换、基础类型扩展、异常、线程、文本与反射基础能力 |
 | [Bing.Utils.Collections](modules/Bing.Utils.Collections.md) | 数组、集合、字典和只读集合操作 |
 | [Bing.Utils.DateTime](modules/Bing.Utils.DateTime.md) | 日期时间、时间跨度、农历和 NodaTime 适配 |
+| [Bing.Utils.Cron](modules/Bing.Utils.Cron.md) | 五段/六段 Cron、时区与有界枚举 |
+| [Bing.Utils.Diff](modules/Bing.Utils.Diff.md) | 可取消、有预算的大文本行级 Diff |
 | [Bing.Utils.Text](modules/Bing.Utils.Text.md) | 关键词匹配、拼音、中文转换、分词和 Unicode 文本处理 |
 | [Bing.Utils.Reflection](modules/Bing.Utils.Reflection.md) | 类型访问、成员操作、动态创建和反射缓存 |
 | [Bing.Utils.IdUtils](modules/Bing.Utils.IdUtils.md) | Snowflake、ObjectId、Guid 等 ID 生成能力 |
