@@ -54,7 +54,12 @@ public class UtilityBudgetCapabilityTest
     [Fact]
     public void RegexConvenienceUsesTimeout()
     {
-        Assert.Throws<RegexMatchTimeoutException>(() => Regexs.IsMatchWithTimeout(new string('a', 20000) + "!", "^(a+)+$", TimeSpan.FromMilliseconds(1), useCache: false));
+        // 部分运行时会快速拒绝嵌套量词样例；重叠分支确保此用例实际触发回溯。
+        const string pattern = "^(a|aa)+$";
+        var input = new string('a', 20000) + "!";
+        var timeout = TimeSpan.FromMilliseconds(1);
+        Assert.Throws<RegexMatchTimeoutException>(() => Regex.IsMatch(input, pattern, RegexOptions.None, timeout));
+        Assert.Throws<RegexMatchTimeoutException>(() => Regexs.IsMatchWithTimeout(input, pattern, timeout, useCache: false));
         Assert.True(Regexs.IsMatchWithTimeout("abc", "^abc$", TimeSpan.FromSeconds(1)));
         Assert.Equal("x", Regexs.ReplaceWithTimeout("abc", "abc", "x", TimeSpan.FromSeconds(1)));
         Assert.Equal(new[] { "a", "b" }, Regexs.SplitWithTimeout("a,b", ",", TimeSpan.FromSeconds(1)));

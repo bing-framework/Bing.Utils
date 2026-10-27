@@ -192,11 +192,14 @@ public sealed class RegexPoolTimeoutTest : IDisposable
     [InlineData(false)]
     public void ExplicitOperations_ThrowOnCatastrophicBacktracking(bool useCache)
     {
-        const string pattern = @"^(a+)+$";
+        // 重叠分支在各目标运行时均产生回溯，避免嵌套量词被快速拒绝后无法验证超时。
+        const string pattern = @"^(a|aa)+$";
         const RegexOptions options = RegexOptions.None;
         var timeout = TimeSpan.FromMilliseconds(15);
         var input = new string('a', 10000) + "!";
 
+        // 先确认当前运行时的样例会超时，再验证工具层所有入口原样传播异常。
+        Assert.Throws<RegexMatchTimeoutException>(() => Regex.IsMatch(input, pattern, options, timeout));
         Assert.Throws<RegexMatchTimeoutException>(
             () => RegexPool.IsMatch(input, pattern, options, timeout, useCache));
         Assert.Throws<RegexMatchTimeoutException>(

@@ -7,6 +7,7 @@ namespace Bing.IO;
 /// 验证文件写入重载、流式写入及资源归属契约。
 /// </summary>
 [Trait("Category", "Regression")]
+[Collection("TimingSensitive")]
 public sealed class FileWriteCapabilityRegressionTest
 {
     /// <summary>

@@ -1,3 +1,4 @@
+using System.Threading;
 using Bing.Http;
 using Bing.Http.Caching;
 
@@ -8,6 +9,7 @@ namespace Bing.Utils.Http.Tests.Bing.Http;
 /// <summary>
 /// 文件缓存后台维护器的周期、停止和异常隔离测试。
 /// </summary>
+[Collection("TimingSensitive")]
 public class FileHttpResponseCacheMaintenanceTest
 {
     /// <summary>
@@ -65,16 +67,24 @@ public class FileHttpResponseCacheMaintenanceTest
     [Fact]
     public async Task CleanupFailure_IsReportedAndDoesNotStopLoop()
     {
-        var errors = new List<Exception>();
         var calls = 0;
+        var errorReported = new TaskCompletionSource<Exception>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var nextCleanupStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         using (var maintenance = new FileHttpResponseCacheMaintenance(_ =>
         {
-            calls++;
+            if (Interlocked.Increment(ref calls) > 1) nextCleanupStarted.TrySetResult(true);
             throw new IOException("injected cleanup failure");
-        }, TimeSpan.FromMilliseconds(20), errors.Add))
+        }, TimeSpan.FromMilliseconds(20), error => errorReported.TrySetResult(error)))
         {
             maintenance.Start();
-            await EventuallyAsync(() => errors.Count > 0 && calls > 1);
+            var observed = Task.WhenAll(errorReported.Task, nextCleanupStarted.Task);
+            var completed = await Task.WhenAny(observed, Task.Delay(TimeSpan.FromSeconds(3)));
+            completed.ShouldBe(observed);
+            var error = await errorReported.Task;
+            (await nextCleanupStarted.Task).ShouldBeTrue();
+            Assert.IsType<IOException>(error);
+            Assert.Equal("injected cleanup failure", error.Message);
+            calls.ShouldBeGreaterThan(1);
             maintenance.IsRunning.ShouldBeTrue();
         }
     }

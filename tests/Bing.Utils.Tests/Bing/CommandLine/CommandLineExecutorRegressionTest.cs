@@ -1,9 +1,12 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bing.CommandLine;
 
+[Collection("TimingSensitive")]
 public class CommandLineExecutorRegressionTest
 {
     private const string PidFileEnvironmentVariable = "BING_UTILS_TEST_PID_FILE";
@@ -47,37 +50,93 @@ public class CommandLineExecutorRegressionTest
         Assert.True(stopwatch.Elapsed < TimeSpan.FromSeconds(8));
     }
 
+    /// <summary>先确认父子进程就绪，再验证父进程退出后无需等待子进程释放继承的管道。</summary>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Execute_WhenExitedParentLeavesInheritedPipes_DoesNotWaitForChild(bool requireMatch)
+    public async Task Execute_WhenExitedParentLeavesInheritedPipes_DoesNotWaitForChild(bool requireMatch)
     {
         var directory = CreateTemporaryDirectory();
         var pidFile = Path.Combine(directory, "descendant.pid");
-        var executor = CreateExecutor(GetSpawnChildAndExitScript(), TimeSpan.FromSeconds(6))
-            .Env(PidFileEnvironmentVariable, pidFile);
+        var parentPidFile = Path.Combine(directory, "parent.pid");
+        var readyFile = Path.Combine(directory, "ready");
+        var childReadyFile = Path.Combine(directory, "child-ready");
+        var exitFile = Path.Combine(directory, "exit-parent");
+        var releaseFile = Path.Combine(directory, "release-child");
+        // 45 秒仅为整个夹具的 watchdog；待测退出行为仍受原有 5 秒限制。
+        var executor = CreateExecutor(GetSpawnChildAndExitScript(), TimeSpan.FromSeconds(45))
+            .Env(PidFileEnvironmentVariable, pidFile)
+            .Env("BING_TEST_PARENT_PID", parentPidFile)
+            .Env("BING_TEST_READY", readyFile)
+            .Env("BING_TEST_CHILD_READY", childReadyFile)
+            .Env("BING_TEST_EXIT", exitFile)
+            .Env("BING_TEST_RELEASE", releaseFile);
         if (requireMatch)
             executor.OutputToMatch("NEVER_MATCHED");
-        var stopwatch = Stopwatch.StartNew();
+        // Execute 是同步 API，使用独立线程避免占用测试框架的线程池工作线程。
+        long completedTimestamp = 0;
+        var execution = Task.Factory.StartNew(() =>
+        {
+            try { return executor.Execute(); }
+            finally { Interlocked.Exchange(ref completedTimestamp, Stopwatch.GetTimestamp()); }
+        }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         try
         {
+            var startup = Stopwatch.StartNew();
+            while (!File.Exists(readyFile))
+            {
+                if (execution.IsCompleted)
+                {
+                    using var unexpected = await execution;
+                    Assert.Fail("夹具在报告就绪之前退出。");
+                }
+                Assert.True(startup.Elapsed < TimeSpan.FromSeconds(30), "父子进程未在启动预算内就绪。");
+                await Task.Delay(20);
+            }
+            var childId = int.Parse(File.ReadAllText(pidFile, Encoding.UTF8));
+            Assert.True(IsProcessRunning(childId));
+            var exitTimestamp = Stopwatch.GetTimestamp();
+            File.WriteAllText(exitFile, string.Empty, Encoding.UTF8);
+            var completed = await Task.WhenAny(execution, Task.Delay(TimeSpan.FromSeconds(5)));
+            Assert.True(ReferenceEquals(execution, completed),
+                $"父进程收到退出许可后未在 5 秒内完成：任务状态 {execution.Status}，" +
+                $"父进程存活 {IsProcessRunning(int.Parse(File.ReadAllText(parentPidFile, Encoding.UTF8)))}，" +
+                $"子进程存活 {IsProcessRunning(childId)}。");
             if (requireMatch)
             {
-                var error = Assert.Throws<InvalidOperationException>(() => executor.Execute());
+                var error = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                {
+                    using var unexpected = await execution;
+                });
                 Assert.Contains("未匹配预期输出", error.Message);
             }
             else
             {
-                using var process = executor.Execute();
+                using var process = await execution;
                 Assert.True(process.HasExited);
                 Assert.Equal(0, process.ExitCode);
             }
-            Assert.True(stopwatch.Elapsed < TimeSpan.FromSeconds(5));
-            // 后代进程由测试显式清理；父进程退出不代表它创建的服务也应被结束。
-            Assert.True(IsProcessRunning(int.Parse(File.ReadAllText(pidFile, Encoding.UTF8))));
+            // 以执行线程的完成时刻计量，不把测试 continuation 恢复延迟算入退出耗时。
+            var exitSeconds = (Interlocked.Read(ref completedTimestamp) - exitTimestamp) / (double)Stopwatch.Frequency;
+            Assert.InRange(exitSeconds, 0, 5);
+            // 子进程尚未收到释放信号，退出结果必须独立于其管道 EOF。
+            Assert.True(IsProcessRunning(childId));
         }
         finally
         {
+            File.WriteAllText(exitFile, string.Empty, Encoding.UTF8);
+            File.WriteAllText(releaseFile, string.Empty, Encoding.UTF8);
+            StopProcessByPidFile(parentPidFile);
+            StopProcessByPidFile(pidFile);
+            // 回收正在执行的调用并观察异常；不能让夹具越过本测试继续运行。
+            var finished = await Task.WhenAny(execution, Task.Delay(TimeSpan.FromSeconds(45)));
+            Assert.Same(execution, finished);
+            if (execution.Status == TaskStatus.RanToCompletion)
+                execution.Result.Dispose();
+            else
+                await Record.ExceptionAsync(async () => { await execution; });
+            // 处理启动较慢、在首次清理之后才写出的 PID。
+            StopProcessByPidFile(parentPidFile);
             StopProcessByPidFile(pidFile);
             Directory.Delete(directory, recursive: true);
         }
@@ -192,12 +251,31 @@ public class CommandLineExecutorRegressionTest
         ? "[Environment]::Exit(0)"
         : "exit 0";
 
-    private static string GetSpawnChildAndExitScript() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-        ? "$info = [Diagnostics.ProcessStartInfo]::new('powershell.exe', '-NoLogo -NoProfile -NonInteractive -Command Start-Sleep -Seconds 30'); " +
-          "$info.UseShellExecute = $false; $info.CreateNoWindow = $true; " +
-          "$child = [Diagnostics.Process]::Start($info); " +
-          "[IO.File]::WriteAllText($env:BING_UTILS_TEST_PID_FILE, [string]$child.Id, [Text.Encoding]::UTF8); [Environment]::Exit(0)"
-        : "sleep 30 & printf '%s' \"$!\" > \"$BING_UTILS_TEST_PID_FILE\"; exit 0";
+    /// <summary>子进程显式持有 stdout/stderr，收到释放信号才退出；父进程就绪后等待退出许可。</summary>
+    private static string GetSpawnChildAndExitScript()
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return "printf '%s' \"$$\" > \"$BING_TEST_PARENT_PID\"; " +
+                "(printf 'CHILD_STDOUT\\n'; printf 'CHILD_STDERR\\n' >&2; " +
+                ": > \"$BING_TEST_CHILD_READY\"; while [ ! -f \"$BING_TEST_RELEASE\" ]; do sleep 0.05; done) & " +
+                "printf '%s' \"$!\" > \"$BING_UTILS_TEST_PID_FILE\"; " +
+                "while [ ! -f \"$BING_TEST_CHILD_READY\" ]; do sleep 0.05; done; " +
+                ": > \"$BING_TEST_READY\"; while [ ! -f \"$BING_TEST_EXIT\" ]; do sleep 0.05; done; exit 0";
+        const string child = "[Console]::Out.WriteLine('CHILD_STDOUT'); [Console]::Out.Flush(); " +
+            "[Console]::Error.WriteLine('CHILD_STDERR'); [Console]::Error.Flush(); " +
+            "[IO.File]::WriteAllText($env:BING_TEST_CHILD_READY, '', [Text.Encoding]::UTF8); " +
+            "while (!(Test-Path -LiteralPath $env:BING_TEST_RELEASE)) { Start-Sleep -Milliseconds 20 }";
+        var encoded = Convert.ToBase64String(Encoding.Unicode.GetBytes(child));
+        return "[IO.File]::WriteAllText($env:BING_TEST_PARENT_PID, [string]$PID, [Text.Encoding]::UTF8); " +
+            "$info = [Diagnostics.ProcessStartInfo]::new('powershell.exe', " +
+            "'-NoLogo -NoProfile -NonInteractive -EncodedCommand " + encoded + "'); " +
+            "$info.UseShellExecute = $false; $info.CreateNoWindow = $true; " +
+            "$child = [Diagnostics.Process]::Start($info); " +
+            "[IO.File]::WriteAllText($env:BING_UTILS_TEST_PID_FILE, [string]$child.Id, [Text.Encoding]::UTF8); " +
+            "while (!(Test-Path -LiteralPath $env:BING_TEST_CHILD_READY)) { Start-Sleep -Milliseconds 20 }; " +
+            "[IO.File]::WriteAllText($env:BING_TEST_READY, '', [Text.Encoding]::UTF8); " +
+            "while (!(Test-Path -LiteralPath $env:BING_TEST_EXIT)) { Start-Sleep -Milliseconds 20 }; [Environment]::Exit(0)";
+    }
 
     private static string GetReadyAndSleepScript() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
         ? "[Console]::Out.WriteLine('READY'); [Console]::Out.Flush(); Start-Sleep -Seconds 30"
@@ -262,6 +340,10 @@ public class CommandLineExecutorRegressionTest
         }
         catch (ArgumentException)
         {
+        }
+        catch (InvalidOperationException)
+        {
+            // 进程可能在 HasExited 检查之后、Kill 之前自行退出。
         }
     }
 

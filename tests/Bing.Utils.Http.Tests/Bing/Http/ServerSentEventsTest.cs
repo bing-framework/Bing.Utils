@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Bing.Utils.Http.Tests.Bing.Http;
 
+[Collection("TimingSensitive")]
 public class ServerSentEventsTest
 {
     [Fact]
@@ -145,7 +146,7 @@ public class ServerSentEventsTest
         using var client = new HttpClient(new Handler(_ => EventResponse(body)));
         var values = await Collect(client.GetServerSentEventsAsync(new Uri("https://test/events"),
             new HttpSseOptions { IdleTimeout = TimeSpan.FromMilliseconds(200) }));
-        Assert.Equal("done", Assert.Single(values).Data); Assert.Equal(6, body.Reads);
+        Assert.Equal("done", Assert.Single(values).Data); Assert.Equal(13, body.Reads);
     }
 
     [Theory]
@@ -172,12 +173,14 @@ public class ServerSentEventsTest
     }
     private sealed class HeartbeatStream : MemoryStream
     {
+        private const int HeartbeatCount = 11;
         internal int Reads;
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken token)
         {
-            if (++Reads == 6) return 0;
-            await Task.Delay(60, token);
-            var bytes = Encoding.UTF8.GetBytes(Reads == 5 ? "data: done\n\n" : ": ping\n\n");
+            var read = ++Reads;
+            if (read == HeartbeatCount + 2) return 0;
+            if (read <= HeartbeatCount) await Task.Delay(20, token);
+            var bytes = Encoding.UTF8.GetBytes(read == HeartbeatCount + 1 ? "data: done\n\n" : ": ping\n\n");
             Array.Copy(bytes, 0, buffer, offset, bytes.Length); return bytes.Length;
         }
     }

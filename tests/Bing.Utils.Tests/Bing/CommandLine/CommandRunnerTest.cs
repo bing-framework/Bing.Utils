@@ -74,7 +74,17 @@ public class CommandRunnerTest
     [Fact]
     public async Task RunAsync_WhenExitCodeIsNonZero_ReturnsResultUntilEnsureSuccessIsCalled()
     {
-        var result = await CommandRunner.RunAsync(CreateScriptOptions(GetExitScript(7), TimeSpan.FromSeconds(10)));
+        // 此用例仅验证退出码，使用系统轻量 shell，避免 PowerShell 冷启动影响断言。
+        var windows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        var options = new CommandOptions
+        {
+            FileName = windows ? "cmd.exe" : "/bin/sh",
+            // 由 stdin 提交内置命令，兼容 netstandard2.0 参数转义与 cmd 的特殊 /c 解析规则。
+            Arguments = windows ? new[] { "/d", "/q" } : Array.Empty<string>(),
+            StandardInput = (writer, _) => writer.WriteLineAsync("exit 7"),
+            Timeout = TimeSpan.FromSeconds(10)
+        };
+        var result = await CommandRunner.RunAsync(options);
 
         Assert.Equal(7, result.ExitCode);
         Assert.Throws<InvalidOperationException>(() => result.EnsureSuccess());

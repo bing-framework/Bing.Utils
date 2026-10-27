@@ -12,8 +12,17 @@ namespace Bing.Utils.Http.Tests.Bing.Http;
 
 
 /// <summary>
+/// 将对系统调度敏感的 HTTP 测试与同项目其他测试隔离运行。
+/// </summary>
+[CollectionDefinition("TimingSensitive", DisableParallelization = true)]
+public sealed class TimingSensitiveHttpTestCollection { }
+
+
+
+/// <summary>
 /// 文件 HTTP 响应缓存的持久化、损坏恢复和失效测试。
 /// </summary>
+[Collection("TimingSensitive")]
 public class FileHttpResponseCacheTest
 {
     /// <summary>
@@ -26,10 +35,14 @@ public class FileHttpResponseCacheTest
         try
         {
             var cache = new FileHttpResponseCache(directory);
-            await cache.SetAsync("orders-1", Response("value"), TimeSpan.FromMilliseconds(50));
+            var ttl = TimeSpan.FromMinutes(5);
+            var beforeSet = DateTimeOffset.UtcNow;
+            await cache.SetAsync("orders-1", Response("value"), ttl);
+            var afterSet = DateTimeOffset.UtcNow;
             (await cache.GetAsync("orders-1")).Data.ShouldBe(new byte[] { 1, 2, 3 });
-            await Task.Delay(100);
+            ExpireCacheEntry(directory, "orders-1", (beforeSet + ttl).UtcTicks, (afterSet + ttl).UtcTicks);
             (await cache.GetAsync("orders-1")).ShouldBeNull();
+            cache.GetStatistics().CorruptEntries.ShouldBe(0);
         }
         finally { Directory.Delete(directory, true); }
     }
@@ -297,7 +310,7 @@ public class FileHttpResponseCacheTest
                     return Task.FromResult(Response("new"));
                 }));
 
-                await Task.Delay(50);
+                await WaitForLockWaitAsync(cache);
                 heldLock.Dispose();
                 var result = await operation;
                 calls.ShouldBe(1);
@@ -329,10 +342,9 @@ public class FileHttpResponseCacheTest
             await cache.RemoveAsync(key);
 
             var lockPath = Path.Combine(directory, Hash(key) + ".lock");
-            var readyPath = Path.Combine(directory, "helper.ready");
             var releasePath = Path.Combine(directory, "helper.release");
-            helper = StartLockHelper(lockPath, readyPath, releasePath);
-            await WaitForFileAsync(readyPath);
+            helper = StartLockHelper(lockPath, releasePath);
+            await WaitForHelperReadyAsync(helper);
 
             var calls = 0;
             var operation = Task.Run(() => cache.GetOrCreateAsync(key, TimeSpan.FromMinutes(1), () =>
@@ -340,7 +352,7 @@ public class FileHttpResponseCacheTest
                 Interlocked.Increment(ref calls);
                 return Task.FromResult(Response("new"));
             }));
-            await Task.Delay(100);
+            await WaitForLockWaitAsync(cache);
             calls.ShouldBe(0);
 
             File.WriteAllText(releasePath, "release");
@@ -833,27 +845,26 @@ public class FileHttpResponseCacheTest
 
 
     /// <summary>
-    /// 启动持有独占文件锁并通过标记文件同步的测试进程。
+    /// 启动持有独占文件锁、报告就绪状态并等待释放标记的测试进程。
     /// </summary>
     /// <param name="lockPath">子进程独占打开的锁文件路径。</param>
-    /// <param name="readyPath">获取锁后写入的就绪标记路径。</param>
     /// <param name="releasePath">指示子进程释放锁并退出的标记路径。</param>
     /// <returns>已启动的 PowerShell 进程，调用方负责同步退出并释放。</returns>
     /// <remarks>当前系统缺少可启动的 PowerShell 时，以跳过测试异常报告环境限制。</remarks>
-    private static Process StartLockHelper(string lockPath, string readyPath, string releasePath)
+    private static Process StartLockHelper(string lockPath, string releasePath)
     {
         var executable = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "powershell.exe" : "pwsh";
-        const string script = "$lock=[IO.File]::Open($env:BING_CACHE_LOCK,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None); [IO.File]::WriteAllText($env:BING_CACHE_READY,'ready'); while(-not [IO.File]::Exists($env:BING_CACHE_RELEASE)){ Start-Sleep -Milliseconds 10 }; $lock.Dispose()";
+        const string script = "$lock=[IO.File]::Open($env:BING_CACHE_LOCK,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None); [Console]::Out.WriteLine('ready'); [Console]::Out.Flush(); while(-not [IO.File]::Exists($env:BING_CACHE_RELEASE)){ Start-Sleep -Milliseconds 10 }; $lock.Dispose()";
         var encoded = Convert.ToBase64String(Encoding.Unicode.GetBytes(script));
         var startInfo = new ProcessStartInfo
         {
             FileName = executable,
             Arguments = "-NoProfile -NonInteractive -EncodedCommand " + encoded,
             CreateNoWindow = true,
-            UseShellExecute = false
+            UseShellExecute = false,
+            RedirectStandardOutput = true
         };
         startInfo.EnvironmentVariables["BING_CACHE_LOCK"] = lockPath;
-        startInfo.EnvironmentVariables["BING_CACHE_READY"] = readyPath;
         startInfo.EnvironmentVariables["BING_CACHE_RELEASE"] = releasePath;
         try
         {
@@ -870,16 +881,61 @@ public class FileHttpResponseCacheTest
 
 
     /// <summary>
-    /// 异步等待跨进程锁辅助程序写入就绪标记。
+    /// 异步等待跨进程锁辅助程序完成独占锁获取。
     /// </summary>
-    /// <param name="path">预期出现的就绪标记文件路径。</param>
-    /// <remarks>最多等待五秒；超时后通过断言报告失败。</remarks>
-    private static async Task WaitForFileAsync(string path)
+    /// <param name="helper">持有锁并通过标准输出报告就绪状态的辅助进程。</param>
+    /// <remarks>标准输出行是明确的就绪握手；超时仅防止辅助进程故障时永久等待。</remarks>
+    private static async Task WaitForHelperReadyAsync(Process helper)
     {
-        var deadline = DateTime.UtcNow.AddSeconds(5);
-        while (!File.Exists(path) && DateTime.UtcNow < deadline)
+        var readyLine = helper.StandardOutput.ReadLineAsync();
+        var completed = await Task.WhenAny(readyLine, Task.Delay(TimeSpan.FromSeconds(5)));
+        completed.ShouldBe(readyLine, "The cross-process lock helper did not signal readiness.");
+        (await readyLine).ShouldBe("ready");
+    }
+
+
+
+    /// <summary>
+    /// 等待缓存统计确认调用方已实际进入文件锁等待。
+    /// </summary>
+    /// <param name="cache">正在等待独占文件锁的缓存实例。</param>
+    /// <remarks>轮询统计只负责等待可观察状态，不依赖固定延迟猜测调度顺序。</remarks>
+    private static async Task WaitForLockWaitAsync(FileHttpResponseCache cache)
+    {
+        var timeout = Stopwatch.StartNew();
+        while (cache.GetStatistics().LockWaits == 0 && timeout.Elapsed < TimeSpan.FromSeconds(5))
             await Task.Delay(10);
-        File.Exists(path).ShouldBeTrue("The cross-process lock helper did not signal readiness.");
+        cache.GetStatistics().LockWaits.ShouldBeGreaterThan(0);
+    }
+
+
+
+    /// <summary>
+    /// 将已持久化缓存条目的过期时刻设置为过去，以确定性验证过期读取。
+    /// </summary>
+    /// <param name="directory">缓存文件所在目录。</param>
+    /// <param name="key">要过期的缓存键。</param>
+    /// <param name="minimumExpirationTicks">调用 SetAsync 前的时刻加上 TTL，作为持久化过期时间下界。</param>
+    /// <param name="maximumExpirationTicks">调用 SetAsync 后的时刻加上 TTL，作为持久化过期时间上界。</param>
+    private static void ExpireCacheEntry(string directory, string key, long minimumExpirationTicks, long maximumExpirationTicks)
+    {
+        var path = Path.Combine(directory, Hash(key) + ".cache");
+        using (var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+        {
+            long expirationOffset;
+            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
+            {
+                reader.ReadString().ShouldBe("BINGHTTP2");
+                reader.ReadInt32().ShouldBe(2);
+                reader.ReadString().ShouldBe(key);
+                expirationOffset = stream.Position;
+                Assert.InRange(reader.ReadInt64(), minimumExpirationTicks, maximumExpirationTicks);
+            }
+
+            stream.Position = expirationOffset;
+            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+                writer.Write(DateTimeOffset.UtcNow.AddMinutes(-1).UtcTicks);
+        }
     }
 
 

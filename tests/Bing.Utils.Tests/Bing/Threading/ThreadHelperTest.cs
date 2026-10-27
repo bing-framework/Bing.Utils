@@ -13,41 +13,45 @@ public class ThreadHelperTest
     public async Task NeedOnlyOne_Should_Return_First_Completed_Task_Result()
     {
         // Arrange
-        var task1WasCancelled = false;
+        var task1Started = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var task1CancellationObserved = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var task2Started = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var task2Release = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         var task2WasCancelled = false;
         Func<CancellationToken, Task<string>> task1 = async (cancellationToken) =>
         {
+            task1Started.TrySetResult(true);
             try
             {
-                await Task.Delay(2000, cancellationToken);
+                await Task.Delay(Timeout.Infinite, cancellationToken);
                 return "任务1完成";
             }
             catch (OperationCanceledException)
             {
-                task1WasCancelled = true;
+                task1CancellationObserved.TrySetResult(true);
                 throw;
             }
         };
         Func<CancellationToken, Task<string>> task2 = async (cancellationToken) =>
         {
-            try
-            {
-                await Task.Delay(1000, cancellationToken);
-                return "任务2完成";
-            }
-            catch (OperationCanceledException)
-            {
-                task2WasCancelled = true;
-                throw;
-            }
+            task2Started.TrySetResult(true);
+            await task2Release.Task.ConfigureAwait(false);
+            task2WasCancelled = cancellationToken.IsCancellationRequested;
+            return "任务2完成";
         };
         // Act
-        var result = await ThreadHelper.NeedOnlyOne(task1, task2);
+        var operation = ThreadHelper.NeedOnlyOne(task1, task2);
+        await Task.WhenAll(task1Started.Task, task2Started.Task);
+        task2Release.SetResult(true);
+        var result = await operation;
+
+        // 超时仅用于限制失败测试的等待，不参与任务先后协调。
+        var cancellationWait = await Task.WhenAny(task1CancellationObserved.Task, Task.Delay(TimeSpan.FromSeconds(10)));
+
         // Assert
         Assert.Equal("任务2完成", result);
-        // 等待片刻，确保取消操作已传播
-        await Task.Delay(100);
-        Assert.True(task1WasCancelled);
+        Assert.Same(task1CancellationObserved.Task, cancellationWait);
+        Assert.True(await task1CancellationObserved.Task);
         Assert.False(task2WasCancelled);
     }
     /// <summary>

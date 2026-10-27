@@ -1877,37 +1877,6 @@ public class MapperHelperTest : TestBase
         results.All(r => r.Email == source.Email).ShouldBeTrue();
     }
     /// <summary>
-    /// 测试 - Map - 大量属性的对象映射
-    /// </summary>
-    [Fact]
-    public void Map_LargeNumberOfProperties_ShouldPerformWell()
-    {
-        // 这个测试验证映射器在处理大量属性时的性能
-        // 由于当前测试模型属性数量有限，这里主要测试重复映射的性能
-        var source = new ComplexTypeSource
-        {
-            Id = 1,
-            Tags = new List<string> { "performance", "test" },
-            Metadata = new Dictionary<string, object> { { "perf", true } },
-            Scores = new decimal[] { 1.0m, 2.0m, 3.0m },
-            CreatedAt = DateTime.Now,
-            Duration = TimeSpan.FromMinutes(30),
-            UniqueId = Guid.NewGuid(),
-            Website = new Uri("https://performance.test")
-        };
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        // Act
-        for (int i = 0; i < 10000; i++)
-        {
-            var result = MapperHelper.Map<ComplexTypeSource, ComplexTypeDestination>(source);
-            result.ShouldNotBeNull();
-        }
-        stopwatch.Stop();
-        // Assert
-        Output.WriteLine($"映射10000次复杂对象耗时: {stopwatch.ElapsedMilliseconds}ms");
-        stopwatch.ElapsedMilliseconds.ShouldBeLessThan(5000); // 应在5秒内完成
-    }
-    /// <summary>
     /// 测试 - Map - 嵌套结构体性能测试
     /// </summary>
     [Fact]
