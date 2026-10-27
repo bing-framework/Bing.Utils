@@ -1,3 +1,5 @@
+using Bing.Operations;
+
 namespace Bing.Serialization.Csv;
 
 /// <summary>
@@ -61,6 +63,11 @@ public sealed class CsvOptions
     /// </summary>
     public string NewLine { get; set; } = "\r\n";
 
+    /// <summary>
+    /// 获取或设置统一操作进度观察器；读取和写入按数据记录报告，不计表头。
+    /// </summary>
+    public IProgress<OperationProgress> OperationProgress { get; set; }
+
     internal CsvOptions Snapshot()
     {
         if (Delimiter > 0x7f || Delimiter == '\0' || Delimiter == '"' || Delimiter == '\r' || Delimiter == '\n')
@@ -121,7 +128,8 @@ public sealed class CsvOptions
             MaxInputBytes = MaxInputBytes,
             MaxRows = MaxRows,
             MaxFieldsPerRow = MaxFieldsPerRow,
-            NewLine = NewLine
+            NewLine = NewLine,
+            OperationProgress = OperationProgress
         };
     }
 }

@@ -1,3 +1,5 @@
+using Bing.Diagnostics;
+
 namespace Bing.Serialization.Csv;
 
 /// <summary>
@@ -36,6 +38,10 @@ public sealed class CsvFormatException : FormatException
     /// 获取可用的字段名。
     /// </summary>
     public string ColumnName { get; }
+
+    /// <summary>获取统一的 CSV 位置；历史调用传入非法坐标时返回 null。</summary>
+    public CsvLocation Location => RowNumber > 0 && ColumnNumber >= 0
+        ? new CsvLocation(RowNumber, ColumnNumber, ColumnName) : null;
 
     private static string FormatMessage(string message, long rowNumber, int columnNumber, string columnName)
     {

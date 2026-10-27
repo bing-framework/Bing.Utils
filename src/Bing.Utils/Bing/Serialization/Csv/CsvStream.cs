@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Text;
+using Bing.Operations;
 
 namespace Bing.Serialization.Csv;
 
@@ -46,6 +47,7 @@ public static class CsvStream
         var config = (options ?? new CsvOptions()).Snapshot();
         cancellationToken.ThrowIfCancellationRequested();
 
+        Exception operationError = null;
         try
         {
             string[] headers = config.Headers?.ToArray();
@@ -57,6 +59,7 @@ public static class CsvStream
             }
 
             long rowNumber = 0;
+            long sequence = 0;
             await foreach (var row in source.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -98,30 +101,53 @@ public static class CsvStream
 
                 await WriteRecordAsync(destination, row.Values, config, rowNumber + (config.WriteHeader ? 1 : 0),
                     cancellationToken).ConfigureAwait(false);
+                config.OperationProgress?.Report(new OperationProgress(OperationStage.Write, ProgressUnit.Record,
+                    rowNumber, total: null, sequence: sequence++));
+                cancellationToken.ThrowIfCancellationRequested();
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            config.OperationProgress?.Report(new OperationProgress(OperationStage.Write, ProgressUnit.Record,
+                rowNumber, total: null, sequence: sequence++, isFinal: true));
         }
+        catch (Exception error) { operationError = error; throw; }
         finally
         {
-            if (!leaveOpen) destination.Dispose();
+            if (!leaveOpen)
+            {
+                try { destination.Dispose(); }
+                catch when (operationError != null) { }
+            }
         }
     }
 
     private static async IAsyncEnumerable<CsvRow> ReadCoreAsync(Stream source, CsvOptions config, bool leaveOpen,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        // 迭代器不能在包含 catch 的 try 内 yield；仅在成功 EOF 或停留于 yield 时允许传播清理异常。
+        // 正在解析或发送进度时离开 try，说明发生了处理异常，应保留该异常（尤其是取消）。
+        var propagateCleanupError = false;
         try
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var reader = new CsvByteReader(source, config.MaxInputBytes);
             await reader.SkipUtf8BomAsync(cancellationToken).ConfigureAwait(false);
 
             string[] headers = config.Headers?.ToArray();
             long recordNumber = 1;
             long dataRowCount = 0;
+            long sequence = 0;
             if (config.HasHeader)
             {
                 var header = await ReadRawRecordAsync(reader, config, recordNumber, cancellationToken).ConfigureAwait(false);
-                if (header == null) yield break;
+                cancellationToken.ThrowIfCancellationRequested();
+                if (header == null)
+                {
+                    config.OperationProgress?.Report(new OperationProgress(OperationStage.Read, ProgressUnit.Record,
+                        0, total: null, sequence: sequence++, isFinal: true));
+                    propagateCleanupError = true;
+                    yield break;
+                }
                 var actualHeaders = header.Values.ToArray();
                 ValidateParsedHeaders(actualHeaders, recordNumber);
                 if (headers != null) EnsureSameHeaders(headers, actualHeaders, recordNumber);
@@ -133,7 +159,14 @@ public static class CsvStream
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var row = await ReadRawRecordAsync(reader, config, recordNumber, cancellationToken).ConfigureAwait(false);
-                if (row == null) yield break;
+                cancellationToken.ThrowIfCancellationRequested();
+                if (row == null)
+                {
+                    config.OperationProgress?.Report(new OperationProgress(OperationStage.Read, ProgressUnit.Record,
+                        dataRowCount, total: null, sequence: sequence++, isFinal: true));
+                    propagateCleanupError = true;
+                    yield break;
+                }
                 if (headers != null && row.Count != headers.Length)
                 {
                     throw new CsvFormatException($"记录包含 {row.Count} 个字段，表头包含 {headers.Length} 个字段。",
@@ -145,14 +178,24 @@ public static class CsvStream
                     throw new CsvFormatException($"数据行数超过上限 {config.MaxRows.Value}。", recordNumber);
                 }
 
-                yield return new CsvRow(row.Values, headers, recordNumber);
                 dataRowCount++;
+                config.OperationProgress?.Report(new OperationProgress(OperationStage.Read, ProgressUnit.Record,
+                    dataRowCount, total: null, sequence: sequence++));
+                cancellationToken.ThrowIfCancellationRequested();
+                var result = new CsvRow(row.Values, headers, recordNumber);
+                propagateCleanupError = true;
+                yield return result;
+                propagateCleanupError = false;
                 recordNumber++;
             }
         }
         finally
         {
-            if (!leaveOpen) source.Dispose();
+            if (!leaveOpen)
+            {
+                try { source.Dispose(); }
+                catch when (!propagateCleanupError) { }
+            }
         }
     }
 

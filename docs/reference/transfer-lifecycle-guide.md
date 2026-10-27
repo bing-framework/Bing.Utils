@@ -91,3 +91,5 @@ var preview = store.CleanupExpired(DateTime.UtcNow.AddDays(-1));
 根目录应专用于此存储并由可信调用方管理。配额只覆盖正文逻辑长度，文件系统元数据、其他目录和下载旧布局不在其中；不要直接通过 `FilePath` 写入以绕过限制。临时文件租约不自动迁移分片下载的旧布局，下载残留使用上面的专用维护入口。
 
 数据库读取器、JSON 和 NDJSON 的逐行衔接见 [数据库流指南](tabular-datareader-guide.md)。
+
+统一进度及旧 HTTP 观察器适配见[统一进度与表格映射指南](tabular-mapping-guide.md)。Read/Write 的最终事件表示对应阶段正常完成；取消和早停不补发完成事件。`Commit` 留给实际提交结果的上层，不能仅凭传输正文结束推断文件已保存。

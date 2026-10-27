@@ -1,5 +1,7 @@
 using System.Buffers;
 using System.Security.Cryptography;
+using System.Runtime.ExceptionServices;
+using Bing.Operations;
 
 namespace Bing.IO;
 
@@ -28,6 +30,11 @@ public sealed class StreamTransferOptions
     /// 获取或设置每次成功写入后报告累计字节数的观察器。
     /// </summary>
     public IProgress<long> Progress { get; set; }
+
+    /// <summary>
+    /// 获取或设置统一操作进度观察器；旧的 <see cref="Progress"/> 仍会继续报告累计字节数。
+    /// </summary>
+    public IProgress<OperationProgress> OperationProgress { get; set; }
 
     /// <summary>
     /// 固定并校验本次传输配置。
@@ -113,11 +120,13 @@ public static class StreamTransfer
         var config = (options ?? new StreamTransferOptions()).Snapshot();
         token.ThrowIfCancellationRequested();
         byte[] buffer = null;
+        Exception operationError = null;
         try
         {
             buffer = ArrayPool<byte>.Shared.Rent(config.BufferSize);
             using var hash = config.ComputeSha256 || config.ExpectedSha256 != null ? IncrementalHash.CreateHash(HashAlgorithmName.SHA256) : null;
             long total = 0;
+            long sequence = 0;
             while (true)
             {
                 token.ThrowIfCancellationRequested();
@@ -127,27 +136,44 @@ public static class StreamTransfer
                     ? await source.ReadAsync(buffer, 0, requested, token).ConfigureAwait(false)
                     : source.Read(buffer, 0, requested);
                 token.ThrowIfCancellationRequested();
-                if (count == 0) break;
+                if (count == 0)
+                {
+                    config.OperationProgress?.Report(new OperationProgress(OperationStage.Read, ProgressUnit.Byte,
+                        total, total: null, sequence: sequence++, isFinal: true));
+                    break;
+                }
+                total += count;
+                config.OperationProgress?.Report(new OperationProgress(OperationStage.Read, ProgressUnit.Byte,
+                    total, total: null, sequence: sequence++));
+                token.ThrowIfCancellationRequested();
                 if (count > remaining) throw new InvalidDataException($"流传输超过 {config.MaxBytes} 字节限额。");
                 if (asynchronous) await destination.WriteAsync(buffer, 0, count, token).ConfigureAwait(false);
                 else destination.Write(buffer, 0, count);
+                config.OperationProgress?.Report(new OperationProgress(OperationStage.Write, ProgressUnit.Byte,
+                    total, total: null, sequence: sequence++));
                 hash?.AppendData(buffer, 0, count);
-                total += count;
                 config.Progress?.Report(total);
             }
             var checksum = hash == null ? null : BitConverter.ToString(hash.GetHashAndReset()).Replace("-", "").ToLowerInvariant();
             if (config.ExpectedSha256 != null && !string.Equals(config.ExpectedSha256, checksum, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException("流传输 SHA-256 校验不匹配。");
             token.ThrowIfCancellationRequested();
+            config.OperationProgress?.Report(new OperationProgress(OperationStage.Write, ProgressUnit.Byte,
+                total, total: null, sequence: sequence++, isFinal: true));
             return new StreamTransferResult(total, checksum);
         }
+        catch (Exception error) { operationError = error; throw; }
         finally
         {
             if (buffer != null) ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
             if (!leaveOpen)
             {
+                Exception cleanupError = null;
                 try { destination.Dispose(); }
-                finally { source.Dispose(); }
+                catch (Exception error) { cleanupError = error; }
+                try { source.Dispose(); }
+                catch (Exception error) { cleanupError ??= error; }
+                if (operationError == null && cleanupError != null) ExceptionDispatchInfo.Capture(cleanupError).Throw();
             }
         }
     }

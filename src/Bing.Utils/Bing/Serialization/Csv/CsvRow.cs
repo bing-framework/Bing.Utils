@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using Bing.Diagnostics;
+using Bing.Tabular;
 
 namespace Bing.Serialization.Csv;
 
 /// <summary>
 /// 表示一条 CSV 记录及其可选表头映射。
 /// </summary>
-public sealed class CsvRow : IReadOnlyList<string>
+public sealed class CsvRow : IReadOnlyList<string>, ITabularRow
 {
     private readonly ReadOnlyCollection<string> _values;
     private readonly ReadOnlyCollection<string> _headers;
@@ -44,6 +46,24 @@ public sealed class CsvRow : IReadOnlyList<string>
     /// 获取逻辑记录号。
     /// </summary>
     public long RowNumber { get; }
+
+    /// <summary>获取原始 CSV 的逻辑记录位置，表头计入记录号。</summary>
+    public CsvLocation Location => new(RowNumber);
+
+    /// <inheritdoc />
+    DataLocation ITabularRow.Location => Location;
+
+    /// <summary>获取零基序号对应的列名；无表头时返回 null。</summary>
+    /// <param name="ordinal">从零开始的列序号。</param>
+    /// <returns>源列名或 null。</returns>
+    public string GetName(int ordinal)
+    {
+        if (ordinal < 0 || ordinal >= Count) throw new ArgumentOutOfRangeException(nameof(ordinal));
+        return HeaderAt(ordinal);
+    }
+
+    /// <inheritdoc />
+    object ITabularRow.GetValue(int ordinal) => _values[ordinal];
 
     /// <summary>
     /// 获取字段值列表。

@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using Bing.Serialization.SystemTextJson;
+using Bing.Operations;
 
 namespace Bing.Utils.Json;
 
@@ -60,10 +61,25 @@ public static partial class TabularDataReader
     /// <exception cref="OperationCanceledException">调用时取消令牌已取消，或读取期间被取消。</exception>
     public static IAsyncEnumerable<TabularRowRecord> ReadRowsAsync(DbDataReader reader,
         bool leaveOpen = true, CancellationToken cancellationToken = default)
+        => ReadRowsWithProgressAsync(reader, null, leaveOpen, cancellationToken);
+
+    /// <summary>
+    /// 从数据库读取器的后续行开始单次异步枚举行记录，并报告读取进度。
+    /// </summary>
+    /// <param name="reader">当前结果集读取器。</param>
+    /// <param name="progress">可选的统一记录进度观察器。</param>
+    /// <param name="leaveOpen">是否在枚举结束、提前释放或失败后保留读取器。</param>
+    /// <param name="cancellationToken">取消后续读取与枚举。</param>
+    /// <returns>表索引为零、状态为 Added 的独立行记录流。</returns>
+    /// <exception cref="ArgumentNullException">读取器为空。</exception>
+    /// <exception cref="ArgumentException">读取器已关闭。</exception>
+    /// <exception cref="OperationCanceledException">调用时取消令牌已取消，或读取期间被取消。</exception>
+    public static IAsyncEnumerable<TabularRowRecord> ReadRowsWithProgressAsync(DbDataReader reader,
+        IProgress<OperationProgress> progress, bool leaveOpen = true, CancellationToken cancellationToken = default)
     {
         ValidateReader(reader);
         cancellationToken.ThrowIfCancellationRequested();
-        return new ReaderRowsEnumerable(reader, leaveOpen, cancellationToken);
+        return new ReaderRowsEnumerable(reader, leaveOpen, cancellationToken, progress);
     }
 
     /// <summary>
@@ -300,6 +316,10 @@ public static partial class TabularDataReader
         /// </summary>
         private readonly CancellationToken _cancellationToken;
         /// <summary>
+        /// 保存统一记录进度观察器。
+        /// </summary>
+        private readonly IProgress<OperationProgress> _progress;
+        /// <summary>
         /// 标记读取器是否已经交给一个枚举器。
         /// </summary>
         private int _enumerated;
@@ -307,11 +327,13 @@ public static partial class TabularDataReader
         /// <summary>
         /// 创建绑定到单个数据库读取器的异步行序列。
         /// </summary>
-        internal ReaderRowsEnumerable(DbDataReader reader, bool leaveOpen, CancellationToken cancellationToken)
+        internal ReaderRowsEnumerable(DbDataReader reader, bool leaveOpen, CancellationToken cancellationToken,
+            IProgress<OperationProgress> progress)
         {
             _reader = reader;
             _leaveOpen = leaveOpen;
             _cancellationToken = cancellationToken;
+            _progress = progress;
         }
 
         /// <summary>
@@ -321,7 +343,7 @@ public static partial class TabularDataReader
         {
             if (Interlocked.Exchange(ref _enumerated, 1) != 0)
                 throw new InvalidOperationException("数据库读取器行序列只能枚举一次。");
-            return new ReaderRowsEnumerator(_reader, _leaveOpen, _cancellationToken, cancellationToken);
+            return new ReaderRowsEnumerator(_reader, _leaveOpen, _cancellationToken, cancellationToken, _progress);
         }
     }
 
@@ -347,6 +369,18 @@ public static partial class TabularDataReader
         /// </summary>
         private readonly CancellationTokenSource _linkedCancellation;
         /// <summary>
+        /// 保存统一记录进度观察器。
+        /// </summary>
+        private readonly IProgress<OperationProgress> _progress;
+        /// <summary>
+        /// 保存当前已成功读取的记录数。
+        /// </summary>
+        private long _rowCount;
+        /// <summary>
+        /// 保存当前操作内的进度序号。
+        /// </summary>
+        private long _sequence;
+        /// <summary>
         /// 标记枚举器是否已经释放。
         /// </summary>
         private bool _disposed;
@@ -355,10 +389,11 @@ public static partial class TabularDataReader
         /// 创建读取器行枚举器并合并取消令牌。
         /// </summary>
         internal ReaderRowsEnumerator(DbDataReader reader, bool leaveOpen, CancellationToken methodToken,
-            CancellationToken enumerationToken)
+            CancellationToken enumerationToken, IProgress<OperationProgress> progress)
         {
             _reader = reader;
             _leaveOpen = leaveOpen;
+            _progress = progress;
             if (methodToken.CanBeCanceled && enumerationToken.CanBeCanceled)
             {
                 _linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(methodToken, enumerationToken);
@@ -387,6 +422,8 @@ public static partial class TabularDataReader
                 _token.ThrowIfCancellationRequested();
                 if (!hasNext)
                 {
+                    _progress?.Report(new OperationProgress(OperationStage.Read, ProgressUnit.Record,
+                        _rowCount, null, sequence: _sequence++, isFinal: true));
                     await DisposeAsync().ConfigureAwait(false);
                     return false;
                 }
@@ -395,6 +432,10 @@ public static partial class TabularDataReader
                 for (var ordinal = 0; ordinal < values.Length; ordinal++)
                     values[ordinal] = _reader.GetValue(ordinal);
                 Current = new TabularRowRecord(0, DataRowState.Added, null, values);
+                _rowCount++;
+                _progress?.Report(new OperationProgress(OperationStage.Read, ProgressUnit.Record,
+                    _rowCount, total: null, sequence: _sequence++));
+                _token.ThrowIfCancellationRequested();
                 return true;
             }
             catch

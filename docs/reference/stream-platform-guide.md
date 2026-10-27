@@ -129,6 +129,8 @@ SSE 按 [WHATWG Server-sent events](https://html.spec.whatwg.org/multipage/serve
 
 ## 共同生命周期契约
 
+流复制、CSV 和数据库行读取现在可接入 `OperationProgress`，配合 `TabularMap<T>` 复用中文字段映射与错误定位，详见[统一进度与表格映射指南](tabular-mapping-guide.md)。`Total` 未知时保持 null；资源预算不充当总量。普通流的写入完成只结束 Write 阶段，不报告文件已提交。
+
 SSE 可通过 `new HttpSseOptions { IdleTimeout = TimeSpan.FromSeconds(30), MaxReconnects = 3 }` 限制等待正文新字节的时间。默认 `null` 不限制，必须大于零。每次底层读取返回字节后重新计算，注释心跳同样有效；消费者处理事件或暂停枚举的时间不计入。超时关闭当前响应并按已有重连配置重试，次数耗尽抛 `TimeoutException`；显式取消优先传播原令牌，不触发重连。超时通过可取消读取实现，不遗留后台读取，底层自定义流须响应取消。头等待仍由 `HttpClient` 的超时控制。
 
 `BatchAsync` 到期时优先交付现有批次，即使下一次读取也已经完成；该元素留给下一批。同步阻塞的 `MoveNextAsync` 无法被抢占，返回后通过单调时钟检查到期。消费者处理批次的时间仍不计入下一批。
