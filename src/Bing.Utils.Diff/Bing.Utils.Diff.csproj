@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Bing.Utils.Diff</AssemblyName>
+    <PackageId>Bing.Utils.Diff</PackageId>
+    <Description>支持取消、计算预算和结构化差异块的大文本行级比较。</Description>
+  </PropertyGroup>
+  <Import Project="../../common.props" />
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Update="DotNetCore.SourceLink.Environment" PrivateAssets="all" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <None Include="ThirdParty/DiffPlex/LICENSE.txt;ThirdParty/DiffPlex/SOURCE.md" Pack="true" PackagePath="ThirdParty/DiffPlex/" />
+    <InternalsVisibleTo Include="Bing.Utils.Diff.Tests" />
+  </ItemGroup>
+</Project>
