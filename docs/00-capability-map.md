@@ -81,6 +81,7 @@
 `src/Bing.Utils.Extra/Bing.Utils.Extra.csproj:7`
 
 ## 6. 风险与待确认项
+- 新增独立扩展包：`Bing.Utils.Sftp`（SSH.NET）、`Bing.Utils.Templates.Scriban`（Scriban）和 `Bing.Utils.Text.EncodingDetection`（UTF.Unknown）均支持 `netstandard2.0;net8.0`。
 - 待确认：仓库文档存在编码可读性问题，`README.md` 中文出现乱码，可能影响新贡献者理解设计目标。证据：`README.md:5`, `README.md:22`, `README.md:45`。
 - DependencyInjection 已实现启动阶段批量注册；复杂泛型只覆盖显式闭合服务集合，不承诺任意扫描 NativeAOT 兼容，见 [模块文档](modules/Bing.Utils.DependencyInjection.md)。
 - 待确认：`Bing.Utils.Guard` 公开入口 `CharGuard` 为空类型，可能处于迁移中。证据：`src/Bing.Utils.Guard/Bing/Text/CharGuard.cs:23`。

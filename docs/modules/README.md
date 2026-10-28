@@ -22,10 +22,14 @@
 | [Bing.Utils.IdUtils](Bing.Utils.IdUtils.md) | Snowflake、ObjectId 等 ID 生成 | 已实现 |
 | [Bing.Utils.JsonSchema](Bing.Utils.JsonSchema.md) | JSON Schema 校验、结构化诊断与预注册引用（.NET 8） | 已实现 |
 | [Bing.Utils.Net](Bing.Utils.Net.md) | FTP/FTPS 客户端封装 | 已实现（单一协议） |
+| [Bing.Utils.Sftp](Bing.Utils.Sftp.md) | SSH.NET SFTP 安全文件传输 | 已实现（无外部服务集成环境） |
 | [Bing.Utils.Reflection](Bing.Utils.Reflection.md) | 类型访问、动态创建与反射缓存 | 已实现 |
 | [Bing.Utils.Security](Bing.Utils.Security.md) | 现代密码学、密钥、证书和请求签名 | 已实现 |
 | [Bing.Utils.Security.Gm](Bing.Utils.Security.Gm.md) | SM2、SM3、HMAC-SM3、SM4-GCM | 已实现 |
 | [Bing.Utils.Text](Bing.Utils.Text.md) | 匹配、拼音、中文转换、分词与 Unicode 文本处理 | 已实现 |
+| [Bing.Utils.Text.EncodingDetection](Bing.Utils.Text.EncodingDetection.md) | 编码检测、流回放和 UTF-8 转码 | 已实现 |
+| [Bing.Utils.Templates.Scriban](Bing.Utils.Templates.Scriban.md) | 受限 Scriban 高级模板 | 已实现 |
 
 完整盘点、缺口和待确认项见 [文档与实现盘点](../00-documentation-audit.md)。
 
+三个扩展包的端到端调用顺序见 [集成能力示例](../integration-capabilities.md)。

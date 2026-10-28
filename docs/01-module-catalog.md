@@ -12,6 +12,8 @@
 | [Bing.Utils.Cron](modules/Bing.Utils.Cron.md) | 五段/六段 Cron、时区与有界枚举 |
 | [Bing.Utils.Diff](modules/Bing.Utils.Diff.md) | 可取消、有预算的大文本行级 Diff |
 | [Bing.Utils.Text](modules/Bing.Utils.Text.md) | 关键词匹配、拼音、中文转换、分词和 Unicode 文本处理 |
+| [Bing.Utils.Text.EncodingDetection](modules/Bing.Utils.Text.EncodingDetection.md) | UTF.Unknown 编码检测、流回放和严格 UTF-8 转码 |
+| [Bing.Utils.Templates.Scriban](modules/Bing.Utils.Templates.Scriban.md) | 受限 Scriban 高级模板编译与渲染 |
 | [Bing.Utils.Reflection](modules/Bing.Utils.Reflection.md) | 类型访问、成员操作、动态创建和反射缓存 |
 | [Bing.Utils.IdUtils](modules/Bing.Utils.IdUtils.md) | Snowflake、ObjectId、Guid 等 ID 生成能力 |
 
@@ -21,6 +23,7 @@
 | --- | --- |
 | [Bing.Utils.Http](modules/Bing.Utils.Http.md) | ASP.NET Core 请求、响应、上下文和下载辅助 |
 | [Bing.Utils.Net](modules/Bing.Utils.Net.md) | 基于 FluentFTP 的同步 FTP/FTPS 客户端 |
+| [Bing.Utils.Sftp](modules/Bing.Utils.Sftp.md) | 固定主机密钥的 SSH.NET SFTP 文件传输 |
 | [Bing.Utils.Guard](modules/Bing.Utils.Guard.md) | 当前提供字符闭区间判断，完整 Guard 能力尚未实现 |
 | [Bing.Utils.DependencyInjection](modules/Bing.Utils.DependencyInjection.md) | 原生 DI 批量注册、受控扫描、标准开放泛型与复杂提前闭合 |
 
