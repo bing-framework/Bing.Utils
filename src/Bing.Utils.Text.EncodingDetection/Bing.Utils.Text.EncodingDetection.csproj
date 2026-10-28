@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Bing.Utils.Text.EncodingDetection</AssemblyName>
+    <PackageId>Bing.Utils.Text.EncodingDetection</PackageId>
+    <Description>基于 UTF.Unknown 的文本编码检测与 UTF-8 转码扩展。</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <Import Project="..\..\common.props" />
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="UTF.Unknown" Version="2.5.0" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
