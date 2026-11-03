@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblySearchPaths>{HintPathFromItem};{CandidateAssemblyFiles};{TargetFrameworkDirectory};{RawFileName}</AssemblySearchPaths>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Reference Include="Bing.Utils">
+      <HintPath>$(BingUtilsAssemblyPath)</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="ValidateBingUtilsAssemblyPath" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(BingUtilsAssemblyPath)' == ''" Text="Set BingUtilsAssemblyPath to the Bing.Utils.dll being probed." />
+    <Error Condition="!Exists('$(BingUtilsAssemblyPath)')" Text="Bing.Utils assembly was not found: $(BingUtilsAssemblyPath)" />
+  </Target>
+</Project>
