@@ -151,7 +151,9 @@ namespace BuildScript
             IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.Extra.csproj"));
             IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.Guard.csproj"));
             IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.Comments.csproj"));
-            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.DependencyInjection.csproj"));
+            // OCR 的 DI 适配器属于独立发布包，显式保留其打包入口。
+            IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.DependencyInjection.csproj")
+                .Where(x => x.FileName != "Bing.Utils.Ocr.DependencyInjection.csproj"));
             IgnorePackProjectFiles.AddRange(context.GetFiles(SourceDir, "*/*.Net.csproj"));
         }
 
@@ -162,12 +164,32 @@ namespace BuildScript
         {
             context.LogInfo($"当前环境值: {Env}");
             BuildVersion = FetchBuildVersion(context);
+            CheckOcrPackProjects(context);
             var clean = Clean(context);
             var restore = Restore(context, clean);
             var build = Build(context, restore);
             var test = Test(context, build);
             var pack = Pack(context, clean);
             PublishNugetPackage(context, build, pack);
+        }
+
+        /// <summary>核验正式打包集合包含四个 OCR 包；供 CI 执行，不产生包或发布动作。</summary>
+        private ITarget CheckOcrPackProjects(ITaskContext context)
+        {
+            return context.CreateTarget("ocr.pack.check")
+                .SetDescription("Verify all OCR projects are included in the publish packaging set.")
+                .Do(task =>
+                {
+                    var required = new[] { "Bing.Utils.Ocr.csproj", "Bing.Utils.Ocr.SkiaSharp.csproj",
+                        "Bing.Utils.Ocr.PaddleServing.csproj", "Bing.Utils.Ocr.DependencyInjection.csproj" };
+                    var projects = GetPackProjects();
+                    foreach (var name in required)
+                    {
+                        if (projects.Count(project => project.FileName == name) != 1)
+                            throw new InvalidOperationException("正式打包集合缺少或重复包含 OCR 项目：" + name);
+                        task.LogInfo("OCR_PACKAGE=" + name);
+                    }
+                });
         }
 
         /// <summary>

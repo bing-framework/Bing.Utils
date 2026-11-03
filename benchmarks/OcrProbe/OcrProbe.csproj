@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Bing.Utils.Ocr.SkiaSharp/Bing.Utils.Ocr.SkiaSharp.csproj" />
+    <ProjectReference Include="../../src/Bing.Utils.Ocr.PaddleServing/Bing.Utils.Ocr.PaddleServing.csproj" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.9" />
+  </ItemGroup>
+</Project>

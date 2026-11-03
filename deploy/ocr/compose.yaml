@@ -1,0 +1,23 @@
+services:
+  ocr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      OCR_HOST: 0.0.0.0
+      OCR_PORT: 8080
+      OCR_MODELS_DIR: /models
+      OCR_BODY_TIMEOUT_SECONDS: ${OCR_BODY_TIMEOUT_SECONDS:-30}
+      OCR_MAX_WAITING: ${OCR_MAX_WAITING:-8}
+      OCR_MAX_BODY_BYTES: ${OCR_MAX_BODY_BYTES:-29360128}
+      OCR_MAX_IMAGE_BYTES: ${OCR_MAX_IMAGE_BYTES:-20971520}
+      OCR_MAX_PIXELS: ${OCR_MAX_PIXELS:-20000000}
+      OCR_MAX_DIMENSION: ${OCR_MAX_DIMENSION:-8192}
+      OCR_STARTUP_TIMEOUT_SECONDS: ${OCR_STARTUP_TIMEOUT_SECONDS:-180}
+      OCR_WORKER_JOIN_TIMEOUT_SECONDS: ${OCR_WORKER_JOIN_TIMEOUT_SECONDS:-5}
+      OCR_CPU_THREADS: ${OCR_CPU_THREADS:-2}
+    ports:
+      - "127.0.0.1:${OCR_PUBLISHED_PORT:-8080}:8080"
+    volumes:
+      - ./models:/models:ro
+    restart: unless-stopped

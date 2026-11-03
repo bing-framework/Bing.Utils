@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
+  <PropertyGroup><Nullable>enable</Nullable><Description>OCR SkiaSharp 图片预处理与坐标映射。</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Bing.Utils.Ocr/Bing.Utils.Ocr.csproj" />
+    <ProjectReference Include="../Bing.Utils.Drawing.SkiaSharp/Bing.Utils.Drawing.SkiaSharp.csproj" />
+  </ItemGroup>
+</Project>

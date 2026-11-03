@@ -1,0 +1,6 @@
+paddleocr==3.7.0
+paddlex==3.7.0
+paddlepaddle==3.3.1
+pillow==13.0.0
+starlette==0.52.0
+uvicorn==0.41.0

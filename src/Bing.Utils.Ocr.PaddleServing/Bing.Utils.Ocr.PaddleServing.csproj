@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
+  <PropertyGroup><Nullable>enable</Nullable><Description>PaddleOCR 私有化 HTTP 识别适配器。</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Bing.Utils.Ocr/Bing.Utils.Ocr.csproj" />
+    <PackageReference Include="System.Text.Json" Version="8.0.6" />
+  </ItemGroup>
+</Project>

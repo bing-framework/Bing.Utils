@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
+  <PropertyGroup><Nullable>enable</Nullable><Description>OCR 公共契约、有界识别编排与坐标转换。</Description></PropertyGroup>
+</Project>

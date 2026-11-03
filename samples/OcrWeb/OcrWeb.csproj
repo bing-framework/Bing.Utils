@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><IsPackable>false</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Bing.Utils.Ocr.DependencyInjection/Bing.Utils.Ocr.DependencyInjection.csproj" />
+    <ProjectReference Include="../../src/Bing.Utils.Ocr.SkiaSharp/Bing.Utils.Ocr.SkiaSharp.csproj" />
+    <ProjectReference Include="../../src/Bing.Utils.Ocr.PaddleServing/Bing.Utils.Ocr.PaddleServing.csproj" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.9" />
+  </ItemGroup>
+</Project>

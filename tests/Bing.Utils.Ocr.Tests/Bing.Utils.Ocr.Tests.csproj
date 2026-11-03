@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.tests.props" />
+  <PropertyGroup><TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../src/Bing.Utils.Ocr/Bing.Utils.Ocr.csproj" /></ItemGroup>
+</Project>

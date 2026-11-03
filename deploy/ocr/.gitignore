@@ -1,0 +1,5 @@
+/models/
+/.venv/
+/.python/
+__pycache__/
+tests/__pycache__/

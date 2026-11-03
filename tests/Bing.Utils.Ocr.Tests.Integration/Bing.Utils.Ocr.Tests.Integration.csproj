@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.tests.props" />
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../samples/OcrWeb/OcrWeb.csproj" /><PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" /></ItemGroup>
+</Project>

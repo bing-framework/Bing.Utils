@@ -1,0 +1,125 @@
+name: OCR
+on:
+  pull_request:
+    paths: ['src/Bing.Utils.Ocr*/**', 'tests/Bing.Utils.Ocr*/**', 'samples/OcrWeb/**', 'deploy/ocr/**', 'build/Test-Ocr.ps1', 'build/OcrPackageConsumer/**', 'build/BuildScript*.cs', 'build/BuildScript.csproj', 'Bing.Utils.sln', 'common.props', 'common.tests.props', 'src/Bing.Utils.Drawing.Shared/**', 'src/Bing.Utils.Drawing.SkiaSharp/**', '.github/workflows/ocr.yml']
+  workflow_dispatch:
+    inputs:
+      run_engine:
+        description: '准备固定模型并运行 Linux CPU 真实引擎'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  engineering:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.428
+            7.0.410
+            8.0.425
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.13'
+      - name: Unit
+        shell: pwsh
+        run: ./build/Test-Ocr.ps1 -Stage Unit
+      - name: Integration
+        shell: pwsh
+        run: ./build/Test-Ocr.ps1 -Stage Integration
+      - name: Pack and consume
+        shell: pwsh
+        run: ./build/Test-Ocr.ps1 -Stage PackConsumer
+      - name: Host scheduling tests
+        working-directory: deploy/ocr
+        shell: bash
+        run: |
+          python -m pip install pillow==13.0.0 starlette==0.52.0 uvicorn==0.41.0
+          python -m unittest discover -s tests -v
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ocr-engineering-${{ matrix.os }}
+          path: output/ocr-validation/
+  engine:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_engine
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.425
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.13'
+      - name: Prepare fixed model files
+        working-directory: deploy/ocr
+        run: python prepare-models.py
+      - name: Start private CPU engine
+        working-directory: deploy/ocr
+        run: docker compose up -d --build
+      - name: Wait for model warmup and set identity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, time, urllib.request
+          for attempt in range(60):
+              try:
+                  with urllib.request.urlopen("http://127.0.0.1:8080/health/ready", timeout=2) as response:
+                      profile = json.load(response)["modelProfileId"]
+                  with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as output:
+                      output.write("OCR_ENDPOINT=http://127.0.0.1:8080/\nOCR_MODEL_PROFILE=" + profile + "\n")
+                  break
+              except (OSError, ValueError, KeyError):
+                  time.sleep(5)
+          else:
+              raise SystemExit("BLOCKED_EXTERNAL: model warmup did not complete")
+          PY
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          echo "OCR_FONT_PATH=$(fc-match -f '%{file}' 'Noto Sans CJK SC')" >> "$GITHUB_ENV"
+      - name: Real English, Chinese, blank and region recognition
+        shell: pwsh
+        run: ./build/Test-Ocr.ps1 -Stage Engine -RequireEngine
+      - name: Real process recovery and host regression
+        shell: bash
+        run: |
+          image=$(docker compose -f deploy/ocr/compose.yaml images -q ocr)
+          docker run --rm --network none --env OCR_MODELS_DIR=/models --env OCR_REAL_PROCESS_TESTS=1 \
+            --mount "type=bind,source=$PWD/deploy/ocr/models,target=/models,readonly" \
+            --mount "type=bind,source=$PWD/deploy/ocr,target=/checks,readonly" \
+            --entrypoint python "$image" -B -m unittest discover -s /checks/tests -v \
+            2>&1 | tee output/ocr-validation/linux-host-tests.log
+      - name: Offline HTTP recognition with network disabled
+        shell: bash
+        run: |
+          image=$(docker compose -f deploy/ocr/compose.yaml images -q ocr)
+          docker run --rm --network none --env OCR_MODELS_DIR=/models \
+            --mount "type=bind,source=$PWD/deploy/ocr/models,target=/models,readonly" \
+            --mount "type=bind,source=$OCR_FONT_PATH,target=/font.ttc,readonly" \
+            --entrypoint python "$image" -B verify_offline.py --font /font.ttc \
+            > output/ocr-validation/linux-offline.json
+      - name: Engine logs
+        if: always()
+        working-directory: deploy/ocr
+        run: docker compose logs --no-color
+      - name: Stop engine
+        if: always()
+        working-directory: deploy/ocr
+        run: docker compose down
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ocr-real-engine
+          path: output/ocr-validation/

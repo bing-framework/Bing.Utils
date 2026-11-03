@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.0</TargetFrameworks>
+    <OutputType Condition="'$(TargetFramework)' != 'netstandard2.0'">Exe</OutputType>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn);NETSDK1138</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Bing.Utils.Ocr" Version="$(OcrPackageVersion)" />
+    <PackageReference Include="Bing.Utils.Ocr.SkiaSharp" Version="$(OcrPackageVersion)" />
+    <PackageReference Include="Bing.Utils.Ocr.PaddleServing" Version="$(OcrPackageVersion)" />
+    <PackageReference Include="Bing.Utils.Ocr.DependencyInjection" Version="$(OcrPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.9" />
+  </ItemGroup>
+</Project>
