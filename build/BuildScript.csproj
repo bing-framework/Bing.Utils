@@ -12,5 +12,7 @@
   <ItemGroup>
     <!-- 消费者编译样例属于独立项目，不能并入构建脚本程序集。 -->
     <Compile Remove="CapabilityConsumer/**/*.cs" />
+    <Compile Remove="OcrPackageConsumer/**/*.cs" />
+    <Compile Remove="OtpPackageConsumer/**/*.cs" />
   </ItemGroup>
 </Project>
