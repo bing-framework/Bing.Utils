@@ -1,0 +1,54 @@
+{
+  "runtime": ".NET 8.0.31",
+  "core": {
+    "Location": "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-repair-z47harqn\\after\\Bing.Utils.dll",
+    "mvid": "039a260a-1cf2-4cc4-b3b5-7a0ef10d2095"
+  },
+  "reflection": {
+    "Location": "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-repair-z47harqn\\after\\Bing.Utils.Reflection.dll",
+    "mvid": "98359e16-2884-45b4-a50a-9c11aa4885b4"
+  },
+  "warmup": 10000,
+  "iterations": 50000,
+  "repetitions": 5,
+  "requestedConcurrency": 1,
+  "maxActualParallelism": 1,
+  "maxQueuedRequests": 0,
+  "measurements": [
+    {
+      "name": "object-getter",
+      "medianNanoseconds": 52.858,
+      "bytesPerOperation": 24
+    },
+    {
+      "name": "readable-properties",
+      "medianNanoseconds": 1917.364,
+      "bytesPerOperation": 296
+    },
+    {
+      "name": "writable-properties",
+      "medianNanoseconds": 5599.198,
+      "bytesPerOperation": 752
+    },
+    {
+      "name": "dynamic-getter",
+      "medianNanoseconds": 230,
+      "bytesPerOperation": 24
+    },
+    {
+      "name": "dynamic-setter",
+      "medianNanoseconds": 360.178,
+      "bytesPerOperation": 0
+    },
+    {
+      "name": "dynamic-create-and-read",
+      "medianNanoseconds": 680.156,
+      "bytesPerOperation": 128
+    },
+    {
+      "name": "typed-getter-new-api",
+      "medianNanoseconds": 14.328,
+      "bytesPerOperation": 0
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-﻿# Bing.Utils.Reflection
+# Bing.Utils.Reflection
 ## 1. 包职责（Scope）
 - 解决的问题
 - 提供反射访问器与类型元数据扩展（`TypeVisit`/`TypeMetaVisitExtensions`/`AssemblyVisit`）。[证据] `src/Bing.Utils.Reflection/Bing.Utils.Reflection.csproj:3` [证据] `src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.Types.cs:10` [证据] `src/Bing.Utils.Reflection/Bing/Reflection/AssemblyVisit.cs:10`
@@ -92,6 +92,28 @@ Assert.Throws<ArgumentNullException>(() => TypeVisit.GetFullyQualifiedName(null)
 
 裁剪与 NativeAOT 的支持边界：当前验证宿主位于 `tests/Bing.Utils.Reflection.Tests.Integration/hosts/ReflectionTrimProbe`；旧的 `benchmarks/ReflectionTrimProbe` 仅作为历史路径。该探针在 net8.0、显式 linker roots、framework-dependent analyzer 与未裁剪契约检查、self-contained partial/full trim 和 NativeAOT metadata-only smoke 下验证构造、带参构造函数查询、属性访问、getter-only/setter-only/静态属性/索引器过滤、严格字段/属性/方法查询、类型/方法全名、普通/泛型方法签名和闭合调用、完整/直接接口图、基类、公共常量递归、实现类型扫描、实例化扫描、闭合泛型模型和嵌套成员路径；独立插件 probe 在不改变主探针 linker 根集合的前提下，记录未 root 程序集在三种加载方式下的实际结果，并直接覆盖类型/成员/参数的 `TypeReflections.IsAttributeDefined` 泛型与非泛型重载及 `Reflections`/`TypeReflections`/`Types` 特性单项、required 和集合包装。NativeAOT 日志检查器、基线和责任清单当前统一位于 `tests/Bing.Utils.Reflection.Tests.Integration/tools/` 与 `baselines/`。普通元数据查询仍依赖调用方保留需要的类型与成员元数据。动态类型、动态对象、表达式委托和方法签名入口声明了相应的 `Requires*` 契约，构造和类型缓存扫描入口声明了 `DynamicallyAccessedMembers` 需求；动态类型生成入口依赖 Reflection.Emit，动态代码不可用时明确拒绝；不构成动态生成及表达式编译入口在 NativeAOT 或未保留元数据的 trimming 场景可用的支持承诺。 framework-dependent `PublishTrimmed=true` 在固定 SDK 上预期失败并返回 `NETSDK1102`；当前迁移后的验证状态见质量文档，历史发布记录不等同于本候选全部矩阵通过。
 
+### 强类型属性访问与本轮兼容性说明
+
+核心包新增两个保留属性值类型的重载，引用本包时也可使用：
+
+```csharp
+var property = typeof(Model).GetProperty(nameof(Model.Count));
+Func<Model, int> getter = property.GetValueGetter<Model, int>();
+Action<Model, int> setter = property.GetValueSetter<Model, int>();
+setter(model, 7);
+int count = getter(model);
+```
+
+`TProperty` 必须与属性类型完全一致。强类型 setter 只支持引用类型实例；结构体写入继续使用 `GetValueSetterByRef<T>`。已经校验成功的强类型访问器命中缓存时直接复用委托，可回收类型参数仍绕过缓存。原有 object 返回值和 object 参数入口也在缓存命中时复用已校验委托，泛型实例类型可回收时绕过委托缓存（包括按引用写入结构体的设置器）；强类型入口避免值类型属性在调用时装箱，保留原有可见性、索引器、init 和动态代码约束。
+
+继承接口的成员路径现可解析到基接口属性；派生接口隐藏同名属性时选择最派生声明，无关接口的同名声明仍报告歧义，IgnoreCase 不改变成员隐藏关系；公共属性去重按真实 `Type` 身份进行，开放泛型中名称相同而类型不同的属性均会保留。公开属性列表仍返回独立快照，内部筛选减少一次数组复制。
+
+构造绑定支持 boxed `ref/in` 参数和 `out` 占位值，`ref/out` 更新会写回传入的 `object[]`；非空值类型 `ref` 参数仍拒绝 null，按值精确匹配的重载优先。`GetBaseMethod` 可定位 protected 基方法，排除不可继承的 private 方法。
+
+可回收动态类型的属性元数据缓存随实例释放，首个名称使用单项快路径，前 8 个名称使用小型不可变缓存，更多名称才创建字典；总容量仍为 1024，并发插入按同一快照查重。首次访问会创建缓存条目，重复访问复用属性元数据。
+
+`Lambdas.GetGroupPredicates` 保留 AND 内嵌 OR 子树，调用方不能再假设每个组元素都是简单比较式；按“组内 AND、组间 OR”重建可保持原逻辑和短路顺序。`GetConditionCount` 通过表达式节点计数，并穿透内置布尔逻辑非统计内部条件。`GetValue` 会计算参数无关的值子表达式（包括方法调用），因此表达式应来自可信调用方；无法提取独立查询值的参数依赖表达式抛 `NotSupportedException`。布尔成员、字符串搜索和集合 Contains 的查询值提取约定保留；选出的独立参数子树直接求值，嵌套 Contains 不再被当成新的查询解析。常量、闭包字段及引用类型属性链走直接读取路径；接收者与参数均可直接读取的普通方法调用复用反射求值委托，减少解释器执行帧分配。复杂参数、ref/out、值类型接收者以及可接收 Type.Missing 的参数签名继续使用解释器，保留转换、写回及传值语义。求值委托以表达式对象为弱键复用，不缓存执行结果；每次调用仍读取当前捕获值，并保持接收者、参数的求值顺序与原始异常。数组、内联集合及 Enumerable/Queryable/ParallelEnumerable 扩展调用的 Contains 可提取查询成员；比较器等辅助参数不作为查询值，集合和值都依赖查询对象时抛出 NotSupportedException。
+
 ## 6. 与其他子包的关系
 - 依赖的包
 - 依赖 `Bing.Utils` 核心包。[证据] `src/Bing.Utils.Reflection/dependency.props:3`
@@ -110,3 +132,7 @@ Assert.Throws<ArgumentNullException>(() => TypeVisit.GetFullyQualifiedName(null)
 - 包内部对核心 `Types` 能力有依赖，升级 `Bing.Utils` 时需联动回归类型判定语义。[证据] `src/Bing.Utils.Reflection/Bing/Reflection/TypeVisit/TypeVisit.cs:46`
 - 严格失败契约的版本升级步骤和仓库消费者清单见 `docs/quality/reflection-contract-migration.md`。
 
+
+成员与参数解析同时识别普通转换和 `checked` 转换；`GetType` 返回被解析成员的类型。取值时仍执行完整转换，保留溢出检查。复杂表达式的弱引用缓存使用按需初始化条目，避免每个新表达式额外分配初始化工厂闭包；首次编译同步，缓存命中无需加锁。
+
+高频调用应复用同一个表达式对象：在循环外构造 `Expression`，在循环内调用 `Lambdas.GetValue(expression)`。闭包变量可以在调用之间更新，求值会读取当前值；每次重新构造等价表达式仍会产生建树、编译和缓存登记开销。

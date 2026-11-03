@@ -35,11 +35,21 @@ public static partial class TypeReflections
     /// <param name="type">要检查的类型。</param>
     /// <returns>公共实例、非索引器属性的独立快照。对于接口，会合并其继承接口；同名同类型且访问器形状相同的属性只保留一个，同名不同类型属性会同时保留。</returns>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 为 null 时抛出。</exception>
+    public static IReadOnlyList<PropertyInfo> GetPublicInstanceProperties(
+#if NET5_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties | System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+        Type type)
+    {
+        return GetPublicInstancePropertiesCore(type).ToArray();
+    }
+
+    /// <summary>返回仅供内部读取的属性集合；公开入口必须复制后再返回，避免缓存污染。</summary>
 #if NET5_0_OR_GREATER
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "ConditionalWeakTable 的 Type 键回调不会保留参数级动态成员标注，实际扫描使用已标注的外层 type。")]
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2087", Justification = "ConditionalWeakTable 的 Type 键回调不会保留参数级动态成员标注，实际扫描使用已标注的外层 type。")]
 #endif
-    public static IReadOnlyList<PropertyInfo> GetPublicInstanceProperties(
+    internal static PropertyInfo[] GetPublicInstancePropertiesCore(
 #if NET5_0_OR_GREATER
         [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties | System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
 #endif
@@ -47,16 +57,15 @@ public static partial class TypeReflections
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-
         if (ReflectionCacheScope.IsCollectible(type))
-            return CreatePublicInstanceProperties(type).ToArray();
+            return CreatePublicInstanceProperties(type);
 
         var lazy = PublicInstancePropertiesCache.GetValue(type, _ => new Lazy<PropertyInfo[]>(
             () => CreatePublicInstanceProperties(type), LazyThreadSafetyMode.ExecutionAndPublication));
         var properties = lazy.Value;
         if (ContainsCollectible(properties))
             PublicInstancePropertiesCache.Remove(type);
-        return properties.ToArray();
+        return properties;
     }
 
     /// <summary>
@@ -82,7 +91,7 @@ public static partial class TypeReflections
 #endif
         Type type)
     {
-        return GetPublicInstanceProperties(type)
+        return GetPublicInstancePropertiesCore(type)
             .Where(property => property.GetMethod != null && property.GetMethod.IsPublic)
             .ToArray();
     }
@@ -99,7 +108,7 @@ public static partial class TypeReflections
 #endif
         Type type)
     {
-        return GetPublicInstanceProperties(type)
+        return GetPublicInstancePropertiesCore(type)
             .Where(property => property.SetMethod != null
                                && property.SetMethod.IsPublic
                                && !PropertyInfoExtensions.IsInitOnlySetter(property))
@@ -123,7 +132,7 @@ public static partial class TypeReflections
 
         return properties
             .Where(IsPublicInstanceNonIndexerProperty)
-            .GroupBy(CreatePropertySignature, StringComparer.Ordinal)
+            .GroupBy(CreatePropertySignature)
             .Select(group => group
                 .OrderBy(property => property.DeclaringType?.FullName, StringComparer.Ordinal)
                 .ThenBy(property => GetMetadataToken(property))
@@ -140,12 +149,14 @@ public static partial class TypeReflections
     /// 获取接口及其所有继承接口声明的属性。
     /// </summary>
     /// <param name="type">接口类型。</param>
+    /// <param name="flags">属性可见性和实例绑定标志。</param>
     /// <returns>接口继承图中的声明属性。</returns>
 #if NET5_0_OR_GREATER
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "接口继承图来自已保留的运行时 Type；公共入口已声明接口和属性元数据需求。")]
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "接口继承图通过队列遍历运行时 Type，泛型集合无法表达元素级裁剪注解。")]
 #endif
-    private static IEnumerable<PropertyInfo> GetInterfaceProperties(Type type)
+    internal static IEnumerable<PropertyInfo> GetInterfaceProperties(Type type,
+        BindingFlags flags = BindingFlags.Public | BindingFlags.Instance)
     {
         var visited = new HashSet<Type>();
         var pending = new Queue<Type>();
@@ -157,7 +168,7 @@ public static partial class TypeReflections
             if (!visited.Add(current))
                 continue;
 
-            foreach (var property in current.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+            foreach (var property in current.GetProperties(flags | BindingFlags.DeclaredOnly))
                 yield return property;
 
             foreach (var inheritedInterface in current.GetInterfaces().OrderBy(item => item.FullName, StringComparer.Ordinal))
@@ -181,20 +192,10 @@ public static partial class TypeReflections
                || (setter != null && setter.IsPublic && !setter.IsStatic);
     }
 
-    /// <summary>
-    /// 创建用于接口属性去重的稳定签名。
-    /// </summary>
-    /// <param name="property">属性元数据。</param>
-    /// <returns>属性名称、类型、索引器参数和访问器形状组成的签名。</returns>
-    private static string CreatePropertySignature(PropertyInfo property)
-    {
-        return string.Concat(
-            property.Name, "|",
-            property.PropertyType.AssemblyQualifiedName, "|",
-            GetIndexParameterSignature(property), "|",
-            property.GetMethod != null ? "get" : string.Empty, "|",
-            property.SetMethod != null ? "set" : string.Empty);
-    }
+    /// <summary>按真实类型身份及访问器形状去重，保留不同声明中的泛型参数和跨加载上下文的类型。</summary>
+    /// <remarks>调用方已排除索引器；Type 相等性保留泛型参数的声明者及位置。</remarks>
+    internal static (string Name, Type PropertyType, bool HasGetter, bool HasSetter) CreatePropertySignature(PropertyInfo property) =>
+        (property.Name, property.PropertyType, property.GetMethod != null, property.SetMethod != null);
 
     /// <summary>
     /// 获取索引参数类型签名。

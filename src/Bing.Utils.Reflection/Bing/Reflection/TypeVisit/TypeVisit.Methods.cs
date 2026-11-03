@@ -190,7 +190,7 @@ public static partial class TypeVisit
     }
 
     /// <summary>
-    /// 获取基础方法
+    /// 获取最近基类中签名兼容的公共或非私有方法；未找到时返回 null。
     /// </summary>
     /// <param name="method">方法元数据</param>
     /// <exception cref="ArgumentNullException">方法元数据为 null 时抛出。</exception>
@@ -205,7 +205,10 @@ public static partial class TypeVisit
             return null;
         try
         {
-            return GetMethodBySignature(method.DeclaringType.BaseType, method);
+            return method.IsPublic
+                ? GetMethodBySignature(method.DeclaringType.BaseType, method)
+                : ResolveMethodBySignature(method.DeclaringType.BaseType, method,
+                    DefaultMethodBindingFlags | BindingFlags.NonPublic);
         }
         catch (MissingMethodException)
         {

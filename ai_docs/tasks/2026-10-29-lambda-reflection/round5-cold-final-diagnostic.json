@@ -1,0 +1,50 @@
+{
+  "runtime": ".NET 8.0.31",
+  "coreMvid": "fe852c2a-bbed-4743-ab37-0a3e06b2786d",
+  "results": [
+    {
+      "label": "checked-name",
+      "actual": "Number",
+      "error": null
+    },
+    {
+      "label": "checked-member",
+      "actual": "Number",
+      "error": null
+    },
+    {
+      "label": "ordinary-cast-control",
+      "actual": "Number",
+      "error": null
+    },
+    {
+      "label": "parallel-method",
+      "actual": "System.Linq.ParallelEnumerable",
+      "error": null
+    },
+    {
+      "label": "parallel-value",
+      "actual": "1,2",
+      "error": null
+    },
+    {
+      "label": "parallel-comparer-value",
+      "actual": "1,2",
+      "error": null
+    },
+    {
+      "label": "enumerable-control",
+      "actual": "1,2",
+      "error": null
+    }
+  ],
+  "cold": {
+    "scenario": "create-expression-and-evaluate-once",
+    "iterations": 10000,
+    "repetitions": 5,
+    "warmup": 2000,
+    "concurrency": 1,
+    "nanoseconds": 12139.3,
+    "bytesPerOperation": 1184.8104
+  }
+}

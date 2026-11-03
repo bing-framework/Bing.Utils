@@ -614,7 +614,10 @@ public static partial class Reflections
         if (options.IncludeNonPublic)
             flags |= BindingFlags.NonPublic;
         var comparison = options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-        var properties = TypeReflections.TypeCacheManager.GetTypeProperties(type, flags)
+        var candidates = type.IsInterface
+            ? GetPathInterfaceProperties(type, name, flags, comparison)
+            : (IEnumerable<PropertyInfo>)TypeReflections.TypeCacheManager.GetTypeProperties(type, flags);
+        var properties = candidates
             .Where(candidate => candidate.GetIndexParameters().Length == 0
                                 && string.Equals(candidate.Name, name, comparison))
             .Take(2).ToArray();
@@ -625,6 +628,38 @@ public static partial class Reflections
         if (!options.IncludeFields)
             return null;
         return SelectClosestField(type, name, TypeReflections.TypeCacheManager.GetTypeFields(type, flags), comparison);
+    }
+
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("接口成员路径按运行时接口继承图解析隐藏关系。")]
+#endif
+    private static IEnumerable<PropertyInfo> GetPathInterfaceProperties(Type type, string name,
+        BindingFlags flags, StringComparison comparison)
+    {
+        var properties = TypeReflections.GetInterfaceProperties(type, flags)
+            .Where(property => property.GetIndexParameters().Length == 0 &&
+                               string.Equals(property.Name, name, comparison))
+            .Distinct()
+            .ToArray();
+
+        return properties.Where(property => !properties.Any(derivedProperty =>
+            IsHiddenInterfaceProperty(property, derivedProperty)));
+    }
+
+#if NET5_0_OR_GREATER
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("接口成员路径按运行时接口继承图解析隐藏关系。")]
+#endif
+    private static bool IsHiddenInterfaceProperty(PropertyInfo property, PropertyInfo derivedProperty)
+    {
+        if (!string.Equals(property.Name, derivedProperty.Name, StringComparison.Ordinal))
+            return false;
+
+        var declaringType = property.DeclaringType;
+        var derivedDeclaringType = derivedProperty.DeclaringType;
+        return declaringType != null && derivedDeclaringType != null
+               && declaringType != derivedDeclaringType
+               // 协变可赋值不代表真实继承；只比较继承图中的精确接口身份。
+               && derivedDeclaringType.GetInterfaces().Contains(declaringType);
     }
 
     /// <summary>

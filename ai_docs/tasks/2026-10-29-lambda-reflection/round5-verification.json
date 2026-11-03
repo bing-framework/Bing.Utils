@@ -1,0 +1,280 @@
+{
+  "status": "COMPLETED",
+  "openActionable": 0,
+  "optimizationItems": {
+    "simpleMethodCallEvaluation": "COMPLETE",
+    "parameterScanAllocation": "COMPLETE"
+  },
+  "review": {
+    "agent": "/root/lambda_perf_test_map",
+    "status": "PASS",
+    "scope": "New production fast path and required semantic boundaries"
+  },
+  "changeImpact": {
+    "risk": "medium",
+    "productionFiles": [
+      "src/Bing.Utils/Bing/Expressions/Lambdas.cs"
+    ],
+    "testFiles": [
+      "tests/Bing.Utils.Tests/Bing/Expressions/LambdaMethodCallEvaluationTests.cs"
+    ],
+    "publicSignaturesChanged": false,
+    "productionDependenciesChanged": false,
+    "targetFrameworksChanged": false,
+    "runtimePaths": [
+      "closed method-call evaluation",
+      "free-parameter scan of method arguments"
+    ]
+  },
+  "checks": [
+    {
+      "command": [
+        "dotnet",
+        "test",
+        "tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj",
+        "-c",
+        "Release",
+        "-f",
+        "net8.0",
+        "--no-restore",
+        "--verbosity",
+        "minimal",
+        "-p:GenerateDocumentationFile=false",
+        "--filter",
+        "FullyQualifiedName~Lambda"
+      ],
+      "exitCode": 0,
+      "name": "targeted",
+      "summary": "Passed!  - Failed:     0, Passed:   150, Skipped:     0, Total:   150, Duration: 2 s - Bing.Utils.Tests.dll (net8.0)\n",
+      "rawLog": "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\targeted.log"
+    },
+    {
+      "command": [
+        "dotnet",
+        "test",
+        "tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj",
+        "-c",
+        "Release",
+        "-f",
+        "net8.0",
+        "--no-restore",
+        "--no-build",
+        "--verbosity",
+        "minimal"
+      ],
+      "exitCode": 0,
+      "name": "core-full",
+      "summary": "Passed!  - Failed:     0, Passed:  7909, Skipped:     0, Total:  7909, Duration: 1 m 23 s - Bing.Utils.Tests.dll (net8.0)\n",
+      "rawLog": "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\core-full.log"
+    },
+    {
+      "command": [
+        "dotnet",
+        "test",
+        "tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj",
+        "-c",
+        "Release",
+        "-f",
+        "net6.0",
+        "--no-restore",
+        "--verbosity",
+        "minimal",
+        "-p:GenerateDocumentationFile=false",
+        "--filter",
+        "FullyQualifiedName~Lambda"
+      ],
+      "exitCode": 0,
+      "name": "lambda-net6.0",
+      "summary": "Passed!  - Failed:     0, Passed:   150, Skipped:     0, Total:   150, Duration: 1 s - Bing.Utils.Tests.dll (net6.0)\n",
+      "rawLog": "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\lambda-net6.0.log"
+    },
+    {
+      "command": [
+        "dotnet",
+        "test",
+        "tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj",
+        "-c",
+        "Release",
+        "-f",
+        "net7.0",
+        "--no-restore",
+        "--verbosity",
+        "minimal",
+        "-p:GenerateDocumentationFile=false",
+        "--filter",
+        "FullyQualifiedName~Lambda"
+      ],
+      "exitCode": 0,
+      "name": "lambda-net7.0",
+      "summary": "Passed!  - Failed:     0, Passed:   150, Skipped:     0, Total:   150, Duration: 1 s - Bing.Utils.Tests.dll (net7.0)\n",
+      "rawLog": "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\lambda-net7.0.log"
+    },
+    {
+      "command": [
+        "dotnet",
+        "build",
+        "src/Bing.Utils/Bing.Utils.csproj",
+        "-c",
+        "Release",
+        "--no-restore",
+        "--verbosity",
+        "quiet",
+        "-p:GenerateDocumentationFile=false"
+      ],
+      "exitCode": 0,
+      "name": "multi-target",
+      "summary": "\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:04.27\n",
+      "rawLog": "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\multi-target.log"
+    }
+  ],
+  "performance": {
+    "baselineMvid": "feb4168f-56df-4fcd-b41f-005a8bed44fe",
+    "candidateMvid": "fe852c2a-bbed-4743-ab37-0a3e06b2786d",
+    "runtime": ".NET 8.0.31",
+    "environment": {
+      "DOTNET_TieredCompilation": "0"
+    },
+    "warmup": 2000,
+    "iterations": 10000,
+    "repetitions": 5,
+    "concurrency": 1,
+    "newPairReason": "Fixed JIT configuration differs from round4; use the same unchanged probe binaries and a pre-edit snapshot of the current workspace as baseline. Historical measurements are retained, not overwritten.",
+    "runsPerCandidateWorkload": {
+      "diagnostic": 1,
+      "confirmation": 1
+    },
+    "commands": [
+      {
+        "name": "cold-baseline-diagnostic",
+        "command": [
+          "dotnet",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-review4-qo10_fqv\\bin\\Release\\net8.0\\Probe.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\baseline\\Bing.Utils.dll"
+        ],
+        "exitCode": 0,
+        "environment": {
+          "DOTNET_TieredCompilation": "0"
+        }
+      },
+      {
+        "name": "warm-baseline-diagnostic",
+        "command": [
+          "dotnet",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-rereview-luv4hjnt\\bin\\Release\\net8.0\\ReviewProbe.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\baseline\\Bing.Utils.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\baseline\\Bing.Utils.Reflection.dll",
+          "--cases",
+          "--perf"
+        ],
+        "exitCode": 0,
+        "environment": {
+          "DOTNET_TieredCompilation": "0"
+        }
+      },
+      {
+        "name": "cold-final-diagnostic",
+        "command": [
+          "dotnet",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-review4-qo10_fqv\\bin\\Release\\net8.0\\Probe.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\final\\Bing.Utils.dll"
+        ],
+        "exitCode": 0,
+        "environment": {
+          "DOTNET_TieredCompilation": "0"
+        }
+      },
+      {
+        "name": "warm-final-diagnostic",
+        "command": [
+          "dotnet",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-rereview-luv4hjnt\\bin\\Release\\net8.0\\ReviewProbe.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\final\\Bing.Utils.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\final\\Bing.Utils.Reflection.dll",
+          "--cases",
+          "--perf"
+        ],
+        "exitCode": 0,
+        "environment": {
+          "DOTNET_TieredCompilation": "0"
+        }
+      },
+      {
+        "name": "cold-final-confirmed",
+        "command": [
+          "dotnet",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-review4-qo10_fqv\\bin\\Release\\net8.0\\Probe.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\final\\Bing.Utils.dll"
+        ],
+        "exitCode": 0,
+        "environment": {
+          "DOTNET_TieredCompilation": "0"
+        }
+      },
+      {
+        "name": "warm-final-confirmed",
+        "command": [
+          "dotnet",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-rereview-luv4hjnt\\bin\\Release\\net8.0\\ReviewProbe.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\final\\Bing.Utils.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\final\\Bing.Utils.Reflection.dll",
+          "--cases",
+          "--perf"
+        ],
+        "exitCode": 0,
+        "environment": {
+          "DOTNET_TieredCompilation": "0"
+        }
+      },
+      {
+        "name": "cold-baseline-confirmed",
+        "command": [
+          "dotnet",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-review4-qo10_fqv\\bin\\Release\\net8.0\\Probe.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\baseline\\Bing.Utils.dll"
+        ],
+        "exitCode": 0,
+        "environment": {
+          "DOTNET_TieredCompilation": "0"
+        }
+      },
+      {
+        "name": "warm-baseline-confirmed",
+        "command": [
+          "dotnet",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-rereview-luv4hjnt\\bin\\Release\\net8.0\\ReviewProbe.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\baseline\\Bing.Utils.dll",
+          "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz\\baseline\\Bing.Utils.Reflection.dll",
+          "--cases",
+          "--perf"
+        ],
+        "exitCode": 0,
+        "environment": {
+          "DOTNET_TieredCompilation": "0"
+        }
+      }
+    ],
+    "preliminaryEvidence": {
+      "status": "SUPERSEDED",
+      "reason": "Earlier candidate did not yet include the Missing signature exclusion and allocation-free argument scan; excluded from final conclusions.",
+      "directory": "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-perf5-li0j6rwz"
+    },
+    "timingLimitation": "Two runs both reduced measured call-evaluation time, but magnitude varied. Allocation reductions were identical. Results describe these workloads and JIT configuration, not a fixed production speedup."
+  },
+  "artifacts": [
+    "round5-cold-baseline-diagnostic.json",
+    "round5-cold-baseline-confirmed.json",
+    "round5-cold-final-diagnostic.json",
+    "round5-cold-final-confirmed.json",
+    "round5-warm-baseline-diagnostic.json",
+    "round5-warm-baseline-confirmed.json",
+    "round5-warm-final-diagnostic.json",
+    "round5-warm-final-confirmed.json"
+  ],
+  "reusedEvidence": {
+    "reflectionSubpackage": "Previous reflection-specific tests remain scoped evidence; no Reflection subpackage production code changed in this continuation.",
+    "probeSources": [
+      "benchmarks/LambdaColdPathProbe",
+      "benchmarks/ReflectionRegressionProbe"
+    ]
+  }
+}

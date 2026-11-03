@@ -1,0 +1,22 @@
+{
+  "coreMvid": "83d68a24-e4a8-4028-b642-16ff1db36861",
+  "collections": 20,
+  "rows": [
+    {
+      "mode": "no-accessor",
+      "assemblyAlive": false
+    },
+    {
+      "mode": "object-getter",
+      "assemblyAlive": false
+    },
+    {
+      "mode": "object-setter",
+      "assemblyAlive": false
+    },
+    {
+      "mode": "typed-accessors",
+      "assemblyAlive": false
+    }
+  ]
+}

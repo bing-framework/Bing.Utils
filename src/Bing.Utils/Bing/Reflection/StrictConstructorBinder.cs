@@ -151,7 +151,21 @@ internal static class StrictConstructorBinder
         var arguments = Expression.Parameter(typeof(object[]), "arguments");
         var parameters = constructor.GetParameters();
         if (parameters.Any(parameter => parameter.ParameterType.IsByRef))
-            return constructor.Invoke;
+        {
+            // Invoke 负责把 ref/out 参数回写原数组；拆除其包装异常以保持普通构造委托的异常契约。
+            return values =>
+            {
+                try
+                {
+                    return constructor.Invoke(values);
+                }
+                catch (TargetInvocationException exception) when (exception.InnerException != null)
+                {
+                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+                    throw;
+                }
+            };
+        }
         var values = parameters.Select((parameter, index) => Expression.Convert(
             Expression.ArrayIndex(arguments, Expression.Constant(index)), parameter.ParameterType));
         var body = Expression.Convert(Expression.New(constructor, values), typeof(object));
@@ -320,6 +334,10 @@ internal static class StrictConstructorBinder
                     return false;
             }
 
+            candidateType = candidateType.IsByRef ? candidateType.GetElementType() : candidateType;
+            otherType = otherType.IsByRef ? otherType.GetElementType() : otherType;
+            if (candidateType == otherType)
+                continue;
             if (otherType.IsAssignableFrom(candidateType))
             {
                 hasMoreSpecificParameter = true;
@@ -349,7 +367,11 @@ internal static class StrictConstructorBinder
 
         for (var index = 0; index < parameters.Length; index++)
         {
-            if (!IsArgumentCompatible(parameters[index].ParameterType, argumentTypes[index]))
+            var parameter = parameters[index];
+            // out 参数允许 null 占位；ref/in 的输入仍按元素类型检查。
+            if (parameter.IsOut && parameter.ParameterType.IsByRef && argumentTypes[index] == null)
+                continue;
+            if (!IsArgumentCompatible(parameter.ParameterType, argumentTypes[index]))
                 return false;
         }
 
@@ -364,6 +386,13 @@ internal static class StrictConstructorBinder
     /// <returns>实参可赋值时返回 true；否则返回 false。</returns>
     private static bool IsArgumentCompatible(Type parameterType, Type argumentType)
     {
+        if (parameterType.IsByRef)
+        {
+            // 元数据查询可显式传入 T&；实例化传入的是装箱后的 T。
+            if (argumentType?.IsByRef == true)
+                return parameterType == argumentType;
+            parameterType = parameterType.GetElementType();
+        }
         if (argumentType == null)
             return !parameterType.IsValueType || Nullable.GetUnderlyingType(parameterType) != null;
         return parameterType.IsAssignableFrom(argumentType)

@@ -1,0 +1,183 @@
+{
+  "status": "COMPLETED",
+  "findings": {
+    "R10": "CLOSED",
+    "R11": "CLOSED"
+  },
+  "optimization": "CLOSED",
+  "openActionable": 0,
+  "review": {
+    "agent": "/root/round4_review",
+    "status": "PASS"
+  },
+  "changeImpact": {
+    "risk": "medium",
+    "productionFiles": [
+      "src/Bing.Utils/Bing/Expressions/Lambdas.cs"
+    ],
+    "testFiles": [
+      "tests/Bing.Utils.Tests/Bing/Expressions/LambdaConversionAndParallelTests.cs",
+      "tests/Bing.Utils.Tests/Bing/Expressions/LambdaReviewRegressionTests.cs"
+    ],
+    "publicSignaturesChanged": false,
+    "productionDependenciesChanged": false,
+    "runtimePaths": [
+      "PLINQ search operand selection",
+      "checked metadata unwrapping",
+      "weak evaluator cache initialization"
+    ]
+  },
+  "checks": [
+    {
+      "command": [
+        "dotnet",
+        "test",
+        "tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj",
+        "-c",
+        "Release",
+        "-f",
+        "net8.0",
+        "--no-restore",
+        "--verbosity",
+        "minimal",
+        "-p:GenerateDocumentationFile=false",
+        "--filter",
+        "FullyQualifiedName~Lambda"
+      ],
+      "exitCode": 0,
+      "summary": "ionsStrictContractTests.AttributeTarget.Value' is never assigned to, and will always have its default value 0 [D:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\Bing.Utils.Tests.csproj::TargetFramework=net8.0]\nD:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\Extensions\\Base\\ObjectExtensionsTest.cs(125,16): warning CS0649: Field 'TestClassB.Id' is never assigned to, and will always have its default value 0 [D:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\Bing.Utils.Tests.csproj::TargetFramework=net8.0]\nD:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\Bing\\Reflection\\ReflectionsMetadataLookupTests.cs(145,48): warning CS0649: Field 'ReflectionsMetadataLookupTests.BaseFieldSample.Value' is never assigned to, and will always have its default value 0 [D:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\Bing.Utils.Tests.csproj::TargetFramework=net8.0]\nD:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\Bing\\Reflection\\ReflectionsMetadataLookupTests.cs(150,20): warning CS0649: Field 'ReflectionsMetadataLookupTests.CaseFieldSample.value' is never assigned to, and will always have its default value 0 [D:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\Bing.Utils.Tests.csproj::TargetFramework=net8.0]\nD:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\Bing\\Reflection\\TypeReflectionsCollectibleAttributeTests.cs(326,24): warning xUnit1013: Public method 'GenericTarget' on test class 'TypeReflectionsCollectibleAttributeTests' should be marked as a Theory. Reduce the visibility of the method, or add a Theory attribute to the method. (https://xunit.net/xunit.analyzers/rules/xUnit1013) [D:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\Bing.Utils.Tests.csproj::TargetFramework=net8.0]\n  Bing.Utils.Tests -> D:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\bin\\Release\\net8.0\\Bing.Utils.Tests.dll\nTest run for D:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\bin\\Release\\net8.0\\Bing.Utils.Tests.dll (.NETCoreApp,Version=v8.0)\nVSTest version 17.11.1 (x64)\n\nStarting test execution, please wait...\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   142, Skipped:     0, Total:   142, Duration: 1 s - Bing.Utils.Tests.dll (net8.0)\n"
+    },
+    {
+      "name": "core-full",
+      "command": [
+        "dotnet",
+        "test",
+        "tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj",
+        "-c",
+        "Release",
+        "-f",
+        "net8.0",
+        "--no-restore",
+        "--no-build",
+        "--verbosity",
+        "minimal"
+      ],
+      "exitCode": 0,
+      "summary": "Test run for D:\\Bing_Framework\\Bing.Utils\\tests\\Bing.Utils.Tests\\bin\\Release\\net8.0\\Bing.Utils.Tests.dll (.NETCoreApp,Version=v8.0)\nVSTest version 17.11.1 (x64)\n\nStarting test execution, please wait...\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:  7645, Skipped:     0, Total:  7645, Duration: 42 s - Bing.Utils.Tests.dll (net8.0)\n"
+    },
+    {
+      "name": "multi-target",
+      "command": [
+        "dotnet",
+        "build",
+        "src/Bing.Utils.Reflection/Bing.Utils.Reflection.csproj",
+        "-c",
+        "Release",
+        "--no-restore",
+        "--verbosity",
+        "quiet",
+        "-p:GenerateDocumentationFile=false"
+      ],
+      "exitCode": 0,
+      "summary": "s.csproj::TargetFramework=net7.0]\nD:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing\\IO\\FileHelper.Info.cs(181,20): warning SYSLIB0001: 'Encoding.UTF7' is obsolete: 'The UTF-7 encoding is insecure and should not be used. Consider using UTF-8 instead.' (https://aka.ms/dotnet-warnings/SYSLIB0001) [D:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing.Utils.csproj::TargetFramework=net7.0]\nD:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing\\Text\\Extensions\\String\\Extensions.String.Byte.cs(41,74): warning SYSLIB0001: 'Encoding.UTF7' is obsolete: 'The UTF-7 encoding is insecure and should not be used. Consider using UTF-8 instead.' (https://aka.ms/dotnet-warnings/SYSLIB0001) [D:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing.Utils.csproj::TargetFramework=net7.0]\nD:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing\\Utils\\Develops\\CodeTimer.cs(218,9): warning SYSLIB0006: 'Thread.Abort()' is obsolete: 'Thread.Abort is not supported and throws PlatformNotSupportedException.' (https://aka.ms/dotnet-warnings/SYSLIB0006) [D:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing.Utils.csproj::TargetFramework=net7.0]\nD:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Json\\TabularDataReader.cs(276,30): warning CS0168: The variable 'error' is declared but never used [D:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing.Utils.csproj::TargetFramework=net7.0]\nD:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Json\\TabularDataReader.cs(282,30): warning CS0168: The variable 'error' is declared but never used [D:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing.Utils.csproj::TargetFramework=net7.0]\nD:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing\\Utils\\Develops\\CodeTimer.cs(230,29): warning CA1416: This call site is reachable on all platforms. 'Console.CursorVisible.get' is only supported on: 'windows'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1416) [D:\\Bing_Framework\\Bing.Utils\\src\\Bing.Utils\\Bing.Utils.csproj::TargetFramework=net7.0]\n    29 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:05.74\n"
+    },
+    {
+      "name": "cache-inventory",
+      "command": [
+        "pwsh",
+        "-NoProfile",
+        "-File",
+        "benchmarks/Bing.Utils.Benchmark/Test-ReflectionCacheInventory.ps1"
+      ],
+      "exitCode": 0,
+      "summary": "reflection-cache-inventory: entries=37, unlisted=0, passed=True\nreflection-cache-inventory-report: D:\\Bing_Framework\\Bing.Utils\\benchmarks\\Bing.Utils.Benchmark\\bin\\reflection-cache-inventory.json\n"
+    },
+    {
+      "name": "probe-build",
+      "command": [
+        "dotnet",
+        "build",
+        "benchmarks\\LambdaColdPathProbe\\LambdaColdPathProbe.csproj",
+        "-c",
+        "Release",
+        "--verbosity",
+        "quiet"
+      ],
+      "exitCode": 0,
+      "summary": "\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:02.93\n"
+    }
+  ],
+  "coreTests": {
+    "framework": "net8.0",
+    "configuration": "Release",
+    "passed": 7645,
+    "failed": 0,
+    "skipped": 0
+  },
+  "reusedEvidence": {
+    "reflectionUnitTests": 323,
+    "source": "round3-verification.json",
+    "reason": "Only Lambdas production paths changed this round; Reflection package production paths and dependent reflection helpers unchanged."
+  },
+  "cacheInventory": {
+    "entries": 37,
+    "unlisted": 0,
+    "passed": true
+  },
+  "performance": {
+    "coldBaseline": {
+      "scenario": "create-expression-and-evaluate-once",
+      "iterations": 10000,
+      "repetitions": 5,
+      "warmup": 2000,
+      "concurrency": 1,
+      "nanoseconds": 11568.08,
+      "bytesPerOperation": 2408.8528
+    },
+    "coldAfter": {
+      "scenario": "create-expression-and-evaluate-once",
+      "iterations": 10000,
+      "repetitions": 5,
+      "warmup": 2000,
+      "concurrency": 1,
+      "nanoseconds": 13021.65,
+      "bytesPerOperation": 2288.8528
+    },
+    "coreMvid": "564267b8-c305-47e1-b7fa-89a495411ad9",
+    "runtime": ".NET 8.0.31",
+    "warmComputedBytesPerOperation": 208,
+    "baselineReused": true,
+    "runsPerCandidateWorkload": {
+      "diagnostic": 1,
+      "confirmation": 1
+    },
+    "coldCommand": {
+      "command": [
+        "dotnet",
+        "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-lambda-review4-qo10_fqv\\bin\\Release\\net8.0\\Probe.dll",
+        "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-round4-15ppj9fv\\candidate\\Bing.Utils.dll"
+      ],
+      "exitCode": 0
+    },
+    "warmCommand": {
+      "command": [
+        "dotnet",
+        "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-rereview-luv4hjnt\\bin\\Release\\net8.0\\ReviewProbe.dll",
+        "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-round4-15ppj9fv\\candidate\\Bing.Utils.dll",
+        "C:\\Users\\jianx\\AppData\\Local\\Temp\\bing-reflection-round4-15ppj9fv\\candidate\\Bing.Utils.Reflection.dll",
+        "--cases",
+        "--perf"
+      ],
+      "exitCode": 0
+    },
+    "limitation": "Cold cost includes expression creation. Cache admission still has overhead; timing varied and no stable speedup is claimed."
+  },
+  "artifacts": [
+    "round4-cold-before.json",
+    "round4-cold-diagnostic.json",
+    "round4-cold-after.json",
+    "round4-warm-before.json",
+    "round4-warm-diagnostic.json",
+    "round4-warm-after.json"
+  ]
+}

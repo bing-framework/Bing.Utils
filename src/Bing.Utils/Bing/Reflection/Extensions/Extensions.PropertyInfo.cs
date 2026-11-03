@@ -14,6 +14,11 @@ namespace Bing.Reflection;
 /// </summary>
 public static partial class PropertyInfoExtensions
 {
+    private static class ObjectAccessorScope<T>
+    {
+        internal static readonly bool IsCollectible = ReflectionCacheScope.IsCollectible(typeof(T));
+    }
+
     private static int _accessorCompileCount;
     internal static int AccessorCompileCount => System.Threading.Volatile.Read(ref _accessorCompileCount);
     private static readonly ConditionalWeakTable<PropertyInfo, StrongBox<bool>> InitOnlySetters = new();
@@ -49,11 +54,17 @@ public static partial class PropertyInfoExtensions
     {
         if (propertyInfo == null)
             throw new ArgumentNullException(nameof(propertyInfo));
+        if (!ObjectAccessorScope<T>.IsCollectible &&
+            TypeReflections.TypeCacheManager<T>.PropertyValueGetters.TryGetValue(propertyInfo, out var existing))
+        {
+            CoreCacheMetrics.Record(existing);
+            return existing.Value;
+        }
         ValidateAccessor(propertyInfo, getter: true, requireInstance: true);
         ValidateBoxablePropertyType(propertyInfo);
         if (propertyInfo.DeclaringType?.IsAssignableFrom(typeof(T)) != true)
             throw new ArgumentException("属性不属于指定的实例类型。", nameof(propertyInfo));
-        if (ReflectionCacheScope.IsCollectible(propertyInfo))
+        if (ObjectAccessorScope<T>.IsCollectible || ReflectionCacheScope.IsCollectible(propertyInfo))
             return BuildValueGetter<T>(propertyInfo);
         CoreCacheMetrics.RecordLookup(TypeReflections.TypeCacheManager<T>.PropertyValueGetters, propertyInfo);
         return TypeReflections.TypeCacheManager<T>.PropertyValueGetters.GetValue(propertyInfo,
@@ -78,6 +89,11 @@ public static partial class PropertyInfoExtensions
     {
         if (propertyInfo == null)
             throw new ArgumentNullException(nameof(propertyInfo));
+        if (TypeReflections.TypeCacheManager.PropertyValueGetters.TryGetValue(propertyInfo, out var existing))
+        {
+            CoreCacheMetrics.Record(existing);
+            return existing.Value;
+        }
         ValidateAccessor(propertyInfo, getter: true, requireInstance: false);
         ValidateBoxablePropertyType(propertyInfo);
         if (propertyInfo.DeclaringType == null)
@@ -110,11 +126,17 @@ public static partial class PropertyInfoExtensions
             throw new ArgumentNullException(nameof(propertyInfo));
         if (typeof(T).IsValueType)
             throw new NotSupportedException("值类型属性请使用 GetValueSetterByRef<T>，以便将修改回写到原始实例。");
+        if (!ObjectAccessorScope<T>.IsCollectible &&
+            TypeReflections.TypeCacheManager<T>.PropertyValueSetters.TryGetValue(propertyInfo, out var existing))
+        {
+            CoreCacheMetrics.Record(existing);
+            return existing.Value;
+        }
         ValidateAccessor(propertyInfo, getter: false, requireInstance: true);
         ValidateBoxablePropertyType(propertyInfo);
         if (propertyInfo.DeclaringType?.IsAssignableFrom(typeof(T)) != true)
             throw new ArgumentException("属性不属于指定的实例类型。", nameof(propertyInfo));
-        if (ReflectionCacheScope.IsCollectible(propertyInfo))
+        if (ObjectAccessorScope<T>.IsCollectible || ReflectionCacheScope.IsCollectible(propertyInfo))
             return BuildValueSetter<T>(propertyInfo);
         CoreCacheMetrics.RecordLookup(TypeReflections.TypeCacheManager<T>.PropertyValueSetters, propertyInfo);
         return TypeReflections.TypeCacheManager<T>.PropertyValueSetters.GetValue(propertyInfo,
@@ -139,6 +161,11 @@ public static partial class PropertyInfoExtensions
     {
         if (propertyInfo == null)
             throw new ArgumentNullException(nameof(propertyInfo));
+        if (TypeReflections.TypeCacheManager.PropertyValueSetters.TryGetValue(propertyInfo, out var existing))
+        {
+            CoreCacheMetrics.Record(existing);
+            return existing.Value;
+        }
         ValidateAccessor(propertyInfo, getter: false, requireInstance: false);
         ValidateBoxablePropertyType(propertyInfo);
         if (propertyInfo.DeclaringType == null)
@@ -162,11 +189,17 @@ public static partial class PropertyInfoExtensions
     {
         if (propertyInfo == null)
             throw new ArgumentNullException(nameof(propertyInfo));
+        if (!ObjectAccessorScope<T>.IsCollectible &&
+            RefSetterCache<T>.Setters.TryGetValue(propertyInfo, out var existing))
+        {
+            CoreCacheMetrics.Record(existing);
+            return existing.Value;
+        }
         ValidateAccessor(propertyInfo, getter: false, requireInstance: true);
         ValidateBoxablePropertyType(propertyInfo);
         if (propertyInfo.DeclaringType?.IsAssignableFrom(typeof(T)) != true)
             throw new ArgumentException("属性不属于指定的值类型。", nameof(propertyInfo));
-        if (ReflectionCacheScope.IsCollectible(propertyInfo))
+        if (ObjectAccessorScope<T>.IsCollectible || ReflectionCacheScope.IsCollectible(propertyInfo))
             return BuildValueSetterByRef<T>(propertyInfo);
         CoreCacheMetrics.RecordLookup(RefSetterCache<T>.Setters, propertyInfo);
         return RefSetterCache<T>.Setters.GetValue(propertyInfo,

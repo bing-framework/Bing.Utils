@@ -1,0 +1,110 @@
+{
+  "runtime": ".NET 8.0.31",
+  "coreMvid": "38452377-9022-4b78-82a3-c5a5ac5f1e71",
+  "reflectionMvid": "17d2bd2b-a804-49f7-b1b0-f03994eda761",
+  "warmup": 2000,
+  "iterations": 10000,
+  "repetitions": 5,
+  "concurrency": 1,
+  "findings": [
+    {
+      "name": "interface-hidden-property-public",
+      "actual": 2,
+      "exception": null
+    },
+    {
+      "name": "interface-hidden-property-include-nonpublic",
+      "actual": 2,
+      "exception": null
+    },
+    {
+      "name": "interface-hidden-property-set",
+      "actual": {
+        "success": true,
+        "expectedMember": 42,
+        "baseMember": 1
+      },
+      "exception": null
+    },
+    {
+      "name": "count-negated-and",
+      "actual": 2,
+      "exception": null
+    },
+    {
+      "name": "nested-contains-value",
+      "actual": [
+        true,
+        false
+      ],
+      "exception": null
+    },
+    {
+      "name": "contains-query-computed-argument",
+      "actual": true,
+      "exception": null
+    },
+    {
+      "name": "bool-comparison-convention",
+      "actual": true,
+      "exception": null
+    }
+  ],
+  "measures": [
+    {
+      "name": "lambda-literal",
+      "nanoseconds": 145.01,
+      "bytesPerOperation": 0
+    },
+    {
+      "name": "lambda-captured-field",
+      "nanoseconds": 330.38,
+      "bytesPerOperation": 24
+    },
+    {
+      "name": "lambda-captured-property",
+      "nanoseconds": 472.96,
+      "bytesPerOperation": 24
+    },
+    {
+      "name": "lambda-computed-value",
+      "nanoseconds": 4142.12,
+      "bytesPerOperation": 1352.032
+    },
+    {
+      "name": "dynamic-first-read",
+      "nanoseconds": 63.42,
+      "bytesPerOperation": 24
+    },
+    {
+      "name": "dynamic-second-read",
+      "nanoseconds": 57.33,
+      "bytesPerOperation": 24
+    },
+    {
+      "name": "dynamic-second-write",
+      "nanoseconds": 102.29,
+      "bytesPerOperation": 0
+    },
+    {
+      "name": "dynamic-create-two-reads",
+      "nanoseconds": 363.3,
+      "bytesPerOperation": 216
+    },
+    {
+      "name": "object-getter-factory-warm",
+      "nanoseconds": 848.96,
+      "bytesPerOperation": 120
+    },
+    {
+      "name": "typed-getter-factory-warm",
+      "nanoseconds": 54.11,
+      "bytesPerOperation": 0
+    },
+    {
+      "name": "typed-getter-invoke",
+      "nanoseconds": 5.06,
+      "bytesPerOperation": 0
+    }
+  ]
+}

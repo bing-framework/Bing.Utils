@@ -132,7 +132,8 @@ public static partial class TypeVisit
 #if NET5_0_OR_GREATER
     [RequiresUnreferencedCode("方法签名按运行时元数据扫描，裁剪时必须保留目标类型的方法和接口元数据。")]
 #endif
-    private static MethodInfo ResolveMethodBySignature(Type type, MethodInfo method)
+    private static MethodInfo ResolveMethodBySignature(Type type, MethodInfo method,
+        BindingFlags bindingFlags = DefaultMethodBindingFlags)
     {
         System.Threading.Interlocked.Increment(ref _methodSignatureScanCount);
         if (type == null)
@@ -140,8 +141,8 @@ public static partial class TypeVisit
         if (method == null)
             throw new ArgumentNullException(nameof(method));
 
-        var candidates = GetMethodCandidates(type, DefaultMethodBindingFlags)
-            .Where(candidate => IsSignatureCompatible(candidate, method))
+        var candidates = GetMethodCandidates(type, bindingFlags)
+            .Where(candidate => !candidate.IsPrivate && IsSignatureCompatible(candidate, method))
             .ToArray();
         if (candidates.Length == 0)
             throw new MissingMethodException($"类型“{type.FullName}”中未找到与方法“{GetFullyQualifiedName(method)}”签名兼容的方法。");

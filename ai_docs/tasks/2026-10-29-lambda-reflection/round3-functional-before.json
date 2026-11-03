@@ -1,0 +1,73 @@
+{
+  "runtime": ".NET 8.0.31",
+  "coreMvid": "75d8fcfb-ffcb-466b-97b0-16ebe294756f",
+  "rows": [
+    {
+      "name": "array-contains-name",
+      "value": null,
+      "type": null,
+      "error": "ArgumentNullException: Value cannot be null. (Parameter \u0027type\u0027)"
+    },
+    {
+      "name": "array-contains-last-name",
+      "value": null,
+      "type": null,
+      "error": "ArgumentNullException: Value cannot be null. (Parameter \u0027type\u0027)"
+    },
+    {
+      "name": "array-contains-value",
+      "value": [
+        1,
+        2
+      ],
+      "type": "System.Int32[]",
+      "error": null
+    },
+    {
+      "name": "array-contains-operator",
+      "value": "Contains",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "list-contains-name-control",
+      "value": "Number",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "inline-list-contains-name",
+      "value": null,
+      "type": null,
+      "error": "InvalidCastException: Unable to cast object of type \u0027System.Linq.Expressions.ListInitExpression\u0027 to type \u0027System.Linq.Expressions.MemberExpression\u0027."
+    },
+    {
+      "name": "constant-string-contains-name",
+      "value": null,
+      "type": null,
+      "error": "InvalidCastException: Unable to cast object of type \u0027System.Linq.Expressions.ConstantExpression\u0027 to type \u0027System.Linq.Expressions.MemberExpression\u0027."
+    },
+    {
+      "name": "both-dependent-contains-with-comparer",
+      "value": "System.OrdinalCaseSensitiveComparer",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "independent-value-control",
+      "value": "a",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "independent-sequence-control",
+      "value": [
+        "a",
+        "b"
+      ],
+      "type": "System.String[]",
+      "error": null
+    }
+  ],
+  "operatorBytesPerCall": 40
+}

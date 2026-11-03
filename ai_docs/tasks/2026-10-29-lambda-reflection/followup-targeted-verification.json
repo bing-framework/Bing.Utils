@@ -1,0 +1,46 @@
+[
+  {
+    "name": "core-targeted",
+    "command": [
+      "dotnet",
+      "test",
+      "tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj",
+      "-c",
+      "Release",
+      "-f",
+      "net8.0",
+      "--no-restore",
+      "--verbosity",
+      "minimal",
+      "-p:GenerateDocumentationFile=false",
+      "--filter",
+      "FullyQualifiedName~LambdaParsingRegressionTests|FullyQualifiedName~LambdasTest|FullyQualifiedName~LambdaAndExpressionExtensionsTests|FullyQualifiedName~ReflectionRepairRegressionTests|FullyQualifiedName~TypedPropertyAccessorTests|FullyQualifiedName~ReflectionsMemberPathTests|FullyQualifiedName~PropertyInfoExtensionsRegressionTests"
+    ],
+    "exitCode": 0,
+    "summary": [
+      "Passed!  - Failed:     0, Passed:   148, Skipped:     0, Total:   148, Duration: 215 ms - Bing.Utils.Tests.dll (net8.0)"
+    ]
+  },
+  {
+    "name": "reflection-targeted",
+    "command": [
+      "dotnet",
+      "test",
+      "tests/Bing.Utils.Reflection.Tests/Bing.Utils.Reflection.Tests.csproj",
+      "-c",
+      "Release",
+      "-f",
+      "net8.0",
+      "--no-restore",
+      "--verbosity",
+      "minimal",
+      "-p:GenerateDocumentationFile=false",
+      "--filter",
+      "FullyQualifiedName~DynamicBaseCollectibleCacheTests|FullyQualifiedName~DynamicBaseTest|FullyQualifiedName~ReflectionCacheScopeTests|FullyQualifiedName~ReflectionBoundedAdmission"
+    ],
+    "exitCode": 0,
+    "summary": [
+      "Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 223 ms - Bing.Utils.Reflection.Tests.dll (net8.0)"
+    ]
+  }
+]

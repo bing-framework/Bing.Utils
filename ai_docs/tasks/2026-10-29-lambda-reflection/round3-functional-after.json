@@ -1,0 +1,73 @@
+{
+  "runtime": ".NET 8.0.31",
+  "coreMvid": "83d68a24-e4a8-4028-b642-16ff1db36861",
+  "rows": [
+    {
+      "name": "array-contains-name",
+      "value": "Number",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "array-contains-last-name",
+      "value": "Number",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "array-contains-value",
+      "value": [
+        1,
+        2
+      ],
+      "type": "System.Int32[]",
+      "error": null
+    },
+    {
+      "name": "array-contains-operator",
+      "value": "Contains",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "list-contains-name-control",
+      "value": "Number",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "inline-list-contains-name",
+      "value": "Number",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "constant-string-contains-name",
+      "value": "Name",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "both-dependent-contains-with-comparer",
+      "value": null,
+      "type": null,
+      "error": "NotSupportedException: \u4E0D\u652F\u6301\u4ECE\u8BE5\u8868\u8FBE\u5F0F\u4E2D\u63D0\u53D6\u67E5\u8BE2\u503C\uFF0C\u8282\u70B9\u7C7B\u578B\uFF1ACall\u3002"
+    },
+    {
+      "name": "independent-value-control",
+      "value": "a",
+      "type": "System.String",
+      "error": null
+    },
+    {
+      "name": "independent-sequence-control",
+      "value": [
+        "a",
+        "b"
+      ],
+      "type": "System.String[]",
+      "error": null
+    }
+  ],
+  "operatorBytesPerCall": 0
+}

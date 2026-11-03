@@ -294,8 +294,8 @@
       "source": "src/Bing.Utils.Reflection/Bing/Dynamic/DynamicBase.cs",
       "match": "ConditionalWeakTable<Type, PropertyLookup> _propertyCache",
       "key": "Type",
-      "policy": "weak-key, bounded property dictionary, collectible bypass",
-      "guards": ["ConditionalWeakTable", "PropertyCacheCapacity", "ReflectionPackageCacheScope.IsCollectible(_type)"]
+      "policy": "weak-key, bounded property dictionary; collectible types use bounded instance-owned cache",
+      "guards": ["ConditionalWeakTable", "PropertyCacheCapacity", "ReflectionPackageCacheScope.IsCollectible(_type)", "ref _instancePropertyCache", "SmallInstancePropertyCacheCapacity"]
     },
     {
       "id": "package.dynamic-base-init-only",
@@ -305,6 +305,58 @@
       "key": "PropertyInfo",
       "policy": "weak-key with collectible property access",
       "guards": ["ConditionalWeakTable", "ReflectionPackageCacheScope.IsCollectible(_type)"]
+    },
+    {
+      "id": "core.property.typed-scope",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.Typed.cs",
+      "match": "internal static readonly bool IsCollectible = ReflectionCacheScope.IsCollectible(typeof(T))",
+      "key": "T and TProperty, scoped to the closed generic type",
+      "policy": "one boolean per generic scope; retains no reflection metadata or delegates",
+      "guards": ["ReflectionCacheScope.IsCollectible(typeof(T))", "ReflectionCacheScope.IsCollectible(typeof(TProperty))", "TypedAccessorScope<T, TProperty>.IsCollectible"]
+    },
+    {
+      "id": "core.property.typed-getters",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.Typed.cs",
+      "match": "ConditionalWeakTable<PropertyInfo, Lazy<Func<T, TProperty>>> Getters",
+      "key": "PropertyInfo, scoped to T and TProperty",
+      "policy": "weak-key; bypass collectible metadata and generic type arguments",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible(propertyInfo)", "ReflectionCacheScope.IsCollectible(typeof(T))", "ReflectionCacheScope.IsCollectible(typeof(TProperty))", "TypedAccessorScope<T, TProperty>.IsCollectible"]
+    },
+    {
+      "id": "core.property.typed-setters",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.Typed.cs",
+      "match": "ConditionalWeakTable<PropertyInfo, Lazy<Action<T, TProperty>>> Setters",
+      "key": "PropertyInfo, scoped to T and TProperty",
+      "policy": "weak-key; bypass collectible metadata and generic type arguments",
+      "guards": ["ConditionalWeakTable", "ReflectionCacheScope.IsCollectible(propertyInfo)", "ReflectionCacheScope.IsCollectible(typeof(T))", "ReflectionCacheScope.IsCollectible(typeof(TProperty))", "TypedAccessorScope<T, TProperty>.IsCollectible"]
+    },
+    {
+      "id": "core.expression.value-evaluators",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Expressions/Lambdas.cs",
+      "match": "ConditionalWeakTable<Expression, ValueEvaluator> ValueEvaluators",
+      "key": "Expression identity",
+      "policy": "weak-key; reuse evaluator only, never evaluated values",
+      "guards": [
+        "ConditionalWeakTable",
+        "HasParameter(expression)",
+        "System.Threading.Volatile.Read(ref _evaluator)",
+        "lock (this)"
+      ]
+    },
+    {
+      "id": "core.property.object-scope",
+      "assembly": "Bing.Utils",
+      "source": "src/Bing.Utils/Bing/Reflection/Extensions/Extensions.PropertyInfo.cs",
+      "match": "internal static readonly bool IsCollectible = ReflectionCacheScope.IsCollectible(typeof(T))",
+      "key": "T, scoped to the closed generic type",
+      "policy": "one boolean per generic scope; no metadata or delegate retention",
+      "guards": [
+        "ObjectAccessorScope<T>.IsCollectible"
+      ]
     }
   ]
 }

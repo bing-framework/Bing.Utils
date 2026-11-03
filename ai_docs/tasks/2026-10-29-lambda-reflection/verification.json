@@ -1,0 +1,91 @@
+[
+  {
+    "name": "core-targeted-verified",
+    "command": [
+      "dotnet",
+      "test",
+      "tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj",
+      "-c",
+      "Release",
+      "-f",
+      "net8.0",
+      "--no-restore",
+      "--verbosity",
+      "minimal",
+      "-p:GenerateDocumentationFile=false",
+      "--filter",
+      "FullyQualifiedName~LambdaParsingRegressionTests|FullyQualifiedName~LambdasTest|FullyQualifiedName~LambdaAndExpressionExtensionsTests|FullyQualifiedName~ReflectionRepairRegressionTests|FullyQualifiedName~TypedPropertyAccessorTests|FullyQualifiedName~TypeReflectionsPropertiesTests|FullyQualifiedName~ReflectionsMemberPathTests|FullyQualifiedName~PropertyInfoExtensionsRegressionTests"
+    ],
+    "exitCode": 0,
+    "summary": [
+      "Passed!  - Failed:     0, Passed:   141, Skipped:     0, Total:   141, Duration: 881 ms - Bing.Utils.Tests.dll (net8.0)"
+    ]
+  },
+  {
+    "name": "core-full",
+    "command": [
+      "dotnet",
+      "test",
+      "tests/Bing.Utils.Tests/Bing.Utils.Tests.csproj",
+      "-c",
+      "Release",
+      "-f",
+      "net8.0",
+      "--no-restore",
+      "--no-build",
+      "--verbosity",
+      "minimal"
+    ],
+    "exitCode": 0,
+    "summary": [
+      "Passed!  - Failed:     0, Passed:  7613, Skipped:     0, Total:  7613, Duration: 1 m 7 s - Bing.Utils.Tests.dll (net8.0)"
+    ]
+  },
+  {
+    "name": "reflection-full",
+    "command": [
+      "dotnet",
+      "test",
+      "tests/Bing.Utils.Reflection.Tests/Bing.Utils.Reflection.Tests.csproj",
+      "-c",
+      "Release",
+      "-f",
+      "net8.0",
+      "--no-restore",
+      "--verbosity",
+      "minimal",
+      "-p:GenerateDocumentationFile=false"
+    ],
+    "exitCode": 0,
+    "summary": [
+      "Passed!  - Failed:     0, Passed:   321, Skipped:     0, Total:   321, Duration: 1 s - Bing.Utils.Reflection.Tests.dll (net8.0)"
+    ]
+  },
+  {
+    "name": "multi-target-build",
+    "command": [
+      "dotnet",
+      "build",
+      "src/Bing.Utils.Reflection/Bing.Utils.Reflection.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--verbosity",
+      "quiet",
+      "-p:GenerateDocumentationFile=false"
+    ],
+    "exitCode": 0,
+    "summary": [
+      "29 Warning(s)",
+      "0 Error(s)",
+      "Time Elapsed 00:00:11.84"
+    ]
+  },
+  {
+    "name": "reflection-cache-inventory",
+    "exitCode": 0,
+    "entries": 34,
+    "unlistedDeclarations": [],
+    "passed": true
+  }
+]
