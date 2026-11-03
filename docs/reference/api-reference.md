@@ -5,7 +5,15 @@
 
 以下已实现模块不在本快照统计范围内：Comments、DependencyInjection、Extra、Extra.Drawing.SkiaSharp、Guard、Net、Security、Security.Gm 和 Drawing.Shared。其公开接口与限制以对应模块文档和源码为准。
 
+DateTime / Date 的公开签名保持，UTC 区间端点、100ns 精度、周期转换和官方节气日期的行为调整见[迁移说明](datetime-date-migration.md)。
+
 ## 命名空间索引
+
+TOTP/HOTP 新增 API 不计入下方历史统计。入口为 `Bing.OneTimePassword.IOtpService`，覆盖 BeginEnrollment/ConfirmEnrollment/BeginVerification/Verify/GetCredentials/Revoke/ResynchronizeHotpAsync。算法 `Hotp/Totp.FindMatch` 仅表示数学匹配，业务认证必须经过事务服务。详见 [动态验证码模块](../modules/Bing.Utils.OneTimePassword.md)。
+
+OCR 新增 API 不计入下方历史统计。入口为 `Bing.Ocr.IOcrService.RecognizeAsync`，扩展接口为 `IOcrProvider` 和 `IOcrImagePreprocessor`，结果使用 EXIF 校正完整图坐标。四包及错误语义见 [OCR 模块](../modules/Bing.Utils.Ocr.md)。
+
+验证码新增 API 不计入下方历史统计。入口为 `Bing.Captcha.ICaptchaService.CreateAsync/VerifyAsync`，存储为 `MemoryCaptchaStore` 或 `Bing.Captcha.Redis.CaptchaRedisStore`，渲染器为 `Bing.Captcha.SkiaSharp.SkiaSharpCaptchaRenderer`。可选 `ICaptchaRendererValidator.ValidateAlphabet` 在构造服务时检查生成字符集与渲染配置兼容。契约、错误语义及接入见 [验证码模块](../modules/Bing.Utils.Captcha.md)。
 
 | 命名空间 | 分类 | Public 类型数 | 扩展方法族数 |
 |---|---|---:|---:|
@@ -638,3 +646,19 @@
 | `Bing.Date.DateTimeOffsetOptions` | 高频枚举; 枚举值变更可能导致序列化或分支不兼容(refs=12) | `[证据] src/Bing.Utils.DateTime/Bing/Date/DateTimeOffsetOptions.cs:6` |
 | `Bing.Net.IPv6.IPv6Format` | 高频枚举; 枚举值变更可能导致序列化或分支不兼容(refs=5) | `[证据] src/Bing.Utils.Http/Bing/Net/IPv6/IPv6Format.cs:6` |
 | `Bing.Text.Similarity.StringSimilarityTypes` | 高频枚举; 枚举值变更可能导致序列化或分支不兼容(refs=5) | `[证据] src/Bing.Utils.Text/Bing/Text/Similarity/StringSimilarityTypes.cs:6` |
+
+## IdUtils 本轮契约更新
+
+- 新增 `Bing.IdUtils.Uuid1.Generate()` 和 `Generate(DateTimeOffset)`；`GuidVersion.TimeBased`/`DceSecurity` 为显式不支持版本。
+- 雪花默认入口不再创建 `workerId=1`，必须启动时显式配置。首次成功返回单值或完整批次后冻结；在途调用期间拒绝配置/重置，若从未成功且所有在途调用失败则可重配。批量异常不返回部分数组，provider 已消耗的序号不回滚；上下文 `Id.SetId` 不计作发号。
+- `TimestampId` 使用 UTC 和 `0001..9999` 序列范围，序列耗尽采用有界等待。
+- PostgreSQL COMB 修复时间字段布局；COMB/Sequential/Equifax 属于存储风格，不是标准 UUID 版本。
+
+
+## Exceptions 本轮契约更新
+
+- 新增 Try.CreateAsync 和 Try.InvokeTaskAsync，各含无令牌与透传 CancellationToken 两种重载；操作取消保存为失败结果，外层任务正常完成。
+- Unwrap 与 ExceptionAs 新增显式聚合分支查找；泛型扩展去除歧义，旧静态 CLR 签名保持。
+- Try<T> 增加 Tap() 与 Tap(Action<T>)；LINQ 组合捕获操作异常并保留已有失败链。
+- ExceptionFormatOptions 为两种格式化入口提供默认资源预算；SuccessAction 按结果身份相等，InvokeRange 按项隔离参数工厂故障。
+- 使用与迁移约定见 [Exceptions 指南](exceptions-guide.md)。

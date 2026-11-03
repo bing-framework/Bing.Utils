@@ -9,6 +9,19 @@
 ## 2. 子包职责矩阵（包名 / 职责 / 典型类型 / 依赖）
 | 包名 | 职责（解决什么） | 边界（不解决什么） | 典型类型 | 依赖 |
 |---|---|---|---|---|
+| `Bing.Utils.Captcha` | 图片挑战生成、HMAC 校验、一次性消费、有界内存 | 不提供身份认证或交互验证码 | `CaptchaService`、`MemoryCaptchaStore`（[模块文档](modules/Bing.Utils.Captcha.md)） | Security、Drawing.Shared、DiagnosticSource 8.0.1 |
+| `Bing.Utils.Captcha.SkiaSharp` | 受限 PNG 渲染、字体复用、中文覆盖校验 | 不捆绑中文字体 | `SkiaSharpCaptchaRenderer` | Captcha、Drawing.SkiaSharp |
+| `Bing.Utils.Captcha.Redis` | 单键原子替换及消费 | 不保证故障切换回滚下的持久一次性 | `CaptchaRedisStore` | Captcha、StackExchange.Redis 2.13.1 |
+| `Bing.Utils.Captcha.DependencyInjection` | 显式组件注册、配置快照、容器所有权 | 不依赖具体 Redis/Skia 适配器 | `AddBingCaptcha`、`AddMemoryCaptchaStore` | Captcha、DI Abstractions 8.0.2 |
+| `Bing.Utils.Ocr` | 中英文单图识别编排、有界准入与只读结果 | 不含 PDF、多页、表格或字段提取 | `IOcrService`、`OcrService`（[模块文档](modules/Bing.Utils.Ocr.md)） | 无外部运行时依赖 |
+| `Bing.Utils.Ocr.SkiaSharp` | 图片预处理、EXIF 与坐标变换 | 不执行 OCR 推理 | `SkiaOcrImagePreprocessor` | Ocr、Drawing.SkiaSharp |
+| `Bing.Utils.Ocr.PaddleServing` | HTTP 识别、响应校验与模型身份 | 不重试、不自动切换云服务 | `PaddleServingOcrProvider` | Ocr、System.Text.Json 8.0.6 |
+| `Bing.Utils.Ocr.DependencyInjection` | 组件注册、配置快照与生命周期 | 不提供隐式模型路由 | `AddBingOcr`、`AddOcrProvider` | Ocr、DI Abstractions 8.0.2 |
+| `Bing.Utils.OneTimePassword` | TOTP/HOTP 算法、绑定确认、验证、撤销、重同步 | 不含真实账号、恢复码、Passkey | `IOtpService`、`Hotp`、`Totp`（[模块](modules/Bing.Utils.OneTimePassword.md)） | Security、DiagnosticSource 8.0.1 |
+| `Bing.Utils.OneTimePassword.Sqlite` | 凭据/事务/失败锁定原子持久化 | 仅本地文件，非多主机共享 | `SqliteOtpStore` | OTP、Microsoft.Data.Sqlite 8.0.33 |
+| `Bing.Utils.OneTimePassword.DataProtection` | 按凭据上下文保护密钥 | 宿主持久化保护 key ring | `DataProtectionOtpSecretProtector` | OTP、DataProtection.Abstractions 8.0.33 |
+| `Bing.Utils.OneTimePassword.Redis` | 分布式固定窗口限流 | 不保存 OTP 权威状态，无故障降级 | `OtpRedisRateLimiter` | OTP、StackExchange.Redis 2.13.1 |
+| `Bing.Utils.OneTimePassword.DependencyInjection` | 唯一组件、配置快照、启动解析 | 宿主显式初始化数据库 | `AddBingOneTimePassword` | OTP、DI Abstractions 8.0.2 |
 | `Bing.Utils.Cron` | 五段/六段 Cron 解析、显式时区及有限区间计算 | 不执行任务，不支持 Quartz 七段 | `CronSchedule`（[模块文档](modules/Bing.Utils.Cron.md)） | 独立包，固定 Cronos `[0.13.0]` |
 | `Bing.Utils.Diff` | 可取消、有预算的大文本行级 Diff | 不提供字符级 Diff 或三方合并 | `TextDiff`、`TextDiffResult`（[模块文档](modules/Bing.Utils.Diff.md)） | 无运行时第三方依赖，内部适配 DiffPlex 1.7.0 必需源码 |
 | `Bing.Utils` | 核心通用工具、扩展与基础能力承载 | 不聚焦某一垂直领域（如仅图像或仅HTTP） | `FileHelper`（`src/Bing.Utils/Bing/IO/FileHelper.cs:11`），`BooleanExtensions`（`src/Bing.Utils/Bing/Extensions.Boolean.cs:8`），`JsonOptions`（`src/Bing.Utils/Bing/JsonOptions.cs:6`） | 外部包 `Newtonsoft.Json`、`AspectCore.Extensions.Reflection` 等（`src/Bing.Utils/Bing.Utils.csproj:16` 到 `src/Bing.Utils/Bing.Utils.csproj:20`） |

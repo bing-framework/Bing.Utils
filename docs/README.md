@@ -23,6 +23,9 @@
 - [工具能力扩展执行记录](quality/capability-expansion-execution.md)
 - [流处理扩展实施记录](quality/stream-platform-execution.md)
 - [安全与密码学专题](security.md)
+- [OCR 图片文字识别](modules/Bing.Utils.Ocr.md)：中英文单图、区域定位、Skia 预处理、私有 Paddle 服务和 Web 示例。
+- [TOTP/HOTP 动态验证码](modules/Bing.Utils.OneTimePassword.md)：绑定确认、原子验证、撤销、重同步、SQLite、密钥保护和 Web 示例。
+- [验证码完整生命周期](modules/Bing.Utils.Captcha.md)：生成、PNG 展示、内存/Redis 存储、一次性校验与 Web 示例。
 - [质量与验证资料](quality/)
 - [TODO 执行记录](quality/todo-execution.md)：既定清单当前状态、本轮交付及剩余依赖。
 - [功能变更隔离与验证](quality/feature-isolation-2026-10-26.md)：剩余工作区变更的批次依赖、独立补丁及验证证据。

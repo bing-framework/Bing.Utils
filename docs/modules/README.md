@@ -5,6 +5,19 @@
 | 模块 | 说明 | 状态 |
 | --- | --- | --- |
 | [Bing.Utils](Bing.Utils.md) | 核心 IO、转换、反射、文本、线程与通用扩展 | 已实现 |
+| [Bing.Utils.Captcha](Bing.Utils.Captcha.md) | 验证码生命周期、HMAC 校验、有界内存 | 已实现 |
+| [Bing.Utils.Captcha.SkiaSharp](Bing.Utils.Captcha.SkiaSharp.md) | PNG 渲染与中文字体校验 | 已实现 |
+| [Bing.Utils.Captcha.Redis](Bing.Utils.Captcha.Redis.md) | Redis 原子替换和一次性消费 | 实现完成，真实服务验收见记录 |
+| [Bing.Utils.Captcha.DependencyInjection](Bing.Utils.Captcha.DependencyInjection.md) | 验证码组件注册及生命周期 | 已实现 |
+| [Bing.Utils.Ocr](Bing.Utils.Ocr.md) | 图片文字识别编排、容量限制与统一结果 | 已实现 |
+| [Bing.Utils.Ocr.SkiaSharp](Bing.Utils.Ocr.SkiaSharp.md) | EXIF、ROI、旋转缩放与坐标回映射 | 已实现 |
+| [Bing.Utils.Ocr.PaddleServing](Bing.Utils.Ocr.PaddleServing.md) | 私有 OCR HTTP 协议与模型身份 | 实现完成，真实引擎证据见记录 |
+| [Bing.Utils.Ocr.DependencyInjection](Bing.Utils.Ocr.DependencyInjection.md) | 单实例注册、配置快照与资源所有权 | 已实现 |
+| [Bing.Utils.OneTimePassword](Bing.Utils.OneTimePassword.md) | TOTP/HOTP 算法与完整生命周期 | 已实现 |
+| [Bing.Utils.OneTimePassword.Sqlite](Bing.Utils.OneTimePassword.Sqlite.md) | 原子消费、持久失败锁定和本地数据库 | 已实现 |
+| [Bing.Utils.OneTimePassword.DataProtection](Bing.Utils.OneTimePassword.DataProtection.md) | 密钥保护、上下文隔离和轮换兼容 | 已实现 |
+| [Bing.Utils.OneTimePassword.Redis](Bing.Utils.OneTimePassword.Redis.md) | Redis 原子固定窗口限流 | 已实现 |
+| [Bing.Utils.OneTimePassword.DependencyInjection](Bing.Utils.OneTimePassword.DependencyInjection.md) | 唯一组件、配置快照和资源所有权 | 已实现 |
 | [Bing.Utils.Collections](Bing.Utils.Collections.md) | 数组、集合、字典与枚举辅助 | 已实现 |
 | [Bing.Utils.Comments](Bing.Utils.Comments.md) | C# XML 注释读取、缓存与继承解析 | 已实现 |
 | [Bing.Utils.DateTime](Bing.Utils.DateTime.md) | 日期时间、时间跨度与 NodaTime 适配 | 已实现 |
