@@ -60,7 +60,13 @@ public static class TryExtensions
             throw new ArgumentNullException(nameof(convert));
         if (selector is null)
             throw new ArgumentNullException(nameof(selector));
-        return source.Bind(val => convert(val).Select(interVal => selector(val, interVal)));
+        return source.Bind(val =>
+        {
+            var intermediate = convert(val);
+            if (intermediate is null)
+                throw new InvalidOperationException("转换函数不能返回空的 Try 结果。");
+            return intermediate.Select(interVal => selector(val, interVal));
+        });
     }
 
     /// <summary>

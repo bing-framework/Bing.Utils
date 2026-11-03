@@ -67,7 +67,17 @@ public abstract class TryAction
     /// </summary>
     /// <typeparam name="TException">异常类型</typeparam>
     /// <returns>返回异常链中指定类型的异常；不存在时返回 <see langword="null"/>。</returns>
-    public TException ExceptionAs<TException>() where TException : Exception => Exception as TException;
+    public TException ExceptionAs<TException>() where TException : Exception =>
+        Exception is null ? null : ExceptionHelper.Unwrap<TException>(Exception);
+
+    /// <summary>
+    /// 从异常链或聚合异常分支中获取第一个匹配的异常。
+    /// </summary>
+    /// <typeparam name="TException">需要匹配的异常类型，允许派生类型。</typeparam>
+    /// <param name="includeAggregateExceptions">是否按原分支顺序深度优先遍历聚合异常。</param>
+    /// <returns>匹配的原异常实例；成功结果或未命中时为 null。</returns>
+    public TException ExceptionAs<TException>(bool includeAggregateExceptions) where TException : Exception =>
+        Exception is null ? null : ExceptionHelper.Unwrap<TException>(Exception, includeAggregateExceptions);
 
     /// <summary>
     /// 恢复

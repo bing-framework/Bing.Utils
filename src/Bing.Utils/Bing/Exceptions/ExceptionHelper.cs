@@ -3,48 +3,48 @@ using System.Runtime.ExceptionServices;
 namespace Bing.Exceptions;
 
 /// <summary>
-/// 异常操作辅助类
+/// 提供异常重抛、诊断格式化与异常链查找。
 /// </summary>
 public static class ExceptionHelper
 {
     /// <summary>
-    /// 捕抓异常并重新抛出
+    /// 保留异常的原始堆栈并立即重新抛出。
     /// </summary>
-    /// <param name="exception">异常</param>
+    /// <param name="exception">需要重新抛出的非空异常。</param>
+    /// <returns>此方法始终抛出异常，不会正常返回。</returns>
     public static Exception PrepareForRethrow(Exception exception)
     {
         ExceptionDispatchInfo.Capture(exception).Throw();
-        // The code cannot ever get here. We just return a value to work around a badly-designed API (ExceptionDispatchInfo.Throw):
-        //  https://connect.microsoft.com/VisualStudio/feedback/details/689516/exceptiondispatchinfo-api-modifications (http://www.webcitation.org/6XQ7RoJmO)
         return exception;
     }
 
     /// <summary>
-    /// 获取异常详情
+    /// 使用默认资源预算获取异常诊断详情。
     /// </summary>
-    /// <param name="exception">异常</param>
-    /// <returns>格式化之后的异常信息</returns>
-    public static string GetExceptionDetail(Exception exception)
+    /// <param name="exception">需要格式化的非空异常。</param>
+    /// <returns>包含记录时间与诊断字段的有限长度文本。</returns>
+    public static string GetExceptionDetail(Exception exception) => GetExceptionDetail(exception, new ExceptionFormatOptions());
+
+    /// <summary>
+    /// 根据资源预算获取异常诊断详情。
+    /// </summary>
+    /// <param name="exception">需要格式化的非空异常。</param>
+    /// <param name="options">本次调用的有限格式化配置，调用开始时读取快照。</param>
+    /// <returns>长度不超过配置上限的诊断文本，必要时包含截断标记。</returns>
+    /// <exception cref="ArgumentNullException">异常或配置为 null。</exception>
+    public static string GetExceptionDetail(Exception exception, ExceptionFormatOptions options)
     {
-        var detail = new StringBuilder();
-        detail.Append(@"***************************************");
-        detail.AppendFormat(@" 异常发生时间： {0} ", DateTime.Now);
-        detail.AppendFormat(@" 异常类型： {0} ", exception.HResult);
-        detail.AppendFormat(@" 导致当前异常的 Exception 实例： {0} ", exception.InnerException);
-        detail.AppendFormat(@" 导致异常的应用程序或对象的名称： {0} ", exception.Source);
-        detail.AppendFormat(@" 引发异常的方法： {0} ", exception.TargetSite);
-        detail.AppendFormat(@" 异常堆栈信息： {0} ", exception.StackTrace);
-        detail.AppendFormat(@" 异常消息： {0} ", exception.Message);
-        detail.Append(@"***************************************");
-        return detail.ToString();
+        if (exception is null)
+            throw new ArgumentNullException(nameof(exception));
+        return ExceptionFormatter.Format(exception, options, true);
     }
 
     /// <summary>
-    /// 解包异常，获取最内层的异常
+    /// 沿单条内部异常链获取最内层异常。
     /// </summary>
-    /// <param name="exception">需要解包的异常</param>
-    /// <returns>返回最内层的异常。如果输入的异常本身就没有内部异常，那么返回输入的异常。</returns>
-    /// <exception cref="ArgumentNullException">当输入的异常为 null 时抛出此异常</exception>
+    /// <param name="exception">需要解包的非空异常。</param>
+    /// <returns>单链最内层的原异常实例。</returns>
+    /// <exception cref="ArgumentNullException">异常为 null。</exception>
     public static Exception Unwrap(Exception exception)
     {
         if (exception is null)
@@ -55,77 +55,102 @@ public static class ExceptionHelper
     }
 
     /// <summary>
-    /// 解包异常，获取指定类型的异常
+    /// 从外到内沿单链查找指定类型的异常。
     /// </summary>
-    /// <param name="exception">需要解包的异常</param>
-    /// <param name="targetType">需要获取的异常类型</param>
-    /// <param name="mayDerivedClass">是否可以是指定异常类型的派生类，默认为 true</param>
-    /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
-    /// <exception cref="ArgumentNullException">当输入的异常或指定的类型为 null 时抛出此异常</exception>
-    /// <exception cref="ArgumentException">当指定的类型不是 Exception 类型或其派生类时抛出此异常</exception>
-    public static Exception Unwrap(Exception exception, Type targetType, bool mayDerivedClass = true)
+    /// <param name="exception">需要查找的非空异常。</param>
+    /// <param name="targetType">Exception 本身或其派生类型。</param>
+    /// <param name="mayDerivedClass">是否允许目标类型的派生类型。</param>
+    /// <returns>第一个匹配的原异常实例，未命中时为 null。</returns>
+    public static Exception Unwrap(Exception exception, Type targetType, bool mayDerivedClass = true) =>
+        Unwrap(exception, targetType, mayDerivedClass, false);
+
+    /// <summary>
+    /// 在异常链或聚合异常分支中查找指定类型。
+    /// </summary>
+    /// <param name="exception">需要查找的非空异常。</param>
+    /// <param name="targetType">Exception 本身或其派生类型。</param>
+    /// <param name="mayDerivedClass">是否允许目标类型的派生类型。</param>
+    /// <param name="includeAggregateExceptions">是否根优先、按分支顺序深度优先遍历聚合异常。</param>
+    /// <returns>第一个匹配的原异常实例，未命中时为 null。</returns>
+    /// <exception cref="ArgumentNullException">异常或目标类型为 null。</exception>
+    /// <exception cref="ArgumentException">目标类型不属于异常类型。</exception>
+    public static Exception Unwrap(Exception exception, Type targetType, bool mayDerivedClass, bool includeAggregateExceptions)
     {
         if (exception is null)
             throw new ArgumentNullException(nameof(exception));
         if (targetType is null)
             throw new ArgumentNullException(nameof(targetType));
-        if (!targetType.IsSubclassOf(typeof(Exception)))
-            throw new ArgumentException($"Type '{targetType}' does not divided from {typeof(Exception)}", nameof(targetType));
-
-        return exception.GetType() == targetType || mayDerivedClass && exception.GetType().IsSubclassOf(targetType)
-            ? exception
-            : exception.InnerException is null
-                ? null
-                : Unwrap(exception.InnerException, targetType, mayDerivedClass);
+        if (!typeof(Exception).IsAssignableFrom(targetType))
+            throw new ArgumentException($"类型 '{targetType}' 必须为 Exception 或其派生类型。", nameof(targetType));
+        if (!includeAggregateExceptions)
+        {
+            for (var current = exception; current != null; current = current.InnerException)
+            {
+                var actualType = current.GetType();
+                if (actualType == targetType || mayDerivedClass && targetType.IsAssignableFrom(actualType))
+                    return current;
+            }
+            return null;
+        }
+        foreach (var node in ExceptionTraversal.Enumerate(exception, true))
+        {
+            if (node.IsRepeated)
+                continue;
+            var actualType = node.Exception.GetType();
+            if (actualType == targetType || mayDerivedClass && targetType.IsAssignableFrom(actualType))
+                return node.Exception;
+        }
+        return null;
     }
 
     /// <summary>
-    /// 解包异常，获取指定类型的异常
+    /// 沿单链查找指定类型或其派生类型的异常。
     /// </summary>
-    /// <typeparam name="TException">需要获取的异常类型</typeparam>
-    /// <param name="exception">需要解包的异常</param>
-    /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TException Unwrap<TException>(this Exception exception) where TException : Exception => exception.Unwrap(Reflection.Types.Of<TException>()) as TException;
+    /// <typeparam name="TException">目标异常类型。</typeparam>
+    /// <param name="exception">需要查找的非空异常。</param>
+    /// <returns>第一个匹配的原异常实例，未命中时为 null。</returns>
+    public static TException Unwrap<TException>(Exception exception) where TException : Exception =>
+        (TException)Unwrap(exception, typeof(TException));
+
+    /// <summary>
+    /// 在异常链或聚合分支中查找指定类型的异常。
+    /// </summary>
+    /// <typeparam name="TException">目标异常类型，允许其派生类型。</typeparam>
+    /// <param name="exception">需要查找的非空异常。</param>
+    /// <param name="includeAggregateExceptions">是否展开聚合异常的全部分支。</param>
+    /// <returns>第一个匹配的原异常实例，未命中时为 null。</returns>
+    public static TException Unwrap<TException>(Exception exception, bool includeAggregateExceptions) where TException : Exception =>
+        (TException)Unwrap(exception, typeof(TException), true, includeAggregateExceptions);
 }
 
 /// <summary>
-/// Bing <see cref="Exception"/> 扩展
+/// 提供异常查找与最内层消息的扩展入口。
 /// </summary>
 public static class ExceptionHelperExtensions
 {
-    /// <summary>
-    /// 解包异常，获取最内层的异常
-    /// </summary>
-    /// <param name="exception">需要解包的异常</param>
-    /// <returns>返回最内层的异常。如果输入的异常本身就没有内部异常，那么返回输入的异常。</returns>
-    /// <exception cref="ArgumentNullException">当输入的异常为 null 时抛出此异常</exception>
+    /// <inheritdoc cref="ExceptionHelper.Unwrap(Exception)"/>
     public static Exception Unwrap(this Exception exception) => ExceptionHelper.Unwrap(exception);
 
-    /// <summary>
-    /// 解包异常，获取指定类型的异常
-    /// </summary>
-    /// <param name="exception">需要解包的异常</param>
-    /// <param name="targetType">需要获取的异常类型</param>
-    /// <param name="mayDerivedClass">是否可以是指定异常类型的派生类，默认为 true</param>
-    /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
-    /// <exception cref="ArgumentNullException">当输入的异常或指定的类型为 null 时抛出此异常</exception>
-    /// <exception cref="ArgumentException">当指定的类型不是 Exception 类型或其派生类时抛出此异常</exception>
-    public static Exception Unwrap(this Exception exception, Type targetType, bool mayDerivedClass = true) => ExceptionHelper.Unwrap(exception, targetType, mayDerivedClass);
+    /// <inheritdoc cref="ExceptionHelper.Unwrap(Exception, Type, bool)"/>
+    public static Exception Unwrap(this Exception exception, Type targetType, bool mayDerivedClass = true) =>
+        ExceptionHelper.Unwrap(exception, targetType, mayDerivedClass);
+
+    /// <inheritdoc cref="ExceptionHelper.Unwrap(Exception, Type, bool, bool)"/>
+    public static Exception Unwrap(this Exception exception, Type targetType, bool mayDerivedClass, bool includeAggregateExceptions) =>
+        ExceptionHelper.Unwrap(exception, targetType, mayDerivedClass, includeAggregateExceptions);
+
+    /// <inheritdoc cref="ExceptionHelper.Unwrap{TException}(Exception)"/>
+    public static TException Unwrap<TException>(this Exception exception) where TException : Exception =>
+        ExceptionHelper.Unwrap<TException>(exception);
+
+    /// <inheritdoc cref="ExceptionHelper.Unwrap{TException}(Exception, bool)"/>
+    public static TException Unwrap<TException>(this Exception exception, bool includeAggregateExceptions) where TException : Exception =>
+        ExceptionHelper.Unwrap<TException>(exception, includeAggregateExceptions);
 
     /// <summary>
-    /// 解包异常，获取指定类型的异常
+    /// 获取单链最内层异常的消息。
     /// </summary>
-    /// <typeparam name="TException">需要获取的异常类型</typeparam>
-    /// <param name="exception">需要解包的异常</param>
-    /// <returns>返回指定类型的异常。如果没有找到指定类型的异常，返回 null。</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TException Unwrap<TException>(this Exception exception) where TException : Exception => ExceptionHelper.Unwrap<TException>(exception);
-
-    /// <summary>
-    /// 解包并返回消息
-    /// </summary>
-    /// <param name="ex">异常</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ToUnwrappedString(this Exception ex) => ex.Unwrap().Message;
+    /// <param name="ex">需要解包的非空异常。</param>
+    /// <returns>最内层异常的原始消息。</returns>
+    public static string ToUnwrappedString(this Exception ex) => ExceptionHelper.Unwrap(ex).Message;
 }

@@ -10,35 +10,23 @@ public static class ExceptionExtensions
     #region FormatMessage(格式化异常消息)
 
     /// <summary>
-    /// 格式化异常消息
+    /// 使用默认资源预算格式化异常消息。
     /// </summary>
     /// <param name="e">异常对象</param>
-    /// <param name="isHideStackTrace">是否隐藏异常规模信息</param>
-    /// <returns>格式化后的异常信息字符串</returns>
-    public static string FormatMessage(this Exception e, bool isHideStackTrace = false)
-    {
-        var sb = new StringBuilder();
-        var count = 0;
-        var appString = string.Empty;
-        while (e != null)
-        {
-            if (count > 0)
-                appString += "  ";
-            sb.AppendLine($"{appString}异常消息：{e.Message}");
-            sb.AppendLine($"{appString}异常类型：{e.GetType().FullName}");
-            sb.AppendLine($"{appString}异常方法：{(e.TargetSite == null ? null : e.TargetSite.Name)}");
-            sb.AppendLine($"{appString}异常源：{e.Source}");
-            if (!isHideStackTrace && e.StackTrace != null)
-                sb.AppendLine($"{appString}异常堆栈：{e.StackTrace}");
-            if (e.InnerException != null)
-            {
-                sb.AppendLine($"{appString}内部异常：");
-                count++;
-            }
-            e = e.InnerException;
-        }
-        return sb.ToString();
-    }
+    /// <param name="isHideStackTrace">是否隐藏异常堆栈信息</param>
+    /// <returns>长度不超过 32768 个 UTF-16 字符的诊断文本；超限时包含截断标记。</returns>
+    public static string FormatMessage(this Exception e, bool isHideStackTrace = false) =>
+        ExceptionFormatter.Format(e, new ExceptionFormatOptions { HideStackTrace = isHideStackTrace }, false);
+
+    /// <summary>
+    /// 根据有限资源预算格式化异常消息。
+    /// </summary>
+    /// <param name="e">异常；为 null 时返回空字符串。</param>
+    /// <param name="options">本次格式化配置；隐藏堆栈不等于消息脱敏。</param>
+    /// <returns>不超过输出预算的诊断文本，必要时包含截断标记。</returns>
+    /// <exception cref="ArgumentNullException">配置为 null。</exception>
+    public static string FormatMessage(this Exception e, ExceptionFormatOptions options) =>
+        ExceptionFormatter.Format(e, options, false);
 
     #endregion
 

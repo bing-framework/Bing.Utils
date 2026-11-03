@@ -15,6 +15,12 @@ public class Failure<T> : Try<T>
     /// <param name="cause">导致错误的原因</param>
     internal Failure(Exception exception, string cause) => Exception = new TryCreatingValueException(exception, cause);
 
+    /// <summary>
+    /// 创建保留既有失败信息的结果，供组合操作跨类型传播。
+    /// </summary>
+    /// <param name="exception">需要保留身份、原因与内部异常的包装异常。</param>
+    internal Failure(TryCreatingValueException exception) => Exception = exception ?? throw new ArgumentNullException(nameof(exception));
+
     /// <inheritdoc />
     public override bool IsFailure => true;
 
@@ -52,7 +58,7 @@ public class Failure<T> : Try<T>
     /// <inheritdoc />
     public override void Deconstruct(out T value, out bool tryResult, out Exception exception)
     {
-        value = Value;
+        value = default!;
         tryResult = IsSuccess;
         exception = Exception;
     }
@@ -126,7 +132,7 @@ public class Failure<T> : Try<T>
     }
 
     /// <inheritdoc />
-    internal override Try<TResult> Bind<TResult>(Func<T, Try<TResult>> bind) => Try.LiftException<TResult>(Exception);
+    internal override Try<TResult> Bind<TResult>(Func<T, Try<TResult>> bind) => new Failure<TResult>(Exception);
 
     /// <summary>
     /// 重抛异常

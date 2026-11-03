@@ -9,7 +9,7 @@ public static partial class Try
     /// <typeparam name="T">类型</typeparam>
     /// <param name="createFunctionAsync">创建值的函数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -21,6 +21,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke();
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -40,7 +41,7 @@ public static partial class Try
     /// <param name="createFunctionAsync">创建值的函数</param>
     /// <param name="arg">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{TResult}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{TResult}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -52,6 +53,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -73,7 +75,7 @@ public static partial class Try
     /// <param name="arg1">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg2">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -86,6 +88,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -109,7 +112,7 @@ public static partial class Try
     /// <param name="arg2">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg3">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -122,6 +125,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -147,7 +151,7 @@ public static partial class Try
     /// <param name="arg3">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg4">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -160,6 +164,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -187,7 +192,7 @@ public static partial class Try
     /// <param name="arg4">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg5">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -200,6 +205,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -229,7 +235,7 @@ public static partial class Try
     /// <param name="arg5">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg6">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -242,6 +248,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -273,7 +280,7 @@ public static partial class Try
     /// <param name="arg6">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg7">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -286,6 +293,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -319,7 +327,7 @@ public static partial class Try
     /// <param name="arg7">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg8">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -332,6 +340,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -367,7 +376,7 @@ public static partial class Try
     /// <param name="arg8">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg9">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -380,6 +389,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -417,7 +427,7 @@ public static partial class Try
     /// <param name="arg9">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg10">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -430,6 +440,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -469,7 +480,7 @@ public static partial class Try
     /// <param name="arg10">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg11">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -482,6 +493,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -523,7 +535,7 @@ public static partial class Try
     /// <param name="arg11">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg12">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -536,6 +548,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -579,7 +592,7 @@ public static partial class Try
     /// <param name="arg12">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg13">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -592,6 +605,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -637,7 +651,7 @@ public static partial class Try
     /// <param name="arg13">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg14">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -650,6 +664,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -697,7 +712,7 @@ public static partial class Try
     /// <param name="arg14">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg15">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -710,6 +725,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -759,7 +775,7 @@ public static partial class Try
     /// <param name="arg15">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="arg16">传递给 <paramref name="createFunctionAsync"/> 的参数</param>
     /// <param name="cause">异常的原因，可选参数</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     /// <returns>
     /// 返回一个 <see cref="Try{T}"/> 实例。
     /// 如果 <paramref name="createFunctionAsync"/> 成功执行，返回的 <see cref="Try{T}"/> 实例的值为 <paramref name="createFunctionAsync"/> 的返回值。
@@ -772,6 +788,7 @@ public static partial class Try
         {
             if (createFunctionAsync is null)
                 throw new ArgumentNullException(nameof(createFunctionAsync));
+            EnsureSynchronousWaitContext();
             var task = createFunctionAsync.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
             if (task is null)
                 throw new ArgumentNullException(nameof(task));
@@ -788,7 +805,7 @@ public static partial class Try
     /// </summary>
     /// <typeparam name="TResult">结果类型</typeparam>
     /// <param name="task">异步</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="cancellationToken">仅取消同步等待，不会取消底层任务；受限上下文应使用 CreateAsync。</param>
     private static TResult ThenWaitAndUnwrapException<TResult>(Task<TResult> task, CancellationToken cancellationToken)
     {
         if (task is null)
@@ -803,4 +820,16 @@ public static partial class Try
             throw ExceptionHelper.PrepareForRethrow(e.InnerException);
         }
     }
+    /// <summary>
+    /// 在执行用户委托前拒绝可能因同步等待而死锁的上下文。
+    /// </summary>
+    /// <exception cref="InvalidOperationException">当前同步上下文或任务调度器不是默认实现。</exception>
+    private static void EnsureSynchronousWaitContext()
+    {
+        var context = SynchronizationContext.Current;
+        if (context != null && context.GetType() != typeof(SynchronizationContext) ||
+            TaskScheduler.Current != TaskScheduler.Default)
+            throw new InvalidOperationException("当前上下文不支持同步等待异步任务，请改用 Try.CreateAsync。");
+    }
+
 }

@@ -1,20 +1,14 @@
 namespace Bing.Exceptions;
 
 /// <summary>
-/// 成功操作
+/// 表示一次成功执行的独立操作结果。
 /// </summary>
 public class SuccessAction : TryAction
 {
     /// <summary>
-    /// 操作哈希值
-    /// </summary>
-    private readonly int _hashOfAction;
-
-    /// <summary>
     /// 初始化一个 <see cref="SuccessAction"/> 类型的实例。
     /// </summary>
-    /// <param name="hashOfAction">操作哈希值</param>
-    internal SuccessAction(int hashOfAction) => _hashOfAction = hashOfAction;
+    internal SuccessAction() { }
 
     /// <inheritdoc />
     public override bool IsFailure => false;
@@ -32,16 +26,17 @@ public class SuccessAction : TryAction
     public override string ToString() => "SuccessAction<Void>";
 
     /// <summary>
-    /// 相等
+    /// 按结果实例身份判断是否相等。
     /// </summary>
-    /// <param name="other">对象</param>
-    public bool Equals(SuccessAction other) => other is not null && EqualityComparer<int>.Default.Equals(_hashOfAction, other._hashOfAction);
+    /// <param name="other">需要比较的结果，允许为 null。</param>
+    /// <returns>同一结果实例为 true，其余情况为 false。</returns>
+    public bool Equals(SuccessAction other) => ReferenceEquals(this, other);
 
     /// <inheritdoc />
     public override bool Equals(object obj) => obj is SuccessAction success && Equals(success);
 
     /// <inheritdoc />
-    public override int GetHashCode() => EqualityComparer<int>.Default.GetHashCode(_hashOfAction);
+    public override int GetHashCode() => RuntimeHelpers.GetHashCode(this);
 
     /// <inheritdoc />
     public override void Deconstruct(out bool tryResult, out TryInvokingException exception)

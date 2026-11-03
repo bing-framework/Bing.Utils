@@ -23,14 +23,15 @@ public class ExceptionHelperTests
     }
 
     /// <summary>
-    /// 验证异常详情不为空。
+    /// 验证异常详情输出真实类型及独立错误码。
     /// </summary>
     [Fact]
     public void GetExceptionDetail_ContainsExceptionType()
     {
         var ex = new InvalidOperationException("msg");
         var detail = ExceptionHelper.GetExceptionDetail(ex);
-        detail.ShouldNotBeNullOrEmpty();
+        detail.ShouldContain(typeof(InvalidOperationException).FullName);
+        detail.ShouldContain("HResult：" + ex.HResult.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
 
     /// <summary>
@@ -41,7 +42,7 @@ public class ExceptionHelperTests
     {
         var ex = new Exception("x");
         var detail = ExceptionHelper.GetExceptionDetail(ex);
-        detail.ShouldContain("*");
+        detail.ShouldStartWith("***************************************");
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -248,7 +249,8 @@ public class ExceptionHelperTests
     [Fact]
     public void FormatMessage_HideStackTrace_DoesNotContainStack()
     {
-        var ex = new Exception("msg");
+        var ex = CaptureThrownException();
+        ex.StackTrace.ShouldNotBeNullOrEmpty();
         var fmt = ex.FormatMessage(isHideStackTrace: true);
         fmt.ShouldNotContain("异常堆栈");
     }
@@ -319,7 +321,19 @@ public class ExceptionHelperTests
     [Fact]
     public void PrepareForRethrow_RethrowsOriginalException()
     {
-        var original = new InvalidOperationException("rethrown");
-        Should.Throw<InvalidOperationException>(() => ExceptionHelper.PrepareForRethrow(original));
+        var original = CaptureThrownException();
+        Should.Throw<InvalidOperationException>(() => ExceptionHelper.PrepareForRethrow(original)).ShouldBeSameAs(original);
+        original.StackTrace.ShouldContain(nameof(CaptureThrownException));
     }
+    /// <summary>
+    /// 提供具有真实堆栈的异常。
+    /// </summary>
+    /// <returns>捕获的异常实例。</returns>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    private static Exception CaptureThrownException()
+    {
+        try { throw new InvalidOperationException("original"); }
+        catch (InvalidOperationException exception) { return exception; }
+    }
+
 }

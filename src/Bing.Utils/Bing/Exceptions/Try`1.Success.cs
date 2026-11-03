@@ -101,6 +101,13 @@ public class Success<T> : Try<T>
     {
         if (bind is null)
             throw new ArgumentNullException(nameof(bind));
-        return bind(Value);
+        try
+        {
+            return bind(Value) ?? Try.LiftException<TResult>(new InvalidOperationException("组合函数不能返回空的 Try 结果。"));
+        }
+        catch (Exception exception)
+        {
+            return Try.LiftException<TResult>(exception);
+        }
     }
 }
