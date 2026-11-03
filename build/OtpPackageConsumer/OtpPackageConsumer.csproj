@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.0</TargetFrameworks>
+    <OutputType Condition="'$(TargetFramework)' != 'netstandard2.0'">Exe</OutputType>
+    <LangVersion>latest</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>$(NoWarn);NETSDK1138</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Bing.Utils.OneTimePassword" Version="$(OtpPackageVersion)" />
+    <PackageReference Include="Bing.Utils.OneTimePassword.Sqlite" Version="$(OtpPackageVersion)" />
+    <PackageReference Include="Bing.Utils.OneTimePassword.DataProtection" Version="$(OtpPackageVersion)" />
+    <PackageReference Include="Bing.Utils.OneTimePassword.Redis" Version="$(OtpPackageVersion)" />
+    <PackageReference Include="Bing.Utils.OneTimePassword.DependencyInjection" Version="$(OtpPackageVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="8.0.33" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+  </ItemGroup>
+</Project>

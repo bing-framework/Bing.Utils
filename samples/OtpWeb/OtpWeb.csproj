@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><IsPackable>false</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Bing.Utils.OneTimePassword.DependencyInjection/Bing.Utils.OneTimePassword.DependencyInjection.csproj" />
+    <ProjectReference Include="../../src/Bing.Utils.OneTimePassword.Sqlite/Bing.Utils.OneTimePassword.Sqlite.csproj" />
+    <ProjectReference Include="../../src/Bing.Utils.OneTimePassword.DataProtection/Bing.Utils.OneTimePassword.DataProtection.csproj" />
+    <ProjectReference Include="../../src/Bing.Utils.OneTimePassword.Redis/Bing.Utils.OneTimePassword.Redis.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="8.0.33" />
+  </ItemGroup>
+</Project>

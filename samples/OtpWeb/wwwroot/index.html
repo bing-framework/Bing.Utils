@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TOTP / HOTP 认证器</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body><main>
+<header><p class="eyebrow">BING · ONE TIME PASSWORD</p><h1>管理你的认证器</h1><p>绑定设备，输入动态验证码，再完成二次认证。</p></header>
+<section><h2>当前会话</h2><p id="session">正在读取会话…</p><div class="actions"><button id="sign-in" hidden>建立开发演示身份</button><button id="sign-out" hidden>退出</button><button id="protected">查看受保护内容</button></div></section>
+<section><h2>1. 绑定认证器</h2><form id="enroll"><label>类型<select id="type"><option value="totp">TOTP · 按时间变化</option><option value="hotp">HOTP · 按次数推进</option></select></label><label>设备名称<input id="device-name" value="我的认证器" maxlength="128" required></label><button>生成绑定信息</button></form>
+<div id="enrollment" hidden><p>请在认证器中手工录入以下密钥，或使用支持 otpauth 的客户端导入 URI。绑定信息仅显示本次，10 分钟内有效。</p><label>共享密钥<code id="secret"></code></label><label>注册 URI<textarea id="uri" rows="4" readonly spellcheck="false"></textarea></label><form id="confirm"><label>认证器验证码<input id="confirm-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button>确认绑定</button></form></div></section>
+<section><h2>2. 已绑定设备</h2><div class="actions"><select id="credentials" aria-label="设备"></select><button id="refresh">刷新设备</button><button id="revoke" class="secondary">撤销所选设备</button></div>
+<form id="verify"><label>新的验证码<input id="verify-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button>完成二次认证</button></form><p class="note">绑定确认使用的验证码已消费。TOTP 请等待下一周期；HOTP 请生成下一个验证码。</p></section>
+<section><h2>3. HOTP 重同步</h2><p>仅用于计数器已超前的 HOTP 设备。选择设备后，连续生成两个验证码。</p><form id="resync"><label>第一个验证码<input id="first-code" inputmode="numeric" maxlength="8" required></label><label>紧随其后的验证码<input id="second-code" inputmode="numeric" maxlength="8" required></label><button>重同步</button></form><p class="note">绑定、撤销和重同步需要 5 分钟内的主认证。开发环境可重新建立演示身份。</p></section>
+<p id="status" role="status" aria-live="polite"></p>
+<footer>开发演示身份仅在 Development 开放。生产宿主须接入主认证与近期认证策略。</footer>
+</main></body></html>
