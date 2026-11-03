@@ -10,6 +10,8 @@
 
 文件内容识别提供 15 类常见格式的签名检测、可选的六种 Office 容器识别、有界读取、前缀重放、显式有界缓存、细分预算诊断和文件名/扩展名一致性比较，详见[使用指南](../reference/file-content-detection-guide.md)。
 
+异常结果、真实异步工厂、聚合异常查找及有界诊断输出的完整契约与迁移示例见 [Exceptions 指南](../reference/exceptions-guide.md)。默认格式化限制为深度 64、不同节点 256、输出 32768 个 UTF-16 字符和 8 层缩进。
+
 ## 2. 核心类型与扩展方法
 - 类型/方法签名摘要
 - `public static partial class FileHelper`，典型方法：`ReadToString(string filePath)`、`ReadToStringAsync(string filePath)`。[证据] `src/Bing.Utils/Bing/IO/FileHelper.Read.cs:6` [证据] `src/Bing.Utils/Bing/IO/FileHelper.Read.cs:95` [证据] `src/Bing.Utils/Bing/IO/FileHelper.Read.cs:118`
