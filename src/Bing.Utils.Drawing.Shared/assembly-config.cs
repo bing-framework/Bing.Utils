@@ -1,4 +1,5 @@
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Captcha")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing.ImageSharp")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing.SkiaSharp")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Bing.Utils.Drawing.Tests")]

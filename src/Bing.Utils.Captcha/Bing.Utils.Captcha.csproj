@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
+  <PropertyGroup><Nullable>enable</Nullable><Description>图片验证码生命周期、原子消费和内存存储。</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Bing.Utils.Security/Bing.Utils.Security.csproj" />
+    <ProjectReference Include="../Bing.Utils.Drawing.Shared/Bing.Utils.Drawing.Shared.csproj" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.1" />
+  </ItemGroup>
+</Project>

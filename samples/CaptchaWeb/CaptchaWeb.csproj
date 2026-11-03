@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><IsPackable>false</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Bing.Utils.Captcha.DependencyInjection/Bing.Utils.Captcha.DependencyInjection.csproj" />
+    <ProjectReference Include="../../src/Bing.Utils.Captcha.SkiaSharp/Bing.Utils.Captcha.SkiaSharp.csproj" />
+  </ItemGroup>
+</Project>

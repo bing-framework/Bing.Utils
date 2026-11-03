@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <Import Project="../../common.tests.props" />
+  <ItemGroup>
+    <ProjectReference Include="../../src/Bing.Utils.Captcha.Redis/Bing.Utils.Captcha.Redis.csproj" />
+  </ItemGroup>
+</Project>

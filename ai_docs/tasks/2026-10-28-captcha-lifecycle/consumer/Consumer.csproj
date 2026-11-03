@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.0</TargetFrameworks>
+    <OutputType Condition="'$(TargetFramework)' != 'netstandard2.0'">Exe</OutputType>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Bing.Utils.Captcha" Version="1.5.0" />
+    <PackageReference Include="Bing.Utils.Captcha.SkiaSharp" Version="1.5.0" />
+    <PackageReference Include="Bing.Utils.Captcha.Redis" Version="1.5.0" />
+    <PackageReference Include="Bing.Utils.Captcha.DependencyInjection" Version="1.5.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+  </ItemGroup>
+</Project>

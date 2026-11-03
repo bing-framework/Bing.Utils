@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a0a2c399-e515-4f9c-9c89-118da3a509b4" name="jianx@LAPTOP-2V5T48RH 2026-10-29 07:58:42" runUser="LAPTOP-2V5T48RH\jianx" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-29T07:58:42.5173825+08:00" queuing="2026-10-29T07:58:42.5173829+08:00" start="2026-10-29T07:58:40.3175468+08:00" finish="2026-10-29T07:58:44.8963634+08:00" />
+  <TestSettings name="default" id="c5fd554e-90fd-4c4f-8b06-00616410e06d">
+    <Deployment runDeploymentRoot="jianx_LAPTOP-2V5T48RH_2026-10-29_07_58_42" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="24e6cf88-68af-45c5-b841-e39f9a5fee9c" testId="e154052c-8201-a287-c72b-ef27996568df" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_MalformedIdLengthIsPreservedAndReturnsStorageError" computerName="LAPTOP-2V5T48RH" duration="00:00:00.0158162" startTime="2026-10-29T07:58:44.8007287+08:00" endTime="2026-10-29T07:58:44.8007299+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24e6cf88-68af-45c5-b841-e39f9a5fee9c" />
+    <UnitTestResult executionId="df29b067-c280-4daa-b159-3b82db9fff9e" testId="b4d2de45-4473-057a-1e47-340540b746d2" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_UnknownProtocolIsPreservedAndReturnsStorageError" computerName="LAPTOP-2V5T48RH" duration="00:00:00.0049214" startTime="2026-10-29T07:58:44.8413295+08:00" endTime="2026-10-29T07:58:44.8413297+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="df29b067-c280-4daa-b159-3b82db9fff9e" />
+    <UnitTestResult executionId="ed584c2d-cb35-4ed3-8a57-a84766f10313" testId="eb4613ca-1a39-3f20-3003-bed69727ea0a" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.ReplaceAsync_ExpiredEntryIsRemovedByRedis" computerName="LAPTOP-2V5T48RH" duration="00:00:03.0528764" startTime="2026-10-29T07:58:44.7847422+08:00" endTime="2026-10-29T07:58:44.7847423+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ed584c2d-cb35-4ed3-8a57-a84766f10313" />
+    <UnitTestResult executionId="a7aee7cf-70b1-4c95-9b5c-a3869d30f98f" testId="8789da99-5e23-8e85-2543-b5cc35c691fb" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_RoundTripsSingleCharacterIdAcrossLuaHeaderOffset" computerName="LAPTOP-2V5T48RH" duration="00:00:00.0142001" startTime="2026-10-29T07:58:41.7159260+08:00" endTime="2026-10-29T07:58:41.7159263+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a7aee7cf-70b1-4c95-9b5c-a3869d30f98f" />
+    <UnitTestResult executionId="c33c1f99-0687-40b3-96f7-0ad9560b98f4" testId="4fbdad8e-5848-fe5a-2d6a-89f5cdd8496b" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.ReplaceAsync_SetsExpiryAndReplacesCurrentEntry" computerName="LAPTOP-2V5T48RH" duration="00:00:00.0100971" startTime="2026-10-29T07:58:44.8310885+08:00" endTime="2026-10-29T07:58:44.8310886+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c33c1f99-0687-40b3-96f7-0ad9560b98f4" />
+    <UnitTestResult executionId="2f46f978-b227-49d9-9b26-f28f6467d1da" testId="765d2e2d-d947-34d2-59fa-5df424f9d4f6" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.ReplaceAsync_ConcurrentRefreshAndOldIdTake_PreservesReplacement" computerName="LAPTOP-2V5T48RH" duration="00:00:00.0155900" startTime="2026-10-29T07:58:41.7316236+08:00" endTime="2026-10-29T07:58:41.7316238+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2f46f978-b227-49d9-9b26-f28f6467d1da" />
+    <UnitTestResult executionId="232a08e1-e46d-4084-b5dd-0c65c83c6b5d" testId="3e1df12f-7f41-8a12-6880-4770cfa3ed1a" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_RoundTripsMaximumBmpUtf8Fields" computerName="LAPTOP-2V5T48RH" duration="00:00:00.4052397" startTime="2026-10-29T07:58:41.7007087+08:00" endTime="2026-10-29T07:58:41.7007313+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="232a08e1-e46d-4084-b5dd-0c65c83c6b5d" />
+    <UnitTestResult executionId="1c064435-3fcb-4f57-b6c4-d5d1ed783f4b" testId="888f5219-993f-5536-3df2-750b96840927" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_ConcurrentCalls_ReturnsEntryExactlyOnce" computerName="LAPTOP-2V5T48RH" duration="00:00:00.0114825" startTime="2026-10-29T07:58:44.8123484+08:00" endTime="2026-10-29T07:58:44.8123485+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1c064435-3fcb-4f57-b6c4-d5d1ed783f4b" />
+    <UnitTestResult executionId="fdbe11e9-9150-4bdd-a203-4eadf688311d" testId="1578acef-b32a-4336-a8fc-5ec310e79c2f" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_DoesNotConsumeEntryForDifferentContext" computerName="LAPTOP-2V5T48RH" duration="00:00:00.0050782" startTime="2026-10-29T07:58:44.8362857+08:00" endTime="2026-10-29T07:58:44.8362858+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fdbe11e9-9150-4bdd-a203-4eadf688311d" />
+    <UnitTestResult executionId="eab859e0-16e5-4458-8bce-74528bf20133" testId="4b8ee647-8001-2929-e17c-3b5733448f2a" testName="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_AcrossIndependentMultiplexers_ReturnsEntryExactlyOnce" computerName="LAPTOP-2V5T48RH" duration="00:00:00.0083779" startTime="2026-10-29T07:58:44.8208511+08:00" endTime="2026-10-29T07:58:44.8208512+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eab859e0-16e5-4458-8bce-74528bf20133" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_RoundTripsSingleCharacterIdAcrossLuaHeaderOffset" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="8789da99-5e23-8e85-2543-b5cc35c691fb">
+      <Execution id="a7aee7cf-70b1-4c95-9b5c-a3869d30f98f" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="TryTakeAsync_RoundTripsSingleCharacterIdAcrossLuaHeaderOffset" />
+    </UnitTest>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_DoesNotConsumeEntryForDifferentContext" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="1578acef-b32a-4336-a8fc-5ec310e79c2f">
+      <Execution id="fdbe11e9-9150-4bdd-a203-4eadf688311d" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="TryTakeAsync_DoesNotConsumeEntryForDifferentContext" />
+    </UnitTest>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_AcrossIndependentMultiplexers_ReturnsEntryExactlyOnce" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="4b8ee647-8001-2929-e17c-3b5733448f2a">
+      <Execution id="eab859e0-16e5-4458-8bce-74528bf20133" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="TryTakeAsync_AcrossIndependentMultiplexers_ReturnsEntryExactlyOnce" />
+    </UnitTest>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.ReplaceAsync_SetsExpiryAndReplacesCurrentEntry" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="4fbdad8e-5848-fe5a-2d6a-89f5cdd8496b">
+      <Execution id="c33c1f99-0687-40b3-96f7-0ad9560b98f4" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="ReplaceAsync_SetsExpiryAndReplacesCurrentEntry" />
+    </UnitTest>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_ConcurrentCalls_ReturnsEntryExactlyOnce" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="888f5219-993f-5536-3df2-750b96840927">
+      <Execution id="1c064435-3fcb-4f57-b6c4-d5d1ed783f4b" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="TryTakeAsync_ConcurrentCalls_ReturnsEntryExactlyOnce" />
+    </UnitTest>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_RoundTripsMaximumBmpUtf8Fields" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="3e1df12f-7f41-8a12-6880-4770cfa3ed1a">
+      <Execution id="232a08e1-e46d-4084-b5dd-0c65c83c6b5d" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="TryTakeAsync_RoundTripsMaximumBmpUtf8Fields" />
+    </UnitTest>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.ReplaceAsync_ConcurrentRefreshAndOldIdTake_PreservesReplacement" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="765d2e2d-d947-34d2-59fa-5df424f9d4f6">
+      <Execution id="2f46f978-b227-49d9-9b26-f28f6467d1da" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="ReplaceAsync_ConcurrentRefreshAndOldIdTake_PreservesReplacement" />
+    </UnitTest>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_MalformedIdLengthIsPreservedAndReturnsStorageError" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="e154052c-8201-a287-c72b-ef27996568df">
+      <Execution id="24e6cf88-68af-45c5-b841-e39f9a5fee9c" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="TryTakeAsync_MalformedIdLengthIsPreservedAndReturnsStorageError" />
+    </UnitTest>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.TryTakeAsync_UnknownProtocolIsPreservedAndReturnsStorageError" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="b4d2de45-4473-057a-1e47-340540b746d2">
+      <Execution id="df29b067-c280-4daa-b159-3b82db9fff9e" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="TryTakeAsync_UnknownProtocolIsPreservedAndReturnsStorageError" />
+    </UnitTest>
+    <UnitTest name="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest.ReplaceAsync_ExpiredEntryIsRemovedByRedis" storage="d:\bing_framework\bing.utils\tests\bing.utils.captcha.redis.tests.integration\bin\release\net8.0\bing.utils.captcha.redis.tests.integration.dll" id="eb4613ca-1a39-3f20-3003-bed69727ea0a">
+      <Execution id="ed584c2d-cb35-4ed3-8a57-a84766f10313" />
+      <TestMethod codeBase="D:\Bing_Framework\Bing.Utils\tests\Bing.Utils.Captcha.Redis.Tests.Integration\bin\Release\net8.0\Bing.Utils.Captcha.Redis.Tests.Integration.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Bing.Utils.Captcha.Redis.Tests.Integration.CaptchaRedisStoreIntegrationTest" name="ReplaceAsync_ExpiredEntryIsRemovedByRedis" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="e154052c-8201-a287-c72b-ef27996568df" executionId="24e6cf88-68af-45c5-b841-e39f9a5fee9c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b4d2de45-4473-057a-1e47-340540b746d2" executionId="df29b067-c280-4daa-b159-3b82db9fff9e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eb4613ca-1a39-3f20-3003-bed69727ea0a" executionId="ed584c2d-cb35-4ed3-8a57-a84766f10313" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8789da99-5e23-8e85-2543-b5cc35c691fb" executionId="a7aee7cf-70b1-4c95-9b5c-a3869d30f98f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4fbdad8e-5848-fe5a-2d6a-89f5cdd8496b" executionId="c33c1f99-0687-40b3-96f7-0ad9560b98f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="765d2e2d-d947-34d2-59fa-5df424f9d4f6" executionId="2f46f978-b227-49d9-9b26-f28f6467d1da" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3e1df12f-7f41-8a12-6880-4770cfa3ed1a" executionId="232a08e1-e46d-4084-b5dd-0c65c83c6b5d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="888f5219-993f-5536-3df2-750b96840927" executionId="1c064435-3fcb-4f57-b6c4-d5d1ed783f4b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1578acef-b32a-4336-a8fc-5ec310e79c2f" executionId="fdbe11e9-9150-4bdd-a203-4eadf688311d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4b8ee647-8001-2929-e17c-3b5733448f2a" executionId="eab859e0-16e5-4458-8bce-74528bf20133" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="10" executed="10" passed="10" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.7+8f2703126a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.13]   Discovering: Bing.Utils.Captcha.Redis.Tests.Integration&#xD;
+[xUnit.net 00:00:00.18]   Discovered:  Bing.Utils.Captcha.Redis.Tests.Integration&#xD;
+[xUnit.net 00:00:00.19]   Starting:    Bing.Utils.Captcha.Redis.Tests.Integration&#xD;
+[xUnit.net 00:00:03.81]   Finished:    Bing.Utils.Captcha.Redis.Tests.Integration&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
+  <PropertyGroup>
+    <AssemblyName>Bing.Utils.Captcha.SkiaSharp</AssemblyName>
+    <PackageId>Bing.Utils.Captcha.SkiaSharp</PackageId>
+    <Description>SkiaSharp PNG renderer for Bing image captcha.</Description>
+    <Nullable>enable</Nullable>
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Bing.Utils.Captcha/Bing.Utils.Captcha.csproj" />
+    <ProjectReference Include="../Bing.Utils.Drawing.SkiaSharp/Bing.Utils.Drawing.SkiaSharp.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.tests.props" />
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../samples/CaptchaWeb/CaptchaWeb.csproj" /><PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" /></ItemGroup>
+  <ItemGroup><PackageReference Include="System.Text.Json" Version="8.0.6" /></ItemGroup>
+</Project>

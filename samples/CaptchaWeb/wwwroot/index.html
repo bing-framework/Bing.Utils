@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>验证码示例</title>
+<style>body{font:18px system-ui;max-width:600px;margin:60px auto;padding:20px}button,input{font:inherit;padding:8px;margin:8px 0}img{display:block}#status{min-height:3em}</style>
+<h1>图片验证码</h1><p>输入图片中的字符，完成一次示例操作。</p>
+<form id="form"><img id="picture" alt="请输入图片中的验证码" width="160" height="60" hidden>
+<button id="refresh" type="button" disabled>换一张</button><p id="expiry"></p>
+<label for="answer">验证码</label><br><input id="answer" maxlength="64" required autocomplete="off" autocapitalize="characters">
+<br><button id="submit" type="submit" disabled>提交示例操作</button></form><p id="status" role="status" aria-live="polite"></p>
+<script>
+const flowId = crypto.randomUUID();
+let token, id, sessionPromise, busy = false;
+const status = document.getElementById('status');
+const answer = document.getElementById('answer');
+const refresh = document.getElementById('refresh');
+const submit = document.getElementById('submit');
+const picture = document.getElementById('picture');
+const expiry = document.getElementById('expiry');
+
+function lock(value) {
+    busy = value;
+    refresh.disabled = value;
+    submit.disabled = value || !id;
+}
+
+// 初始化属于生成流程的一部分；失败后下次刷新可以重新获取会话令牌。
+async function ensureSession() {
+    if (token) return;
+    if (!sessionPromise) {
+        sessionPromise = fetch('/api/session').then(async response => {
+            if (!response.ok) throw new Error('会话初始化失败，请点击“换一张”重试。');
+            const session = await response.json();
+            if (!session.token) throw new Error('会话初始化失败，请点击“换一张”重试。');
+            token = session.token;
+        }).finally(() => { sessionPromise = null; });
+    }
+    await sessionPromise;
+}
+
+async function post(url, data) {
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token },
+        body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error(response.status === 429 ? '请求过于频繁，请稍后重试。' :
+        response.status === 503 ? '服务暂不可用，请稍后重试。' : '验证码错误或已失效，请换一张。');
+    return response.json();
+}
+
+async function load() {
+    if (busy) return;
+    lock(true);
+    id = null;
+    answer.value = '';
+    picture.hidden = true;
+    expiry.textContent = '';
+    status.textContent = '正在生成…';
+    try {
+        await ensureSession();
+        const challenge = await post('/api/captchas', { flowId });
+        id = challenge.captchaId;
+        picture.src = 'data:image/png;base64,' + challenge.imageBase64;
+        picture.hidden = false;
+        expiry.textContent = '有效至 ' + new Date(challenge.expiresAt).toLocaleTimeString();
+        status.textContent = '';
+        answer.focus();
+    } catch (error) {
+        status.textContent = error.message;
+    } finally {
+        lock(false);
+    }
+}
+
+refresh.onclick = load;
+document.getElementById('form').onsubmit = async event => {
+    event.preventDefault();
+    if (busy || !id) return;
+    lock(true);
+    try {
+        const result = await post('/api/demo/submit', { flowId, captchaId: id, answer: answer.value });
+        status.textContent = result.message;
+    } catch (error) {
+        status.textContent = error.message;
+    } finally {
+        id = null;
+        lock(false);
+    }
+};
+load();
+</script></html>

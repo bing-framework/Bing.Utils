@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../common.props" />
+  <PropertyGroup><Nullable>enable</Nullable><Description>验证码服务的依赖注入注册。</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Bing.Utils.Captcha/Bing.Utils.Captcha.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+  </ItemGroup>
+</Project>

@@ -658,8 +658,22 @@ public static partial class SkiaSharpHelper
     /// <exception cref="ArgumentNullException"></exception>
     public static SKImage CreateCaptchaImage(string code, CaptchaOptions? options = null)
     {
+        return CreateCaptchaImage(code, options, SKTypeface.Default);
+    }
+
+    /// <summary>
+    /// 使用调用方提供的字体创建验证码图片；字体由调用方负责释放。
+    /// </summary>
+    /// <param name="code">验证码文本</param>
+    /// <param name="options">验证码配置</param>
+    /// <param name="typeface">用于绘制文本的字体。</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static SKImage CreateCaptchaImage(string code, CaptchaOptions? options, SKTypeface typeface)
+    {
         if (string.IsNullOrWhiteSpace(code))
             throw new ArgumentNullException(nameof(code));
+        if (typeface is null)
+            throw new ArgumentNullException(nameof(typeface));
 
         options = options ?? new CaptchaOptions();
         var fontSize = options.FontSize;
@@ -679,7 +693,7 @@ public static partial class SkiaSharpHelper
 
         DrawCaptchaDisorderLine(canvas, code, width, height, options, rng);
         DrawCaptchaDisorderPoint(output, code, width, height, options, rng);
-        DrawCaptchaText(canvas, code, width, height, fontSize, fontWidth, options, rng);
+        DrawCaptchaText(canvas, code, width, height, fontSize, fontWidth, options, rng, typeface);
         canvas.Flush();
 
         return TrackFormat(SKImage.FromBitmap(output), SKEncodedImageFormat.Png)!;
@@ -1097,7 +1111,8 @@ public static partial class SkiaSharpHelper
     /// <param name="fontWidth">验证码字符宽度。</param>
     /// <param name="options">验证码绘制选项。</param>
     /// <param name="rng">用于生成文本位置和角度的随机数生成器。</param>
-    private static void DrawCaptchaText(SKCanvas canvas, string code, int width, int height, int fontSize, int fontWidth, CaptchaOptions options, Random rng)
+    /// <param name="typeface">由调用方拥有的绘制字体。</param>
+    private static void DrawCaptchaText(SKCanvas canvas, string code, int width, int height, int fontSize, int fontWidth, CaptchaOptions options, Random rng, SKTypeface typeface)
     {
         var textColor = options.RandomColor
             ? new SKColor(24, 24, 24, 255)
@@ -1112,7 +1127,7 @@ public static partial class SkiaSharpHelper
             Color = textColor,
             IsAntialias = true,
             TextSize = fontSize,
-            Typeface = SKTypeface.Default,
+            Typeface = typeface,
             FakeBoldText = true
         };
 

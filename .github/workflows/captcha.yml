@@ -1,0 +1,55 @@
+name: captcha
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  captcha:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      BING_CAPTCHA_REDIS: localhost:6379,abortConnect=true
+      BING_CAPTCHA_TEST_FONT: /usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
+      BING_CAPTCHA_TEST_LATIN_FONT: /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+            8.0.425
+      - name: Install CJK fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk fonts-dejavu-core
+          test -f "$BING_CAPTCHA_TEST_FONT"
+          test -f "$BING_CAPTCHA_TEST_LATIN_FONT"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test captcha page request sequencing
+        run: node --test samples/CaptchaWeb/tests/captcha-page.test.cjs
+      - name: Test captcha core, DI, and web integration
+        run: |
+          dotnet test tests/Bing.Utils.Captcha.Tests/Bing.Utils.Captcha.Tests.csproj -c Release -f net6.0
+          dotnet test tests/Bing.Utils.Captcha.Tests/Bing.Utils.Captcha.Tests.csproj -c Release -f net7.0
+          dotnet test tests/Bing.Utils.Captcha.Tests/Bing.Utils.Captcha.Tests.csproj -c Release -f net8.0
+          dotnet test tests/Bing.Utils.Captcha.DependencyInjection.Tests/Bing.Utils.Captcha.DependencyInjection.Tests.csproj -c Release
+          dotnet test tests/Bing.Utils.Captcha.Tests.Integration/Bing.Utils.Captcha.Tests.Integration.csproj -c Release -f net8.0
+      - name: Test SkiaSharp renderer
+        run: dotnet test tests/Bing.Utils.Captcha.SkiaSharp.Tests.Integration/Bing.Utils.Captcha.SkiaSharp.Tests.Integration.csproj -c Release -f net8.0
+      - name: Test Redis adapter unit suite
+        run: dotnet test tests/Bing.Utils.Captcha.Redis.Tests/Bing.Utils.Captcha.Redis.Tests.csproj -c Release
+      - name: Test Redis storage
+        run: dotnet test tests/Bing.Utils.Captcha.Redis.Tests.Integration/Bing.Utils.Captcha.Redis.Tests.Integration.csproj -c Release -f net8.0

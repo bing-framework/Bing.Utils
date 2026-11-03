@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <Import Project="..\..\common.tests.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bing.Utils.Captcha.Redis\Bing.Utils.Captcha.Redis.csproj" />
+    <PackageReference Include="StackExchange.Redis" Version="2.13.1" />
+  </ItemGroup>
+</Project>
