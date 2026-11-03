@@ -289,7 +289,7 @@ public static partial class DateTimeExtensions
     /// <param name="max">范围结束日期</param>
     /// <returns>如果在范围内则为true，否则为false</returns>
     /// <remarks>
-    /// 此方法考虑整个日期，max日期会被视为整天（到次日凌晨前），
+    /// 此方法保留边界的日内分量；自然日范围请传入 min.Date 和 max.Date，
     /// 因此实际是判断 dt 大于等于 min 且 dt 小于 max.AddDays(1)
     /// </remarks>
     /// <example>
@@ -301,7 +301,7 @@ public static partial class DateTimeExtensions
     /// </code>
     /// </example>
     public static bool IsDateBetweenWithBoundary(this DateTime dt, DateTime min, DateTime max) =>
-        dt.IsBetween(min, max.AddDays(+1), false);
+        dt.IsDateBetweenWithBoundary((DateTime?)min, max);
 
     /// <summary>
     /// 判断日期是否在可为空的日期范围内（闭区间，包含边界日期）
@@ -325,13 +325,11 @@ public static partial class DateTimeExtensions
     /// </example>
     public static bool IsDateBetweenWithBoundary(this DateTime dt, DateTime? min, DateTime? max)
     {
-        if (min.HasValue && max.HasValue)
-            return dt.IsDateBetweenWithBoundary(min.Value, max.Value);
-        if (min.HasValue)
-            return dt >= min.Value;
-        if (max.HasValue)
-            return dt < max.Value.AddDays(+1);
-        return true;
+        if (min.HasValue && (dt < min.Value || (max.HasValue && min.Value > max.Value)))
+            return false;
+        // 保留 max 的日内分量；排他上界越过 MaxValue 时包含剩余可表示时间。
+        return !max.HasValue || max.Value.Ticks > DateTime.MaxValue.Ticks - TimeSpan.TicksPerDay
+            || dt.Ticks < max.Value.Ticks + TimeSpan.TicksPerDay;
     }
 
     /// <summary>
@@ -1058,7 +1056,7 @@ public static partial class DateTimeExtensions
     /// Console.WriteLine(utcTime); // 输出: 2023-01-01 12:00:00（相同的时间值）
     /// </code>
     /// </example>
-    public static DateTime ToUtc(this DateTime dt) => new(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, DateTimeKind.Utc);
+    public static DateTime ToUtc(this DateTime dt) => DateTime.SpecifyKind(dt, DateTimeKind.Utc);
 
     /// <summary>
     /// 获取当前时刻的中国标准时间（CST，UTC+8）
@@ -1089,7 +1087,7 @@ public static partial class DateTimeExtensions
     /// <param name="dt">要计算的日期时间</param>
     /// <returns>与Unix纪元之间的TimeSpan</returns>
     /// <remarks>
-    /// Unix纪元定义为1970年1月1日 00:00:00 UTC
+    /// Unix纪元定义为1970年1月1日 00:00:00 UTC；Local 转为 UTC，Unspecified 按 UTC 解释
     /// </remarks>
     /// <example>
     /// <code>
@@ -1098,7 +1096,9 @@ public static partial class DateTimeExtensions
     /// Console.WriteLine(epochSpan.TotalDays); // 输出从1970-01-01到2023-01-01的总天数
     /// </code>
     /// </example>
-    public static TimeSpan ToEpochTimeSpan(this DateTime dt) => dt.Subtract(DateTimeFactory.Create(1970, 1, 1));
+    public static TimeSpan ToEpochTimeSpan(this DateTime dt) =>
+        (dt.Kind == DateTimeKind.Local ? dt.ToUniversalTime() : DateTime.SpecifyKind(dt, DateTimeKind.Utc))
+        - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
     /// <summary>
     /// 将DateTime转换为NodaTime的 <see cref="LocalDateTime"/>

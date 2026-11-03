@@ -43,8 +43,9 @@ public static class ChineseConstellationHelper
     public static string Get(DateTime dt, bool traditionalChineseCharacters = false)
     {
         var dict = traditionalChineseCharacters ? NAME_Z : NAME_S;
-        var offset = (dt - ChineseConstellationReferDay).Days;
-        var modStarDay = offset % 28;
-        return modStarDay >= 0 ? dict[modStarDay] : dict[27 + modStarDay];
+        var date = new DateTime(dt.Year, dt.Month, dt.Day);
+        var offset = (date - ChineseConstellationReferDay).Days;
+        var modStarDay = ((offset % 28) + 28) % 28;
+        return dict[modStarDay];
     }
 }

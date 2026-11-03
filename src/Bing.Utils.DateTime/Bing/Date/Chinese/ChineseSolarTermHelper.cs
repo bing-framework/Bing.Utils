@@ -5,18 +5,9 @@ namespace Bing.Date.Chinese;
 /// <summary>
 /// 中国二十四节气帮助类
 /// </summary>
+/// <remarks>节气按官方 UTC+8 自然日固定表查询，支持 1900 至 2100 年。</remarks>
 public static class ChineseSolarTermHelper
 {
-    /// <summary>
-    /// 基准日期时间：1900年1月6日2:05:00
-    /// </summary>
-    private static readonly DateTime BaseDateAndTime = new(1900, 1, 6, 2, 5, 0);
-
-    /// <summary>
-    /// 每年的分钟偏移量
-    /// </summary>
-    private const double MinutesPerYear = 525948.76;
-
     /// <summary>
     /// 24节气 - 简体
     /// </summary>
@@ -51,7 +42,7 @@ public static class ChineseSolarTermHelper
     ];
 
     /// <summary>
-    /// 24节气 - 枚举
+    /// 24节气枚举，顺序与固定自然日表一致
     /// </summary>
     private static readonly List<ChineseSolarTerms> SOLAR_TERM_ENUM =
     [
@@ -79,15 +70,6 @@ public static class ChineseSolarTermHelper
         ChineseSolarTerms.SlightSnow,
         ChineseSolarTerms.GreatSnow,
         ChineseSolarTerms.WinterSolstice
-    ];
-
-    /// <summary>
-    /// 24节气信息，保存每个节气的分钟偏移量
-    /// </summary>
-    private static readonly int[] SOLAR_TERM_INFO =
-    [
-        0, 21208, 42467, 63836, 85337, 107014, 128867, 150921, 173149, 195551, 218072, 240693, 263343, 285989,
-        308563, 331033, 353350, 375494, 397447, 419210, 440795, 462224, 483532, 504758
     ];
 
     /// <summary>
@@ -132,7 +114,7 @@ public static class ChineseSolarTermHelper
     {
         if (calendar == null)
             throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        var i = GetSolarTermIndex(calendar, targetDt, (x, y) => Math.Abs(x - y) <= 1, out _);
+        var i = GetSolarTermIndex(calendar, targetDt, SearchMode.On, out _);
         var solarTermP = traditionalChineseCharacters ? SOLAR_TERM_Z : SOLAR_TERM_S;
         return i == -1 ? string.Empty : solarTermP[i];
     }
@@ -160,7 +142,7 @@ public static class ChineseSolarTermHelper
     {
         if (calendar == null)
             throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        var i = GetSolarTermIndex(calendar, targetDt, (x, y) => x < y, out dt);
+        var i = GetSolarTermIndex(calendar, targetDt, SearchMode.Before, out dt);
         var solarTermP = traditionalChineseCharacters ? SOLAR_TERM_Z : SOLAR_TERM_S;
         return i == -1 ? string.Empty : solarTermP[i];
     }
@@ -188,7 +170,7 @@ public static class ChineseSolarTermHelper
     {
         if (calendar == null)
             throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        var i = GetSolarTermIndex(calendar, targetDt, (x, y) => x > y, out dt);
+        var i = GetSolarTermIndex(calendar, targetDt, SearchMode.After, out dt);
         var solarTermP = traditionalChineseCharacters ? SOLAR_TERM_Z : SOLAR_TERM_S;
         return i == -1 ? string.Empty : solarTermP[i];
     }
@@ -204,7 +186,7 @@ public static class ChineseSolarTermHelper
     {
         if (calendar == null)
             throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        var i = GetSolarTermIndex(calendar, targetDt, (x, y) => Math.Abs(x - y) <= 1, out _);
+        var i = GetSolarTermIndex(calendar, targetDt, SearchMode.On, out _);
         return i == -1 ? null : SOLAR_TERM_ENUM[i];
     }
 
@@ -229,7 +211,7 @@ public static class ChineseSolarTermHelper
     {
         if (calendar == null)
             throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        var i = GetSolarTermIndex(calendar, targetDt, (x, y) => x < y, out dt);
+        var i = GetSolarTermIndex(calendar, targetDt, SearchMode.Before, out dt);
         return i == -1 ? null : SOLAR_TERM_ENUM[i];
     }
 
@@ -254,47 +236,100 @@ public static class ChineseSolarTermHelper
     {
         if (calendar == null)
             throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        var i = GetSolarTermIndex(calendar, targetDt, (x, y) => x > y, out dt);
+        var i = GetSolarTermIndex(calendar, targetDt, SearchMode.After, out dt);
         return i == -1 ? null : SOLAR_TERM_ENUM[i];
     }
 
+    private enum SearchMode
+    {
+        On,
+        Before,
+        After
+    }
+
     /// <summary>
-    /// 节气计算，返回指定条件的节气序及日期（公历）
+    /// 在固定 UTC+8 自然日表中查找节气，并以午夜 Unspecified 返回日期。
     /// </summary>
-    /// <param name="calendar">中国农历日历实例</param>
-    /// <param name="targetDt">目标日期</param>
-    /// <param name="comparer">用于比较日期的函数</param>
-    /// <param name="dateTime">计算得到的符合条件的节气日期</param>
-    /// <returns>返回节气的索引，如果未找到符合条件的节气，则返回-1</returns>
-    private static int GetSolarTermIndex(ChineseLunisolarCalendar calendar, DateTime targetDt, Func<int, int, bool> comparer, out DateTime dateTime)
+    private static int GetSolarTermIndex(ChineseLunisolarCalendar calendar, DateTime targetDt, SearchMode mode, out DateTime dateTime)
     {
         if (calendar == null)
             throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        if (targetDt < BaseDateAndTime || targetDt > new DateTime(2100, 12, 31))
+
+        dateTime = calendar.MinSupportedDateTime;
+        if (!ChineseSolarTermDateData.IsSupportedYear(targetDt.Year))
+            return -1;
+
+        if (mode == SearchMode.Before)
         {
-            dateTime = calendar.MinSupportedDateTime;
+            for (var index = 23; index >= 0; index--)
+            {
+                if (!IsBeforeTarget(targetDt, index))
+                    continue;
+
+                dateTime = CreateTermDate(targetDt.Year, index);
+                return index;
+            }
+
+            if (targetDt.Year > ChineseSolarTermDateData.MinYear)
+            {
+                dateTime = CreateTermDate(targetDt.Year - 1, 23);
+                return 23;
+            }
+
             return -1;
         }
 
-        var year = targetDt.Year;
-        // 获取24节气的序号列表，根据比较函数决定顺序
-        var solarTermIndices = Enumerable.Range(1, 24).ToArray();
-        if (comparer(0, 1)) // 降序
-            solarTermIndices = solarTermIndices.OrderByDescending(x => x).ToArray();
-        foreach (var termIndex in solarTermIndices)
+        if (mode == SearchMode.After)
         {
-            // 计算节气对应的分钟数
-            var minutes = MinutesPerYear * (year - 1900) + SOLAR_TERM_INFO[termIndex - 1];
-            // 计算节气对应的日期
-            var termDate = BaseDateAndTime.AddMinutes(minutes);
-            // 根据比较函数判断是否符合条件
-            if (comparer(termDate.DayOfYear, targetDt.DayOfYear))
+            for (var index = 0; index < 24; index++)
             {
-                dateTime = termDate;
-                return termIndex - 1;
+                if (!IsAfterTarget(targetDt, index))
+                    continue;
+
+                dateTime = CreateTermDate(targetDt.Year, index);
+                return index;
+            }
+
+            if (targetDt.Year < ChineseSolarTermDateData.MaxYear)
+            {
+                dateTime = CreateTermDate(targetDt.Year + 1, 0);
+                return 0;
+            }
+
+            return -1;
+        }
+
+        for (var index = 0; index < 24; index++)
+        {
+            var termMonth = index / 2 + 1;
+            if (targetDt.Month == termMonth && targetDt.Day == ChineseSolarTermDateData.GetDayOfMonth(targetDt.Year, index))
+            {
+                dateTime = CreateTermDate(targetDt.Year, index);
+                return index;
             }
         }
-        dateTime = calendar.MinSupportedDateTime;
+
         return -1;
+    }
+
+    private static DateTime CreateTermDate(int year, int index)
+    {
+        var month = index / 2 + 1;
+        var day = ChineseSolarTermDateData.GetDayOfMonth(year, index);
+        return new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Unspecified);
+    }
+
+    private static bool IsBeforeTarget(DateTime targetDt, int index)
+    {
+        var month = index / 2 + 1;
+        var day = ChineseSolarTermDateData.GetDayOfMonth(targetDt.Year, index);
+        return month < targetDt.Month || month == targetDt.Month && day < targetDt.Day;
+    }
+
+    private static bool IsAfterTarget(DateTime targetDt, int index)
+    {
+        var month = index / 2 + 1;
+        var day = ChineseSolarTermDateData.GetDayOfMonth(targetDt.Year, index);
+        return month > targetDt.Month || month == targetDt.Month && day > targetDt.Day;
     }
 }

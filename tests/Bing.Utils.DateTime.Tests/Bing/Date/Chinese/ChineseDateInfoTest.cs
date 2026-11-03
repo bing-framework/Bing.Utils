@@ -320,6 +320,20 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
+    /// 验证年、月天数按日期对应的农历年和农历月计算。
+    /// </summary>
+    [Fact]
+    public void GetDaysInYearAndMonth_UsesLunarCalendarParts()
+    {
+        var info = new ChineseDateInfo(new DateTime(2024, 1, 31));
+
+        info.ChineseYear.ShouldBe(2023);
+        info.ChineseMonth.ShouldBe(13); // BCL 的闰月年按月份序号计数，腊月为第 13 月。
+        info.GetDaysInYear().ShouldBe(384);
+        info.GetDaysInMonth().ShouldBe(30);
+    }
+
+    /// <summary>
     /// 验证农历年内序号位于合理范围。
     /// </summary>
     [Fact]

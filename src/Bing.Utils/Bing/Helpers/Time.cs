@@ -360,12 +360,11 @@ public static partial class Time
     {
         try
         {
-            var ticks = TimeOptions.UnixEpochTicks + epochSecond * TimeOptions.TicksPerSec;
-            return new DateTime(ticks, DateTimeKind.Utc).ToLocalTime();
+            return DateTimeOffset.FromUnixTimeSeconds(epochSecond).LocalDateTime;
         }
-        catch (ArgumentOutOfRangeException ex)
+        catch (ArgumentOutOfRangeException)
         {
-            throw new ArgumentOutOfRangeException($"Unix时间戳超出支持范围: {epochSecond}", ex);
+            throw new ArgumentOutOfRangeException(nameof(epochSecond), epochSecond, "Unix 时间戳超出支持范围。");
         }
     }
 
@@ -390,12 +389,11 @@ public static partial class Time
     {
         try
         {
-            var ticks = TimeOptions.UnixEpochTicks + epochMilli * TimeOptions.TicksPreMillisecond;
-            return new DateTime(ticks, DateTimeKind.Utc).ToLocalTime();
+            return DateTimeOffset.FromUnixTimeMilliseconds(epochMilli).LocalDateTime;
         }
-        catch (ArgumentOutOfRangeException ex)
+        catch (ArgumentOutOfRangeException)
         {
-            throw new ArgumentOutOfRangeException($"Unix时间戳（毫秒）超出支持范围: {epochMilli}", ex);
+            throw new ArgumentOutOfRangeException(nameof(epochMilli), epochMilli, "Unix 毫秒时间戳超出支持范围。");
         }
     }
 

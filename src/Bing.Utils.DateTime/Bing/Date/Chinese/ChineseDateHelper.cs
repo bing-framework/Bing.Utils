@@ -153,16 +153,13 @@ public static class ChineseDateHelper
     /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static string GetSexagenaryYear(ChineseLunisolarCalendar calendar, DateTime dt, bool traditionalChineseCharacters = false)
     {
-        if (calendar == null)
-            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        if (!DateJudge.IsValid(dt))
-            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+        ValidateLunarDate(calendar, dt);
 
         var ganP = traditionalChineseCharacters ? GAN_Z : GAN_S;
         var zhiP = traditionalChineseCharacters ? ZHI_Z : ZHI_S;
 
         var sexagenaryYear = calendar.GetSexagenaryYear(dt);
-        var stemIndex = calendar.GetCelestialStem(sexagenaryYear - 1);
+        var stemIndex = calendar.GetCelestialStem(sexagenaryYear) - 1;
         var branchIndex = calendar.GetTerrestrialBranch(sexagenaryYear) - 1;
         return $"{ganP[stemIndex]}{zhiP[branchIndex]}年";
     }
@@ -177,10 +174,7 @@ public static class ChineseDateHelper
     /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static string GetChineseMonth(ChineseLunisolarCalendar calendar, DateTime dt, bool traditionalChineseCharacters = false)
     {
-        if (calendar == null)
-            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        if (!DateJudge.IsValid(dt))
-            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+        ValidateLunarDate(calendar, dt);
 
         var run = traditionalChineseCharacters ? RUN_Z : RUN_S;
         var yueP = traditionalChineseCharacters ? YUE_Z : YUE_S;
@@ -230,10 +224,7 @@ public static class ChineseDateHelper
     /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static string GetChineseDay(ChineseLunisolarCalendar calendar, DateTime dt, bool traditionalChineseCharacters = false)
     {
-        if (calendar == null)
-            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        if (!DateJudge.IsValid(dt))
-            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+        ValidateLunarDate(calendar, dt);
 
         var day = calendar.GetDayOfMonth(dt);
         var priP = traditionalChineseCharacters ? PRI_Z : PRI_S;
@@ -285,10 +276,7 @@ public static class ChineseDateHelper
     /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static string GetChineseDateTime(ChineseLunisolarCalendar calendar, DateTime dt, bool includeHour = true, bool traditionalChineseCharacters = false)
     {
-        if (calendar == null)
-            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        if (!DateJudge.IsValid(dt))
-            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
+        ValidateLunarDate(calendar, dt);
 
         var year = GetSexagenaryYear(calendar, dt, traditionalChineseCharacters);
         var month = GetChineseMonth(calendar, dt, traditionalChineseCharacters);
@@ -323,11 +311,8 @@ public static class ChineseDateHelper
     /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static bool IsLeapYear(ChineseLunisolarCalendar calendar, DateTime dt)
     {
-        if (calendar == null)
-            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        if (!DateJudge.IsValid(dt))
-            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
-        return calendar.IsLeapYear(dt.Year);
+        ValidateLunarDate(calendar, dt);
+        return calendar.IsLeapYear(calendar.GetYear(dt));
     }
 
     /// <summary>
@@ -354,11 +339,10 @@ public static class ChineseDateHelper
     /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static bool IsLeapMonth(ChineseLunisolarCalendar calendar, DateTime dt)
     {
-        if (calendar == null)
-            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        if (!DateJudge.IsValid(dt))
-            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
-        return calendar.IsLeapMonth(dt.Year, dt.Month);
+        ValidateLunarDate(calendar, dt);
+        var lunarYear = calendar.GetYear(dt);
+        var lunarMonth = calendar.GetMonth(dt);
+        return calendar.IsLeapMonth(lunarYear, lunarMonth);
     }
 
     /// <summary>
@@ -370,10 +354,18 @@ public static class ChineseDateHelper
     /// <exception cref="ArgumentNullException">日历或日期为空时抛出</exception>
     public static bool IsLeapDay(ChineseLunisolarCalendar calendar, DateTime dt)
     {
+        ValidateLunarDate(calendar, dt);
+        var lunarYear = calendar.GetYear(dt);
+        var lunarMonth = calendar.GetMonth(dt);
+        var lunarDay = calendar.GetDayOfMonth(dt);
+        return calendar.IsLeapDay(lunarYear, lunarMonth, lunarDay);
+    }
+    /// <summary>农历入口以具体历法支持范围为准，不使用通用日期判断范围。</summary>
+    private static void ValidateLunarDate(ChineseLunisolarCalendar calendar, DateTime dt)
+    {
         if (calendar == null)
-            throw new ArgumentNullException(nameof(calendar), "中国农历日历不能为空");
-        if (!DateJudge.IsValid(dt))
-            throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
-        return calendar.IsLeapDay(dt.Year, dt.Month, dt.Day);
+            throw new ArgumentNullException(nameof(calendar));
+        if (dt < calendar.MinSupportedDateTime || dt > calendar.MaxSupportedDateTime)
+            throw new ArgumentOutOfRangeException(nameof(dt), dt, "日期超出中国农历支持范围。");
     }
 }

@@ -136,45 +136,53 @@ public static partial class DateTimeExtensions
     /// 获取某秒的结束时间，类似于“2023-01-03 01:01:01.999”。
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime EndOfSecond(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 999, dt.Kind);
+    public static DateTime EndOfSecond(this DateTime dt) => dt.AddTicks(TimeSpan.TicksPerSecond - 1 - dt.Ticks % TimeSpan.TicksPerSecond);
 
     /// <summary>
     /// 获取某分钟的结束时间，类似于“2023-01-03 01:01:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime EndOfMinute(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 59, 999, dt.Kind);
+    public static DateTime EndOfMinute(this DateTime dt) => dt.AddTicks(TimeSpan.TicksPerMinute - 1 - dt.Ticks % TimeSpan.TicksPerMinute);
 
     /// <summary>
     /// 获取某小时的结束时间，类似于“2023-01-03 01:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime EndOfHour(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, dt.Hour, 59, 59, 999, dt.Kind);
+    public static DateTime EndOfHour(this DateTime dt) => dt.AddTicks(TimeSpan.TicksPerHour - 1 - dt.Ticks % TimeSpan.TicksPerHour);
 
     /// <summary>
     /// 获取某天的结束时间，类似于“2023-01-03 23:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime EndOfDay(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, 23, 59, 59, 999, dt.Kind);
+    public static DateTime EndOfDay(this DateTime dt) => dt.AddTicks(TimeSpan.TicksPerDay - 1 - dt.Ticks % TimeSpan.TicksPerDay);
 
     /// <summary>
     /// 获取某天的结束时间，类似于“2023-01-03 23:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
-    public static DateTime EndOfDay(this DateTime dt, int timeZoneOffset) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, 23, 59, 59, 999, dt.Kind).AddHours(timeZoneOffset);
+    public static DateTime EndOfDay(this DateTime dt, int timeZoneOffset) => dt.EndOfDay().AddHours(timeZoneOffset);
 
     /// <summary>
     /// 获取某周的结束时间
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime EndOfWeek(this DateTime dt) => dt.LastDayOfWeek().EndOfDay();
+    public static DateTime EndOfWeek(this DateTime dt)
+    {
+        var first = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+        var days = ((int)first + 6 - (int)dt.DayOfWeek + 7) % 7;
+        var remainingDays = (DateTime.MaxValue.Ticks - dt.Date.Ticks) / TimeSpan.TicksPerDay;
+        return days > remainingDays
+            ? DateTime.SpecifyKind(DateTime.MaxValue, dt.Kind)
+            : dt.Date.AddDays(days).EndOfDay();
+    }
 
     /// <summary>
     /// 获取某周的结束时间
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
-    public static DateTime EndOfWeek(this DateTime dt, int timeZoneOffset) => dt.LastDayOfWeek().EndOfDay(timeZoneOffset);
+    public static DateTime EndOfWeek(this DateTime dt, int timeZoneOffset) => dt.EndOfWeek().AddHours(timeZoneOffset);
 
     /// <summary>
     /// 获取某月的结束时间
@@ -237,12 +245,13 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>定位到指定星期后的日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">dayOfWeek 不是有效的星期枚举。</exception>
     public static DateTime FirstDayOfYear(this DateTime dt, DayOfWeek dayOfWeek)
     {
+        DayOfWeekCalc.Validate(dayOfWeek, nameof(dayOfWeek));
         var ret = dt.FirstDayOfYear();
-        return DayOfWeekCalc.TryDaysBetween(ret.DayOfWeek, dayOfWeek, out var day) && day > 0
-            ? ret.AddDays(day)
-            : ret;
+        return ret.AddDays(DayOfWeekCalc.DaysBetween(ret.DayOfWeek, dayOfWeek));
     }
 
     /// <summary>
@@ -253,7 +262,7 @@ public static partial class DateTimeExtensions
     {
         var currentQuarter = dt.GetQuarter();
         var month = 3 * currentQuarter - 2;
-        return DateTimeFactory.Create(dt.Year, month, 1);
+        return new DateTime(dt.Year, month, 1, 0, 0, 0, dt.Kind);
     }
 
     /// <summary>
@@ -261,12 +270,13 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>定位到指定星期后的日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">dayOfWeek 不是有效的星期枚举。</exception>
     public static DateTime FirstDayOfQuarter(this DateTime dt, DayOfWeek dayOfWeek)
     {
+        DayOfWeekCalc.Validate(dayOfWeek, nameof(dayOfWeek));
         var ret = dt.FirstDayOfQuarter();
-        return DayOfWeekCalc.TryDaysBetween(ret.DayOfWeek, dayOfWeek, out var day) && day > 0
-            ? ret.AddDays(day)
-            : ret;
+        return ret.AddDays(DayOfWeekCalc.DaysBetween(ret.DayOfWeek, dayOfWeek));
     }
 
     /// <summary>
@@ -280,12 +290,13 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>定位到指定星期后的日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">dayOfWeek 不是有效的星期枚举。</exception>
     public static DateTime FirstDayOfMonth(this DateTime dt, DayOfWeek dayOfWeek)
     {
+        DayOfWeekCalc.Validate(dayOfWeek, nameof(dayOfWeek));
         var ret = dt.FirstDayOfMonth();
-        return DayOfWeekCalc.TryDaysBetween(ret.DayOfWeek, dayOfWeek, out var day) && day > 0
-            ? ret.AddDays(day)
-            : ret;
+        return ret.AddDays(DayOfWeekCalc.DaysBetween(ret.DayOfWeek, dayOfWeek));
     }
 
     /// <summary>
@@ -319,12 +330,13 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>定位到指定星期后的日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">dayOfWeek 不是有效的星期枚举。</exception>
     public static DateTime LastDayOfYear(this DateTime dt, DayOfWeek dayOfWeek)
     {
+        DayOfWeekCalc.Validate(dayOfWeek, nameof(dayOfWeek));
         var ret = dt.LastDayOfYear();
-        return DayOfWeekCalc.TryDaysBetween(ret.DayOfWeek, dayOfWeek, out var day) && day == 0
-            ? ret
-            : ret.AddDays(-day);
+        return ret.AddDays(-DayOfWeekCalc.DaysBetween(dayOfWeek, ret.DayOfWeek));
     }
 
     /// <summary>
@@ -336,7 +348,7 @@ public static partial class DateTimeExtensions
         var currentQuarter = dt.GetQuarter();
         var month = 3 * currentQuarter;
         var day = DateTime.DaysInMonth(dt.Year, month);
-        return DateTimeFactory.Create(dt.Year, month, day);
+        return new DateTime(dt.Year, month, day, 0, 0, 0, dt.Kind);
     }
 
     /// <summary>
@@ -344,12 +356,13 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>定位到指定星期后的日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">dayOfWeek 不是有效的星期枚举。</exception>
     public static DateTime LastDayOfQuarter(this DateTime dt, DayOfWeek dayOfWeek)
     {
+        DayOfWeekCalc.Validate(dayOfWeek, nameof(dayOfWeek));
         var ret = dt.LastDayOfQuarter();
-        return DayOfWeekCalc.TryDaysBetween(ret.DayOfWeek, dayOfWeek, out var day) && day == 0
-            ? ret
-            : ret.AddDays(-day);
+        return ret.AddDays(-DayOfWeekCalc.DaysBetween(dayOfWeek, ret.DayOfWeek));
     }
 
     /// <summary>
@@ -363,12 +376,13 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>定位到指定星期后的日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">dayOfWeek 不是有效的星期枚举。</exception>
     public static DateTime LastDayOfMonth(this DateTime dt, DayOfWeek dayOfWeek)
     {
+        DayOfWeekCalc.Validate(dayOfWeek, nameof(dayOfWeek));
         var ret = dt.LastDayOfMonth();
-        return DayOfWeekCalc.TryDaysBetween(ret.DayOfWeek, dayOfWeek, out var day) && day == 0
-            ? ret
-            : ret.AddDays(-day);
+        return ret.AddDays(-DayOfWeekCalc.DaysBetween(dayOfWeek, ret.DayOfWeek));
     }
 
     /// <summary>
@@ -382,7 +396,13 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="cultureInfo">区域信息</param>
-    public static DateTime LastDayOfWeek(this DateTime dt, CultureInfo cultureInfo) => dt.FirstDayOfWeek(cultureInfo).AddDays(6);
+    public static DateTime LastDayOfWeek(this DateTime dt, CultureInfo cultureInfo)
+    {
+        var first = dt.FirstDayOfWeek(cultureInfo);
+        // 最后一个可表示的周可能不足七天；保持输入的时分秒和 Kind。
+        var days = Math.Min(6, (DateTime.MaxValue.Date - first.Date).Days);
+        return first.AddDays(days);
+    }
 
     /// <summary>
     /// 获取指定月份中的天数
@@ -425,21 +445,21 @@ public static partial class DateTimeExtensions
     /// 获取指定的星期是一年中的第几个星期
     /// </summary>
     /// <param name="dt">时间</param>
-    public static int GetWeekOfYear(this DateTime dt) => GetWeekOfYear(dt, new DateTimeFormatInfo().CalendarWeekRule, new DateTimeFormatInfo().FirstDayOfWeek);
+    public static int GetWeekOfYear(this DateTime dt) => GetWeekOfYear(dt, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
 
     /// <summary>
     /// 获取指定的星期是一年中的第几个星期
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="weekRule">星期规则</param>
-    public static int GetWeekOfYear(this DateTime dt, CalendarWeekRule weekRule) => GetWeekOfYear(dt, weekRule, new DateTimeFormatInfo().FirstDayOfWeek);
+    public static int GetWeekOfYear(this DateTime dt, CalendarWeekRule weekRule) => GetWeekOfYear(dt, weekRule, DayOfWeek.Sunday);
 
     /// <summary>
     /// 获取指定的星期是一年中的第几个星期
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="firstDayOfWeek">星期几</param>
-    public static int GetWeekOfYear(this DateTime dt, DayOfWeek firstDayOfWeek) => GetWeekOfYear(dt, new DateTimeFormatInfo().CalendarWeekRule, firstDayOfWeek);
+    public static int GetWeekOfYear(this DateTime dt, DayOfWeek firstDayOfWeek) => GetWeekOfYear(dt, CalendarWeekRule.FirstDay, firstDayOfWeek);
 
     /// <summary>
     /// 获取指定的星期是一年中的第几个星期
@@ -532,6 +552,8 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>定位到指定星期后的日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">dayOfWeek 不是有效的星期枚举。</exception>
     public static DateTime NextDayOfWeek(this DateTime dt, DayOfWeek dayOfWeek) => DateTimeCalc.OffsetOfDayOfWeek(dt, dayOfWeek, 1);
 
     /// <summary>
@@ -539,6 +561,8 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>定位到指定星期后的日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">dayOfWeek 不是有效的星期枚举。</exception>
     public static DateTime PreviousDayOfWeek(this DateTime dt, DayOfWeek dayOfWeek) => DateTimeCalc.OffsetOfDayOfWeek(dt, dayOfWeek, -1);
 
     #endregion

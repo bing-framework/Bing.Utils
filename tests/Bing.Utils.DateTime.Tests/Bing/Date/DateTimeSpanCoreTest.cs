@@ -56,16 +56,16 @@ public class DateTimeSpanCoreTest
         subtracted.ShouldBe(span);
     }
     /// <summary>
-    /// 验证取负时将全部分量折算为时间跨度。
+    /// 验证取负保留年月与固定时长分量。
     /// </summary>
     [Fact]
-    public void UnaryMinus_CurrentBehavior_DropsYearsAndMonths()
+    public void UnaryMinus_PreservesCalendarComponents()
     {
         var span = new DateTimeSpan(1, 2, TimeSpan.FromHours(1));
         var negated = -span;
-        negated.Years.ShouldBe(0);
-        negated.Months.ShouldBe(0);
-        negated.TimeSpan.ShouldBe(-((TimeSpan)span));
+        negated.Years.ShouldBe(-1);
+        negated.Months.ShouldBe(-2);
+        negated.TimeSpan.ShouldBe(-span.TimeSpan);
     }
     /// <summary>
     /// 验证大小比较及与时间跨度的相等判断。
@@ -131,15 +131,15 @@ public class DateTimeSpanCoreTest
         multipleValue.TimeSpan.ShouldBe(TimeSpan.FromHours(1).Add(TimeSpan.FromMinutes(2)).Add(TimeSpan.FromSeconds(3)));
     }
     /// <summary>
-    /// 验证当前复数年份扩展映射到月份分量。
+    /// 验证复数年份扩展设置年份分量。
     /// </summary>
     [Fact]
-    public void NumberExtensions_CurrentBehavior_YearsPluralMapsToMonths()
+    public void NumberExtensions_YearsPluralMapsToYears()
     {
         var pluralYears = 2.Years();
         var singularYear = 1.Year();
-        pluralYears.Years.ShouldBe(0);
-        pluralYears.Months.ShouldBe(2);
+        pluralYears.Years.ShouldBe(2);
+        pluralYears.Months.ShouldBe(0);
         singularYear.Years.ShouldBe(1);
         singularYear.Months.ShouldBe(0);
     }

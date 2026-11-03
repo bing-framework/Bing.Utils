@@ -1,4 +1,3 @@
-using Bing.Conversions;
 using NodaTime;
 
 namespace Bing.Date.DateUtils;
@@ -18,8 +17,8 @@ internal static class DateTimeCalcHelper
     /// <returns>目标日期的天数</returns>
     public static int GetTargetDays(int year, int month, int weekAtMonth, int dayOfWeek)
     {
-        if (year <= 0)
-            throw new ArgumentOutOfRangeException(nameof(year), "年份必须大于0");
+        if (year < 1 || year > 9999)
+            throw new ArgumentOutOfRangeException(nameof(year), "年份必须在1到9999之间");
         if (month < 1 || month > 12)
             throw new ArgumentOutOfRangeException(nameof(month), "月份必须在1到12之间");
         if (weekAtMonth < 1 || weekAtMonth > 5)
@@ -42,23 +41,22 @@ internal static class DateTimeCalcHelper
     /// </summary>
     /// <param name="year">起始年份</param>
     /// <param name="month">起始月份</param>
-    /// <param name="offsetMonths">偏移月份数，正数表示向后，负数表示向前</param>
+    /// <param name="months">偏移月份数，正数表示向后，负数表示向前</param>
     /// <returns>偏移后的年月元组</returns>
     /// <exception cref="ArgumentOutOfRangeException">当年份或月份超出有效范围时抛出</exception>
-    public static (int Year, int Month) Calc(int year, int month, int offsetMonths)
+    public static (int Year, int Month) Calc(int year, int month, int months)
     {
-        if (year <= 0)
-            throw new ArgumentOutOfRangeException(nameof(year), "年份必须大于0");
+        if (year < 1 || year > 9999)
+            throw new ArgumentOutOfRangeException(nameof(year), "年份必须在1到9999之间");
         if (month < 1 || month > 12)
             throw new ArgumentOutOfRangeException(nameof(month), "月份必须在1到12之间");
-        if (offsetMonths == 0)
+        if (months == 0)
             return (year, month);
 
-        var totalMonths = year * 12 + (month - 1) + offsetMonths;
-        var newYear = totalMonths / 12;
-        var newMonth = totalMonths % 12 + 1;
-
-        return (newYear, newMonth);
+        var totalMonths = (year - 1L) * 12 + (month - 1) + months;
+        if (totalMonths < 0 || totalMonths >= 9999L * 12)
+            throw new ArgumentOutOfRangeException(nameof(months));
+        return ((int)(totalMonths / 12) + 1, (int)(totalMonths % 12) + 1);
     }
 }
 
@@ -142,9 +140,9 @@ public static class DateTimeCalc
     /// <param name="weekAtMonth">第几个星期，1-5</param>
     /// <param name="dayOfWeek">星期几</param>
     /// <returns>计算得到的日期时间，如果不存在则返回DateTime.MinValue</returns>
-    /// <exception cref="ArgumentException">当weekAtMonth无效时抛出</exception>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static DateTime OffsetByWeek(int year, int month, int weekAtMonth, DayOfWeek dayOfWeek) => OffsetByWeek(year, month, weekAtMonth, dayOfWeek.CastToInt32(0));
+    public static DateTime OffsetByWeek(int year, int month, int weekAtMonth, DayOfWeek dayOfWeek) => OffsetByWeek(year, month, weekAtMonth, (int)dayOfWeek);
 
     /// <summary>
     /// 获取指定年月的特定星期几的日期
@@ -154,12 +152,9 @@ public static class DateTimeCalc
     /// <param name="weekAtMonth">第几个星期，1-5</param>
     /// <param name="dayOfWeek">星期几，0-6，0表示周日</param>
     /// <returns>计算得到的日期时间，如果不存在则返回DateTime.MinValue</returns>
-    /// <exception cref="ArgumentException">当weekAtMonth无效时抛出</exception>
-    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime OffsetByWeek(int year, int month, int weekAtMonth, int dayOfWeek)
     {
-        if (weekAtMonth < 1 || weekAtMonth > 5)
-            throw new ArgumentException("weekAtMonth必须在1到5之间", nameof(weekAtMonth));
         var targetDay = DateTimeCalcHelper.GetTargetDays(year, month, weekAtMonth, dayOfWeek);
         if (targetDay > DateTime.DaysInMonth(year, month))
             return DateTime.MinValue;
@@ -174,10 +169,10 @@ public static class DateTimeCalc
     /// <param name="weekAtMonth">第几个星期，1-5</param>
     /// <param name="dayOfWeek">星期几</param>
     /// <param name="result">输出参数，存储计算结果</param>
-    /// <returns>如果成功计算出有效日期则返回true，否则返回false</returns>
+    /// <returns>参数有效且存在对应日期时返回 true；参数越界或日期不存在时返回 false，输出 DateTime.MinValue。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryOffsetByWeek(int year, int month, int weekAtMonth, DayOfWeek dayOfWeek, out DateTime result) =>
-        TryOffsetByWeek(year, month, weekAtMonth, dayOfWeek.CastToInt32(0), out result);
+        TryOffsetByWeek(year, month, weekAtMonth, (int)dayOfWeek, out result);
 
     /// <summary>
     /// 尝试获取指定年月的特定星期几的日期
@@ -187,12 +182,12 @@ public static class DateTimeCalc
     /// <param name="weekAtMonth">第几个星期，1-5</param>
     /// <param name="dayOfWeek">星期几，0-6，0表示周日</param>
     /// <param name="result">输出参数，存储计算结果</param>
-    /// <returns>如果成功计算出有效日期则返回true，否则返回false</returns>
-    /// <exception cref="ArgumentException">当weekAtMonth无效时抛出</exception>
+    /// <returns>参数有效且存在对应日期时返回 true；参数越界或日期不存在时返回 false，输出 DateTime.MinValue。</returns>
     public static bool TryOffsetByWeek(int year, int month, int weekAtMonth, int dayOfWeek, out DateTime result)
     {
-        if (weekAtMonth < 1 || weekAtMonth > 5)
-            throw new ArgumentException("weekAtMonth必须在1到5之间", nameof(weekAtMonth));
+        result = DateTime.MinValue;
+        if (year < 1 || year > 9999 || month < 1 || month > 12 || weekAtMonth < 1 || weekAtMonth > 5 || (uint)dayOfWeek > 6)
+            return false;
         var targetDay = DateTimeCalcHelper.GetTargetDays(year, month, weekAtMonth, dayOfWeek);
         var invalid = targetDay > DateTime.DaysInMonth(year, month);
         result = invalid ? DateTime.MinValue : DateTimeFactory.Create(year, month, targetDay);
@@ -218,8 +213,10 @@ public static class DateTimeCalc
     /// <param name="dt">原始日期时间</param>
     /// <param name="dayOfWeek">目标星期几</param>
     /// <returns>上一个匹配的日期</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime OffsetByWeekBefore(DateTime dt, DayOfWeek dayOfWeek)
     {
+        DayOfWeekCalc.Validate(dayOfWeek, nameof(dayOfWeek));
         var daysSubtract = (int)dayOfWeek - (int)dt.DayOfWeek;
         return (int)dayOfWeek < (int)dt.DayOfWeek
             ? dt.AddDays(daysSubtract)
@@ -232,8 +229,10 @@ public static class DateTimeCalc
     /// <param name="dt">原始日期时间</param>
     /// <param name="dayOfWeek">目标星期几</param>
     /// <returns>下一个匹配的日期</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime OffsetByWeekAfter(DateTime dt, DayOfWeek dayOfWeek)
     {
+        DayOfWeekCalc.Validate(dayOfWeek, nameof(dayOfWeek));
         var daysNeeded = (int)dayOfWeek - (int)dt.DayOfWeek;
         if (dayOfWeek == dt.DayOfWeek)
             return dt.AddDays(7);
@@ -253,8 +252,10 @@ public static class DateTimeCalc
     /// <param name="dayOfWeek">目标星期几</param>
     /// <param name="weekOffset">周偏移量，正数表示向后几周，负数表示向前几周</param>
     /// <returns>偏移后的新日期时间</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime OffsetOfDayOfWeek(DateTime dt, DayOfWeek dayOfWeek, int weekOffset)
     {
+        DayOfWeekCalc.Validate(dayOfWeek, nameof(dayOfWeek));
         // 如果周偏移为0且目标星期几与当前日期的星期几相同，则返回当前日期
         if (weekOffset == 0)
         {
@@ -283,7 +284,7 @@ public static class DateTimeCalc
             }
 
             // 再加上剩余的周数
-            return nextOccurrence.AddDays(7 * (weekOffset - 1));
+            return nextOccurrence.AddDays(7L * (weekOffset - 1L));
         }
         else // weekOffset < 0
         {
@@ -302,7 +303,7 @@ public static class DateTimeCalc
             }
 
             // 再减去剩余的周数
-            return prevOccurrence.AddDays(7 * (weekOffset + 1));
+            return prevOccurrence.AddDays(7L * (weekOffset + 1L));
         }
     }
 
@@ -317,18 +318,36 @@ public static class DateTimeCalc
     /// <param name="months">要偏移的月份数，正数表示向后，负数表示向前</param>
     /// <param name="options">日期时间偏移选项，指定偏移行为</param>
     /// <returns>偏移后的新日期时间</returns>
-    public static DateTime OffsetByMonths(DateTime dt, int months, DateTimeOffsetOptions options = DateTimeOffsetOptions.Absolute)
-    {
-        // 绝对偏移模式，直接使用TimeSpan偏移
-        if (options == DateTimeOffsetOptions.Absolute)
-            return dt.AddMonths(months);
+    /// <exception cref="ArgumentOutOfRangeException">偏移后超出日期范围，参数名为 months。</exception>
+    public static DateTime OffsetByMonths(DateTime dt, int months, DateTimeOffsetOptions options = DateTimeOffsetOptions.Absolute) =>
+        OffsetByMonthsCore(dt, months, options, nameof(months));
 
-        // 相对偏移模式，需要考虑月份天数变化
-        var calcResult = DateTimeCalcHelper.Calc(dt.Year, dt.Month, months);
-        var firstDayOfMonth = dt.SetDate(calcResult.Year, calcResult.Month, 1);
-        var lastDayOfMonth = firstDayOfMonth.LastDayOfMonth().Day;
-        var day = dt.Day > lastDayOfMonth ? lastDayOfMonth : dt.Day;
-        return dt.SetDate(calcResult.Year, calcResult.Month, day);
+    /// <summary>
+    /// 按月计算日历偏移，并保留调用方公开的偏移参数名。
+    /// </summary>
+    /// <param name="dt">原始日期时间。</param>
+    /// <param name="months">换算后的月份数。</param>
+    /// <param name="options">偏移选项。</param>
+    /// <param name="parameterName">原始偏移参数名。</param>
+    /// <returns>偏移后的日期时间。</returns>
+    private static DateTime OffsetByMonthsCore(DateTime dt, int months, DateTimeOffsetOptions options, string parameterName)
+    {
+        try
+        {
+            if (options == DateTimeOffsetOptions.Absolute)
+                return dt.AddMonths(months);
+
+            // 相对偏移保持现有月末截断规则。
+            var calcResult = DateTimeCalcHelper.Calc(dt.Year, dt.Month, months);
+            var firstDayOfMonth = dt.SetDate(calcResult.Year, calcResult.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.LastDayOfMonth().Day;
+            var day = dt.Day > lastDayOfMonth ? lastDayOfMonth : dt.Day;
+            return dt.SetDate(calcResult.Year, calcResult.Month, day);
+        }
+        catch (ArgumentOutOfRangeException exception) when (exception.ParamName != parameterName)
+        {
+            throw new ArgumentOutOfRangeException(parameterName, exception.Message);
+        }
     }
 
     #endregion
@@ -342,10 +361,9 @@ public static class DateTimeCalc
     /// <param name="quarters">要偏移的季度数，正数表示向后，负数表示向前</param>
     /// <param name="options">日期时间偏移选项，指定偏移行为</param>
     /// <returns>偏移后的新日期时间</returns>
+    /// <exception cref="ArgumentOutOfRangeException">偏移后超出日期范围；参数名使用公开的 quarters 或 years。</exception>
     public static DateTime OffsetByQuarters(DateTime dt, int quarters, DateTimeOffsetOptions options = DateTimeOffsetOptions.Absolute) =>
-        options == DateTimeOffsetOptions.Absolute
-            ? OffsetByMonths(dt, quarters * 3, DateTimeOffsetOptions.Absolute)
-            : OffsetByMonths(dt, quarters * 3, DateTimeOffsetOptions.Relatively);
+        OffsetByMonthsCore(dt, checked(quarters * 3), options, nameof(quarters));
 
     #endregion
 
@@ -358,10 +376,20 @@ public static class DateTimeCalc
     /// <param name="years">要偏移的年数，正数表示向后，负数表示向前</param>
     /// <param name="options">日期时间偏移选项，指定偏移行为</param>
     /// <returns>偏移后的新日期时间</returns>
-    public static DateTime OffsetByYears(DateTime dt, int years, DateTimeOffsetOptions options = DateTimeOffsetOptions.Absolute) =>
-        options == DateTimeOffsetOptions.Absolute
-            ? dt.AddYears(years)
-            : OffsetByMonths(dt, years * 12, DateTimeOffsetOptions.Relatively);
+    /// <exception cref="ArgumentOutOfRangeException">偏移后超出日期范围；参数名使用公开的 quarters 或 years。</exception>
+    public static DateTime OffsetByYears(DateTime dt, int years, DateTimeOffsetOptions options = DateTimeOffsetOptions.Absolute)
+    {
+        if (options != DateTimeOffsetOptions.Absolute)
+            return OffsetByMonthsCore(dt, checked(years * 12), DateTimeOffsetOptions.Relatively, nameof(years));
+        try
+        {
+            return dt.AddYears(years);
+        }
+        catch (ArgumentOutOfRangeException exception) when (exception.ParamName != nameof(years))
+        {
+            throw new ArgumentOutOfRangeException(nameof(years), years, "偏移后超出日期范围。");
+        }
+    }
 
     #endregion
 

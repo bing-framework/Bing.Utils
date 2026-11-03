@@ -12,6 +12,7 @@ public static class DayOfWeekExtensions
     /// </summary>
     /// <param name="week">星期枚举值。</param>
     /// <returns>返回星期的中文表示形式，前缀为“星期”。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">week 不是有效的星期枚举。</exception>
     public static string ToChinese(this DayOfWeek week) => ToChinese(week, "星期");
 
     /// <summary>
@@ -20,6 +21,7 @@ public static class DayOfWeekExtensions
     /// <param name="week">星期枚举值。</param>
     /// <param name="weekNamePre">星期名称前缀，允许自定义前缀以适应不同的显示需求。</param>
     /// <returns>返回星期的中文表示形式，包含自定义前缀。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">week 不是有效的星期枚举。</exception>
     public static string ToChinese(this DayOfWeek week, string weekNamePre) =>
         week switch
         {
@@ -30,7 +32,7 @@ public static class DayOfWeekExtensions
             DayOfWeek.Thursday => $"{weekNamePre}四",
             DayOfWeek.Friday => $"{weekNamePre}五",
             DayOfWeek.Saturday => $"{weekNamePre}六",
-            _ => null
+            _ => throw new ArgumentOutOfRangeException(nameof(week), week, "星期必须在 Sunday 到 Saturday 之间。")
         };
 
     /// <summary>
@@ -49,6 +51,12 @@ public static class DayOfWeekExtensions
     /// <param name="to">结束星期几。</param>
     /// <param name="includeBoundary">是否包含边界的星期几，默认为true。</param>
     /// <returns>从起始星期几到结束星期几之间的所有星期几，根据includeBoundary参数决定是否包含起始和结束星期几。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">from 或 to 不是有效的星期枚举，在返回枚举前立即拒绝。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<DayOfWeek> GetDaysBetween(this DayOfWeek from, DayOfWeek to, bool includeBoundary = true) => DayOfWeekCalc.GetDaysBetween(from, to, includeBoundary);
+    public static IEnumerable<DayOfWeek> GetDaysBetween(this DayOfWeek from, DayOfWeek to, bool includeBoundary = true)
+    {
+        DayOfWeekCalc.Validate(from, nameof(from));
+        DayOfWeekCalc.Validate(to, nameof(to));
+        return DayOfWeekCalc.GetDaysBetween(from, to, includeBoundary);
+    }
 }

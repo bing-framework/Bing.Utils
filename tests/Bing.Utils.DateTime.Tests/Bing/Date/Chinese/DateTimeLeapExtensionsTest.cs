@@ -5,7 +5,7 @@ namespace Bing.Date.Chinese;
 /// <summary>
 /// 农历闰年、闰月和闰日扩展测试。
 /// </summary>
-/// <remarks>含历法的重载使用显式农历历法；无历法重载的空历法异常另有用例验证。闰月判断沿用当前实现的公历年月映射规则。</remarks>
+/// <remarks>含历法的重载使用显式农历历法；无历法重载的空历法异常另有用例验证。日期判断基于传入日期对应的农历年月日分量。</remarks>
 [Trait("DateTimeUT", "ChineseDate.LeapExtensions")]
 public class DateTimeLeapExtensionsTest
 {
@@ -47,6 +47,15 @@ public class DateTimeLeapExtensionsTest
     }
 
     /// <summary>
+    /// 验证春节前的公历日期仍按前一个农历年判断闰年。
+    /// </summary>
+    [Fact]
+    public void IsLeapYear_BeforeLunarNewYear_UsesPreviousLunarYear()
+    {
+        new DateTime(2024, 1, 31).IsLeapYear(_calendar).ShouldBeTrue();
+    }
+
+    /// <summary>
     /// 验证无历法重载因缺少历法而抛出参数空值异常。
     /// </summary>
     [Fact]
@@ -66,9 +75,18 @@ public class DateTimeLeapExtensionsTest
     [Fact]
     public void IsLeapMonth_WithDateInLeapMonth2020_ReturnsTrue()
     {
-        // 2020-05-25 公历月=5，对应农历年2020 month槽位5=闰四月
+        // 2020-05-25 对应农历年2020的闰四月
         var dt = new DateTime(2020, 5, 25);
         dt.IsLeapMonth(_calendar).ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// 验证公历六月仍能识别农历闰四月。
+    /// </summary>
+    [Fact]
+    public void IsLeapMonth_WithGregorianJuneInLunarLeapMonth2020_ReturnsTrue()
+    {
+        new DateTime(2020, 6, 1).IsLeapMonth(_calendar).ShouldBeTrue();
     }
 
     /// <summary>
@@ -101,9 +119,18 @@ public class DateTimeLeapExtensionsTest
     [Fact]
     public void IsLeapDay_WithDayInLeapMonth_ReturnsTrue()
     {
-        // 2020-05-25 公历月=5，农历year=2020 month=5为闰四月，属于闰日
+        // 2020-05-25 属于农历年2020的闰四月
         var dt = new DateTime(2020, 5, 25);
         dt.IsLeapDay(_calendar).ShouldBeTrue();
+    }
+
+    /// <summary>
+    /// 验证闰日判断使用农历月份，而非公历月份。
+    /// </summary>
+    [Fact]
+    public void IsLeapDay_WithGregorianJuneInLunarLeapMonth2020_ReturnsTrue()
+    {
+        new DateTime(2020, 6, 1).IsLeapDay(_calendar).ShouldBeTrue();
     }
 
     /// <summary>

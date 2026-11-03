@@ -61,7 +61,7 @@ public class DateTimeNavigationTest
         var begin = date.BeginningOfDay();
         var end = date.EndOfDay();
         begin.ShouldBe(new DateTime(2024, 3, 12, 0, 0, 0, 0, DateTimeKind.Utc));
-        end.ShouldBe(new DateTime(2024, 3, 12, 23, 59, 59, 999, DateTimeKind.Utc));
+        end.ShouldBe(new DateTime(2024, 3, 12, 23, 59, 59, DateTimeKind.Utc).AddTicks(TimeSpan.TicksPerSecond - 1));
     }
     /// <summary>
     /// 验证日边界按给定小时偏移进行算术调整。
@@ -73,7 +73,7 @@ public class DateTimeNavigationTest
         var begin = date.BeginningOfDay(8);
         var end = date.EndOfDay(-5);
         begin.ShouldBe(new DateTime(2024, 3, 12, 8, 0, 0, 0, DateTimeKind.Unspecified));
-        end.ShouldBe(new DateTime(2024, 3, 12, 18, 59, 59, 999, DateTimeKind.Unspecified));
+        end.ShouldBe(new DateTime(2024, 3, 12, 18, 59, 59, DateTimeKind.Unspecified).AddTicks(TimeSpan.TicksPerSecond - 1));
     }
     /// <summary>
     /// 验证周边界遵循指定区域性的每周首日。

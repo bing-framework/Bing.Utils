@@ -29,7 +29,9 @@ public static class NodaPeriodExtensions
     /// 将 <see cref="Period"/> 转换为 <see cref="TimeSpan"/>
     /// </summary>
     /// <param name="p">期间</param>
-    public static TimeSpan AsTimeSpan(this Period p) => TimeSpan.FromTicks(p.Ticks);
+    /// <remarks>包含完整固定单位；不足 100ns 的部分向零截断。</remarks>
+    /// <exception cref="InvalidOperationException">周期包含非零年或月，无法确定固定时长。</exception>
+    public static TimeSpan AsTimeSpan(this Period p) => p.ToDuration().ToTimeSpan();
 
     /// <summary>
     /// 将 <see cref="Period"/> 转换为 <see cref="DateTimeSpan"/>
@@ -41,7 +43,8 @@ public static class NodaPeriodExtensions
     /// 将 <see cref="Period"/> 转换为 <see cref="Duration"/>
     /// </summary>
     /// <param name="p">期间</param>
-    public static Duration AsDuration(this Period p) => Duration.FromTicks(p.Ticks);
+    /// <exception cref="InvalidOperationException">周期包含非零年或月，无法确定固定时长。</exception>
+    public static Duration AsDuration(this Period p) => p.ToDuration();
 
     /// <summary>
     /// 将纳秒数转换为 <see cref="Period"/>
@@ -89,7 +92,7 @@ public static class NodaPeriodExtensions
     /// 将季度数转换为 <see cref="Period"/>
     /// </summary>
     /// <param name="quarters">季度数</param>
-    public static Period AsPeriodOfQuarters(this int quarters) => Period.FromMonths(quarters * 3);
+    public static Period AsPeriodOfQuarters(this int quarters) => Period.FromMonths(checked(quarters * 3));
 
     /// <summary>
     /// 将年数转换为 <see cref="Period"/>

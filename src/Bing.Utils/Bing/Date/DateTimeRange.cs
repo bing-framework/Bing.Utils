@@ -8,12 +8,12 @@ namespace Bing.Date;
 public interface IDateTimeRange
 {
     /// <summary>
-    /// 获取起始时间
+    /// 获取包含的起始时间（UTC）
     /// </summary>
     DateTime StartTime { get; }
 
     /// <summary>
-    /// 获取结束时间
+    /// 获取包含的结束时间（UTC）
     /// </summary>
     DateTime EndTime { get; }
 }
@@ -77,10 +77,13 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <param name="start">起始时间</param>
     /// <param name="end">结束时间</param>
     /// <remarks>
-    /// 支持起止时间无序传入，自动排序
+    /// Local 转为 UTC，Unspecified 按本地解释；在 UTC 时间轴上排序并保存闭区间端点。
+    /// MinValue/MaxValue 作为 UTC 哨兵，普通值转换越界时抛异常。
     /// </remarks>
     public DateTimeRange(DateTime start, DateTime end)
     {
+        start = ToUtcSafe(start);
+        end = ToUtcSafe(end);
         if (start <= end)
         {
             StartTime = start;
@@ -91,8 +94,6 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
             StartTime = end;
             EndTime = start;
         }
-        UtcStartTime = ToUtcSafe(StartTime);
-        UtcEndTime = ToUtcSafe(EndTime);
     }
 
     /// <summary>
@@ -103,29 +104,15 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <remarks>
     /// 支持起止时间无序传入，自动排序
     /// </remarks>
-    public DateTimeRange(DateTimeOffset start, DateTimeOffset end)
+    public DateTimeRange(DateTimeOffset start, DateTimeOffset end) : this(start.UtcDateTime, end.UtcDateTime)
     {
-        if (start <= end)
-        {
-            StartTime = start.DateTime;
-            EndTime = end.DateTime;
-            UtcStartTime = start.UtcDateTime;
-            UtcEndTime = end.UtcDateTime;
-        }
-        else
-        {
-            StartTime = end.DateTime;
-            EndTime = start.DateTime;
-            UtcStartTime = end.UtcDateTime;
-            UtcEndTime = start.UtcDateTime;
-        }
     }
 
     /// <summary>
     /// 初始化一个 <see cref="DateTimeRange"/> 类型的实例。
     /// </summary>
     /// <param name="dateTimeRange">事件范围</param>
-    public DateTimeRange(IDateTimeRange dateTimeRange) : this(dateTimeRange.StartTime, dateTimeRange.EndTime)
+    public DateTimeRange(IDateTimeRange dateTimeRange) : this(dateTimeRange?.StartTime ?? throw new ArgumentNullException(nameof(dateTimeRange)), dateTimeRange.EndTime)
     {
     }
 
@@ -133,44 +120,41 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// 初始化一个 <see cref="DateTimeRange"/> 类型的实例。
     /// </summary>
     /// <param name="start">起始时间</param>
-    /// <param name="duration">持续时间（必须为正值）</param>
+    /// <param name="duration">持续时间（必须为非负值）</param>
     /// <exception cref="ArgumentOutOfRangeException">当持续时间为负值时抛出此异常</exception>
     public DateTimeRange(DateTime start, TimeSpan duration)
     {
-        if (duration.TotalMilliseconds < 0)
+        if (duration.Ticks < 0)
             throw new ArgumentOutOfRangeException(nameof(duration), "持续时间不能为负值");
-        StartTime = start;
-        EndTime = start.Add(duration);
-        UtcStartTime = ToUtcSafe(StartTime);
-        UtcEndTime = ToUtcSafe(EndTime);
+        StartTime = ToUtcSafe(start);
+        EndTime = StartTime.Add(duration);
     }
 
     /// <summary>
     /// 初始化一个 <see cref="DateTimeRange"/> 类型的实例。
     /// </summary>
-    /// <param name="duration">持续时间（必须为正值）</param>
+    /// <param name="duration">持续时间（必须为非负值）</param>
     /// <param name="end">结束时间</param>
     /// <exception cref="ArgumentOutOfRangeException">当持续时间为负值时抛出此异常</exception>
     public DateTimeRange(TimeSpan duration, DateTime end)
     {
-        if (duration.TotalMilliseconds < 0)
+        if (duration.Ticks < 0)
             throw new ArgumentOutOfRangeException(nameof(duration), "持续时间不能为负值");
-        StartTime = end.Add(-duration);
-        EndTime = end;
-        UtcStartTime = ToUtcSafe(StartTime);
-        UtcEndTime = ToUtcSafe(EndTime);
+        EndTime = ToUtcSafe(end);
+        StartTime = EndTime.Subtract(duration);
     }
 
     /// <summary>
-    /// 将本地时间转换为 UTC 时间，安全处理 DateTime.MinValue 和 DateTime.MaxValue
+    /// 将自定义区间按相同的 Kind 规则规范化，并排序端点。
     /// </summary>
-    /// <param name="dt">时间</param>
-    /// <returns>UTC 时间</returns>
+    private static DateTimeRange Normalize(IDateTimeRange range) => range as DateTimeRange ?? new DateTimeRange(range);
+
+    /// <summary>UTC 原样，Local/Unspecified 按本地转换；极值作为 UTC 哨兵。</summary>
     private static DateTime ToUtcSafe(DateTime dt)
     {
         return (dt == DateTime.MinValue || dt == DateTime.MaxValue)
-            ? dt
-            : DateTime.SpecifyKind(dt, DateTimeKind.Local).ToUniversalTime();
+            ? DateTime.SpecifyKind(dt, DateTimeKind.Utc)
+            : dt.Kind == DateTimeKind.Utc ? dt : new DateTimeOffset(dt).UtcDateTime;
     }
 
     #endregion
@@ -178,27 +162,27 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     #region 属性
 
     /// <summary>
-    /// 获取起始时间
+    /// 获取包含的起始时间（UTC）
     /// </summary>
     public DateTime StartTime { get; }
 
     /// <summary>
-    /// 获取结束时间
+    /// 获取包含的结束时间（UTC）
     /// </summary>
     public DateTime EndTime { get; }
 
     /// <summary>
     /// 获取起始时间（UTC）
     /// </summary>
-    public DateTime UtcStartTime { get; }
+    public DateTime UtcStartTime => StartTime;
 
     /// <summary>
     /// 获取结束时间（UTC）
     /// </summary>
-    public DateTime UtcEndTime { get; }
+    public DateTime UtcEndTime => EndTime;
 
     /// <summary>
-    /// 获取时间范围跨度
+    /// 获取按 UTC 时间点计算的实际经过时长
     /// </summary>
     public TimeSpan TimeSpan => EndTime - StartTime;
 
@@ -229,6 +213,13 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
 
     #endregion
 
+    /// <summary>直接计算当天末 tick，避免最大日期先构造次日导致溢出。</summary>
+    private static DateTime EndOfCalendarDay(DateTime value) => value.Date.AddTicks(TimeSpan.TicksPerDay - 1);
+
+    /// <summary>返回一周末 tick；最后一周截止到 DateTime 可表示上限。</summary>
+    private static DateTime EndOfCalendarWeek(DateTime start) =>
+        start.AddTicks(Math.Min(7 * TimeSpan.TicksPerDay - 1, DateTime.MaxValue.Ticks - start.Ticks));
+
     #region 静态属性
 
     #region Yesterday(昨天时间范围)
@@ -241,7 +232,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         get
         {
             var now = Now;
-            return new DateTimeRange(now.Date.AddDays(-1), now.Date.AddMilliseconds(-1));
+            return new DateTimeRange(now.Date.AddDays(-1), now.Date.AddTicks(-1));
         }
     }
 
@@ -257,7 +248,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         get
         {
             var now = Now;
-            return new DateTimeRange(now.Date.Date, now.Date.AddDays(1).AddMilliseconds(-1));
+            return new DateTimeRange(now.Date, EndOfCalendarDay(now));
         }
     }
 
@@ -273,7 +264,8 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         get
         {
             var now = Now;
-            return new DateTimeRange(now.Date.AddDays(1), now.Date.AddDays(2).AddMilliseconds(-1));
+            var tomorrow = now.Date.AddDays(1);
+            return new DateTimeRange(tomorrow, EndOfCalendarDay(tomorrow));
         }
     }
 
@@ -290,7 +282,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         {
             var now = Now;
             var index = Array.IndexOf(Weeks, now.DayOfWeek);
-            return new DateTimeRange(now.Date.AddDays(-index - 7), now.Date.AddDays(-index).AddMilliseconds(-1));
+            return new DateTimeRange(now.Date.AddDays(-index - 7), now.Date.AddDays(-index).AddTicks(-1));
         }
     }
 
@@ -307,7 +299,8 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         {
             var now = Now;
             var index = Array.IndexOf(Weeks, now.DayOfWeek);
-            return new DateTimeRange(now.Date.AddDays(-index), now.Date.AddDays(7 - index).AddMilliseconds(-1));
+            var start = now.Date.AddDays(-index);
+            return new DateTimeRange(start, EndOfCalendarWeek(start));
         }
     }
 
@@ -324,7 +317,8 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         {
             var now = Now;
             var index = Array.IndexOf(Weeks, now.DayOfWeek);
-            return new DateTimeRange(now.Date.AddDays(-index + 7), now.Date.AddDays(14 - index).AddMilliseconds(-1));
+            var start = now.Date.AddDays(-index + 7);
+            return new DateTimeRange(start, EndOfCalendarWeek(start));
         }
     }
 
@@ -341,7 +335,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         {
             var now = Now;
             var startTime = now.Date.AddDays(-now.Day + 1).AddMonths(-1);
-            var endTime = startTime.AddMonths(1).AddMilliseconds(-1);
+            var endTime = EndOfCalendarDay(new DateTime(startTime.Year, startTime.Month, DateTime.DaysInMonth(startTime.Year, startTime.Month)));
             return new DateTimeRange(startTime, endTime);
         }
     }
@@ -359,7 +353,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         {
             var now = Now;
             var startTime = now.Date.AddDays(-now.Day + 1);
-            var endTime = startTime.AddMonths(1).AddMilliseconds(-1);
+            var endTime = EndOfCalendarDay(new DateTime(startTime.Year, startTime.Month, DateTime.DaysInMonth(startTime.Year, startTime.Month)));
             return new DateTimeRange(startTime, endTime);
         }
     }
@@ -377,7 +371,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         {
             var now = Now;
             var startTime = now.Date.AddDays(-now.Day + 1).AddMonths(1);
-            var endTime = startTime.AddMonths(1).AddMilliseconds(-1);
+            var endTime = EndOfCalendarDay(new DateTime(startTime.Year, startTime.Month, DateTime.DaysInMonth(startTime.Year, startTime.Month)));
             return new DateTimeRange(startTime, endTime);
         }
     }
@@ -394,7 +388,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         get
         {
             var now = Now;
-            return new DateTimeRange(new DateTime(now.Year - 1, 1, 1), new DateTime(now.Year, 1, 1).AddMilliseconds(-1));
+            return new DateTimeRange(new DateTime(now.Year - 1, 1, 1), new DateTime(now.Year, 1, 1).AddTicks(-1));
         }
     }
 
@@ -410,7 +404,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         get
         {
             var now = Now;
-            return new DateTimeRange(new DateTime(now.Year, 1, 1), new DateTime(now.Year + 1, 1, 1).AddMilliseconds(-1));
+            return new DateTimeRange(new DateTime(now.Year, 1, 1), EndOfCalendarDay(new DateTime(now.Year, 12, 31)));
         }
     }
 
@@ -426,7 +420,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         get
         {
             var now = Now;
-            return new DateTimeRange(new DateTime(now.Year + 1, 1, 1), new DateTime(now.Year + 2, 1, 1).AddMilliseconds(-1));
+            return new DateTimeRange(new DateTime(now.Year + 1, 1, 1), EndOfCalendarDay(new DateTime(now.Year + 1, 12, 31)));
         }
     }
 
@@ -474,7 +468,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         get
         {
             var now = Now;
-            return new DateTimeRange(now.Date.AddDays(-7), now.Date.AddMilliseconds(-1));
+            return new DateTimeRange(now.Date.AddDays(-7), now.Date.AddTicks(-1));
         }
     }
 
@@ -490,7 +484,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
         get
         {
             var now = Now;
-            return new DateTimeRange(now.Date.AddDays(-30), now.Date.AddMilliseconds(-1));
+            return new DateTimeRange(now.Date.AddDays(-30), now.Date.AddTicks(-1));
         }
     }
 
@@ -556,9 +550,8 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <returns>如果指定的时间在此时间范围内，返回 true，否则返回 false。</returns>
     public bool Contains(DateTime time)
     {
-        if (time.Kind == DateTimeKind.Utc)
-            return time >= UtcStartTime && time <= UtcEndTime;
-        return time >= StartTime && time <= EndTime;
+        var utc = ToUtcSafe(time);
+        return utc >= StartTime && utc <= EndTime;
     }
 
     /// <summary>
@@ -567,13 +560,14 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <param name="range">时间范围</param>
     public bool Contains(IDateTimeRange range)
     {
-        return range.StartTime.In(StartTime, EndTime) && range.EndTime.In(StartTime, EndTime);
+        var other = Normalize(range);
+        return other.StartTime >= StartTime && other.EndTime <= EndTime;
     }
 
     /// <summary>
     /// 判断是否包含指定起止时间
     /// </summary>
-    /// <param name="start">开始时间</param>
+    /// <param name="start">开始时间；Utc 原样，Local/Unspecified 按本地时区转换。</param>
     /// <param name="end">结束时间</param>
     public bool Contains(DateTime start, DateTime end) => Contains(new DateTimeRange(start, end));
 
@@ -587,7 +581,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <param name="range">时间范围</param>
     public bool In(IDateTimeRange range)
     {
-        return StartTime.In(range.StartTime, range.EndTime) && EndTime.In(range.StartTime, range.EndTime);
+        return Normalize(range).Contains(this);
     }
 
     /// <summary>
@@ -607,7 +601,8 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <param name="range">时间范围</param>
     public bool HasIntersect(IDateTimeRange range)
     {
-        return StartTime.In(range.StartTime, range.EndTime) || EndTime.In(range.StartTime, range.EndTime);
+        var other = Normalize(range);
+        return StartTime <= other.EndTime && other.StartTime <= EndTime;
     }
 
     /// <summary>
@@ -628,6 +623,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <returns>是否有交集, 交集范围</returns>
     public (bool intersected, DateTimeRange range) Intersect(IDateTimeRange range)
     {
+        range = Normalize(range);
         if (!HasIntersect(range))
             return (false, null);
 
@@ -654,6 +650,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <param name="range">时间范围</param>
     public DateTimeRange Union(IDateTimeRange range)
     {
+        range = Normalize(range);
         if (!HasIntersect(range))
             throw new ArgumentException("不相交的时间段无法合并", nameof(range));
         var start = StartTime < range.StartTime ? StartTime : range.StartTime;
@@ -722,16 +719,15 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     public override bool Equals(object obj) => obj is DateTimeRange other && Equals(other);
 
     /// <inheritdoc />
-    public override int GetHashCode() => (StartTime.Ticks + EndTime.Ticks).GetHashCode();
+    public override int GetHashCode() => unchecked(StartTime.GetHashCode() * 397 ^ EndTime.GetHashCode());
 
     /// <inheritdoc />
     public int CompareTo(DateTimeRange other)
     {
         if (other is null)
             return 1;
-        if (Equals(other))
-            return 0;
-        return StartTime.CompareTo(other.EndTime);
+        var startComparison = StartTime.CompareTo(other.StartTime);
+        return startComparison != 0 ? startComparison : EndTime.CompareTo(other.EndTime);
     }
 
     /// <summary>

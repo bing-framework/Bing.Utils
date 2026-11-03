@@ -12,7 +12,7 @@
 - `DateTimeExtensions.AddBusinessDays()/IsBefore()`。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:72` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:542`
 - `DateTimeSpanExtensions`：`Days()/Weeks()/Before()/FromNow()`。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:23` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:186` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:208`
 - 输入输出约定
-- `ToUtc` 只改 `Kind`，不做时区换算（保持年月日时分秒）。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1050` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1061`
+- `ToUtc` 只改 `Kind`，不做时区换算（保留全部 ticks）。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1050` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1061`
 - `ToCst` 忽略传入参数，直接基于当前时钟返回上海时区时间。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1066` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1081`
 - 边界行为（null、空集合、非法参数）
 - `DateTime` 是值类型，大多数 API 无 null 分支；`DateTime?` 扩展方法会做空值防御后返回 false。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:566` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:568`
@@ -36,7 +36,7 @@ span.TotalDays.ShouldBeGreaterThan(0);
 ```csharp
 var input = DateTime.UtcNow;
 var cst = input.ToCst(); // 注意：实现按当前时钟取值，不使用 input
-// 修正：若需要“基于输入时间换算”，应使用明确的时区转换逻辑（当前包此处不提供）
+// 基于输入时间换算请使用现有 TimeZoneConversion API。
 ```
 [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1066` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1081` [证据] `tests/Bing.Utils.DateTime.Tests/Bing/Date/Extensions/DateTimeExtensionsToTest.cs:95`
 
@@ -70,3 +70,13 @@ var cst = input.ToCst(); // 注意：实现按当前时钟取值，不使用 inp
 - 跟随公共多目标框架策略。[证据] `common.props:3`
 - 依赖 `NodaTime 3.1.2`，升级时需回归时区与边界日期行为。[证据] `src/Bing.Utils.DateTime/Bing.Utils.DateTime.csproj:15`
 
+
+## 9. 本次修复的契约与迁移
+
+完整变化见 [DateTime / Date 迁移说明](../reference/datetime-date-migration.md)。主包 DateTimeRange 统一为 UTC 闭区间，显示端点需明确时区；NoRepeatTimeStampFactory 使用 UTC tick 序列并保留入口 Kind。
+
+独立包保留 DateTimeSpan 的年月分量与固定时长，修正 NodaTime 转换；含年月的 Period 不可直接转固定时长。Set 方法保留未修改精度，EndOf 系列使用最后一个 tick。ToEpochTimeSpan 的 Unspecified 按 UTC 解释，ToUtc 只改标签的历史契约保留。
+
+节气按[官方自然日数据](../reference/solar-term-data.md)覆盖 1900～2100 年，运行时不联网，输出午夜 Unspecified；农历和节气各自使用适用范围。默认周数仍用当前文化的 Calendar 与 FirstDay/Sunday 规则，去除每次调用的格式对象分配。
+
+新回归入口包括 DateArithmeticRegressionTest、DatePrecisionNavigationRegressionTest 和 Chinese 目录的历法测试；主包对应 DateNumericBoundaryRegressionTest、DateTimeRangeUtcRegressionTest、NoRepeatTimeStampRegressionTest。框架、覆盖率和性能证据见[实施记录](../quality/datetime-date-repair-report.md)。

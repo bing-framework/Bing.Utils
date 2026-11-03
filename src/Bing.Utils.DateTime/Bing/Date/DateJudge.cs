@@ -1,4 +1,5 @@
 using System.Globalization;
+using Bing.Date.DateUtils;
 
 namespace Bing.Date;
 
@@ -114,10 +115,12 @@ public static class DateJudge
     /// </summary>
     /// <param name="date">日期1</param>
     /// <param name="compareDate">日期2</param>
-    /// <param name="firstDayOfWeek"></param>
+    /// <param name="firstDayOfWeek">每周的第一天，必须是有效星期枚举。</param>
     /// <returns>是否为同一周</returns>
+    /// <exception cref="ArgumentOutOfRangeException">firstDayOfWeek 不是有效的星期枚举，即使日期为空也会拒绝。</exception>
     public static bool IsSameWeek(DateTime? date, DateTime? compareDate, DayOfWeek firstDayOfWeek)
     {
+        DayOfWeekCalc.Validate(firstDayOfWeek, nameof(firstDayOfWeek));
         if (date is null || compareDate is null)
             return false;
         return IsSameYear(date, compareDate)

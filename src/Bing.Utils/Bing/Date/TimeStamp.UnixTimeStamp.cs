@@ -260,7 +260,12 @@ public class UnixTimeStamp : TimeStamp
     /// var unixTimeStamp = UnixTimeStamp.FromUnixTimeMilliseconds(jsTimestamp);
     /// </code>
     /// </example>
-    public static UnixTimeStamp FromUnixTimeMilliseconds(long unixTimestampMilliseconds) => new(unixTimestampMilliseconds / 1000);
+    public static UnixTimeStamp FromUnixTimeMilliseconds(long unixTimestampMilliseconds)
+    {
+        if (unixTimestampMilliseconds < 0)
+            throw new ArgumentOutOfRangeException(nameof(unixTimestampMilliseconds));
+        return new UnixTimeStamp(unixTimestampMilliseconds / 1000);
+    }
 
     #endregion
 

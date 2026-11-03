@@ -312,7 +312,8 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// -
     /// </summary>
     /// <param name="value">值</param>
-    public static DateTimeSpan operator -(DateTimeSpan value) => value.Negate();
+    public static DateTimeSpan operator -(DateTimeSpan value) =>
+        new(checked(-value.Years), checked(-value.Months), -value.TimeSpan);
 
     /// <summary>
     /// &lt;
@@ -527,10 +528,9 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// <param name="dateTimeSpan">日期时间间隔</param>
     public static implicit operator TimeSpan(DateTimeSpan dateTimeSpan)
     {
-        var daysFromYears = DAYS_PER_YEAR * dateTimeSpan.Years;
-        var daysFromMonths = 30 * dateTimeSpan.Months;
-        var days = daysFromMonths + daysFromYears;
-        return new TimeSpan(days, 0, 0, 0) + dateTimeSpan.TimeSpan;
+        // 兼容固定换算：一年 365 天、一月 30 天；不表示真实日历跨度。
+        var days = (long)DAYS_PER_YEAR * dateTimeSpan.Years + 30L * dateTimeSpan.Months;
+        return TimeSpan.FromTicks(checked(days * TimeSpan.TicksPerDay)) + dateTimeSpan.TimeSpan;
     }
 
     /// <summary>
@@ -543,25 +543,28 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     /// 将 <see cref="DateTimeSpan"/> 显式转换为 <see cref="Period"/>
     /// </summary>
     /// <param name="dateTimeSpan">日期时间间隔</param>
-    public static implicit operator Period(DateTimeSpan dateTimeSpan) => Period.FromTicks(dateTimeSpan.Ticks);
+    public static implicit operator Period(DateTimeSpan dateTimeSpan) =>
+        new PeriodBuilder { Years = dateTimeSpan.Years, Months = dateTimeSpan.Months, Ticks = dateTimeSpan.TimeSpan.Ticks }.Build();
 
     /// <summary>
     /// 将 <see cref="Period"/> 显式转换为 <see cref="DateTimeSpan"/>
     /// </summary>
     /// <param name="period">期间</param>
-    public static implicit operator DateTimeSpan(Period period) =>
-        new()
-        {
-            Years = period.Years,
-            Months = period.Months,
-            TimeSpan = TimeSpan.FromTicks(period.Ticks)
-        };
+    public static implicit operator DateTimeSpan(Period period)
+    {
+        if (period is null)
+            throw new ArgumentNullException(nameof(period));
+        var fixedPart = period.ToBuilder();
+        fixedPart.Years = 0;
+        fixedPart.Months = 0;
+        return new DateTimeSpan(period.Years, period.Months, fixedPart.Build().ToDuration().ToTimeSpan());
+    }
 
     /// <summary>
     /// 将 <see cref="DateTimeSpan"/> 显式转换为 <see cref="Duration"/>
     /// </summary>
     /// <param name="dateTimeSpan">日期时间间隔</param>
-    public static implicit operator Duration(DateTimeSpan dateTimeSpan) => Duration.FromTimeSpan(dateTimeSpan.TimeSpan);
+    public static implicit operator Duration(DateTimeSpan dateTimeSpan) => Duration.FromTimeSpan((TimeSpan)dateTimeSpan);
 
     /// <summary>
     /// 将 <see cref="Duration"/> 显式转换为 <see cref="DateTimeSpan"/>
@@ -679,8 +682,8 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     internal static DateTimeSpan SubtractInternal(TimeSpan left, DateTimeSpan right) =>
         new()
         {
-            Years = -right.Years,
-            Months = -right.Months,
+            Years = checked(-right.Years),
+            Months = checked(-right.Months),
             TimeSpan = left - right.TimeSpan
         };
 
@@ -710,8 +713,8 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     static DateTimeSpan AddInternal(DateTimeSpan left, DateTimeSpan right) =>
         new()
         {
-            Years = left.Years + right.Years,
-            Months = left.Months + right.Months,
+            Years = checked(left.Years + right.Years),
+            Months = checked(left.Months + right.Months),
             TimeSpan = left.TimeSpan + right.TimeSpan
         };
 
@@ -723,8 +726,8 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     static DateTimeSpan SubtractInternal(DateTimeSpan left, DateTimeSpan right) =>
         new()
         {
-            Years = left.Years - right.Years,
-            Months = left.Months - right.Months,
+            Years = checked(left.Years - right.Years),
+            Months = checked(left.Months - right.Months),
             TimeSpan = left.TimeSpan - right.TimeSpan,
         };
 
@@ -835,8 +838,8 @@ public partial struct DateTimeSpan : IEquatable<DateTimeSpan>, IComparable<TimeS
     public TimeSpan Negate() =>
         new DateTimeSpan
         {
-            Years = -Years,
-            Months = -Months,
+            Years = checked(-Years),
+            Months = checked(-Months),
             TimeSpan = -TimeSpan
         };
 }

@@ -23,9 +23,9 @@ public static partial class DateTimeOffsetExtensions
     /// <param name="dto">时间点</param>
     /// <param name="timeSpan">日期时间间隔</param>
     public static DateTimeOffset SubtractDateTimeSpan(this DateTimeOffset dto, DateTimeSpan timeSpan) =>
-        dto.AddMonths(-timeSpan.Months)
-            .AddYears(-timeSpan.Years)
-            .Add(timeSpan.TimeSpan);
+        dto.AddMonths(checked(-timeSpan.Months))
+            .AddYears(checked(-timeSpan.Years))
+            .Subtract(timeSpan.TimeSpan);
 
     /// <summary>
     /// 添加工作日
@@ -108,7 +108,7 @@ public static partial class DateTimeOffsetExtensions
     /// </summary>
     /// <param name="current">时间点</param>
     /// <param name="date">日期</param>
-    public static bool IsSameMonth(this DateTimeOffset current, DateTimeOffset date) => current.Month == date.Month;
+    public static bool IsSameMonth(this DateTimeOffset current, DateTimeOffset date) => current.Year == date.Year && current.Month == date.Month;
 
     /// <summary>
     /// 判断是否同一年

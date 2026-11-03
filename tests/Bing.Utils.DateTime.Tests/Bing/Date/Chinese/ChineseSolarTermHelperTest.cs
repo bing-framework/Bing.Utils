@@ -200,4 +200,140 @@ public class ChineseSolarTermHelperTest
         // Assert
         result.ShouldBe(string.Empty);
     }
+
+    /// <summary>
+    /// 验证节气按 UTC+8 自然日精确匹配，不把相邻日期算作节气日。
+    /// </summary>
+    [Fact]
+    public void GetSolarTerm_SummerSolstice_UsesNaturalDateAndStrictNeighborSearch()
+    {
+        var date = new DateTime(2023, 6, 21, 23, 59, 59, DateTimeKind.Local);
+
+        ChineseSolarTermHelper.GetSolarTerm(_calendar, date).ShouldBe("夏至");
+        ChineseSolarTermHelper.GetSolarTermEnum(_calendar, date).ShouldBe(ChineseSolarTerms.SummerSolstice);
+        ChineseSolarTermHelper.GetSolarTerm(_calendar, new DateTime(2023, 6, 20)).ShouldBeEmpty();
+        ChineseSolarTermHelper.GetSolarTerm(_calendar, new DateTime(2023, 6, 22)).ShouldBeEmpty();
+
+        ChineseSolarTermHelper.GetLastSolarTerm(_calendar, date, out var previousDate).ShouldBe("芒种");
+        previousDate.ShouldBe(new DateTime(2023, 6, 6));
+        previousDate.Kind.ShouldBe(DateTimeKind.Unspecified);
+
+        ChineseSolarTermHelper.GetNextSolarTerm(_calendar, date, out var nextDate).ShouldBe("小暑");
+        nextDate.ShouldBe(new DateTime(2023, 7, 7));
+        nextDate.Kind.ShouldBe(DateTimeKind.Unspecified);
+    }
+
+    /// <summary>
+    /// 验证元旦、年末及节气当天的前后查找使用固定日期并严格排除当天。
+    /// </summary>
+    [Fact]
+    public void GetLastAndNextSolarTerm_CrossYearUsesFixedDatesAndExcludesQueryDay()
+    {
+        var newYear = new DateTime(2024, 1, 1);
+        ChineseSolarTermHelper.GetLastSolarTerm(_calendar, newYear, out var previousYearTerm).ShouldBe("冬至");
+        AssertUnspecifiedSolarTermDate(previousYearTerm, 2023, 12, 22);
+        previousYearTerm.ShouldBeLessThan(newYear);
+
+        var yearEnd = new DateTime(2024, 12, 31);
+        ChineseSolarTermHelper.GetNextSolarTerm(_calendar, yearEnd, out var nextYearTerm).ShouldBe("小寒");
+        AssertUnspecifiedSolarTermDate(nextYearTerm, 2025, 1, 5);
+        nextYearTerm.ShouldBeGreaterThan(yearEnd);
+
+        var winterSolstice = new DateTime(2023, 12, 22);
+        ChineseSolarTermHelper.GetLastSolarTerm(_calendar, winterSolstice, out var strictlyPrevious).ShouldBe("大雪");
+        AssertUnspecifiedSolarTermDate(strictlyPrevious, 2023, 12, 7);
+        strictlyPrevious.ShouldBeLessThan(winterSolstice);
+
+        ChineseSolarTermHelper.GetNextSolarTerm(_calendar, winterSolstice, out var strictlyNext).ShouldBe("小寒");
+        AssertUnspecifiedSolarTermDate(strictlyNext, 2024, 1, 6);
+        strictlyNext.ShouldBeGreaterThan(winterSolstice);
+    }
+
+    /// <summary>
+    /// 验证完整 1900 年节气固定向量。
+    /// </summary>
+    [Fact]
+    public void GetSolarTerm_1900_UsesOfficialBeijingCalendarDates()
+    {
+        var expected = new (int Month, int Day, string Name)[]
+        {
+            (1, 6, "小寒"), (1, 20, "大寒"), (2, 4, "立春"), (2, 19, "雨水"),
+            (3, 6, "惊蛰"), (3, 21, "春分"), (4, 5, "清明"), (4, 20, "谷雨"),
+            (5, 6, "立夏"), (5, 21, "小满"), (6, 6, "芒种"), (6, 22, "夏至"),
+            (7, 7, "小暑"), (7, 23, "大暑"), (8, 8, "立秋"), (8, 23, "处暑"),
+            (9, 8, "白露"), (9, 23, "秋分"), (10, 9, "寒露"), (10, 24, "霜降"),
+            (11, 8, "立冬"), (11, 23, "小雪"), (12, 7, "大雪"), (12, 22, "冬至")
+        };
+
+        foreach (var (month, day, name) in expected)
+            ChineseSolarTermHelper.GetSolarTerm(_calendar, new DateTime(1900, month, day)).ShouldBe(name);
+    }
+
+    /// <summary>
+    /// 验证支持范围内每个公历年均有且只有 24 个不同节气日。
+    /// </summary>
+    [Fact]
+    public void GetSolarTerm_AllSupportedYears_HasTwentyFourTerms()
+    {
+        for (var year = 1900; year <= 2100; year++)
+        {
+            var found = new bool[24];
+            var count = 0;
+            for (var month = 1; month <= 12; month++)
+            {
+                var daysInMonth = DateTime.DaysInMonth(year, month);
+                for (var day = 1; day <= daysInMonth; day++)
+                {
+                    var term = ChineseSolarTermHelper.GetSolarTermEnum(_calendar, new DateTime(year, month, day));
+                    if (term == null)
+                        continue;
+
+                    var index = (int)term.Value;
+                    found[index].ShouldBeFalse($"Duplicate {term} on {year:D4}-{month:D2}-{day:D2}");
+                    found[index] = true;
+                    count++;
+                }
+            }
+
+            count.ShouldBe(24, $"Unexpected number of terms in {year}");
+            for (var index = 0; index < found.Length; index++)
+                found[index].ShouldBeTrue($"Missing enum index {index} in {year}");
+        }
+    }
+
+    /// <summary>
+    /// 验证完整数据边界的相邻节气查询和输出哨兵。
+    /// </summary>
+    [Fact]
+    public void GetLastAndNextSolarTerm_SupportedRangeBoundaries_ReturnExpectedSentinels()
+    {
+        var firstDate = new DateTime(1900, 1, 1);
+        ChineseSolarTermHelper.GetLastSolarTerm(_calendar, firstDate, out var beforeFirst).ShouldBeEmpty();
+        beforeFirst.ShouldBe(_calendar.MinSupportedDateTime);
+        beforeFirst.Kind.ShouldBe(DateTimeKind.Unspecified);
+        ChineseSolarTermHelper.GetNextSolarTerm(_calendar, firstDate, out var firstTerm).ShouldBe("小寒");
+        firstTerm.ShouldBe(new DateTime(1900, 1, 6));
+        firstTerm.Kind.ShouldBe(DateTimeKind.Unspecified);
+
+        var lastDate = new DateTime(2100, 12, 31);
+        ChineseSolarTermHelper.GetNextSolarTerm(_calendar, lastDate, out var afterLast).ShouldBeEmpty();
+        afterLast.ShouldBe(_calendar.MinSupportedDateTime);
+        ChineseSolarTermHelper.GetLastSolarTerm(_calendar, lastDate, out var lastTerm).ShouldBe("冬至");
+        lastTerm.ShouldBe(new DateTime(2100, 12, 22));
+        lastTerm.Kind.ShouldBe(DateTimeKind.Unspecified);
+
+        foreach (var date in new[] { new DateTime(1899, 12, 31), new DateTime(2101, 1, 1) })
+        {
+            ChineseSolarTermHelper.GetLastSolarTerm(_calendar, date, out var previous).ShouldBeEmpty();
+            previous.ShouldBe(_calendar.MinSupportedDateTime);
+            ChineseSolarTermHelper.GetNextSolarTerm(_calendar, date, out var next).ShouldBeEmpty();
+            next.ShouldBe(_calendar.MinSupportedDateTime);
+        }
+    }
+
+    private static void AssertUnspecifiedSolarTermDate(DateTime actual, int year, int month, int day)
+    {
+        actual.Ticks.ShouldBe(new DateTime(year, month, day).Ticks);
+        actual.Kind.ShouldBe(DateTimeKind.Unspecified);
+    }
 }

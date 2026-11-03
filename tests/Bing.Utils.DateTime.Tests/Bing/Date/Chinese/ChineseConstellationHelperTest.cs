@@ -49,6 +49,21 @@ public class ChineseConstellationHelperTest
     }
 
     /// <summary>
+    /// 验证参考日前一日按正模运算回到周期末尾，并忽略日内时间。
+    /// </summary>
+    [Fact]
+    public void Get_PreReferenceDate_UsesPositiveModuloAndNaturalDate()
+    {
+        var previousDay = new DateTime(2007, 9, 12, 23, 59, 0, DateTimeKind.Utc);
+        var previousCycle = new DateTime(2007, 8, 16, 0, 0, 0);
+        var referenceDayLate = new DateTime(2007, 9, 13, 23, 59, 0, DateTimeKind.Local);
+
+        ChineseConstellationHelper.Get(previousDay).ShouldBe("轸水蚓");
+        ChineseConstellationHelper.Get(previousCycle).ShouldBe("角木蛟");
+        ChineseConstellationHelper.Get(referenceDayLate).ShouldBe("角木蛟");
+    }
+
+    /// <summary>
     /// 验证常用日期返回非空星宿名称。
     /// </summary>
     /// <param name="year">待查询日期的公历年份。</param>

@@ -136,11 +136,11 @@ public class DateTimeFactoryTest
     /// 验证无效的月内出现序号被拒绝并报告参数名。
     /// </summary>
     [Fact]
-    public void CreateByWeek_InvalidOccurrence_ThrowsArgumentException()
+    public void CreateByWeek_InvalidOccurrence_ThrowsArgumentOutOfRangeException()
     {
-        var ex = Should.Throw<ArgumentException>(() => DateTimeFactory.CreateByWeek(2024, 2, DayOfWeek.Monday, 0));
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() => DateTimeFactory.CreateByWeek(2024, 2, DayOfWeek.Monday, 0));
 
-        ex.ParamName.ShouldBe("weekAtMonth");
+        ex.ParamName.ShouldBe("occurrence");
     }
 
     /// <summary>

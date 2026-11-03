@@ -6,11 +6,10 @@ namespace Bing.Date;
 public class DateTimeOffsetCoreExtensionsTest
 {
     /// <summary>
-    /// 验证时间跨度增减的当前年月与时间分量行为。
+    /// 验证非月末日期的年月和固定时长加减往返。
     /// </summary>
-    /// <remarks>当前减法在扣除年月后仍增加时间分量，因此加减往返后的时间比起始值晚四小时。</remarks>
     [Fact]
-    public void AddDateTimeSpan_And_SubtractDateTimeSpan_ShouldReturnExpectedCurrentBehavior()
+    public void AddDateTimeSpan_And_SubtractDateTimeSpan_RoundTripAwayFromMonthEnd()
     {
         var offset = TimeSpan.FromHours(8);
         var dto = new DateTimeOffset(2024, 1, 15, 10, 20, 30, offset);
@@ -18,7 +17,8 @@ public class DateTimeOffsetCoreExtensionsTest
         var added = dto.AddDateTimeSpan(span);
         var subtracted = added.SubtractDateTimeSpan(span);
         added.ShouldBe(new DateTimeOffset(2025, 2, 15, 12, 20, 30, offset));
-        subtracted.ShouldBe(new DateTimeOffset(2024, 1, 15, 14, 20, 30, offset));
+        subtracted.ShouldBe(dto);
+        subtracted.Offset.ShouldBe(offset);
     }
     /// <summary>
     /// 验证周五增加一个工作日后到达下周一。
@@ -89,14 +89,15 @@ public class DateTimeOffsetCoreExtensionsTest
         past.IsInThePast().ShouldBeTrue();
     }
     /// <summary>
-    /// 验证同月判定当前忽略年份差异。
+    /// 验证同月判定同时比较年份与月份。
     /// </summary>
     [Fact]
-    public void IsSameMonth_CurrentBehavior_IgnoresYear()
+    public void IsSameMonth_DifferentYears_ReturnsFalse()
     {
         var left = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var right = new DateTimeOffset(2023, 1, 31, 23, 0, 0, TimeSpan.Zero);
-        left.IsSameMonth(right).ShouldBeTrue();
+        left.IsSameMonth(right).ShouldBeFalse();
+        left.IsSameMonth(new DateTimeOffset(2024, 1, 31, 23, 0, 0, TimeSpan.Zero)).ShouldBeTrue();
     }
     /// <summary>
     /// 验证同日与同年判定使用对应日期分量。

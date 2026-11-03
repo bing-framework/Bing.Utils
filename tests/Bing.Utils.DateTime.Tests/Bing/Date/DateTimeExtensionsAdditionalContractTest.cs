@@ -216,11 +216,11 @@ public class DateTimeExtensionsAdditionalContractTest
         var source = new DateTime(2024, 1, 15, 10, 20, 30, 456, DateTimeKind.Utc);
 
         source.BeginningOfSecond().ShouldBe(new DateTime(2024, 1, 15, 10, 20, 30, 0, DateTimeKind.Utc));
-        source.EndOfSecond().ShouldBe(new DateTime(2024, 1, 15, 10, 20, 30, 999, DateTimeKind.Utc));
+        source.EndOfSecond().ShouldBe(new DateTime(2024, 1, 15, 10, 20, 30, DateTimeKind.Utc).AddTicks(TimeSpan.TicksPerSecond - 1));
         source.BeginningOfMinute().ShouldBe(new DateTime(2024, 1, 15, 10, 20, 0, 0, DateTimeKind.Utc));
-        source.EndOfMinute().ShouldBe(new DateTime(2024, 1, 15, 10, 20, 59, 999, DateTimeKind.Utc));
+        source.EndOfMinute().ShouldBe(new DateTime(2024, 1, 15, 10, 20, 59, DateTimeKind.Utc).AddTicks(TimeSpan.TicksPerSecond - 1));
         source.BeginningOfHour().ShouldBe(new DateTime(2024, 1, 15, 10, 0, 0, 0, DateTimeKind.Utc));
-        source.EndOfHour().ShouldBe(new DateTime(2024, 1, 15, 10, 59, 59, 999, DateTimeKind.Utc));
+        source.EndOfHour().ShouldBe(new DateTime(2024, 1, 15, 10, 59, 59, DateTimeKind.Utc).AddTicks(TimeSpan.TicksPerSecond - 1));
     }
 
     /// <summary>

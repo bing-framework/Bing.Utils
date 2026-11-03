@@ -52,6 +52,32 @@ public class ChineseDateHelperTest
         // Assert
         result.ShouldBe(expected);
     }
+
+    /// <summary>
+    /// 验证从甲子年开始的完整六十年干支周期。
+    /// </summary>
+    [Fact]
+    public void GetSexagenaryYear_FullCycle_ReturnsOneBasedStemAndBranchNames()
+    {
+        var expected = new[]
+        {
+            "甲子年", "乙丑年", "丙寅年", "丁卯年", "戊辰年", "己巳年", "庚午年", "辛未年", "壬申年", "癸酉年",
+            "甲戌年", "乙亥年", "丙子年", "丁丑年", "戊寅年", "己卯年", "庚辰年", "辛巳年", "壬午年", "癸未年",
+            "甲申年", "乙酉年", "丙戌年", "丁亥年", "戊子年", "己丑年", "庚寅年", "辛卯年", "壬辰年", "癸巳年",
+            "甲午年", "乙未年", "丙申年", "丁酉年", "戊戌年", "己亥年", "庚子年", "辛丑年", "壬寅年", "癸卯年",
+            "甲辰年", "乙巳年", "丙午年", "丁未年", "戊申年", "己酉年", "庚戌年", "辛亥年", "壬子年", "癸丑年",
+            "甲寅年", "乙卯年", "丙辰年", "丁巳年", "戊午年", "己未年", "庚申年", "辛酉年", "壬戌年", "癸亥年"
+        };
+
+        for (var offset = 0; offset < expected.Length; offset++)
+        {
+            var date = _calendar.ToDateTime(1984 + offset, 1, 1, 0, 0, 0, 0);
+            ChineseDateHelper.GetSexagenaryYear(_calendar, date).ShouldBe(expected[offset]);
+        }
+
+        ChineseDateHelper.GetSexagenaryYear(_calendar, new DateTime(2024, 2, 10)).ShouldBe("甲辰年");
+        ChineseDateHelper.GetSexagenaryYear(_calendar, new DateTime(1984, 2, 2)).ShouldBe("甲子年");
+    }
     /// <summary>
     /// 验证获取干支年时拒绝空历法。
     /// </summary>
@@ -186,19 +212,22 @@ public class ChineseDateHelperTest
     /// <summary>
     /// 验证日期与年份重载的农历闰年判断结果一致。
     /// </summary>
-    /// <param name="year">待判断的年份。</param>
+    /// <param name="year">公历年份。</param>
+    /// <param name="month">公历月份。</param>
+    /// <param name="day">公历日。</param>
     /// <param name="expected">预期结果。</param>
     [Theory]
-    [InlineData(2023, true)] // 2023农历闰二月
-    [InlineData(2022, false)]
-    [InlineData(2020, true)] // 2020农历闰四月
-    public void IsLeapYear_ValidYear_ReturnsCorrectResult(int year, bool expected)
+    [InlineData(2023, 6, 1, true)] // 2023农历闰二月
+    [InlineData(2022, 6, 1, false)]
+    [InlineData(2020, 6, 1, true)] // 2020农历闰四月
+    [InlineData(2024, 1, 31, true)] // 公历日期仍处于农历闰年2023
+    public void IsLeapYear_ValidDate_UsesLunarYear(int year, int month, int day, bool expected)
     {
         // Arrange
-        var date = new DateTime(year, 1, 1);
+        var date = new DateTime(year, month, day);
         // Act
         var result = ChineseDateHelper.IsLeapYear(_calendar, date);
-        var resultInt = ChineseDateHelper.IsLeapYear(_calendar, year);
+        var resultInt = ChineseDateHelper.IsLeapYear(_calendar, _calendar.GetYear(date));
         // Assert
         result.ShouldBe(expected);
         resultInt.ShouldBe(expected);
@@ -214,6 +243,7 @@ public class ChineseDateHelperTest
     [InlineData(2023, 3, 25, true)] // 2023年闰二月
     [InlineData(2023, 1, 22, false)]
     [InlineData(2020, 5, 25, true)] // 2020年闰四月
+    [InlineData(2020, 6, 1, true)] // 公历六月仍属于农历闰四月
     public void IsLeapMonth_ValidDate_ReturnsCorrectResult(int year, int month, int day, bool expected)
     {
         // Arrange
@@ -233,5 +263,16 @@ public class ChineseDateHelperTest
         var regularDay = new DateTime(2023, 1, 22);
         // Act & Assert
         ChineseDateHelper.IsLeapDay(_calendar, regularDay).ShouldBeFalse();
+    }
+
+    /// <summary>
+    /// 验证日期闰日判断使用农历年月日分量。
+    /// </summary>
+    [Theory]
+    [InlineData(2020, 6, 1, true)]
+    [InlineData(2020, 4, 1, false)]
+    public void IsLeapDay_ValidDate_UsesLunarDate(int year, int month, int day, bool expected)
+    {
+        ChineseDateHelper.IsLeapDay(_calendar, new DateTime(year, month, day)).ShouldBe(expected);
     }
 }

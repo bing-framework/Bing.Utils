@@ -31,7 +31,7 @@ public class DateTimeNavigationTimeZoneBoundaryTest
 
         var result = source.EndOfDay(-30);
 
-        result.ShouldBe(new DateTime(2023, 12, 31, 17, 59, 59, 999, DateTimeKind.Utc));
+        result.ShouldBe(new DateTime(2023, 12, 31, 18, 0, 0, DateTimeKind.Utc).AddTicks(-1));
     }
 
     /// <summary>

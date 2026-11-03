@@ -1,4 +1,3 @@
-using Bing.Conversions;
 using Bing.Date.DateUtils;
 
 namespace Bing.Date;
@@ -85,6 +84,8 @@ public static class DateTimeFactory
     /// <param name="year">年</param>
     /// <param name="month">月</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>对应的指定星期日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime CreateLastDayOfMonth(int year, int month, DayOfWeek dayOfWeek) =>
         DateTimeCalc.TryOffsetByWeek(year, month, 5, dayOfWeek, out var resultedDay)
             ? resultedDay
@@ -96,6 +97,8 @@ public static class DateTimeFactory
     /// <param name="year">年</param>
     /// <param name="month">月</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>对应的指定星期日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime CreateLastDayOfMonth(int year, int month, int dayOfWeek) =>
         DateTimeCalc.TryOffsetByWeek(year, month, 5, dayOfWeek, out var resultedDay)
             ? resultedDay
@@ -110,7 +113,7 @@ public static class DateTimeFactory
     /// </summary>
     /// <param name="year">年</param>
     /// <param name="month">月</param>
-    public static DateTime CreateFirstDayOfMonth(int year, int month) => CreateFirstDayOfMonth(year, month, 1);
+    public static DateTime CreateFirstDayOfMonth(int year, int month) => Create(year, month, 1);
 
     /// <summary>
     /// 寻找一个月中的第一个工作日（如周一）
@@ -118,6 +121,8 @@ public static class DateTimeFactory
     /// <param name="year">年</param>
     /// <param name="month">月</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>对应的指定星期日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime CreateFirstDayOfMonth(int year, int month, DayOfWeek dayOfWeek) => DateTimeCalc.OffsetByWeek(year, month, 1, dayOfWeek);
 
     /// <summary>
@@ -126,6 +131,8 @@ public static class DateTimeFactory
     /// <param name="year">年</param>
     /// <param name="month">月</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>对应的指定星期日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime CreateFirstDayOfMonth(int year, int month, int dayOfWeek) => DateTimeCalc.OffsetByWeek(year, month, 1, dayOfWeek);
 
     #endregion
@@ -139,6 +146,8 @@ public static class DateTimeFactory
     /// <param name="month">月</param>
     /// <param name="day">日</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>对应的指定星期日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime CreateNextDayByWeek(int year, int month, int day, DayOfWeek dayOfWeek) => DateTimeCalc.OffsetByWeekAfter(Create(year, month, day), dayOfWeek);
 
     /// <summary>
@@ -146,6 +155,8 @@ public static class DateTimeFactory
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>对应的指定星期日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime CreateNextDayByWeek(DateTime dt, DayOfWeek dayOfWeek) => DateTimeCalc.OffsetByWeekAfter(dt, dayOfWeek);
 
     #endregion
@@ -159,6 +170,8 @@ public static class DateTimeFactory
     /// <param name="month">月</param>
     /// <param name="day">日</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>对应的指定星期日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime CreatePreviousDayByWeek(int year, int month, int day, DayOfWeek dayOfWeek) => DateTimeCalc.OffsetByWeekBefore(Create(year, month, day), dayOfWeek);
 
     /// <summary>
@@ -166,6 +179,8 @@ public static class DateTimeFactory
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="dayOfWeek">星期几</param>
+    /// <returns>对应的指定星期日期。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期、星期或星期序号越界。</exception>
     public static DateTime CreatePreviousDayByWeek(DateTime dt, DayOfWeek dayOfWeek) => DateTimeCalc.OffsetByWeekBefore(dt, dayOfWeek);
 
     #endregion
@@ -179,7 +194,14 @@ public static class DateTimeFactory
     /// <param name="month">月</param>
     /// <param name="dayOfWeek">星期几</param>
     /// <param name="occurrence">第几个星期</param>
-    public static DateTime CreateByWeek(int year, int month, DayOfWeek dayOfWeek, int occurrence) => DateTimeCalc.OffsetByWeek(year, month, occurrence, dayOfWeek.CastToInt32(0));
+    /// <returns>指定星期日期；当月没有该次出现时返回 DateTime.MinValue。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">年份、月份、星期或出现序号越界。</exception>
+    public static DateTime CreateByWeek(int year, int month, DayOfWeek dayOfWeek, int occurrence)
+    {
+        if (occurrence < 1 || occurrence > 5)
+            throw new ArgumentOutOfRangeException(nameof(occurrence), occurrence, "出现序号必须在1到5之间。");
+        return DateTimeCalc.OffsetByWeek(year, month, occurrence, dayOfWeek);
+    }
 
     #endregion
 }

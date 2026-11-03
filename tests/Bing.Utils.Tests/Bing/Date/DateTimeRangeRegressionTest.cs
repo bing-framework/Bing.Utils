@@ -19,8 +19,8 @@ public class DateTimeRangeRegressionTest
 
         var range = new DateTimeRange(start, end);
 
-        range.StartTime.ShouldBe(end);
-        range.EndTime.ShouldBe(start);
+        range.StartTime.ShouldBe(end.ToUniversalTime());
+        range.EndTime.ShouldBe(start.ToUniversalTime());
         range.TotalDays.ShouldBe(1d);
     }
 }

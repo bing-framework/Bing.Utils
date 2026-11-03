@@ -48,7 +48,7 @@ public class NoRepeatTimeStampFactoryTest
     {
         // Act & Assert
         Should.Throw<ArgumentOutOfRangeException>(() => new NoRepeatTimeStampFactory(invalidIncrementMs))
-            .ParamName.ShouldBe("value");
+            .ParamName.ShouldBe("incrementMs");
     }
     /// <summary>
     /// 验证毫秒增量属性保存设置值。
@@ -246,54 +246,31 @@ public class NoRepeatTimeStampFactoryTest
         unixTimeStampObj.ToTimestamp().ShouldBeGreaterThan(0);
         utcUnixTimeStampObj.ToTimestamp().ShouldBeGreaterThan(0);
     }
-    /// <summary>
-    /// 测试 - 时间戳对象方法 - 确保不重复（分别测试）
-    /// </summary>
+    /// <summary>tick 序列唯一；Unix 包装仍按秒量化。</summary>
     [Fact]
     public void TimeStampObjectMethods_ConsecutiveCalls_EnsureNoRepeat()
     {
-        // Arrange
-        var factory = new NoRepeatTimeStampFactory(1000.0);
-        // Act & Assert - 测试 TimeStamp 对象（Ticks 格式）
-        var timeStampTicks = new List<long>();
-        for (int i = 0; i < 50; i++)
+        var origin = new DateTime(2090, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var factory = new NoRepeatTimeStampFactory(0.0001);
+        factory.GetTimeStamp(origin);
+        var timestamps = Enumerable.Range(0, 100)
+            .Select(_ => factory.GetUtcTimeStampObject()).ToArray();
+        timestamps.Select(x => x.ToTimestamp()).Distinct().Count().ShouldBe(100);
+        timestamps.Select(x => x.ToDateTime().Kind).ShouldAllBe(x => x == DateTimeKind.Utc);
+
+        var seconds = new NoRepeatTimeStampFactory(1000);
+        seconds.GetTimeStamp(origin);
+        var unixValues = new List<long>();
+        for (var i = 0; i < 50; i++)
         {
-            timeStampTicks.Add(factory.GetTimeStampObject().ToTimestamp());
-            timeStampTicks.Add(factory.GetUtcTimeStampObject().ToTimestamp());
+            unixValues.Add(seconds.GetUnixTimeStampObject().ToTimestamp());
+            unixValues.Add(seconds.GetUtcUnixTimeStampObject().ToTimestamp());
         }
-        timeStampTicks.Count.ShouldBe(100);
-        var distinctTicksStamps = timeStampTicks.Distinct().ToList();
-        distinctTicksStamps.Count.ShouldBe(100, "TimeStamp 对象应该生成唯一的 Ticks 时间戳");
-        // Act & Assert - 测试 UnixTimeStamp 对象（Unix 秒格式）
-        var unixTimeStamps = new List<long>();
-        for (int i = 0; i < 50; i++)
-        {
-            unixTimeStamps.Add(factory.GetUnixTimeStampObject().ToTimestamp());
-            unixTimeStamps.Add(factory.GetUtcUnixTimeStampObject().ToTimestamp());
-        }
-        unixTimeStamps.Count.ShouldBe(100);
-        var distinctUnixStamps = unixTimeStamps.Distinct().ToList();
-        distinctUnixStamps.Count.ShouldBe(100, "UnixTimeStamp 对象应该生成唯一的 Unix 时间戳");
-        // 修复：避免直接计算平均值，改用范围比较
-        var minTicksValue = timeStampTicks.Min();
-        var maxTicksValue = timeStampTicks.Max();
-        var minUnixValue = unixTimeStamps.Min();
-        var maxUnixValue = unixTimeStamps.Max();
-        // 验证 Ticks 值远大于 Unix 时间戳值
-        // 使用最小的 Ticks 值与最大的 Unix 值进行比较
-        minTicksValue.ShouldBeGreaterThan(maxUnixValue * 1000000L,
-            $"最小的 Ticks 时间戳 ({minTicksValue}) 应该比最大的 Unix 时间戳 ({maxUnixValue}) 大得多");
-        // 额外验证：Ticks 值应该在合理范围内（当前年份附近）
-        var currentTicks = DateTime.Now.Ticks;
-        var year2020Ticks = new DateTime(2020, 1, 1).Ticks;
-        var year2030Ticks = new DateTime(2030, 1, 1).Ticks;
-        timeStampTicks.ShouldAllBe(ticks => ticks >= year2020Ticks && ticks <= year2030Ticks,
-            "Ticks 时间戳应该在合理的时间范围内");
-        // 验证 Unix 时间戳在合理范围内（2020-2030年之间）
-        var year2020Unix = 1577836800L; // 2020-01-01 Unix timestamp
-        var year2030Unix = 1893456000L; // 2030-01-01 Unix timestamp
-        unixTimeStamps.ShouldAllBe(unix => unix >= year2020Unix && unix <= year2030Unix,
-            "Unix 时间戳应该在合理的时间范围内");
+        var originSeconds = new DateTimeOffset(origin).ToUnixTimeSeconds();
+        unixValues.ShouldBe(Enumerable.Range(1, 100).Select(i => originSeconds + i).ToArray());
+
+        factory.GetUnixTimeStampObject().ToTimestamp().ShouldBe(originSeconds);
+        factory.GetUtcUnixTimeStampObject().ToTimestamp().ShouldBe(originSeconds);
     }
     #endregion
     #region 批量生成测试

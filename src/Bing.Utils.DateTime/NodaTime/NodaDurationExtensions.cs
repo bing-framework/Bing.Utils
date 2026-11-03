@@ -83,5 +83,5 @@ public static class NodaDurationExtensions
     /// 将周数转换为 <see cref="Duration"/>
     /// </summary>
     /// <param name="weeks">周数</param>
-    public static Duration AsDurationOfWeeks(this int weeks) => Duration.FromDays(weeks * 7);
+    public static Duration AsDurationOfWeeks(this int weeks) => Duration.FromDays((double)weeks * 7);
 }

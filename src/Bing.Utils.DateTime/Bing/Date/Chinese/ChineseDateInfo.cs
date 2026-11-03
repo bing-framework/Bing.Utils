@@ -49,7 +49,7 @@ public class ChineseDateInfo
     public int ChineseYear => Calendar.GetYear(InternalDateTime);
 
     /// <summary>
-    /// 获取农历月份
+    /// 获取农历月份序号（1～13，闰月占一个序号；中文月名使用 GetChineseMonth）。
     /// </summary>
     public int ChineseMonth => Calendar.GetMonth(InternalDateTime);
 
@@ -224,13 +224,13 @@ public class ChineseDateInfo
     /// 获取农历年中的总天数。
     /// </summary>
     /// <returns>返回指定农历年中的总天数。</returns>
-    public int GetDaysInYear() => Calendar.GetDaysInYear(InternalDateTime.Year);
+    public int GetDaysInYear() => Calendar.GetDaysInYear(Calendar.GetYear(InternalDateTime));
 
     /// <summary>
     /// 获取农历月中的总天数。
     /// </summary>
     /// <returns>返回指定农历月中的总天数。</returns>
-    public int GetDaysInMonth() => Calendar.GetDaysInMonth(InternalDateTime.Year, InternalDateTime.Month);
+    public int GetDaysInMonth() => Calendar.GetDaysInMonth(Calendar.GetYear(InternalDateTime), Calendar.GetMonth(InternalDateTime));
 
     /// <summary>
     /// 农历年中的第几天。

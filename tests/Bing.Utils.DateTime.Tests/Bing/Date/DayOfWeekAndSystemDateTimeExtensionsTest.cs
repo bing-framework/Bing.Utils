@@ -32,13 +32,12 @@ public class DayOfWeekAndSystemDateTimeExtensionsTest
         DayOfWeek.Monday.ToChinese("周").ShouldBe("周一");
     }
     /// <summary>
-    /// 验证未定义星期值的中文转换结果为空。
+    /// 验证未定义星期值的中文转换立即拒绝，并报告公开参数名。
     /// </summary>
     [Fact]
-    public void ToChinese_WithInvalidEnum_ReturnsNull()
+    public void ToChinese_WithInvalidEnum_ThrowsArgumentOutOfRange()
     {
-        var result = ((DayOfWeek)999).ToChinese();
-        result.ShouldBeNull();
+        Should.Throw<ArgumentOutOfRangeException>(() => ((DayOfWeek)999).ToChinese()).ParamName.ShouldBe("week");
     }
     /// <summary>
     /// 验证星期偏移跨越一周边界。

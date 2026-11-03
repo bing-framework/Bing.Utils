@@ -141,7 +141,7 @@ public static class DateTimeSpanExtensions
     /// </code>
     /// </example>
     [Pure]
-    public static DateTimeSpan Years(this int years) => new(0, years, TimeSpan.Zero);
+    public static DateTimeSpan Years(this int years) => new(years, 0, TimeSpan.Zero);
 
     /// <summary>
     /// 创建指定季度数的日期时间间隔
@@ -155,7 +155,7 @@ public static class DateTimeSpanExtensions
     /// </code>
     /// </example>
     [Pure]
-    public static DateTimeSpan Quarters(this int quarters) => new(0, quarters * 3, TimeSpan.Zero);
+    public static DateTimeSpan Quarters(this int quarters) => new(0, checked(quarters * 3), TimeSpan.Zero);
 
     /// <summary>
     /// 创建指定月数的日期时间间隔
@@ -183,7 +183,7 @@ public static class DateTimeSpanExtensions
     /// </code>
     /// </example>
     [Pure]
-    public static DateTimeSpan Weeks(this int weeks) => new(0, 0, TimeSpan.FromDays(weeks * 7));
+    public static DateTimeSpan Weeks(this int weeks) => new(0, 0, TimeSpan.FromTicks(checked((long)weeks * 7 * TimeSpan.TicksPerDay)));
 
     /// <summary>
     /// 创建指定周数的日期时间间隔（浮点数版本）

@@ -33,8 +33,8 @@ public class DateTimeDstBoundaryContractTest
         var daylightOffset = dstEndDate.EndOfDay(-4);
         var standardOffset = dstEndDate.EndOfDay(-5);
 
-        daylightOffset.ShouldBe(new DateTime(2024, 11, 3, 19, 59, 59, 999, DateTimeKind.Unspecified));
-        standardOffset.ShouldBe(new DateTime(2024, 11, 3, 18, 59, 59, 999, DateTimeKind.Unspecified));
+        daylightOffset.ShouldBe(new DateTime(2024, 11, 3, 20, 0, 0, DateTimeKind.Unspecified).AddTicks(-1));
+        standardOffset.ShouldBe(new DateTime(2024, 11, 3, 19, 0, 0, DateTimeKind.Unspecified).AddTicks(-1));
         (daylightOffset - standardOffset).TotalHours.ShouldBe(1);
     }
 }
