@@ -88,12 +88,64 @@ public class GuidTest
         Test_ShouldNotBeEmpty(GuidProvider.Create(GuidStyle.SequentialAsEndStyle, NoRepeatMode.Off));
         Test_ShouldNotBeEmpty(GuidProvider.Create(GuidStyle.EquifaxStyle, NoRepeatMode.Off));
     }
+
     /// <summary>
-    /// 验证 GUID 格式化后不为空，并将结果写入测试输出。
+    /// 验证 PostgreSQL COMB 的不重复模式消费入口使用 UTC 毫秒时间戳。
+    /// </summary>
+    /// <remarks>Unix COMB 只编码毫秒，因此同一毫秒内的连续时间戳可以相等。</remarks>
+    [Fact]
+    public void Test_Create_PostgreSqlNoRepeat_EmbedsUtcMillisecondTimestamps()
+    {
+        var firstId = GuidProvider.Create(GuidStyle.PostgreSqlTimeStampStyle, NoRepeatMode.On);
+        var secondId = GuidProvider.Create(GuidStyle.PostgreSqlTimeStampStyle, NoRepeatMode.On);
+
+        firstId.ShouldNotBe(Guid.Empty);
+        secondId.ShouldNotBe(Guid.Empty);
+
+        var decoder = global::Bing.IdUtils.CombImplements.InternalCombImplementProxy.PostgreSql;
+        var firstTimestamp = decoder.GetTimeStamp(firstId);
+        var secondTimestamp = decoder.GetTimeStamp(secondId);
+
+        firstTimestamp.Kind.ShouldBe(DateTimeKind.Utc);
+        secondTimestamp.Kind.ShouldBe(DateTimeKind.Utc);
+        (firstTimestamp.Ticks % TimeSpan.TicksPerMillisecond).ShouldBe(0);
+        (secondTimestamp.Ticks % TimeSpan.TicksPerMillisecond).ShouldBe(0);
+        secondTimestamp.Ticks.ShouldBeGreaterThanOrEqualTo(firstTimestamp.Ticks);
+    }
+
+    /// <summary>
+    /// 验证固定 UTC 时间经 NoRepeat 工厂和 PostgreSQL COMB 编解码后按毫秒量化。
+    /// </summary>
+    [Fact]
+    public void Test_PostgreSqlNoRepeatFactory_EncodesFixedUtcTimestampsToMilliseconds()
+    {
+        var factory = new global::Bing.Date.NoRepeatTimeStampFactory();
+        var fixedBase = new DateTime(2024, 1, 1, 12, 34, 56, 123, DateTimeKind.Utc).AddTicks(4567);
+        var provider = new global::Bing.IdUtils.CombImplements.Providers.PostgreSqlCombProvider(
+            new global::Bing.IdUtils.CombImplements.Strategies.UnixDateTimeStrategy(),
+            () => factory.GetTimeStamp(fixedBase));
+        var fixedGuid = Guid.Parse("00112233-4455-6677-8899-aabbccddeeff");
+
+        var firstId = provider.Create(fixedGuid);
+        var secondId = provider.Create(fixedGuid);
+        var firstTimestamp = provider.GetTimeStamp(firstId);
+        var secondTimestamp = provider.GetTimeStamp(secondId);
+        var firstExpectedTicks = new DateTime(2024, 1, 1, 12, 34, 56, 123, DateTimeKind.Utc).Ticks;
+        var secondExpectedTicks = new DateTime(2024, 1, 1, 12, 34, 56, 127, DateTimeKind.Utc).Ticks;
+
+        firstTimestamp.Ticks.ShouldBe(firstExpectedTicks);
+        firstTimestamp.Kind.ShouldBe(DateTimeKind.Utc);
+        secondTimestamp.Ticks.ShouldBe(secondExpectedTicks);
+        secondTimestamp.Kind.ShouldBe(DateTimeKind.Utc);
+    }
+
+    /// <summary>
+    /// 验证 GUID 非空，并将结果写入测试输出。
     /// </summary>
     /// <param name="id">要验证并输出的 GUID。</param>
     private void Test_ShouldNotBeEmpty(Guid id)
     {
+        id.ShouldNotBe(Guid.Empty);
         var result = id.ToString();
         result.ShouldNotBeEmpty();
         Output.WriteLine(result);

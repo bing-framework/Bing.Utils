@@ -8,6 +8,25 @@ namespace Bing.IdUtils;
 public class Uuid7Test
 {
     /// <summary>
+    /// 验证无参入口使用当前 UTC 时间，并设置正确的版本和变体位。
+    /// </summary>
+    [Fact]
+    public void Generate_WithoutTimestamp_UsesCurrentTimeWindow()
+    {
+        var before = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+        var value = Uuid7.Generate();
+
+        var after = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        var compact = value.ToString("N");
+        compact[12].ShouldBe('7');
+        new[] { '8', '9', 'a', 'b' }.ShouldContain(compact[16]);
+        Uuid7.TryGetTimestamp(value, out var actual).ShouldBeTrue();
+        actual.ShouldBeGreaterThanOrEqualTo(before);
+        actual.ShouldBeLessThanOrEqualTo(after);
+    }
+
+    /// <summary>
     /// 验证指定时刻被编码到 RFC 字段位置并设置版本和变体位。
     /// </summary>
     [Fact]

@@ -118,17 +118,33 @@ public static partial class GuidProvider
     /// </summary>
     /// <param name="endianGuidBytes">大/小端点字节数组</param>
     /// <param name="style">GUID 字节风格</param>
+    /// <exception cref="ArgumentNullException">有效字节风格下，数组为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">有效字节风格下，数组长度不是 16 时抛出。</exception>
     public static Guid Create(byte[] endianGuidBytes, GuidBytesStyle style)
     {
         switch (style)
         {
             case GuidBytesStyle.LittleEndianByteArray:
+                ValidateGuidBytes(endianGuidBytes);
                 return LittleEndianByteArrayProvider.Create(endianGuidBytes);
             case GuidBytesStyle.BigEndianByteArray:
+                ValidateGuidBytes(endianGuidBytes);
                 return BigEndianByteArrayProvider.Create(endianGuidBytes);
             default:
                 return Guid.NewGuid();
         }
+    }
+
+    /// <summary>
+    /// 校验端序字节数组是否包含完整 GUID。
+    /// </summary>
+    /// <param name="endianGuidBytes">端序字节数组。</param>
+    private static void ValidateGuidBytes(byte[] endianGuidBytes)
+    {
+        if (endianGuidBytes == null)
+            throw new ArgumentNullException(nameof(endianGuidBytes));
+        if (endianGuidBytes.Length != 16)
+            throw new ArgumentException("GUID 字节数组必须正好包含 16 个字节。", nameof(endianGuidBytes));
     }
 
     /// <summary>
@@ -148,11 +164,11 @@ public static partial class GuidProvider
             case GuidVersion.NameBasedSha1:
                 return NamedGuidProvider.Create(@namespace, name, GuidVersion.NameBasedSha1);
             case GuidVersion.TimeBased:
-                return GuidProvider.Create(CombStyle.NormalStyle);
-            //case GuidVersion.DceSecurity:
-            //    break;
+                throw new NotSupportedException("GuidVersion.TimeBased（UUIDv1）请使用 Uuid1.Generate；当前入口不隐式生成 UUIDv1。");
+            case GuidVersion.DceSecurity:
+                throw new NotSupportedException("GuidVersion.DceSecurity 当前不受支持。");
             default:
-                return Guid.NewGuid();
+                throw new ArgumentOutOfRangeException(nameof(version), version, "未知的 GUID 版本。");
         }
     }
 }

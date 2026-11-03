@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Bing.IdUtils.SnowflakeImplements.Providers;
 
 /// <summary>
@@ -58,6 +60,16 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     const long SEQUENCE_MASK = -1L ^ (-1L << SEQUENCE_BITS);
 
     /// <summary>
+    /// 等待物理时钟追上逻辑时钟的最长时间（毫秒）。
+    /// </summary>
+    private const long MAX_WAIT_MILLISECONDS = 1000L;
+
+    /// <summary>
+    /// 41 位时间字段的最大值。
+    /// </summary>
+    private const long MAX_TIMESTAMP = (1L << 41) - 1;
+
+    /// <summary>
     /// 机器ID的偏移量(12)
     /// </summary>
     // ReSharper disable once InconsistentNaming
@@ -93,6 +105,11 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     private long _lastTimestamp = -1L;
 
     /// <summary>
+    /// 是否已经成功生成过标识。
+    /// </summary>
+    private bool _hasGenerated;
+
+    /// <summary>
     /// 同步锁
     /// </summary>
     private readonly object _lock = new();
@@ -112,9 +129,11 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     {
         // 如果超出范围就抛出异常
         if (workerId > MAX_WORKER_ID || workerId < 0)
-            throw new ArgumentException($"worker Id 必须大于0，且不能大于 MaxWorkerId：{MAX_WORKER_ID}");
+            throw new ArgumentException($"worker Id 必须大于等于0，且不能大于 MaxWorkerId：{MAX_WORKER_ID}");
         if (datacenterId > MAX_DATA_CENTER_ID || datacenterId < 0)
-            throw new ArgumentException($"datacenter Id 必须大于0，且不能大于 MaxDatacenterId：{MAX_DATA_CENTER_ID}");
+            throw new ArgumentException($"datacenter Id 必须大于等于0，且不能大于 MaxDatacenterId：{MAX_DATA_CENTER_ID}");
+        if (sequence > SEQUENCE_MASK || sequence < 0)
+            throw new ArgumentOutOfRangeException(nameof(sequence), sequence, $"sequence 必须位于 0 到 {SEQUENCE_MASK} 之间。");
 
         // 先校验再赋值
         WorkerId = workerId;
@@ -142,7 +161,12 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     public long Sequence
     {
         get => _sequence;
-        internal set => _sequence = value;
+        internal set
+        {
+            if (value < 0 || value > SEQUENCE_MASK)
+                throw new ArgumentOutOfRangeException(nameof(value), value, $"sequence 必须位于 0 到 {SEQUENCE_MASK} 之间。");
+            _sequence = value;
+        }
     }
 
     #endregion
@@ -150,42 +174,49 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     /// <inheritdoc />
     public override long NextId()
     {
-        lock (_lock) // 同步锁保证线程安全
+        lock (_lock)
         {
             var timestamp = TimeGen();
+            ValidateTimestamp(timestamp);
+            var sequence = _sequence;
 
-            // 系统时钟不允许回退
-            // 说明：这种回拨机制判断仅限于运行时检查，如果关闭以后回拨系统时间，则生成的ID就同样存在风险。
-            if (timestamp < _lastTimestamp)
-                throw new ApplicationException($"时间戳必须大于上一次生成ID的时间戳，拒绝为{_lastTimestamp - timestamp}毫秒生成id");
-
-            // 如果是同一时间生成的，则进行毫秒内序列生成
-            if (_lastTimestamp == timestamp)
+            if (!_hasGenerated)
             {
-                // sequence自增，和sequenceMask相与一下，去掉高位
-                _sequence = (_sequence + 1) & SEQUENCE_MASK;
-                // 判断是否溢出,也就是每毫秒内超过1024，当为1024时，与sequenceMask相与，sequence就等于0
-                if (_sequence == 0)
-                {
-                    // 阻塞到下一个毫秒，获得新的时间戳
-                    timestamp = TilNextMillis(_lastTimestamp);
-                }
+                // 首次发号保留构造函数传入的初始 sequence。
             }
             else
             {
-                // 如果和上次生成时间不同,重置sequence，就是下一毫秒开始，sequence计数重新从0开始累加,
-                // 为了保证尾数随机性更大一些,最后一位可以设置一个随机数
-                _sequence = 0;//new Random().Next(10);
+                if (timestamp < _lastTimestamp)
+                    throw new InvalidOperationException($"时间戳发生回拨，拒绝为 {_lastTimestamp - timestamp} 毫秒生成 ID。");
+
+                if (timestamp == _lastTimestamp)
+                {
+                    sequence++;
+                    if (sequence > SEQUENCE_MASK)
+                    {
+                        // 等待失败时不修改字段，保留最后一个成功的状态。
+                        timestamp = TilNextMillis(_lastTimestamp);
+                        ValidateTimestamp(timestamp);
+                        sequence = 0;
+                    }
+                }
+                else
+                {
+                    sequence = 0;
+                }
             }
 
-            // 上次生成ID的时间截
-            _lastTimestamp = timestamp;
+            var relativeTimestamp = timestamp - TWEPOCH;
+            var id = (relativeTimestamp << TIMESTAMP_LEFT_SHIFT)
+                     | (DatacenterId << DATA_CENTER_ID_SHIFT)
+                     | (WorkerId << WORKER_ID_SHIFT)
+                     | sequence;
 
-            // 移位并通过或运算拼到一起组成64位的ID
-            return ((timestamp - TWEPOCH) << TIMESTAMP_LEFT_SHIFT)  // 时间戳部分
-                   | (DatacenterId << DATA_CENTER_ID_SHIFT)         // 数据中心部分
-                   | (WorkerId << WORKER_ID_SHIFT)                  // 机器标识部分
-                   | _sequence;                                     // 序列号部分
+            _lastTimestamp = timestamp;
+            _sequence = sequence;
+            _hasGenerated = true;
+
+            return id;
         }
     }
 
@@ -196,9 +227,49 @@ internal class TwitterSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvi
     /// <returns>大于 lastTimestamp 的系统毫秒时间戳。</returns>
     protected virtual long TilNextMillis(long lastTimestamp)
     {
-        var timestamp = TimeGen();
-        while (timestamp <= lastTimestamp)
-            timestamp = TimeGen();
-        return timestamp;
+        var startedAt = MonotonicMilliseconds();
+        while (true)
+        {
+            var timestamp = TimeGen();
+            if (timestamp < lastTimestamp)
+                throw new InvalidOperationException($"等待下一毫秒时检测到时钟回拨，最后时间戳为 {lastTimestamp}，当前时间戳为 {timestamp}。");
+
+            var elapsed = MonotonicMilliseconds() - startedAt;
+            if (timestamp > lastTimestamp)
+            {
+                if (elapsed >= MAX_WAIT_MILLISECONDS)
+                    throw new TimeoutException("等待雪花算法的下一毫秒超时。");
+                return timestamp;
+            }
+
+            if (elapsed >= MAX_WAIT_MILLISECONDS)
+                throw new TimeoutException("等待雪花算法的下一毫秒超时。");
+
+            Delay(1);
+        }
+    }
+
+    /// <summary>
+    /// 获取单调毫秒计时，用于等待超时判断。
+    /// </summary>
+    protected virtual long MonotonicMilliseconds() => (long)(Stopwatch.GetTimestamp() * 1000d / Stopwatch.Frequency);
+
+    /// <summary>
+    /// 等待指定的毫秒数。
+    /// </summary>
+    protected virtual void Delay(int milliseconds)
+    {
+        if (milliseconds > 0)
+            Thread.Sleep(milliseconds);
+    }
+
+    /// <summary>
+    /// 校验 Twitter 雪花时间字段范围。
+    /// </summary>
+    private static void ValidateTimestamp(long timestamp)
+    {
+        var relativeTimestamp = timestamp - TWEPOCH;
+        if (relativeTimestamp < 0 || relativeTimestamp > MAX_TIMESTAMP)
+            throw new InvalidOperationException("当前时间超出 Twitter 雪花算法的 41 位时间字段范围。");
     }
 }

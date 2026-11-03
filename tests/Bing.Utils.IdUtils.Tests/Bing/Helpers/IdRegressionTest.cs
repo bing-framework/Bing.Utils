@@ -5,6 +5,7 @@ namespace Bing.Helpers;
 /// </summary>
 [Trait("Category", "Regression")]
 [Trait("Risk", "High")]
+[Collection("Id static state")]
 public class IdRegressionTest : IDisposable
 {
     /// <summary>

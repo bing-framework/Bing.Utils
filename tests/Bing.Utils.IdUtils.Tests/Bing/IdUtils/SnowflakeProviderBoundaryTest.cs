@@ -1,64 +1,125 @@
 namespace Bing.IdUtils.SnowflakeImplements.Providers;
 
 /// <summary>
-/// 测试类：覆盖 Twitter 雪花 ID 提供程序的时钟和序列边界。
+/// 覆盖 Twitter 雪花提供程序的配置、序列和时钟边界。
 /// </summary>
 [Trait("IdUtilsUT", "SnowflakeProvider.Boundary")]
 public class SnowflakeProviderBoundaryTest
 {
     private const long SequenceMask = 4095L;
 
-    /// <summary>
-    /// 测试用例：序列从 4095 溢出后应推进到下一毫秒并保持 ID 唯一。
-    /// </summary>
-    [Fact]
-    public void NextId_SequenceOverflow_UsesNextMillisecondAndResetsSequence()
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(32)]
+    public void Constructor_InvalidWorkerId_Throws(long workerId)
     {
-        var timestamp = TwitterSnowflakeProvider.TWEPOCH + 10;
-        var timestamps = Enumerable.Repeat(timestamp, 4097)
-            .Concat(new[] { timestamp, timestamp - 1, timestamp + 1 })
-            .ToArray();
-        var provider = new ControlledTwitterSnowflakeProvider(timestamps);
-
-        var ids = Enumerable.Range(0, 4097)
-            .Select(_ => provider.NextId())
-            .ToArray();
-
-        ids.Distinct().Count().ShouldBe(4097);
-        for (var i = 1; i < ids.Length; i++)
-            ids[i].ShouldBeGreaterThan(ids[i - 1]);
-        (ids[4095] & SequenceMask).ShouldBe(SequenceMask);
-        (ids[4096] & SequenceMask).ShouldBe(0);
-        DecodeTimestamp(ids[0]).ShouldBe(timestamp);
-        DecodeTimestamp(ids[4095]).ShouldBe(timestamp);
-        DecodeTimestamp(ids[4096]).ShouldBe(timestamp + 1);
-        provider.Sequence.ShouldBe(0);
-        provider.TimeGenCalls.ShouldBe(4100);
+        Should.Throw<ArgumentException>(() => new TwitterSnowflakeProvider(workerId, 0));
     }
 
-    /// <summary>
-    /// 测试用例：时钟回拨抛出异常后，恢复到前进时间仍应能够生成唯一 ID。
-    /// </summary>
-    [Fact]
-    public void NextId_WhenClockMovesBack_ThrowsAndLaterForwardCallRecovers()
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(32)]
+    public void Constructor_InvalidDataCenterId_Throws(long dataCenterId)
     {
-        var timestamp = TwitterSnowflakeProvider.TWEPOCH + 20;
-        var provider = new ControlledTwitterSnowflakeProvider(timestamp, timestamp - 1, timestamp, timestamp + 1);
+        Should.Throw<ArgumentException>(() => new TwitterSnowflakeProvider(0, dataCenterId));
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(4096)]
+    public void Constructor_InvalidSequence_Throws(long sequence)
+    {
+        Should.Throw<ArgumentOutOfRangeException>(() => new TwitterSnowflakeProvider(0, 0, sequence));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(7)]
+    [InlineData(4095)]
+    public void NextId_FirstCall_UsesInitialSequence(long initialSequence)
+    {
+        var timestamp = TwitterSnowflakeProvider.TWEPOCH + 10;
+        var provider = new ControlledTwitterSnowflakeProvider(new[] { timestamp, timestamp, timestamp + 1 }, initialSequence);
 
         var first = provider.NextId();
 
-        Should.Throw<ApplicationException>(() => provider.NextId());
-        var sameTimestamp = provider.NextId();
+        (first & SequenceMask).ShouldBe(initialSequence);
+    }
+
+    [Fact]
+    public void NextId_SequenceOverflow_AdvancesTimestampWithoutReusingSequence()
+    {
+        var timestamp = TwitterSnowflakeProvider.TWEPOCH + 10;
+        var clock = Enumerable.Repeat(timestamp, 4097).Concat(new[] { timestamp + 1 }).ToArray();
+        var provider = new ControlledTwitterSnowflakeProvider(clock);
+
+        var ids = Enumerable.Range(0, 4097).Select(_ => provider.NextId()).ToArray();
+
+        ids.Distinct().Count().ShouldBe(4097);
+        (ids[0] & SequenceMask).ShouldBe(0);
+        (ids[4095] & SequenceMask).ShouldBe(SequenceMask);
+        (ids[4096] & SequenceMask).ShouldBe(0);
+        DecodeTimestamp(ids[4096]).ShouldBe(timestamp + 1);
+    }
+
+    [Fact]
+    public void NextId_WhenClockMovesBack_ThrowsAndPreservesLastSuccessfulState()
+    {
+        var timestamp = TwitterSnowflakeProvider.TWEPOCH + 20;
+        var provider = new ControlledTwitterSnowflakeProvider(timestamp, timestamp - 1, timestamp + 1);
+
+        var first = provider.NextId();
+        Should.Throw<InvalidOperationException>(() => provider.NextId());
         var recovered = provider.NextId();
 
         (first & SequenceMask).ShouldBe(0);
-        (sameTimestamp & SequenceMask).ShouldBe(1);
-        DecodeTimestamp(sameTimestamp).ShouldBe(timestamp);
+        (recovered & SequenceMask).ShouldBe(0);
         DecodeTimestamp(recovered).ShouldBe(timestamp + 1);
-        new[] { first, sameTimestamp, recovered }.Distinct().Count().ShouldBe(3);
-        recovered.ShouldBeGreaterThan(sameTimestamp);
-        provider.Sequence.ShouldBe(0);
-        provider.TimeGenCalls.ShouldBe(4);
+        recovered.ShouldBeGreaterThan(first);
+    }
+
+    [Fact]
+    public void NextId_WhenWaitDetectsRollback_ThrowsWithoutCommittingState()
+    {
+        var timestamp = TwitterSnowflakeProvider.TWEPOCH + 30;
+        var provider = new ControlledTwitterSnowflakeProvider(new[] { timestamp, timestamp, timestamp - 1, timestamp + 1 }, SequenceMask);
+
+        provider.NextId();
+        Should.Throw<InvalidOperationException>(() => provider.NextId());
+        var recovered = provider.NextId();
+
+        DecodeTimestamp(recovered).ShouldBe(timestamp + 1);
+        (recovered & SequenceMask).ShouldBe(0);
+    }
+
+    [Fact]
+    public void NextId_WhenWaitTimesOut_ThrowsWithoutReusingLastSequence()
+    {
+        var timestamp = TwitterSnowflakeProvider.TWEPOCH + 40;
+        var provider = new ControlledTwitterSnowflakeProvider(Enumerable.Repeat(timestamp, 3).Concat(new[] { timestamp + 1 }).ToArray(), SequenceMask)
+        {
+            MonotonicStep = 1000
+        };
+
+        provider.NextId();
+        Should.Throw<TimeoutException>(() => provider.NextId());
+        var recovered = provider.NextId();
+
+        DecodeTimestamp(recovered).ShouldBe(timestamp + 1);
+        (recovered & SequenceMask).ShouldBe(0);
+    }
+
+    [Fact]
+    public void NextId_WhenWaitCrossesTimestampFieldLimit_ThrowsWithoutCommittingState()
+    {
+        var maximumTimestamp = TwitterSnowflakeProvider.TWEPOCH + ((1L << 41) - 1);
+        var provider = new ControlledTwitterSnowflakeProvider(
+            new[] { maximumTimestamp, maximumTimestamp, maximumTimestamp + 1 },
+            SequenceMask);
+
+        provider.NextId();
+
+        Should.Throw<InvalidOperationException>(() => provider.NextId());
     }
 
     private static long DecodeTimestamp(long id) => (id >> 22) + TwitterSnowflakeProvider.TWEPOCH;
@@ -66,21 +127,37 @@ public class SnowflakeProviderBoundaryTest
     private sealed class ControlledTwitterSnowflakeProvider : TwitterSnowflakeProvider
     {
         private readonly Queue<long> _timestamps;
+        private long _monotonicMilliseconds;
 
-        public ControlledTwitterSnowflakeProvider(params long[] timestamps)
-            : base(1, 1)
+        public ControlledTwitterSnowflakeProvider(IEnumerable<long> timestamps, long sequence = 0)
+            : base(1, 1, sequence)
         {
             _timestamps = new Queue<long>(timestamps);
         }
 
-        public int TimeGenCalls { get; private set; }
+        public ControlledTwitterSnowflakeProvider(params long[] timestamps)
+            : this((IEnumerable<long>)timestamps)
+        {
+        }
+
+        public long MonotonicStep { get; set; } = 1;
 
         protected override long TimeGen()
         {
-            TimeGenCalls++;
             if (_timestamps.Count == 0)
                 throw new InvalidOperationException("受控时钟队列已耗尽。");
             return _timestamps.Dequeue();
+        }
+
+        protected override long MonotonicMilliseconds()
+        {
+            var value = _monotonicMilliseconds;
+            _monotonicMilliseconds += MonotonicStep;
+            return value;
+        }
+
+        protected override void Delay(int milliseconds)
+        {
         }
     }
 }

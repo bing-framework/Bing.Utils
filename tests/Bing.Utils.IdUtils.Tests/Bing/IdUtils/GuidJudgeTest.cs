@@ -32,7 +32,10 @@ public class GuidJudgeTest
     [Theory]
     [InlineData("6F9619FF-8B86-D011-B42D-00CF4FC964FF")]
     [InlineData("{6F9619FF-8B86-D011-B42D-00CF4FC964FF}")]
+    [InlineData("(6F9619FF-8B86-D011-B42D-00CF4FC964FF)")]
     [InlineData("6f9619ff8b86d011b42d00cf4fc964ff")]
+    [InlineData("{0x6F9619FF,0x8B86,0xD011,{0xB4,0x2D,0x00,0xCF,0x4F,0xC9,0x64,0xFF}}")]
+    [InlineData(" 6F9619FF-8B86-D011-B42D-00CF4FC964FF ")]
     public void IsValid_ValidInputs_ShouldReturnTrue(string input)
     {
         GuidJudge.IsValid(input).ShouldBeTrue();
@@ -44,8 +47,11 @@ public class GuidJudgeTest
     [Theory]
     [InlineData(null)]
     [InlineData("")]
+    [InlineData("   ")]
     [InlineData("not-guid")]
     [InlineData("6F9619FF-8B86-D011-B42D-00CF4FC964F")]
+    [InlineData("{6F9619FF-8B86-D011-B42D-00CF4FC964FF)")]
+    [InlineData("(6F9619FF-8B86-D011-B42D-00CF4FC964FF}")]
     public void IsValid_InvalidInputs_ShouldReturnFalse(string input)
     {
         GuidJudge.IsValid(input).ShouldBeFalse();

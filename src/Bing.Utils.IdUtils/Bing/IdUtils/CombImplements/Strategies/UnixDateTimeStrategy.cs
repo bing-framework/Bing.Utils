@@ -57,7 +57,14 @@ internal class UnixDateTimeStrategy : ICombDateTimeStrategy
     /// </summary>
     /// <param name="timestamp">要转换的日期时间。</param>
     /// <returns>相对于 Unix 纪元的毫秒数。</returns>
-    private long ToUnixTimeMilliseconds(DateTime timestamp) => (timestamp.Ticks - MinDateTimeValue.Ticks) / TICKS_PER_MILLISECOND;
+    private long ToUnixTimeMilliseconds(DateTime timestamp)
+    {
+        var ticksSinceUnixEpoch = timestamp.Ticks - MinDateTimeValue.Ticks;
+        if (ticksSinceUnixEpoch < 0)
+            throw new ArgumentOutOfRangeException(nameof(timestamp), timestamp, "Unix 时间戳不能早于 Unix Epoch。");
+
+        return ticksSinceUnixEpoch / TICKS_PER_MILLISECOND;
+    }
 
     /// <summary>
     /// 将相对于 Unix 纪元的毫秒数转换为日期时间。

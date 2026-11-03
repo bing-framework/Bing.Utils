@@ -16,6 +16,11 @@ internal static class NamedGuidProvider
     /// <param name="version">GUID版本</param>
     public static Guid Create(Guid @namespace, byte[] name, GuidVersion version)
     {
+        if (name == null)
+            throw new ArgumentNullException(nameof(name));
+        if (version != GuidVersion.NameBasedMd5 && version != GuidVersion.NameBasedSha1)
+            throw new ArgumentOutOfRangeException(nameof(version), version, "名称型 GUID 版本必须是 MD5（v3）或 SHA-1（v5）。");
+
         var namespaceBytes = @namespace.ToBigEndianByteArray();
 
         byte[] hash;

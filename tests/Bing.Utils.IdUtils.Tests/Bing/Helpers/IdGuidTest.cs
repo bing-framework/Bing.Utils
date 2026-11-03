@@ -3,6 +3,7 @@ namespace Bing.Helpers;
 /// <summary>
 /// 标识生成器 - Guid 测试
 /// </summary>
+[Collection("Id static state")]
 [Trait("Bing.Helpers", "Id.Guid")]
 public class IdGuidTest : IDisposable
 {
@@ -87,7 +88,7 @@ public class IdGuidTest : IDisposable
                 results.Add(Id.CreateGuid());
             });
         }
-        Task.WaitAll(tasks);
+        Task.WaitAll(tasks, TimeSpan.FromSeconds(5)).ShouldBeTrue();
         // Assert
         results.Count.ShouldBe(10);
         results.All(g => guids.Contains(g)).ShouldBeTrue();
@@ -144,7 +145,7 @@ public class IdGuidTest : IDisposable
                 results.Add(Id.CreateGuid());
             });
         }
-        Task.WaitAll(tasks);
+        Task.WaitAll(tasks, TimeSpan.FromSeconds(5)).ShouldBeTrue();
         // Assert
         results.Count.ShouldBe(10);
         results.All(g => g != customGuid).ShouldBeTrue();
@@ -246,7 +247,7 @@ public class IdGuidTest : IDisposable
                 results.Add(Id.CreateSimpleGuid());
             });
         }
-        Task.WaitAll(tasks);
+        Task.WaitAll(tasks, TimeSpan.FromSeconds(5)).ShouldBeTrue();
         // Assert
         results.Count.ShouldBe(100);
         results.All(r => r.Length == 32).ShouldBeTrue();
@@ -356,7 +357,7 @@ public class IdGuidTest : IDisposable
                 results.Add(Id.CreateGuid());
             });
         }
-        Task.WaitAll(tasks);
+        Task.WaitAll(tasks, TimeSpan.FromSeconds(5)).ShouldBeTrue();
         // Assert
         results.Count.ShouldBe(100);
         results.All(g => g != Guid.Empty).ShouldBeTrue();

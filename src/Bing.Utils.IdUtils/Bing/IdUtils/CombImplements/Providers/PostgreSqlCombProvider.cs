@@ -50,7 +50,7 @@ internal class PostgreSqlCombProvider : BaseCombProvider
     /// <param name="input">输入值</param>
     private void SwapByteOrderForStringOrder(byte[] input)
     {
-        Array.Reverse(input, 4, 4);
+        Array.Reverse(input, 0, 4);
         if (input.Length == 4)
             return;
         Array.Reverse(input, 4, 2);

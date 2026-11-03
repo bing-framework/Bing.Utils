@@ -34,24 +34,25 @@ public static class Uuid7
         if (unixTimeMilliseconds < 0 || unixTimeMilliseconds > MaximumTimestamp)
             throw new ArgumentOutOfRangeException(nameof(timestamp), timestamp, "UUIDv7 时间戳必须位于 48 位 Unix 毫秒范围内。");
 
-        var networkBytes = new byte[16];
-        var randomBytes = new byte[10];
+#if NET6_0_OR_GREATER
+        Span<byte> bytes = stackalloc byte[16];
+        RandomNumberGenerator.Fill(bytes);
+#else
+        var bytes = new byte[16];
         using (var random = RandomNumberGenerator.Create())
-            random.GetBytes(randomBytes);
+            random.GetBytes(bytes);
+#endif
 
-        var timestampValue = unixTimeMilliseconds;
-        for (var index = 5; index >= 0; index--)
-        {
-            networkBytes[index] = (byte)(timestampValue & 0xFF);
-            timestampValue >>= 8;
-        }
-
-        networkBytes[6] = (byte)(0x70 | (randomBytes[0] & 0x0F));
-        networkBytes[7] = randomBytes[1];
-        networkBytes[8] = (byte)(0x80 | (randomBytes[2] & 0x3F));
-        Array.Copy(randomBytes, 3, networkBytes, 9, 7);
-
-        return FromNetworkOrderBytes(networkBytes);
+        // 直接写入 Guid 构造函数使用的混合端序，保留 74 位密码学随机数据。
+        bytes[3] = (byte)(unixTimeMilliseconds >> 40);
+        bytes[2] = (byte)(unixTimeMilliseconds >> 32);
+        bytes[1] = (byte)(unixTimeMilliseconds >> 24);
+        bytes[0] = (byte)(unixTimeMilliseconds >> 16);
+        bytes[5] = (byte)(unixTimeMilliseconds >> 8);
+        bytes[4] = (byte)unixTimeMilliseconds;
+        bytes[7] = (byte)(0x70 | (bytes[7] & 0x0F));
+        bytes[8] = (byte)(0x80 | (bytes[8] & 0x3F));
+        return new Guid(bytes);
     }
 
     /// <summary>
@@ -62,58 +63,24 @@ public static class Uuid7
     /// <returns>标识具有 UUIDv7 版本和 RFC 变体时返回 <see langword="true"/>。</returns>
     public static bool TryGetTimestamp(Guid value, out long unixTimeMilliseconds)
     {
-        var networkBytes = ToNetworkOrderBytes(value);
-        if ((networkBytes[6] >> 4) != 7 || (networkBytes[8] & 0xC0) != 0x80)
+#if NET6_0_OR_GREATER
+        Span<byte> bytes = stackalloc byte[16];
+        value.TryWriteBytes(bytes);
+#else
+        var bytes = value.ToByteArray();
+#endif
+        if ((bytes[7] >> 4) != 7 || (bytes[8] & 0xC0) != 0x80)
         {
             unixTimeMilliseconds = 0;
             return false;
         }
 
-        unixTimeMilliseconds = 0;
-        for (var index = 0; index < 6; index++)
-            unixTimeMilliseconds = (unixTimeMilliseconds << 8) | networkBytes[index];
-
+        unixTimeMilliseconds = ((long)bytes[3] << 40)
+                             | ((long)bytes[2] << 32)
+                             | ((long)bytes[1] << 24)
+                             | ((long)bytes[0] << 16)
+                             | ((long)bytes[5] << 8)
+                             | bytes[4];
         return true;
-    }
-
-    /// <summary>
-    /// 将 RFC 网络字节序转换为 .NET <see cref="Guid"/> 构造函数使用的混合端序。
-    /// </summary>
-    /// <param name="networkBytes">按 RFC 9562 顺序排列的 16 字节 UUID。</param>
-    /// <returns>表示相同 UUID 的 .NET <see cref="Guid"/>。</returns>
-    private static Guid FromNetworkOrderBytes(byte[] networkBytes)
-    {
-        var guidBytes = new byte[16];
-        guidBytes[0] = networkBytes[3];
-        guidBytes[1] = networkBytes[2];
-        guidBytes[2] = networkBytes[1];
-        guidBytes[3] = networkBytes[0];
-        guidBytes[4] = networkBytes[5];
-        guidBytes[5] = networkBytes[4];
-        guidBytes[6] = networkBytes[7];
-        guidBytes[7] = networkBytes[6];
-        Array.Copy(networkBytes, 8, guidBytes, 8, 8);
-        return new Guid(guidBytes);
-    }
-
-    /// <summary>
-    /// 将 .NET <see cref="Guid"/> 的混合端序转换为 RFC 网络字节序。
-    /// </summary>
-    /// <param name="value">待转换的标识。</param>
-    /// <returns>按 RFC 9562 字段顺序排列的 16 字节 UUID。</returns>
-    private static byte[] ToNetworkOrderBytes(Guid value)
-    {
-        var guidBytes = value.ToByteArray();
-        var networkBytes = new byte[16];
-        networkBytes[0] = guidBytes[3];
-        networkBytes[1] = guidBytes[2];
-        networkBytes[2] = guidBytes[1];
-        networkBytes[3] = guidBytes[0];
-        networkBytes[4] = guidBytes[5];
-        networkBytes[5] = guidBytes[4];
-        networkBytes[6] = guidBytes[7];
-        networkBytes[7] = guidBytes[6];
-        Array.Copy(guidBytes, 8, networkBytes, 8, 8);
-        return networkBytes;
     }
 }

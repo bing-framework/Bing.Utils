@@ -425,11 +425,14 @@ public class ModelIdAccessorTest
     {
         // Arrange
         var accessor = new ModelIdAccessor();
+        accessor.GetCurrentTimeStamp().Kind.ShouldBe(DateTimeKind.Local);
         var timestamps = new List<DateTime>();
         // Act
         for (int i = 0; i < 100; i++)
         {
-            timestamps.Add(accessor.RefreshTimeStamp());
+            var timestamp = accessor.RefreshTimeStamp();
+            timestamp.Kind.ShouldBe(DateTimeKind.Local);
+            timestamps.Add(timestamp);
             // 不添加延迟，测试NoRepeatTimeStampFactory的处理能力
         }
         // Assert

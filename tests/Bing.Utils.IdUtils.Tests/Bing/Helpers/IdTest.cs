@@ -4,6 +4,7 @@ namespace Bing.Helpers;
 /// 标识生成器 测试
 /// </summary>
 [Trait("Bing.Helpers", "Id")]
+[Collection("Id static state")]
 public class IdTest : IDisposable
 {
     /// <summary>
@@ -108,7 +109,7 @@ public class IdTest : IDisposable
                 results[threadId] = Id.CreateString();
             }));
         }
-        Task.WaitAll(tasks.ToArray());
+        Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(5)).ShouldBeTrue();
         // Assert
         for (int i = 0; i < 5; i++)
         {
@@ -542,7 +543,7 @@ public class IdTest : IDisposable
                 results[threadIndex] = Id.CreateString();
             }));
         }
-        Task.WaitAll(tasks.ToArray());
+        Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(5)).ShouldBeTrue();
         // Assert
         results.Count.ShouldBe(threadCount);
         for (int i = 0; i < threadCount; i++)
@@ -583,7 +584,7 @@ public class IdTest : IDisposable
                 }
             }));
         }
-        Task.WaitAll(tasks.ToArray());
+        Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(5)).ShouldBeTrue();
         // Assert
         exceptions.ShouldBeEmpty("并发配置不应该产生异常");
     }

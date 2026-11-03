@@ -1,13 +1,16 @@
-using System.Reflection;
-
 namespace Bing.IdUtils;
 
 /// <summary>
 /// 测试类：覆盖 RandomIdGenerator、RandomNonceStrGenerator、TimestampId 与 GuidExtensions 的核心契约。
 /// </summary>
 [Trait("IdUtilsUT", "RandomAndTimestamp")]
-public class RandomAndTimestampTest
+[Collection("Id static state")]
+public class RandomAndTimestampTest : IDisposable
 {
+    public RandomAndTimestampTest() => TimestampId.ResetInstanceForTests();
+
+    public void Dispose() => TimestampId.ResetInstanceForTests();
+
     /// <summary>
     /// 测试用例：Create 在指定长度与字典时，返回长度正确且字符全部来自字典。
     /// </summary>
@@ -99,7 +102,12 @@ public class RandomAndTimestampTest
     [Fact]
     public void GetId_ValidInitialDate_ReturnsNumericString()
     {
-        var instance = CreateTimestampIdByReflection(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        var instance = new TimestampId(
+            new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            () => DateTime.UtcNow,
+            () => 0,
+            TimeSpan.FromSeconds(1),
+            _ => { });
         var id = instance.GetId();
 
         id.ShouldNotBeNullOrWhiteSpace();
@@ -107,32 +115,12 @@ public class RandomAndTimestampTest
     }
 
     /// <summary>
-    /// 测试用例：GetId 在初始时间大于当前时间时，抛出异常并包含业务错误信息。
+    /// 测试用例：初始化时间大于当前 UTC 时间时立即抛出参数异常。
     /// </summary>
     [Fact]
     public void GetId_FutureInitialDate_ThrowsException()
     {
         var future = DateTime.Now.AddMinutes(5);
-        var instance = CreateTimestampIdByReflection(future);
-        var ex = Should.Throw<Exception>(() => instance.GetId());
-
-        ex.Message.ShouldContain("初始化时间比当前时间还大");
-    }
-
-    /// <summary>
-    /// 测试辅助：通过反射调用 TimestampId 非公开构造函数，创建可控初始时间的实例。
-    /// </summary>
-    /// <param name="initialDate">要传给 TimestampId 非公开构造函数的初始时间。</param>
-    /// <returns>使用指定初始时间创建的时间戳 ID 实例。</returns>
-    private static TimestampId CreateTimestampIdByReflection(DateTime initialDate)
-    {
-        var ctor = typeof(TimestampId).GetConstructor(
-            BindingFlags.Instance | BindingFlags.NonPublic,
-            binder: null,
-            types: new[] { typeof(DateTime?) },
-            modifiers: null);
-
-        ctor.ShouldNotBeNull();
-        return (TimestampId)ctor.Invoke(new object[] { (DateTime?)initialDate });
+        Should.Throw<ArgumentOutOfRangeException>(() => TimestampId.GetInstance(future));
     }
 }

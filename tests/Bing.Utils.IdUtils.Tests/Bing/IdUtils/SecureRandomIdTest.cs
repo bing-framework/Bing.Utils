@@ -119,16 +119,22 @@ public class SecureRandomIdTest
     /// </summary>
     /// <param name="alphabet">无效字符集。</param>
     [Theory]
-    [InlineData("")]
-    [InlineData("a")]
-    [InlineData("aabc")]
-    [InlineData("\uD800a")]
-    [InlineData("\uDC00a")]
-    [InlineData("\uD83D\uDE00")]
-    public void Create_RejectsInvalidAlphabet(string alphabet)
+    [MemberData(nameof(InvalidAlphabetCases))]
+    public void Create_RejectsInvalidAlphabet(string caseName, string alphabet)
     {
+        _ = caseName;
         Assert.Throws<ArgumentException>(() => SecureRandomId.Create(1, alphabet));
     }
+
+    public static IEnumerable<object[]> InvalidAlphabetCases => new[]
+    {
+        new object[] { "empty", "" },
+        new object[] { "single", "a" },
+        new object[] { "duplicate", "aabc" },
+        new object[] { "high-surrogate", "\uD800a" },
+        new object[] { "low-surrogate", "\uDC00a" },
+        new object[] { "surrogate-pair", "\uD83D\uDE00" }
+    };
 
     /// <summary>
     /// 验证字符集不能为 null。

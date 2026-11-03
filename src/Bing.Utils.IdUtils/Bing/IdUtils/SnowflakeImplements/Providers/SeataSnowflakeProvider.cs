@@ -51,6 +51,11 @@ internal class SeataSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvide
     // ReSharper disable once IdentifierTypo
     const long TIMESTAMP_AND_SEQUENCE_MASK = ~(-1L << (TIMESTAMP_BITS + SEQUENCE_BITS));
 
+    /// <summary>
+    /// 41 位逻辑时间字段的最大值。
+    /// </summary>
+    const long MAX_TIMESTAMP = ~(-1L << TIMESTAMP_BITS);
+
     #endregion
 
     #region 字段
@@ -112,10 +117,11 @@ internal class SeataSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvide
     /// <exception cref="ArgumentException"></exception>
     private void Initialize(long workerId)
     {
-        InitTimestampAndSequence();
         // 如果超出范围就抛出异常
         if (workerId > MAX_WORKER_ID || workerId < 0)
-            throw new ArgumentException($"worker Id 必须大于0，且不能大于 MaxWorkerId：{MAX_WORKER_ID}");
+            throw new ArgumentException($"worker Id 必须大于等于0，且不能大于 MaxWorkerId：{MAX_WORKER_ID}");
+
+        InitTimestampAndSequence();
         WorkerId = workerId << (TIMESTAMP_BITS + SEQUENCE_BITS);
     }
 
@@ -125,6 +131,8 @@ internal class SeataSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvide
     private void InitTimestampAndSequence()
     {
         var timestamp = TimeGen();
+        if (timestamp < 0 || timestamp > MAX_TIMESTAMP)
+            throw new InvalidOperationException("当前时间超出 Seata 雪花算法的 41 位时间字段范围。");
         var timestampWithSequence = timestamp << SEQUENCE_BITS;
         _timestampAndSequence = timestampWithSequence;
     }
@@ -134,11 +142,30 @@ internal class SeataSnowflakeProvider : BaseSnowflakeProvider, ISnowflakeProvide
     /// </summary>
     private void WaitIfNecessary()
     {
+        if ((_timestampAndSequence & TIMESTAMP_AND_SEQUENCE_MASK) == TIMESTAMP_AND_SEQUENCE_MASK)
+            throw new InvalidOperationException("Seata 雪花算法的逻辑时间和序列空间已耗尽。");
+
         var currentWithSequence = ++_timestampAndSequence;
         var current = currentWithSequence >> SEQUENCE_BITS;
+        if (current > MAX_TIMESTAMP)
+            throw new InvalidOperationException("Seata 雪花算法的逻辑时间字段已耗尽。");
         var newest = TimeGen();
         if (current > newest)
             System.Threading.Thread.Sleep(5);
+    }
+
+    /// <summary>
+    /// 为测试设置逻辑时间和序列状态，不属于生产调用契约。
+    /// </summary>
+    internal void SetTimestampAndSequenceForTests(long timestamp, long sequence)
+    {
+        if (timestamp < 0 || timestamp > MAX_TIMESTAMP)
+            throw new ArgumentOutOfRangeException(nameof(timestamp));
+        if (sequence < 0 || sequence > TIMESTAMP_AND_SEQUENCE_MASK >> TIMESTAMP_BITS)
+            throw new ArgumentOutOfRangeException(nameof(sequence));
+
+        lock (_lock)
+            _timestampAndSequence = (timestamp << SEQUENCE_BITS) | sequence;
     }
 
     /// <inheritdoc />

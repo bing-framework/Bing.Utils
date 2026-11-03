@@ -8,13 +8,13 @@ public enum GuidVersion
     /// <summary>
     /// 基于时间的版本
     /// </summary>
-    /// <remarks>日期时间和MAC地址</remarks>
+    /// <remarks>请使用 Uuid1.Generate()；该入口不再隐式生成 UUIDv1。</remarks>
     TimeBased = 1,
 
     /// <summary>
     /// DCE 安全版本
     /// </summary>
-    /// <remarks>日期时间和MAC地址，DCE安全版本</remarks>
+    /// <remarks>DCE 安全版本当前不受支持。</remarks>
     DceSecurity = 2,
 
     /// <summary>

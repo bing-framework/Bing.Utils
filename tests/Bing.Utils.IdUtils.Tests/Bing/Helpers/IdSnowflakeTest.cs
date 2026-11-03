@@ -1,594 +1,477 @@
 using System.Collections.Concurrent;
+using System.Threading;
 using Bing.IdUtils;
+
 namespace Bing.Helpers;
+
 /// <summary>
-/// 标识生成器 - 雪花算法Id 测试
+/// 覆盖雪花 ID 配置生命周期、上下文覆盖和并发生成契约。
 /// </summary>
-[Trait("Bing.Helpers", "Id.SnowflakeId")]
-public class IdSnowflakeTest
+[Collection("Id static state")]
+[Trait("Bing.Helpers", "Id.Snowflake")]
+public class IdSnowflakeTest : IDisposable
 {
-    #region 基础功能测试
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - 生成唯一ID
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeId_DefaultGenerator_ReturnsUniqueId()
+    public IdSnowflakeTest()
     {
-        // Arrange & Act
-        var id1 = Id.CreateSnowflakeId();
-        var id2 = Id.CreateSnowflakeId();
-        // Assert
-        id1.ShouldBeGreaterThan(0);
-        id2.ShouldBeGreaterThan(0);
-        id1.ShouldNotBe(id2, $"生成的ID不应该重复: id1={id1}, id2={id2}");
-        // 验证递增趋势（雪花ID具有时间序列特性）
-        id2.ShouldBeGreaterThanOrEqualTo(id1, "后生成的ID应该大于等于先生成的ID");
+        Id.ResetSnowflakeIdForTests();
+        Id.Reset();
     }
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - 递增趋势验证
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeId_SequentialGeneration_ShowsIncreasingTrend()
+
+    public void Dispose()
     {
-        // Arrange
-        Id.ResetSnowflakeId();
-        var ids = new List<long>();
-        // Act
-        for (int i = 0; i < 10; i++)
-        {
-            ids.Add(Id.CreateSnowflakeId());
-            Thread.Sleep(1); // 确保不同的时间戳
-        }
-        // Assert
-        for (int i = 1; i < ids.Count; i++)
-        {
-            ids[i].ShouldBeGreaterThanOrEqualTo(ids[i - 1],
-                $"ID[{i}]({ids[i]}) should be >= ID[{i - 1}]({ids[i - 1]})");
-        }
+        Id.Reset();
+        Id.ResetSnowflakeIdForTests();
     }
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - 使用上下文ID
-    /// </summary>
-    /// <param name="contextId">测试上下文中预先设置的雪花 ID。</param>
+
+    [Fact]
+    public void CreateSnowflakeId_WithoutConfiguration_ThrowsInvalidOperationException()
+    {
+        Should.Throw<InvalidOperationException>(() => Id.CreateSnowflakeId());
+    }
+
+    [Fact]
+    public void CreateSnowflakeIds_WithoutConfiguration_ThrowsInvalidOperationException()
+    {
+        Should.Throw<InvalidOperationException>(() => Id.CreateSnowflakeIds(1));
+    }
+
+    [Fact]
+    public void ConfigureSnowflakeId_NullFactory_ThrowsArgumentNullException()
+    {
+        Should.Throw<ArgumentNullException>(() => Id.ConfigureSnowflakeId(null));
+    }
+
+    [Fact]
+    public void ConfigureSnowflakeId_NullResult_ThrowsAndKeepsUnconfiguredState()
+    {
+        Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => null));
+        Should.Throw<InvalidOperationException>(() => Id.CreateSnowflakeId());
+    }
+
+    [Fact]
+    public void ConfigureSnowflakeId_FactoryFailure_LeavesStateUnchanged()
+    {
+        Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => throw new InvalidOperationException("factory failure")));
+        Should.Throw<InvalidOperationException>(() => Id.CreateSnowflakeId());
+    }
+
+    [Fact]
+    public void CreateSnowflakeId_ProviderFailure_AllowsReconfigurationBeforeAnySuccess()
+    {
+        Id.ConfigureSnowflakeId(() => new FailingSnowflakeId());
+
+        Should.Throw<InvalidOperationException>(() => Id.CreateSnowflakeId());
+
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+        Id.CreateSnowflakeId().ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public void CreateSnowflakeIds_ProviderFailure_AllowsReconfigurationBeforeAnySuccess()
+    {
+        Id.ConfigureSnowflakeId(() => new FailingSnowflakeId());
+
+        Should.Throw<InvalidOperationException>(() => Id.CreateSnowflakeIds(2));
+
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+        Id.CreateSnowflakeIds(2).Length.ShouldBe(2);
+    }
+
     [Theory]
-    [InlineData("123456789")]
-    [InlineData("987654321")]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task ConfigureSnowflakeId_WhileGenerationInProgress_IsRejectedUntilCompletion(bool batch, bool fail)
+    {
+        using var entered = new ManualResetEventSlim();
+        using var release = new ManualResetEventSlim();
+        Id.ConfigureSnowflakeId(() => new BlockingSnowflakeId(entered, release, fail));
+
+        var task = Task.Run(() => Record.Exception(() => Generate(batch)));
+        try
+        {
+            entered.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+            var factoryCalled = false;
+            Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() =>
+            {
+                factoryCalled = true;
+                return SnowflakeGenerator.Create(2, 1);
+            }));
+            factoryCalled.ShouldBeFalse();
+            Should.Throw<InvalidOperationException>(() => Id.ResetSnowflakeId());
+        }
+        finally
+        {
+            release.Set();
+            // 必须等待后台调用退出后，才由 Dispose 清理静态状态。
+            await task;
+        }
+
+        if (fail)
+        {
+            (await task).ShouldBeOfType<InvalidOperationException>();
+            Id.ResetSnowflakeId();
+            Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1));
+        }
+        else
+        {
+            (await task).ShouldBeNull();
+            Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1)));
+            Should.Throw<InvalidOperationException>(() => Id.ResetSnowflakeId());
+        }
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    public async Task ConcurrentGeneration_CompletionsPreserveOtherCallsAndSuccessfulFreeze(bool firstSucceeds, bool secondSucceeds)
+    {
+        using var firstEntered = new ManualResetEventSlim();
+        using var secondEntered = new ManualResetEventSlim();
+        using var releaseFirst = new ManualResetEventSlim();
+        using var releaseSecond = new ManualResetEventSlim();
+        var calls = 0;
+        var firstProvider = new BlockingSnowflakeId(firstEntered, releaseFirst, !firstSucceeds);
+        var secondProvider = new BlockingSnowflakeId(secondEntered, releaseSecond, !secondSucceeds);
+        Id.ConfigureSnowflakeId(() => new DelegateSnowflakeId(() =>
+            Interlocked.Increment(ref calls) == 1 ? firstProvider.NextId() : secondProvider.NextId()));
+        var first = Task.Run(() => Record.Exception(() => Id.CreateSnowflakeId()));
+        Task<Exception> second = null;
+        try
+        {
+            firstEntered.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+            second = Task.Run(() => Record.Exception(() => Id.CreateSnowflakeIds(1)));
+            secondEntered.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+            releaseFirst.Set();
+            var firstError = await first;
+            (firstError == null).ShouldBe(firstSucceeds);
+
+            // 首个调用结束后，另一个调用仍在途，不能提前替换实例。
+            Should.Throw<InvalidOperationException>(() => Id.ResetSnowflakeId());
+            Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1)));
+        }
+        finally
+        {
+            releaseFirst.Set();
+            releaseSecond.Set();
+            await first;
+            if (second != null)
+                await second;
+        }
+
+        ((await second) == null).ShouldBe(secondSucceeds);
+        if (firstSucceeds || secondSucceeds)
+        {
+            Should.Throw<InvalidOperationException>(() => Id.ResetSnowflakeId());
+            Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1)));
+        }
+        else
+        {
+            Id.ResetSnowflakeId();
+            Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1));
+        }
+    }
+
+    [Fact]
+    public void CreateSnowflakeIds_PartialProviderFailure_PreservesSequenceAndAllowsReplacement()
+    {
+        var calls = 0;
+        Id.ConfigureSnowflakeId(() => new DelegateSnowflakeId(() =>
+        {
+            if (++calls >= 2)
+                throw new InvalidOperationException("batch failure");
+            return calls;
+        }));
+
+        long[] result = null;
+        Should.Throw<InvalidOperationException>(() => result = Id.CreateSnowflakeIds(2));
+        result.ShouldBeNull();
+        calls.ShouldBe(2);
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1));
+        Id.CreateSnowflakeId().ShouldBeGreaterThan(0);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void CreateSnowflakeId_FailureAfterSuccess_DoesNotUnfreezeConfiguration(bool batch)
+    {
+        var fail = false;
+        Id.ConfigureSnowflakeId(() => new DelegateSnowflakeId(() => fail
+            ? throw new InvalidOperationException("provider failure") : 42));
+        Generate(batch);
+        fail = true;
+        Should.Throw<InvalidOperationException>(() => Generate(batch));
+        Should.Throw<InvalidOperationException>(() => Id.ResetSnowflakeId());
+        Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1)));
+    }
+
+    [Fact]
+    public void ConfigureSnowflakeId_FactoryGeneratesBeforePublishing_CannotReplaceUsedProvider()
+    {
+        var original = new DelegateSnowflakeId(() => 42);
+        Id.ConfigureSnowflakeId(() => original);
+        Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() =>
+        {
+            Id.CreateSnowflakeId().ShouldBe(42);
+            return new DelegateSnowflakeId(() => 99);
+        }));
+        Id.CreateSnowflakeId().ShouldBe(42);
+    }
+
+    [Fact]
+    public void ConfigureSnowflakeId_InvalidReplacement_PreservesExistingProvider()
+    {
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+
+        Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => null));
+        Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => throw new InvalidOperationException("factory failure")));
+
+        Id.CreateSnowflakeId().ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task ConfigureSnowflakeId_FactoryWaitsForWorkerGeneration_DoesNotDeadlockOrReplaceUsedProvider()
+    {
+        Id.ConfigureSnowflakeId(() => new DelegateSnowflakeId(() => 42));
+        Task<long> generation = null;
+        try
+        {
+            Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() =>
+            {
+                generation = Task.Run(() => Id.CreateSnowflakeId());
+                // 有界等待使旧实现能暴露锁互等问题，同时确保测试可以收尾。
+                generation.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+                generation.Result.ShouldBe(42);
+                return new DelegateSnowflakeId(() => 99);
+            }));
+        }
+        finally
+        {
+            if (generation != null)
+                await generation;
+        }
+        Id.CreateSnowflakeId().ShouldBe(42);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ConfigureSnowflakeId_FactoryChangesConfiguration_CannotPublishStaleCandidate(bool reset)
+    {
+        Id.ConfigureSnowflakeId(() => new DelegateSnowflakeId(() => 42));
+        Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() =>
+        {
+            if (reset)
+                Id.ResetSnowflakeId();
+            else
+                Id.ConfigureSnowflakeId(() => new DelegateSnowflakeId(() => 77));
+            return new DelegateSnowflakeId(() => 99);
+        }));
+
+        if (reset)
+            Should.Throw<InvalidOperationException>(() => Id.CreateSnowflakeId());
+        else
+            Id.CreateSnowflakeId().ShouldBe(77);
+    }
+
+    [Fact]
+    public async Task ConfigureSnowflakeId_ConcurrentReplacement_PreservesNewerConfiguration()
+    {
+        Id.ConfigureSnowflakeId(() => new DelegateSnowflakeId(() => 42));
+        using var factoryEntered = new ManualResetEventSlim();
+        using var releaseFactory = new ManualResetEventSlim();
+        var pending = Task.Run(() => Record.Exception(() => Id.ConfigureSnowflakeId(() =>
+        {
+            factoryEntered.Set();
+            releaseFactory.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+            return new DelegateSnowflakeId(() => 99);
+        })));
+        try
+        {
+            factoryEntered.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+            Id.ConfigureSnowflakeId(() => new DelegateSnowflakeId(() => 77));
+        }
+        finally
+        {
+            releaseFactory.Set();
+            await pending;
+        }
+
+        (await pending).ShouldBeOfType<InvalidOperationException>();
+        Id.CreateSnowflakeId().ShouldBe(77);
+    }
+
+    [Fact]
+    public void ConfigureSnowflakeId_BeforeFirstGeneration_CanReplaceConfiguration()
+    {
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1));
+
+        var id = Id.CreateSnowflakeId();
+
+        id.ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public void ConfigureSnowflakeId_AfterFirstGeneration_ThrowsAndKeepsOriginalProvider()
+    {
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+        var first = Id.CreateSnowflakeId();
+
+        Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1)));
+        var second = Id.CreateSnowflakeId();
+
+        second.ShouldBeGreaterThan(first);
+    }
+
+    [Fact]
+    public void ResetSnowflakeId_BeforeFirstGeneration_ClearsConfiguration()
+    {
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+        Id.ResetSnowflakeId();
+
+        Should.Throw<InvalidOperationException>(() => Id.CreateSnowflakeId());
+    }
+
+    [Fact]
+    public void ResetSnowflakeId_AfterFirstGeneration_Throws()
+    {
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+        Id.CreateSnowflakeId();
+
+        Should.Throw<InvalidOperationException>(() => Id.ResetSnowflakeId());
+    }
+
+    [Fact]
+    public void CreateSnowflakeIds_FirstBatch_FreezesConfiguration()
+    {
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+        Id.CreateSnowflakeIds(2).Length.ShouldBe(2);
+
+        Should.Throw<InvalidOperationException>(() => Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2, 1)));
+        Should.Throw<InvalidOperationException>(() => Id.ResetSnowflakeId());
+    }
+
+    [Theory]
     [InlineData("1")]
-    [InlineData("9223372036854775807")] // long.MaxValue
+    [InlineData("922337203685477580")]
     public void CreateSnowflakeId_WithContextId_ReturnsContextValue(string contextId)
     {
-        try
-        {
-            // Arrange
-            Id.SetId(contextId);
-            // Act
-            var result = Id.CreateSnowflakeId();
-            // Assert
-            result.ShouldBe(long.Parse(contextId));
-        }
-        finally
-        {
-            // Cleanup
-            Id.Reset();
-        }
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - 空白上下文ID时生成新ID
-    /// </summary>
-    /// <param name="contextId">测试上下文中的空白 ID 值。</param>
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    [InlineData("\t")]
-    [InlineData("\n")]
-    public void CreateSnowflakeId_WithEmptyContextId_GeneratesNewId(string contextId)
-    {
-        try
-        {
-            // Arrange
-            Id.SetId(contextId);
-            // Act
-            var result = Id.CreateSnowflakeId();
-            // Assert
-            result.ShouldBeGreaterThan(0);
-        }
-        finally
-        {
-            // Cleanup
-            Id.Reset();
-        }
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - 快速连续生成不重复
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeId_RapidGeneration_ProducesUniqueIds()
-    {
-        try
-        {
-            // Arrange
-            Id.ResetSnowflakeId();
-            Id.Reset();
-            var ids = new List<long>();
-            const int count = 1000;
-            // Act - 快速连续生成
-            for (int i = 0; i < count; i++)
-            {
-                ids.Add(Id.CreateSnowflakeId());
-            }
-            // Assert
-            var uniqueIds = new HashSet<long>(ids);
-            uniqueIds.Count.ShouldBe(count, "所有生成的ID应该是唯一的");
-            ids.ShouldAllBe(id => id > 0, "所有ID应该大于0");
-            // 验证递增趋势
-            for (int i = 1; i < ids.Count; i++)
-            {
-                ids[i].ShouldBeGreaterThanOrEqualTo(ids[i - 1],
-                    $"ID[{i}]({ids[i]}) 应该大于等于 ID[{i - 1}]({ids[i - 1]})");
-            }
-        }
-        finally
-        {
-            // Cleanup
-            Id.Reset();
-            Id.ResetSnowflakeId();
-        }
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - 重复配置不影响唯一性
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeId_MultipleConfigurations_MaintainsUniqueness()
-    {
-        try
-        {
-            var allIds = new HashSet<long>();
-            // 第一次配置
-            Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1));
-            for (int i = 0; i < 10; i++)
-            {
-                allIds.Add(Id.CreateSnowflakeId());
-            }
-            // 第二次配置（不同配置）
-            Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(2));
-            for (int i = 0; i < 10; i++)
-            {
-                allIds.Add(Id.CreateSnowflakeId());
-            }
-            // 重置为默认配置
-            Id.ResetSnowflakeId();
-            for (int i = 0; i < 10; i++)
-            {
-                allIds.Add(Id.CreateSnowflakeId());
-            }
-            // Assert
-            allIds.Count.ShouldBe(30, "所有30个ID应该都是唯一的");
-            allIds.ShouldAllBe(id => id > 0, "所有ID应该有效");
-        }
-        finally
-        {
-            // Cleanup
-            Id.Reset();
-            Id.ResetSnowflakeId();
-        }
-    }
-    #endregion
-    #region 批量生成测试
-    /// <summary>
-    /// 测试 - CreateSnowflakeIds - 批量生成ID
-    /// </summary>
-    /// <param name="count">要生成的雪花 ID 数量。</param>
-    [Theory]
-    [InlineData(1)]
-    [InlineData(10)]
-    [InlineData(100)]
-    [InlineData(1000)]
-    [InlineData(10000)]
-    public void CreateSnowflakeIds_ValidCount_ReturnsCorrectAmount(uint count)
-    {
-        // Act
-        var ids = Id.CreateSnowflakeIds(count);
-        // Assert
-        ids.ShouldNotBeNull();
-        ids.Length.ShouldBe((int)count);
-        // 验证所有ID都是正数且唯一
-        var uniqueIds = new HashSet<long>(ids);
-        uniqueIds.Count.ShouldBe((int)count, "所有生成的ID应该是唯一的");
-        ids.ShouldAllBe(id => id > 0, "所有ID应该大于0");
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeIds - 参数验证
-    /// </summary>
-    /// <param name="count">超出允许范围的 ID 数量。</param>
-    [Theory]
-    [InlineData(0)]
-    [InlineData(100001)]
-    [InlineData(200000)]
-    public void CreateSnowflakeIds_InvalidCount_ThrowsArgumentOutOfRangeException(uint count)
-    {
-        // Act & Assert
-        Should.Throw<ArgumentOutOfRangeException>(() => Id.CreateSnowflakeIds(count))
-            .ParamName.ShouldBe("count");
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeIds - 边界值测试
-    /// </summary>
-    /// <param name="count">要验证的边界数量。</param>
-    [Theory]
-    [InlineData(1)]
-    [InlineData(100000)]
-    public void CreateSnowflakeIds_BoundaryValues_WorksCorrectly(uint count)
-    {
-        // Act
-        var ids = Id.CreateSnowflakeIds(count);
-        // Assert
-        ids.Length.ShouldBe((int)count);
-        ids.ShouldAllBe(id => id > 0);
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeIds - 忽略上下文ID
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeIds_WithContextId_IgnoresContextAndGeneratesNew()
-    {
-        try
-        {
-            // Arrange
-            Id.SetId("123456789");
-            // Act
-            var ids = Id.CreateSnowflakeIds(5);
-            // Assert
-            ids.Length.ShouldBe(5);
-            ids.ShouldAllBe(id => id != 123456789, "批量生成应该忽略上下文ID");
-            ids.ShouldAllBe(id => id > 0);
-        }
-        finally
-        {
-            // Cleanup
-            Id.Reset();
-        }
-    }
-    #endregion
-    #region 配置管理测试
-    /// <summary>
-    /// 测试 - ConfigureSnowflakeId - 自定义生成器
-    /// </summary>
-    [Fact]
-    public void ConfigureSnowflakeId_CustomGenerator_UsesCustomLogic()
-    {
-        // Arrange
-        const long customWorkerId = 10;
-        const long customDataCenterId = 5;
-        try
-        {
-            // Act
-            Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(customWorkerId, customDataCenterId));
-            var id1 = Id.CreateSnowflakeId();
-            var id2 = Id.CreateSnowflakeId();
-            // Assert
-            id1.ShouldBeGreaterThan(0);
-            id2.ShouldBeGreaterThan(0);
-            id1.ShouldNotBe(id2);
-        }
-        finally
-        {
-            // Cleanup
-            Id.ResetSnowflakeId();
-        }
-    }
-    /// <summary>
-    /// 测试 - ConfigureSnowflakeId - Null参数验证
-    /// </summary>
-    [Fact]
-    public void ConfigureSnowflakeId_NullGenerator_ThrowsArgumentNullException()
-    {
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() => Id.ConfigureSnowflakeId(null))
-            .ParamName.ShouldBe("generatorFactory");
-    }
-    /// <summary>
-    /// 测试 - ResetSnowflakeId - 重置为默认配置
-    /// </summary>
-    [Fact]
-    public void ResetSnowflakeId_AfterCustomConfiguration_RestoresDefaultBehavior()
-    {
-        // Arrange
-        var originalId = Id.CreateSnowflakeId();
-        // 配置自定义生成器
-        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(99));
-        var customId = Id.CreateSnowflakeId();
-        // Act
-        Id.ResetSnowflakeId();
-        var resetId = Id.CreateSnowflakeId();
-        // Assert
-        originalId.ShouldBeGreaterThan(0);
-        customId.ShouldBeGreaterThan(0);
-        resetId.ShouldBeGreaterThan(0);
-        // 验证重置后的行为（不能简单比较ID值，因为时间戳不同）
-        resetId.ShouldNotBe(customId);
-    }
-    /// <summary>
-    /// 测试 - Configure - 过时方法向后兼容性
-    /// </summary>
-    [Fact]
-    public void Configure_ObsoleteMethod_StillWorksCorrectly()
-    {
-        try
-        {
-            // Arrange & Act
-#pragma warning disable CS0618 // 类型或成员已过时
-            Id.Configure(() => SnowflakeGenerator.Create(20));
-#pragma warning restore CS0618 // 类型或成员已过时
-            var id = Id.CreateSnowflakeId();
-            // Assert
-            id.ShouldBeGreaterThan(0);
-        }
-        finally
-        {
-            // Cleanup
-            Id.ResetSnowflakeId();
-        }
-    }
-    #endregion
-    #region 并发安全测试
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - 并发安全性
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeId_ConcurrentGeneration_ProducesUniqueIds()
-    {
-        // Arrange
-        const int threadCount = 10;
-        const int idsPerThread = 1000;
-        var allIds = new ConcurrentBag<long>();
-        var tasks = new List<Task>();
-        // Act
-        for (int i = 0; i < threadCount; i++)
-        {
-            tasks.Add(Task.Run(() =>
-            {
-                for (int j = 0; j < idsPerThread; j++)
-                {
-                    allIds.Add(Id.CreateSnowflakeId());
-                }
-            }));
-        }
-        Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(10));
-        // Assert
-        var uniqueIds = new HashSet<long>(allIds);
-        allIds.Count.ShouldBe(threadCount * idsPerThread);
-        uniqueIds.Count.ShouldBe(threadCount * idsPerThread, "所有并发生成的ID应该是唯一的");
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeIds - 并发批量生成
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeIds_ConcurrentBatchGeneration_ProducesUniqueIds()
-    {
-        // Arrange
-        const int threadCount = 5;
-        const uint batchSize = 100;
-        var allIds = new ConcurrentBag<long>();
-        var tasks = new List<Task>();
-        // Act
-        for (int i = 0; i < threadCount; i++)
-        {
-            tasks.Add(Task.Run(() =>
-            {
-                var ids = Id.CreateSnowflakeIds(batchSize);
-                foreach (var id in ids)
-                {
-                    allIds.Add(id);
-                }
-            }));
-        }
-        Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(5));
-        // Assert
-        var uniqueIds = new HashSet<long>(allIds);
-        allIds.Count.ShouldBe(threadCount * (int)batchSize);
-        uniqueIds.Count.ShouldBe(threadCount * (int)batchSize, "所有并发批量生成的ID应该是唯一的");
-    }
-    /// <summary>
-    /// 测试 - ConfigureSnowflakeId - 并发配置安全性
-    /// </summary>
-    [Fact]
-    public void ConfigureSnowflakeId_ConcurrentConfiguration_IsThreadSafe()
-    {
-        // Arrange
-        const int threadCount = 5;
-        var tasks = new List<Task>();
-        var exceptions = new ConcurrentBag<Exception>();
-        // Act
-        for (int i = 0; i < threadCount; i++)
-        {
-            var workerId = i + 1;
-            tasks.Add(Task.Run(() =>
-            {
-                try
-                {
-                    Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(workerId));
-                    var id = Id.CreateSnowflakeId();
-                    id.ShouldBeGreaterThan(0);
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
-            }));
-        }
-        Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(5));
-        // Assert
-        exceptions.ShouldBeEmpty("并发配置不应该产生异常");
-        // Cleanup
+        Id.SetId(contextId);
+
+        Id.CreateSnowflakeId().ShouldBe(long.Parse(contextId));
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
         Id.ResetSnowflakeId();
     }
-    #endregion
-    #region 性能测试
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - 单线程性能
-    /// </summary>
+
     [Fact]
-    public void CreateSnowflakeId_Performance_GeneratesQuickly()
+    public void CreateSnowflakeIds_WithContextId_IgnoresContextAndGeneratesIds()
     {
-        // Arrange
-        const int count = 10000;
-        // Act & Assert
-        Should.CompleteIn(() =>
-        {
-            for (int i = 0; i < count; i++)
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+        Id.SetId("123");
+
+        var ids = Id.CreateSnowflakeIds(3);
+
+        ids.Length.ShouldBe(3);
+        ids.Distinct().Count().ShouldBe(3);
+        ids.ShouldNotContain(123);
+        Id.CreateSnowflakeId().ShouldBe(123);
+    }
+
+    [Fact]
+    public void CreateSnowflakeIds_InvalidCount_ThrowsBeforeConfigurationLookup()
+    {
+        Should.Throw<ArgumentOutOfRangeException>(() => Id.CreateSnowflakeIds(0));
+        Should.Throw<ArgumentOutOfRangeException>(() => Id.CreateSnowflakeIds(100001));
+    }
+
+    [Fact]
+    public void CreateSnowflakeId_ConcurrentGeneration_IsUnique()
+    {
+        Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(1, 1));
+        var results = new ConcurrentBag<long>();
+        var tasks = Enumerable.Range(0, 8)
+            .Select(_ => Task.Run(() =>
             {
-                Id.CreateSnowflakeId();
-            }
-        }, TimeSpan.FromSeconds(1), $"生成{count}个ID应该在1秒内完成");
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeIds - 批量生成性能
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeIds_BatchPerformance_GeneratesQuickly()
-    {
-        // Arrange
-        const uint batchSize = 10000;
-        // Act & Assert
-        Should.CompleteIn(() =>
-        {
-            var ids = Id.CreateSnowflakeIds(batchSize);
-            ids.Length.ShouldBe((int)batchSize);
-        }, TimeSpan.FromSeconds(1), $"批量生成{batchSize}个ID应该在1秒内完成");
-    }
-    #endregion
-    #region 数据质量测试
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - ID长度验证
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeId_IdLength_IsValid64BitLong()
-    {
-        // Act
-        var id = Id.CreateSnowflakeId();
-        // Assert
-        id.ShouldBeGreaterThan(0);
-        id.ShouldBeLessThanOrEqualTo(long.MaxValue);
-        // 验证ID的位数（雪花ID通常是19位数字）
-        var idString = id.ToString();
-        idString.Length.ShouldBeInRange(16, 19, "雪花ID应该是16-19位数字");
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeId - 时间单调性验证
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeId_TimeMonotonicity_IncreasesOverTime()
-    {
-        // Arrange
-        var startTime = DateTimeOffset.UtcNow;
-        var ids = new List<long>();
-        // Act
-        for (int i = 0; i < 5; i++)
-        {
-            ids.Add(Id.CreateSnowflakeId());
-            Thread.Sleep(10); // 确保时间差异
-        }
-        // Assert
-        // 验证ID在时间上的单调递增性
-        for (int i = 1; i < ids.Count; i++)
-        {
-            ids[i].ShouldBeGreaterThan(ids[i - 1],
-                "后生成的ID应该大于先生成的ID");
-        }
-    }
-    /// <summary>
-    /// 测试 - CreateSnowflakeIds - 批量ID质量验证
-    /// </summary>
-    [Fact]
-    public void CreateSnowflakeIds_DataQuality_AllIdsAreValid()
-    {
-        // Arrange
-        const uint count = 1000;
-        // Act
-        var ids = Id.CreateSnowflakeIds(count);
-        // Assert
-        ids.ShouldAllBe(id => id > 0, "所有ID应该大于0");
-        // 验证ID的分布（不应该有明显的聚集）
-        var sortedIds = ids.OrderBy(x => x).ToArray();
-        for (int i = 1; i < sortedIds.Length; i++)
-        {
-            sortedIds[i].ShouldBeGreaterThan(sortedIds[i - 1], "排序后的ID应该严格递增");
-        }
-    }
-    #endregion
-    #region 集成测试
-    /// <summary>
-    /// 测试 - 完整工作流程 - 配置-生成-重置-再生成
-    /// </summary>
-    [Fact]
-    public void CompleteWorkflow_ConfigureGenerateResetGenerate_WorksCorrectly()
-    {
+                for (var i = 0; i < 200; i++)
+                    results.Add(Id.CreateSnowflakeId());
+            }))
+            .ToArray();
+
         try
         {
-            // 1. 默认生成
-            var defaultId = Id.CreateSnowflakeId();
-            defaultId.ShouldBeGreaterThan(0);
-            // 2. 配置自定义生成器
-            Id.ConfigureSnowflakeId(() => SnowflakeGenerator.Create(50));
-            var customId = Id.CreateSnowflakeId();
-            customId.ShouldBeGreaterThan(0);
-            // 3. 批量生成
-            var batchIds = Id.CreateSnowflakeIds(10);
-            batchIds.Length.ShouldBe(10);
-            batchIds.ShouldAllBe(id => id > 0);
-            // 4. 设置上下文ID
-            Id.SetId("999999999");
-            var contextId = Id.CreateSnowflakeId();
-            contextId.ShouldBe(999999999);
-            // 5. 重置并清理上下文
-            Id.Reset();
-            Id.ResetSnowflakeId();
-            var finalId = Id.CreateSnowflakeId();
-            finalId.ShouldBeGreaterThan(0);
-            finalId.ShouldNotBe(999999999);
-            // Assert - 验证所有ID都不相同（除了上下文ID）
-            var uniqueIds = new HashSet<long> { defaultId, customId, finalId };
-            uniqueIds.Count.ShouldBe(3, "不同阶段生成的ID应该不同");
+            Task.WaitAll(tasks, TimeSpan.FromSeconds(5)).ShouldBeTrue();
         }
         finally
         {
-            // Cleanup
-            Id.Reset();
-            Id.ResetSnowflakeId();
+            Task.WaitAll(tasks);
         }
+        results.Count.ShouldBe(1600);
+        results.Distinct().Count().ShouldBe(results.Count);
     }
-    /// <summary>
-    /// 测试 - 极限场景 - 大量ID生成和验证
-    /// </summary>
+
     [Fact]
-    public void ExtremeScenario_LargeVolumeGeneration_MaintainsUniqueness()
+    public void Configure_ObsoleteAlias_UsesSameLifecycle()
     {
-        // Arrange
-        const int totalIds = 50000;
-        var allIds = new HashSet<long>();
-        // Act
-        Should.CompleteIn(() =>
-        {
-            // 混合单个生成和批量生成
-            for (int i = 0; i < totalIds / 2; i++)
-            {
-                allIds.Add(Id.CreateSnowflakeId());
-            }
-            // 批量生成剩余的ID
-            var remainingCount = (uint)(totalIds - allIds.Count);
-            if (remainingCount > 0)
-            {
-                var batchIds = Id.CreateSnowflakeIds(Math.Min(remainingCount, 10000));
-                foreach (var id in batchIds)
-                {
-                    allIds.Add(id);
-                }
-            }
-        }, TimeSpan.FromSeconds(10), "大量ID生成应该在合理时间内完成");
-        // Assert
-        allIds.Count.ShouldBeGreaterThanOrEqualTo(totalIds / 2, "应该生成预期数量的唯一ID");
-        allIds.ShouldAllBe(id => id > 0, "所有ID应该有效");
+#pragma warning disable CS0618
+        Id.Configure(() => SnowflakeGenerator.Create(1, 1));
+#pragma warning restore CS0618
+
+        Id.CreateSnowflakeId().ShouldBeGreaterThan(0);
     }
-    #endregion
+
+    private sealed class FailingSnowflakeId : ISnowflakeId
+    {
+        public long NextId() => throw new InvalidOperationException("provider failure");
+
+        public long[] NextIds(uint size) => throw new InvalidOperationException("provider failure");
+    }
+
+    private sealed class BlockingSnowflakeId : ISnowflakeId
+    {
+        private readonly ManualResetEventSlim _entered;
+        private readonly ManualResetEventSlim _release;
+        private readonly bool _fail;
+
+        public BlockingSnowflakeId(ManualResetEventSlim entered, ManualResetEventSlim release, bool fail)
+        {
+            _entered = entered;
+            _release = release;
+            _fail = fail;
+        }
+
+        public long NextId()
+        {
+            _entered.Set();
+            if (!_release.Wait(TimeSpan.FromSeconds(5)))
+                throw new TimeoutException("test release timed out");
+            if (_fail)
+                throw new InvalidOperationException("provider failure");
+            return 1;
+        }
+
+        public long[] NextIds(uint size) => new[] { NextId() };
+    }
+
+    private static void Generate(bool batch)
+    {
+        if (batch)
+            Id.CreateSnowflakeIds(1);
+        else
+            Id.CreateSnowflakeId();
+    }
+
+    private sealed class DelegateSnowflakeId : ISnowflakeId
+    {
+        private readonly Func<long> _nextId;
+
+        public DelegateSnowflakeId(Func<long> nextId) => _nextId = nextId;
+
+        public long NextId() => _nextId();
+
+        public long[] NextIds(uint size) => Enumerable.Range(0, checked((int)size)).Select(_ => NextId()).ToArray();
+    }
 }

@@ -65,23 +65,59 @@ public class GuidProviderAndExtensionsTest
     public void Create_WithNameBasedVersions_IsDeterministic()
     {
         var @namespace = Guid.Parse("6ba7b810-9dad-11d1-80b4-00c04fd430c8");
-        var name = Encoding.UTF8.GetBytes("bing-utils");
+        var name = Encoding.UTF8.GetBytes("www.widgets.com");
         var md5A = GuidProvider.Create(@namespace, name, GuidVersion.NameBasedMd5);
         var md5B = GuidProvider.Create(@namespace, name, GuidVersion.NameBasedMd5);
         var sha1A = GuidProvider.Create(@namespace, name, GuidVersion.NameBasedSha1);
         var sha1B = GuidProvider.Create(@namespace, name, GuidVersion.NameBasedSha1);
+        var random = GuidProvider.Create(@namespace, name, GuidVersion.Random);
         md5A.ShouldBe(md5B);
         sha1A.ShouldBe(sha1B);
         md5A.ShouldNotBe(sha1A);
+        md5A.ShouldBe(Guid.Parse("3d813cbb-47fb-32ba-91df-831e1593ac29"));
+        sha1A.ShouldBe(Guid.Parse("21f7f8de-8051-5b89-8680-0195ef798b6a"));
+        md5A.ToString("N")[12].ShouldBe('3');
+        sha1A.ToString("N")[12].ShouldBe('5');
+        new[] { '8', '9', 'a', 'b' }.ShouldContain(md5A.ToString("N")[16]);
+        new[] { '8', '9', 'a', 'b' }.ShouldContain(sha1A.ToString("N")[16]);
+        random.ToString("N")[12].ShouldBe('4');
+        new[] { '8', '9', 'a', 'b' }.ShouldContain(random.ToString("N")[16]);
     }
+
     /// <summary>
-    /// 测试用例：验证 `Create` 在 `WithUnknownGuidVersion` 场景下，结果为 `FallsBackToRandomGuid`。
+    /// 验证 RFC 9562 名称型 UUID 官方固定向量。
     /// </summary>
     [Fact]
-    public void Create_WithUnknownGuidVersion_FallsBackToRandomGuid()
+    public void Create_WithNameBasedVersions_MatchesRfc9562Vectors()
     {
-        var result = GuidProvider.Create(Guid.NewGuid(), Encoding.UTF8.GetBytes("bing-utils"), (GuidVersion)999);
-        result.ShouldNotBe(Guid.Empty);
+        var @namespace = Guid.Parse("6ba7b810-9dad-11d1-80b4-00c04fd430c8");
+        var name = Encoding.UTF8.GetBytes("www.example.com");
+
+        GuidProvider.Create(@namespace, name, GuidVersion.NameBasedMd5)
+            .ShouldBe(Guid.Parse("5df41881-3aed-3515-88a7-2f4a814cf09e"));
+        GuidProvider.Create(@namespace, name, GuidVersion.NameBasedSha1)
+            .ShouldBe(Guid.Parse("2ed6657d-e927-568b-95e1-2665a8aea6a2"));
+    }
+    /// <summary>
+    /// 测试用例：验证未知 GUID 版本抛出参数范围异常。
+    /// </summary>
+    [Fact]
+    public void Create_WithUnknownGuidVersion_ThrowsArgumentOutOfRangeException()
+    {
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() =>
+            GuidProvider.Create(Guid.NewGuid(), Encoding.UTF8.GetBytes("bing-utils"), (GuidVersion)999));
+        exception.ParamName.ShouldBe("version");
+    }
+
+    /// <summary>
+    /// 测试用例：验证未实现的时间型 GUID 版本明确抛出不支持异常。
+    /// </summary>
+    [Theory]
+    [InlineData(GuidVersion.TimeBased)]
+    [InlineData(GuidVersion.DceSecurity)]
+    public void Create_WithUnsupportedGuidVersion_ThrowsNotSupportedException(GuidVersion version)
+    {
+        Should.Throw<NotSupportedException>(() => GuidProvider.Create(Guid.NewGuid(), Array.Empty<byte>(), version));
     }
     /// <summary>
     /// 测试用例：验证 `Create` 在 `WithLittleEndianNullBytes` 场景下，结果为 `ThrowsArgumentNullException`。
@@ -107,14 +143,55 @@ public class GuidProviderAndExtensionsTest
     {
         Should.Throw<ArgumentException>(() => GuidProvider.Create(new byte[8], GuidBytesStyle.BigEndianByteArray));
     }
+
     /// <summary>
-    /// 测试用例：验证 `Create` 在 `WithNameBasedNullName` 场景下，结果为 `ThrowsNullReferenceException`。
+    /// 验证两种端序都拒绝比 GUID 字段更长的字节数组，避免静默截断。
+    /// </summary>
+    [Theory]
+    [InlineData(GuidBytesStyle.LittleEndianByteArray, 15)]
+    [InlineData(GuidBytesStyle.LittleEndianByteArray, 17)]
+    [InlineData(GuidBytesStyle.BigEndianByteArray, 15)]
+    [InlineData(GuidBytesStyle.BigEndianByteArray, 17)]
+    public void Create_WithInvalidLengthEndianBytes_ThrowsArgumentException(GuidBytesStyle style, int length)
+    {
+        Should.Throw<ArgumentException>(() => GuidProvider.Create(new byte[length], style));
+    }
+
+    /// <summary>
+    /// 验证两种端序的 null 输入使用一致的参数异常契约。
+    /// </summary>
+    [Theory]
+    [InlineData(GuidBytesStyle.LittleEndianByteArray)]
+    [InlineData(GuidBytesStyle.BigEndianByteArray)]
+    public void Create_WithNullEndianBytes_ThrowsArgumentNullException(GuidBytesStyle style)
+    {
+        var exception = Should.Throw<ArgumentNullException>(() => GuidProvider.Create(null, style));
+        exception.ParamName.ShouldBe("endianGuidBytes");
+    }
+    /// <summary>
+    /// 测试用例：验证名称型 GUID 的 null 名称抛出参数为空异常。
     /// </summary>
     [Fact]
-    public void Create_WithNameBasedNullName_ThrowsNullReferenceException()
+    public void Create_WithNameBasedNullName_ThrowsArgumentNullException()
     {
         var @namespace = Guid.NewGuid();
-        Should.Throw<NullReferenceException>(() => GuidProvider.Create(@namespace, null, GuidVersion.NameBasedMd5));
+        var exception = Should.Throw<ArgumentNullException>(() => GuidProvider.Create(@namespace, null, GuidVersion.NameBasedMd5));
+        exception.ParamName.ShouldBe("name");
+    }
+
+    /// <summary>
+    /// 测试用例：验证名称型 GUID 对空名称和 null 名称区分处理。
+    /// </summary>
+    [Fact]
+    public void Create_WithEmptyName_ReturnsDeterministicGuid()
+    {
+        var @namespace = Guid.Parse("6ba7b810-9dad-11d1-80b4-00c04fd430c8");
+
+        var first = GuidProvider.Create(@namespace, Array.Empty<byte>(), GuidVersion.NameBasedMd5);
+        var second = GuidProvider.Create(@namespace, Array.Empty<byte>(), GuidVersion.NameBasedMd5);
+
+        first.ShouldBe(second);
+        first.ToString("N")[12].ShouldBe('3');
     }
     /// <summary>
     /// 测试用例：验证 `Create` 在 `WithSecureTimestampAndUnknownStyle` 场景下，结果为 `ReturnsNonEmptyGuid`。
