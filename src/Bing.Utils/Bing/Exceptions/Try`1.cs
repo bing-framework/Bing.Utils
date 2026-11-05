@@ -109,43 +109,47 @@ public abstract class Try<T>
     /// <summary>
     /// 安全获取值
     /// </summary>
-    /// <param name="defaultValAsyncFunc">默认值函数</param>
-    /// <returns>返回异步安全获取值的任务。</returns>
+    /// <param name="defaultValAsyncFunc">失败时调用的异步默认值函数；为 null 时使用类型默认值。</param>
+    /// <returns>包含成功值或默认值的任务，或异步默认值函数返回的任务。</returns>
+    /// <remarks>回调返回 null 任务时，返回包含 <see cref="InvalidOperationException"/> 的故障任务；回调同步抛出的异常直接传播。</remarks>
     public virtual Task<T> GetSafeValueAsync(Func<Task<T>> defaultValAsyncFunc)
     {
         if (IsSuccess)
             return Task.FromResult(Value);
         return defaultValAsyncFunc is null
             ? Task.FromResult(default(T)!)
-            : defaultValAsyncFunc();
+            : defaultValAsyncFunc() ?? FromException<T>(new InvalidOperationException("异步默认值函数不能返回空的 Task。"));
     }
 
     /// <summary>
     /// 安全获取值
     /// </summary>
-    /// <param name="defaultValAsyncFunc">默认值函数</param>
-    /// <returns>返回异步安全获取值的任务。</returns>
+    /// <param name="defaultValAsyncFunc">接收包装异常的异步默认值函数；为 null 时使用类型默认值。</param>
+    /// <returns>包含成功值或默认值的任务，或异步默认值函数返回的任务。</returns>
+    /// <remarks>回调返回 null 任务时，返回包含 <see cref="InvalidOperationException"/> 的故障任务；回调同步抛出的异常直接传播。</remarks>
     public virtual Task<T> GetSafeValueAsync(Func<TryCreatingValueException, Task<T>> defaultValAsyncFunc)
     {
         if (IsSuccess)
             return Task.FromResult(Value);
         return defaultValAsyncFunc is null
             ? Task.FromResult(default(T)!)
-            : defaultValAsyncFunc(Exception);
+            : defaultValAsyncFunc(Exception) ?? FromException<T>(new InvalidOperationException("异步默认值函数不能返回空的 Task。"));
     }
 
     /// <summary>
     /// 安全获取值
     /// </summary>
-    /// <param name="defaultValAsyncFunc">默认值函数</param>
-    /// <returns>返回异步安全获取值的任务。</returns>
+    /// <param name="defaultValAsyncFunc">接收原异常和原因的异步默认值函数；为 null 时使用类型默认值。</param>
+    /// <returns>包含成功值或默认值的任务，或异步默认值函数返回的任务。</returns>
+    /// <remarks>回调返回 null 任务时，返回包含 <see cref="InvalidOperationException"/> 的故障任务；回调同步抛出的异常直接传播。</remarks>
     public virtual Task<T> GetSafeValueAsync(Func<Exception, string, Task<T>> defaultValAsyncFunc)
     {
         if (IsSuccess)
             return Task.FromResult(Value);
         return defaultValAsyncFunc is null
             ? Task.FromResult(default(T)!)
-            : defaultValAsyncFunc(Exception?.InnerException, Exception?.Cause);
+            : defaultValAsyncFunc(Exception?.InnerException, Exception?.Cause)
+                ?? FromException<T>(new InvalidOperationException("异步默认值函数不能返回空的 Task。"));
     }
 
     /// <summary>
@@ -487,17 +491,19 @@ public abstract class Try<T>
     public abstract Try<T> Recover(Func<Exception, string, T> recoverFunction);
 
     /// <summary>
-    /// 恢复
+    /// 使用另一个尝试结果恢复失败。
     /// </summary>
-    /// <param name="recoverFunction">恢复函数</param>
-    /// <returns>返回恢复后的尝试结果。</returns>
+    /// <param name="recoverFunction">接收包装异常并返回恢复结果的函数。</param>
+    /// <returns>成功时返回当前结果；失败时返回恢复函数的结果，或包含恢复异常的失败结果。</returns>
+    /// <remarks>恢复函数返回 null 时，失败结果包含 <see cref="InvalidOperationException"/>。</remarks>
     public abstract Try<T> RecoverWith(Func<TryCreatingValueException, Try<T>> recoverFunction);
 
     /// <summary>
-    /// 恢复
+    /// 使用另一个尝试结果恢复失败。
     /// </summary>
-    /// <param name="recoverFunction">恢复函数</param>
-    /// <returns>返回恢复后的尝试结果。</returns>
+    /// <param name="recoverFunction">接收原异常和原因并返回恢复结果的函数。</param>
+    /// <returns>成功时返回当前结果；失败时返回恢复函数的结果，或包含恢复异常的失败结果。</returns>
+    /// <remarks>恢复函数返回 null 时，失败结果包含 <see cref="InvalidOperationException"/>。</remarks>
     public abstract Try<T> RecoverWith(Func<Exception, string, Try<T>> recoverFunction);
 
     /// <summary>

@@ -13,7 +13,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync(Task<Action> invokeAsyncAction, string cause = null)
     {
         try
@@ -44,7 +44,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T>(Task<Action<T>> invokeAsyncAction, T obj, string cause = null)
     {
         try
@@ -77,7 +77,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2>(
         Task<Action<T1, T2>> invokeAsyncAction,
         T1 arg1, T2 arg2, string cause = null)
@@ -114,7 +114,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3>(
         Task<Action<T1, T2, T3>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, string cause = null)
@@ -153,7 +153,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4>(
         Task<Action<T1, T2, T3, T4>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, string cause = null)
@@ -194,7 +194,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5>(
         Task<Action<T1, T2, T3, T4, T5>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, string cause = null)
@@ -237,7 +237,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6>(
         Task<Action<T1, T2, T3, T4, T5, T6>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, string cause = null)
@@ -282,7 +282,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, string cause = null)
@@ -329,7 +329,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7, T8>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, string cause = null)
@@ -378,7 +378,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, string cause = null)
@@ -429,7 +429,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, string cause = null)
@@ -482,7 +482,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, string cause = null)
@@ -537,7 +537,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, string cause = null)
@@ -594,7 +594,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, string cause = null)
@@ -653,7 +653,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, string cause = null)
@@ -714,7 +714,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, string cause = null)
@@ -777,7 +777,7 @@ public static partial class Try
     /// 如果操作成功执行，返回的 <see cref="TryAction"/> 实例表示本次操作成功。
     /// 如果操作抛出异常，返回的 <see cref="TryAction"/> 实例包含该异常。
     /// </returns>
-    /// <exception cref="ArgumentNullException">当输入的操作为 null 时抛出此异常</exception>
+    /// <remarks>任务或任务返回的操作为 null 时，返回的失败结果包含 <see cref="ArgumentNullException"/>。</remarks>
     public static async Task<TryAction> InvokeAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(
         Task<Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>> invokeAsyncAction,
         T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16, string cause = null)

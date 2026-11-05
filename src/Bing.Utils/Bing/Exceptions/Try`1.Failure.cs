@@ -80,7 +80,7 @@ public class Failure<T> : Try<T>
     {
         try
         {
-            return recoverFunction(Exception);
+            return recoverFunction(Exception) ?? throw new InvalidOperationException("恢复函数不能返回空的 Try 结果。");
         }
         catch (Exception ex)
         {
@@ -93,7 +93,8 @@ public class Failure<T> : Try<T>
     {
         try
         {
-            return recoverFunction(Exception?.InnerException, Exception?.Cause);
+            return recoverFunction(Exception?.InnerException, Exception?.Cause)
+                ?? throw new InvalidOperationException("恢复函数不能返回空的 Try 结果。");
         }
         catch (Exception ex)
         {

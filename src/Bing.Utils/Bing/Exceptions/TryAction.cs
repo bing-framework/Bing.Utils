@@ -87,10 +87,11 @@ public abstract class TryAction
     public abstract TryAction Recover(Action<Exception> recoverFunction);
 
     /// <summary>
-    /// 恢复
+    /// 使用另一个操作结果恢复失败。
     /// </summary>
-    /// <param name="recoverFunction">恢复函数</param>
-    /// <returns>返回恢复后的尝试结果。</returns>
+    /// <param name="recoverFunction">接收包装异常并返回恢复结果的函数。</param>
+    /// <returns>成功时返回当前结果；失败时返回恢复函数的结果，或包含恢复异常的失败结果。</returns>
+    /// <remarks>失败时，空回调产生包含 <see cref="ArgumentNullException"/> 的失败；回调返回 null 产生包含 <see cref="InvalidOperationException"/> 的失败。</remarks>
     public abstract TryAction RecoverWith(Func<Exception, TryAction> recoverFunction);
 
     /// <summary>

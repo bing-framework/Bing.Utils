@@ -59,11 +59,13 @@ public class FailureAction : TryAction
     {
         try
         {
-            return recoverFunction(Exception);
+            if (recoverFunction is null)
+                throw new ArgumentNullException(nameof(recoverFunction));
+            return recoverFunction(Exception) ?? throw new InvalidOperationException("恢复函数不能返回空的 TryAction 结果。");
         }
         catch (Exception e)
         {
-            return new FailureAction(e, recoverFunction.GetHashCode(), "An exception occurred during recovery.");
+            return new FailureAction(e, 0, "An exception occurred during recovery.");
         }
     }
 
