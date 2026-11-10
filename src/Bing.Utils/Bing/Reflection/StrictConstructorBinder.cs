@@ -7,36 +7,85 @@ using System.Diagnostics.CodeAnalysis;
 #endif
 
 namespace Bing.Reflection;
-
-/// <summary>核心包和反射子包共用的严格构造绑定及弱键缓存。</summary>
+/// <summary>
+/// 提供严格构造函数绑定和弱键缓存。
+/// </summary>
 internal static class StrictConstructorBinder
 {
+    /// <summary>
+    /// 每种类型允许缓存的构造函数签名上限。
+    /// </summary>
     internal const int ConstructorCacheCapacity = 512;
+    /// <summary>
+    /// 已执行构造函数扫描的累计次数。
+    /// </summary>
     private static int _constructorScanCount;
+    /// <summary>
+    /// 获取已执行构造函数扫描的累计次数。
+    /// </summary>
     internal static int ConstructorScanCount => System.Threading.Volatile.Read(ref _constructorScanCount);
+    /// <summary>
+    /// 已构造快速调用器的累计数量。
+    /// </summary>
     private static int _constructorInvokerBuildCount;
+    /// <summary>
+    /// 获取已构造快速调用器的累计数量。
+    /// </summary>
     internal static int ConstructorInvokerBuildCount => System.Threading.Volatile.Read(ref _constructorInvokerBuildCount);
+    /// <summary>
+    /// 按目标类型保存的构造函数查找缓存。
+    /// </summary>
     private static readonly ConditionalWeakTable<Type, ConstructorLookup> ConstructorLookups = new();
+    /// <summary>
+    /// 按构造函数保存的已编译调用委托缓存。
+    /// </summary>
     private static readonly ConditionalWeakTable<ConstructorInfo, Lazy<Func<object[], object>>> ConstructorInvokers = new();
-
+    /// <summary>
+    /// 单个目标类型的构造函数查找状态。
+    /// </summary>
     private sealed class ConstructorLookup
     {
+        /// <summary>
+        /// 按参数类型签名缓存的构造函数。
+        /// </summary>
         internal readonly ConcurrentDictionary<ConstructorSignature, Lazy<ConstructorInfo>> Constructors = new();
+        /// <summary>
+        /// 限制缓存条目准入的同步锁。
+        /// </summary>
         internal readonly object AdmissionGate = new();
+        /// <summary>
+        /// 当前绑定结果对应的快速调用路径。
+        /// </summary>
         internal ConstructorFastPath FastPath;
     }
-
+    /// <summary>
+    /// 按实参运行时类型复用构造函数调用器的快速路径。
+    /// </summary>
     private sealed class ConstructorFastPath
     {
+        /// <summary>
+        /// 构造函数参数对应的运行时类型序列。
+        /// </summary>
         private readonly Type[] _argumentTypes;
+        /// <summary>
+        /// 已选构造函数的调用委托。
+        /// </summary>
         internal readonly Func<object[], object> Invoker;
-
+        /// <summary>
+        /// 初始化一个 <see cref="ConstructorFastPath"/> 类型的实例。
+        /// </summary>
+        /// <param name="argumentTypes">构造实参的运行时类型序列。</param>
+        /// <param name="invoker">已选构造函数的调用委托。</param>
         internal ConstructorFastPath(Type[] argumentTypes, Func<object[], object> invoker)
         {
             _argumentTypes = argumentTypes;
             Invoker = invoker;
         }
-
+        /// <summary>
+        /// 判断实参是否与快速路径的类型序列匹配。
+        /// </summary>
+        /// <param name="arguments">待检查的构造实参。</param>
+        /// <returns>所有实参类型均匹配时为 true，否则为 false。</returns>
         internal bool Matches(object[] arguments)
         {
             if (_argumentTypes.Length != arguments.Length)
@@ -49,19 +98,27 @@ internal static class StrictConstructorBinder
             return true;
         }
     }
-
+    /// <summary>
+    /// 以构造实参类型序列表示的缓存键。
+    /// </summary>
     private sealed class ConstructorSignature : IEquatable<ConstructorSignature>
     {
+        /// <summary>
+        /// 构造实参对应的运行时类型序列。
+        /// </summary>
         private readonly Type[] _argumentTypes;
-
+        /// <summary>
+        /// 初始化一个 <see cref="ConstructorSignature"/> 类型的实例。
+        /// </summary>
+        /// <param name="argumentTypes">构造实参的运行时类型序列。</param>
         internal ConstructorSignature(Type[] argumentTypes) => _argumentTypes = argumentTypes;
-
+        /// <inheritdoc />
         public bool Equals(ConstructorSignature other) => other != null
             && _argumentTypes.Length == other._argumentTypes.Length
             && _argumentTypes.SequenceEqual(other._argumentTypes);
-
+        /// <inheritdoc />
         public override bool Equals(object obj) => Equals(obj as ConstructorSignature);
-
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             var hash = 17;
@@ -76,7 +133,8 @@ internal static class StrictConstructorBinder
     /// <param name="type">要创建实例的类型。</param>
     /// <param name="args">构造函数参数。</param>
     /// <returns>创建的实例。</returns>
-    /// <exception cref="ArgumentException">当目标类型不可实例化，或不存在唯一兼容构造函数时抛出。</exception>
+    /// <exception cref="ArgumentException">目标类型不可实例化，或不存在兼容构造函数时抛出。</exception>
+    /// <exception cref="AmbiguousMatchException">存在多个无法确定唯一优先项的兼容构造函数时抛出。</exception>
     /// <exception cref="InvalidOperationException">当构造函数执行失败时抛出。</exception>
 #if NET7_0_OR_GREATER
     [RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
@@ -139,6 +197,11 @@ internal static class StrictConstructorBinder
         }
     }
 
+    /// <summary>
+    /// 编译构造函数调用委托。
+    /// </summary>
+    /// <param name="constructor">要调用的构造函数。</param>
+    /// <returns>可使用参数数组调用构造函数的委托。</returns>
 #if NET7_0_OR_GREATER
     [RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
 #endif
@@ -172,6 +235,12 @@ internal static class StrictConstructorBinder
         return Expression.Lambda<Func<object[], object>>(body, arguments).Compile();
     }
 
+    /// <summary>
+    /// 创建来自可回收程序集的类型实例。
+    /// </summary>
+    /// <param name="type">要创建实例的类型。</param>
+    /// <param name="args">构造函数参数。</param>
+    /// <returns>创建的实例。</returns>
 #if NET7_0_OR_GREATER
     [RequiresDynamicCode("构造函数委托通过 Expression.Compile 生成，要求运行时支持动态代码。")]
 #endif
@@ -196,7 +265,6 @@ internal static class StrictConstructorBinder
             throw new InvalidOperationException($"调用类型“{type.FullName}”的构造函数时发生异常", exception);
         }
     }
-
     /// <summary>
     /// 查找唯一的兼容构造函数。
     /// </summary>
@@ -204,7 +272,8 @@ internal static class StrictConstructorBinder
     /// <param name="argumentTypes">构造函数参数类型。</param>
     /// <param name="lookup">目标类型的构造函数缓存。</param>
     /// <returns>唯一兼容的构造函数。</returns>
-    /// <exception cref="ArgumentException">当不存在或存在多个兼容构造函数时抛出。</exception>
+    /// <exception cref="ArgumentException">不存在兼容构造函数时抛出。</exception>
+    /// <exception cref="AmbiguousMatchException">存在多个无法确定唯一优先项的兼容构造函数时抛出。</exception>
     private static ConstructorInfo FindCompatibleConstructor(
 #if NET5_0_OR_GREATER
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
@@ -249,7 +318,13 @@ internal static class StrictConstructorBinder
             return ResolveCompatibleConstructor(type, argumentTypes);
         return GetCachedConstructor(lookup, key, lazy);
     }
-
+    /// <summary>
+    /// 获取缓存的构造函数，并移除引用可回收程序集的缓存项。
+    /// </summary>
+    /// <param name="lookup">目标类型的构造函数查找缓存。</param>
+    /// <param name="key">构造函数签名键。</param>
+    /// <param name="lazy">延迟解析的构造函数。</param>
+    /// <returns>与签名匹配的构造函数。</returns>
     private static ConstructorInfo GetCachedConstructor(
         ConstructorLookup lookup,
         ConstructorSignature key,
@@ -265,7 +340,14 @@ internal static class StrictConstructorBinder
         CoreCacheMetrics.RecordBypass();
         return constructor;
     }
-
+    /// <summary>
+    /// 根据实参类型解析唯一兼容的公共构造函数。
+    /// </summary>
+    /// <param name="type">目标类型。</param>
+    /// <param name="argumentTypes">构造实参的运行时类型序列。</param>
+    /// <returns>唯一兼容的构造函数。</returns>
+    /// <exception cref="ArgumentException">不存在兼容构造函数时抛出。</exception>
+    /// <exception cref="AmbiguousMatchException">存在多个无法确定唯一优先项的兼容构造函数时抛出。</exception>
     private static ConstructorInfo ResolveCompatibleConstructor(
 #if NET5_0_OR_GREATER
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
@@ -306,10 +388,13 @@ internal static class StrictConstructorBinder
             throw new AmbiguousMatchException($"类型“{type.FullName}”存在多个与给定参数兼容的公共构造函数");
         return candidates[bestCandidateIndex];
     }
-
     /// <summary>
-    /// 判断一个构造函数是否在每个参数位置都不比另一个候选宽泛，并且至少一个位置更具体。
+    /// 判断一个构造函数是否比另一个候选更具体。
     /// </summary>
+    /// <param name="candidateParameterTypes">当前候选构造函数的参数类型。</param>
+    /// <param name="otherParameterTypes">用于比较的候选构造函数参数类型。</param>
+    /// <param name="argumentTypes">构造实参的运行时类型。</param>
+    /// <returns>当前候选在所有不同参数位置均不更宽泛，且至少一处更具体时为 true，否则为 false。</returns>
     private static bool IsStrictlyBetterCandidate(Type[] candidateParameterTypes, Type[] otherParameterTypes,
         Type[] argumentTypes)
     {
@@ -352,7 +437,6 @@ internal static class StrictConstructorBinder
 
         return hasMoreSpecificParameter;
     }
-
     /// <summary>
     /// 判断构造函数是否与给定实参兼容。
     /// </summary>
@@ -377,7 +461,6 @@ internal static class StrictConstructorBinder
 
         return true;
     }
-
     /// <summary>
     /// 判断单个构造函数实参是否可赋值给参数类型。
     /// </summary>
@@ -398,12 +481,12 @@ internal static class StrictConstructorBinder
         return parameterType.IsAssignableFrom(argumentType)
                || Nullable.GetUnderlyingType(parameterType) == argumentType;
     }
-
     /// <summary>
     /// 验证类型可通过公共构造函数创建实例。
     /// </summary>
     /// <param name="type">待验证的类型。</param>
-    /// <exception cref="ArgumentException">当类型为接口、抽象类、开放泛型或指针类型时抛出。</exception>
+    /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">当类型是接口、抽象类、开放泛型、指针、引用或类似引用的类型时抛出。</exception>
     internal static void EnsureCreatableType(
 #if NET5_0_OR_GREATER
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
@@ -416,7 +499,11 @@ internal static class StrictConstructorBinder
             || type.IsByRef || type == typeof(void) || IsByRefLikeType(type))
             throw new ArgumentException($"类型“{type.FullName}”不能通过公共构造函数创建实例", nameof(type));
     }
-
+    /// <summary>
+    /// 判断类型是否具有类似引用的存储限制。
+    /// </summary>
+    /// <param name="type">待检查的类型。</param>
+    /// <returns>类型为类似引用的类型时为 true，否则为 false。</returns>
     private static bool IsByRefLikeType(Type type)
     {
 #if NET6_0_OR_GREATER
@@ -425,8 +512,15 @@ internal static class StrictConstructorBinder
         return typeof(Type).GetProperty("IsByRefLike")?.GetValue(type) is true;
 #endif
     }
-
-    /// <summary>根据实参类型或 null 模式取得唯一兼容构造函数。</summary>
+    /// <summary>
+    /// 根据实参类型或 null 模式取得唯一兼容构造函数。
+    /// </summary>
+    /// <param name="type">目标类型。</param>
+    /// <param name="argumentTypes">构造实参的运行时类型序列。</param>
+    /// <returns>唯一兼容的构造函数。</returns>
+    /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">目标类型不可实例化，或不存在兼容构造函数时抛出。</exception>
+    /// <exception cref="AmbiguousMatchException">存在多个无法确定唯一优先项的兼容构造函数时抛出。</exception>
     internal static ConstructorInfo FindConstructor(
 #if NET5_0_OR_GREATER
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]

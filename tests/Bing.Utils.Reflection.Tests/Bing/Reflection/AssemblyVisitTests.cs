@@ -13,7 +13,7 @@ public class AssemblyVisitTests
     #region GetFileVersion
 
     /// <summary>
-    /// 测试目的：对 null 程序集调用 GetFileVersion，应抛出 ArgumentNullException
+    /// 验证空程序集输入会抛出参数空异常。
     /// </summary>
     [Fact]
     public void GetFileVersion_WithNullAssembly_ThrowsArgumentNullException()
@@ -23,7 +23,7 @@ public class AssemblyVisitTests
     }
 
     /// <summary>
-    /// 测试目的：对有效程序集调用 GetFileVersion，应不抛异常（版本字符串可为 null 或有值）
+    /// 验证有效程序集可以读取文件版本。
     /// </summary>
     [Fact]
     public void GetFileVersion_WithValidAssembly_DoesNotThrow()
@@ -45,7 +45,7 @@ public class AssemblyVisitTests
     #region GetProductVersion
 
     /// <summary>
-    /// 测试目的：对 null 程序集调用 GetProductVersion，应抛出 ArgumentNullException
+    /// 验证空程序集输入会抛出参数空异常。
     /// </summary>
     [Fact]
     public void GetProductVersion_WithNullAssembly_ThrowsArgumentNullException()
@@ -55,29 +55,21 @@ public class AssemblyVisitTests
     }
 
     /// <summary>
-    /// 测试目的：对有效程序集调用 GetProductVersion，应不抛异常
+    /// 验证产品版本优先使用信息版本，并保留预发布版本。
     /// </summary>
     [Fact]
-    public void GetProductVersion_WithValidAssembly_DoesNotThrow()
+    public void GetProductVersion_WithInformationalVersion_PrefersItOverFileAndAssemblyVersion()
     {
-        // Arrange
-        var assembly = Assembly.GetExecutingAssembly();
+        var assembly = CreateVersionAssembly();
+        SetVersionAttribute<AssemblyFileVersionAttribute>(assembly, "4.5.6.7");
+        SetVersionAttribute<AssemblyInformationalVersionAttribute>(assembly, "1.2.3-beta+build.123");
 
-        // Act
-        var version = AssemblyVisit.GetProductVersion(assembly);
-
-        // Assert — single-file 与普通程序集都不应依赖物理路径
-        var rawVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-            ?? assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
-            ?? assembly.GetName().Version?.ToString()
-            ?? string.Empty;
-        version.ShouldBe(rawVersion.Contains("+")
-            ? System.Text.RegularExpressions.Regex.Replace(rawVersion, @"\+(\w+)?", "")
-            : rawVersion);
+        AssemblyVisit.GetProductVersion(assembly).ShouldBe("1.2.3-beta");
+        AssemblyVisit.GetFileVersion(assembly).ShouldBe("4.5.6.7");
     }
 
     /// <summary>
-    /// 测试目的：程序集没有版本特性时，应回退到程序集名称版本，而不是访问空的物理路径。
+    /// 验证程序集没有版本特性时回退到名称版本。
     /// </summary>
     [Fact]
     public void GetVersion_WhenAssemblyHasNoVersionAttributes_UsesAssemblyNameVersion()
@@ -93,41 +85,56 @@ public class AssemblyVisitTests
     }
 
     /// <summary>
-    /// 测试目的：GetProductVersion 应移除版本字符串中的 +commit-hash 后缀
+    /// 验证产品版本移除完整的构建元数据后缀。
     /// </summary>
-    [Fact]
-    public void GetProductVersion_WithVersionContainingHash_RemovesHashSuffix()
+    /// <param name="version">程序集信息版本字符串。</param>
+    /// <param name="expected">预期的产品版本。</param>
+    [Theory]
+    [InlineData("1.0.0+abc1234def", "1.0.0")]
+    [InlineData("1.2.3+build.123", "1.2.3")]
+    [InlineData("1.2.3+build-abc", "1.2.3")]
+    [InlineData("1.2.3-beta+build.123", "1.2.3-beta")]
+    [InlineData("2.3.1", "2.3.1")]
+    [InlineData("1.2.3-beta", "1.2.3-beta")]
+    [InlineData("1.2.3+", "1.2.3")]
+    [InlineData("", "")]
+    public void GetProductVersion_WithInformationalVersion_RemovesEntireBuildSuffix(string version, string expected)
     {
-        // 说明：此测试通过 MockAssembly 替代真实程序集来验证截断逻辑
-        // 由于 AssemblyVisit 直接依赖 FileVersionInfo，此处通过验证逻辑一致性间接覆盖
-        // 在现有 API 不可注入情况下，通过字符串处理行为断言来验证
+        var assembly = CreateVersionAssembly();
+        SetVersionAttribute<AssemblyInformationalVersionAttribute>(assembly, version);
 
-        // Arrange — 模拟含 hash 的版本字符串处理
-        const string versionWithHash = "1.0.0+abc1234def";
-        const string versionWithoutHash = "1.0.0";
-        var processedVersion = versionWithHash.Contains("+")
-            ? System.Text.RegularExpressions.Regex.Replace(versionWithHash, @"\+(\w+)?", "")
-            : versionWithHash;
-
-        // Assert — 验证 hash 截断逻辑正确
-        processedVersion.ShouldBe(versionWithoutHash);
+        AssemblyVisit.GetProductVersion(assembly).ShouldBe(expected);
     }
 
     /// <summary>
-    /// 测试目的：不含 hash 的版本字符串经过 GetProductVersion 处理应保持不变
+    /// 验证缺少信息版本时回退到文件版本。
     /// </summary>
     [Fact]
-    public void GetProductVersion_WithVersionWithoutHash_ReturnsSameVersion()
+    public void GetProductVersion_WithoutInformationalVersion_UsesFileVersion()
     {
-        // Arrange
-        const string cleanVersion = "2.3.1";
-        var processedVersion = cleanVersion.Contains("+")
-            ? System.Text.RegularExpressions.Regex.Replace(cleanVersion, @"\+(\w+)?", "")
-            : cleanVersion;
+        var assembly = CreateVersionAssembly();
+        SetVersionAttribute<AssemblyFileVersionAttribute>(assembly, "4.5.6.7");
 
-        // Assert
-        processedVersion.ShouldBe(cleanVersion);
+        AssemblyVisit.GetProductVersion(assembly).ShouldBe("4.5.6.7");
     }
+
+    /// <summary>
+    /// 创建用于版本测试的动态程序集。
+    /// </summary>
+    /// <returns>包含测试程序集名称版本的动态程序集。</returns>
+    private static AssemblyBuilder CreateVersionAssembly() => AssemblyBuilder.DefineDynamicAssembly(
+        new AssemblyName("AssemblyVisitVersion_" + Guid.NewGuid().ToString("N")) { Version = new Version(2, 3, 4, 5) },
+        AssemblyBuilderAccess.RunAndCollect);
+
+    /// <summary>
+    /// 为动态程序集设置版本特性。
+    /// </summary>
+    /// <typeparam name="TAttribute">具有字符串构造参数的版本特性类型。</typeparam>
+    /// <param name="assembly">目标动态程序集。</param>
+    /// <param name="version">写入特性的版本字符串。</param>
+    private static void SetVersionAttribute<TAttribute>(AssemblyBuilder assembly, string version)
+        where TAttribute : Attribute => assembly.SetCustomAttribute(new CustomAttributeBuilder(
+            typeof(TAttribute).GetConstructor(new[] { typeof(string) })!, new object[] { version }));
 
     #endregion
 }

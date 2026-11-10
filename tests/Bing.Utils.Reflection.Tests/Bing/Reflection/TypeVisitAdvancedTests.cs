@@ -4,7 +4,6 @@ using Shouldly;
 using System.Reflection.Emit;
 
 namespace Bing.Reflection;
-
 /// <summary>
 /// 测试类：TypeVisit 严格方法签名匹配和实例创建功能。
 /// </summary>
@@ -27,7 +26,6 @@ public class TypeVisitAdvancedTests
         // Assert
         result.ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试目的：返回类型不一致的方法不应被判定为签名兼容。
     /// </summary>
@@ -44,7 +42,6 @@ public class TypeVisitAdvancedTests
         // Assert
         result.ShouldBeFalse();
     }
-
     /// <summary>
     /// 测试目的：FindMethod 应返回目标类型中的唯一签名兼容方法。
     /// </summary>
@@ -61,7 +58,6 @@ public class TypeVisitAdvancedTests
         result.ShouldNotBeNull();
         result.DeclaringType.ShouldBe(typeof(SignatureTarget));
     }
-
     /// <summary>
     /// 测试目的：批量创建应保留 null 构造函数参数，并按参数集合顺序返回实例。
     /// </summary>
@@ -83,7 +79,6 @@ public class TypeVisitAdvancedTests
         result[0].ShouldBeOfType<NullableConstructorEntity>().Value.ShouldBeNull();
         result[1].ShouldBeOfType<NullableConstructorEntity>().Value.ShouldBe("second");
     }
-
     /// <summary>
     /// 测试目的：批量构造的参数集合失败时，应报告失败集合索引和参数类型。
     /// </summary>
@@ -106,7 +101,6 @@ public class TypeVisitAdvancedTests
         exception.Message.ShouldContain(typeof(int).FullName!);
         exception.InnerException.ShouldNotBeNull();
     }
-
     /// <summary>
     /// 测试目的：开放泛型定义和类型实参应创建对应的封闭泛型实例。
     /// </summary>
@@ -120,7 +114,6 @@ public class TypeVisitAdvancedTests
         var generic = result.ShouldBeOfType<SampleGeneric<string>>();
         generic.Value.ShouldBe("value");
     }
-
     /// <summary>
     /// 测试目的：非开放泛型定义不应传入 CreateGenericInstance。
     /// </summary>
@@ -131,7 +124,6 @@ public class TypeVisitAdvancedTests
         Should.Throw<ArgumentException>(() =>
             TypeVisit.CreateGenericInstance(typeof(SampleGeneric<string>), new[] { typeof(string) }, "value"));
     }
-
     /// <summary>
     /// 测试目的：普通方法查找默认仅返回公开方法，显式选项允许私有方法。
     /// </summary>
@@ -152,7 +144,6 @@ public class TypeVisitAdvancedTests
         baseMethod.ShouldNotBeNull();
         Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), "Private", typeof(int)));
     }
-
     /// <summary>
     /// 测试目的：参数描述符应精确区分按值、ref、out 和泛型参数数量。
     /// </summary>
@@ -176,7 +167,6 @@ public class TypeVisitAdvancedTests
         genericMethod.ShouldNotBeNull();
         genericMethod.IsGenericMethodDefinition.ShouldBeTrue();
     }
-
     /// <summary>
     /// 测试目的：方法查找应支持接口的父接口成员，并在无匹配时抛出明确异常。
     /// </summary>
@@ -191,7 +181,6 @@ public class TypeVisitAdvancedTests
         Should.Throw<MissingMethodException>(() =>
             TypeVisit.FindMethod(typeof(IChildContract), "Missing", typeof(string)));
     }
-
     /// <summary>
     /// 测试目的：存在同名同参但不同返回类型的显式接口成员时，查找应报告歧义。
     /// </summary>
@@ -201,7 +190,6 @@ public class TypeVisitAdvancedTests
         // Act & Assert
         Should.Throw<AmbiguousMatchException>(() => TypeVisit.FindMethod(typeof(IAmbiguousContract), "Get", Type.EmptyTypes));
     }
-
     /// <summary>
     /// 测试目的：多个运行时类型应按输入顺序以相同构造参数创建实例。
     /// </summary>
@@ -216,7 +204,6 @@ public class TypeVisitAdvancedTests
         result[0].ShouldBeOfType<FirstCreated>().Value.ShouldBe("value");
         result[1].ShouldBeOfType<SecondCreated>().Value.ShouldBe("value");
     }
-
     /// <summary>
     /// 测试目的：严格批量创建遇到类型不匹配、接口或构造函数异常时，应提供索引并保留内部异常。
     /// </summary>
@@ -233,7 +220,60 @@ public class TypeVisitAdvancedTests
         interfaceType.Message.ShouldContain("第 0 个");
         throwing.InnerException.ShouldNotBeNull();
     }
-
+    /// <summary>
+    /// 测试目的：批量及泛型构造入口应保留歧义异常类型，避免将其误包装为参数错误。
+    /// </summary>
+    [Fact]
+    public void CreateInstances_WithAmbiguousConstructor_ThrowsAmbiguousMatchException()
+    {
+        Should.Throw<AmbiguousMatchException>(() =>
+            TypeVisit.CreateInstances(typeof(AmbiguousConstructor), new[] { new object[] { null! } }));
+        Should.Throw<AmbiguousMatchException>(() =>
+            TypeVisit.CreateInstances<AmbiguousConstructor>(new[] { new object[] { null! } }));
+    }
+    /// <summary>
+    /// 验证不同泛型调用入口遇到构造函数歧义时传播匹配异常。
+    /// </summary>
+    /// <param name="typed">是否使用显式类型参数调用泛型入口。</param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void CreateInstances_WithAmbiguousTypeCollection_ThrowsAmbiguousMatchException(bool typed)
+    {
+        var types = new[] { typeof(AmbiguousConstructor) };
+        var arguments = new object[] { null! };
+        if (typed)
+            Should.Throw<AmbiguousMatchException>(() => TypeVisit.CreateInstances<object>(types, arguments));
+        else
+            Should.Throw<AmbiguousMatchException>(() => TypeVisit.CreateInstances(types, arguments));
+    }
+    /// <summary>
+    /// 验证不同泛型创建重载均在执行构造函数前拒绝歧义。
+    /// </summary>
+    /// <param name="overload">选择的泛型创建重载编号。</param>
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void CreateGenericInstance_WithAmbiguousConstructor_ThrowsAmbiguousMatchException(int overload)
+    {
+        var arguments = new object[] { null! };
+        Should.Throw<AmbiguousMatchException>(() =>
+        {
+            switch (overload)
+            {
+                case 0:
+                    TypeVisit.CreateGenericInstance(typeof(AmbiguousGeneric<>), new[] { typeof(int) }, arguments);
+                    break;
+                case 1:
+                    TypeVisit.CreateGenericInstance<AmbiguousGeneric<int>>(typeof(AmbiguousGeneric<>), arguments);
+                    break;
+                default:
+                    TypeVisit.CreateGenericInstance<object>(typeof(AmbiguousGeneric<>), new[] { typeof(int) }, arguments);
+                    break;
+            }
+        });
+    }
     /// <summary>
     /// 测试目的：强类型批量创建应验证可赋值关系并支持空集合。
     /// </summary>
@@ -249,7 +289,6 @@ public class TypeVisitAdvancedTests
         empty.ShouldBeEmpty();
         Should.Throw<ArgumentException>(() => TypeVisit.CreateInstances<ICreated>(new[] { typeof(MethodTarget) }));
     }
-
     /// <summary>
     /// 测试目的：强类型泛型创建应从 TInstance 推导泛型实参，并验证显式实参可赋值关系。
     /// </summary>
@@ -266,7 +305,6 @@ public class TypeVisitAdvancedTests
         Should.Throw<ArgumentException>(() => TypeVisit.CreateGenericInstance<string>(typeof(SampleGeneric<>), "value"));
         Should.Throw<ArgumentException>(() => TypeVisit.CreateGenericInstance(typeof(SampleGeneric<>), Type.EmptyTypes));
     }
-
     /// <summary>
     /// 测试目的：BindingFlags 应限制方法候选范围，并支持忽略大小写和 Type 扩展入口。
     /// </summary>
@@ -289,7 +327,6 @@ public class TypeVisitAdvancedTests
         Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), "Private",
             BindingFlags.Instance | BindingFlags.Public, typeof(int)));
     }
-
     /// <summary>
     /// 测试目的：参数描述符查找应区分一维和多维数组，并解析嵌套泛型结构。
     /// </summary>
@@ -311,6 +348,9 @@ public class TypeVisitAdvancedTests
             new MethodParameterSignature(typeof(string[,]))));
     }
 
+    /// <summary>
+    /// 验证方法查找和缓存区分向量数组与非向量一维数组。
+    /// </summary>
     [Fact]
     public void FindMethod_DistinguishesVectorAndVariableBoundArrays_InMatchingAndCache()
     {
@@ -337,7 +377,6 @@ public class TypeVisitAdvancedTests
         Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.NestedVectorArray), 0,
             new MethodParameterSignature(typeof(List<>).MakeGenericType(variableBound))));
     }
-
     /// <summary>
     /// 测试目的：MethodInfo 签名比较应区分静态性、ref/out 和数组秩。
     /// </summary>
@@ -359,7 +398,6 @@ public class TypeVisitAdvancedTests
         Should.Throw<ArgumentNullException>(() => TypeVisit.IsSignatureCompatible(null!, instanceMethod));
         Should.Throw<ArgumentNullException>(() => TypeVisit.FindMethod(typeof(MethodTarget), (MethodInfo)null!));
     }
-
     /// <summary>
     /// 测试目的：方法查找应验证名称、类型、参数签名和泛型参数数量。
     /// </summary>
@@ -379,7 +417,6 @@ public class TypeVisitAdvancedTests
         Should.Throw<ArgumentOutOfRangeException>(() =>
             new MethodParameterSignature(typeof(int), (ParameterPassingKind)99));
     }
-
     /// <summary>
     /// 测试目的：DeclaredOnly 查找接口时不应返回父接口成员，描述符扩展入口应正常工作。
     /// </summary>
@@ -397,7 +434,6 @@ public class TypeVisitAdvancedTests
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly, 0,
             new MethodParameterSignature(typeof(string))));
     }
-
     /// <summary>
     /// 测试目的：参数描述符的传递方式与泛型参数数量不一致时，方法查找应抛出明确异常。
     /// </summary>
@@ -409,7 +445,6 @@ public class TypeVisitAdvancedTests
         Should.Throw<MissingMethodException>(() => TypeVisit.FindMethod(typeof(MethodTarget), nameof(MethodTarget.Generic), 2,
             new MethodParameterSignature(typeof(List<string>))));
     }
-
     /// <summary>
     /// 测试目的：多个运行时类型创建应接受空集合，并验证 null 集合和 null 类型元素。
     /// </summary>
@@ -425,7 +460,6 @@ public class TypeVisitAdvancedTests
         var nullType = Should.Throw<ArgumentException>(() => TypeVisit.CreateInstances(new Type[] { null! }));
         nullType.Message.ShouldContain("第 0 个");
     }
-
     /// <summary>
     /// 测试目的：多个运行时类型创建应拒绝抽象、开放泛型和指针类型，并保留类型索引上下文。
     /// </summary>
@@ -442,7 +476,6 @@ public class TypeVisitAdvancedTests
         openGenericType.Message.ShouldContain("第 0 个");
         pointerType.Message.ShouldContain("第 0 个");
     }
-
     /// <summary>
     /// 测试目的：强类型批量创建应验证 null 集合、null 元素和不可赋值类型。
     /// </summary>
@@ -454,7 +487,6 @@ public class TypeVisitAdvancedTests
         Should.Throw<ArgumentException>(() => TypeVisit.CreateInstances<ICreated>(new Type[] { null! }));
         Should.Throw<ArgumentException>(() => TypeVisit.CreateInstances<ICreated>(new[] { typeof(MethodTarget) }));
     }
-
     /// <summary>
     /// 测试目的：泛型创建应验证 null、泛型实参数量、约束、构造函数和强类型赋值关系。
     /// </summary>
@@ -474,53 +506,183 @@ public class TypeVisitAdvancedTests
         Should.Throw<InvalidCastException>(() => TypeVisit.CreateGenericInstance<string>(typeof(SampleGeneric<>), new[] { typeof(int) }, 1));
     }
 
+    /// <summary>
+    /// 提供用于比较泛型方法和返回类型的源签名。
+    /// </summary>
     public sealed class SignatureSource
     {
+        /// <summary>
+        /// 返回传入的泛型值。
+        /// </summary>
+        /// <typeparam name="T">值的类型。</typeparam>
+        /// <param name="value">待返回的值。</param>
+        /// <returns>传入的值。</returns>
         public T Echo<T>(T value) => value;
+
+        /// <summary>
+        /// 获取源签名的整数结果。
+        /// </summary>
+        /// <returns>固定整数值。</returns>
         public int GetValue() => 1;
     }
 
+    /// <summary>
+    /// 提供与源签名返回类型不同的目标签名。
+    /// </summary>
     public sealed class SignatureTarget
     {
+        /// <summary>
+        /// 返回传入的泛型值。
+        /// </summary>
+        /// <typeparam name="T">值的类型。</typeparam>
+        /// <param name="value">待返回的值。</param>
+        /// <returns>传入的值。</returns>
         public T Echo<T>(T value) => value;
+
+        /// <summary>
+        /// 获取目标签名的字符串结果。
+        /// </summary>
+        /// <returns>固定字符串值。</returns>
         public string GetValue() => "value";
     }
 
+    /// <summary>
+    /// 提供供方法查找验证继承成员的基类样例。
+    /// </summary>
     public class MethodBase
     {
+        /// <summary>
+        /// 声明用于验证继承方法查找的基类成员。
+        /// </summary>
+        /// <param name="value">方法的长整数参数。</param>
         public void Base(long value) { }
     }
 
+    /// <summary>
+    /// 提供不同参数签名的反射查找样例方法。
+    /// </summary>
     public sealed class MethodTarget : MethodBase
     {
+        /// <summary>
+        /// 声明公开实例方法候选。
+        /// </summary>
+        /// <param name="value">方法的字符串参数。</param>
         public void Public(string value) { }
+
+        /// <summary>
+        /// 声明非公开实例方法候选。
+        /// </summary>
+        /// <param name="value">方法的整数参数。</param>
         private void Private(int value) { }
+
+        /// <summary>
+        /// 声明静态方法候选。
+        /// </summary>
+        /// <param name="value">方法的 GUID 参数。</param>
         public static void Static(Guid value) { }
+
+        /// <summary>
+        /// 声明按值传递整数的方法候选。
+        /// </summary>
+        /// <param name="value">方法的整数参数。</param>
         public void ChangeValue(int value) { }
+
+        /// <summary>
+        /// 声明按引用传递整数的方法候选。
+        /// </summary>
+        /// <param name="value">按引用传入的整数参数。</param>
         public void ChangeRef(ref int value) { }
+
+        /// <summary>
+        /// 声明按输出传递整数的方法候选。
+        /// </summary>
+        /// <param name="value">由方法写入的整数参数。</param>
         public void ChangeOut(out int value) => value = 0;
+
+        /// <summary>
+        /// 声明包含泛型参数列表的方法候选。
+        /// </summary>
+        /// <typeparam name="T">列表元素类型。</typeparam>
+        /// <param name="values">泛型元素列表。</param>
         public void Generic<T>(List<T> values) { }
+
+        /// <summary>
+        /// 声明一维向量数组参数的方法候选。
+        /// </summary>
+        /// <param name="values">字符串向量。</param>
         public void OneDimensional(string[] values) { }
+
+        /// <summary>
+        /// 声明二维数组参数的方法候选。
+        /// </summary>
+        /// <param name="values">二维字符串数组。</param>
         public void TwoDimensional(string[,] values) { }
+
+        /// <summary>
+        /// 声明整数向量数组参数的方法候选。
+        /// </summary>
+        /// <param name="values">整数向量。</param>
         public void VectorArray(int[] values) { }
+
+        /// <summary>
+        /// 声明嵌套向量数组参数的方法候选。
+        /// </summary>
+        /// <param name="values">包含整数向量的列表。</param>
         public void NestedVectorArray(List<int[]> values) { }
+
+        /// <summary>
+        /// 声明嵌套泛型参数的方法候选。
+        /// </summary>
+        /// <typeparam name="T">内部列表的元素类型。</typeparam>
+        /// <param name="values">以字符串为键的泛型列表字典。</param>
         public void NestedGeneric<T>(Dictionary<string, List<T>> values) { }
     }
 
+    /// <summary>
+    /// 提供与目标签名在静态性、传递方式或数组秩上不同的源成员。
+    /// </summary>
     public sealed class SignatureDifferenceSource
     {
+        /// <summary>
+        /// 声明实例方法以形成静态性差异。
+        /// </summary>
         public void Static() { }
+
+        /// <summary>
+        /// 声明输出参数以形成参数传递方式差异。
+        /// </summary>
+        /// <param name="value">由方法写入的整数参数。</param>
         public void Change(out int value) => value = 0;
+
+        /// <summary>
+        /// 声明二维数组参数以形成数组秩差异。
+        /// </summary>
+        /// <param name="values">二维字符串数组。</param>
         public void Array(string[,] values) { }
     }
 
+    /// <summary>
+    /// 提供与源签名在静态性、传递方式或数组秩上不同的目标成员。
+    /// </summary>
     public sealed class SignatureDifferenceTarget
     {
+        /// <summary>
+        /// 声明静态方法以形成静态性差异。
+        /// </summary>
         public static void Static() { }
+
+        /// <summary>
+        /// 声明引用参数以形成参数传递方式差异。
+        /// </summary>
+        /// <param name="value">按引用传入的整数参数。</param>
         public void Change(ref int value) { }
+
+        /// <summary>
+        /// 声明一维数组参数以形成数组秩差异。
+        /// </summary>
+        /// <param name="values">字符串向量。</param>
         public void Array(string[] values) { }
     }
-
     /// <summary>
     /// 用于验证接口方法继承的父契约。
     /// </summary>
@@ -562,7 +724,6 @@ public class TypeVisitAdvancedTests
     /// 用于验证同名方法返回类型冲突的组合契约。
     /// </summary>
     public interface IAmbiguousContract : IStringGet, IIntGet { }
-
     /// <summary>
     /// 用于验证实例创建结果的取值契约。
     /// </summary>
@@ -573,28 +734,91 @@ public class TypeVisitAdvancedTests
         /// </summary>
         string Value { get; }
     }
+    /// <summary>
+    /// 实现创建结果契约的第一种样例类型。
+    /// </summary>
     public sealed class FirstCreated : ICreated
     {
+        /// <summary>
+        /// 初始化一个 <see cref="FirstCreated"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">保存到实例中的文本。</param>
         public FirstCreated(string value) => Value = value;
+
+        /// <inheritdoc />
         public string Value { get; }
     }
 
+    /// <summary>
+    /// 实现创建结果契约的第二种样例类型。
+    /// </summary>
     public sealed class SecondCreated : ICreated
     {
+        /// <summary>
+        /// 初始化一个 <see cref="SecondCreated"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">保存到实例中的文本。</param>
         public SecondCreated(string value) => Value = value;
+
+        /// <inheritdoc />
         public string Value { get; }
     }
 
+    /// <summary>
+    /// 提供与批量创建参数不匹配的构造函数样例。
+    /// </summary>
     public sealed class NoMatchingConstructor
     {
+        /// <summary>
+        /// 初始化一个 <see cref="NoMatchingConstructor"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">构造函数要求的整数参数。</param>
         public NoMatchingConstructor(int value) { }
     }
-
-    public sealed class ThrowingCreated
+    /// <summary>
+    /// 用于验证批量构造入口保留歧义异常的样例。
+    /// </summary>
+    public sealed class AmbiguousConstructor
     {
-        public ThrowingCreated() => throw new InvalidOperationException("constructor");
+        /// <summary>
+        /// 初始化一个 <see cref="AmbiguousConstructor"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">用于形成构造函数重载歧义的字符串参数。</param>
+        public AmbiguousConstructor(string value) { }
+        /// <summary>
+        /// 初始化一个 <see cref="AmbiguousConstructor"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">用于形成构造函数重载歧义的 URI 参数。</param>
+        public AmbiguousConstructor(Uri value) { }
+    }
+    /// <summary>
+    /// 提供两个互不优先的引用类型构造函数，验证封闭泛型的歧义行为。
+    /// </summary>
+    /// <typeparam name="T">用于构造封闭泛型样例的类型参数。</typeparam>
+    public sealed class AmbiguousGeneric<T>
+    {
+        /// <summary>
+        /// 初始化一个 <see cref="AmbiguousGeneric"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">字符串构造参数。</param>
+        public AmbiguousGeneric(string value) => throw new InvalidOperationException("不应调用歧义候选。");
+        /// <summary>
+        /// 初始化一个 <see cref="AmbiguousGeneric"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">URI 构造参数。</param>
+        public AmbiguousGeneric(Uri value) => throw new InvalidOperationException("不应调用歧义候选。");
     }
 
+    /// <summary>
+    /// 提供用于验证构造函数异常传播的样例类型。
+    /// </summary>
+    public sealed class ThrowingCreated
+    {
+        /// <summary>
+        /// 初始化一个 <see cref="ThrowingCreated"/> 类型的实例。
+        /// </summary>
+        public ThrowingCreated() => throw new InvalidOperationException("constructor");
+    }
     /// <summary>
     /// 用于验证抽象类型实例创建限制的样例。
     /// </summary>
@@ -602,14 +826,32 @@ public class TypeVisitAdvancedTests
     {
     }
 
+    /// <summary>
+    /// 声明仅接受值类型实参的泛型构造样例。
+    /// </summary>
+    /// <typeparam name="T">必须为非可空值类型的泛型实参。</typeparam>
     public sealed class StructOnlyGeneric<T> where T : struct
     {
+        /// <summary>
+        /// 初始化一个 <see cref="StructOnlyGeneric{T}"/> 类型的实例。
+        /// </summary>
         public StructOnlyGeneric() { }
     }
 
+    /// <summary>
+    /// 提供泛型构造与结果属性验证的实体样例。
+    /// </summary>
     public sealed class NullableConstructorEntity
     {
+        /// <summary>
+        /// 初始化一个 <see cref="NullableConstructorEntity"/> 类型的实例。
+        /// </summary>
+        /// <param name="value">实例保存的文本值。</param>
         public NullableConstructorEntity(string value) => Value = value;
+
+        /// <summary>
+        /// 获取构造函数传入的文本值。
+        /// </summary>
         public string Value { get; }
     }
 }

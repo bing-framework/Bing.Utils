@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Reflection;
-
 /// <summary>
 /// 类型反射操作。
 /// </summary>
@@ -16,9 +15,19 @@ public static partial class TypeReflections
     /// 缓存数组不直接暴露给调用方，避免调用方修改结果污染后续查询。
     /// </remarks>
     private static readonly ConditionalWeakTable<Type, Lazy<PropertyInfo[]>> PublicInstancePropertiesCache = new();
+    /// <summary>
+    /// 已确认不包含可回收程序集成员的属性快照标记表。
+    /// </summary>
     private static readonly ConditionalWeakTable<object, object> SafePropertySnapshots = new();
+    /// <summary>
+    /// 标记属性快照已完成可回收程序集检查。
+    /// </summary>
     private static readonly object SafePropertySnapshotMarker = new();
-
+    /// <summary>
+    /// 判断属性快照是否包含可回收程序集成员。
+    /// </summary>
+    /// <param name="properties">待检查的属性快照。</param>
+    /// <returns>包含可回收程序集成员时为 true，否则为 false。</returns>
     private static bool ContainsCollectible(PropertyInfo[] properties)
     {
         if (properties == null || SafePropertySnapshots.TryGetValue(properties, out _))
@@ -28,12 +37,14 @@ public static partial class TypeReflections
         SafePropertySnapshots.GetValue(properties, _ => SafePropertySnapshotMarker);
         return false;
     }
-
     /// <summary>
     /// 获取指定类型的公共实例属性。
     /// </summary>
     /// <param name="type">要检查的类型。</param>
-    /// <returns>公共实例、非索引器属性的独立快照。对于接口，会合并其继承接口；同名同类型且访问器形状相同的属性只保留一个，同名不同类型属性会同时保留。</returns>
+    /// <returns>经过筛选、去重和稳定排序的公共实例属性快照。</returns>
+    /// <remarks>
+    /// 非索引器属性会合并接口继承图；同名同类型且访问器形状、公开性和初始化语义相同的属性只保留一个，其余契约分别保留。
+    /// </remarks>
     /// <exception cref="ArgumentNullException">当 <paramref name="type"/> 为 null 时抛出。</exception>
     public static IReadOnlyList<PropertyInfo> GetPublicInstanceProperties(
 #if NET5_0_OR_GREATER
@@ -43,8 +54,11 @@ public static partial class TypeReflections
     {
         return GetPublicInstancePropertiesCore(type).ToArray();
     }
-
-    /// <summary>返回仅供内部读取的属性集合；公开入口必须复制后再返回，避免缓存污染。</summary>
+    /// <summary>
+    /// 返回仅供内部读取的属性集合。
+    /// </summary>
+    /// <param name="type">要检查的类型。</param>
+    /// <returns>缓存中的公共实例属性数组。</returns>
 #if NET5_0_OR_GREATER
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "ConditionalWeakTable 的 Type 键回调不会保留参数级动态成员标注，实际扫描使用已标注的外层 type。")]
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2087", Justification = "ConditionalWeakTable 的 Type 键回调不会保留参数级动态成员标注，实际扫描使用已标注的外层 type。")]
@@ -67,9 +81,8 @@ public static partial class TypeReflections
             PublicInstancePropertiesCache.Remove(type);
         return properties;
     }
-
     /// <summary>
-    /// 获取指定泛型类型的公共实例属性。
+    /// 获取指定类型的公共实例属性。
     /// </summary>
     /// <typeparam name="T">要检查的类型。</typeparam>
     /// <returns>公共实例、非索引器属性的独立快照。</returns>
@@ -78,7 +91,6 @@ public static partial class TypeReflections
         [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties | System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.Interfaces)]
 #endif
         T>() => GetPublicInstanceProperties(typeof(T));
-
     /// <summary>
     /// 获取指定类型的公共可读实例属性。
     /// </summary>
@@ -95,7 +107,6 @@ public static partial class TypeReflections
             .Where(property => property.GetMethod != null && property.GetMethod.IsPublic)
             .ToArray();
     }
-
     /// <summary>
     /// 获取指定类型的公共可写实例属性。
     /// </summary>
@@ -114,7 +125,6 @@ public static partial class TypeReflections
                                && !PropertyInfoExtensions.IsInitOnlySetter(property))
             .ToArray();
     }
-
     /// <summary>
     /// 创建指定类型的公共实例属性快照。
     /// </summary>
@@ -144,7 +154,6 @@ public static partial class TypeReflections
             .ThenBy(GetMetadataToken)
             .ToArray();
     }
-
     /// <summary>
     /// 获取接口及其所有继承接口声明的属性。
     /// </summary>
@@ -175,7 +184,6 @@ public static partial class TypeReflections
                 pending.Enqueue(inheritedInterface);
         }
     }
-
     /// <summary>
     /// 判断属性是否为公共实例非索引器属性。
     /// </summary>
@@ -191,12 +199,23 @@ public static partial class TypeReflections
         return (getter != null && getter.IsPublic && !getter.IsStatic)
                || (setter != null && setter.IsPublic && !setter.IsStatic);
     }
-
-    /// <summary>按真实类型身份及访问器形状去重，保留不同声明中的泛型参数和跨加载上下文的类型。</summary>
-    /// <remarks>调用方已排除索引器；Type 相等性保留泛型参数的声明者及位置。</remarks>
-    internal static (string Name, Type PropertyType, bool HasGetter, bool HasSetter) CreatePropertySignature(PropertyInfo property) =>
-        (property.Name, property.PropertyType, property.GetMethod != null, property.SetMethod != null);
-
+    /// <summary>
+    /// 创建用于属性去重的签名。
+    /// </summary>
+    /// <param name="property">属性元数据。</param>
+    /// <returns>包含名称、类型和访问器契约的属性签名。</returns>
+    /// <remarks>
+    /// 调用方已排除索引器；Type 相等性保留泛型参数的声明者及位置。
+    /// </remarks>
+    internal static (string Name, Type PropertyType, bool HasGetter, bool HasSetter,
+        bool HasPublicGetter, bool HasPublicSetter, bool IsInitOnly) CreatePropertySignature(PropertyInfo property)
+    {
+        var getter = property.GetMethod;
+        var setter = property.SetMethod;
+        return (property.Name, property.PropertyType, getter != null, setter != null,
+            getter?.IsPublic == true, setter?.IsPublic == true,
+            setter != null && PropertyInfoExtensions.IsInitOnlySetter(property));
+    }
     /// <summary>
     /// 获取索引参数类型签名。
     /// </summary>
@@ -204,7 +223,6 @@ public static partial class TypeReflections
     /// <returns>索引参数类型组成的稳定签名。</returns>
     private static string GetIndexParameterSignature(PropertyInfo property) =>
         string.Join(";", property.GetIndexParameters().Select(parameter => parameter.ParameterType.AssemblyQualifiedName));
-
     /// <summary>
     /// 获取元数据标识，用于同程序集成员的补充排序。
     /// </summary>

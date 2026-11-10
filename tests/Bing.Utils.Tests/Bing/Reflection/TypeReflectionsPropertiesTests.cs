@@ -144,6 +144,65 @@ public class TypeReflectionsPropertiesTests
     }
 
     /// <summary>
+    /// 验证接口的 init 与 set 契约不会合并，可写结果不受声明类型名称排序影响。
+    /// </summary>
+    /// <param name="type">要枚举属性的接口类型。</param>
+    /// <param name="writableDeclaringType">预期保留的可写属性声明类型。</param>
+    [Theory]
+    [InlineData(typeof(IZSetAfterInit), typeof(IZSetAfterInit))]
+    [InlineData(typeof(IASetBeforeInit), typeof(IASetBeforeInit))]
+    [InlineData(typeof(IInitAndSetSiblings), typeof(IZSetValue))]
+    public void GetPublicWritableInstanceProperties_WithInterfaceInitAndSet_KeepsWritableContract(
+        Type type, Type writableDeclaringType)
+    {
+        var properties = TypeReflections.GetPublicInstanceProperties(type);
+        var writable = TypeReflections.GetPublicWritableInstanceProperties(type);
+
+        properties.Count(property => property.Name == "Value").ShouldBe(2);
+        writable.Count.ShouldBe(1);
+        writable[0].DeclaringType.ShouldBe(writableDeclaringType);
+        TypeReflections.GetPublicWritableInstanceProperties(type)[0].ShouldBe(writable[0]);
+    }
+
+    /// <summary>
+    /// 验证接口属性保留不同访问器的公开契约。
+    /// </summary>
+    /// <param name="type">要枚举属性的接口类型。</param>
+    /// <param name="publicDeclaringType">公共访问器所属的声明类型。</param>
+    /// <param name="restrictedDeclaringType">受限访问器所属的声明类型。</param>
+    /// <param name="privateGetter">为 true 时验证私有读取访问器，否则验证私有写入访问器。</param>
+    [Theory]
+    [InlineData(typeof(IGetterVisibilityPrivateFirst), typeof(IZPublicAccessors), typeof(IAPrivateGetter), true)]
+    [InlineData(typeof(IGetterVisibilityPublicFirst), typeof(IAPublicAccessors), typeof(IZPrivateGetter), true)]
+    [InlineData(typeof(ISetterVisibilityPrivateFirst), typeof(IZPublicAccessors), typeof(IAPrivateSetter), false)]
+    [InlineData(typeof(ISetterVisibilityPublicFirst), typeof(IAPublicAccessors), typeof(IZPrivateSetter), false)]
+    [InlineData(typeof(IZPublicAfterPrivateGetter), typeof(IZPublicAfterPrivateGetter), typeof(IAPrivateGetter), true)]
+    [InlineData(typeof(IAPublicBeforePrivateGetter), typeof(IAPublicBeforePrivateGetter), typeof(IZPrivateGetter), true)]
+    [InlineData(typeof(IZPublicAfterPrivateSetter), typeof(IZPublicAfterPrivateSetter), typeof(IAPrivateSetter), false)]
+    [InlineData(typeof(IAPublicBeforePrivateSetter), typeof(IAPublicBeforePrivateSetter), typeof(IZPrivateSetter), false)]
+    public void GetPublicInstanceProperties_WithInterfaceAccessorVisibility_KeepsPublicContracts(
+        Type type, Type publicDeclaringType, Type restrictedDeclaringType, bool privateGetter)
+    {
+        var properties = TypeReflections.GetPublicInstanceProperties(type);
+        var readable = TypeReflections.GetPublicReadableInstanceProperties(type);
+        var writable = TypeReflections.GetPublicWritableInstanceProperties(type);
+        var restrictedAccess = privateGetter ? readable : writable;
+        var sharedAccess = privateGetter ? writable : readable;
+
+        // 公共访问能力由契约决定，不应被字母排序靠前的私有访问器覆盖。
+        restrictedAccess.Count.ShouldBe(1);
+        restrictedAccess[0].DeclaringType.ShouldBe(publicDeclaringType);
+        sharedAccess.Select(property => property.DeclaringType)
+            .ShouldBe(new[] { publicDeclaringType, restrictedDeclaringType }.OrderBy(item => item.FullName, StringComparer.Ordinal));
+        properties.Count.ShouldBe(2);
+        properties.ShouldAllBe(property => property.Name == "Value" && property.PropertyType == typeof(int));
+
+        TypeReflections.GetPublicInstanceProperties(type).ShouldBe(properties);
+        TypeReflections.GetPublicReadableInstanceProperties(type).ShouldBe(readable);
+        TypeReflections.GetPublicWritableInstanceProperties(type).ShouldBe(writable);
+    }
+
+    /// <summary>
     /// 提供继承属性、私有属性及索引器的基类样例。
     /// </summary>
     public class BaseProperties
@@ -199,6 +258,9 @@ public class TypeReflectionsPropertiesTests
         /// 获取或初始化用于验证 init-only setter 筛选的测试整数。
         /// </summary>
         public int InitOnly { get; init; }
+        /// <summary>
+        /// 获取只读测试文本。
+        /// </summary>
         public string ReadOnly { get; } = "read";
         /// <summary>
         /// 获取或设置具有私有读取和公开写入访问器的测试文本。
@@ -322,4 +384,194 @@ public class TypeReflectionsPropertiesTests
     /// 用于验证同名属性访问器差异的组合契约。
     /// </summary>
     public interface IAccessorShapeConflict : IGetOnlyValue, IGetSetValue { }
+
+    /// <summary>
+    /// 名称排序在派生可写接口之前的初始化契约。
+    /// </summary>
+    public interface IAInitValue
+    {
+        /// <summary>
+        /// 获取或初始化测试值。
+        /// </summary>
+        int Value { get; init; }
+    }
+
+    /// <summary>
+    /// 用普通 setter 隐藏基接口 init 属性。
+    /// </summary>
+    public interface IZSetAfterInit : IAInitValue
+    {
+        /// <summary>
+        /// 获取或设置隐藏基接口初始化属性的测试值。
+        /// </summary>
+        new int Value { get; set; }
+    }
+
+    /// <summary>
+    /// 名称排序在派生可写接口之后的初始化契约。
+    /// </summary>
+    public interface IZInitValue
+    {
+        /// <summary>
+        /// 获取或初始化测试值。
+        /// </summary>
+        int Value { get; init; }
+    }
+
+    /// <summary>
+    /// 交换名称排序后仍应保留可写属性。
+    /// </summary>
+    public interface IASetBeforeInit : IZInitValue
+    {
+        /// <summary>
+        /// 获取或设置隐藏基接口初始化属性的测试值。
+        /// </summary>
+        new int Value { get; set; }
+    }
+
+    /// <summary>
+    /// 与初始化接口并列的可写契约。
+    /// </summary>
+    public interface IZSetValue
+    {
+        /// <summary>
+        /// 获取或设置测试值。
+        /// </summary>
+        int Value { get; set; }
+    }
+
+    /// <summary>
+    /// 合并同名同类型但初始化语义不同的接口。
+    /// </summary>
+    public interface IInitAndSetSiblings : IAInitValue, IZSetValue { }
+
+    /// <summary>
+    /// 名称排序靠前且具有私有 getter 的默认接口属性。
+    /// </summary>
+    public interface IAPrivateGetter
+    {
+        /// <summary>
+        /// 获取或设置具有私有读取访问器的测试值。
+        /// </summary>
+        int Value { private get => 0; set { } }
+    }
+
+    /// <summary>
+    /// 名称排序靠后且具有私有 getter 的默认接口属性。
+    /// </summary>
+    public interface IZPrivateGetter
+    {
+        /// <summary>
+        /// 获取或设置具有私有读取访问器的测试值。
+        /// </summary>
+        int Value { private get => 0; set { } }
+    }
+
+    /// <summary>
+    /// 名称排序靠前且具有私有 setter 的默认接口属性。
+    /// </summary>
+    public interface IAPrivateSetter
+    {
+        /// <summary>
+        /// 获取或设置具有私有写入访问器的测试值。
+        /// </summary>
+        int Value { get => 0; private set { } }
+    }
+
+    /// <summary>
+    /// 名称排序靠后且具有私有 setter 的默认接口属性。
+    /// </summary>
+    public interface IZPrivateSetter
+    {
+        /// <summary>
+        /// 获取或设置具有私有写入访问器的测试值。
+        /// </summary>
+        int Value { get => 0; private set { } }
+    }
+
+    /// <summary>
+    /// 名称排序靠前的公共读写属性契约。
+    /// </summary>
+    public interface IAPublicAccessors
+    {
+        /// <summary>
+        /// 获取或设置测试值。
+        /// </summary>
+        int Value { get; set; }
+    }
+
+    /// <summary>
+    /// 名称排序靠后的公共读写属性契约。
+    /// </summary>
+    public interface IZPublicAccessors
+    {
+        /// <summary>
+        /// 获取或设置测试值。
+        /// </summary>
+        int Value { get; set; }
+    }
+
+    /// <summary>
+    /// 并列继承时先遇到私有 getter 的组合契约。
+    /// </summary>
+    public interface IGetterVisibilityPrivateFirst : IAPrivateGetter, IZPublicAccessors { }
+
+    /// <summary>
+    /// 并列继承时先遇到公共 getter 的组合契约。
+    /// </summary>
+    public interface IGetterVisibilityPublicFirst : IAPublicAccessors, IZPrivateGetter { }
+
+    /// <summary>
+    /// 并列继承时先遇到私有 setter 的组合契约。
+    /// </summary>
+    public interface ISetterVisibilityPrivateFirst : IAPrivateSetter, IZPublicAccessors { }
+
+    /// <summary>
+    /// 并列继承时先遇到公共 setter 的组合契约。
+    /// </summary>
+    public interface ISetterVisibilityPublicFirst : IAPublicAccessors, IZPrivateSetter { }
+
+    /// <summary>
+    /// 公共读写声明隐藏排序靠前的私有 getter 属性。
+    /// </summary>
+    public interface IZPublicAfterPrivateGetter : IAPrivateGetter
+    {
+        /// <summary>
+        /// 获取或设置具有公共访问器的测试值。
+        /// </summary>
+        new int Value { get; set; }
+    }
+
+    /// <summary>
+    /// 公共读写声明隐藏排序靠后的私有 getter 属性。
+    /// </summary>
+    public interface IAPublicBeforePrivateGetter : IZPrivateGetter
+    {
+        /// <summary>
+        /// 获取或设置具有公共访问器的测试值。
+        /// </summary>
+        new int Value { get; set; }
+    }
+
+    /// <summary>
+    /// 公共读写声明隐藏排序靠前的私有 setter 属性。
+    /// </summary>
+    public interface IZPublicAfterPrivateSetter : IAPrivateSetter
+    {
+        /// <summary>
+        /// 获取或设置具有公共访问器的测试值。
+        /// </summary>
+        new int Value { get; set; }
+    }
+
+    /// <summary>
+    /// 公共读写声明隐藏排序靠后的私有 setter 属性。
+    /// </summary>
+    public interface IAPublicBeforePrivateSetter : IZPrivateSetter
+    {
+        /// <summary>
+        /// 获取或设置具有公共访问器的测试值。
+        /// </summary>
+        new int Value { get; set; }
+    }
 }
