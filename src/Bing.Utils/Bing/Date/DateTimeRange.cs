@@ -147,10 +147,16 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <summary>
     /// 将自定义区间按相同的 Kind 规则规范化，并排序端点。
     /// </summary>
+    /// <param name="range">待规范化的时间区间。</param>
+    /// <returns>按统一 Kind 规则规范化后的时间区间。</returns>
     private static DateTimeRange Normalize(IDateTimeRange range) => range as DateTimeRange ?? new DateTimeRange(range);
 
-    /// <summary>UTC 原样，Local/Unspecified 按本地转换；极值作为 UTC 哨兵。</summary>
-    private static DateTime ToUtcSafe(DateTime dt)
+    /// <summary>
+    /// 将区间端点或待比较时间转换为 UTC；极值保留为 UTC 哨兵。
+    /// </summary>
+    /// <param name="dt">待转换时间；Unspecified 按本地时区解释。</param>
+    /// <returns>规范化后的 UTC 时间。</returns>
+    internal static DateTime ToUtcSafe(DateTime dt)
     {
         return (dt == DateTime.MinValue || dt == DateTime.MaxValue)
             ? DateTime.SpecifyKind(dt, DateTimeKind.Utc)
@@ -161,14 +167,10 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
 
     #region 属性
 
-    /// <summary>
-    /// 获取包含的起始时间（UTC）
-    /// </summary>
+    /// <inheritdoc />
     public DateTime StartTime { get; }
 
-    /// <summary>
-    /// 获取包含的结束时间（UTC）
-    /// </summary>
+    /// <inheritdoc />
     public DateTime EndTime { get; }
 
     /// <summary>
@@ -213,10 +215,18 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
 
     #endregion
 
-    /// <summary>直接计算当天末 tick，避免最大日期先构造次日导致溢出。</summary>
+    /// <summary>
+    /// 直接计算当天末 tick，避免最大日期先构造次日导致溢出。
+    /// </summary>
+    /// <param name="value">用于确定自然日的日期时间。</param>
+    /// <returns>指定自然日最后一个刻度的日期时间。</returns>
     private static DateTime EndOfCalendarDay(DateTime value) => value.Date.AddTicks(TimeSpan.TicksPerDay - 1);
 
-    /// <summary>返回一周末 tick；最后一周截止到 DateTime 可表示上限。</summary>
+    /// <summary>
+    /// 返回一周末 tick；最后一周截止到 DateTime 可表示上限。
+    /// </summary>
+    /// <param name="start">一周起始日的日期时间。</param>
+    /// <returns>指定周的最后一个刻度；超过可表示范围时返回日期上限。</returns>
     private static DateTime EndOfCalendarWeek(DateTime start) =>
         start.AddTicks(Math.Min(7 * TimeSpan.TicksPerDay - 1, DateTime.MaxValue.Ticks - start.Ticks));
 
@@ -499,6 +509,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <summary>
     /// 获取两个时间之间的天数
     /// </summary>
+    /// <returns>区间持续时间的总天数。</returns>
     public int GetDays() => Convert.ToInt32(TimeSpan.TotalDays);
 
     #endregion
@@ -508,6 +519,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <summary>
     /// 获取两个时间之间的小时数
     /// </summary>
+    /// <returns>区间持续时间的总小时数。</returns>
     public int GetHours() => Convert.ToInt32(TimeSpan.TotalHours);
 
     #endregion
@@ -517,6 +529,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <summary>
     /// 获取两个时间之间的分钟数
     /// </summary>
+    /// <returns>区间持续时间的总分钟数。</returns>
     public int GetMinutes() => Convert.ToInt32(TimeSpan.TotalMinutes);
 
     #endregion
@@ -526,6 +539,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <summary>
     /// 获取两个时间之间的秒数
     /// </summary>
+    /// <returns>区间持续时间的总秒数。</returns>
     public int GetSeconds() => Convert.ToInt32(TimeSpan.TotalSeconds);
 
     #endregion
@@ -535,6 +549,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <summary>
     /// 获取两个时间之间的毫秒数
     /// </summary>
+    /// <returns>区间持续时间的总毫秒数。</returns>
     public int GetMilliseconds() => Convert.ToInt32(TimeSpan.TotalMilliseconds);
 
     #endregion
@@ -558,6 +573,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// 判断是否包含指定时间范围
     /// </summary>
     /// <param name="range">时间范围</param>
+    /// <returns>当前区间包含指定值或区间时为 true，否则为 false。</returns>
     public bool Contains(IDateTimeRange range)
     {
         var other = Normalize(range);
@@ -569,6 +585,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// </summary>
     /// <param name="start">开始时间；Utc 原样，Local/Unspecified 按本地时区转换。</param>
     /// <param name="end">结束时间</param>
+    /// <returns>当前区间包含指定值或区间时为 true，否则为 false。</returns>
     public bool Contains(DateTime start, DateTime end) => Contains(new DateTimeRange(start, end));
 
     #endregion
@@ -579,6 +596,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// 判断当前范围是否在指定范围内
     /// </summary>
     /// <param name="range">时间范围</param>
+    /// <returns>当前值处于指定区间内时为 true，否则为 false。</returns>
     public bool In(IDateTimeRange range)
     {
         return Normalize(range).Contains(this);
@@ -589,6 +607,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
+    /// <returns>当前值处于指定区间内时为 true，否则为 false。</returns>
     public bool In(DateTime start, DateTime end) => In(new DateTimeRange(start, end));
 
     #endregion
@@ -599,6 +618,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// 判断与指定范围是否有交集
     /// </summary>
     /// <param name="range">时间范围</param>
+    /// <returns>两个区间相交时为 true，否则为 false。</returns>
     public bool HasIntersect(IDateTimeRange range)
     {
         var other = Normalize(range);
@@ -610,6 +630,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
+    /// <returns>两个区间相交时为 true，否则为 false。</returns>
     public bool HasIntersect(DateTime start, DateTime end) => HasIntersect(new DateTimeRange(start, end));
 
     #endregion
@@ -648,6 +669,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// 合并时间范围
     /// </summary>
     /// <param name="range">时间范围</param>
+    /// <returns>覆盖两个区间端点的最小连续区间。</returns>
     public DateTimeRange Union(IDateTimeRange range)
     {
         range = Normalize(range);
@@ -663,6 +685,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// </summary>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
+    /// <returns>覆盖两个区间端点的最小连续区间。</returns>
     public DateTimeRange Union(DateTime start, DateTime end) => Union(new DateTimeRange(start, end));
 
     #endregion
@@ -687,6 +710,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// </summary>
     /// <param name="format">格式</param>
     /// <param name="separator">分隔符</param>
+    /// <returns>按指定格式生成的时间文本。</returns>
     public string ToString(string format, string separator) => $"{StartTime.ToString(format)}{separator}{EndTime.ToString(format)}";
 
     /// <summary>
@@ -694,6 +718,7 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// </summary>
     /// <param name="format">格式</param>
     /// <param name="formatProvider">格式化提供程序</param>
+    /// <returns>按指定格式生成的时间文本。</returns>
     public string ToString(string format, IFormatProvider formatProvider) => ToString(format, DefaultSeparator, formatProvider);
 
     /// <summary>
@@ -702,17 +727,15 @@ public class DateTimeRange : IDateTimeRange, IEquatable<DateTimeRange>, ICompara
     /// <param name="format">格式</param>
     /// <param name="separator">分隔符</param>
     /// <param name="formatProvider">格式化提供程序</param>
+    /// <returns>按指定格式生成的时间文本。</returns>
     public string ToString(string format, string separator, IFormatProvider formatProvider) => $"{StartTime.ToString(format, formatProvider)}{separator}{EndTime.ToString(format, formatProvider)}";
 
     #endregion
 
     #region 运算符与比较
 
-    /// <summary>
-    /// 相等比较
-    /// </summary>
-    /// <param name="other">时间范围</param>
-    /// <returns></returns>
+    /// <inheritdoc />
+    /// <remarks>起止时间均相等时视为相等；与 null 比较时不相等。</remarks>
     public bool Equals(DateTimeRange other) => other is not null && StartTime == other.StartTime && EndTime == other.EndTime;
 
     /// <inheritdoc />

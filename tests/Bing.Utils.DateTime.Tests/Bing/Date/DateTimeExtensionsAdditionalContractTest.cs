@@ -1,7 +1,6 @@
 using NodaTime;
 
 namespace Bing.Date;
-
 /// <summary>
 /// 日期时间扩展的运算、时段和边界契约测试。
 /// </summary>
@@ -25,7 +24,6 @@ public class DateTimeExtensionsAdditionalContractTest
 
         result.ShouldBe(DateTime.Parse(expected));
     }
-
     /// <summary>
     /// 验证季度偏移按三个月步进并支持跨年。
     /// </summary>
@@ -43,7 +41,6 @@ public class DateTimeExtensionsAdditionalContractTest
 
         result.ShouldBe(DateTime.Parse(expected));
     }
-
     /// <summary>
     /// 验证按 NodaTime 时长偏移日期时间。
     /// </summary>
@@ -57,18 +54,17 @@ public class DateTimeExtensionsAdditionalContractTest
 
         result.ShouldBe(new DateTime(2024, 1, 15, 11, 22, 33, DateTimeKind.Utc));
     }
-
     /// <summary>
-    /// 验证整月差按日期顺序和日部分计算。
+    /// 验证整月差按完整月份计算并保持日期顺序对称。
     /// </summary>
     /// <param name="left">第一个日期。</param>
     /// <param name="right">第二个日期。</param>
     /// <param name="expected">预期月差。</param>
     [Theory]
-    [InlineData("2023-01-15", "2023-05-10", 4)]
-    [InlineData("2023-01-10", "2023-05-15", 5)]
-    [InlineData("2023-05-15", "2023-01-10", 5)]
-    public void GetMonthDiff_DifferentDayRules_ReturnsCurrentExpected(string left, string right, int expected)
+    [InlineData("2023-01-15", "2023-05-10", 3)]
+    [InlineData("2023-01-10", "2023-05-15", 4)]
+    [InlineData("2023-05-15", "2023-01-10", 4)]
+    public void GetMonthDiff_DifferentDayNumbers_ReturnsCompletedMonths(string left, string right, int expected)
     {
         var l = DateTime.Parse(left);
         var r = DateTime.Parse(right);
@@ -77,7 +73,6 @@ public class DateTimeExtensionsAdditionalContractTest
 
         result.ShouldBe(expected);
     }
-
     /// <summary>
     /// 验证包含不足整月部分的月差计算。
     /// </summary>
@@ -91,7 +86,6 @@ public class DateTimeExtensionsAdditionalContractTest
 
         result.ShouldBe(4.161290322580645, 1e-12);
     }
-
     /// <summary>
     /// 验证区间判断遵循是否包含边界的设置。
     /// </summary>
@@ -105,7 +99,6 @@ public class DateTimeExtensionsAdditionalContractTest
         value.IsBetween(min, max, includeBoundary: true).ShouldBeTrue();
         value.IsBetween(min, max, includeBoundary: false).ShouldBeFalse();
     }
-
     /// <summary>
     /// 验证上午时段的小时边界。
     /// </summary>
@@ -122,7 +115,6 @@ public class DateTimeExtensionsAdditionalContractTest
 
         value.IsMorning().ShouldBe(expected);
     }
-
     /// <summary>
     /// 验证下午时段的小时边界。
     /// </summary>
@@ -139,7 +131,6 @@ public class DateTimeExtensionsAdditionalContractTest
 
         value.IsAfternoon().ShouldBe(expected);
     }
-
     /// <summary>
     /// 验证傍晚时段的小时边界。
     /// </summary>
@@ -156,7 +147,6 @@ public class DateTimeExtensionsAdditionalContractTest
 
         value.IsDusk().ShouldBe(expected);
     }
-
     /// <summary>
     /// 验证晚间时段的小时边界。
     /// </summary>
@@ -172,7 +162,6 @@ public class DateTimeExtensionsAdditionalContractTest
 
         value.IsEvening().ShouldBe(expected);
     }
-
     /// <summary>
     /// 验证午前和午后以十二点为分界。
     /// </summary>
@@ -190,7 +179,6 @@ public class DateTimeExtensionsAdditionalContractTest
         value.IsAM().ShouldBe(expectedAm);
         value.IsPM().ShouldBe(expectedPm);
     }
-
     /// <summary>
     /// 验证日期相等和时间相等分别只比较对应部分。
     /// </summary>
@@ -206,7 +194,6 @@ public class DateTimeExtensionsAdditionalContractTest
         left.IsDateEqual(rightSameTime).ShouldBeFalse();
         left.IsTimeEqual(rightSameTime).ShouldBeTrue();
     }
-
     /// <summary>
     /// 验证秒、分和小时的起止边界保留日期时间种类。
     /// </summary>
@@ -222,7 +209,6 @@ public class DateTimeExtensionsAdditionalContractTest
         source.BeginningOfHour().ShouldBe(new DateTime(2024, 1, 15, 10, 0, 0, 0, DateTimeKind.Utc));
         source.EndOfHour().ShouldBe(new DateTime(2024, 1, 15, 10, 59, 59, DateTimeKind.Utc).AddTicks(TimeSpan.TicksPerSecond - 1));
     }
-
     /// <summary>
     /// 验证闰年和平年的月份与全年天数。
     /// </summary>
@@ -237,7 +223,6 @@ public class DateTimeExtensionsAdditionalContractTest
         leapFeb.DaysInYear().ShouldBe(366);
         commonFeb.DaysInYear().ShouldBe(365);
     }
-
     /// <summary>
     /// 验证月份映射到对应季度。
     /// </summary>

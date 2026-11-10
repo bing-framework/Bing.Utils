@@ -120,27 +120,88 @@ public static class ChineseDateHelper
     #endregion
 
     /// <summary>
-    /// 获取农历年
+    /// 将公历年份转换为中文数字。
     /// </summary>
     /// <param name="dt">日期</param>
     /// <param name="traditionalChineseCharacters">是否使用繁体中文字符</param>
-    /// <returns>农历年</returns>
-    /// <exception cref="ArgumentNullException">日期为空时抛出</exception>
+    /// <returns>公历年份的中文数字。</returns>
+    /// <exception cref="ArgumentOutOfRangeException">日期超出有效范围。</exception>
     public static string GetChineseYear(DateTime dt, bool traditionalChineseCharacters = false)
     {
         if (!DateJudge.IsValid(dt))
             throw new ArgumentOutOfRangeException(nameof(dt), "日期必须在有效范围内");
 
+        return FormatChineseYear(dt.Year, traditionalChineseCharacters);
+    }
+
+    /// <summary>
+    /// 将有效农历日期所属的年份转换为中文数字。
+    /// </summary>
+    /// <param name="calendar">中国农历历法。</param>
+    /// <param name="dt">公历日期。</param>
+    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符。</param>
+    /// <returns>农历年份的中文数字。</returns>
+    internal static string GetChineseYear(ChineseLunisolarCalendar calendar, DateTime dt, bool traditionalChineseCharacters)
+    {
+        ValidateLunarDate(calendar, dt);
+        return FormatChineseYear(calendar.GetYear(dt), traditionalChineseCharacters);
+    }
+
+    /// <summary>
+    /// 使用现有字表格式化年份数字。
+    /// </summary>
+    /// <param name="year">待格式化的年份。</param>
+    /// <param name="traditionalChineseCharacters">是否使用繁体中文字符。</param>
+    /// <returns>年份的中文数字。</returns>
+    private static string FormatChineseYear(int year, bool traditionalChineseCharacters)
+    {
         var hzNumP = traditionalChineseCharacters ? HZNUM_Z : HZNUM_S;
 
         var result = string.Empty;
-        foreach (var digit in dt.Year.ToString())
+        foreach (var digit in year.ToString())
         {
             // 将字符转换为数字并获取对应的中文数字
             if (int.TryParse(digit.ToString(), out int number) && number >= 0 && number <= 9)
                 result += hzNumP[number];
         }
         return $"{result}年";
+    }
+
+    /// <summary>
+    /// 根据已验证的农历分量格式化简体或繁体日期。
+    /// </summary>
+    /// <param name="year">农历年。</param>
+    /// <param name="month">农历显示月份。</param>
+    /// <param name="day">农历日。</param>
+    /// <param name="isLeapMonth">是否为闰月。</param>
+    /// <param name="traditional">是否使用繁体字形。</param>
+    /// <param name="includeYear">是否包含农历年份。</param>
+    /// <returns>按现有字表组成的农历日期。</returns>
+    internal static string FormatLunarDate(int year, int month, int day, bool isLeapMonth, bool traditional, bool includeYear)
+    {
+        var builder = new System.Text.StringBuilder(16);
+        if (includeYear)
+        {
+            var numbers = traditional ? HZNUM_Z : HZNUM_S;
+            builder.Append(numbers[year / 1000]);
+            builder.Append(numbers[year / 100 % 10]);
+            builder.Append(numbers[year / 10 % 10]);
+            builder.Append(numbers[year % 10]);
+            builder.Append('年');
+        }
+
+        if (isLeapMonth)
+            builder.Append(traditional ? RUN_Z : RUN_S);
+        builder.Append((traditional ? YUE_Z : YUE_S)[month - 1]);
+        builder.Append('月');
+        if (day % 10 == 0)
+            builder.Append((traditional ? MRI_Z : MRI_S)[day / 10]);
+        else
+        {
+            builder.Append((traditional ? PRI_Z : PRI_S)[day / 10]);
+            builder.Append((traditional ? SRI_Z : SRI_S)[day % 10]);
+        }
+        return builder.ToString();
     }
 
     /// <summary>
@@ -360,7 +421,11 @@ public static class ChineseDateHelper
         var lunarDay = calendar.GetDayOfMonth(dt);
         return calendar.IsLeapDay(lunarYear, lunarMonth, lunarDay);
     }
-    /// <summary>农历入口以具体历法支持范围为准，不使用通用日期判断范围。</summary>
+    /// <summary>
+    /// 验证公历日期位于指定农历的支持范围内。
+    /// </summary>
+    /// <param name="calendar">使用的中国农历实例。</param>
+    /// <param name="dt">待验证的公历日期时间。</param>
     private static void ValidateLunarDate(ChineseLunisolarCalendar calendar, DateTime dt)
     {
         if (calendar == null)

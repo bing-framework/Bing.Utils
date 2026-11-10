@@ -13,7 +13,7 @@ public static partial class DateTimeExtensions
     /// <returns>大于或等于 <paramref name="dateTime"/> 的最近间隔边界。</returns>
     /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="interval"/> 小于或等于零，或向上取整结果超出 <see cref="DateTime.MaxValue"/> 时抛出。</exception>
     /// <remarks>
-    /// 已位于边界的值保持不变。该方法仅按 Tick 取整，不执行时区转换，并保留原始 <see cref="DateTime.Kind"/>。
+    /// 已位于边界的值保持不变。该方法仅按 Tick 取整，不执行时区转换，并保留原始 Kind 及本地重复时间选择标记。
     /// </remarks>
     /// <example>
     /// <code>
@@ -32,7 +32,7 @@ public static partial class DateTimeExtensions
         var ticksToAdd = interval.Ticks - remainder;
         if (dateTime.Ticks > DateTime.MaxValue.Ticks - ticksToAdd)
             throw new ArgumentOutOfRangeException(nameof(interval), "向上取整结果超出 DateTime 的有效范围。");
-        return new DateTime(dateTime.Ticks + ticksToAdd, dateTime.Kind);
+        return dateTime.AddTicks(ticksToAdd);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public static partial class DateTimeExtensions
     /// <returns>小于或等于 <paramref name="dateTime"/> 的最近间隔边界。</returns>
     /// <exception cref="ArgumentOutOfRangeException">当 <paramref name="interval"/> 小于或等于零时抛出。</exception>
     /// <remarks>
-    /// 已位于边界的值保持不变。该方法仅按 Tick 取整，不执行时区转换，并保留原始 <see cref="DateTime.Kind"/>。
+    /// 已位于边界的值保持不变。该方法仅按 Tick 取整，不执行时区转换，并保留原始 Kind 及本地重复时间选择标记。
     /// </remarks>
     /// <example>
     /// <code>
@@ -54,7 +54,7 @@ public static partial class DateTimeExtensions
     public static DateTime RoundDown(this DateTime dateTime, TimeSpan interval)
     {
         ValidateInterval(interval);
-        return new DateTime(dateTime.Ticks - dateTime.Ticks % interval.Ticks, dateTime.Kind);
+        return dateTime.AddTicks(-(dateTime.Ticks % interval.Ticks));
     }
 
     /// <summary>

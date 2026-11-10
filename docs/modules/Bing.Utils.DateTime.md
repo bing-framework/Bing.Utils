@@ -1,4 +1,9 @@
 ﻿# Bing.Utils.DateTime
+
+当前能力与可运行示例见 [DateTime / Date 使用指南与本次验收](../reference/datetime-date-usage.md)，涵盖区间、业务日历、固定时钟、时区、时间戳、严格 JSON 和节气查询。
+
+新增的显式 UTC/区间时区投影、版本化年度日历加载、类型化节气查询及性能资源方案见[能力补齐指南](../reference/datetime-capabilities.md)。年度日历由业务维护地区配置，查询使用不可变前缀索引。
+
 ## 1. 包职责（Scope）
 - 解决的问题
 - 提供日期时间计算、导航、比较、业务日运算与 NodaTime 转换扩展。[证据] `src/Bing.Utils.DateTime/Bing.Utils.DateTime.csproj:3` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:72` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1118`
@@ -11,6 +16,7 @@
 - `DateTimeExtensions.ToUtc()/ToCst()/ToEpochTimeSpan()/ToLocalDateTime()`。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1061` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1079` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1101` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1118`
 - `DateTimeExtensions.AddBusinessDays()/IsBefore()`。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:72` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:542`
 - `DateTimeSpanExtensions`：`Days()/Weeks()/Before()/FromNow()`。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:23` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:186` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeSpanExtensions.cs:208`
+- `IClock`、`SystemClock`、`FixedClock`；相对当前时间的计算支持显式传入时钟。`BusinessCalendar` 支持节假日和补班规则，`TimeZoneConversion` 支持显式时区和歧义处理。
 - 输入输出约定
 - `ToUtc` 只改 `Kind`，不做时区换算（保留全部 ticks）。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1050` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1061`
 - `ToCst` 忽略传入参数，直接基于当前时钟返回上海时区时间。[证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1066` [证据] `src/Bing.Utils.DateTime/Bing/Date/DateTimeExtensions.cs:1081`
@@ -78,5 +84,7 @@ var cst = input.ToCst(); // 注意：实现按当前时钟取值，不使用 inp
 独立包保留 DateTimeSpan 的年月分量与固定时长，修正 NodaTime 转换；含年月的 Period 不可直接转固定时长。Set 方法保留未修改精度，EndOf 系列使用最后一个 tick。ToEpochTimeSpan 的 Unspecified 按 UTC 解释，ToUtc 只改标签的历史契约保留。
 
 节气按[官方自然日数据](../reference/solar-term-data.md)覆盖 1900～2100 年，运行时不联网，输出午夜 Unspecified；农历和节气各自使用适用范围。默认周数仍用当前文化的 Calendar 与 FirstDay/Sunday 规则，去除每次调用的格式对象分配。
+
+农历可通过 `DateTime.ToLunarDate()` 和 `ChineseLunarCalendar` 双向转换，显示月份与闰月标志分开表示。日期字段和时间点入口的时区契约、旧接口迁移及范围见[农历日期指南](../reference/datetime-lunar-guide.md)。
 
 新回归入口包括 DateArithmeticRegressionTest、DatePrecisionNavigationRegressionTest 和 Chinese 目录的历法测试；主包对应 DateNumericBoundaryRegressionTest、DateTimeRangeUtcRegressionTest、NoRepeatTimeStampRegressionTest。框架、覆盖率和性能证据见[实施记录](../quality/datetime-date-repair-report.md)。

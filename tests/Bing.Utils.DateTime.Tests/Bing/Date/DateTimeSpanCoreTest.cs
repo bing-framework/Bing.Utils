@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Globalization;
+
 namespace Bing.Date;
 /// <summary>
 /// 日期时间跨度的运算、比较和解析测试。
@@ -81,6 +83,26 @@ public class DateTimeSpanCoreTest
         (longSpan >= shortSpan).ShouldBeTrue();
         (shortSpan == TimeSpan.FromHours(1)).ShouldBeTrue();
         (shortSpan != TimeSpan.FromHours(2)).ShouldBeTrue();
+    }
+    /// <summary>
+    /// 验证对象相等性区分时间跨度类型，同时保留同类型相等及时间跨度运算符契约。
+    /// </summary>
+    [Fact]
+    public void EqualsObject_WithTimeSpan_RemainsTypeSymmetric()
+    {
+        var span = new DateTimeSpan(0, 0, TimeSpan.FromHours(1));
+        var equalSpan = new DateTimeSpan(0, 0, TimeSpan.FromHours(1));
+        object timeSpan = TimeSpan.FromHours(1);
+
+        span.Equals(timeSpan).ShouldBeFalse();
+        timeSpan.Equals(span).ShouldBeFalse();
+        (span == (TimeSpan)timeSpan).ShouldBeTrue();
+        ((TimeSpan)timeSpan == span).ShouldBeTrue();
+        span.Equals((object)equalSpan).ShouldBeTrue();
+        equalSpan.GetHashCode().ShouldBe(span.GetHashCode());
+
+        new HashSet<object> { span, timeSpan }.Count.ShouldBe(2);
+        new HashSet<object> { timeSpan, span }.Count.ShouldBe(2);
     }
     /// <summary>
     /// 验证不兼容的比较对象被拒绝并报告参数名。

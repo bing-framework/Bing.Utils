@@ -154,6 +154,66 @@ public class ChineseDateInfoTest
     }
 
     /// <summary>
+    /// 验证农历新年前夕及春节当天的对象年份采用农历年，并保持简繁体文本。
+    /// </summary>
+    /// <param name="month">公历月份。</param>
+    /// <param name="day">公历日。</param>
+    /// <param name="lunarYear">预期农历年。</param>
+    /// <param name="simplifiedYear">预期简体农历年文本。</param>
+    /// <param name="traditionalYear">预期繁体农历年文本。</param>
+    /// <param name="simplifiedDate">预期简体完整农历日期。</param>
+    /// <param name="traditionalDate">预期繁体完整农历日期。</param>
+    [Theory]
+    [InlineData(2, 9, 2023, "二零二三年", "貳零貳叁年", "二零二三年腊月三十", "貳零貳叁年臘月叁拾")]
+    [InlineData(2, 10, 2024, "二零二四年", "貳零貳肆年", "二零二四年正月初一", "貳零貳肆年正月初壹")]
+    public void GetChineseYearAndDateWithYear_LunarNewYearBoundary_UsesLunarYear(
+        int month,
+        int day,
+        int lunarYear,
+        string simplifiedYear,
+        string traditionalYear,
+        string simplifiedDate,
+        string traditionalDate)
+    {
+        var info = new ChineseDateInfo(new DateTime(2024, month, day));
+
+        info.ChineseYear.ShouldBe(lunarYear);
+        info.GetChineseYear().ShouldBe(simplifiedYear);
+        info.GetChineseYear(traditionalChineseCharacters: true).ShouldBe(traditionalYear);
+        info.GetChineseDateWithYear().ShouldBe(simplifiedDate);
+        info.GetChineseDateWithYear(traditionalChineseCharacters: true).ShouldBe(traditionalDate);
+    }
+
+    /// <summary>
+    /// 验证底层日期 helper 仍按公历年份输出中文年份。
+    /// </summary>
+    /// <param name="month">公历月份。</param>
+    /// <param name="day">公历日。</param>
+    [Theory]
+    [InlineData(2, 9)]
+    [InlineData(2, 10)]
+    public void ChineseDateHelperGetChineseYear_LunarNewYearBoundary_UsesGregorianYear(int month, int day)
+    {
+        var date = new DateTime(2024, month, day);
+
+        ChineseDateHelper.GetChineseYear(date).ShouldBe("二零二四年");
+        ChineseDateHelper.GetChineseYear(date, traditionalChineseCharacters: true).ShouldBe("貳零貳肆年");
+    }
+
+    /// <summary>
+    /// 验证农历年份格式化拒绝空历法及超出历法范围的日期。
+    /// </summary>
+    [Fact]
+    public void GetChineseYear_InvalidCalendarOrDate_IsRejected()
+    {
+        var noCalendar = new ChineseDateInfo(new DateTime(2024, 2, 9), null);
+        var outsideRange = new ChineseDateInfo(ChineseLunarCalendar.MinDate.AddDays(-1));
+
+        Should.Throw<ArgumentNullException>(() => noCalendar.GetChineseYear()).ParamName.ShouldBe("calendar");
+        Should.Throw<ArgumentOutOfRangeException>(() => outsideRange.GetChineseYear()).ParamName.ShouldBe("dt");
+    }
+
+    /// <summary>
     /// 验证二〇二三年日期的干支年名称包含癸卯。
     /// </summary>
     [Fact]
@@ -368,6 +428,27 @@ public class ChineseDateInfoTest
         // 2023年癸卯年正月十五 = 公历 2023-02-05
         var info = ChineseDateInfo.OfLunar(2023, 1, 15);
         info.ToDateTime().ShouldBe(new DateTime(2023, 2, 5));
+    }
+
+    /// <summary>
+    /// 验证旧农历工厂的月份参数继续采用 BCL 月份槽位，闰二月占用第三槽。
+    /// </summary>
+    /// <param name="calendarMonth">BCL 农历月份槽位。</param>
+    /// <param name="gregorianMonth">对应的公历月份。</param>
+    /// <param name="gregorianDay">对应的公历日期。</param>
+    /// <param name="isLeapMonth">是否为闰月槽位。</param>
+    [Theory]
+    [InlineData(2, 2, 20, false)]
+    [InlineData(3, 3, 22, true)]
+    [InlineData(4, 4, 20, false)]
+    public void OfLunar_MonthSlot_PreservesLeapMonthContract(
+        int calendarMonth, int gregorianMonth, int gregorianDay, bool isLeapMonth)
+    {
+        var info = ChineseDateInfo.OfLunar(2023, calendarMonth, 1);
+
+        info.ToDateTime().ShouldBe(new DateTime(2023, gregorianMonth, gregorianDay));
+        info.ChineseMonth.ShouldBe(calendarMonth);
+        info.IsLeapMonth().ShouldBe(isLeapMonth);
     }
 
     #endregion

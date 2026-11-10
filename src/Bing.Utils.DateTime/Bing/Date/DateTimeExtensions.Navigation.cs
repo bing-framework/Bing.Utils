@@ -3,7 +3,9 @@ using Bing.Date.DateUtils;
 
 namespace Bing.Date;
 
-// 日期时间 - 导航
+/// <summary>
+/// 日期时间扩展方法。
+/// </summary>
 public static partial class DateTimeExtensions
 {
     #region Offset
@@ -14,6 +16,7 @@ public static partial class DateTimeExtensions
     /// <param name="dt">时间</param>
     /// <param name="offsetVal">偏移值</param>
     /// <param name="styles">日期偏移风格</param>
+    /// <returns>按指定时间间隔偏移后的日期时间。</returns>
     public static DateTime OffsetBy(this DateTime dt, int offsetVal, DateOffsetStyles styles) =>
         styles switch
         {
@@ -31,6 +34,7 @@ public static partial class DateTimeExtensions
     /// <param name="dt">时间</param>
     /// <param name="offsetVal">偏移值</param>
     /// <param name="styles">时间偏移风格</param>
+    /// <returns>按指定时间间隔偏移后的日期时间。</returns>
     public static DateTime OffsetBy(this DateTime dt, int offsetVal, TimeOffsetStyles styles) =>
         styles switch
         {
@@ -49,37 +53,44 @@ public static partial class DateTimeExtensions
     /// 获取某秒的开始时间，类似于“2023-01-03 01:01:01.000”。
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime BeginningOfSecond(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0, dt.Kind);
+    /// <returns>清除秒以下 ticks，并保留 Kind 和本地重复时间选择标记的日期时间。</returns>
+    public static DateTime BeginningOfSecond(this DateTime dt) => dt.AddTicks(-(dt.Ticks % TimeSpan.TicksPerSecond));
 
     /// <summary>
     /// 获取某分钟的开始时间，类似于“2023-01-03 01:01:00.000”。
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime BeginningOfMinute(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, 0, dt.Kind);
+    /// <returns>清除分钟以下 ticks，并保留 Kind 和本地重复时间选择标记的日期时间。</returns>
+    public static DateTime BeginningOfMinute(this DateTime dt) => dt.AddTicks(-(dt.Ticks % TimeSpan.TicksPerMinute));
 
     /// <summary>
     /// 获取某小时的开始时间，类似于“2023-01-03 01:00:00.000”。
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime BeginningOfHour(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0, 0, dt.Kind);
+    /// <returns>清除小时以下 ticks，并保留 Kind 和本地重复时间选择标记的日期时间。</returns>
+    public static DateTime BeginningOfHour(this DateTime dt) => dt.AddTicks(-(dt.Ticks % TimeSpan.TicksPerHour));
 
     /// <summary>
     /// 获取某天的开始时间，类似于“2023-01-03 00:00:00.000”。
     /// </summary>
     /// <param name="dt">时间</param>
-    public static DateTime BeginningOfDay(this DateTime dt) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, 0, 0, 0, 0, dt.Kind);
+    /// <returns>午夜日期值，保留 Kind 和本地重复时间选择标记。</returns>
+    public static DateTime BeginningOfDay(this DateTime dt) => dt.Date;
 
     /// <summary>
     /// 获取某天的开始时间，类似于“2023-01-03 00:00:00.000”。
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
-    public static DateTime BeginningOfDay(this DateTime dt, int timeZoneOffset) => DateTimeFactory.Create(dt.Year, dt.Month, dt.Day, 0, 0, 0, 0, dt.Kind).AddHours(timeZoneOffset);
+    /// <returns>当天午夜按指定小时数偏移后的钟面值，保留 Kind 和本地重复时间选择标记。</returns>
+    /// <remarks>仅执行固定小时数的算术偏移，不解析时区规则。</remarks>
+    public static DateTime BeginningOfDay(this DateTime dt, int timeZoneOffset) => dt.BeginningOfDay().AddHours(timeZoneOffset);
 
     /// <summary>
     /// 获取某周的开始时间
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在周起点的日期时间。</returns>
     public static DateTime BeginningOfWeek(this DateTime dt) => dt.FirstDayOfWeek().BeginningOfDay();
 
     /// <summary>
@@ -87,12 +98,14 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
+    /// <returns>所在周起点的日期时间。</returns>
     public static DateTime BeginningOfWeek(this DateTime dt, int timeZoneOffset) => dt.FirstDayOfWeek().BeginningOfDay(timeZoneOffset);
 
     /// <summary>
     /// 获取某月的开始时间
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在月起点的日期时间。</returns>
     public static DateTime BeginningOfMonth(this DateTime dt) => dt.FirstDayOfMonth().BeginningOfDay();
 
     /// <summary>
@@ -100,12 +113,14 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
+    /// <returns>所在月起点的日期时间。</returns>
     public static DateTime BeginningOfMonth(this DateTime dt, int timeZoneOffset) => dt.FirstDayOfMonth().BeginningOfDay(timeZoneOffset);
 
     /// <summary>
     /// 获取某季度的开始时间
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在季度起点的日期时间。</returns>
     public static DateTime BeginningOfQuarter(this DateTime dt) => dt.FirstDayOfQuarter().BeginningOfDay();
 
     /// <summary>
@@ -113,12 +128,14 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
+    /// <returns>所在季度起点的日期时间。</returns>
     public static DateTime BeginningOfQuarter(this DateTime dt, int timeZoneOffset) => dt.FirstDayOfQuarter().BeginningOfDay(timeZoneOffset);
 
     /// <summary>
     /// 获取某年的开始时间，类似于“2023-01-01 00:00:00”。
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在年起点的日期时间。</returns>
     public static DateTime BeginningOfYear(this DateTime dt) => dt.FirstDayOfYear().BeginningOfDay();
 
     /// <summary>
@@ -126,6 +143,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
+    /// <returns>所在年起点的日期时间。</returns>
     public static DateTime BeginningOfYear(this DateTime dt, int timeZoneOffset) => dt.FirstDayOfYear().BeginningOfDay(timeZoneOffset);
 
     #endregion
@@ -136,24 +154,28 @@ public static partial class DateTimeExtensions
     /// 获取某秒的结束时间，类似于“2023-01-03 01:01:01.999”。
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在秒最后一个刻度的日期时间。</returns>
     public static DateTime EndOfSecond(this DateTime dt) => dt.AddTicks(TimeSpan.TicksPerSecond - 1 - dt.Ticks % TimeSpan.TicksPerSecond);
 
     /// <summary>
     /// 获取某分钟的结束时间，类似于“2023-01-03 01:01:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在分钟最后一个刻度的日期时间。</returns>
     public static DateTime EndOfMinute(this DateTime dt) => dt.AddTicks(TimeSpan.TicksPerMinute - 1 - dt.Ticks % TimeSpan.TicksPerMinute);
 
     /// <summary>
     /// 获取某小时的结束时间，类似于“2023-01-03 01:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在小时最后一个刻度的日期时间。</returns>
     public static DateTime EndOfHour(this DateTime dt) => dt.AddTicks(TimeSpan.TicksPerHour - 1 - dt.Ticks % TimeSpan.TicksPerHour);
 
     /// <summary>
     /// 获取某天的结束时间，类似于“2023-01-03 23:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在日最后一个刻度的日期时间。</returns>
     public static DateTime EndOfDay(this DateTime dt) => dt.AddTicks(TimeSpan.TicksPerDay - 1 - dt.Ticks % TimeSpan.TicksPerDay);
 
     /// <summary>
@@ -161,12 +183,14 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
+    /// <returns>所在日最后一个刻度的日期时间。</returns>
     public static DateTime EndOfDay(this DateTime dt, int timeZoneOffset) => dt.EndOfDay().AddHours(timeZoneOffset);
 
     /// <summary>
     /// 获取某周的结束时间
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在周最后一个刻度的日期时间。</returns>
     public static DateTime EndOfWeek(this DateTime dt)
     {
         var first = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
@@ -182,12 +206,14 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
+    /// <returns>所在周最后一个刻度的日期时间。</returns>
     public static DateTime EndOfWeek(this DateTime dt, int timeZoneOffset) => dt.EndOfWeek().AddHours(timeZoneOffset);
 
     /// <summary>
     /// 获取某月的结束时间
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在月最后一个刻度的日期时间。</returns>
     public static DateTime EndOfMonth(this DateTime dt) => dt.LastDayOfMonth().EndOfDay();
 
     /// <summary>
@@ -195,12 +221,14 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
+    /// <returns>所在月最后一个刻度的日期时间。</returns>
     public static DateTime EndOfMonth(this DateTime dt, int timeZoneOffset) => dt.LastDayOfMonth().EndOfDay(timeZoneOffset);
 
     /// <summary>
     /// 获取某季度的结束时间
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在季度最后一个刻度的日期时间。</returns>
     public static DateTime EndOfQuarter(this DateTime dt) => dt.LastDayOfQuarter().EndOfDay();
 
     /// <summary>
@@ -208,12 +236,14 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
+    /// <returns>所在季度最后一个刻度的日期时间。</returns>
     public static DateTime EndOfQuarter(this DateTime dt, int timeZoneOffset) => dt.LastDayOfQuarter().EndOfDay(timeZoneOffset);
 
     /// <summary>
     /// 获取某年的结束时间，类似于“2023-12-31 23:59:59.999”。
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在年最后一个刻度的日期时间。</returns>
     public static DateTime EndOfYear(this DateTime dt) => dt.LastDayOfYear().EndOfDay();
 
     /// <summary>
@@ -221,6 +251,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="timeZoneOffset">时区偏移量</param>
+    /// <returns>所在年最后一个刻度的日期时间。</returns>
     public static DateTime EndOfYear(this DateTime dt, int timeZoneOffset) => dt.LastDayOfYear().EndOfDay(timeZoneOffset);
 
     #endregion
@@ -232,12 +263,14 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="leftDt">时间</param>
     /// <param name="rightDt">时间</param>
+    /// <returns>右侧日期时间减去左侧日期时间的间隔，可以为负值。</returns>
     public static TimeSpan GetTimeSpan(this DateTime leftDt, DateTime rightDt) => rightDt - leftDt;
 
     /// <summary>
     /// 获取指定年份的第一天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在年第一天的日期时间。</returns>
     public static DateTime FirstDayOfYear(this DateTime dt) => dt.SetDate(dt.Year, 1, 1);
 
     /// <summary>
@@ -258,11 +291,12 @@ public static partial class DateTimeExtensions
     /// 获取指定季度的第一天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>季度第一天的午夜，保留 Kind 和本地重复时间选择标记。</returns>
     public static DateTime FirstDayOfQuarter(this DateTime dt)
     {
         var currentQuarter = dt.GetQuarter();
         var month = 3 * currentQuarter - 2;
-        return new DateTime(dt.Year, month, 1, 0, 0, 0, dt.Kind);
+        return dt.SetDate(dt.Year, month, 1).Date;
     }
 
     /// <summary>
@@ -283,6 +317,7 @@ public static partial class DateTimeExtensions
     /// 获取指定月份的第一天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在月第一天的日期时间。</returns>
     public static DateTime FirstDayOfMonth(this DateTime dt) => dt.SetDay(1);
 
     /// <summary>
@@ -303,6 +338,7 @@ public static partial class DateTimeExtensions
     /// 获取指定星期的第一天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在周第一天的日期时间。</returns>
     public static DateTime FirstDayOfWeek(this DateTime dt) => dt.FirstDayOfWeek(null);
 
     /// <summary>
@@ -310,6 +346,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="cultureInfo">区域信息</param>
+    /// <returns>所在周第一天的日期时间。</returns>
     public static DateTime FirstDayOfWeek(this DateTime dt, CultureInfo cultureInfo)
     {
         cultureInfo ??= CultureInfo.CurrentCulture;
@@ -323,6 +360,7 @@ public static partial class DateTimeExtensions
     /// 获取指定年份的最后一天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在年最后一天的日期时间。</returns>
     public static DateTime LastDayOfYear(this DateTime dt) => dt.SetDate(dt.Year, 12, 31);
 
     /// <summary>
@@ -343,12 +381,13 @@ public static partial class DateTimeExtensions
     /// 获取指定季度的最后一天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>季度最后一天的午夜，保留 Kind 和本地重复时间选择标记。</returns>
     public static DateTime LastDayOfQuarter(this DateTime dt)
     {
         var currentQuarter = dt.GetQuarter();
         var month = 3 * currentQuarter;
         var day = DateTime.DaysInMonth(dt.Year, month);
-        return new DateTime(dt.Year, month, day, 0, 0, 0, dt.Kind);
+        return dt.SetDate(dt.Year, month, day).Date;
     }
 
     /// <summary>
@@ -369,6 +408,7 @@ public static partial class DateTimeExtensions
     /// 获取指定月份的最后一天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在月最后一天的日期时间。</returns>
     public static DateTime LastDayOfMonth(this DateTime dt) => dt.SetDay(dt.DaysInMonth());
 
     /// <summary>
@@ -389,6 +429,7 @@ public static partial class DateTimeExtensions
     /// 获取指定星期的最后一天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在周最后一天的日期时间。</returns>
     public static DateTime LastDayOfWeek(this DateTime dt) => dt.LastDayOfWeek(null);
 
     /// <summary>
@@ -396,6 +437,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="cultureInfo">区域信息</param>
+    /// <returns>所在周最后一天的日期时间。</returns>
     public static DateTime LastDayOfWeek(this DateTime dt, CultureInfo cultureInfo)
     {
         var first = dt.FirstDayOfWeek(cultureInfo);
@@ -408,12 +450,14 @@ public static partial class DateTimeExtensions
     /// 获取指定月份中的天数
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在月份包含的自然日数。</returns>
     public static int DaysInMonth(this DateTime dt) => DateTime.DaysInMonth(dt.Year, dt.Month);
 
     /// <summary>
     /// 获取指定年份中的天数
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>所在年份包含的自然日数。</returns>
     public static int DaysInYear(this DateTime dt) => DateTime.IsLeapYear(dt.Year) ? 366 : 365;
 
     /// <summary>
@@ -445,6 +489,7 @@ public static partial class DateTimeExtensions
     /// 获取指定的星期是一年中的第几个星期
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>按指定周历规则计算的周号。</returns>
     public static int GetWeekOfYear(this DateTime dt) => GetWeekOfYear(dt, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
 
     /// <summary>
@@ -452,6 +497,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="weekRule">星期规则</param>
+    /// <returns>按指定周历规则计算的周号。</returns>
     public static int GetWeekOfYear(this DateTime dt, CalendarWeekRule weekRule) => GetWeekOfYear(dt, weekRule, DayOfWeek.Sunday);
 
     /// <summary>
@@ -459,6 +505,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dt">时间</param>
     /// <param name="firstDayOfWeek">星期几</param>
+    /// <returns>按指定周历规则计算的周号。</returns>
     public static int GetWeekOfYear(this DateTime dt, DayOfWeek firstDayOfWeek) => GetWeekOfYear(dt, CalendarWeekRule.FirstDay, firstDayOfWeek);
 
     /// <summary>
@@ -467,6 +514,7 @@ public static partial class DateTimeExtensions
     /// <param name="dt">时间</param>
     /// <param name="weekRule">星期规则</param>
     /// <param name="firstDayOfWeek">星期几</param>
+    /// <returns>按指定周历规则计算的周号。</returns>
     public static int GetWeekOfYear(this DateTime dt, CalendarWeekRule weekRule, DayOfWeek firstDayOfWeek) => CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(dt, weekRule, firstDayOfWeek);
 
     #endregion
@@ -477,66 +525,77 @@ public static partial class DateTimeExtensions
     /// 下一年（明年）
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向后偏移一个年后的日期时间。</returns>
     public static DateTime NextYear(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Year);
 
     /// <summary>
     /// 上一年（去年）
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向前偏移一个年后的日期时间。</returns>
     public static DateTime PreviousYear(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Year);
 
     /// <summary>
     /// 下个季度
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向后偏移一个季度后的日期时间。</returns>
     public static DateTime NextQuarter(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Quarters);
 
     /// <summary>
     /// 上个季度
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向前偏移一个季度后的日期时间。</returns>
     public static DateTime PreviousQuarter(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Quarters);
 
     /// <summary>
     /// 下个月
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向后偏移一个月后的日期时间。</returns>
     public static DateTime NextMonth(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Month);
 
     /// <summary>
     /// 上个月
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向前偏移一个月后的日期时间。</returns>
     public static DateTime PreviousMonth(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Month);
 
     /// <summary>
     /// 下个星期
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向后偏移一个周后的日期时间。</returns>
     public static DateTime NextWeek(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Week);
 
     /// <summary>
     /// 上个星期
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向前偏移一个周后的日期时间。</returns>
     public static DateTime PreviousWeek(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Week);
 
     /// <summary>
     /// 下一天（明天）
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向后偏移一个日后的日期时间。</returns>
     public static DateTime NextDay(this DateTime dt) => dt.OffsetBy(1, DateOffsetStyles.Day);
 
     /// <summary>
     /// 上一天（昨天）
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>向前偏移一个日后的日期时间。</returns>
     public static DateTime PreviousDay(this DateTime dt) => dt.OffsetBy(-1, DateOffsetStyles.Day);
 
     /// <summary>
     /// 明天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>下一自然日的日期时间。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime Tomorrow(this DateTime dt) => dt.NextDay();
 
@@ -544,6 +603,7 @@ public static partial class DateTimeExtensions
     /// 昨天
     /// </summary>
     /// <param name="dt">时间</param>
+    /// <returns>上一自然日的日期时间。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime Yesterday(this DateTime dt) => dt.PreviousDay();
 

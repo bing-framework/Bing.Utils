@@ -98,8 +98,9 @@ public class TimeTest : TestBase, IDisposable
         AssertDateTimeNotEqual(_testDateString, Time.Now);
     }
     /// <summary>
-    /// 测试 - SetTime - 通过字符串设置时间
+    /// 验证支持的日期字符串均可设置固定时间。
     /// </summary>
+    /// <param name="dateString">用于设置时间的日期字符串。</param>
     [Theory]
     [InlineData("2023-01-01 12:00:00")]
     [InlineData("2023/1/1 12:00")]
@@ -116,8 +117,9 @@ public class TimeTest : TestBase, IDisposable
         time1.ShouldBe(time2); // 模拟时间应该是固定的
     }
     /// <summary>
-    /// 测试 - SetTime - 无效日期字符串抛出异常
+    /// 验证无效日期字符串会抛出参数异常。
     /// </summary>
+    /// <param name="invalidDateString">无法解析的日期字符串。</param>
     [Theory]
     [InlineData("invalid date")]
     [InlineData("2023-13-45")]
@@ -128,8 +130,9 @@ public class TimeTest : TestBase, IDisposable
         Should.Throw<ArgumentException>(() => Time.SetTime(invalidDateString));
     }
     /// <summary>
-    /// 测试 - SetTime - 空字符串清除模拟时间
+    /// 验证空或空白字符串会清除模拟时间。
     /// </summary>
+    /// <param name="dateString">为空、空白或 null 的字符串。</param>
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
@@ -242,10 +245,11 @@ public class TimeTest : TestBase, IDisposable
     {
         // Arrange
         Time.UseUtc(false);
+        var expected = _utcDate.ToLocalTime();
         // Act
         var result = Time.Normalize(_utcDate);
         // Assert
-        AssertDateTimeEqual(_testDateString, result);
+        result.Ticks.ShouldBe(expected.Ticks);
         result.Kind.ShouldBe(DateTimeKind.Local);
     }
     /// <summary>
@@ -256,10 +260,11 @@ public class TimeTest : TestBase, IDisposable
     {
         // Arrange
         Time.UseUtc(true);
+        var expected = _localDate2.ToUniversalTime();
         // Act
         var result = Time.Normalize(_localDate2);
         // Assert
-        AssertDateTimeEqual(_testDateString, result);
+        result.Ticks.ShouldBe(expected.Ticks);
         result.Kind.ShouldBe(DateTimeKind.Utc);
     }
     /// <summary>
@@ -298,10 +303,11 @@ public class TimeTest : TestBase, IDisposable
     {
         // Arrange
         Time.UseUtc(true);
+        var expected = DateTime.SpecifyKind(_unspecifiedDate, DateTimeKind.Local).ToUniversalTime();
         // Act
         var result = Time.Normalize(_unspecifiedDate);
         // Assert
-        result.ShouldBe(_utcDate);
+        result.Ticks.ShouldBe(expected.Ticks);
         result.Kind.ShouldBe(DateTimeKind.Utc);
     }
     #endregion
@@ -519,6 +525,8 @@ public class TimeTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - GetUnixTimestamp - 指定时间的时间戳
     /// </summary>
+    /// <param name="dateTimeString">以 UTC+08:00 表示的固定日期向量。</param>
+    /// <param name="expectedTimestamp">预期的 Unix 秒数。</param>
     [Theory]
     [InlineData("1970-01-01 12:12:12", 15132)]
     [InlineData("2000-12-12 12:12:12", 976594332)]
@@ -526,7 +534,8 @@ public class TimeTest : TestBase, IDisposable
     public void GetUnixTimestamp_SpecificDateTime_ReturnsCorrectTimestamp(string dateTimeString, long expectedTimestamp)
     {
         // Arrange
-        var dateTime = DateTime.Parse(dateTimeString);
+        var fixedOffsetDateTime = new DateTimeOffset(DateTime.Parse(dateTimeString), TimeSpan.FromHours(8));
+        var dateTime = fixedOffsetDateTime.LocalDateTime;
         // Act
         var result = Time.GetUnixTimestamp(dateTime);
         // Assert
@@ -535,6 +544,8 @@ public class TimeTest : TestBase, IDisposable
     /// <summary>
     /// 测试 - GetTimeFromUnixTimestamp - 从时间戳获取时间
     /// </summary>
+    /// <param name="timestamp">输入的 Unix 秒数。</param>
+    /// <param name="expectedDateTimeString">以 UTC+08:00 表示的固定日期向量。</param>
     [Theory]
     [InlineData(15132, "1970-01-01 12:12:12")]
     [InlineData(976594332, "2000-12-12 12:12:12")]
@@ -542,11 +553,13 @@ public class TimeTest : TestBase, IDisposable
     public void GetTimeFromUnixTimestamp_ValidTimestamp_ReturnsCorrectDateTime(long timestamp, string expectedDateTimeString)
     {
         // Arrange
-        var expectedDateTime = DateTime.Parse(expectedDateTimeString);
+        var fixedOffsetDateTime = new DateTimeOffset(DateTime.Parse(expectedDateTimeString), TimeSpan.FromHours(8));
+        var expectedDateTime = fixedOffsetDateTime.LocalDateTime;
         // Act
         var result = Time.GetTimeFromUnixTimestamp(timestamp);
         // Assert
         result.ShouldBe(expectedDateTime);
+        result.Kind.ShouldBe(DateTimeKind.Local);
     }
     /// <summary>
     /// 测试 - OfEpochSecond - Unix时间戳秒转换
@@ -564,8 +577,9 @@ public class TimeTest : TestBase, IDisposable
         Time.ToEpochSecond(result).ShouldBe(timestamp);
     }
     /// <summary>
-    /// 测试 - OfEpochSecond - 超出范围的时间戳
+    /// 验证超出日期时间范围的 Unix 秒数会被拒绝。
     /// </summary>
+    /// <param name="invalidTimestamp">超出支持范围的 Unix 秒数。</param>
     [Theory]
     [InlineData(253402300800)] // 超出DateTime.MaxValue对应的时间戳
     [InlineData(-62135596801)] // 小于DateTime.MinValue对应的时间戳
@@ -590,8 +604,9 @@ public class TimeTest : TestBase, IDisposable
         Time.ToEpochMilli(result).ShouldBe(timestamp);
     }
     /// <summary>
-    /// 测试 - OfEpochMilli - 超出范围的时间戳
+    /// 验证超出日期时间范围的 Unix 毫秒数会被拒绝。
     /// </summary>
+    /// <param name="invalidTimestamp">超出支持范围的 Unix 毫秒数。</param>
     [Theory]
     [InlineData(253402300800000)] // 超出DateTime.MaxValue对应的时间戳（毫秒）
     [InlineData(-62135596800001)] // 小于DateTime.MinValue对应的时间戳（毫秒）
@@ -627,16 +642,25 @@ public class TimeTest : TestBase, IDisposable
         result.ShouldBe(1640995200500);
     }
     /// <summary>
-    /// 测试 - Unix时间戳转换 - 往返测试
+    /// 验证本地可表示的 Unix 时间戳往返及超界时的 BCL 饱和行为。
     /// </summary>
+    /// <param name="originalTimestamp">输入的 Unix 秒数。</param>
     [Theory]
     [InlineData(0)]  // Unix epoch
     [InlineData(1640995200)]  // 2022-01-01
     [InlineData(-62135596800)] // DateTime.MinValue 对应的时间戳
     public void UnixTimestampRoundTrip_ValidTimestamps_MaintainsAccuracy(long originalTimestamp)
     {
-        // Act
+        var instant = DateTimeOffset.FromUnixTimeSeconds(originalTimestamp);
+        var localTicks = instant.UtcDateTime.Ticks + TimeZoneInfo.Local.GetUtcOffset(instant).Ticks;
         var dateTime = Time.OfEpochSecond(originalTimestamp);
+        dateTime.Kind.ShouldBe(DateTimeKind.Local);
+        if (localTicks < DateTime.MinValue.Ticks || localTicks > DateTime.MaxValue.Ticks)
+        {
+            dateTime.Ticks.ShouldBe(localTicks < DateTime.MinValue.Ticks ? DateTime.MinValue.Ticks : DateTime.MaxValue.Ticks);
+            return;
+        }
+        // Act
         var resultTimestamp = Time.ToEpochSecond(dateTime);
         // Assert
         resultTimestamp.ShouldBe(originalTimestamp);
@@ -644,8 +668,9 @@ public class TimeTest : TestBase, IDisposable
     #endregion
     #region 边界条件和异常测试
     /// <summary>
-    /// 测试 - 时区转换 - 处理极值
+    /// 验证极值日期的时区转换不会抛出异常。
     /// </summary>
+    /// <param name="dateTimeString">待转换的极值日期字符串。</param>
     [Theory]
     [InlineData("0001-01-01 00:00:00")]
     [InlineData("9999-12-31 23:59:59")]

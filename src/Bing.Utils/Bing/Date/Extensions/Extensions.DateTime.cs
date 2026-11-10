@@ -2,101 +2,100 @@ using Bing.Helpers;
 
 // ReSharper disable once CheckNamespace
 namespace Bing.Date;
-
 /// <summary>
 /// 时间(<see cref="DateTime"/>) 扩展
 /// </summary>
 public static partial class DateTimeExtensions
 {
     #region ToDateTimeString(yyyy-MM-dd HH:mm:ss)
-
     /// <summary>
     /// 获取格式化字符串，带时分秒，格式："yyyy-MM-dd HH:mm:ss"
     /// </summary>
     /// <param name="dateTime">日期</param>
     /// <param name="isRemoveSecond">是否移除秒,true:是,false:否</param>
+    /// <returns>格式化后的日期时间文本。</returns>
     public static string ToDateTimeString(this in DateTime dateTime, bool isRemoveSecond = false) => dateTime.ToString(isRemoveSecond ? "yyyy-MM-dd HH:mm" : "yyyy-MM-dd HH:mm:ss");
-
     /// <summary>
     /// 获取格式化字符串，带时分秒，格式："yyyy-MM-dd HH:mm:ss"
     /// </summary>
     /// <param name="dateTime">日期</param>
     /// <param name="isRemoveSecond">是否移除秒,true:是,false:否</param>
+    /// <returns>格式化后的日期时间文本。</returns>
     public static string ToDateTimeString(this in DateTime? dateTime, bool isRemoveSecond = false) => dateTime == null ? string.Empty : ToDateTimeString(dateTime.Value, isRemoveSecond);
 
     #endregion
 
     #region ToDateString(yyyy-MM-dd)
-
     /// <summary>
     /// 获取格式化字符串，不带时分秒，格式："yyyy-MM-dd"
     /// </summary>
     /// <param name="dateTime">日期</param>
+    /// <returns>格式化后的日期文本。</returns>
     public static string ToDateString(this in DateTime dateTime) => dateTime.ToString("yyyy-MM-dd");
-
     /// <summary>
     /// 获取格式化字符串，不带时分秒，格式："yyyy-MM-dd"
     /// </summary>
     /// <param name="dateTime">日期</param>
+    /// <returns>格式化后的日期文本。</returns>
     public static string ToDateString(this in DateTime? dateTime) => dateTime == null ? string.Empty : ToDateString(dateTime.Value);
 
     #endregion
 
     #region ToTimeString(HH:mm:ss)
-
     /// <summary>
     /// 获取格式化字符串，不带年月日，格式："HH:mm:ss"
     /// </summary>
     /// <param name="dateTime">日期</param>
+    /// <returns>格式化后的时间文本。</returns>
     public static string ToTimeString(this in DateTime dateTime) => dateTime.ToString("HH:mm:ss");
-
     /// <summary>
     /// 获取格式化字符串，不带年月日，格式："HH:mm:ss"
     /// </summary>
     /// <param name="dateTime">日期</param>
+    /// <returns>格式化后的时间文本。</returns>
     public static string ToTimeString(this in DateTime? dateTime) => dateTime == null ? string.Empty : ToTimeString(dateTime.Value);
 
     #endregion
 
     #region ToMillisecondString(yyyy-MM-dd HH:mm:ss.fff)
-
     /// <summary>
     /// 获取格式化字符串，带毫秒，格式："yyyy-MM-dd HH:mm:ss.fff"
     /// </summary>
     /// <param name="dateTime">日期</param>
+    /// <returns>包含毫秒分量的日期时间文本。</returns>
     public static string ToMillisecondString(this in DateTime dateTime) => dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-
     /// <summary>
     /// 获取格式化字符串，带毫秒，格式："yyyy-MM-dd HH:mm:ss.fff"
     /// </summary>
     /// <param name="dateTime">日期</param>
+    /// <returns>包含毫秒分量的日期时间文本。</returns>
     public static string ToMillisecondString(this in DateTime? dateTime) => dateTime == null ? string.Empty : ToMillisecondString(dateTime.Value);
 
     #endregion
 
     #region ToChineseDateString(yyyy年MM月dd日)
-
     /// <summary>
     /// 获取格式化字符串，不带时分秒，格式："yyyy年MM月dd日"
     /// </summary>
     /// <param name="dateTime">日期</param>
+    /// <returns>使用中文年月日分隔符的日期文本。</returns>
     public static string ToChineseDateString(this in DateTime dateTime) => $"{dateTime.Year}年{dateTime.Month}月{dateTime.Day}日";
-
     /// <summary>
     /// 获取格式化字符串，不带时分秒，格式："yyyy年MM月dd日"
     /// </summary>
     /// <param name="dateTime">日期</param>
+    /// <returns>使用中文年月日分隔符的日期文本。</returns>
     public static string ToChineseDateString(this in DateTime? dateTime) => dateTime == null ? string.Empty : ToChineseDateString(dateTime.Value);
 
     #endregion
 
     #region ToChineseDateTimeString(yyyy年MM月dd日 HH时mm分)
-
     /// <summary>
     /// 获取格式化字符串，带时分秒，格式："yyyy年MM月dd日 HH时mm分"
     /// </summary>
     /// <param name="dateTime">日期</param>
     /// <param name="isRemoveSecond">是否移除秒</param>
+    /// <returns>使用中文日期分隔符的日期时间文本。</returns>
     public static string ToChineseDateTimeString(this in DateTime dateTime, bool isRemoveSecond = false)
     {
         var result = new StringBuilder();
@@ -106,34 +105,34 @@ public static partial class DateTimeExtensions
             result.AppendFormat("{0}秒", dateTime.Second);
         return result.ToString();
     }
-
     /// <summary>
     /// 获取格式化字符串，带时分秒，格式："yyyy年MM月dd日 HH时mm分"
     /// </summary>
     /// <param name="dateTime">日期</param>
     /// <param name="isRemoveSecond">是否移除秒</param>
+    /// <returns>使用中文日期分隔符的日期时间文本。</returns>
     public static string ToChineseDateTimeString(this in DateTime? dateTime, bool isRemoveSecond = false) => dateTime == null ? string.Empty : ToChineseDateTimeString(dateTime.Value, isRemoveSecond);
 
     #endregion
 
     #region ToUnixTimestamp(转换为Unix时间戳)
-
     /// <summary>
     /// 将 <see cref="DateTime"/> 转换为Unix时间戳
     /// </summary>
     /// <param name="time">时间</param>
     /// <remarks>当前时间必须是 <see cref="TimeZoneInfo.Local"/></remarks>
+    /// <returns>从 Unix 纪元起经过的秒数。</returns>
     public static long ToUnixTimestamp(this DateTime time) => Time.GetUnixTimestamp(time);
 
     #endregion
 
     #region ToUniqueString(获取时间相对唯一字符串)
-
     /// <summary>
     /// 获取时间相对唯一字符串
     /// </summary>
     /// <param name="dateTime">时间点</param>
     /// <param name="isContainMillisecond">是否包含毫秒</param>
+    /// <returns>根据日期时间刻度生成的字符串。</returns>
     public static string ToUniqueString(this DateTime dateTime, bool isContainMillisecond = false)
     {
         var sedonds = dateTime.Hour * 3600 + dateTime.Minute * 60 + dateTime.Second;
@@ -144,30 +143,34 @@ public static partial class DateTimeExtensions
     #endregion
 
     #region ToJsGetTime(将时间转换为JS时间格式)
-
     /// <summary>
     /// 将时间转换为JS时间格式（Date.getTime()）
     /// </summary>
     /// <param name="dateTime">时间点</param>
-    /// <param name="isContainMillisecond">是否包含毫秒</param>
+    /// <param name="isContainMillisecond">true 返回毫秒，false 按历史规则返回四舍五入的秒。</param>
+    /// <returns>相对于 Unix 纪元的时间戳字符串。</returns>
+    /// <remarks>毫秒分支按 JavaScript 时间裁剪规则向零截断，并使用固定的数字格式。</remarks>
     public static string ToJsGetTime(this DateTime dateTime, bool isContainMillisecond = true)
     {
         var utc = dateTime.ToUniversalTime();
-        var span = utc.Subtract(TimeOptions.Date1970);
-        return Math.Round(isContainMillisecond ? span.TotalMilliseconds : span.TotalSeconds).ToString();
+        if (isContainMillisecond)
+            return ((utc.Ticks - TimeOptions.UnixEpochTicks) / TimeSpan.TicksPerMillisecond)
+                .ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        return Math.Round(utc.Subtract(TimeOptions.Date1970).TotalSeconds).ToString();
     }
 
     #endregion
 
     #region In(判断时间是否在区间内)
-
     /// <summary>
     /// 判断时间是否在区间内
     /// </summary>
-    /// <param name="this"></param>
+    /// <param name="this">要判断的时间。</param>
     /// <param name="start">开始时间</param>
     /// <param name="end">结束时间</param>
     /// <param name="mode">区间模式</param>
+    /// <returns>当前值处于指定区间内时为 true，否则为 false。</returns>
     public static bool In(this in DateTime @this, DateTime start, DateTime end, RangeMode mode = RangeMode.Close)
     {
         return mode switch
@@ -179,7 +182,6 @@ public static partial class DateTimeExtensions
             _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
         };
     }
-
     /// <summary>
     /// 判断当前时间是否在指定的时间范围内。
     /// </summary>
@@ -187,13 +189,22 @@ public static partial class DateTimeExtensions
     /// <param name="range">时间范围。</param>
     /// <param name="mode">范围模式（默认为 <see cref="RangeMode.Close"/>，即包括开始和结束时间）。</param>
     /// <returns>如果当前时间在指定范围内，则为 true；否则为 false。</returns>
+    /// <remarks>UTC 时间原样比较，Local 和 Unspecified 按本地时区转换；自定义范围的端点会规范化并排序。</remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="range"/> 为 null。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool In(this in DateTime @this, IDateTimeRange range, RangeMode mode = RangeMode.Close) => In(@this, range.StartTime, range.EndTime, mode);
+    public static bool In(this in DateTime @this, IDateTimeRange range, RangeMode mode = RangeMode.Close)
+    {
+        if (range == null)
+            throw new ArgumentNullException(nameof(range));
+
+        var normalizedRange = range as DateTimeRange ?? new DateTimeRange(range);
+        var utc = DateTimeRange.ToUtcSafe(@this);
+        return In(utc, normalizedRange.StartTime, normalizedRange.EndTime, mode);
+    }
 
     #endregion
 
     #region SetTime(设置时间)
-
     /// <summary>
     /// 设置时间，设置时间间隔
     /// </summary>
@@ -205,13 +216,13 @@ public static partial class DateTimeExtensions
     #endregion
 
     #region CompareInterval(计算两个时间的间隔)
-
     /// <summary>
     /// 计算两个时间的间隔
     /// </summary>
     /// <param name="begin">开始时间</param>
     /// <param name="end">结束时间</param>
     /// <param name="dateFormat">间隔格式(y:年,M:月,d:天,h:小时,m:分钟,s:秒,fff:毫秒)</param>
+    /// <returns>根据指定时间精度比较得到的大小关系。</returns>
     public static long CompareInterval(this DateTime begin, DateTime end, string dateFormat)
     {
         long interval = begin.Ticks - end.Ticks;
@@ -240,27 +251,20 @@ public static partial class DateTimeExtensions
                 break;
 
             case "M":
-                dt1 = (begin.CompareTo(end) >= 0) ? end : begin;
-                dt2 = (begin.CompareTo(end) >= 0) ? begin : end;
-                interval = -1;
-                while (dt2.CompareTo(dt1) >= 0)
-                {
-                    interval++;
-                    dt1 = dt1.AddMonths(1);
-                }
-                break;
-
             case "y":
                 dt1 = (begin.CompareTo(end) >= 0) ? end : begin;
                 dt2 = (begin.CompareTo(end) >= 0) ? begin : end;
-                interval = -1;
-                while (dt2.CompareTo(dt1) >= 0)
+                interval = 0;
+                while (dt1 < dt2 && (dt1.Year < 9999 || dt1.Month < 12))
                 {
-                    interval++;
                     dt1 = dt1.AddMonths(1);
+                    if (dt1 > dt2)
+                        break;
+                    interval++;
                 }
 
-                interval /= 12;
+                if (dateFormat == "y")
+                    interval /= 12;
                 break;
         }
 
@@ -270,25 +274,24 @@ public static partial class DateTimeExtensions
     #endregion
 
     #region ConvertToTimeZone(将当前时间转换为特定时区的时间)
-
     /// <summary>
     /// 将当前时间转换为特定时区的时间
     /// </summary>
     /// <param name="dateTime">时间</param>
     /// <param name="timeZone">时区</param>
+    /// <returns>转换到目标时区后的日期时间。</returns>
     public static DateTime ConvertToTimeZone(this DateTime dateTime, TimeZoneInfo timeZone) => TimeZoneInfo.ConvertTime(dateTime, timeZone);
 
     #endregion
 
     #region IsBetweenTime(判断当前时间是否在指定时间段内)
-
     /// <summary>
     /// 判断当前时间是否在指定时间段内，格式：hh:mm:ss
     /// </summary>
     /// <param name="currentTime">当前时间</param>
     /// <param name="beginTime">开始时间</param>
     /// <param name="endTime">结束时间</param>
-    /// <returns></returns>
+    /// <returns>时分秒位于包含边界的时间段内时为 true，否则为 false；支持结束时间早于开始时间的跨午夜区间。</returns>
     public static bool IsBetweenTime(this DateTime currentTime, DateTime beginTime, DateTime endTime)
     {
         var am = beginTime.TimeOfDay;
@@ -314,14 +317,13 @@ public static partial class DateTimeExtensions
     #endregion
 
     #region IsBetweenDate(判断当前时间是否在指定日期时间段内)
-
     /// <summary>
     /// 判断当前时间是否在指定日期时间段内，格式：yyyy-MM-dd
     /// </summary>
     /// <param name="currentDate">当前日期</param>
     /// <param name="beginDate">开始日期</param>
     /// <param name="endDate">结束日期</param>
-    /// <returns></returns>
+    /// <returns>自然日位于包含边界的日期区间内时为 true，否则为 false。</returns>
     public static bool IsBetweenDate(this DateTime currentDate, DateTime beginDate, DateTime endDate)
     {
         var begin = beginDate.Date;
@@ -334,12 +336,11 @@ public static partial class DateTimeExtensions
     #endregion
 
     #region IsValid(是否有效时间)
-
     /// <summary>
     /// 是否有效时间
     /// </summary>
     /// <param name="value">值</param>
-    /// <returns></returns>
+    /// <returns>日期时间位于配置的有效日期范围内时为 true，否则为 false。</returns>
     public static bool IsValid(this DateTime value)
     {
         return (value >= TimeOptions.MinDate) && (value <= TimeOptions.MaxDate);

@@ -19,22 +19,15 @@ public class UnixTimeStampTest
         UnixTimeStamp.MinUnixTimestamp.ShouldBe(0L);
         UnixTimeStamp.MaxUnixTimestamp32Bit.ShouldBe(2147483647L);
         UnixTimeStamp.MaxUnixTimestamp.ShouldBeGreaterThan(UnixTimeStamp.MaxUnixTimestamp32Bit);
+        UnixTimeStamp.MaxUnixTimestamp.ShouldBe(253402300799L);
     }
     /// <summary>
-    /// 测试 - 常量计算 - 验证MaxUnixTimestamp延迟计算
+    /// 验证最大 Unix 时间戳使用固定的 UTC 上限。
     /// </summary>
     [Fact]
-    public void Constants_MaxUnixTimestamp_CalculatedCorrectly()
+    public void Constants_MaxUnixTimestamp_UsesFixedUtcUpperBound()
     {
-        // Act
-        var maxTimestamp1 = UnixTimeStamp.MaxUnixTimestamp;
-        var maxTimestamp2 = UnixTimeStamp.MaxUnixTimestamp;
-        // Assert
-        maxTimestamp1.ShouldBe(maxTimestamp2); // 验证缓存机制
-        maxTimestamp1.ShouldBeGreaterThan(0);
-        // 验证计算结果的合理性
-        var expectedMax = (long)(DateTime.MaxValue.ToUniversalTime() - UnixTimeStamp.UnixEpoch).TotalSeconds;
-        maxTimestamp1.ShouldBe(expectedMax);
+        UnixTimeStamp.MaxUnixTimestamp.ShouldBe(253402300799L);
     }
     #endregion
     #region 构造函数测试
@@ -402,6 +395,102 @@ public class UnixTimeStampTest
         // Assert
         result.ToTimestamp().ShouldBeLessThan(baseTimestamp);
         result.ShouldBeOfType<UnixTimeStamp>();
+    }
+    /// <summary>
+    /// 验证超出 long 范围的日期增量不会发生整数回绕。
+    /// </summary>
+    /// <param name="value">日期单位数量。</param>
+    /// <param name="methodName">待调用的日期增量方法。</param>
+    [Theory]
+    [InlineData(long.MaxValue, "AddMinutes")]
+    [InlineData(long.MinValue, "AddMinutes")]
+    [InlineData(long.MaxValue, "AddHours")]
+    [InlineData(long.MinValue, "AddHours")]
+    [InlineData(long.MaxValue, "AddDays")]
+    [InlineData(long.MinValue, "AddDays")]
+    public void AddMethods_WithOverflowingValues_ThrowsOverflowException(long value, string methodName)
+    {
+        var unixTimeStamp = new UnixTimeStamp(1000000L);
+
+        Func<UnixTimeStamp> action = methodName switch
+        {
+            "AddMinutes" => () => unixTimeStamp.AddMinutes(value),
+            "AddHours" => () => unixTimeStamp.AddHours(value),
+            "AddDays" => () => unixTimeStamp.AddDays(value),
+            _ => throw new ArgumentOutOfRangeException(nameof(methodName))
+        };
+
+        Should.Throw<OverflowException>(() => action());
+    }
+    /// <summary>
+    /// 验证 Unix 秒数严格限制在非负且可表示的 DateTime UTC 范围内。
+    /// </summary>
+    [Fact]
+    public void DateTimeConstructor_BeforeEpoch_ThrowsArgumentOutOfRangeException()
+    {
+        Should.Throw<ArgumentOutOfRangeException>(() =>
+            new UnixTimeStamp(UnixTimeStamp.UnixEpoch.AddTicks(-1)));
+        Should.Throw<ArgumentOutOfRangeException>(() =>
+            new UnixTimeStamp(UnixTimeStamp.UnixEpoch.AddSeconds(-1)));
+
+        var epoch = new UnixTimeStamp(UnixTimeStamp.UnixEpoch);
+        epoch.ToTimestamp().ShouldBe(UnixTimeStamp.MinUnixTimestamp);
+    }
+    /// <summary>
+    /// 验证 DateTime 最大 UTC 时间按秒截断到 Unix 可表示的最后一秒。
+    /// </summary>
+    [Fact]
+    public void DateTimeConstructor_UtcMaxValue_UsesLastRepresentableUnixSecond()
+    {
+        var unixTimeStamp = new UnixTimeStamp(DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc));
+
+        unixTimeStamp.ToTimestamp().ShouldBe(253402300799L);
+        unixTimeStamp.ToUtcDateTime().ShouldBe(new DateTime(9999, 12, 31, 23, 59, 59, DateTimeKind.Utc));
+    }
+    /// <summary>
+    /// 验证派生类型调用受保护构造函数时不能绕过 Unix 秒范围。
+    /// </summary>
+    /// <param name="timestamp">待构造的 Unix 秒值。</param>
+    [Theory]
+    [InlineData(-1L)]
+    [InlineData(253402300800L)]
+    public void ProtectedConstructor_WithOutOfRangeTimestamp_ThrowsArgumentOutOfRangeException(long timestamp)
+    {
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() =>
+            new ExposedUnixTimeStamp(UnixTimeStamp.UnixEpoch, timestamp));
+
+        exception.ParamName.ShouldBe("timestamp");
+    }
+    /// <summary>
+    /// 验证派生类型通过受保护构造函数创建合法边界时比较和哈希一致。
+    /// </summary>
+    /// <param name="timestamp">合法边界 Unix 秒值。</param>
+    [Theory]
+    [InlineData(0L)]
+    [InlineData(253402300799L)]
+    public void ProtectedConstructor_WithValidBoundary_PreservesComparisonContract(long timestamp)
+    {
+        var utcTime = new DateTime(
+            UnixTimeStamp.UnixEpoch.Ticks + timestamp * TimeSpan.TicksPerSecond,
+            DateTimeKind.Utc);
+        TimeStamp derived = new ExposedUnixTimeStamp(utcTime, timestamp);
+        TimeStamp equivalent = new TimeStamp(utcTime);
+
+        derived.ToTimestamp().ShouldBe(timestamp);
+        derived.Equals(equivalent).ShouldBeTrue();
+        derived.CompareTo(equivalent).ShouldBe(0);
+        derived.GetHashCode().ShouldBe(equivalent.GetHashCode());
+    }
+    /// <summary>
+    /// 验证按固定时长减至 Unix 纪元之前时拒绝生成负时间戳。
+    /// </summary>
+    [Fact]
+    public void SubtractTimeSpan_BeforeEpoch_ThrowsArgumentOutOfRangeException()
+    {
+        var epoch = new UnixTimeStamp(UnixTimeStamp.UnixEpoch);
+
+        Should.Throw<ArgumentOutOfRangeException>(() => epoch.Subtract(TimeSpan.FromTicks(1)));
+        Should.Throw<ArgumentOutOfRangeException>(() => epoch.Subtract(TimeSpan.FromSeconds(1)));
     }
     /// <summary>
     /// 测试 - Add和Subtract方法 - TimeSpan重载
@@ -982,13 +1071,13 @@ public class UnixTimeStampTest
     /// 验证并发读取的最大 Unix 时间戳一致且符合日期上限。
     /// </summary>
     [Fact]
-    public void ThreadSafety_MaxUnixTimestampLazyCalculation_IsThreadSafe()
+    public void ThreadSafety_MaxUnixTimestamp_IsConsistentAcrossConcurrentReads()
     {
         // Arrange
         const int threadCount = 20;
         var results = new ConcurrentBag<long>();
         var tasks = new List<Task>();
-        // Act - 多线程同时访问MaxUnixTimestamp
+        // Act - 多线程同时读取最大 Unix 时间戳常量
         for (int i = 0; i < threadCount; i++)
         {
             tasks.Add(Task.Run(() =>
@@ -1000,12 +1089,25 @@ public class UnixTimeStampTest
         Task.WaitAll(tasks.ToArray());
         // Assert
         results.Count.ShouldBe(threadCount);
-        // 所有结果应该相同（延迟计算只执行一次）
+        // 所有并发读取结果应一致
         var distinctResults = results.Distinct().ToArray();
         distinctResults.Length.ShouldBe(1);
         // 验证计算结果正确
-        var expectedMax = (long)(DateTime.MaxValue.ToUniversalTime() - UnixTimeStamp.UnixEpoch).TotalSeconds;
-        distinctResults[0].ShouldBe(expectedMax);
+        distinctResults[0].ShouldBe(253402300799L);
     }
+
+    /// <summary>
+    /// 暴露指定构造函数以验证 Unix 时间戳的继承行为。
+    /// </summary>
+    private sealed class ExposedUnixTimeStamp : UnixTimeStamp
+    {
+        /// <summary>
+        /// 初始化一个 <see cref="ExposedUnixTimeStamp"/> 类型的实例。
+        /// </summary>
+        /// <param name="dateTime">直接传递给基类的时间值。</param>
+        /// <param name="timestamp">直接传递给基类的 Unix 秒数。</param>
+        public ExposedUnixTimeStamp(DateTime dateTime, long timestamp) : base(dateTime, timestamp) { }
+    }
+
     #endregion
 }

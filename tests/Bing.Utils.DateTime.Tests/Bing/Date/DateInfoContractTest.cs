@@ -1,7 +1,6 @@
 using NodaTime;
 
 namespace Bing.Date;
-
 /// <summary>
 /// 验证日期对象的构造、分量设置、日期偏移及 NodaTime 转换。
 /// </summary>
@@ -9,19 +8,27 @@ namespace Bing.Date;
 public class DateInfoContractTest
 {
     /// <summary>
-    /// 验证日期对象构造时截断时间并保留时间种类。
+    /// 验证日期对象构造时清除全部时间刻度、保留时间种类并转换为无时区午夜。
     /// </summary>
-    [Fact]
-    public void DateInfo_ConstructWithDateTime_TruncatesTimePart()
+    /// <param name="kind">输入日期时间的种类。</param>
+    [Theory]
+    [InlineData(DateTimeKind.Utc)]
+    [InlineData(DateTimeKind.Local)]
+    [InlineData(DateTimeKind.Unspecified)]
+    public void DateInfo_ConstructWithDateTime_TruncatesSubMillisecondTicksAndPreservesKind(DateTimeKind kind)
     {
-        var source = new DateTime(2024, 7, 8, 9, 10, 11, 123, DateTimeKind.Local);
+        var source = new DateTime(2024, 7, 8, 9, 10, 11, 123, kind).AddTicks(4567);
 
         var info = new DateInfo(source);
         var result = info.ToDateTime();
 
-        result.ShouldBe(new DateTime(2024, 7, 8, 0, 0, 0, 0, DateTimeKind.Local));
+        result.Ticks.ShouldBe(new DateTime(2024, 7, 8).Ticks);
+        result.Kind.ShouldBe(kind);
+        info.Year.ShouldBe(2024);
+        info.Month.ShouldBe(7);
+        info.Day.ShouldBe(8);
+        info.ToLocalDateTime().ShouldBe(new LocalDateTime(2024, 7, 8, 0, 0, 0));
     }
-
     /// <summary>
     /// 验证按年月日构造日期对象时保存闰日。
     /// </summary>
@@ -34,7 +41,6 @@ public class DateInfoContractTest
         info.Month.ShouldBe(2);
         info.Day.ShouldBe(29);
     }
-
     /// <summary>
     /// 验证日期分量设置后返回更新的日期。
     /// </summary>
@@ -50,7 +56,6 @@ public class DateInfoContractTest
         var result = info.ToDateTime();
         result.ShouldBe(new DateTime(2025, 2, 20));
     }
-
     /// <summary>
     /// 验证月份设置拒绝超出一至十二月的数值。
     /// </summary>
@@ -64,7 +69,6 @@ public class DateInfoContractTest
 
         Should.Throw<ArgumentOutOfRangeException>(() => info.Month = month);
     }
-
     /// <summary>
     /// 验证日分量设置拒绝目标月份中不存在的日期。
     /// </summary>
@@ -75,7 +79,6 @@ public class DateInfoContractTest
 
         Should.Throw<ArgumentOutOfRangeException>(() => info.Day = 31);
     }
-
     /// <summary>
     /// 验证连续日期偏移修改同一对象并返回原引用。
     /// </summary>
@@ -89,7 +92,6 @@ public class DateInfoContractTest
         returned.ShouldBeSameAs(info);
         info.ToDateTime().ShouldBe(new DateTime(2024, 1, 3));
     }
-
     /// <summary>
     /// 验证日期对象转换为等价的 NodaTime 日期及午夜时间。
     /// </summary>

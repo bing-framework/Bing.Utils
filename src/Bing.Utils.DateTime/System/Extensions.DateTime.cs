@@ -8,10 +8,11 @@ public static class BingDateTimeExtensions
     #region Clone(克隆)
 
     /// <summary>
-    /// 克隆
+    /// 复制日期时间值，保留完整的本地夏令时重复时间标记。
     /// </summary>
-    /// <param name="dt">日期时间</param>
-    public static DateTime Clone(this DateTime dt) => new(dt.Ticks, dt.Kind);
+    /// <param name="dt">待复制的日期时间。</param>
+    /// <returns>具有相同 ticks、Kind 和本地时间点选择的值副本。</returns>
+    public static DateTime Clone(this DateTime dt) => dt;
 
     #endregion
 }

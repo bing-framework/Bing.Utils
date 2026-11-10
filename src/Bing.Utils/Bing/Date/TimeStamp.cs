@@ -11,12 +11,13 @@ namespace Bing.Date;
 /// <para>- 范围：0001年1月1日至9999年12月31日</para>
 /// <para>- 用途：适用于需要高精度时间记录的场景</para>
 /// <para>- 与Unix时间戳的区别：本类使用Ticks，Unix时间戳使用秒/毫秒</para>
+/// <para>- 比较及差值使用原始日期 ticks；与 UnixTimeStamp 比较时须先明确本类时间的 Kind 和时区</para>
 /// <para>常用场景：日志记录、数据审计、时间序列分析、性能监控等</para>
 /// </remarks>
 public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
 {
     /// <summary>
-    /// 内部时间戳值（以.NET Ticks为单位）
+    /// 内部时间戳值；普通时间戳使用 .NET ticks，Unix 时间戳使用秒。
     /// </summary>
     // ReSharper disable once InconsistentNaming
     protected long m_timestamp;
@@ -26,6 +27,11 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     /// </summary>
     // ReSharper disable once InconsistentNaming
     protected DateTime m_datetime;
+
+    /// <summary>
+    /// 获取用于比较和计算差值的 .NET ticks。
+    /// </summary>
+    internal virtual long ComparisonTicks => m_timestamp;
 
     #region 构造函数
 
@@ -201,13 +207,14 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     #region 实用工具方法
 
     /// <summary>
-    /// 获取时间戳与指定时间戳之间的差值
+    /// 获取时间戳与指定时间戳之间的 tick 差值
     /// </summary>
     /// <param name="other">要比较的时间戳</param>
-    /// <returns>时间差（当前时间戳 - 指定时间戳）</returns>
+    /// <returns>时间差 ticks（当前时间戳 - 指定时间戳）</returns>
     /// <exception cref="ArgumentNullException">当other为null时抛出</exception>
     /// <remarks>
-    /// 返回值为正数表示当前时间戳较晚，为负数表示当前时间戳较早。
+    /// 返回以 ticks 为单位的差值。普通时间戳比较原始日期 ticks；Unix 时间戳比较 UTC 秒对应的 ticks。
+    /// 普通时间戳不会根据 Kind 进行时区转换。
     /// </remarks>
     /// <example>
     /// <code>
@@ -222,7 +229,7 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     {
         if (other == null)
             throw new ArgumentNullException(nameof(other));
-        return m_timestamp - other.m_timestamp;
+        return ComparisonTicks - other.ComparisonTicks;
     }
 
     /// <summary>
@@ -284,47 +291,41 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
 
     #region 相等性和比较实现
 
-    /// <summary>
-    /// 比较当前时间戳与另一个时间戳的大小关系
-    /// </summary>
-    /// <param name="other">要比较的时间戳</param>
-    /// <returns>
-    /// 小于0：当前时间戳早于指定时间戳
-    /// 等于0：时间戳相等
-    /// 大于0：当前时间戳晚于指定时间戳
-    /// </returns>
+    /// <inheritdoc />
+    /// <remarks>使用统一的比较刻度进行排序；与 null 比较时当前实例较大。</remarks>
     public int CompareTo(TimeStamp other)
     {
         if (other == null)
             return 1;
-        return m_timestamp.CompareTo(other.m_timestamp);
+        return ComparisonTicks.CompareTo(other.ComparisonTicks);
     }
 
-    /// <summary>
-    /// 检查当前时间戳是否与另一个时间戳相等
-    /// </summary>
-    /// <param name="other">要比较的时间戳</param>
-    /// <returns>如果时间戳相等则返回true，否则返回false</returns>
+    /// <inheritdoc />
+    /// <remarks>按统一的比较刻度判断相等；与 null 比较时不相等。</remarks>
     public bool Equals(TimeStamp other)
     {
         if (other == null)
             return false;
-        return m_timestamp == other.m_timestamp;
+        return ComparisonTicks == other.ComparisonTicks;
     }
 
     /// <inheritdoc />
     public override bool Equals(object obj) => Equals(obj as TimeStamp);
 
     /// <inheritdoc />
-    public override int GetHashCode() => m_timestamp.GetHashCode();
+    public override int GetHashCode() => ComparisonTicks.GetHashCode();
 
     #endregion
 
     #region 运算符重载
 
     /// <summary>
-    /// 时间戳相等运算符
+    /// 判断两个时间戳是否相等。
     /// </summary>
+    /// <param name="left">左侧时间戳。</param>
+    /// <param name="right">右侧时间戳。</param>
+    /// <returns>相等时为 true，否则为 false。</returns>
+    /// <remarks>null 小于任何非 null 时间戳，两个 null 视为相等。</remarks>
     public static bool operator ==(TimeStamp left, TimeStamp right)
     {
         if (ReferenceEquals(left, right))
@@ -335,13 +336,21 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     }
 
     /// <summary>
-    /// 时间戳不等运算符
+    /// 判断两个时间戳是否不相等。
     /// </summary>
+    /// <param name="left">左侧时间戳。</param>
+    /// <param name="right">右侧时间戳。</param>
+    /// <returns>不相等时为 true，否则为 false。</returns>
+    /// <remarks>null 小于任何非 null 时间戳，两个 null 视为相等。</remarks>
     public static bool operator !=(TimeStamp left, TimeStamp right) => !(left == right);
 
     /// <summary>
-    /// 时间戳小于运算符
+    /// 判断左侧时间戳是否小于右侧时间戳。
     /// </summary>
+    /// <param name="left">左侧时间戳。</param>
+    /// <param name="right">右侧时间戳。</param>
+    /// <returns>左侧小于右侧时为 true，否则为 false。</returns>
+    /// <remarks>null 小于任何非 null 时间戳，两个 null 视为相等。</remarks>
     public static bool operator <(TimeStamp left, TimeStamp right)
     {
         if (left is null)
@@ -350,24 +359,36 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     }
 
     /// <summary>
-    /// 时间戳小于等于运算符
+    /// 判断左侧时间戳是否小于或等于右侧时间戳。
     /// </summary>
+    /// <param name="left">左侧时间戳。</param>
+    /// <param name="right">右侧时间戳。</param>
+    /// <returns>左侧小于或等于右侧时为 true，否则为 false。</returns>
+    /// <remarks>null 小于任何非 null 时间戳，两个 null 视为相等。</remarks>
     public static bool operator <=(TimeStamp left, TimeStamp right)
     {
         return left is null || left.CompareTo(right) <= 0;
     }
 
     /// <summary>
-    /// 时间戳大于运算符
+    /// 判断左侧时间戳是否大于右侧时间戳。
     /// </summary>
+    /// <param name="left">左侧时间戳。</param>
+    /// <param name="right">右侧时间戳。</param>
+    /// <returns>左侧大于右侧时为 true，否则为 false。</returns>
+    /// <remarks>null 小于任何非 null 时间戳，两个 null 视为相等。</remarks>
     public static bool operator >(TimeStamp left, TimeStamp right)
     {
         return left is not null && left.CompareTo(right) > 0;
     }
 
     /// <summary>
-    /// 时间戳大于等于运算符
+    /// 判断左侧时间戳是否大于或等于右侧时间戳。
     /// </summary>
+    /// <param name="left">左侧时间戳。</param>
+    /// <param name="right">右侧时间戳。</param>
+    /// <returns>左侧大于或等于右侧时为 true，否则为 false。</returns>
+    /// <remarks>null 小于任何非 null 时间戳，两个 null 视为相等。</remarks>
     public static bool operator >=(TimeStamp left, TimeStamp right)
     {
         if (left is null)
@@ -376,8 +397,11 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     }
 
     /// <summary>
-    /// 时间戳加法运算符
+    /// 为时间戳增加指定时长。
     /// </summary>
+    /// <param name="timeStamp">参与运算的时间戳。</param>
+    /// <param name="timeSpan">要增加的时长。</param>
+    /// <returns>增加时长后的时间戳。</returns>
     public static TimeStamp operator +(TimeStamp timeStamp, TimeSpan timeSpan)
     {
         if (timeStamp == null)
@@ -386,8 +410,11 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     }
 
     /// <summary>
-    /// 时间戳减法运算符
+    /// 从时间戳减去指定时长。
     /// </summary>
+    /// <param name="timeStamp">参与运算的时间戳。</param>
+    /// <param name="timeSpan">要减去的时长。</param>
+    /// <returns>减去时长后的时间戳。</returns>
     public static TimeStamp operator -(TimeStamp timeStamp, TimeSpan timeSpan)
     {
         if (timeStamp == null)
@@ -396,8 +423,11 @@ public class TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>
     }
 
     /// <summary>
-    /// 时间戳差值运算符
+    /// 计算两个时间戳的时间差。
     /// </summary>
+    /// <param name="left">左侧时间戳。</param>
+    /// <param name="right">右侧时间戳。</param>
+    /// <returns>左侧时间戳减去右侧时间戳的时长。</returns>
     public static TimeSpan operator -(TimeStamp left, TimeStamp right)
     {
         if (left == null)

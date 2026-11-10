@@ -1,6 +1,8 @@
 using System.Diagnostics.Contracts;
 using Bing.Date.DateUtils;
 using NodaTime;
+using IClock = Bing.Date.Clock.IClock;
+using RelativeSystemClock = Bing.Date.Clock.SystemClock;
 
 namespace Bing.Date;
 
@@ -133,10 +135,11 @@ public static partial class DateTimeExtensions
     #region Clone
 
     /// <summary>
-    /// 创建日期时间的精确副本，保留原始的Ticks和Kind属性
+    /// 复制日期时间值，保留 ticks、Kind 和本地夏令时重复时间标记。
     /// </summary>
     /// <param name="dt">要克隆的日期时间</param>
-    /// <returns>与原始日期时间值和Kind属性完全相同的新实例</returns>
+    /// <returns>保留原有完整状态的值副本。</returns>
+    /// <remarks>保留此静态调用入口以兼容已编译调用方；扩展调用统一由 System.BingDateTimeExtensions 提供，避免命名空间组合时产生歧义。</remarks>
     /// <example>
     /// <code>
     /// var original = DateTime.UtcNow;
@@ -144,21 +147,22 @@ public static partial class DateTimeExtensions
     /// Console.WriteLine(cloned.Kind == original.Kind); // 输出: True
     /// </code>
     /// </example>
-    public static DateTime Clone(this DateTime dt) => new(dt.Ticks, dt.Kind);
+    public static DateTime Clone(DateTime dt) => System.BingDateTimeExtensions.Clone(dt);
 
     #endregion
 
     #region Diff
 
     /// <summary>
-    /// 计算两个日期时间之间相差的月份数（整数）
+    /// 计算两个公历日期之间的完整月数。
     /// </summary>
     /// <param name="dt1">第一个日期时间</param>
     /// <param name="dt2">第二个日期时间</param>
-    /// <returns>两个日期之间的月份差异数（绝对值）</returns>
+    /// <returns>忽略不足整月部分的非负月数，交换参数后结果相同。</returns>
     /// <remarks>
-    /// 如果较小日期的天数大于较大日期的天数，不计入一个月；
-    /// 如果较小日期的天数等于较大日期的天数，则精确计算月份差。
+    /// 只使用年月日字段，忽略时分秒和 Kind，不转换时区。
+    /// 若较晚日期的日号小于较早日期的日号，则从年月差中扣除一个月。
+    /// 不将月末自动视为同一日号，例如 1 月 31 日至 2 月 28 日为零个完整月。
     /// </remarks>
     /// <example>
     /// <code>
@@ -171,9 +175,8 @@ public static partial class DateTimeExtensions
     {
         var l = dt1 < dt2 ? dt1 : dt2;
         var r = dt1 >= dt2 ? dt1 : dt2;
-        return (l.Day == r.Day ? 0 : l.Day > r.Day ? 0 : 1)
-               + (l.Month == r.Month ? 0 : r.Month - l.Month)
-               + (l.Year == r.Year ? 0 : (r.Year - l.Year) * 12);
+        var months = (r.Year - l.Year) * 12 + r.Month - l.Month;
+        return months - (r.Day < l.Day ? 1 : 0);
     }
 
     /// <summary>
@@ -221,7 +224,7 @@ public static partial class DateTimeExtensions
     /// <param name="dt">参照时间</param>
     /// <returns>时间差的TimeSpan对象</returns>
     /// <remarks>
-    /// 使用<see cref="DateTime.Now"/>作为当前系统时间进行计算。
+    /// 使用系统 UTC 时钟；Local 和 Unspecified 按本地时区解释后比较时间点。
     /// 如果dt早于当前时间，返回的TimeSpan为正值，否则为负值。
     /// </remarks>
     /// <example>
@@ -231,7 +234,18 @@ public static partial class DateTimeExtensions
     /// Console.WriteLine(elapsed.TotalHours); // 输出约为: 2
     /// </code>
     /// </example>
-    public static TimeSpan ElapsedTime(this DateTime dt) => DateTime.Now - dt;
+    public static TimeSpan ElapsedTime(this DateTime dt) => dt.ElapsedTime(RelativeSystemClock.Instance);
+
+    /// <summary>
+    /// 计算指定时钟与参照时间之间经过的时间。
+    /// </summary>
+    /// <param name="dt">参照时间；Unspecified 按本地时区解释。</param>
+    /// <param name="clock">当前时间来源。</param>
+    /// <returns>当前时间减去参照时间的结果。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="clock"/> 为 null。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">参照时间转换到 UTC 时超出可表示范围。</exception>
+    public static TimeSpan ElapsedTime(this DateTime dt, IClock clock) =>
+        GetCurrentUtc(clock) - new DateTimeOffset(dt).UtcDateTime;
 
     /// <summary>
     /// 计算当前系统时间与指定时间之间的时间差（毫秒）
@@ -239,16 +253,38 @@ public static partial class DateTimeExtensions
     /// <param name="dt">参照时间</param>
     /// <returns>时间差的总毫秒数（整数）</returns>
     /// <remarks>
-    /// 使用<see cref="DateTime.Now"/>作为当前系统时间进行计算。
+    /// 使用系统 UTC 时钟；Local 和 Unspecified 按本地时区解释后比较时间点。
     /// 如果dt早于当前时间，返回值为正，否则为负。
     /// </remarks>
+    /// <exception cref="OverflowException">经过的整毫秒数超出 <see cref="int"/> 的范围。</exception>
     /// <example>
     /// <code>
     /// var pastTime = DateTime.Now.AddSeconds(-5);
     /// var elapsed = pastTime.ElapsedMilliseconds(); // 结果约为5000毫秒
     /// </code>
     /// </example>
-    public static int ElapsedMilliseconds(this DateTime dt) => (int)(DateTime.Now - dt).TotalMilliseconds;
+    public static int ElapsedMilliseconds(this DateTime dt) => dt.ElapsedMilliseconds(RelativeSystemClock.Instance);
+
+    /// <summary>
+    /// 计算指定时钟与参照时间之间经过的整毫秒数。
+    /// </summary>
+    /// <param name="dt">参照时间；Unspecified 按本地时区解释。</param>
+    /// <param name="clock">当前时间来源。</param>
+    /// <returns>当前时间减去参照时间的总毫秒数，向零截断。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="clock"/> 为 null。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">参照时间转换到 UTC 时超出可表示范围。</exception>
+    /// <exception cref="OverflowException">经过的整毫秒数超出 <see cref="int"/> 的范围。</exception>
+    public static int ElapsedMilliseconds(this DateTime dt, IClock clock) =>
+        checked((int)(dt.ElapsedTime(clock).Ticks / TimeSpan.TicksPerMillisecond));
+
+    /// <summary>
+    /// 获取指定时钟所表示的 UTC 时间点。
+    /// </summary>
+    /// <param name="clock">当前时间来源。</param>
+    /// <returns>时钟值所表示的 UTC 时间。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="clock"/> 为 null。</exception>
+    private static DateTime GetCurrentUtc(IClock clock) =>
+        (clock ?? throw new ArgumentNullException(nameof(clock))).UtcNow.UtcDateTime;
 
     #endregion
 
@@ -630,7 +666,7 @@ public static partial class DateTimeExtensions
     /// <param name="includeBoundary">是否将相等的时间视为未来（默认为false）</param>
     /// <returns>如果在当前时间之后则为true，否则为false</returns>
     /// <remarks>
-    /// 使用<see cref="DateTime.Now"/>作为比较基准
+    /// 使用系统 UTC 时钟；Local 和 Unspecified 按本地时区解释后比较时间点。
     /// </remarks>
     /// <example>
     /// <code>
@@ -642,7 +678,19 @@ public static partial class DateTimeExtensions
     /// </code>
     /// </example>
     public static bool IsInTheFuture(this DateTime dt, bool includeBoundary = false) =>
-        dt.IsAfter(DateTime.Now, includeBoundary);
+        dt.IsInTheFuture(includeBoundary, RelativeSystemClock.Instance);
+
+    /// <summary>
+    /// 判断指定时间是否在指定时钟的当前时间之后。
+    /// </summary>
+    /// <param name="dt">要判断的时间；Unspecified 按本地时区解释。</param>
+    /// <param name="includeBoundary">是否将相等的时间视为未来。</param>
+    /// <param name="clock">当前时间来源。</param>
+    /// <returns>在当前时间之后，或包含边界且相等时返回 true；否则返回 false。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="clock"/> 为 null。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">输入时间转换到 UTC 时超出可表示范围。</exception>
+    public static bool IsInTheFuture(this DateTime dt, bool includeBoundary, IClock clock) =>
+        new DateTimeOffset(dt).UtcDateTime.IsAfter(GetCurrentUtc(clock), includeBoundary);
 
     /// <summary>
     /// 判断指定可空时间是否在当前系统时间之后（未来）
@@ -676,7 +724,7 @@ public static partial class DateTimeExtensions
     /// <param name="includeBoundary">是否将相等的时间视为过去（默认为false）</param>
     /// <returns>如果在当前时间之前则为true，否则为false</returns>
     /// <remarks>
-    /// 使用<see cref="DateTime.Now"/>作为比较基准
+    /// 使用系统 UTC 时钟；Local 和 Unspecified 按本地时区解释后比较时间点。
     /// </remarks>
     /// <example>
     /// <code>
@@ -688,7 +736,19 @@ public static partial class DateTimeExtensions
     /// </code>
     /// </example>
     public static bool IsInThePast(this DateTime dt, bool includeBoundary = false) =>
-        dt.IsBefore(DateTime.Now, includeBoundary);
+        dt.IsInThePast(includeBoundary, RelativeSystemClock.Instance);
+
+    /// <summary>
+    /// 判断指定时间是否在指定时钟的当前时间之前。
+    /// </summary>
+    /// <param name="dt">要判断的时间；Unspecified 按本地时区解释。</param>
+    /// <param name="includeBoundary">是否将相等的时间视为过去。</param>
+    /// <param name="clock">当前时间来源。</param>
+    /// <returns>在当前时间之前，或包含边界且相等时返回 true；否则返回 false。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="clock"/> 为 null。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">输入时间转换到 UTC 时超出可表示范围。</exception>
+    public static bool IsInThePast(this DateTime dt, bool includeBoundary, IClock clock) =>
+        new DateTimeOffset(dt).UtcDateTime.IsBefore(GetCurrentUtc(clock), includeBoundary);
 
     /// <summary>
     /// 判断指定可空时间是否在当前系统时间之前（过去）
@@ -983,7 +1043,8 @@ public static partial class DateTimeExtensions
     /// - 舍入到秒：毫秒>=500则进一秒 <br />
     /// - 舍入到分钟：秒>=30则进一分钟 <br />
     /// - 舍入到小时：分钟>=30则进一小时 <br />
-    /// - 舍入到天：小时>=12则进一天
+    /// - 舍入到天：小时>=12则进一天 <br />
+    /// 按钟面 ticks 计算偏移，不转换时区，并保留原有 Kind 及本地重复时间选择标记。
     /// </remarks>
     /// <example>
     /// <code>
@@ -995,44 +1056,20 @@ public static partial class DateTimeExtensions
     /// var roundToDay = time.Round(RoundTo.Day); // 2023-01-02 00:00:00（因为12>=12）
     /// </code>
     /// </example>
-    /// <exception cref="ArgumentOutOfRangeException">当rt参数不是有效的RoundTo枚举值时抛出</exception>
+    /// <exception cref="ArgumentOutOfRangeException">精度非法或最终取整结果超出 DateTime 范围。</exception>
     public static DateTime Round(this DateTime dt, RoundTo rt)
     {
-        DateTime rounded;
-        switch (rt)
+        var intervalTicks = rt switch
         {
-            case RoundTo.Second:
-                {
-                    rounded = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Kind);
-                    if (dt.Millisecond >= 500)
-                        rounded = rounded.AddSeconds(1);
-                    break;
-                }
-            case RoundTo.Minute:
-                {
-                    rounded = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, dt.Kind);
-                    if (dt.Second >= 30)
-                        rounded = rounded.AddMinutes(1);
-                    break;
-                }
-            case RoundTo.Hour:
-                {
-                    rounded = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0, dt.Kind);
-                    if (dt.Minute >= 30)
-                        rounded = rounded.AddHours(1);
-                    break;
-                }
-            case RoundTo.Day:
-                {
-                    rounded = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, dt.Kind);
-                    if (dt.Hour >= 12)
-                        rounded = rounded.AddDays(1);
-                    break;
-                }
-            default:
-                throw new ArgumentOutOfRangeException(nameof(rt));
-        }
-        return rounded;
+            RoundTo.Second => TimeSpan.TicksPerSecond,
+            RoundTo.Minute => TimeSpan.TicksPerMinute,
+            RoundTo.Hour => TimeSpan.TicksPerHour,
+            RoundTo.Day => TimeSpan.TicksPerDay,
+            _ => throw new ArgumentOutOfRangeException(nameof(rt))
+        };
+        var remainder = dt.Ticks % intervalTicks;
+        var adjustment = remainder >= intervalTicks / 2 ? intervalTicks - remainder : -remainder;
+        return dt.AddTicks(adjustment);
     }
 
     #endregion

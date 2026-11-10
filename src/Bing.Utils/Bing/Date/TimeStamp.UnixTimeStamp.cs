@@ -12,6 +12,7 @@ namespace Bing.Date;
 /// <para>- 范围：1970年1月1日至2038年1月19日（32位）或更远（64位）</para>
 /// <para>- 用途：与外部系统交互、API调用、跨平台时间处理</para>
 /// <para>- 兼容性：符合POSIX标准，与大多数编程语言和系统兼容</para>
+/// <para>- 比较及差值按 UTC 整秒对应的 .NET ticks 计算</para>
 /// <para>常用场景：Web API、数据库记录、日志系统、缓存过期时间、文件系统时间戳等</para>
 /// </remarks>
 public class UnixTimeStamp : TimeStamp
@@ -37,23 +38,13 @@ public class UnixTimeStamp : TimeStamp
     /// 获取Unix时间戳的实际最大值（64位，对应9999年12月31日）
     /// </summary>
     /// <remarks>
-    /// 计算公式：(DateTime.MaxValue.ToUniversalTime().Ticks - UnixEpoch.Ticks) / TimeSpan.TicksPerSecond
-    /// 为了避免静态初始化依赖问题，这里使用延迟计算的属性
+    /// 使用 UTC 日期的最大 ticks 计算，不依赖本地时区。
     /// </remarks>
-    public static long MaxUnixTimestamp => _maxUnixTimestamp ??= CalculateMaxUnixTimestamp();
+    public static long MaxUnixTimestamp => (DateTime.MaxValue.Ticks - TimeOptions.UnixEpochTicks) / TimeSpan.TicksPerSecond;
 
-    /// <summary>
-    /// 缓存的最大Unix时间戳值
-    /// </summary>
-    private static long? _maxUnixTimestamp;
-
-    /// <summary>
-    /// 计算最大Unix时间戳值
-    /// </summary>
-    private static long CalculateMaxUnixTimestamp()
-    {
-        return (long)(DateTime.MaxValue.ToUniversalTime() - UnixEpoch).TotalSeconds;
-    }
+    /// <inheritdoc />
+    /// <remarks>使用 Unix 秒数对应的 UTC 整秒刻度进行比较和差值计算。</remarks>
+    internal override long ComparisonTicks => checked(TimeOptions.UnixEpochTicks + m_timestamp * TimeSpan.TicksPerSecond);
 
     #endregion
 
@@ -96,8 +87,9 @@ public class UnixTimeStamp : TimeStamp
     /// <param name="dt">时间对象</param>
     /// <remarks>
     /// 将DateTime对象转换为Unix时间戳并创建时间戳实例。
-    /// 如果DateTime的Kind为Unspecified，将按本地时间处理。
+    /// Utc 原样使用，Local 转换为 UTC，Unspecified 按 UTC 解释；纪元之前的输入会被拒绝。
     /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">输入对应的 UTC 时间早于 Unix 纪元或超出可表示范围。</exception>
     /// <example>
     /// <code>
     /// var specific = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Utc);
@@ -112,9 +104,10 @@ public class UnixTimeStamp : TimeStamp
     /// </summary>
     ///<param name="dt">时间对象</param>
     /// <param name="timestamp">Unix时间戳值</param>
+    /// <exception cref="ArgumentOutOfRangeException">Unix 秒数超出有效范围。</exception>
     protected UnixTimeStamp(DateTime dt, long timestamp) : base(dt, dt.Ticks)
     {
-        // 重新设置为Unix时间戳
+        ValidateUnixTimestamp(timestamp);
         m_timestamp = timestamp;
     }
 
@@ -124,7 +117,7 @@ public class UnixTimeStamp : TimeStamp
 
     /// <inheritdoc />
     /// <remarks>
-    /// 返回当前Unix时间戳对应的本地时间。
+    /// 从秒值构造时返回本地时间；从 DateTime 构造时保留传入值。本地时间超界时可能饱和。
     /// </remarks>
     /// <example>
     /// <code>
@@ -162,7 +155,7 @@ public class UnixTimeStamp : TimeStamp
     /// Console.WriteLine($"UTC时间: {utcTime:yyyy-MM-dd HH:mm:ss} UTC");
     /// </code>
     /// </example>
-    public DateTime ToUtcDateTime() => UnixEpoch.AddSeconds(m_timestamp);
+    public DateTime ToUtcDateTime() => new(ComparisonTicks, DateTimeKind.Utc);
 
     #endregion
 
@@ -171,17 +164,28 @@ public class UnixTimeStamp : TimeStamp
     /// <summary>
     /// 时间转Unix时间戳函数
     /// </summary>
-    private static readonly Func<DateTime, long> ToUnixTimestampFunc = time =>
+    private static readonly Func<DateTime, long> ToUnixTimestampFunc = dt =>
     {
-        var utcTime = time.Kind switch
+        DateTime utcTime;
+        try
         {
-            DateTimeKind.Utc => time,
-            DateTimeKind.Local => time.ToUniversalTime(),
-            DateTimeKind.Unspecified => DateTime.SpecifyKind(time, DateTimeKind.Utc), // 将Unspecified视为UTC时间
-            _ => time.ToUniversalTime()
-        };
+            utcTime = dt.Kind switch
+            {
+                DateTimeKind.Utc => dt,
+                DateTimeKind.Local => new DateTimeOffset(dt).UtcDateTime,
+                DateTimeKind.Unspecified => DateTime.SpecifyKind(dt, DateTimeKind.Utc),
+                _ => dt.ToUniversalTime()
+            };
+        }
+        catch (ArgumentException)
+        {
+            throw new ArgumentOutOfRangeException(nameof(dt), dt, "转换后的 UTC 时间超出可表示范围。");
+        }
 
-        return (long)(utcTime - UnixEpoch).TotalSeconds;
+        var elapsedTicks = utcTime.Ticks - TimeOptions.UnixEpochTicks;
+        if (elapsedTicks < 0)
+            throw new ArgumentOutOfRangeException(nameof(dt), dt, "Unix 时间戳不支持纪元之前的时间。");
+        return elapsedTicks / TimeSpan.TicksPerSecond;
     };
 
     /// <summary>
@@ -189,11 +193,21 @@ public class UnixTimeStamp : TimeStamp
     /// </summary>
     private static readonly Func<long, DateTime> FromUnixTimestampFunc = timestamp =>
     {
-        if (timestamp < MinUnixTimestamp || timestamp > MaxUnixTimestamp)
-            throw new ArgumentOutOfRangeException(nameof(timestamp), $"Unix时间戳值超出有效范围。有效范围：{MinUnixTimestamp} 到 {MaxUnixTimestamp}");
-        var utcTime = UnixEpoch.AddSeconds(timestamp);
+        ValidateUnixTimestamp(timestamp);
+        var utcTime = new DateTime(TimeOptions.UnixEpochTicks + timestamp * TimeSpan.TicksPerSecond, DateTimeKind.Utc);
         return utcTime.ToLocalTime();
     };
+
+    /// <summary>
+    /// 验证 Unix 秒数处于支持的非负 UTC 范围。
+    /// </summary>
+    /// <param name="timestamp">Unix 秒数。</param>
+    /// <exception cref="ArgumentOutOfRangeException">秒数超出有效范围。</exception>
+    private static void ValidateUnixTimestamp(long timestamp)
+    {
+        if (timestamp < MinUnixTimestamp || timestamp > MaxUnixTimestamp)
+            throw new ArgumentOutOfRangeException(nameof(timestamp), timestamp, $"Unix时间戳值超出有效范围。有效范围：{MinUnixTimestamp} 到 {MaxUnixTimestamp}");
+    }
 
     #endregion
 
@@ -307,6 +321,8 @@ public class UnixTimeStamp : TimeStamp
     /// </summary>
     /// <param name="seconds">要添加的秒数</param>
     /// <returns>新的Unix时间戳对象</returns>
+    /// <exception cref="OverflowException">整数加法溢出。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">结果超出非负 Unix 时间戳范围。</exception>
     /// <example>
     /// <code>
     /// var unixTimeStamp = new UnixTimeStamp();
@@ -314,34 +330,64 @@ public class UnixTimeStamp : TimeStamp
     /// Console.WriteLine($"一小时后: {futureStamp.ToDateTime():HH:mm:ss}");
     /// </code>
     /// </example>
-    public UnixTimeStamp AddSeconds(long seconds) => new(m_timestamp + seconds);
+    public UnixTimeStamp AddSeconds(long seconds) => new(checked(m_timestamp + seconds));
 
     /// <summary>
     /// 添加指定的分钟数
     /// </summary>
     /// <param name="minutes">要添加的分钟数</param>
     /// <returns>新的Unix时间戳对象</returns>
-    public UnixTimeStamp AddMinutes(long minutes) => AddSeconds(minutes * 60);
+    /// <exception cref="OverflowException">单位换算或整数加法溢出。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">结果超出非负 Unix 时间戳范围。</exception>
+    public UnixTimeStamp AddMinutes(long minutes) => AddSeconds(checked(minutes * 60));
 
     /// <summary>
     /// 添加指定的小时数
     /// </summary>
     /// <param name="hours">要添加的小时数</param>
     /// <returns>新的Unix时间戳对象</returns>
-    public UnixTimeStamp AddHours(long hours) => AddSeconds(hours * 3600);
+    /// <exception cref="OverflowException">单位换算或整数加法溢出。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">结果超出非负 Unix 时间戳范围。</exception>
+    public UnixTimeStamp AddHours(long hours) => AddSeconds(checked(hours * 3600));
 
     /// <summary>
     /// 添加指定的天数
     /// </summary>
     /// <param name="days">要添加的天数</param>
     /// <returns>新的Unix时间戳对象</returns>
-    public UnixTimeStamp AddDays(long days) => AddSeconds(days * 86400);
+    /// <exception cref="OverflowException">单位换算或整数加法溢出。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">结果超出非负 Unix 时间戳范围。</exception>
+    public UnixTimeStamp AddDays(long days) => AddSeconds(checked(days * 86400));
 
     /// <inheritdoc />
-    public override TimeStamp Add(TimeSpan timeSpan) => new UnixTimeStamp(m_datetime.Add(timeSpan));
+    /// <remarks>本地钟面无法表示结果时，使用 UTC 表示并保留时间戳。</remarks>
+    public override TimeStamp Add(TimeSpan timeSpan) => ShiftTimeSpan(timeSpan, false);
 
     /// <inheritdoc />
-    public override TimeStamp Subtract(TimeSpan timeSpan) => new UnixTimeStamp(m_datetime.Subtract(timeSpan));
+    /// <remarks>本地钟面无法表示结果时，使用 UTC 表示并保留时间戳。</remarks>
+    public override TimeStamp Subtract(TimeSpan timeSpan) => ShiftTimeSpan(timeSpan, true);
+
+    /// <summary>
+    /// 保留原有钟面运算；本地时间在边界饱和时改用可表示的 UTC 时间。
+    /// </summary>
+    /// <param name="timeSpan">要添加或减去的时间间隔。</param>
+    /// <param name="subtract">为 true 时减去时间间隔。</param>
+    /// <returns>运算后的 Unix 时间戳。</returns>
+    private TimeStamp ShiftTimeSpan(TimeSpan timeSpan, bool subtract)
+    {
+        var reference = ToUnixTimestampFunc(m_datetime) == m_timestamp ? m_datetime : ToUtcDateTime();
+        DateTime result;
+        try
+        {
+            result = subtract ? reference.Subtract(timeSpan) : reference.Add(timeSpan);
+        }
+        catch (ArgumentOutOfRangeException) when (reference.Kind == DateTimeKind.Local)
+        {
+            var utc = reference.ToUniversalTime();
+            result = subtract ? utc.Subtract(timeSpan) : utc.Add(timeSpan);
+        }
+        return new UnixTimeStamp(result);
+    }
 
     #endregion
 

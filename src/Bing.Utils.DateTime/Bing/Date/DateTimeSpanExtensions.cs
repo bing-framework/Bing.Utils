@@ -23,6 +23,14 @@ public static class DateTimeSpanExtensions
     public static DateTime Before(this DateTimeSpan ts) => ts.Before(DateTime.Now);
 
     /// <summary>
+    /// 从指定时钟的本机本地时间向前计算。
+    /// </summary>
+    /// <param name="ts">日期时间间隔。</param>
+    /// <param name="clock">当前时间来源。</param>
+    /// <returns>本地时间减去指定间隔。</returns>
+    public static DateTime Before(this DateTimeSpan ts, Clock.IClock clock) => ts.Before(DateTimeFactory.Now(clock));
+
+    /// <summary>
     /// 计算指定时间之前的指定日期时间间隔
     /// </summary>
     /// <param name="ts">日期时间间隔</param>
@@ -49,6 +57,14 @@ public static class DateTimeSpanExtensions
     /// </code>
     /// </example>
     public static DateTimeOffset OffsetBefore(this DateTimeSpan ts) => ts.Before(DateTimeOffset.Now);
+
+    /// <summary>
+    /// 从指定时钟的本机本地时间点向前计算。
+    /// </summary>
+    /// <param name="ts">日期时间间隔。</param>
+    /// <param name="clock">当前时间来源。</param>
+    /// <returns>带本地偏移的时间点减去指定间隔。</returns>
+    public static DateTimeOffset OffsetBefore(this DateTimeSpan ts, Clock.IClock clock) => ts.Before(ClockDateTime.Instant(clock).ToLocalTime());
 
     /// <summary>
     /// 计算指定时间偏移量之前的指定日期时间间隔
@@ -83,6 +99,14 @@ public static class DateTimeSpanExtensions
     public static DateTime FromNow(this DateTimeSpan ts) => ts.From(DateTime.Now);
 
     /// <summary>
+    /// 从指定时钟的本机本地时间向后计算。
+    /// </summary>
+    /// <param name="ts">日期时间间隔。</param>
+    /// <param name="clock">当前时间来源。</param>
+    /// <returns>本地时间加上指定间隔。</returns>
+    public static DateTime FromNow(this DateTimeSpan ts, Clock.IClock clock) => ts.From(DateTimeFactory.Now(clock));
+
+    /// <summary>
     /// 计算从指定时间开始，向后偏移指定日期时间间隔的时间
     /// </summary>
     /// <param name="ts">日期时间间隔</param>
@@ -109,6 +133,14 @@ public static class DateTimeSpanExtensions
     /// </code>
     /// </example>
     public static DateTimeOffset OffsetFromNow(this DateTimeSpan ts) => ts.From(DateTimeOffset.Now);
+
+    /// <summary>
+    /// 从指定时钟的本机本地时间点向后计算。
+    /// </summary>
+    /// <param name="ts">日期时间间隔。</param>
+    /// <param name="clock">当前时间来源。</param>
+    /// <returns>带本地偏移的时间点加上指定间隔。</returns>
+    public static DateTimeOffset OffsetFromNow(this DateTimeSpan ts, Clock.IClock clock) => ts.From(ClockDateTime.Instant(clock).ToLocalTime());
 
     /// <summary>
     /// 计算从指定时间偏移量开始，向后偏移指定日期时间间隔的时间偏移量
